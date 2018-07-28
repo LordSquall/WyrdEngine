@@ -6,9 +6,14 @@
 #include <Windows.h>
 #include "subsystems\loaders\ConfigLoader.h"
 #include "subsystems\window\MSWindow.h"
-#include "subsystems\renderer\DX11Renderer.h"
-#include "subsystems\renderer\OGLRenderer.h"
 
+#if defined ORS_RENDERER_OPENGL_
+#include "subsystems\renderer\OGLRenderer.h"
+#elif defined ORS_RENDERER_DX11_
+#include "subsystems\renderer\DX11Renderer.h"
+#elif defined ORS_RENDERER_VULKAN_
+#endif
+	
 using namespace OrisisEngine;
 
 Framework::Framework()
@@ -38,12 +43,12 @@ int Framework::Initialise(HINSTANCE hInstance, string configFilePath)
 	_window->RegisterLogger(_logger);
 
 	/* Allocate a renderer based on the supplied renderer configuration */
-#if defined _ORS_RENDERER_OPENGL_
+#if defined ORS_RENDERER_OPENGL_
 	_renderer = new OGLRenderer();
 	_renderer->RegisterLogger(_logger);
-#elif defined _ORS_RENDERER_DX11_
+#elif defined ORS_RENDERER_DX11_
 	renderer = new DX11Renderer();
-#elif defined _ORS_RENDERER_VULKAN_
+#elif defined ORS_RENDERER_VULKAN_
 	renderer = new VulkanRenderer();
 #else
 	_logger->LogError("Framework: No Renderer symbol found.");
@@ -52,10 +57,14 @@ int Framework::Initialise(HINSTANCE hInstance, string configFilePath)
 	/*Initialise the renderer subsystem */
 	_renderer->Initialise();
 
-
 	_window->Create(&config);
 
 	return 0;
+}
+
+string Framework::GetVersionInfo()
+{
+	return string("Framework: " + string(ORS_FW_VER_INFO));
 }
 
 bool Framework::Run()
@@ -71,7 +80,6 @@ bool Framework::Run()
 
 bool Framework::ExecuteFrame()
 {
-	_logger->LogInfo("FRAME");
 	return true;
 }
 

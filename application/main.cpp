@@ -25,6 +25,9 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	/* Register the logger to ensure we get all the messages as early as possible */
 	framework->RegisterLogger(logger);
 
+	/* Retrieve framework version info */
+	logger->LogInfo(framework->GetVersionInfo());
+
 	/* Attempt the initialise the framework */
 	if (framework->Initialise(hInstance, "config.ini") != 0)
 	{

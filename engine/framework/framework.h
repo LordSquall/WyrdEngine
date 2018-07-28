@@ -1,6 +1,8 @@
 #ifndef _FRAMEWORK_H_
 #define _FRAMEWORK_H_
 
+#define ORS_FW_VER_INFO "Version 0.0.1 [In Development]"
+
 #include <Windows.h>
 
 #include "export.h"
@@ -21,6 +23,8 @@ namespace OrisisEngine
 
 			int Initialise(HINSTANCE hInstance, string configFilePath);
 			int Shutdown();
+
+			string GetVersionInfo();
 
 			bool Run();
 

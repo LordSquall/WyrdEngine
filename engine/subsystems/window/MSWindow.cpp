@@ -92,8 +92,6 @@ bool MSWindow::WindowsEventLoop(MSWindow_Params* params)
 	// wait for the next message in the queue, store the result in 'msg'
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
-
-		printf("foobar");
 		// translate keystroke messages into the right format
 		TranslateMessage(&msg);
 
