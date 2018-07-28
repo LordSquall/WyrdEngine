@@ -1,9 +1,52 @@
 /* System Includes */
-#include <stdio.h>
+#include <windows.h>
+#include <windowsx.h>
+
+/* Orisis Engine Framework Includes */
+#include "framework\framework.h"
+
+/* Local Implemented Orisis Classes */
+#include "ConsoleLogger.h"
+
+using namespace OrisisEngine;
 
 /* Program Entry Point */
-int main(int argc, char *argv[])
+int WINAPI WinMain(HINSTANCE hInstance,
+	HINSTANCE hPrevInstance,
+	LPSTR lpCmdLine,
+	int nCmdShow)
 {
-	printf("Hello World");
+	/* Create a Console Logger */
+	ILogger* logger = new ConsoleLogger();
+
+	/* Initialise a Framework object */
+	Framework* framework = new Framework();
+
+	/* Register the logger to ensure we get all the messages as early as possible */
+	framework->RegisterLogger(logger);
+
+	/* Attempt the initialise the framework */
+	if (framework->Initialise(hInstance, "config.ini") != 0)
+	{
+		/* We have failed to initialise */
+		logger->LogError("Framework Initialise Failed");
+		
+		/* Delete the framework and logger objects */
+		delete framework;
+		delete logger;
+
+		exit(0);
+	}
+
+	/* Run the framework - This is a blocking call */
+	framework->Run();
+
+	/* Shutdown the framwork */
+	framework->Shutdown();
+
+	/* Delete framework and logger objects */
+	delete framework;
+	delete logger;
+
 	return 0;
 }
