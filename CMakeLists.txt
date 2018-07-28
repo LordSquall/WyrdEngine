@@ -6,33 +6,25 @@ project (OsirisEngine VERSION 1.0.0 DESCRIPTION "Osiris Engine Shared Library")
 set (OsirisEngineLib_VERSION_MAJOR 1)
 set (OsirisEngineLib_VERSION_MINOR 0)
 
-# add source files to library 
-set(OsirisEngineLib_SourceFiles
-	engine/framework/framework.cpp
-	engine/subsystems/window/MSWindow.cpp
-	engine/subsystems/renderer/DX11Renderer.cpp
-	engine/subsystems/renderer/OGLRenderer.cpp
-)	
+# Add the engine library into the project
+add_subdirectory("${PROJECT_SOURCE_DIR}/engine")
 
-add_library(OsirisEngineLib SHARED
-	${OsirisEngineLib_SourceFiles}
-)
-
-set(OSIRIS_lIBS OsirisEngineLib)
-
-# add source files to application 
+# Add source files to application 
 set(OsirisApp_SourceFiles
 	application/ConsoleLogger.cpp
 	application/main.cpp
 )
 
-
+# Set the includes for the engine header files
 include_directories(OsirisApp engine)	
 
-add_executable(OsirisApp
+# Add a executable using the sample application code
+add_executable(OsirisApp WIN32
 	${OsirisApp_SourceFiles}
 )
 
-target_link_libraries(OsirisApp ${OSIRIS_lIBS})
+# Link the osiris engine libs
+target_link_libraries(OsirisApp ${OSIRIS_LIBS})
 
+# Set the default project to be the sample app
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OsirisApp)

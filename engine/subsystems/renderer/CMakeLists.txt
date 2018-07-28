@@ -1,0 +1,8 @@
+cmake_minimum_required (VERSION 3.9)
+
+set(ENGINE_SOURCE
+   ${ENGINE_SOURCE}
+   ${CMAKE_CURRENT_SOURCE_DIR}/DX11Renderer.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/OGLRenderer.cpp
+   PARENT_SCOPE
+)
