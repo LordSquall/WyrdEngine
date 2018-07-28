@@ -36,7 +36,7 @@ int Framework::Initialise(HINSTANCE hInstance, string configFilePath)
 	_logger->LogInfo("Framework: Initialise Called");
 
 	/* Load the configuration file */
-	FrameworkConfig config = FrameworkConfigLoader::LoadFile(configFilePath);
+	FrameworkConfig config = FrameworkConfigLoader::LoadFile(configFilePath, _logger);
 
 	/* Initialise a basic window for the application */
 	_window = new MSWindow(hInstance);

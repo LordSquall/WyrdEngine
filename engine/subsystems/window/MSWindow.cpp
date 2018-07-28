@@ -42,7 +42,6 @@ bool MSWindow::Create(FrameworkConfig* config)
 	_Params.wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
 	_Params.wc.lpszClassName = "WindowClass1";
 
-
 	_EventThread = thread(&MSWindow::WindowsEventLoop, this, &_Params);
 
 	_IsRunning = true;
@@ -73,9 +72,10 @@ bool MSWindow::WindowsEventLoop(MSWindow_Params* params)
 	AdjustWindowRect(&params->wr, WS_OVERLAPPEDWINDOW, FALSE);    // adjust the size
 
 														  // create the window and use the result as the handle
+	_logger->LogDebug(params->config.title);
 	params->hWnd = CreateWindowEx(NULL,
 		"WindowClass1",    // name of the window class
-		"Our First Windowed Program",   // title of the window
+		params->config.title,   // title of the window
 		WS_OVERLAPPEDWINDOW,    // window style
 		params->config.x,    // x-position of the window
 		params->config.y,    // y-position of the window

@@ -29,7 +29,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	logger->LogInfo(framework->GetVersionInfo());
 
 	/* Attempt the initialise the framework */
-	if (framework->Initialise(hInstance, "config.ini") != 0)
+	if (framework->Initialise(hInstance, "../application/config.ini") != 0)
 	{
 		/* We have failed to initialise */
 		logger->LogError("Framework Initialise Failed");

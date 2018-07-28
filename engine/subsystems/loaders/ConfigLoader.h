@@ -16,7 +16,7 @@ namespace OrisisEngine
 			FrameworkConfigLoader(const FrameworkConfigLoader &obj);
 			~FrameworkConfigLoader();
 
-			static FrameworkConfig LoadFile(string filePath);
+			static FrameworkConfig LoadFile(string filePath, ILogger* logger);
 	};
 }
 
