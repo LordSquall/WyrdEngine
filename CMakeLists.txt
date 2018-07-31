@@ -23,7 +23,8 @@ add_executable(OsirisApp WIN32
 	${OsirisApp_SourceFiles}
 )
 
-# Link the osiris engine libs
+# Link the osiris engine 
+MESSAGE(STATUS ${OSIRIS_LIBS})
 target_link_libraries(OsirisApp ${OSIRIS_LIBS})
 
 # Set the default project to be the sample app

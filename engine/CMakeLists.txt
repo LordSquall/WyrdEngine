@@ -8,9 +8,13 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/engine/subsystems/window")
 
 include_directories(OsirisEngineLib "${PROJECT_SOURCE_DIR}/engine")	
 
-add_library(OsirisEngineLib STATIC
-	${ENGINE_SOURCE}
-)
+add_library(OsirisEngineLib STATIC ${SRC_ENGINE})
+
+# Create the source folder group
+source_group("framework" FILES ${SRC_FRAMEWORK_GROUP})
+source_group("subsystems\\loaders" FILES ${SRC_SS_LOADERS_GROUP})
+source_group("subsystems\\renderer" FILES ${SRC_SS_RENDERER_GROUP})
+source_group("subsystems\\window" FILES ${SRC_SS_WINDOW_GROUP})
 
 set(OSIRIS_LIBS 
 OsirisEngineLib
