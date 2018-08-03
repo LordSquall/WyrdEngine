@@ -8,12 +8,15 @@
 #include <windows.h>
 #include <windowsx.h>
 #include <thread>
+#include <string>
+
+#include <GL\glew.h>
+#include <GL\wglew.h>
 
 namespace OrisisEngine
 {
 	struct MSWindow_Params
 	{
-		HWND hWnd;
 		WNDCLASSEX wc;
 		RECT wr;
 		FrameworkConfig config;
@@ -26,19 +29,31 @@ namespace OrisisEngine
 			~MSWindow();
 
 			void RegisterLogger(ILogger* logger);
+
+			void* GetPlatformDC();
+
 			bool Create(FrameworkConfig* config);
 			void Shutdown();
 			bool IsRunning();
+
+			void PresentFrame();
 
 	private:
 			bool WindowsEventLoop(MSWindow_Params* params);
 			static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 		private:
-			HINSTANCE _Instance;
-			ILogger* _logger;
+			HWND		_Handle;
+			HINSTANCE	_Instance;
+			HDC			_DeviceContext;
+			HGLRC		_RenderingContext;
+			ILogger*	_logger;
+
+			string		_Title;
 
 			static bool _IsRunning;
+
+			bool	_Complete;
 
 			thread _EventThread;
 

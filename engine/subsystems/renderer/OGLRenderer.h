@@ -5,7 +5,7 @@
 #include "subsystems\interfaces\ISubSystem.h"
 #include "subsystems\interfaces\ILogger.h"
 #include "subsystems\interfaces\IRenderer.h"
-
+#include "subsystems\interfaces\IWindow.h"
 
 namespace OrisisEngine
 {
@@ -19,7 +19,7 @@ namespace OrisisEngine
 			void RegisterLogger(ILogger* logger);
 
 			/* IRenderer Functions */			
-			bool Initialise();
+			bool Initialise(IWindow* window);
 			void Shutdown();
 
 	public:

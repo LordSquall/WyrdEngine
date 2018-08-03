@@ -54,9 +54,10 @@ int Framework::Initialise(HINSTANCE hInstance, string configFilePath)
 	_logger->LogError("Framework: No Renderer symbol found.");
 #endif
 
-	/*Initialise the renderer subsystem */
-	_renderer->Initialise();
+	/* Initialise the renderer subsystem */
+	_renderer->Initialise(_window);
 
+	/* Create the window. This function will block until window is completed created with all graphical context initialisation complete */
 	_window->Create(&config);
 
 	return 0;
@@ -80,6 +81,11 @@ bool Framework::Run()
 
 bool Framework::ExecuteFrame()
 {
+	glClearColor(0.129f, 0.586f, 0.949f, 1.0f); // Blue
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	_window->PresentFrame();
+
 	return true;
 }
 
