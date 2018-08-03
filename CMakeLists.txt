@@ -15,8 +15,7 @@ set(OsirisApp_SourceFiles
 	application/main.cpp
 )
 
-# Set the includes for the engine header files
-include_directories(OsirisApp engine)	
+include_directories(OsirisEngineLib engine)	
 
 # Add a executable using the sample application code
 add_executable(OsirisApp WIN32
@@ -29,3 +28,8 @@ target_link_libraries(OsirisApp ${OSIRIS_LIBS})
 
 # Set the default project to be the sample app
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OsirisApp)
+
+add_custom_command(TARGET OsirisApp POST_BUILD       
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_SOURCE_DIR}/external/GLEW/bin/Release/Win32/glew32.dll"      # <--this is in-file
+        $<TARGET_FILE_DIR:OsirisApp>)                 # <--this is out-file path
