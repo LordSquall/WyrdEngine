@@ -6,24 +6,25 @@ MESSAGE(STATUS ${CMAKE_SOURCE_DIR} )
 set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/external/GLEW")
 set(CMAKE_LIBRARY_PATH "${CMAKE_SOURCE_DIR}/external/GLEW/lib/Release/Win32/")
 
+# OpenGL
 find_package(OPENGL REQUIRED)
-find_package(GLEW REQUIRED)
 
-if (GLEW_FOUND)
-    include_directories(${GLEW_INCLUDE_DIRS})
-    link_libraries(${GLEW_LIBRARIES})
-endif()
+# GLEW
+find_package(GLEW REQUIRED)
 
 set(OSIRIS_LIBS
 ${OSIRIS_LIBS}
 ${OPENGL_LIBRARIES}
 ${GLEW_LIBRARIES}
+vulkan-1
 PARENT_SCOPE
 )
 
 set(OSIRIS_INCLUDE_DIRS
 ${OSIRIS_INCLUDE_DIRS}
 ${GLEW_INCLUDE_DIRS}
+${CMAKE_SOURCE_DIR}/external/
+$ENV{VULKAN_SDK}/Include/
 PARENT_SCOPE
 )
 

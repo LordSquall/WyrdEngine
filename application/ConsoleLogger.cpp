@@ -17,20 +17,20 @@ ConsoleLogger::ConsoleLogger()
 
 void ConsoleLogger::LogDebug(string msg)
 {
-	cout << msg << endl;
+	cout << "Debug: " << msg << endl;
 }
 
 void ConsoleLogger::LogInfo(string msg)
 {
-	cout << msg << endl;
+	cout << "Info: " << msg << endl;
 }
 
 void ConsoleLogger::LogWarning(string msg)
 {
-	cout << msg << endl;
+	cout << "Warning: " << msg << endl;
 }
 
 void ConsoleLogger::LogError(string msg)
 {
-	cout << msg << endl;
+	cout << "Error: " << msg << endl;
 }

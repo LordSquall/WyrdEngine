@@ -29,6 +29,7 @@ namespace OrisisEngine
 			~MSWindow();
 
 			void RegisterLogger(ILogger* logger);
+			ILogger* GetLogger();
 
 			void* GetPlatformDC();
 

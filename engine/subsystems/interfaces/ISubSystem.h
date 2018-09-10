@@ -13,6 +13,7 @@ namespace OrisisEngine
 	class ISubSystem {
 	public:
 		virtual void RegisterLogger(ILogger* logger) = 0;
+		virtual ILogger* GetLogger() = 0;
 	};
 }
 

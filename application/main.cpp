@@ -6,6 +6,7 @@
 #include "framework\framework.h"
 
 /* Local Implemented Orisis Classes */
+#include "SampleScene.h"
 #include "ConsoleLogger.h"
 
 using namespace OrisisEngine;
@@ -25,6 +26,9 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	/* Register the logger to ensure we get all the messages as early as possible */
 	framework->RegisterLogger(logger);
 
+	/* The hardcoded test scene */
+	SampleScene scene(framework);
+
 	/* Retrieve framework version info */
 	logger->LogInfo(framework->GetVersionInfo());
 
@@ -40,6 +44,12 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 		exit(0);
 	}
+
+	/* Add the scene to the framework */
+	framework->AddScene("SampleScene", &scene);
+
+	/*  Set the default scene */
+	framework->SetCurrentScene("SampleScene");
 
 	/* Run the framework - This is a blocking call */
 	framework->Run();

@@ -5,6 +5,8 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/engine/framework")
 add_subdirectory("${PROJECT_SOURCE_DIR}/engine/subsystems/loaders")
 add_subdirectory("${PROJECT_SOURCE_DIR}/engine/subsystems/renderer")
 add_subdirectory("${PROJECT_SOURCE_DIR}/engine/subsystems/window")
+add_subdirectory("${PROJECT_SOURCE_DIR}/engine/subsystems/graphics")
+add_subdirectory("${PROJECT_SOURCE_DIR}/engine/subsystems/sprites")
 
 include_directories(OsirisEngineLib "${PROJECT_SOURCE_DIR}/engine" ${OSIRIS_INCLUDE_DIRS})	
 
@@ -15,6 +17,8 @@ source_group("framework" FILES ${SRC_FRAMEWORK_GROUP})
 source_group("subsystems\\loaders" FILES ${SRC_SS_LOADERS_GROUP})
 source_group("subsystems\\renderer" FILES ${SRC_SS_RENDERER_GROUP})
 source_group("subsystems\\window" FILES ${SRC_SS_WINDOW_GROUP})
+source_group("subsystems\\graphics" FILES ${SRC_SS_GRAPHICS_GROUP})
+source_group("subsystems\\sprites" FILES ${SRC_SS_SPRITES_GROUP})
 
 set(OSIRIS_INCLUDE_DIRS
 ${OSIRIS_INCLUDE_DIRS}

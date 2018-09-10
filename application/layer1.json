@@ -1,0 +1,25 @@
+{
+	"layers": [
+        {
+            "name": "background",
+            "texture":  "spritesheet1",
+            "sprites": [
+                {
+                    "name": "Sprite 1",
+                    "x": 0,
+                    "y": 0
+                },
+                {
+                    "name": "Sprite 2",
+                    "x": 128,
+                    "y": 128
+                },
+                {
+                    "name": "Sprite 3",
+                    "x": 512,
+                    "y": 256
+                }
+            ]
+        }
+	]
+}

@@ -11,11 +11,14 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/engine")
 
 # Add source files to application 
 set(OsirisApp_SourceFiles
+	application/SampleScene.cpp
 	application/ConsoleLogger.cpp
 	application/main.cpp
 )
 
 include_directories(OsirisEngineLib engine)	
+
+link_directories($ENV{VULKAN_SDK}/Lib32/)
 
 # Add a executable using the sample application code
 add_executable(OsirisApp WIN32

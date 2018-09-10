@@ -5,4 +5,4 @@ mkdir cmakeBuild
 cd cmakeBuild
 cmake ../
 
-msbuild OrisisEngine.sln
+msbuild OsirisEngine.sln

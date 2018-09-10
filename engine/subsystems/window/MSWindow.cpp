@@ -24,6 +24,11 @@ void MSWindow::RegisterLogger(ILogger* logger)
 	_logger->LogInfo("Logger Registered with MSWindow");
 }
 
+ILogger* MSWindow::GetLogger()
+{
+	return _logger;
+}
+
 void* MSWindow::GetPlatformDC()
 {
 	return _DeviceContext;
@@ -213,6 +218,8 @@ bool MSWindow::WindowsEventLoop(MSWindow_Params* params)
 	wglDeleteContext(tempRenderingContext);
 	ReleaseDC(tempWindow, tempDeviceContext);
 	DestroyWindow(tempWindow);
+
+	wglSwapIntervalEXT(0);
 
 	_Complete = true;
 
