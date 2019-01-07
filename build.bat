@@ -1,8 +1,3 @@
-del cmakeBuild\* /Q
-rmdir /s /q cmakeBuild
+call toolchain\premake\premake5.exe vs2017
 
-mkdir cmakeBuild
-cd cmakeBuild
-cmake ../
-
-msbuild OsirisEngine.sln
+PAUSE

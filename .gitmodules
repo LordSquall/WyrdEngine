@@ -1,0 +1,6 @@
+[submodule "Osiris/vendor/spdlog"]
+	path = Osiris/vendor/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "Osiris/vendor/GLFW"]
+	path = Osiris/vendor/GLFW
+	url = https://github.com/PaulRichardHickman/glfw
