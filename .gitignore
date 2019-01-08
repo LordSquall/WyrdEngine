@@ -1,2 +1,10 @@
 cmakeBuild
 .vs
+*.filters
+bin/*
+obj/*
+Osiris/vendor/*/bin/*
+Osiris/vendor/*/bin-int/*
+*.sln
+*.vcxproj
+*.vcxproj.user
