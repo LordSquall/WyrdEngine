@@ -1,3 +1,4 @@
+#include "osrpch.h"
 #include "Resources.h"
 
 Resources::Resources()

@@ -19,6 +19,8 @@ namespace Osiris {
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));	
 
 		m_Renderer = std::shared_ptr<Renderer>(Renderer::Create());
+
+		m_Resources = std::make_unique<Resources>();
 	}
 
 	Application::~Application()
@@ -56,6 +58,7 @@ namespace Osiris {
 			m_Window->OnUpdate();
 
 			m_Window->OnPreRender();
+
 			m_Window->OnRender();
 
 			for (Layer* layer : m_LayerStack)

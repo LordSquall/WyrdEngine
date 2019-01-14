@@ -3,6 +3,7 @@
 #include "export.h"
 #include "Window.h"
 #include "Renderer.h"
+#include "Resources.h"
 #include "LayerStack.h"
 
 namespace Osiris {
@@ -22,9 +23,12 @@ namespace Osiris {
 
 		inline static Application& Get() { return *s_Instance; }
 		inline Window& GetWindow() { return *m_Window;  }
+		inline Resources& GetResources() { return *m_Resources; }
 	protected:
 		std::unique_ptr<Window> m_Window;
 		std::shared_ptr<Renderer> m_Renderer;
+		std::unique_ptr<Resources> m_Resources;
+
 		bool m_Running = true;
 		LayerStack m_LayerStack;
 

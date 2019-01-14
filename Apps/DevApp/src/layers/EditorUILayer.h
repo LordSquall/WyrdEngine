@@ -3,12 +3,10 @@
 #include <core/Layer.h>
 #include <graphics/Mesh.h>
 
-class TestRenderLayer : public Osiris::Layer
+class EditorUILayer : public Osiris::Layer
 {
 public:
-	TestRenderLayer();
+	EditorUILayer();
 
 	void OnRender(std::shared_ptr<Osiris::Renderer> renderer) override;
-private:
-	std::vector<Osiris::Mesh> m_Meshs;
 };

@@ -20,7 +20,6 @@ namespace Osiris
 	ImGuiLayer::ImGuiLayer()
 		: Layer("ImGuiLayer")
 	{
-
 	}
 
 	ImGuiLayer::~ImGuiLayer()
@@ -81,6 +80,11 @@ namespace Osiris
 
 	void ImGuiLayer::OnRender(std::shared_ptr<Renderer> renderer)
 	{
+		static bool menu_app_close_show = true;
+		static bool menu_tools_show = true;
+		static bool menu_tools_resources_show = true;
+
+
 		float time = (float)glfwGetTime();
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
@@ -94,12 +98,31 @@ namespace Osiris
 		UpdateCursor();
 		ImGui::NewFrame();
 
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);
+		/* menu bar */
+		ImGui::BeginMainMenuBar();
+
+		if (ImGui::BeginMenu("App", true))
+		{
+			if (ImGui::MenuItem("Exit", NULL, &menu_app_close_show))
+			{
+
+			}
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Tools", true))
+		{
+			ImGui::MenuItem("Resources", NULL, &menu_tools_resources_show);
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMainMenuBar();
+
+		if(menu_tools_resources_show == true) m_ResourceViewer.OnEditorRender();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+		
 	}
 
 	void ImGuiLayer::OnEvent(Event& event)
