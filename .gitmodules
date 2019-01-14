@@ -4,6 +4,6 @@
 [submodule "Osiris/vendor/GLFW"]
 	path = Osiris/vendor/GLFW
 	url = https://github.com/PaulRichardHickman/glfw
-[submodule "osiris/vendor/imgui"]
-	path = osiris/vendor/imgui
+[submodule "Osiris/vendor/imgui"]
+	path = Osiris/vendor/imgui
 	url = https://github.com/PaulRichardHickman/imgui
