@@ -14,9 +14,12 @@ outputdir = "%{cfg.buildcfg}"
 includedir = {}
 includedir["GLFW"] = "Osiris/vendor/GLFW/include"
 includedir["GLAD"] = "Osiris/vendor/GLAD/include"
+includedir["imgui"] = "Osiris/vendor/imgui"
+includedir["tinyobjloader"] = "Osiris/vendor/tinyobjloader/include"
 
 include "Osiris/vendor/GLFW"
 include "Osiris/vendor/GLAD"
+include "Osiris/vendor/imgui"
 
 project "Osiris"
 	location "Osiris"
@@ -33,7 +36,9 @@ project "Osiris"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/res/**.vs",
+		"%{prj.name}/res/**.fs"
 	}
 	
 	includedirs
@@ -41,13 +46,16 @@ project "Osiris"
 		"%{prj.name}/src/",
 		"%{prj.name}/vendor/spdlog/include",
 		"%{includedir.GLFW}",
-		"%{includedir.GLAD}"
+		"%{includedir.GLAD}",
+		"%{includedir.imgui}",
+		"%{includedir.tinyobjloader}"
 	}
 	
 	links
 	{
 		"GLFW",
 		"GLAD",
+		"imgui",
 		"opengl32.dll"
 	}
 		
@@ -95,7 +103,9 @@ project "DevApp"
 	files
 	{
 		"Apps/%{prj.name}/src/**.h",
-		"Apps/%{prj.name}/src/**.cpp"
+		"Apps/%{prj.name}/src/**.cpp",
+		"Apps/%{prj.name}/res/**.vs",
+		"Apps/%{prj.name}/res/**.fs"
 	}
 	
 	includedirs

@@ -1,12 +1,15 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
+#include <filesystem>
 #include <memory>
 #include <utility>
 #include <algorithm>
 #include <functional>
 
 #include <string>
+#include <ostream>
 #include <sstream>
 #include <vector>
 #include <unordered_map>

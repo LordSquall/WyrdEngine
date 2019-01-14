@@ -1,31 +1,23 @@
 #include <Osiris.h>
 
-class ExampleLayer : public Osiris::Layer
-{
-public:
-	ExampleLayer()
-		: Layer("Example")
-	{
-	}
+#include "events/ApplicationEvent.h"
+#include "events/KeyEvent.h"
+#include "graphics/Shader.h"
+#include "layers/ImGuiLayer.h"
 
-	void OnUpdate() override
-	{
-		OSR_CLIENT_INFO("ExampleLayer::Update");
-	}
-
-	void OnEvent(Osiris::Event& event) override
-	{
-		OSR_CLIENT_TRACE("{0}", event);
-	}
-
-};
+#include "Resources.h"
+#include "layers/LoadingLayer.h"
+#include "layers/TestRenderLayer.h"
 
 class ClientApplication : public Osiris::Application
 {
 public:
 	ClientApplication()
 	{
-		PushLayer(new ExampleLayer());
+		/* Set the resources renderer context */
+		m_Resources.SetRenderer(m_Renderer);
+
+		PushOverlay(new Osiris::ImGuiLayer());
 	}
 
 	~ClientApplication()
@@ -33,6 +25,8 @@ public:
 
 	}
 
+private:
+	Resources m_Resources;
 };
 
 Osiris::Application* Osiris::CreateApplication()

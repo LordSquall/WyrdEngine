@@ -85,19 +85,19 @@ namespace Osiris {
 			{
 				case GLFW_PRESS:
 				{
-					KeyPressedEvent e(key, 0);
+					KeyPressedEvent e((Osiris::KeyCode)key, 0);
 					data.EventCallback(e);
 					break;
 				}
 				case GLFW_RELEASE:
 				{
-					KeyReleasedEvent e(key);
+					KeyReleasedEvent e((Osiris::KeyCode)key);
 					data.EventCallback(e);
 					break;
 				}
 				case GLFW_REPEAT:
 				{
-					KeyPressedEvent e(key, 1);
+					KeyPressedEvent e((Osiris::KeyCode)key, 1);
 					data.EventCallback(e);
 					break;
 				}
@@ -150,6 +150,23 @@ namespace Osiris {
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
+	}
+
+	void WindowsWindow::OnRender()
+	{
+
+	}
+
+	void WindowsWindow::OnPreRender()
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	}
+
+	void WindowsWindow::OnPostRender()
+	{
+		glfwPollEvents();
+
 		glfwSwapBuffers(m_Window);
 	}
 
@@ -168,4 +185,9 @@ namespace Osiris {
 		return m_Data.VSync;
 	}
 
+
+	void* WindowsWindow::GetNativeWindowPointer()
+	{
+		return (void*)m_Window;
+	}
 }

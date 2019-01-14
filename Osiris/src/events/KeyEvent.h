@@ -4,23 +4,48 @@
 
 namespace Osiris {
 
+	enum KeyCode
+	{
+		TAB = 258,
+		ARROW_LEFT = 263,
+		ARROW_RIGHT = 262,
+		ARROW_UP = 265,
+		ARROW_DOWN = 264,
+		PG_UP = 266,
+		PG_DOWN = 267,
+		FUNC_HOME = 268,
+		FUNC_END = 269,
+		FUNC_INSERT = 260,
+		FUNC_DELETE = 261,
+		BACKSPACE = 259,
+		SPACE = 32,
+		ENTER = 257,
+		ESCAPE = 256,
+		KEY_A = 65,
+		KEY_C = 67,
+		KEY_V = 86,
+		KEY_X = 88,
+		KEY_Y = 89,
+		KEY_Z = 90,
+	};
+
 	class OSIRIS_API KeyEvent : public Event
 	{
 	public:
-		inline int GetKeyCode() const { return m_KeyCode; }
+		inline KeyCode GetKeyCode() const { return m_KeyCode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 	protected:
-		KeyEvent(int keycode)
+		KeyEvent(KeyCode keycode)
 			: m_KeyCode(keycode) {}
 
-		int m_KeyCode;
+		KeyCode m_KeyCode;
 	};
 
 	class OSIRIS_API KeyPressedEvent : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(int keycode, int repeatCount)
+		KeyPressedEvent(KeyCode keycode, int repeatCount)
 			: KeyEvent(keycode), m_RepeatCount(repeatCount) {}
 
 		inline int GetRepeatCount() const { return m_RepeatCount; }
@@ -41,7 +66,7 @@ namespace Osiris {
 	class OSIRIS_API KeyReleasedEvent : public KeyEvent
 	{
 	public:
-		KeyReleasedEvent(int keycode)
+		KeyReleasedEvent(KeyCode keycode)
 			: KeyEvent(keycode) {}
 
 		std::string ToString() const override
