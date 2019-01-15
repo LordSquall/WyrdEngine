@@ -1,6 +1,6 @@
 workspace "Osiris"
 	architecture "x64"
-	startproject "DevApp"
+	startproject "EditorApp"
 		
 	configurations
 	{
@@ -14,11 +14,13 @@ outputdir = "%{cfg.buildcfg}"
 includedir = {}
 includedir["GLFW"] = "Osiris/vendor/GLFW/include"
 includedir["GLAD"] = "Osiris/vendor/GLAD/include"
+includedir["SOIL"] = "Osiris/vendor/soil/src"
 includedir["imgui"] = "Osiris/vendor/imgui"
 includedir["tinyobjloader"] = "Osiris/vendor/tinyobjloader/include"
 
 include "Osiris/vendor/GLFW"
 include "Osiris/vendor/GLAD"
+include "Osiris/vendor/SOIL"
 include "Osiris/vendor/imgui"
 
 project "Osiris"
@@ -47,6 +49,7 @@ project "Osiris"
 		"%{prj.name}/vendor/spdlog/include",
 		"%{includedir.GLFW}",
 		"%{includedir.GLAD}",
+		"%{includedir.SOIL}",
 		"%{includedir.imgui}",
 		"%{includedir.tinyobjloader}"
 	}
@@ -55,13 +58,14 @@ project "Osiris"
 	{
 		"GLFW",
 		"GLAD",
+		"SOIL",
 		"imgui",
 		"opengl32.dll"
 	}
 		
 	postbuildcommands
 	{
-		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/DevApp"),
+		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/DevApp")
 	}
 	
 	filter "system:windows"

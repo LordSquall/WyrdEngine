@@ -22,7 +22,7 @@ namespace Osiris {
 		std::ifstream vsFile(vertexSrcFile);
 		if (vsFile)
 		{
-			shader->VertexSrc = std::string(std::istreambuf_iterator<char>(vsFile), std::istreambuf_iterator<char>());
+			shader->SetVertexSource(std::string(std::istreambuf_iterator<char>(vsFile), std::istreambuf_iterator<char>()));
 		}
 		else
 		{
@@ -32,13 +32,19 @@ namespace Osiris {
 		std::ifstream fsFile(fragmentSrcFile);
 		if (fsFile)
 		{
-			shader->FragmentSrc = std::string(std::istreambuf_iterator<char>(fsFile), std::istreambuf_iterator<char>());
+			shader->SetFragmentSource(std::string(std::istreambuf_iterator<char>(fsFile), std::istreambuf_iterator<char>()));
 		}
 		else
 		{
 			OSR_CORE_ERROR("Unable to find file " + std::filesystem::current_path().string() + fragmentSrcFile);
 		}
 		
+		std::string path_delimiter = "/";
+		std::string file_delimiter = ".";
+		std::string token = vertexSrcFile.substr(vertexSrcFile.find_last_of(path_delimiter) + 1);
+
+		shader->SetName(token);
+
 		return shader;
 	}
 }

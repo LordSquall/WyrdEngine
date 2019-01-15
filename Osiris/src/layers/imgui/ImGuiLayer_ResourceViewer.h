@@ -13,5 +13,11 @@ namespace Osiris
 		
 		void OnEditorRender() override;
 
+		static bool showTextures;
+		static bool showShaders;
+
+	private:
+		void ShowTextureDialog();
+		void ShowShaderDialog();
 	};
 }

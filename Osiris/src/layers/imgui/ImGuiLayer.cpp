@@ -13,6 +13,8 @@
 #include "platform/OpenGL/imgui_opengl_renderer.h"
 #include <GLFW/glfw3.h>
 
+#include "ImGuiLayer_GameViewer.h"
+#include "ImGuiLayer_SceneEditor.h"
 #include "ImGuiLayer_SceneHierarchy.h"
 #include "ImGuiLayer_ResourceViewer.h"
 
@@ -84,14 +86,20 @@ namespace Osiris
 
 	void ImGuiLayer::OnRender(std::shared_ptr<Renderer> renderer)
 	{
-		static bool menu_app_close_show = true;
-		static bool menu_tools_show = true;
-		static bool menu_tools_resources_shaders_show = false;
-		static bool menu_tools_resources_textures_show = false;
+		static bool menu_app_close_show = false;
+		static bool menu_tools_show = false;
+		static bool menu_tools_game_view_show = false;
+		static bool menu_tools_scene_editor_show = false;
+		static bool menu_tools_resources_show = false;
 		static bool menu_tools_scene_heirarchy_show = false;
 
-		ImGuiLayer_SceneHierarchy sceneHierarchy;
-		ImGuiLayer_ResourceViewer resourceViewer;
+		static bool menu_help_show = false;
+		static bool menu_help_demo_window_show = false;
+
+		ImGuiLayer_GameViewer		gameViewer;
+		ImGuiLayer_SceneEditor		sceneEditor;
+		ImGuiLayer_SceneHierarchy	sceneHierarchy;
+		ImGuiLayer_ResourceViewer	resourceViewer;
 
 		float time = (float)glfwGetTime();
 		ImGuiIO& io = ImGui::GetIO();
@@ -120,23 +128,29 @@ namespace Osiris
 
 		if (ImGui::BeginMenu("Tools", true))
 		{
-			if (ImGui::BeginMenu("Resources", true))
-			{
-				ImGui::MenuItem("Shaders", NULL, &menu_tools_resources_shaders_show);
-				ImGui::MenuItem("Textures", NULL, &menu_tools_resources_textures_show);
-
-				ImGui::EndMenu();
-			}
-
+			ImGui::MenuItem("Game View", NULL, &menu_tools_game_view_show);
+			ImGui::MenuItem("Scene Editor", NULL, &menu_tools_scene_editor_show);
+			ImGui::MenuItem("Resources", NULL, &menu_tools_resources_show);
 			ImGui::MenuItem("Scene Hierarchy", NULL, &menu_tools_scene_heirarchy_show);
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Help", true))
+		{
+			ImGui::MenuItem("Show Demo Window", NULL, &menu_help_demo_window_show);
 
 			ImGui::EndMenu();
 		}
 
 		ImGui::EndMainMenuBar();
 
-		if(menu_tools_resources_shaders_show == true) resourceViewer.OnEditorRender();
+		if (menu_tools_game_view_show == true) gameViewer.OnEditorRender();
+		if (menu_tools_scene_editor_show == true) sceneEditor.OnEditorRender();
+		if (menu_tools_resources_show == true) resourceViewer.OnEditorRender();
 		if (menu_tools_scene_heirarchy_show == true) sceneHierarchy.OnEditorRender();
+
+		if (menu_help_demo_window_show == true) ImGui::ShowDemoWindow();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

@@ -3,6 +3,8 @@
 #include "Application.h"
 #include "events/ApplicationEvent.h"
 
+#include "layers/imgui/ImGuiPlugin.h"
+
 #include "graphics/Shader.h"
 
 namespace Osiris {

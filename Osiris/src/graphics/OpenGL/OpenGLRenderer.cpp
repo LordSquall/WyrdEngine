@@ -25,8 +25,8 @@ namespace Osiris {
 	unsigned int OpenGLRenderer::LoadShader(std::shared_ptr<Shader> shader)
 	{
 		unsigned int program = glCreateProgram();
-		unsigned int vs = CompileShader(GL_VERTEX_SHADER, shader->VertexSrc.c_str());
-		unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, shader->FragmentSrc.c_str());
+		unsigned int vs = CompileShader(GL_VERTEX_SHADER, shader->GetVertexSource().c_str());
+		unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, shader->GetFragmentSource().c_str());
 
 		glAttachShader(program, vs);
 		glAttachShader(program, fs);
@@ -51,6 +51,27 @@ namespace Osiris {
 		// Give our vertices to OpenGL.
 		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * mesh->vertices.size(), &mesh->vertices[0], GL_STATIC_DRAW);
 		
+		return 1;
+	}
+
+	unsigned int OpenGLRenderer::LoadTexture(std::shared_ptr<Texture> texture)
+	{
+		unsigned int handle;
+
+		glGenTextures(1, &handle);
+
+		texture->SetHandle(handle);
+
+		glBindTexture(GL_TEXTURE_2D, handle);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture->GetWidth(), texture->GetHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, texture->GetData());
+
 		return 1;
 	}
 

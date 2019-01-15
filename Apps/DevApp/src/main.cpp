@@ -12,8 +12,8 @@ class ClientApplication : public Osiris::Application
 public:
 	ClientApplication()
 	{
-		PushLayer(new LoadingLayer());
 		PushOverlay(new Osiris::ImGuiLayer());
+		PushOverlay(new LoadingLayer());
 	}
 
 	~ClientApplication()

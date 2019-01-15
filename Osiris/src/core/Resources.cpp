@@ -26,7 +26,20 @@ namespace Osiris {
 			return false;
 		}
 
-		m_ShaderMap.insert(std::pair<std::string, Osiris::Shader>("Shader 1", *shader));
+		m_ShaderMap.push_back(shader);
+
+		return true;
+	}
+
+	bool Resources::AddTexture(std::shared_ptr<Osiris::Texture> texture)
+	{
+		if (m_Renderer->LoadTexture(texture) == 0)
+		{
+			OSR_CLIENT_ERROR("Unable to load Shader!");
+			return false;
+		}
+
+		m_TextureMap.push_back(texture);
 
 		return true;
 	}

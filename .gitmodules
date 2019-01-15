@@ -7,3 +7,6 @@
 [submodule "Osiris/vendor/imgui"]
 	path = Osiris/vendor/imgui
 	url = https://github.com/PaulRichardHickman/imgui
+[submodule "Osiris/vendor/soil"]
+	path = Osiris/vendor/soil
+	url = https://github.com/PaulRichardHickman/Simple-OpenGL-Image-Library.git
