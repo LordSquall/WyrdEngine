@@ -5,11 +5,11 @@
 
 namespace Osiris
 {
-	class OSIRIS_API ImGuiLayer_ResourceViewer : public ImGuiPlugin
+	class OSIRIS_API ImGuiLayer_SceneHierarchy : public ImGuiPlugin
 	{
 	public:
-		ImGuiLayer_ResourceViewer();
-		~ImGuiLayer_ResourceViewer();
+		ImGuiLayer_SceneHierarchy();
+		~ImGuiLayer_SceneHierarchy();
 		
 		void OnEditorRender() override;
 

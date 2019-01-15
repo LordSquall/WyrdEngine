@@ -16,7 +16,7 @@ namespace Osiris
 
 		static Renderer* Create();
 		
-		virtual unsigned int LoadShader(std::unique_ptr<Shader>& shader) = 0;
+		virtual unsigned int LoadShader(std::shared_ptr<Shader> shader) = 0;
 		virtual unsigned int LoadMesh(std::unique_ptr<Mesh>& mesh) = 0;
 
 		virtual unsigned int RenderMesh(std::unique_ptr<Mesh>& mesh) = 0;

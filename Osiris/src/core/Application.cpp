@@ -20,7 +20,8 @@ namespace Osiris {
 
 		m_Renderer = std::shared_ptr<Renderer>(Renderer::Create());
 
-		m_Resources = std::make_unique<Resources>();
+		m_Resources = std::unique_ptr<Resources>(new Resources());
+		m_Resources->SetRenderer(m_Renderer);
 	}
 
 	Application::~Application()

@@ -15,9 +15,9 @@ namespace Osiris {
 
 	}
 
-	std::unique_ptr<Shader> Shader::CreateFromFiles(const std::string& vertexSrcFile, const std::string& fragmentSrcFile)
+	std::shared_ptr<Shader> Shader::CreateFromFiles(const std::string& vertexSrcFile, const std::string& fragmentSrcFile)
 	{
-		std::unique_ptr<Shader> shader = std::make_unique<Shader>();
+		std::shared_ptr<Shader> shader = std::make_shared<Shader>();
 		
 		std::ifstream vsFile(vertexSrcFile);
 		if (vsFile)

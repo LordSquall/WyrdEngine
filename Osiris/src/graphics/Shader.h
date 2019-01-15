@@ -12,7 +12,7 @@ namespace Osiris {
 		virtual ~Shader();
 
 
-		static std::unique_ptr<Shader> CreateFromFiles(const std::string& vertexSrcFile, const std::string& fragmentSrcFile);
+		static std::shared_ptr<Shader> CreateFromFiles(const std::string& vertexSrcFile, const std::string& fragmentSrcFile);
 
 		std::string VertexSrc;
 		std::string FragmentSrc;

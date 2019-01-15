@@ -4,27 +4,27 @@
 #include <core/Layer.h>
 #include <core/Renderer.h>
 
-#include <graphics/Sprite.h>
+#include <graphics/Shader.h>
 
-class Resources
-{
-public:
-	Resources();
+namespace Osiris {
 
-	void SetRenderer(std::shared_ptr<Osiris::Renderer> renderer);
+	class OSIRIS_API Resources
+	{
+	public:
+		Resources();
 
-	bool AddShader(std::unique_ptr<Osiris::Shader> shader);
+		inline static Resources& Get() { return *s_Instance; };
 
-	bool AddMesh(std::unique_ptr<Osiris::Mesh> mesh);
+		void SetRenderer(std::shared_ptr<Osiris::Renderer> renderer);
 
-	bool AddSprite(std::unique_ptr<Osiris::Sprite> sprite);
+		bool AddShader(std::shared_ptr<Osiris::Shader> shader);
 
-public:
-	std::shared_ptr<Osiris::Renderer> m_Renderer;
+	public:
+		static Resources* s_Instance;
 
-	std::unordered_map<std::string, std::unique_ptr<Osiris::Shader>> m_ShaderMap;
+		std::shared_ptr<Osiris::Renderer> m_Renderer;
 
-	std::unordered_map<std::string, std::unique_ptr<Osiris::Mesh>> m_MeshMap;
-	
-	std::vector<std::unique_ptr<Osiris::Sprite>> m_Sprites;
-};
+		std::map<std::string, Osiris::Shader> m_ShaderMap;
+
+	};
+}

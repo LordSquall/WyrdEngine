@@ -22,7 +22,7 @@ namespace Osiris {
 
 	}
 
-	unsigned int OpenGLRenderer::LoadShader(std::unique_ptr<Shader>& shader)
+	unsigned int OpenGLRenderer::LoadShader(std::shared_ptr<Shader> shader)
 	{
 		unsigned int program = glCreateProgram();
 		unsigned int vs = CompileShader(GL_VERTEX_SHADER, shader->VertexSrc.c_str());

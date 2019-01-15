@@ -11,5 +11,4 @@ public:
 	void OnUpdate() override;
 
 	void OnEvent(Osiris::Event& event) override;
-	
 };

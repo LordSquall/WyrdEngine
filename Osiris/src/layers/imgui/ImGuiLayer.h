@@ -2,7 +2,6 @@
 #include "core/Layer.h"
 
 #include "ImGuiPlugin.h"
-#include "ImGuiLayer_ResourceViewer.h"
 
 namespace Osiris
 {
@@ -23,7 +22,6 @@ namespace Osiris
 		void UpdateCursor();
 
 	private:
-		ImGuiLayer_ResourceViewer m_ResourceViewer;
 		float	m_Time;
 	};
 }

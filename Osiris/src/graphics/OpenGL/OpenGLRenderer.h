@@ -12,7 +12,7 @@ namespace Osiris {
 		virtual ~OpenGLRenderer();
 
 
-		unsigned int LoadShader(std::unique_ptr<Shader>& shader) override;
+		unsigned int LoadShader(std::shared_ptr<Shader> shader) override;
 		unsigned int LoadMesh(std::unique_ptr<Mesh>& mesh) override;
 
 		unsigned int RenderMesh(std::unique_ptr<Mesh>& mesh) override;

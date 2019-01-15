@@ -8,9 +8,13 @@
 #include "events/Event.h"
 #include "events/KeyEvent.h"
 #include "events/MouseEvent.h"
+#include "events/ApplicationEvent.h"
 
 #include "platform/OpenGL/imgui_opengl_renderer.h"
 #include <GLFW/glfw3.h>
+
+#include "ImGuiLayer_SceneHierarchy.h"
+#include "ImGuiLayer_ResourceViewer.h"
 
 namespace Osiris
 {
@@ -82,8 +86,12 @@ namespace Osiris
 	{
 		static bool menu_app_close_show = true;
 		static bool menu_tools_show = true;
-		static bool menu_tools_resources_show = true;
+		static bool menu_tools_resources_shaders_show = false;
+		static bool menu_tools_resources_textures_show = false;
+		static bool menu_tools_scene_heirarchy_show = false;
 
+		ImGuiLayer_SceneHierarchy sceneHierarchy;
+		ImGuiLayer_ResourceViewer resourceViewer;
 
 		float time = (float)glfwGetTime();
 		ImGuiIO& io = ImGui::GetIO();
@@ -112,13 +120,23 @@ namespace Osiris
 
 		if (ImGui::BeginMenu("Tools", true))
 		{
-			ImGui::MenuItem("Resources", NULL, &menu_tools_resources_show);
+			if (ImGui::BeginMenu("Resources", true))
+			{
+				ImGui::MenuItem("Shaders", NULL, &menu_tools_resources_shaders_show);
+				ImGui::MenuItem("Textures", NULL, &menu_tools_resources_textures_show);
+
+				ImGui::EndMenu();
+			}
+
+			ImGui::MenuItem("Scene Hierarchy", NULL, &menu_tools_scene_heirarchy_show);
+
 			ImGui::EndMenu();
 		}
 
 		ImGui::EndMainMenuBar();
 
-		if(menu_tools_resources_show == true) m_ResourceViewer.OnEditorRender();
+		if(menu_tools_resources_shaders_show == true) resourceViewer.OnEditorRender();
+		if (menu_tools_scene_heirarchy_show == true) sceneHierarchy.OnEditorRender();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
