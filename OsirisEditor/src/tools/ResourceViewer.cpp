@@ -1,6 +1,6 @@
-#include "osrpch.h"
+#include "osreditorpch.h"
 
-#include "ImGuiLayer_ResourceViewer.h"
+#include "ResourceViewer.h"
 
 #include "core/Application.h"
 #include "core/Layer.h"
@@ -11,14 +11,14 @@
 
 #include "imgui.h"
 
-namespace Osiris
+namespace Osiris::Editor
 {
 
-	ImGuiLayer_ResourceViewer::ImGuiLayer_ResourceViewer() : ImGuiPlugin("Resource Viewer"){}
+	ResourceViewer::ResourceViewer() : EditorPlugin("Resource Viewer"){}
 
-	ImGuiLayer_ResourceViewer::~ImGuiLayer_ResourceViewer(){}
+	ResourceViewer::~ResourceViewer(){}
 
-	void ImGuiLayer_ResourceViewer::OnEditorRender()
+	void ResourceViewer::OnEditorRender()
 	{
 		ImGui::Begin("Resource Viewer");
 		ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
@@ -43,7 +43,7 @@ namespace Osiris
 		ImGui::End();
 	}
 
-	void ImGuiLayer_ResourceViewer::ShowTextureDialog()
+	void ResourceViewer::ShowTextureDialog()
 	{
 		static std::shared_ptr<Osiris::Texture>	selectedTexture = nullptr;
 		float width = ImGui::GetWindowContentRegionWidth() * 0.5f;
@@ -76,7 +76,7 @@ namespace Osiris
 		}
 	}
 
-	void ImGuiLayer_ResourceViewer::ShowShaderDialog()
+	void ResourceViewer::ShowShaderDialog()
 	{
 		static std::shared_ptr<Osiris::Shader>	selectedShader = nullptr;
 		float width = ImGui::GetWindowContentRegionWidth() * 0.5f;

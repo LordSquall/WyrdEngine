@@ -1,15 +1,15 @@
 #include "core/export.h"
 #include "core/Layer.h"
 
-#include "ImGuiPlugin.h"
+#include "EditorPlugin.h"
 
-namespace Osiris
+namespace Osiris::Editor
 {
-	class OSIRIS_API ImGuiLayer_ResourceViewer : public ImGuiPlugin
+	class OSIRIS_API ResourceViewer : public EditorPlugin
 	{
 	public:
-		ImGuiLayer_ResourceViewer();
-		~ImGuiLayer_ResourceViewer();
+		ResourceViewer();
+		~ResourceViewer();
 		
 		void OnEditorRender() override;
 

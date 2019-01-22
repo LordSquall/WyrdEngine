@@ -10,3 +10,6 @@
 [submodule "Osiris/vendor/soil"]
 	path = Osiris/vendor/soil
 	url = https://github.com/PaulRichardHickman/Simple-OpenGL-Image-Library.git
+[submodule "Osiris/vendor/json"]
+	path = Osiris/vendor/json
+	url = https://github.com/PaulRichardHickman/json

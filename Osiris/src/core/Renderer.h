@@ -21,6 +21,8 @@ namespace Osiris
 		virtual unsigned int LoadTexture(std::shared_ptr<Texture> texture) = 0;
 		virtual unsigned int LoadMesh(std::unique_ptr<Mesh>& mesh) = 0;
 
+		virtual unsigned int LoadRawTexture(unsigned char* data, int width, int height, int channels) = 0;
+
 		virtual unsigned int RenderMesh(std::unique_ptr<Mesh>& mesh) = 0;
 	};
 }

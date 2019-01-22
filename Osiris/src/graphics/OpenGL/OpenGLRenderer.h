@@ -16,6 +16,8 @@ namespace Osiris {
 		unsigned int LoadMesh(std::unique_ptr<Mesh>& mesh) override;
 		unsigned int LoadTexture(std::shared_ptr<Texture> texture) override;
 
+		unsigned int LoadRawTexture(unsigned char* data, int width, int height, int channels);
+
 		unsigned int RenderMesh(std::unique_ptr<Mesh>& mesh) override;
 
 	private:

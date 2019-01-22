@@ -1,6 +1,6 @@
-#include "osrpch.h"
+#include "osreditorpch.h"
 
-#include "ImGuiLayer_SceneEditor.h"
+#include "GameViewer.h"
 
 #include "core/Application.h"
 #include "core/Layer.h"
@@ -11,16 +11,16 @@
 
 #include "imgui.h"
 
-namespace Osiris
+namespace Osiris::Editor
 {
 
-	ImGuiLayer_SceneEditor::ImGuiLayer_SceneEditor() : ImGuiPlugin("Scene Editor"){}
+	GameViewer::GameViewer() : EditorPlugin("Game Viewer"){}
 
-	ImGuiLayer_SceneEditor::~ImGuiLayer_SceneEditor(){}
+	GameViewer::~GameViewer(){}
 
-	void ImGuiLayer_SceneEditor::OnEditorRender()
+	void GameViewer::OnEditorRender()
 	{
-		ImGui::Begin("Scene Editor");
+		ImGui::Begin("Game Viewer");
 
 		if (ImGui::TreeNode("Basic"))
 		{

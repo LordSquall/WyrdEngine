@@ -1,6 +1,6 @@
-#include "osrpch.h"
+#include "osreditorpch.h"
 
-#include "ImGuiLayer.h"
+#include "EditorLayer.h"
 
 #include "core/Application.h"
 #include "core/Layer.h"
@@ -12,38 +12,62 @@
 
 #include "platform/OpenGL/imgui_opengl_renderer.h"
 #include <GLFW/glfw3.h>
+#include <SOIL.h>
 
-#include "ImGuiLayer_GameViewer.h"
-#include "ImGuiLayer_SceneEditor.h"
-#include "ImGuiLayer_SceneHierarchy.h"
-#include "ImGuiLayer_ResourceViewer.h"
-
-namespace Osiris
+namespace Osiris::Editor
 {
 	static bool			s_MouseJustPressed[5]					= { false, false, false, false, false };
 	static GLFWcursor*  s_MouseCursors[ImGuiMouseCursor_COUNT]	= { 0 };
+	static ImFont*		s_defaultFont							= nullptr;
 
-	ImGuiLayer::ImGuiLayer()
+	EditorLayer::EditorLayer()
 		: Layer("ImGuiLayer")
 	{
+		//m_plugins["Game Viewer"] = std::make_shared<GameViewer>();
+		//m_plugins["Scene Editor"] = std::make_shared<SceneEditor>();
+		//m_plugins["Scene Hierarchy"] = std::make_shared<SceneHierarchy>();
+		//m_plugins["Resource Viewer"] = std::make_shared<ResourceViewer>();
+		//m_plugins["Project Explorer"] = std::make_shared<ProjectExplorer>();
 	}
 
-	ImGuiLayer::~ImGuiLayer()
+	EditorLayer::~EditorLayer()
 	{
 
 	}
 
-	void ImGuiLayer::OnAttach()
+	void EditorLayer::OnAttach()
 	{
+
+		/* load in icons sets */
+		m_IconLibrary.AddIconsFromFile(std::string("C:/Projects/Active/OsirisEngine/Osiris/res/icons/filesystem_icons.json"));
+
+		/* set the style and icons library for each of the plugins */
+		for (std::map<std::string, std::shared_ptr<EditorPlugin>>::iterator it = m_plugins.begin(); it != m_plugins.end(); it++)
+		{
+			(it->second)->SetIconLibrary(&m_IconLibrary);
+			(it->second)->OnInitialise();
+		}
+
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
-		ImGui::StyleColorsDark();
+		//ImGui::StyleColorsDark();
 		
 		ImGuiIO& io = ImGui::GetIO();
+
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
 		io.BackendPlatformName = "imgui_openg3_renderer";
 
+		if (std::filesystem::exists("C:/Projects/Active/OsirisEngine/Osiris/res/arial.ttf") == true)
+		{
+			s_defaultFont = io.Fonts->AddFontFromFileTTF("C:/Projects/Active/OsirisEngine/Osiris/res/arial.ttf", 16.0f);
+			unsigned char * pixels;
+			int width, height, bytes_per_pixels;
+			io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, &bytes_per_pixels);
+			unsigned int id = Application::Get().GetRenderer().LoadRawTexture(pixels, width, height, 4);
+			io.Fonts->SetTexID((void*)id);
+		}
+		
 		// Keyboard mapping. ImGui will use those indices to peek into the io.KeysDown[] array.
 		io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB;
 		io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
@@ -77,29 +101,20 @@ namespace Osiris
 		s_MouseCursors[ImGuiMouseCursor_Hand] = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
 
 		ImGui_ImplOpenGL3_Init("#version 410");
+
+
 	}
 
-	void ImGuiLayer::OnDetach()
+	void EditorLayer::OnDetach()
 	{
 
 	}
 
-	void ImGuiLayer::OnRender(std::shared_ptr<Renderer> renderer)
+	void EditorLayer::OnRender(std::shared_ptr<Renderer> renderer)
 	{
 		static bool menu_app_close_show = false;
-		static bool menu_tools_show = false;
-		static bool menu_tools_game_view_show = false;
-		static bool menu_tools_scene_editor_show = false;
-		static bool menu_tools_resources_show = false;
-		static bool menu_tools_scene_heirarchy_show = false;
-
-		static bool menu_help_show = false;
 		static bool menu_help_demo_window_show = false;
 
-		ImGuiLayer_GameViewer		gameViewer;
-		ImGuiLayer_SceneEditor		sceneEditor;
-		ImGuiLayer_SceneHierarchy	sceneHierarchy;
-		ImGuiLayer_ResourceViewer	resourceViewer;
 
 		float time = (float)glfwGetTime();
 		ImGuiIO& io = ImGui::GetIO();
@@ -114,8 +129,22 @@ namespace Osiris
 		UpdateCursor();
 		ImGui::NewFrame();
 
+		ImGui::PushFont(s_defaultFont);
+
 		/* menu bar */
 		ImGui::BeginMainMenuBar();
+
+		if (ImGui::BeginMenu("Project"))
+		{
+			ImGui::MenuItem("Open");
+			ImGui::MenuItem("Save");
+			ImGui::MenuItem("Save As..");
+			ImGui::Separator();
+			ImGui::MenuItem("Reload");
+			ImGui::Separator();
+			ImGui::MenuItem("Close");
+			ImGui::EndMenu();
+		}
 
 		if (ImGui::BeginMenu("App", true))
 		{
@@ -128,10 +157,10 @@ namespace Osiris
 
 		if (ImGui::BeginMenu("Tools", true))
 		{
-			ImGui::MenuItem("Game View", NULL, &menu_tools_game_view_show);
-			ImGui::MenuItem("Scene Editor", NULL, &menu_tools_scene_editor_show);
-			ImGui::MenuItem("Resources", NULL, &menu_tools_resources_show);
-			ImGui::MenuItem("Scene Hierarchy", NULL, &menu_tools_scene_heirarchy_show);
+			for (std::map<std::string, std::shared_ptr<EditorPlugin>>::iterator it = m_plugins.begin(); it != m_plugins.end(); it++)
+			{
+				ImGui::MenuItem((it->second)->GetName().c_str(), NULL, (it->second)->GetShowFlagRef());
+			}
 
 			ImGui::EndMenu();
 		}
@@ -145,19 +174,26 @@ namespace Osiris
 
 		ImGui::EndMainMenuBar();
 
-		if (menu_tools_game_view_show == true) gameViewer.OnEditorRender();
-		if (menu_tools_scene_editor_show == true) sceneEditor.OnEditorRender();
-		if (menu_tools_resources_show == true) resourceViewer.OnEditorRender();
-		if (menu_tools_scene_heirarchy_show == true) sceneHierarchy.OnEditorRender();
+		/* test the plugin visibility flags */
+		for (std::map<std::string, std::shared_ptr<EditorPlugin>>::iterator it = m_plugins.begin(); it != m_plugins.end(); it++)
+		{
+			bool showFlag = *(it->second)->GetShowFlagRef();
+			if (showFlag == true)
+			{
+				(it->second)->OnEditorRender();
+			}
+		}
 
 		if (menu_help_demo_window_show == true) ImGui::ShowDemoWindow();
+
+		ImGui::PopFont();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		
 	}
 
-	void ImGuiLayer::OnEvent(Event& event)
+	void EditorLayer::OnEvent(Event& event)
 	{
 		int flags = event.GetCategoryFlags();
 		unsigned int val = EventCategoryKeyboard;
@@ -194,7 +230,7 @@ namespace Osiris
 		}
 	}
 
-	void ImGuiLayer::UpdateMouse()
+	void EditorLayer::UpdateMouse()
 	{
 		Application& app = Application::Get();
 		GLFWwindow* nativeWindow = (GLFWwindow*)app.GetWindow().GetNativeWindowPointer();
@@ -226,7 +262,7 @@ namespace Osiris
 		}
 	}
 
-	void ImGuiLayer::UpdateCursor()
+	void EditorLayer::UpdateCursor()
 	{
 		Application& app = Application::Get();
 		GLFWwindow* nativeWindow = (GLFWwindow*)app.GetWindow().GetNativeWindowPointer();

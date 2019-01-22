@@ -22,6 +22,7 @@ namespace Osiris {
 		void PushOverlay(Layer* layer);
 
 		inline static Application& Get() { return *s_Instance; }
+		inline Renderer& GetRenderer() { return *m_Renderer; }
 		inline Window& GetWindow() { return *m_Window;  }
 		inline Resources& GetResources() { return *m_Resources; }
 	protected:

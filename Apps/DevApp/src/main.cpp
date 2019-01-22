@@ -4,9 +4,6 @@
 #include "events/KeyEvent.h"
 #include "graphics/Shader.h"
 
-#include "layers/imgui/ImGuiLayer.h"
-#include "layers/LoadingLayer.h"
-
 class ClientApplication : public Osiris::Application
 {
 public:
