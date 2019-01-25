@@ -16,12 +16,14 @@ includedir["GLFW"] = "Osiris/vendor/GLFW/include"
 includedir["GLAD"] = "Osiris/vendor/GLAD/include"
 includedir["SOIL"] = "Osiris/vendor/soil/src"
 includedir["imgui"] = "Osiris/vendor/imgui"
+includedir["json"] = "Osiris/vendor/json/include"
 includedir["tinyobjloader"] = "Osiris/vendor/tinyobjloader/include"
 
 include "Osiris/vendor/GLFW"
 include "Osiris/vendor/GLAD"
 include "Osiris/vendor/SOIL"
 include "Osiris/vendor/imgui"
+include "Osiris/vendor/json"
 
 project "Osiris"
 	location "Osiris"
@@ -51,6 +53,7 @@ project "Osiris"
 		"%{includedir.GLAD}",
 		"%{includedir.SOIL}",
 		"%{includedir.imgui}",
+		"%{includedir.json}",
 		"%{includedir.tinyobjloader}"
 	}
 	
@@ -65,7 +68,8 @@ project "Osiris"
 		
 	postbuildcommands
 	{
-		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/DevApp")
+		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/DevApp"),
+		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/OsirisEditor")
 	}
 	
 	filter "system:windows"
@@ -94,7 +98,72 @@ project "Osiris"
 	filter "configurations:Distribution"
 		defines "ORS_DISTRIBUTION"
 		buildoptions "/MD"
-		symbols "On"		
+		symbols "On"	
+
+project "OsirisEditor"
+	location "OsirisEditor"
+	kind "ConsoleApp"
+	language "C++"
+	
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("obj/" .. outputdir .. "/%{prj.name}")
+	
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
+	
+	includedirs
+	{
+		"%{prj.name}/src/",
+		"%{prj.name}/vendor/spdlog/include",
+		"Osiris/src",
+		"Osiris/vendor/spdlog/include",
+		"%{includedir.GLFW}",
+		"%{includedir.GLAD}",
+		"%{includedir.SOIL}",
+		"%{includedir.imgui}",
+		"%{includedir.json}",
+		"%{includedir.tinyobjloader}"
+	}
+	
+	links
+	{
+		"Osiris",
+		"GLFW",
+		"GLAD",
+		"SOIL",
+		"imgui",
+		"opengl32.dll"
+	}
+			
+	filter "system:windows"
+		cppdialect "C++17"
+		staticruntime "On"
+		systemversion "latest"
+		characterset "MBCS"
+		
+		defines
+		{
+			"OSR_PLATFORM_WINDOWS",
+			"OSR_ENABLE_ASSERTS"
+		}
+		
+	filter "configurations:Debug"
+		defines "ORS_DEBUG"
+		buildoptions "/MDd"
+		symbols "On"
+	
+	filter "configurations:Release"
+		defines "ORS_RELEASE"
+		buildoptions "/MD"
+		symbols "On"
+	
+	filter "configurations:Distribution"
+		defines "ORS_DISTRIBUTION"
+		buildoptions "/MD"
+		symbols "On"				
 		
 project "DevApp"
 	location "Apps/DevApp"

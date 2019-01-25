@@ -1,0 +1,40 @@
+{
+	"filename" : "filesystem_icons.png",
+	"icons" : [
+		{
+			"name" : "folder_open",
+			"pos-x" : 0,
+			"pos-y" : 0,
+			"width" : 64,
+			"height": 64
+		},
+		{
+			"name" : "folder_closed",
+			"pos-x" : 64,
+			"pos-y" : 0,
+			"width" : 64,
+			"height": 64
+		},
+		{
+			"name" : "unknown_file",
+			"pos-x" : 128,
+			"pos-y" : 0,
+			"width" : 64,
+			"height": 64
+		},
+		{
+			"name" : "mesh_file",
+			"pos-x" : 192,
+			"pos-y" : 0,
+			"width" : 64,
+			"height": 64
+		},
+		{
+			"name" : "text_file",
+			"pos-x" : 256,
+			"pos-y" : 0,
+			"width" : 64,
+			"height": 64
+		}
+	]
+}
