@@ -5,7 +5,7 @@
 
 namespace Osiris::Editor
 {
-	class OSIRIS_API SceneEditor : public EditorPlugin
+	class SceneEditor : public EditorPlugin
 	{
 	public:
 		SceneEditor();

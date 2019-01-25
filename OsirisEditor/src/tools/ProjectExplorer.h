@@ -35,7 +35,7 @@ namespace Osiris::Editor
 		std::map<std::string, ProjectExplorer_entry> filesystem;
 	};
 
-	class OSIRIS_API ProjectExplorer : public EditorPlugin
+	class ProjectExplorer : public EditorPlugin
 	{
 	public:
 		ProjectExplorer();

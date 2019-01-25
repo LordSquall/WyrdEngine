@@ -68,7 +68,8 @@ project "Osiris"
 		
 	postbuildcommands
 	{
-		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/DevApp")
+		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/DevApp"),
+		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/OsirisEditor")
 	}
 	
 	filter "system:windows"
@@ -136,12 +137,7 @@ project "OsirisEditor"
 		"imgui",
 		"opengl32.dll"
 	}
-		
-	postbuildcommands
-	{
-		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/DevApp")
-	}
-	
+			
 	filter "system:windows"
 		cppdialect "C++17"
 		staticruntime "On"
@@ -151,8 +147,7 @@ project "OsirisEditor"
 		defines
 		{
 			"OSR_PLATFORM_WINDOWS",
-			"OSR_BUILD_DLL",
-			"GLFW_INCLUDE_NONE"
+			"OSR_ENABLE_ASSERTS"
 		}
 		
 	filter "configurations:Debug"

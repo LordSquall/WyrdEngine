@@ -3,6 +3,10 @@
 #include "core/export.h"
 #include "core/Layer.h"
 
+#include "events/KeyEvent.h"
+#include "events/MouseEvent.h"
+#include "events/ApplicationEvent.h"
+
 #include "EditorPlugin.h"
 #include "IconLibrary.h"
 
@@ -14,7 +18,7 @@
 
 namespace Osiris::Editor
 {
-	class OSIRIS_API EditorLayer : public Layer
+	class EditorLayer : public Layer
 	{
 	public:
 		EditorLayer();
@@ -27,8 +31,14 @@ namespace Osiris::Editor
 		void OnEvent(Event& event) override;
 		
 	private:
-		void UpdateMouse();
-		void UpdateCursor();
+		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
+		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
+		bool OnMouseMovedEvent(MouseMovedEvent& e);
+		bool OnMouseScrolledEvent(MouseScrolledEvent& e);
+		bool OnKeyReleasedEvent(KeyReleasedEvent& e);
+		bool OnKeyPressedEvent(KeyPressedEvent& e);
+		bool OnKeyTypedEvent(KeyTypedEvent& e);
+		bool OnWindowResizeEvent(WindowResizeEvent& e);
 
 	private:
 		float	m_Time;

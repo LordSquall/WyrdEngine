@@ -7,7 +7,7 @@
 
 namespace Osiris
 {
-	class OSIRIS_API EditorPlugin
+	class EditorPlugin
 	{
 	public:
 		EditorPlugin(const std::string& name = "ImGuiPlugin") { m_Name = name; }

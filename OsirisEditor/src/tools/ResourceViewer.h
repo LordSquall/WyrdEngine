@@ -5,7 +5,7 @@
 
 namespace Osiris::Editor
 {
-	class OSIRIS_API ResourceViewer : public EditorPlugin
+	class ResourceViewer : public EditorPlugin
 	{
 	public:
 		ResourceViewer();

@@ -5,7 +5,7 @@
 
 namespace Osiris::Editor
 {
-	class OSIRIS_API SceneHierarchy : public EditorPlugin
+	class SceneHierarchy : public EditorPlugin
 	{
 	public:
 		SceneHierarchy();

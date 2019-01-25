@@ -11,6 +11,7 @@
 #include "events/ApplicationEvent.h"
 
 #include "platform/OpenGL/imgui_opengl_renderer.h"
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <SOIL.h>
 
@@ -23,6 +24,9 @@ namespace Osiris::Editor
 	EditorLayer::EditorLayer()
 		: Layer("ImGuiLayer")
 	{
+		int status = gladLoadGL();
+		OSR_CORE_ASSERT(status, "Failed to initialise GLAD!");
+
 		//m_plugins["Game Viewer"] = std::make_shared<GameViewer>();
 		//m_plugins["Scene Editor"] = std::make_shared<SceneEditor>();
 		//m_plugins["Scene Hierarchy"] = std::make_shared<SceneHierarchy>();
@@ -37,7 +41,6 @@ namespace Osiris::Editor
 
 	void EditorLayer::OnAttach()
 	{
-
 		/* load in icons sets */
 		m_IconLibrary.AddIconsFromFile(std::string("C:/Projects/Active/OsirisEngine/Osiris/res/icons/filesystem_icons.json"));
 
@@ -125,8 +128,6 @@ namespace Osiris::Editor
 
 
 		ImGui_ImplOpenGL3_NewFrame();
-		UpdateMouse();
-		UpdateCursor();
 		ImGui::NewFrame();
 
 		ImGui::PushFont(s_defaultFont);
@@ -195,94 +196,85 @@ namespace Osiris::Editor
 
 	void EditorLayer::OnEvent(Event& event)
 	{
-		int flags = event.GetCategoryFlags();
-		unsigned int val = EventCategoryKeyboard;
-
-		switch(event.GetCategoryFlags())
-		{
-		case EventCategoryKeyboard:
-			{
-				KeyEvent* keyEvent = (KeyEvent*)&event;
-
-				ImGuiIO& io = ImGui::GetIO();
-				if (keyEvent->GetEventType() == EventType::KeyPressed)
-					io.KeysDown[keyEvent->GetKeyCode()] = true;
-
-				if (keyEvent->GetEventType() == EventType::KeyReleased)
-					io.KeysDown[keyEvent->GetKeyCode()] = false;
-
-				// Modifiers are not reliable across systems
-				io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
-				io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
-				io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
-				io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
-			}
-			break;
-		case EventCategoryMouse:
-			{
-				if (event.GetEventType() == EventType::MouseButtonPressed)
-				{
-					MouseButtonPressedEvent* mouseEvent = (MouseButtonPressedEvent*)&event;
-					s_MouseJustPressed[mouseEvent->GetMouseButton()] = true;
-				}
-			}
-			break;
-		}
+		EventDispatcher dispatcher(event);
+		dispatcher.Dispatch<MouseButtonPressedEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressedEvent));
+		dispatcher.Dispatch<MouseButtonReleasedEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnMouseButtonReleasedEvent));
+		dispatcher.Dispatch<MouseMovedEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnMouseMovedEvent));
+		dispatcher.Dispatch<MouseScrolledEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnMouseScrolledEvent));
+		dispatcher.Dispatch<KeyReleasedEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnKeyReleasedEvent));
+		dispatcher.Dispatch<KeyPressedEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnKeyPressedEvent));
+		dispatcher.Dispatch<KeyTypedEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnKeyTypedEvent));
+		dispatcher.Dispatch<WindowResizeEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnWindowResizeEvent));
 	}
 
-	void EditorLayer::UpdateMouse()
+	bool EditorLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
 	{
-		Application& app = Application::Get();
-		GLFWwindow* nativeWindow = (GLFWwindow*)app.GetWindow().GetNativeWindowPointer();
 		ImGuiIO& io = ImGui::GetIO();
-
-		for (int i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++)
-		{
-			// If a mouse press event came, always pass it as "mouse held this frame", so we don't miss click-release events that are shorter than 1 frame.
-			io.MouseDown[i] = s_MouseJustPressed[i] || glfwGetMouseButton(nativeWindow, i) != 0;
-			s_MouseJustPressed[i] = false;
-		}
-
-		// Update mouse position
-		const ImVec2 mouse_pos_backup = io.MousePos;
-		io.MousePos = ImVec2(-FLT_MAX, -FLT_MAX);
-		const bool focused = glfwGetWindowAttrib(nativeWindow, GLFW_FOCUSED) != 0;
-		if (focused)
-		{
-			if (io.WantSetMousePos)
-			{
-				glfwSetCursorPos(nativeWindow, (double)mouse_pos_backup.x, (double)mouse_pos_backup.y);
-			}
-			else
-			{
-				double mouse_x, mouse_y;
-				glfwGetCursorPos(nativeWindow, &mouse_x, &mouse_y);
-				io.MousePos = ImVec2((float)mouse_x, (float)mouse_y);
-			}
-		}
+		io.MouseDown[e.GetMouseButton()] = true;
+		return false;
 	}
 
-	void EditorLayer::UpdateCursor()
+	bool EditorLayer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e)
 	{
-		Application& app = Application::Get();
-		GLFWwindow* nativeWindow = (GLFWwindow*)app.GetWindow().GetNativeWindowPointer();
 		ImGuiIO& io = ImGui::GetIO();
-		
-		if ((io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) || glfwGetInputMode(nativeWindow, GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
-			return;
+		io.MouseDown[e.GetMouseButton()] = false;
+		return false;
+	}
 
-		ImGuiMouseCursor imgui_cursor = ImGui::GetMouseCursor();
-		if (imgui_cursor == ImGuiMouseCursor_None || io.MouseDrawCursor)
-		{
-			// Hide OS mouse cursor if imgui is drawing it or if it wants no cursor
-			glfwSetInputMode(nativeWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-		}
-		else
-		{
-			// Show OS mouse cursor
-			// FIXME-PLATFORM: Unfocused windows seems to fail changing the mouse cursor with GLFW 3.2, but 3.3 works here.
-			glfwSetCursor(nativeWindow, s_MouseCursors[imgui_cursor] ? s_MouseCursors[imgui_cursor] : s_MouseCursors[ImGuiMouseCursor_Arrow]);
-			glfwSetInputMode(nativeWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		}
+	bool EditorLayer::OnMouseMovedEvent(MouseMovedEvent& e)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.MousePos = ImVec2(e.GetX(), e.GetY());
+		return false;
+	}
+
+	bool EditorLayer::OnMouseScrolledEvent(MouseScrolledEvent& e)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.MouseWheel += e.GetYOffset();
+		io.MouseWheelH += e.GetXOffset();
+
+		return false;
+	}
+
+	bool EditorLayer::OnKeyReleasedEvent(KeyReleasedEvent& e)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.KeysDown[e.GetKeyCode()] = false;
+
+		return false;
+	}
+
+	bool EditorLayer::OnKeyPressedEvent(KeyPressedEvent& e)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.KeysDown[e.GetKeyCode()] = true;
+
+		io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
+		io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
+		io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
+		io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
+
+		return false;
+	}
+
+	bool EditorLayer::OnKeyTypedEvent(KeyTypedEvent& e)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		if (e.GetKeyCode() > 0 && e.GetKeyCode() < 0x10000)
+			io.AddInputCharacter((unsigned short)e.GetKeyCode());
+
+		return false;
+	}
+
+	bool EditorLayer::OnWindowResizeEvent(WindowResizeEvent& e)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.DisplaySize = ImVec2(e.GetWidth(), e.GetHeight());
+		io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+		io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+		glViewport(0, 0, e.GetWidth(), e.GetHeight());
+
+		return false;
 	}
 }

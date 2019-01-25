@@ -1,5 +1,7 @@
 #include "osreditorpch.h"
 
+#include "core/Log.h"
+
 #include "SceneHierarchy.h"
 
 #include "core/Application.h"

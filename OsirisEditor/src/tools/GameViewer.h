@@ -5,7 +5,7 @@
 
 namespace Osiris::Editor
 {
-	class OSIRIS_API GameViewer : public EditorPlugin
+	class GameViewer : public EditorPlugin
 	{
 	public:
 		GameViewer();

@@ -10,7 +10,7 @@ class EditorApplication : public Osiris::Application
 public:
 	EditorApplication()
 	{
-
+		PushLayer(new Osiris::Editor::EditorLayer());
 	}
 
 	~EditorApplication()
