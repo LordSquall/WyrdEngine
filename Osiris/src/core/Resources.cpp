@@ -22,7 +22,7 @@ namespace Osiris {
 	{
 		if (m_Renderer->LoadShader(shader) == 0)
 		{
-			OSR_CLIENT_ERROR("Unable to load Shader!");
+			OSR_ERROR("Unable to load Shader!");
 			return false;
 		}
 
@@ -35,7 +35,7 @@ namespace Osiris {
 	{
 		if (m_Renderer->LoadTexture(texture) == 0)
 		{
-			OSR_CLIENT_ERROR("Unable to load Shader!");
+			OSR_ERROR("Unable to load Shader!");
 			return false;
 		}
 

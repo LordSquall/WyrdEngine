@@ -2,7 +2,6 @@
 
 #include "Application.h"
 #include "events/ApplicationEvent.h"
-
 #include "graphics/Shader.h"
 
 namespace Osiris {

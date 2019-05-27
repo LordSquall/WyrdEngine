@@ -1,16 +1,25 @@
+/* engine headers */
 #include <Osiris.h>
 
-#include "events/ApplicationEvent.h"
-#include "events/KeyEvent.h"
-#include "graphics/Shader.h"
+/* local headers */
+#include "layers/ExampleLayer.h"
+
+/* if editor is enabled we want to include the inbuild editor layers */
+#ifdef OSR_EDITOR_ENABLED 
+#include "editor/layers/EditorLayer.h"
+#endif
 
 class ClientApplication : public Osiris::Application
 {
 public:
 	ClientApplication()
 	{
-		PushOverlay(new Osiris::ImGuiLayer());
-		PushOverlay(new LoadingLayer());
+		PushLayer(new ExampleLayer());
+
+#ifdef OSR_EDITOR_ENABLED
+		PushLayer(new Osiris::Editor::EditorLayer());
+#endif
+		
 	}
 
 	~ClientApplication()

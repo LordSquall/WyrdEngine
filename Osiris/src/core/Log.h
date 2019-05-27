@@ -27,8 +27,8 @@ namespace Osiris {
 #define OSR_CORE_ERROR(...)		::Osiris::Log::GetCoreLogger()->error(__VA_ARGS__)
 #define OSR_CORE_FATAL(...)		::Osiris::Log::GetCoreLogger()->fatal(__VA_ARGS__)
 
-#define OSR_CLIENT_TRACE(...)		::Osiris::Log::GetClientLogger()->trace(__VA_ARGS__)
-#define OSR_CLIENT_INFO(...)		::Osiris::Log::GetClientLogger()->info(__VA_ARGS__)
-#define OSR_CLIENT_WARN(...)		::Osiris::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define OSR_CLIENT_ERROR(...)		::Osiris::Log::GetClientLogger()->error(__VA_ARGS__)
-#define OSR_CLIENT_FATAL(...)		::Osiris::Log::GetClientLogger()->fatal(__VA_ARGS__)
+#define OSR_TRACE(...)		::Osiris::Log::GetClientLogger()->trace(__VA_ARGS__)
+#define OSR_INFO(...)		::Osiris::Log::GetClientLogger()->info(__VA_ARGS__)
+#define OSR_WARN(...)		::Osiris::Log::GetClientLogger()->warn(__VA_ARGS__)
+#define OSR_ERROR(...)		::Osiris::Log::GetClientLogger()->error(__VA_ARGS__)
+#define OSR_FATAL(...)		::Osiris::Log::GetClientLogger()->fatal(__VA_ARGS__)

@@ -1,6 +1,6 @@
 workspace "Osiris"
 	architecture "x64"
-	startproject "EditorApp"
+	startproject "DevApp"
 		
 	configurations
 	{
@@ -15,6 +15,7 @@ includedir = {}
 includedir["GLFW"] = "Osiris/vendor/GLFW/include"
 includedir["GLAD"] = "Osiris/vendor/GLAD/include"
 includedir["SOIL"] = "Osiris/vendor/soil/src"
+includedir["glm"] = "Osiris/vendor/glm"
 includedir["imgui"] = "Osiris/vendor/imgui"
 includedir["json"] = "Osiris/vendor/json/include"
 includedir["tinyobjloader"] = "Osiris/vendor/tinyobjloader/include"
@@ -54,6 +55,7 @@ project "Osiris"
 		"%{includedir.SOIL}",
 		"%{includedir.imgui}",
 		"%{includedir.json}",
+		"%{includedir.glm}",
 		"%{includedir.tinyobjloader}"
 	}
 	
@@ -68,8 +70,7 @@ project "Osiris"
 		
 	postbuildcommands
 	{
-		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/DevApp"),
-		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/OsirisEditor")
+		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/DevApp")
 	}
 	
 	filter "system:windows"
@@ -81,6 +82,7 @@ project "Osiris"
 		defines
 		{
 			"OSR_PLATFORM_WINDOWS",
+			"OSR_EDITOR_ENABLED",
 			"OSR_BUILD_DLL",
 			"GLFW_INCLUDE_NONE"
 		}
@@ -98,72 +100,7 @@ project "Osiris"
 	filter "configurations:Distribution"
 		defines "ORS_DISTRIBUTION"
 		buildoptions "/MD"
-		symbols "On"	
-
-project "OsirisEditor"
-	location "OsirisEditor"
-	kind "ConsoleApp"
-	language "C++"
-	
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("obj/" .. outputdir .. "/%{prj.name}")
-	
-	files
-	{
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
-	}
-	
-	includedirs
-	{
-		"%{prj.name}/src/",
-		"%{prj.name}/vendor/spdlog/include",
-		"Osiris/src",
-		"Osiris/vendor/spdlog/include",
-		"%{includedir.GLFW}",
-		"%{includedir.GLAD}",
-		"%{includedir.SOIL}",
-		"%{includedir.imgui}",
-		"%{includedir.json}",
-		"%{includedir.tinyobjloader}"
-	}
-	
-	links
-	{
-		"Osiris",
-		"GLFW",
-		"GLAD",
-		"SOIL",
-		"imgui",
-		"opengl32.dll"
-	}
-			
-	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "On"
-		systemversion "latest"
-		characterset "MBCS"
-		
-		defines
-		{
-			"OSR_PLATFORM_WINDOWS",
-			"OSR_ENABLE_ASSERTS"
-		}
-		
-	filter "configurations:Debug"
-		defines "ORS_DEBUG"
-		buildoptions "/MDd"
 		symbols "On"
-	
-	filter "configurations:Release"
-		defines "ORS_RELEASE"
-		buildoptions "/MD"
-		symbols "On"
-	
-	filter "configurations:Distribution"
-		defines "ORS_DISTRIBUTION"
-		buildoptions "/MD"
-		symbols "On"				
 		
 project "DevApp"
 	location "Apps/DevApp"
@@ -185,12 +122,25 @@ project "DevApp"
 	{
 		"%{prj.name}/src/",
 		"Osiris/src",
-		"Osiris/vendor/spdlog/include"
+		"%{includedir.glm}",
+		"Osiris/vendor/spdlog/include",
+		"%{includedir.GLFW}",
+		"%{includedir.GLAD}",
+		"%{includedir.SOIL}",
+		"%{includedir.imgui}",
+		"%{includedir.glm}",
+		"%{includedir.json}",
+		"%{includedir.tinyobjloader}"
 	}
 	
 	links
 	{
-		"Osiris"
+		"Osiris",
+		"GLFW",
+		"GLAD",
+		"SOIL",
+		"imgui",
+		"opengl32.dll"
 	}
 	
 	filter "system:windows"
@@ -201,7 +151,8 @@ project "DevApp"
 		
 		defines
 		{
-			"OSR_PLATFORM_WINDOWS"
+			"OSR_PLATFORM_WINDOWS",
+			"OSR_EDITOR_ENABLED"
 		}
 	
 		filter "configurations:Debug"

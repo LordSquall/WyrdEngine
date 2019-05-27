@@ -13,7 +13,6 @@ namespace Osiris {
 
 		virtual ~Mesh();
 
-
 		static std::unique_ptr<Mesh> CreateFromFile(const std::string& filePath);
 
 		std::vector<Vertex> vertices;
