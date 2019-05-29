@@ -43,7 +43,7 @@ namespace Osiris::Editor
 	void EditorLayer::OnAttach()
 	{
 		/* load in icons sets */
-		m_IconLibrary.AddIconsFromFile(std::string("C:/Projects/Active/OsirisEngine/Osiris/res/icons/filesystem_icons.json"));
+		m_IconLibrary.AddIconsFromFile(std::string("../../Osiris/res/icons/filesystem_icons.json"));
 
 		/* set the style and icons library for each of the plugins */
 		for (std::map<std::string, std::shared_ptr<EditorPlugin>>::iterator it = m_plugins.begin(); it != m_plugins.end(); it++)
@@ -54,23 +54,12 @@ namespace Osiris::Editor
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
-		//ImGui::StyleColorsDark();
 		
 		ImGuiIO& io = ImGui::GetIO();
 
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
 		io.BackendPlatformName = "imgui_openg3_renderer";
-
-		if (std::filesystem::exists("C:/Projects/Active/OsirisEngine/Osiris/res/arial.ttf") == true)
-		{
-			s_defaultFont = io.Fonts->AddFontFromFileTTF("C:/Projects/Active/OsirisEngine/Osiris/res/arial.ttf", 16.0f);
-			unsigned char * pixels;
-			int width, height, bytes_per_pixels;
-			io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, &bytes_per_pixels);
-			unsigned int id = Application::Get().GetRenderer().LoadRawTexture(pixels, width, height, 4);
-			io.Fonts->SetTexID((void*)id);
-		}
 		
 		// Keyboard mapping. ImGui will use those indices to peek into the io.KeysDown[] array.
 		io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB;
@@ -105,8 +94,6 @@ namespace Osiris::Editor
 		s_MouseCursors[ImGuiMouseCursor_Hand] = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
 
 		ImGui_ImplOpenGL3_Init("#version 410");
-
-
 	}
 
 	void EditorLayer::OnDetach()

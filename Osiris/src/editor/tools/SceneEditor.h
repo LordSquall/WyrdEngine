@@ -2,7 +2,6 @@
 #include "core/Layer.h"
 
 #include "editor/EditorPlugin.h"
-#include "editor/scene/Scene.h"
 
 namespace Osiris::Editor
 {
@@ -13,11 +12,5 @@ namespace Osiris::Editor
 		~SceneEditor();
 		
 		void OnEditorRender() override;
-
-	private:
-		void PopulateSceneTree(Node* rootNode);
-
-	private:
-		Scene m_Scene;
 	};
 }

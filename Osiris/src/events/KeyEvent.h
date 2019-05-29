@@ -1,5 +1,7 @@
 #pragma once
 
+using namespace std;
+
 #include "Event.h"
 
 namespace Osiris {
