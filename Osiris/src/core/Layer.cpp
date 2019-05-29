@@ -11,6 +11,5 @@ namespace Osiris {
 
 	Layer::~Layer()
 	{
-
 	}
 }

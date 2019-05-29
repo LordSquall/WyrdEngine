@@ -4,10 +4,6 @@
 #include "export.h"
 #include "events/Event.h"
 
-#include "graphics/Shader.h"
-#include "graphics/Texture.h"
-#include "graphics/Mesh.h"
-
 namespace Osiris
 {
 	class Renderer
@@ -15,14 +11,7 @@ namespace Osiris
 	public:
 		virtual ~Renderer() {};
 
-		static Renderer* Create();
+		static Renderer* Create(); 
 		
-		virtual unsigned int LoadShader(std::shared_ptr<Shader> shader) = 0;
-		virtual unsigned int LoadTexture(std::shared_ptr<Texture> texture) = 0;
-		virtual unsigned int LoadMesh(std::unique_ptr<Mesh>& mesh) = 0;
-
-		virtual unsigned int LoadRawTexture(unsigned char* data, int width, int height, int channels) = 0;
-
-		virtual unsigned int RenderMesh(std::unique_ptr<Mesh>& mesh) = 0;
 	};
 }

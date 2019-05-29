@@ -24,7 +24,6 @@ namespace Osiris::Editor
 		EditorLayer();
 		~EditorLayer();
 
-		
 		void OnAttach() override;
 		void OnDetach() override;
 		void OnRender(std::shared_ptr<Renderer> renderer) override;

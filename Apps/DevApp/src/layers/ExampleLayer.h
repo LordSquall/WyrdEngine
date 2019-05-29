@@ -2,10 +2,6 @@
 
 #include <Osiris.h>
 
-#include <scene/GameObject.h>
-#include <scene/visitors/RenderVisitor.h>
-#include <scene/components/MeshRenderer.h>
-
 #ifdef OSR_EDITOR_ENABLED
 #include "editor/layers/EditorLayer.h"
 #endif
@@ -22,14 +18,10 @@ public:
 
 	void OnAttach() override
 	{
-		root = new GameObject();
-
-		root->AddComponent(new MeshRenderer());
 	}
 
 	void OnDetach() override
 	{
-		root->Shutdown();
 	}
 
 	void OnUpdate() override
@@ -39,15 +31,10 @@ public:
 
 	void OnEvent(Event& event) override
 	{
-
 	}
 
 	void OnRender(std::shared_ptr<Renderer> renderer) override
 	{
-		root->AcceptPostOrder(visitor);
-	}
 
-private:
-	GameObject* root;
-	RenderVisitor visitor;
+	}
 };
