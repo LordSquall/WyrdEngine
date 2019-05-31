@@ -2,6 +2,8 @@
 
 #include "core/Window.h"
 
+#include "core/renderer/GraphicsContext.h"
+
 #include <GLFW/glfw3.h>
 
 namespace Osiris {
@@ -34,6 +36,8 @@ namespace Osiris {
 
 	private:
 		GLFWwindow* m_Window;
+
+		GraphicsContext* m_Context;
 
 		struct WindowData
 		{

@@ -25,8 +25,6 @@ namespace Osiris::Editor
 	EditorLayer::EditorLayer()
 		: Layer("ImGuiLayer")
 	{
-		int status = gladLoadGL();
-		OSR_CORE_ASSERT(status, "Failed to initialise GLAD!");
 
 		m_plugins["Game Viewer"] = std::make_shared<GameViewer>();
 		m_plugins["Scene Editor"] = std::make_shared<SceneEditor>();
