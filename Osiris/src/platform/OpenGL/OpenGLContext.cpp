@@ -19,6 +19,11 @@ namespace Osiris {
 		glfwMakeContextCurrent(m_WindowHandle);
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		OSR_CORE_ASSERT(status, "Failed to initialise GLAD!");
+
+		OSR_CORE_INFO("Graphics Context Info: OpenGL");
+		OSR_CORE_INFO("   Vendor: {0}", glGetString(GL_VENDOR));
+		OSR_CORE_INFO("   Renderer: {0}", glGetString(GL_RENDERER));
+		OSR_CORE_INFO("   Version: {0}", glGetString(GL_VERSION));
 	}
 
 	void OpenGLContext::SwapBuffer()

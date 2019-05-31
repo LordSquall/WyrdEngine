@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/Renderer.h"
+#include "core/renderer/Renderer.h"
 
 namespace Osiris {
 

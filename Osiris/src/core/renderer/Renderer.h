@@ -1,7 +1,6 @@
 #pragma once
 
 #include "osrpch.h"
-#include "export.h"
 #include "events/Event.h"
 
 namespace Osiris
