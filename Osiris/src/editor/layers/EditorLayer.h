@@ -18,7 +18,7 @@
 
 namespace Osiris::Editor
 {
-	class OSIRIS_API EditorLayer : public Layer
+	class  EditorLayer : public Layer
 	{
 	public:
 		EditorLayer();

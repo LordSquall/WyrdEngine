@@ -4,7 +4,7 @@
 
 namespace Osiris
 {
-	class OSIRIS_API MouseMovedEvent : public Event
+	class  MouseMovedEvent : public Event
 	{
 	public:
 		MouseMovedEvent(float x, float y)
@@ -27,7 +27,7 @@ namespace Osiris
 		float m_MouseX, m_MouseY;
 	};
 
-	class OSIRIS_API MouseScrolledEvent : public Event
+	class  MouseScrolledEvent : public Event
 	{
 	public:
 		MouseScrolledEvent(float xOffset, float yOffset)
@@ -50,7 +50,7 @@ namespace Osiris
 		float m_OffsetX, m_OffsetY;
 	};
 
-	class OSIRIS_API MouseButtonEvent : public Event
+	class  MouseButtonEvent : public Event
 	{
 	public:
 		inline int GetMouseButton() const { return m_MouseButton; }
@@ -63,7 +63,7 @@ namespace Osiris
 		int m_MouseButton;
 	};
 
-	class OSIRIS_API MouseButtonPressedEvent : public MouseButtonEvent
+	class  MouseButtonPressedEvent : public MouseButtonEvent
 	{
 	public:
 		MouseButtonPressedEvent(int mouseButton)
@@ -79,7 +79,7 @@ namespace Osiris
 		EVENT_CLASS_TYPE(MouseButtonPressed)
 	};
 
-	class OSIRIS_API MouseButtonReleasedEvent : public MouseButtonEvent
+	class  MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
 		MouseButtonReleasedEvent(int mouseButton)

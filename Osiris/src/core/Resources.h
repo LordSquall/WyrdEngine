@@ -7,7 +7,7 @@
 
 namespace Osiris {
 
-	class OSIRIS_API Resources
+	class  Resources
 	{
 	public:
 		Resources();

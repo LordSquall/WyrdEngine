@@ -8,7 +8,7 @@
 
 namespace Osiris {
 
-	class OSIRIS_API Application
+	class  Application
 	{
 	public:
 		Application();

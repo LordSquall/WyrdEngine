@@ -63,7 +63,7 @@ namespace Osiris::Editor
 		windowFlags |= ImGuiWindowFlags_MenuBar;
 		
 		/* start a new window */
-		if(ImGui::Begin("Project Explorer", &m_ShowFlag, windowFlags));
+		if(ImGui::Begin("Project Explorer", &m_ShowFlag, windowFlags))
 		{
 			/* limit the split width between the navigation and content panels */
 			panelSplitWidth = ImGui::GetWindowContentRegionWidth() * 0.5f;
@@ -143,12 +143,12 @@ namespace Osiris::Editor
 			}
 			else
 			{
-				icon = m_IconLibrary->GetIconFromFileExtension(entry.path());
+				//icon = m_IconLibrary->GetIconFromFileExtension(entry.path());
 			}
 
 			ImGui::BeginGroup();
 			ImGui::PushID(entry.path().c_str());
-			ImGui::Image((void*)icon.GetHandle(), iconSize, ImVec2(icon.GetUV0()[0], icon.GetUV0()[1]), ImVec2(icon.GetUV1()[0], icon.GetUV1()[1]));
+			//ImGui::Image((ImTextureID)icon.GetHandle(), iconSize, ImVec2(icon.GetUV0()[0], icon.GetUV0()[1]), ImVec2(icon.GetUV1()[0], icon.GetUV1()[1]));
 			ImGui::Text(entry.path().filename().string().c_str());
 			ImGui::PopID();
 			ImGui::EndGroup();

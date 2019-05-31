@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef OSR_PLATFORM_WINDOWS
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include <iostream>
 #include <fstream>
 #include <filesystem>
