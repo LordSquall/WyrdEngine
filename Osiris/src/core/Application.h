@@ -3,6 +3,8 @@
 #include "export.h"
 #include "Window.h"
 #include "core/renderer/Renderer.h"
+#include "core/renderer/Shader.h"
+#include "core/renderer/Buffer.h"
 #include "Resources.h"
 #include "LayerStack.h"
 
@@ -32,6 +34,12 @@ namespace Osiris {
 
 		bool m_Running = true;
 		LayerStack m_LayerStack;
+
+		unsigned int _VertexArray;
+		std::unique_ptr<Shader> _Shader;
+		std::unique_ptr<VertexBuffer> _vertexBuffer;
+		std::unique_ptr<IndexBuffer> _indexBuffer;
+
 
 	private:
 		static Application* s_Instance;

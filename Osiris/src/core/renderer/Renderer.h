@@ -5,12 +5,18 @@
 
 namespace Osiris
 {
+	enum class RendererAPI
+	{
+		None = 0, OpenGL =1
+	};
+
 	class Renderer
 	{
 	public:
-		virtual ~Renderer() {};
+		inline static RendererAPI GetAPI() { return s_RendererAPI; }
 
-		static Renderer* Create(); 
-		
+	private:
+		static RendererAPI s_RendererAPI;
+
 	};
 }
