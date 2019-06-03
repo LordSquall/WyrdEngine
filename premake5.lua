@@ -28,8 +28,10 @@ include "Osiris/vendor/json"
 
 project "Osiris"
 	location "Osiris"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 	
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("obj/" .. outputdir .. "/%{prj.name}")
@@ -74,38 +76,36 @@ project "Osiris"
 	}
 	
 	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
-		characterset "MBCS"
 		
 		defines
 		{
 			"OSR_PLATFORM_WINDOWS",
 			"OSR_EDITOR_ENABLED",
-			"OSR_BUILD_DLL",
 			"GLFW_INCLUDE_NONE"
 		}
 		
 	filter "configurations:Debug"
 		defines "ORS_DEBUG"
-		buildoptions "/MDd"
-		symbols "On"
+		runtime "Debug"
+		symbols "on"
 	
 	filter "configurations:Release"
 		defines "ORS_RELEASE"
-		buildoptions "/MD"
-		symbols "On"
+		runtime "Release"
+		symbols "on"
 	
 	filter "configurations:Distribution"
 		defines "ORS_DISTRIBUTION"
-		buildoptions "/MD"
-		symbols "On"
+		runtime "Release"
+		symbols "on"
 		
 project "DevApp"
 	location "Apps/DevApp"
 	kind "ConsoleApp"
 	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 	
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("obj/" .. outputdir .. "/%{prj.name}")
@@ -144,10 +144,7 @@ project "DevApp"
 	}
 	
 	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
-		characterset "MBCS"
 		
 		defines
 		{
@@ -155,17 +152,17 @@ project "DevApp"
 			"OSR_EDITOR_ENABLED"
 		}
 	
-		filter "configurations:Debug"
+	filter "configurations:Debug"
 		defines "ORS_DEBUG"
-		buildoptions "/MDd"
-		symbols "On"
+		runtime "Debug"
+		symbols "on"
 	
 	filter "configurations:Release"
 		defines "ORS_RELEASE"
-		buildoptions "/MD"
-		symbols "On"
+		runtime "Debug"
+		symbols "on"
 	
 	filter "configurations:Distribution"
 		defines "ORS_DISTRIBUTION"
-		buildoptions "/MD"
-		symbols "On"	
+		runtime "Debug"
+		symbols "on"	

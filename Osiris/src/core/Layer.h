@@ -3,11 +3,11 @@
 #include "core/export.h"
 #include "events/Event.h"
 
-#include "core/Renderer.h"
+#include "core/renderer/Renderer.h"
 
 namespace Osiris {
 
-	class OSIRIS_API Layer
+	class  Layer
 	{
 	public:
 		Layer(const std::string& name = "Layer");

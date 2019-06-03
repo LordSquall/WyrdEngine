@@ -6,7 +6,7 @@
 
 namespace Osiris {
 
-	class OSIRIS_API Log
+	class  Log
 	{
 	public:
 		static void Init();

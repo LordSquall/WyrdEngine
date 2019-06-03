@@ -2,12 +2,12 @@
 
 #include <osrpch.h>
 #include <core/Layer.h>
-#include <core/Renderer.h>
+#include <core/renderer/Renderer.h>
 
 
 namespace Osiris {
 
-	class OSIRIS_API Resources
+	class  Resources
 	{
 	public:
 		Resources();

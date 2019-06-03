@@ -53,8 +53,6 @@ namespace Osiris
 		inline void AddIcon(std::string& name, Icon& icon) { m_Icons[name] = icon; }
 		inline Icon& GetIcon(std::string& name) { return m_Icons[name]; }
 		
-		Icon& GetIconFromFileExtension(const std::filesystem::path& path);
-
 	private:
 		std::map<std::string, Icon> m_Icons;
 	};

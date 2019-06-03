@@ -6,8 +6,7 @@
 #include "events/ApplicationEvent.h"
 #include "events/MouseEvent.h"
 #include "events/KeyEvent.h"
-
-#include <glad/glad.h>
+#include "platform/OpenGL/OpenGLContext.h"
 
 namespace Osiris {
 
@@ -51,10 +50,11 @@ namespace Osiris {
 		}
 
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_Window);
 
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		OSR_CORE_ASSERT(status, "Failed to initialise GLAD!");
+
+		m_Context = new OpenGLContext(m_Window);
+		m_Context->Init();
+
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
@@ -174,15 +174,14 @@ namespace Osiris {
 
 	void WindowsWindow::OnPreRender()
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
 	}
 
 	void WindowsWindow::OnPostRender()
 	{
 		glfwPollEvents();
 
-		glfwSwapBuffers(m_Window);
+		m_Context->SwapBuffer();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
