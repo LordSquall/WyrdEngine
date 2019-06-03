@@ -16,11 +16,16 @@
 #include <GLFW/glfw3.h>
 #include <SOIL.h>
 
+#define GetCurrentDir _getcwd;
+
 namespace Osiris::Editor
 {
 	static bool			s_MouseJustPressed[5]					= { false, false, false, false, false };
 	static GLFWcursor*  s_MouseCursors[ImGuiMouseCursor_COUNT]	= { 0 };
 	static ImFont*		s_defaultFont							= nullptr;
+	std::string host_top_level_folder_prefix;
+	std::filesystem::path p;
+	
 
 	EditorLayer::EditorLayer()
 		: Layer("ImGuiLayer")
@@ -33,6 +38,12 @@ namespace Osiris::Editor
 		m_plugins["Scene Hierarchy"] = std::make_shared<SceneHierarchy>();
 		m_plugins["Resource Viewer"] = std::make_shared<ResourceViewer>();
 		m_plugins["Project Explorer"] = std::make_shared<ProjectExplorer>();
+
+		host_top_level_folder_prefix = Get_TLF();
+		p = Get_TLF();
+		OSR_INFO("host_top_level_folder_prefix = " + host_top_level_folder_prefix);
+
+
 	}
 
 	EditorLayer::~EditorLayer()
@@ -40,10 +51,48 @@ namespace Osiris::Editor
 
 	}
 
+	std::string EditorLayer::Get_TLF()
+	{
+		char top_level_folder_check[] = { 'O','s','i','r','i','s','E','n','g','i','n','e' };
+		char top_level_folder[FILENAME_MAX] = {};
+		char cCurrentPath[FILENAME_MAX];
+		int bytes = GetModuleFileName(NULL, cCurrentPath, sizeof(cCurrentPath));
+		unsigned j = 1;
+		char sep = '\\';
+		bool tlf = false;
+		for (unsigned i = 0; i < bytes; i++) {
+			if (cCurrentPath[i] == sep) {
+				while (cCurrentPath[i + j] != sep) {
+					if (cCurrentPath[i + j] == top_level_folder_check[j - 1]) {
+						tlf = true;
+					}
+					else {
+						tlf = false;
+						break;
+					}
+					j++;
+				};
+				if (tlf) {
+					const int tlf_length = i + j + 1;
+					for (unsigned k = 0; k < i + j + 1; k++) {
+						top_level_folder[k] = cCurrentPath[k];
+					}
+					break;
+				}
+				else {
+					j = 1;
+				}
+			}
+
+		}
+		std::string tlf_path(top_level_folder);
+		return tlf_path;
+	}
+
 	void EditorLayer::OnAttach()
 	{
 		/* load in icons sets */
-		m_IconLibrary.AddIconsFromFile(std::string("../../Osiris/res/icons/filesystem_icons.json"));
+		m_IconLibrary.AddIconsFromFile(std::string(host_top_level_folder_prefix + "Osiris/res/icons/filesystem_icons.json"));
 
 		/* set the style and icons library for each of the plugins */
 		for (std::map<std::string, std::shared_ptr<EditorPlugin>>::iterator it = m_plugins.begin(); it != m_plugins.end(); it++)
@@ -54,12 +103,23 @@ namespace Osiris::Editor
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
+		//ImGui::StyleColorsDark();
 		
 		ImGuiIO& io = ImGui::GetIO();
 
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
 		io.BackendPlatformName = "imgui_openg3_renderer";
+
+		if (std::filesystem::exists(host_top_level_folder_prefix + "Osiris/res/arial.ttf") == true)
+		{
+			s_defaultFont = io.Fonts->AddFontFromFileTTF((p + "Osiris/res/arial.ttf")), 16.0f);
+			unsigned char * pixels;
+			int width, height, bytes_per_pixels;
+			io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, &bytes_per_pixels);
+			unsigned int id = Application::Get().GetRenderer().LoadRawTexture(pixels, width, height, 4);
+			io.Fonts->SetTexID((void*)id);
+		}
 		
 		// Keyboard mapping. ImGui will use those indices to peek into the io.KeysDown[] array.
 		io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB;
@@ -94,6 +154,8 @@ namespace Osiris::Editor
 		s_MouseCursors[ImGuiMouseCursor_Hand] = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
 
 		ImGui_ImplOpenGL3_Init("#version 410");
+
+
 	}
 
 	void EditorLayer::OnDetach()
