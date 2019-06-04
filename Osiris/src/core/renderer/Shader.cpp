@@ -1,18 +1,16 @@
 #include "osrpch.h"
 #include "core/renderer/Renderer.h"
 
-#include "platform/OpenGL/OpenGLRenderer.h"
+#include "platform/OpenGL/OpenGLShader.h"
 
 namespace Osiris
 {
-	RendererAPI Renderer::s_RendererAPI = RendererAPI::OpenGL;
-
-	Renderer* Renderer::Create()
+	Shader* Shader::Create()
 	{
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::None:		OSR_CORE_ASSERT(false, "RendererAPI::None is currently not supported"); return nullptr;
-		case RendererAPI::OpenGL:	return new OpenGLRenderer();
+		case RendererAPI::OpenGL:	return new OpenGLShader();
 		}
 
 		OSR_CORE_ASSERT(false, "Unknown Renderer API");

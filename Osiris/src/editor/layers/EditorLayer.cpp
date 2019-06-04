@@ -99,7 +99,7 @@ namespace Osiris::Editor
 
 	}
 
-	void EditorLayer::OnRender(std::shared_ptr<Renderer> renderer)
+	void EditorLayer::OnRender(Renderer& renderer)
 	{
 		static bool menu_app_close_show = false;
 		static bool menu_help_demo_window_show = false;

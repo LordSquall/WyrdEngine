@@ -26,7 +26,7 @@ namespace Osiris::Editor
 
 		void OnAttach() override;
 		void OnDetach() override;
-		void OnRender(std::shared_ptr<Renderer> renderer) override;
+		void OnRender(Renderer& renderer) override;
 		void OnEvent(Event& event) override;
 		
 	private:

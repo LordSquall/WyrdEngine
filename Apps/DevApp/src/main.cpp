@@ -1,6 +1,8 @@
 /* engine headers */
 #include <Osiris.h>
 
+#include "core/EntryPoint.h"
+
 /* local headers */
 #include "layers/ExampleLayer.h"
 
@@ -17,7 +19,7 @@ public:
 		PushLayer(new ExampleLayer());
 
 #ifdef OSR_EDITOR_ENABLED
-		PushLayer(new Osiris::Editor::EditorLayer());
+		PushOverlay(new Osiris::Editor::EditorLayer());
 #endif
 		
 	}
