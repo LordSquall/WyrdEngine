@@ -19,8 +19,12 @@ namespace Osiris {
 		virtual void OnRender(Renderer& renderer) {}
 		virtual void OnEvent(Event& event) {}
 
-		inline const std::string& GetName() const { return m_DebugName; }
+		inline const std::string& GetName() const { return _Name; }
+
+		inline bool* IsEnabled() { return &_IsEnabled; }
+
 	protected:
-		std::string m_DebugName;
+		bool _IsEnabled;
+		std::string _Name;
 	};
 }

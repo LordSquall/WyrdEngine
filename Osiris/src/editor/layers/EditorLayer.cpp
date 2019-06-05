@@ -23,14 +23,16 @@ namespace Osiris::Editor
 	static ImFont*		s_defaultFont							= nullptr;
 
 	EditorLayer::EditorLayer()
-		: Layer("ImGuiLayer")
+		: Layer("EditorLayer")
 	{
+		Application& app = Application::Get();
+		LayerStack* stack = app.GetLayerStack();
 
-		m_plugins["Game Viewer"] = std::make_shared<GameViewer>();
-		m_plugins["Scene Editor"] = std::make_shared<SceneEditor>();
-		m_plugins["Scene Hierarchy"] = std::make_shared<SceneHierarchy>();
-		m_plugins["Resource Viewer"] = std::make_shared<ResourceViewer>();
-		m_plugins["Project Explorer"] = std::make_shared<ProjectExplorer>();
+		std::shared_ptr<LayerViewer> layerViewer = std::make_shared<LayerViewer>();
+		layerViewer->SetLayerStack(stack);
+
+		m_plugins["Layer Viewer"] = layerViewer;
+		
 	}
 
 	EditorLayer::~EditorLayer()
@@ -123,14 +125,6 @@ namespace Osiris::Editor
 
 		if (ImGui::BeginMenu("Project"))
 		{
-			ImGui::MenuItem("Open");
-			ImGui::MenuItem("Save");
-			ImGui::MenuItem("Save As..");
-			ImGui::Separator();
-			ImGui::MenuItem("Reload");
-			ImGui::Separator();
-			ImGui::MenuItem("Close"); 
-			ImGui::Separator();
 			if (ImGui::MenuItem("Exit"))
 			{
 				exit(0);
@@ -158,6 +152,20 @@ namespace Osiris::Editor
 
 		ImGui::EndMainMenuBar();
 
+		/* system info window */
+		ImGui::SetNextWindowSize(ImVec2((float)app.GetWindow().GetWidth() * 0.25f, (float)app.GetWindow().GetHeight() * 0.25f));
+		ImGui::SetNextWindowPos(ImVec2(((float)app.GetWindow().GetWidth() * 0.75f) - 5.0f, 25.0f));
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoNav;
+
+		ImGui::Begin("System Info", NULL, window_flags);
+
+		struct RendererInfo& info = renderer.GetVendorInfo();
+		ImGui::Text("Vendor: %s", info.vendor.c_str());
+		ImGui::Text("Version: %s", info.version.c_str());
+		ImGui::Text("Renderer: %s", info.renderer.c_str());
+
+		ImGui::End();
+		
 		/* test the plugin visibility flags */
 		for (std::map<std::string, std::shared_ptr<EditorPlugin>>::iterator it = m_plugins.begin(); it != m_plugins.end(); it++)
 		{

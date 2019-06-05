@@ -3,8 +3,8 @@
 
 namespace Osiris {
 
-	Layer::Layer(const std::string& debugName)
-		: m_DebugName(debugName)
+	Layer::Layer(const std::string& name)
+		: _Name(name), _IsEnabled(true)
 	{
 
 	}

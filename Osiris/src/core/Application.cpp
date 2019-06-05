@@ -3,6 +3,10 @@
 #include "Application.h"
 #include "events/ApplicationEvent.h"
 
+#ifdef OSR_EDITOR_ENABLED
+#include "editor/layers/EditorLayer.h"
+#endif
+
 namespace Osiris {
 	
 	Application* Application::s_Instance = nullptr;
@@ -40,10 +44,11 @@ namespace Osiris {
 		m_LayerStack.PushLayer(layer);
 	}
 
-	void Application::PushOverlay(Layer* layer)
-	{
-		m_LayerStack.PushOverlay(layer);
+	void Application::PushOverlay(Layer* overlay)
+	{	
+		m_LayerStack.PushOverlay(overlay);
 	}
+
 
 	void Application::OnEvent(Event& e)
 	{
@@ -67,14 +72,20 @@ namespace Osiris {
 
 			/* run the layer and window lifecycle */
 			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate();
+			{
+				if((*layer->IsEnabled()) == true)
+					layer->OnUpdate();
+			}
 
 			m_Window->OnUpdate();
 			m_Window->OnPreRender();
 			m_Window->OnRender();
 
 			for (Layer* layer : m_LayerStack)
-				layer->OnRender(*m_Renderer);
+			{
+				if ((*layer->IsEnabled()) == true)
+					layer->OnRender(*m_Renderer);
+			}
 
 			m_Window->OnPostRender();
 		}

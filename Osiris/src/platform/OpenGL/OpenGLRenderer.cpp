@@ -7,6 +7,19 @@ namespace Osiris
 {
 	OpenGLRenderer::OpenGLRenderer()
 	{
+		std::ostringstream stringStream;
+		stringStream << glGetString(GL_VENDOR);
+		_vendorInfo.vendor = stringStream.str();
+		stringStream.str(std::string());
+
+		stringStream << glGetString(GL_VERSION);
+		_vendorInfo.version = stringStream.str();
+		stringStream.str(std::string());
+
+		stringStream << glGetString(GL_RENDERER);
+		_vendorInfo.renderer = stringStream.str();
+		stringStream.str(std::string());
+
 	}
 
 	OpenGLRenderer::~OpenGLRenderer()
