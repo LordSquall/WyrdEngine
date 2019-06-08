@@ -3,9 +3,9 @@
 #include "Application.h"
 #include "events/ApplicationEvent.h"
 
-#include "platform/OpenGL/OpenGLShader.h"
-
-#include <glad/glad.h>
+#ifdef OSR_EDITOR_ENABLED
+#include "editor/layers/EditorLayer.h"
+#endif
 
 namespace Osiris {
 	
@@ -13,40 +13,25 @@ namespace Osiris {
 
 	Application::Application()
 	{
-		OSR_CORE_ASSERT(!s_Instance, "Application is not null!");
-
+		/* save the local instance of the application */
 		s_Instance = this;
 
+		/* create a windows and bind the event callback */
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));	
 
+		/* create a renderer */
+		m_Renderer.reset(Renderer::Create());
 
-		glGenVertexArrays(1, &_VertexArray);
-		glBindVertexArray(_VertexArray);
-
-		float vertices[3 * 3] = {
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.0f,  0.5f, 0.0f
-		};
-
-		_vertexBuffer.reset(VertexBuffer::Create(&vertices[0], sizeof(vertices)));
-
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-
-		unsigned int indices[3] = { 0, 1, 2 };
-
-		_indexBuffer.reset(IndexBuffer::Create(&indices[0], sizeof(indices) / sizeof(uint32_t)));
-
-		std::ifstream vertexStream("../../Osiris/res/shaders/example.vs");
+		/* load and build the sprite shader */
+		std::ifstream vertexStream("../../Osiris/res/shaders/sprite.vs");
 		std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
 
-		std::ifstream fragmentStream("../../Osiris/res/shaders/example.fs");
+		std::ifstream fragmentStream("../../Osiris/res/shaders/sprite.fs");
 		std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
 
-		_Shader.reset(new OpenGLShader());
-		_Shader.get()->Build(vertexSrc, fragmentSrc);
+		_Shader.reset(Shader::Create());
+		_Shader->Build(vertexSrc, fragmentSrc);
 	}
 
 	Application::~Application()
@@ -59,10 +44,11 @@ namespace Osiris {
 		m_LayerStack.PushLayer(layer);
 	}
 
-	void Application::PushOverlay(Layer* layer)
-	{
-		m_LayerStack.PushOverlay(layer);
+	void Application::PushOverlay(Layer* overlay)
+	{	
+		m_LayerStack.PushOverlay(overlay);
 	}
+
 
 	void Application::OnEvent(Event& e)
 	{
@@ -78,26 +64,28 @@ namespace Osiris {
 	{
 		while (m_Running)
 		{
-
-			glClearColor(0.1f, 0.1f, 0.1f, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
-
+			/* bind the sprite shader */
 			_Shader->Bind();
-			glBindVertexArray(_VertexArray);
-			glDrawElements(GL_TRIANGLES, _indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
 
+			/* clear the back buffer */
+			m_Renderer->Clear(0.1f, 0.1f, 0.1f);
 
+			/* run the layer and window lifecycle */
 			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate();
+			{
+				if((layer->Enabled()) == true)
+					layer->OnUpdate();
+			}
 
 			m_Window->OnUpdate();
-
 			m_Window->OnPreRender();
-
 			m_Window->OnRender();
 
 			for (Layer* layer : m_LayerStack)
-				layer->OnRender(m_Renderer);
+			{
+				if ((layer->Enabled()) == true)
+					layer->OnRender(*m_Renderer);
+			}
 
 			m_Window->OnPostRender();
 		}

@@ -10,11 +10,7 @@
 #include "editor/EditorPlugin.h"
 #include "editor/support/IconLibrary.h"
 
-#include "editor/tools/GameViewer.h"
-#include "editor/tools/SceneEditor.h"
-#include "editor/tools/SceneHierarchy.h"
-#include "editor/tools/ResourceViewer.h"
-#include "editor/tools/ProjectExplorer.h"
+#include "editor/tools/LayerViewer/LayerViewer.h"
 
 namespace Osiris::Editor
 {
@@ -26,7 +22,7 @@ namespace Osiris::Editor
 
 		void OnAttach() override;
 		void OnDetach() override;
-		void OnRender(std::shared_ptr<Renderer> renderer) override;
+		void OnRender(Renderer& renderer) override;
 		void OnEvent(Event& event) override;
 		
 	private:

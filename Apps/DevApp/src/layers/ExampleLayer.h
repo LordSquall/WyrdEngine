@@ -2,39 +2,30 @@
 
 #include <Osiris.h>
 
-#ifdef OSR_EDITOR_ENABLED
-#include "editor/layers/EditorLayer.h"
-#endif
-
 using namespace Osiris;
 
 class ExampleLayer : public Layer
 {
 public:
-	ExampleLayer() : Layer("Example Layer")
+	ExampleLayer(std::string name, int tempId) : Layer(name), tempId(tempId)
 	{
 
 	}
 
-	void OnAttach() override
-	{
-	}
+	void OnAttach() override;
 
-	void OnDetach() override
-	{
-	}
+	void OnDetach() override;
 
-	void OnUpdate() override
-	{
-		
-	}
+	void OnUpdate() override;
 
-	void OnEvent(Event& event) override
-	{
-	}
+	void OnEvent(Event& event) override;
 
-	void OnRender(std::shared_ptr<Renderer> renderer) override
-	{
+	void OnRender(Renderer& renderer) override;
 
-	}
+private:
+	std::unique_ptr<VertexArray> _VertexArray;
+	std::unique_ptr<VertexBuffer> _VertexBuffer;
+	std::unique_ptr<IndexBuffer> _IndexBuffer;
+
+	int tempId;
 };

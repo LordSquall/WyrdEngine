@@ -16,32 +16,23 @@
 #include <GLFW/glfw3.h>
 #include <SOIL.h>
 
-#define GetCurrentDir _getcwd;
-
 namespace Osiris::Editor
 {
 	static bool			s_MouseJustPressed[5]					= { false, false, false, false, false };
 	static GLFWcursor*  s_MouseCursors[ImGuiMouseCursor_COUNT]	= { 0 };
 	static ImFont*		s_defaultFont							= nullptr;
-	std::string host_top_level_folder_prefix;
-	std::filesystem::path p;
-	
 
 	EditorLayer::EditorLayer()
-		: Layer("ImGuiLayer")
+		: Layer("EditorLayer")
 	{
+		Application& app = Application::Get();
+		LayerStack* stack = app.GetLayerStack();
 
-		m_plugins["Game Viewer"] = std::make_shared<GameViewer>();
-		m_plugins["Scene Editor"] = std::make_shared<SceneEditor>();
-		m_plugins["Scene Hierarchy"] = std::make_shared<SceneHierarchy>();
-		m_plugins["Resource Viewer"] = std::make_shared<ResourceViewer>();
-		m_plugins["Project Explorer"] = std::make_shared<ProjectExplorer>();
+		std::shared_ptr<LayerViewer> layerViewer = std::make_shared<LayerViewer>();
+		layerViewer->SetLayerStack(stack);
 
-		host_top_level_folder_prefix = Get_TLF();
-		p = Get_TLF();
-		OSR_INFO("host_top_level_folder_prefix = " + host_top_level_folder_prefix);
-
-
+		m_plugins["Layer Viewer"] = layerViewer;
+		
 	}
 
 	EditorLayer::~EditorLayer()
@@ -49,48 +40,10 @@ namespace Osiris::Editor
 
 	}
 
-	std::string EditorLayer::Get_TLF()
-	{
-		char top_level_folder_check[] = { 'O','s','i','r','i','s','E','n','g','i','n','e' };
-		char top_level_folder[FILENAME_MAX] = {};
-		char cCurrentPath[FILENAME_MAX];
-		int bytes = GetModuleFileName(NULL, cCurrentPath, sizeof(cCurrentPath));
-		unsigned j = 1;
-		char sep = '\\';
-		bool tlf = false;
-		for (unsigned i = 0; i < bytes; i++) {
-			if (cCurrentPath[i] == sep) {
-				while (cCurrentPath[i + j] != sep) {
-					if (cCurrentPath[i + j] == top_level_folder_check[j - 1]) {
-						tlf = true;
-					}
-					else {
-						tlf = false;
-						break;
-					}
-					j++;
-				};
-				if (tlf) {
-					const int tlf_length = i + j + 1;
-					for (unsigned k = 0; k < i + j + 1; k++) {
-						top_level_folder[k] = cCurrentPath[k];
-					}
-					break;
-				}
-				else {
-					j = 1;
-				}
-			}
-
-		}
-		std::string tlf_path(top_level_folder);
-		return tlf_path;
-	}
-
 	void EditorLayer::OnAttach()
 	{
 		/* load in icons sets */
-		m_IconLibrary.AddIconsFromFile(std::string(host_top_level_folder_prefix + "Osiris/res/icons/filesystem_icons.json"));
+		m_IconLibrary.AddIconsFromFile(std::string("../../Osiris/res/icons/filesystem_icons.json"));
 
 		/* set the style and icons library for each of the plugins */
 		for (std::map<std::string, std::shared_ptr<EditorPlugin>>::iterator it = m_plugins.begin(); it != m_plugins.end(); it++)
@@ -101,23 +54,12 @@ namespace Osiris::Editor
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
-		//ImGui::StyleColorsDark();
 		
 		ImGuiIO& io = ImGui::GetIO();
 
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
 		io.BackendPlatformName = "imgui_openg3_renderer";
-
-		if (std::filesystem::exists(host_top_level_folder_prefix + "Osiris/res/arial.ttf") == true)
-		{
-			s_defaultFont = io.Fonts->AddFontFromFileTTF((p + "Osiris/res/arial.ttf")), 16.0f);
-			unsigned char * pixels;
-			int width, height, bytes_per_pixels;
-			io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, &bytes_per_pixels);
-			unsigned int id = Application::Get().GetRenderer().LoadRawTexture(pixels, width, height, 4);
-			io.Fonts->SetTexID((void*)id);
-		}
 		
 		// Keyboard mapping. ImGui will use those indices to peek into the io.KeysDown[] array.
 		io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB;
@@ -152,8 +94,6 @@ namespace Osiris::Editor
 		s_MouseCursors[ImGuiMouseCursor_Hand] = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
 
 		ImGui_ImplOpenGL3_Init("#version 410");
-
-
 	}
 
 	void EditorLayer::OnDetach()
@@ -161,7 +101,7 @@ namespace Osiris::Editor
 
 	}
 
-	void EditorLayer::OnRender(std::shared_ptr<Renderer> renderer)
+	void EditorLayer::OnRender(Renderer& renderer)
 	{
 		static bool menu_app_close_show = false;
 		static bool menu_help_demo_window_show = false;
@@ -185,14 +125,6 @@ namespace Osiris::Editor
 
 		if (ImGui::BeginMenu("Project"))
 		{
-			ImGui::MenuItem("Open");
-			ImGui::MenuItem("Save");
-			ImGui::MenuItem("Save As..");
-			ImGui::Separator();
-			ImGui::MenuItem("Reload");
-			ImGui::Separator();
-			ImGui::MenuItem("Close"); 
-			ImGui::Separator();
 			if (ImGui::MenuItem("Exit"))
 			{
 				exit(0);
@@ -220,6 +152,20 @@ namespace Osiris::Editor
 
 		ImGui::EndMainMenuBar();
 
+		/* system info window */
+		ImGui::SetNextWindowSize(ImVec2((float)app.GetWindow().GetWidth() * 0.25f, (float)app.GetWindow().GetHeight() * 0.25f));
+		ImGui::SetNextWindowPos(ImVec2(((float)app.GetWindow().GetWidth() * 0.75f) - 5.0f, 25.0f));
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoNav;
+
+		ImGui::Begin("System Info", NULL, window_flags);
+
+		struct RendererInfo& info = renderer.GetVendorInfo();
+		ImGui::Text("Vendor: %s", info.vendor.c_str());
+		ImGui::Text("Version: %s", info.version.c_str());
+		ImGui::Text("Renderer: %s", info.renderer.c_str());
+
+		ImGui::End();
+		
 		/* test the plugin visibility flags */
 		for (std::map<std::string, std::shared_ptr<EditorPlugin>>::iterator it = m_plugins.begin(); it != m_plugins.end(); it++)
 		{

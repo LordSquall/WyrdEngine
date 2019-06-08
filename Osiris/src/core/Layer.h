@@ -16,11 +16,16 @@ namespace Osiris {
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnUpdate() {}
-		virtual void OnRender(std::shared_ptr<Renderer> renderer) {}
+		virtual void OnRender(Renderer& renderer) {}
 		virtual void OnEvent(Event& event) {}
 
-		inline const std::string& GetName() const { return m_DebugName; }
+		inline const std::string& GetName() const { return _Name; }
+
+		inline bool Enabled() { return _IsEnabled; }
+		inline void Enabled(const bool flag) { _IsEnabled = flag; }
+
 	protected:
-		std::string m_DebugName;
+		bool _IsEnabled;
+		std::string _Name;
 	};
 }
