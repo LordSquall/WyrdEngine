@@ -28,8 +28,12 @@ namespace Osiris::Editor
 		for (auto layer : *_LayerStack)
 		{
 			/* ignore the editor layer */
-			if(layer->GetName().compare("EditorLayer") != 0)
-				ImGui::Checkbox(layer->GetName().c_str(), layer->IsEnabled());
+			if (layer->GetName().compare("EditorLayer") != 0)
+			{
+				bool enabledFlag = layer->Enabled();
+				ImGui::Checkbox(layer->GetName().c_str(), &enabledFlag);
+				layer->Enabled(enabledFlag);
+			}
 		}
 
 		ImGui::End();

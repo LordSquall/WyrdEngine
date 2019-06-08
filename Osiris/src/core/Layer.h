@@ -21,7 +21,8 @@ namespace Osiris {
 
 		inline const std::string& GetName() const { return _Name; }
 
-		inline bool* IsEnabled() { return &_IsEnabled; }
+		inline bool Enabled() { return _IsEnabled; }
+		inline void Enabled(const bool flag) { _IsEnabled = flag; }
 
 	protected:
 		bool _IsEnabled;

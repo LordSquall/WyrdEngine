@@ -73,7 +73,7 @@ namespace Osiris {
 			/* run the layer and window lifecycle */
 			for (Layer* layer : m_LayerStack)
 			{
-				if((*layer->IsEnabled()) == true)
+				if((layer->Enabled()) == true)
 					layer->OnUpdate();
 			}
 
@@ -83,7 +83,7 @@ namespace Osiris {
 
 			for (Layer* layer : m_LayerStack)
 			{
-				if ((*layer->IsEnabled()) == true)
+				if ((layer->Enabled()) == true)
 					layer->OnRender(*m_Renderer);
 			}
 

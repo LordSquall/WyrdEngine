@@ -8,3 +8,4 @@ Osiris/vendor/*/bin-int/*
 *.sln
 *.vcxproj
 *.vcxproj.user
+/Apps/DevApp/imgui.ini

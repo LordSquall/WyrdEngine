@@ -57,7 +57,7 @@ namespace Osiris {
 
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
-		SetVSync(true);
+		SetVSync(false);
 
 		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
 		{
