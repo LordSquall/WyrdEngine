@@ -129,4 +129,15 @@ namespace Osiris
 	{
 		glUseProgram(0);
 	}
+
+	void OpenGLShader::SetVPMatrix(glm::mat4& mat)
+	{
+		GLuint location = glGetUniformLocation(m_RendererHandle, "viewProjection");
+		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
+
+		GLenum err = glGetError();
+
+		if (err != GL_NO_ERROR)
+			OSR_CORE_ERROR(err);
+	}
 }

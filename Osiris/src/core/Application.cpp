@@ -22,16 +22,6 @@ namespace Osiris {
 
 		/* create a renderer */
 		m_Renderer.reset(Renderer::Create());
-
-		/* load and build the sprite shader */
-		std::ifstream vertexStream("../../Osiris/res/shaders/sprite.vs");
-		std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
-
-		std::ifstream fragmentStream("../../Osiris/res/shaders/sprite.fs");
-		std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
-
-		_Shader.reset(Shader::Create());
-		_Shader->Build(vertexSrc, fragmentSrc);
 	}
 
 	Application::~Application()
@@ -65,7 +55,7 @@ namespace Osiris {
 		while (m_Running)
 		{
 			/* bind the sprite shader */
-			_Shader->Bind();
+			//_Shader->Bind();
 
 			/* clear the back buffer */
 			m_Renderer->Clear(0.1f, 0.1f, 0.1f);
@@ -73,7 +63,7 @@ namespace Osiris {
 			/* run the layer and window lifecycle */
 			for (Layer* layer : m_LayerStack)
 			{
-				if((layer->Enabled()) == true)
+				if(layer->IsEnabled())
 					layer->OnUpdate();
 			}
 
@@ -83,7 +73,7 @@ namespace Osiris {
 
 			for (Layer* layer : m_LayerStack)
 			{
-				if ((layer->Enabled()) == true)
+				if (layer->IsEnabled())
 					layer->OnRender(*m_Renderer);
 			}
 

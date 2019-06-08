@@ -14,6 +14,7 @@ namespace Osiris
 		bool Build(const std::string& vertexSrc, const std::string& fragment) override;
 		void Bind() override;
 		void Unbind() override;
+		void SetVPMatrix(glm::mat4& mat) override;
 
 	private:
 		uint32_t m_RendererHandle;

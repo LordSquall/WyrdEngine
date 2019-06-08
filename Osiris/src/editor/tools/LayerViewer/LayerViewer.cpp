@@ -30,9 +30,9 @@ namespace Osiris::Editor
 			/* ignore the editor layer */
 			if (layer->GetName().compare("EditorLayer") != 0)
 			{
-				bool enabledFlag = layer->Enabled();
+				bool enabledFlag = layer->IsEnabled();
 				ImGui::Checkbox(layer->GetName().c_str(), &enabledFlag);
-				layer->Enabled(enabledFlag);
+				layer->SetEnabled(enabledFlag);
 			}
 		}
 
