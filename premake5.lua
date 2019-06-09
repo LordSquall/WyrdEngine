@@ -82,7 +82,8 @@ project "Osiris"
 		{
 			"OSR_PLATFORM_WINDOWS",
 			"OSR_EDITOR_ENABLED",
-			"GLFW_INCLUDE_NONE"
+			"GLFW_INCLUDE_NONE",
+			"GLM_ENABLE_EXPERIMENTAL"
 		}
 		
 	filter "configurations:Debug"
@@ -149,7 +150,8 @@ project "DevApp"
 		defines
 		{
 			"OSR_PLATFORM_WINDOWS",
-			"OSR_EDITOR_ENABLED"
+			"OSR_EDITOR_ENABLED",
+			"GLM_ENABLE_EXPERIMENTAL"
 		}
 	
 	filter "configurations:Debug"

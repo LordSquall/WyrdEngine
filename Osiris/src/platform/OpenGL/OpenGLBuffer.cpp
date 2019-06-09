@@ -11,6 +11,12 @@ namespace Osiris
 		glCreateBuffers(1, &_rendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, _rendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+
+		GLenum err = glGetError();
+
+		if (err != GL_NO_ERROR)
+			OSR_CORE_ERROR(err);
+
 	}
 
 	OpenGLVertexBuffer::~OpenGLVertexBuffer()
@@ -26,6 +32,18 @@ namespace Osiris
 	void OpenGLVertexBuffer::Unbind() const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+
+	void OpenGLVertexBuffer::Update(float* vertices, uint32_t size) const
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, _rendererID);
+		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+
+		GLenum err = glGetError();
+
+		if (err != GL_NO_ERROR)
+			OSR_CORE_ERROR(err);
+
 	}
 
 	OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t count)
@@ -50,5 +68,18 @@ namespace Osiris
 	void OpenGLIndexBuffer::Unbind() const
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
+
+	void OpenGLIndexBuffer::Update(uint32_t* indices, uint32_t count)
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _rendererID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
+
+		_count = count;
+
+		GLenum err = glGetError();
+
+		if (err != GL_NO_ERROR)
+			OSR_CORE_ERROR(err);
 	}
 }

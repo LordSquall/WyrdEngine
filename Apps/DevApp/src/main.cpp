@@ -1,6 +1,7 @@
 /* engine headers */
 #include <Osiris.h>
 
+#include "layers/Renderer2DLayer.h"
 #include "core/EntryPoint.h"
 
 /* local headers */
@@ -16,10 +17,12 @@ class ClientApplication : public Osiris::Application
 public:
 	ClientApplication()
 	{
-		PushLayer(new ExampleLayer("Sprite Layer 1", 0));
+		/*PushLayer(new ExampleLayer("Sprite Layer 1", 0));
 		PushLayer(new ExampleLayer("Sprite Layer 2", 1));
 		PushLayer(new ExampleLayer("Sprite Layer 3", 2));
-		PushLayer(new ExampleLayer("Sprite Layer 4", 3));
+		PushLayer(new ExampleLayer("Sprite Layer 4", 3));*/
+
+		PushLayer(new Osiris::Layers::Renderer2DLayer("2D Rendering Layer"));
 
 #ifdef OSR_EDITOR_ENABLED
 		PushOverlay(new Osiris::Editor::EditorLayer());

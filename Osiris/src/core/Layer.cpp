@@ -4,7 +4,7 @@
 namespace Osiris {
 
 	Layer::Layer(const std::string& name)
-		: _Name(name), _IsEnabled(true)
+		: _Name(name), _Enabled(true)
 	{
 
 	}

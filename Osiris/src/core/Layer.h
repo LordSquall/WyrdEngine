@@ -19,13 +19,14 @@ namespace Osiris {
 		virtual void OnRender(Renderer& renderer) {}
 		virtual void OnEvent(Event& event) {}
 
+		/* Getters and Setters */
 		inline const std::string& GetName() const { return _Name; }
 
-		inline bool Enabled() { return _IsEnabled; }
-		inline void Enabled(const bool flag) { _IsEnabled = flag; }
+		inline bool IsEnabled() { return _Enabled; }
+		inline void SetEnabled(const bool flag) { _Enabled = flag; }
 
 	protected:
-		bool _IsEnabled;
+		bool _Enabled;
 		std::string _Name;
 	};
 }

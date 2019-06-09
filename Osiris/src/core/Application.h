@@ -3,14 +3,13 @@
 #include "export.h"
 #include "Window.h"
 #include "core/renderer/Renderer.h"
-#include "core/renderer/Shader.h"
 #include "core/renderer/VertexArray.h"
 #include "core/renderer/Buffer.h"
 #include "Resources.h"
 #include "LayerStack.h"
 
 #ifdef OSR_EDITOR_ENABLED
-#define LAYERID_CORE_EDITORLAYER "EditorLayer"s
+#define LAYERID_CORE_EDITORLAYER "EditorLayer"
 #endif
 
 namespace Osiris {
@@ -42,8 +41,6 @@ namespace Osiris {
 
 		bool m_Running = true;
 		LayerStack m_LayerStack;
-		
-		std::unique_ptr<Shader> _Shader;
 
 	private:
 		static Application* s_Instance;
