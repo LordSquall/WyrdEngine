@@ -4,14 +4,18 @@
 
 namespace Osiris::Editor
 {
-	class OSIRIS_API Utils
+	class Utils
 	{
 	public:
 		Utils();
 		~Utils();
 
-		std::filesystem::path GetAssetFolder();
+		std::string GetAssetFolder(); 
 
+	private:
+		static std::string Utils::canonical_path;
+		static std::string Utils::asset_path;
 	};
+
 
 }

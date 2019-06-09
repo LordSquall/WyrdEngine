@@ -21,6 +21,7 @@ namespace Osiris::Editor
 	static bool			s_MouseJustPressed[5]					= { false, false, false, false, false };
 	static GLFWcursor*  s_MouseCursors[ImGuiMouseCursor_COUNT]	= { 0 };
 	static ImFont*		s_defaultFont							= nullptr;
+	Utils util;
 
 	EditorLayer::EditorLayer()
 		: Layer("EditorLayer")
@@ -32,6 +33,8 @@ namespace Osiris::Editor
 		layerViewer->SetLayerStack(stack);
 
 		m_plugins["Layer Viewer"] = layerViewer;
+
+		util = Utils();
 		
 	}
 
@@ -43,7 +46,7 @@ namespace Osiris::Editor
 	void EditorLayer::OnAttach()
 	{
 		/* load in icons sets */
-		m_IconLibrary.AddIconsFromFile(std::string("../../Osiris/res/icons/filesystem_icons.json"));
+		m_IconLibrary.AddIconsFromFile(util.GetAssetFolder() + /*std::string("../../Osiris/res*/"/icons/filesystem_icons.json");//TODO confirm with Paul this is the correct way to do this
 
 		/* set the style and icons library for each of the plugins */
 		for (std::map<std::string, std::shared_ptr<EditorPlugin>>::iterator it = m_plugins.begin(); it != m_plugins.end(); it++)
