@@ -35,7 +35,6 @@ namespace Osiris::Editor
 		m_plugins["Layer Viewer"] = layerViewer;
 
 		util = Utils();
-		
 	}
 
 	EditorLayer::~EditorLayer()
@@ -128,13 +127,20 @@ namespace Osiris::Editor
 
 		if (ImGui::BeginMenu("Project"))
 		{
+			if (ImGui::BeginMenu("Create New Project...")) {
+				if (ImGui::MenuItem("New"));
+				if (ImGui::MenuItem("Open", "Ctrl+O")) {
+					util.OpenFolderDialouge();
+				}
+				ImGui::EndMenu();
+			}
 			if (ImGui::MenuItem("Exit"))
 			{
 				exit(0);
 			}
 			ImGui::EndMenu();
-
 		}
+		
 
 		if (ImGui::BeginMenu("Tools", true))
 		{

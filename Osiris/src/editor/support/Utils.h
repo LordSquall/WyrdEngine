@@ -4,13 +4,14 @@
 
 namespace Osiris::Editor
 {
-	class Utils
+	class Utils 
 	{
 	public:
 		Utils();
 		~Utils();
 
-		std::string GetAssetFolder(); 
+		std::string GetAssetFolder();
+		HRESULT OpenFolderDialouge();
 
 	private:
 		static std::string Utils::canonical_path;
