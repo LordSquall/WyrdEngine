@@ -5,6 +5,7 @@
 #include "core/renderer/Renderer.h"
 #include "core/renderer/VertexArray.h"
 #include "core/renderer/Buffer.h"
+#include "core/renderer/Texture.h"
 #include "Resources.h"
 #include "LayerStack.h"
 

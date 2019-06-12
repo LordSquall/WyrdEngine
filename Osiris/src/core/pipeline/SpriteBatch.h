@@ -20,6 +20,8 @@ namespace Osiris {
 
 		void AddSprite(Sprite* sprite);
 
+		void SetTexture(Texture* texture);
+
 	private:
 
 		std::vector<float> _vertices;
@@ -27,5 +29,7 @@ namespace Osiris {
 		std::unique_ptr<VertexArray> _VertexArray;
 		std::unique_ptr<VertexBuffer> _VertexBuffer;
 		std::unique_ptr<IndexBuffer> _IndexBuffer;
+
+		std::unique_ptr<Texture> _Texture;
 	};
 }

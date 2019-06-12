@@ -3,6 +3,8 @@
 
 #include "Renderer2DLayer.h"
 
+#include "SOIL.h"
+
 namespace Osiris::Layers
 {
 	Renderer2DLayer::Renderer2DLayer(std::string name) : Layer(name)
@@ -35,12 +37,19 @@ namespace Osiris::Layers
 		/* Set the View * Projection Matrix */
 		_Shader->SetVPMatrix(_vpMat);
 
+		/* TEMP: Load sprite batch textures */
+		int width, height, channels;
+		unsigned char* data;
+
+		data = SOIL_load_image("../../Osiris/res/textures/test_01.bmp", &width, &height, &channels, SOIL_LOAD_AUTO);
+		_staticSpriteBatch->SetTexture(Texture::Create(data, width, height, channels));
+
 		/* TEMP: Load Test Sprites */
-		_staticSpriteBatch->AddSprite(new Sprite(0, 0, 50, 50));
-		_staticSpriteBatch->AddSprite(new Sprite(100, 100, 100, 100));
+		_staticSpriteBatch->AddSprite(new Sprite(200, 200, 100, 100));
+		/*_staticSpriteBatch->AddSprite(new Sprite(100, 100, 100, 100));
 		_staticSpriteBatch->AddSprite(new Sprite(200, 200, 50, 50));
 		_staticSpriteBatch->AddSprite(new Sprite(300, 300, 100, 100));
-		_staticSpriteBatch->AddSprite(new Sprite(400, 400, 50, 50));
+		_staticSpriteBatch->AddSprite(new Sprite(400, 400, 50, 50));*/
 	}
 
 	void Renderer2DLayer::OnDetach()
