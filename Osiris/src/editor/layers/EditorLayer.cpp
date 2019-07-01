@@ -129,8 +129,11 @@ namespace Osiris::Editor
 		{
 			if (ImGui::BeginMenu("Create New Project...")) {
 				if (ImGui::MenuItem("New"));
-				if (ImGui::MenuItem("Open", "Ctrl+O")) {
-					util.OpenFolderDialouge();
+				if (ImGui::MenuItem("Open File", "Ctrl+O")) {
+					OSR_INFO(util.OpenFileDialouge());
+				}
+				if (ImGui::MenuItem("Open Folder")) {
+					OSR_INFO(util.OpenFolderDialouge());
 				}
 				ImGui::EndMenu();
 			}
