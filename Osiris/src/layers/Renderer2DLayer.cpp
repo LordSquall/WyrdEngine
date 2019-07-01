@@ -18,9 +18,6 @@ namespace Osiris::Layers
 
 	void Renderer2DLayer::OnAttach()
 	{
-		/* Create Static batch table */
-		_staticSpriteBatch.reset(new SpriteBatch());
-
 		/* Load any resources which are required to renderer (e.g. shaders) */
 		std::ifstream vertexStream("../../Osiris/res/shaders/sprite.vs");
 		std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
@@ -35,12 +32,9 @@ namespace Osiris::Layers
 		/* Set the View * Projection Matrix */
 		_Shader->SetVPMatrix(_vpMat);
 
-		/* TEMP: Load Test Sprites */
-		_staticSpriteBatch->AddSprite(new Sprite(0, 0, 50, 50));
-		_staticSpriteBatch->AddSprite(new Sprite(100, 100, 100, 100));
-		_staticSpriteBatch->AddSprite(new Sprite(200, 200, 50, 50));
-		_staticSpriteBatch->AddSprite(new Sprite(300, 300, 100, 100));
-		_staticSpriteBatch->AddSprite(new Sprite(400, 400, 50, 50));
+		/* Add 2 initial sprite layers */
+		_SpriteLayers.push_back(new SpriteLayer());
+		_SpriteLayers.push_back(new SpriteLayer());
 	}
 
 	void Renderer2DLayer::OnDetach()
@@ -65,7 +59,10 @@ namespace Osiris::Layers
 		/* Bind the sprite shader */
 		_Shader->Bind();
 
-		/* Render Static Batching Table */
-		_staticSpriteBatch->Render(renderer);
+		/* Render Each sprite layer */
+		for (auto sl : _SpriteLayers)
+		{
+			sl->Render(renderer);
+		}
 	}
 }

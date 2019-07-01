@@ -18,6 +18,7 @@ namespace Osiris
 
 		_VertexArray.reset(VertexArray::Create());
 		_VertexArray->SetAttribute(0, 0, 2);
+		_VertexArray->SetAttribute(1, 2, 2);
 
 		uint32_t indices[3] = { 0, 1, 2 };
 
@@ -30,15 +31,27 @@ namespace Osiris
 
 		_vertices.push_back(sprite->GetX());
 		_vertices.push_back(sprite->GetY());
+		
+		_vertices.push_back(0.0f);
+		_vertices.push_back(0.0f);
 
 		_vertices.push_back(sprite->GetX());
 		_vertices.push_back(sprite->GetY() + sprite->GetHeight());
 
+		_vertices.push_back(0.0f);
+		_vertices.push_back(-1.0f);
+
 		_vertices.push_back(sprite->GetX() + sprite->GetWidth());
 		_vertices.push_back(sprite->GetX() + sprite->GetHeight());
 
+		_vertices.push_back(1.0f);
+		_vertices.push_back(-1.0f);
+
 		_vertices.push_back(sprite->GetX() + sprite->GetWidth());
 		_vertices.push_back(sprite->GetX());
+
+		_vertices.push_back(1.0f);
+		_vertices.push_back(0.0f);
 
 		_indicies.push_back(x + 0);
 		_indicies.push_back(x + 1);
@@ -54,11 +67,19 @@ namespace Osiris
 
 	}
 
+	void SpriteBatch::SetTexture(Texture* texture)
+	{
+		_Texture.reset(texture);
+	}
+
 	void SpriteBatch::Render(Renderer& renderer)
 	{
 		_VertexArray->Bind();
 		_IndexBuffer->Bind();
 		_VertexBuffer->Bind();
+
+		_Texture->Bind();
+
 		renderer.DrawElements(RendererDrawType::Triangles, _IndexBuffer->GetCount());
 	}
 }

@@ -128,12 +128,18 @@ namespace Osiris::Editor
 		if (ImGui::BeginMenu("Project"))
 		{
 			if (ImGui::BeginMenu("Create New Project...")) {
-				if (ImGui::MenuItem("New")) {}
+<<<<<<< HEAD
+				if (ImGui::MenuItem("New"));
 				if (ImGui::MenuItem("Open File", "Ctrl+O")) {
 					OSR_INFO(util.OpenFileDialouge());
 				}
 				if (ImGui::MenuItem("Open Folder")) {
 					OSR_INFO(util.OpenFolderDialouge());
+=======
+				if (ImGui::MenuItem("New")) {}
+				if (ImGui::MenuItem("Open", "Ctrl+O")) {
+					util.OpenFolderDialouge();
+>>>>>>> 23954bb6f1e929b14308acbab37a5792b1cf3da7
 				}
 				ImGui::EndMenu();
 			}

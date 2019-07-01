@@ -123,6 +123,8 @@ namespace Osiris
 	void OpenGLShader::Bind()
 	{
 		glUseProgram(m_RendererHandle);
+
+		glUniform1i(glGetUniformLocation(m_RendererHandle, "s_Texture"), 0); // set it manually
 	}
 
 	void OpenGLShader::Unbind()
