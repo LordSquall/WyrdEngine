@@ -11,8 +11,6 @@
 #include "editor/support/IconLibrary.h"
 #include "editor/support/Utils.h"
 
-#include "editor/tools/LayerViewer/LayerViewer.h"
-
 namespace Osiris::Editor
 {
 	class  EditorLayer : public Layer

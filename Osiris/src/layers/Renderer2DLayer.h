@@ -27,6 +27,11 @@ namespace Osiris::Layers
 
 		void OnRender(Renderer& renderer) override;
 
+		inline std::vector<SpriteLayer*> GetSpriteLayers() { return _SpriteLayers; }
+
+		void AddSpriteLayer(std::string name);
+		void RemoveSpriteLayer(uint32_t index);
+
 	private:
 		std::unique_ptr<Shader> _Shader;
 

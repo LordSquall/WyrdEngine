@@ -46,4 +46,13 @@ namespace Osiris {
 		overlay->OnDetach();
 	}
 
+	Layer* LayerStack::FindLayer(std::string name)
+	{
+		for (auto layer : m_Layers)
+		{
+			if (layer->GetName().compare(name) == 0)
+				return layer;
+		}
+	}
+
 }

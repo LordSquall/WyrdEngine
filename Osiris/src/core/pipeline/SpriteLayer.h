@@ -17,7 +17,17 @@ namespace Osiris {
 
 		void Render(Renderer& renderer);
 
+		void AddSprite(Sprite* sprite);
+
+		inline std::vector<Sprite*> GetSprites() const { return _Sprites; }
+
+		inline void SetName(std::string name) { _Name = name; }
+		inline std::string GetName() const { return _Name; }
+
 	private:
-		std::unique_ptr<SpriteBatch> _staticSpriteBatch;
+		std::string _Name;
+		std::vector<Sprite*> _Sprites;
+		std::unique_ptr<SpriteBatch> _StaticSpriteBatch;
+
 	};
 }

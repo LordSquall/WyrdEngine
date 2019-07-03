@@ -65,6 +65,7 @@ namespace Osiris {
 			}
 			return false;
 		}
+
 	private:
 		Event& m_Event;
 	};

@@ -11,6 +11,10 @@
 #include "events/MouseEvent.h"
 #include "events/ApplicationEvent.h"
 
+#include "editor/tools/PropertiesViewer/PropertiesViewer.h"
+#include "editor/tools/LayerViewer/LayerViewer.h"
+#include "editor/tools/SpriteLayerEditor/SpriteLayerEditor.h"
+
 #include "editor/platform/OpenGL/imgui_opengl_renderer.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -29,10 +33,19 @@ namespace Osiris::Editor
 		Application& app = Application::Get();
 		LayerStack* stack = app.GetLayerStack();
 
+		m_plugins["Properties"] = std::make_shared<PropertiesViewer>();
+
 		std::shared_ptr<LayerViewer> layerViewer = std::make_shared<LayerViewer>();
 		layerViewer->SetLayerStack(stack);
 
 		m_plugins["Layer Viewer"] = layerViewer;
+
+		std::shared_ptr<SpriteLayerEditor> spriteLayerEditor = std::make_shared<SpriteLayerEditor>();
+		spriteLayerEditor->SetRenderingLayer((Layers::Renderer2DLayer*)stack->FindLayer("2D Rendering Layer"));
+		m_plugins["Sprite Layer Editor"] = spriteLayerEditor;
+
+		/* Register all editor plugins for events */
+		//for(auto& )
 
 		util = Utils();
 	}

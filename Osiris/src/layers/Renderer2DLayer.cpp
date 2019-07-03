@@ -32,9 +32,11 @@ namespace Osiris::Layers
 		/* Set the View * Projection Matrix */
 		_Shader->SetVPMatrix(_vpMat);
 
-		/* Add 2 initial sprite layers */
-		_SpriteLayers.push_back(new SpriteLayer());
-		_SpriteLayers.push_back(new SpriteLayer());
+		/* Add initial sprite layer */
+		SpriteLayer* spriteLayer = new SpriteLayer();
+		spriteLayer->SetName("Background");
+
+		_SpriteLayers.push_back(spriteLayer);
 	}
 
 	void Renderer2DLayer::OnDetach()
@@ -64,5 +66,18 @@ namespace Osiris::Layers
 		{
 			sl->Render(renderer);
 		}
+	}
+
+
+	void Renderer2DLayer::AddSpriteLayer(std::string name)
+	{
+		SpriteLayer* newLayer = new SpriteLayer();
+		newLayer->SetName(name);
+		_SpriteLayers.push_back(newLayer);
+	}
+
+	void Renderer2DLayer::RemoveSpriteLayer(uint32_t index)
+	{
+		_SpriteLayers.erase(_SpriteLayers.begin() + index);
 	}
 }

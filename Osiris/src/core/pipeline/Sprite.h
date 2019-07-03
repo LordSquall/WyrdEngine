@@ -10,11 +10,14 @@ namespace Osiris {
 	class Sprite
 	{
 	public:
-		Sprite(int x, int y, int width, int height) : _X(x), _Y(y), _Width(width), _Height(width) {}
+		Sprite(std::string name, int x, int y, int width, int height) : _Name(name), _X(x), _Y(y), _Width(width), _Height(width) {}
 
 		~Sprite() {}
 
 		/* Getters and Setters */
+		inline const std::string GetName() const { return _Name; }
+		inline void SetName(const std::string name) { _Name = name; }
+
 		inline const int GetX() const { return _X; }
 		inline void SetX(const int x) { _X = x; }
 
@@ -28,6 +31,7 @@ namespace Osiris {
 		inline void SetHeight(const int height) { _Height = height; }
 
 	private:
+		std::string _Name;
 		int _X;
 		int _Y;
 		int _Width;

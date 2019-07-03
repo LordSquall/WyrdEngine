@@ -42,13 +42,13 @@ namespace Osiris
 		_vertices.push_back(-1.0f);
 
 		_vertices.push_back(sprite->GetX() + sprite->GetWidth());
-		_vertices.push_back(sprite->GetX() + sprite->GetHeight());
+		_vertices.push_back(sprite->GetY() + sprite->GetHeight());
 
 		_vertices.push_back(1.0f);
 		_vertices.push_back(-1.0f);
 
 		_vertices.push_back(sprite->GetX() + sprite->GetWidth());
-		_vertices.push_back(sprite->GetX());
+		_vertices.push_back(sprite->GetY());
 
 		_vertices.push_back(1.0f);
 		_vertices.push_back(0.0f);
