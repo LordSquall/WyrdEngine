@@ -34,7 +34,6 @@ namespace Osiris
 		_StaticSpriteBatch->Render(renderer);
 	}
 
-
 	void SpriteLayer::AddSprite(Sprite* sprite)
 	{
 		_Sprites.push_back(sprite);

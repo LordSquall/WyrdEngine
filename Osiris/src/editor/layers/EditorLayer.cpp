@@ -44,9 +44,6 @@ namespace Osiris::Editor
 		spriteLayerEditor->SetRenderingLayer((Layers::Renderer2DLayer*)stack->FindLayer("2D Rendering Layer"));
 		m_plugins["Sprite Layer Editor"] = spriteLayerEditor;
 
-		/* Register all editor plugins for events */
-		//for(auto& )
-
 		util = Utils();
 	}
 

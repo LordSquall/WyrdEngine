@@ -4,6 +4,7 @@
 
 #include "SpriteLayerEditor.h"
 
+#include "editor/events/EventsManager.h"
 #include "core/Application.h"
 #include "core/Layer.h"
 
@@ -12,7 +13,7 @@
 
 namespace Osiris::Editor
 {
-	SpriteLayerEditor::SpriteLayerEditor() : EditorPlugin("Sprite Layer Editor"), _SelectedLayerIndex(-1), _LayerSelected(false) {}
+	SpriteLayerEditor::SpriteLayerEditor() : EditorPlugin("Sprite Layer Editor"), _SelectedSprite(-1) {}
 
 	SpriteLayerEditor::~SpriteLayerEditor() {}
 
@@ -20,48 +21,49 @@ namespace Osiris::Editor
 	{
 		ImGui::Begin("Sprite Layer Editor");
 
-		if (ImGui::TreeNode("Sprite Layers"))
-		{
-			for (auto& item : _RenderingLayer->GetSpriteLayers())
-			{
-				if (ImGui::TreeNode(item->GetName().c_str()))
-				{
-					for (auto& sprite : item->GetSprites())
-					{
-						if (ImGui::Selectable(sprite->GetName().c_str()) == true)
-						{
-						}
-					}
-					ImGui::TreePop();
-				}
-			}
+		/* Sprite Layer selection combobox */
+		std::vector<SpriteLayer*> spriteLayers = _RenderingLayer->GetSpriteLayers();
 
-			ImGui::TreePop();
+		static const SpriteLayer* currentLayer = spriteLayers[0];
+		if (ImGui::BeginCombo("", currentLayer->GetName().c_str(), 0)) // The second parameter is the label previewed before opening the combo.
+		{
+			for (int n = 0; n < spriteLayers.size(); n++)
+			{
+				bool selectedLayer = (currentLayer == spriteLayers[n]);
+				if (ImGui::Selectable(spriteLayers[n]->GetName().c_str(), selectedLayer))
+					currentLayer = spriteLayers[n];
+				if (selectedLayer)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
 		}
 
+		ImGui::SameLine();
 		if (ImGui::Button("+") == true)
 		{
 			_RenderingLayer->AddSpriteLayer("New Layer " + std::to_string(_RenderingLayer->GetSpriteLayers().size()));
 		}
-		ImGui::SameLine();
-		if (ImGui::Button("-") == true)
+
+
+		/* Sprite Layer List */
+		static const Sprite* currentSprite = currentLayer->GetSprites()[0];
+
+		ImGui::ListBoxHeader("");
+		for (auto item : currentLayer->GetSprites())
 		{
-			if (_LayerSelected == true)
+			ImGui::PushID(item->GetID());
+			bool selectedSprite = (item == currentSprite);
+			if (ImGui::Selectable(item->GetName().c_str(), selectedSprite))
 			{
-				_RenderingLayer->RemoveSpriteLayer(_SelectedLayerIndex);
-				_SelectedLayerIndex = _SelectedLayerIndex - 1;
-
-				if (_SelectedLayerIndex < 0) _SelectedLayerIndex = 0;
-
-				_LayerSelected = true;
+				currentSprite = item;
+				Events::EventsManager::Publish(Events::EventType::SelectedSpriteChanged, Events::SelectedSpriteChangedArgs(currentSprite));
 			}
-
-			if (_RenderingLayer->GetSpriteLayers().size() == 0)
-			{
-				_LayerSelected = false;
-			}
+			if (currentSprite)
+				ImGui::SetItemDefaultFocus();
+			ImGui::PopID();
 		}
-		
+		ImGui::ListBoxFooter();
+
 		ImGui::End();
 	}
 

@@ -18,7 +18,6 @@ namespace Osiris::Editor
 	private:
 		Layers::Renderer2DLayer* _RenderingLayer;
 
-		bool _LayerSelected;
-		int32_t _SelectedLayerIndex;
+		int32_t _SelectedSprite;
 	};
 }

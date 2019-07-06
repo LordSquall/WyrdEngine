@@ -26,7 +26,7 @@ namespace Osiris
 	protected:
 		std::string m_Name;
 
-		bool m_ShowFlag = false;
+		bool m_ShowFlag = true;
 
 		IconLibrary* m_IconLibrary;
 	};

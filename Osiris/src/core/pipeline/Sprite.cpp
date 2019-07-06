@@ -5,5 +5,5 @@
 
 namespace Osiris
 {
-
+	uint32_t Sprite::_nextID = 0;
 }

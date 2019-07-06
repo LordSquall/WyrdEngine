@@ -11,6 +11,8 @@
 #include "editor/support/IconLibrary.h"
 #include "editor/support/Utils.h"
 
+#include "editor/events/EventsManager.h"
+
 namespace Osiris::Editor
 {
 	class  EditorLayer : public Layer
@@ -33,7 +35,7 @@ namespace Osiris::Editor
 		bool OnKeyPressedEvent(KeyPressedEvent& e);
 		bool OnKeyTypedEvent(KeyTypedEvent& e);
 		bool OnWindowResizeEvent(WindowResizeEvent& e);
-
+		
 	private:
 		float	m_Time;
 
