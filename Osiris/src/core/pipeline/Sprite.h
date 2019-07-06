@@ -7,6 +7,10 @@ using namespace Osiris;
 
 namespace Osiris {
 
+	class SpriteLayer;
+	class SpriteBatch;
+	struct SpriteBatchEntry;
+
 	class Sprite
 	{
 	public:
@@ -24,16 +28,25 @@ namespace Osiris {
 		inline void SetName(const std::string name) { _Name = name; }
 
 		inline const int GetX() const { return _X; }
-		inline void SetX(const int x) { _X = x; }
+		void SetX(const int x);
 
 		inline const int GetY() const { return _Y; }
-		inline void SetY(const int y) { _Y = y; }
+		void SetY(const int y);
 
 		inline const int GetWidth() const { return _Width; }
-		inline void SetWidth(const int width) { _Width = width; }
+		void SetWidth(const int width);
 
 		inline const int GetHeight() const { return _Height; }
-		inline void SetHeight(const int height) { _Height = height; }
+		void SetHeight(const int height);
+
+		inline const SpriteLayer* GetLayer() const { return _Layer; }
+		inline void SetLayer(SpriteLayer* layer) { _Layer = layer; }
+
+		inline const SpriteBatchEntry* GetBatchEntry() const { return _Entry; }
+		inline void SetBatchEntry(SpriteBatchEntry* entry) { _Entry = entry; }
+
+		inline const SpriteBatch* GetBatch() const { return _Batch; }
+		inline void SetBatch(SpriteBatch* batch) { _Batch = batch; }
 
 	private:
 		uint32_t _ID;
@@ -43,6 +56,12 @@ namespace Osiris {
 		int _Width;
 		int _Height;
 
+		SpriteLayer* _Layer;
+		SpriteBatch* _Batch;
+		SpriteBatchEntry* _Entry;
+
 		static uint32_t _nextID;
+
+		void UpdateBatchData();
 	};
 }

@@ -18,7 +18,7 @@ namespace Osiris
 		int width, height, channels;
 		unsigned char* data;
 
-		data = SOIL_load_image("../../Osiris/res/textures/test_01.bmp", &width, &height, &channels, SOIL_LOAD_AUTO);
+		data = SOIL_load_image("../../Osiris/res/textures/box_01.png", &width, &height, &channels, SOIL_LOAD_AUTO);
 		_StaticSpriteBatch->SetTexture(Texture::Create(data, width, height, channels));
 
 		/* Load Test Sprites */
@@ -36,7 +36,11 @@ namespace Osiris
 
 	void SpriteLayer::AddSprite(Sprite* sprite)
 	{
+		sprite->SetLayer(this);
+		sprite->SetBatch(&(*_StaticSpriteBatch));
+
 		_Sprites.push_back(sprite);
+
 		_StaticSpriteBatch->AddSprite(sprite);
 	}
 }

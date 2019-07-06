@@ -5,53 +5,45 @@
 
 namespace Osiris
 {
+
+	void SpriteBatchEntry::Update(SpriteBatch* batch)
+	{
+		batch->_vertices[0].x = (float)sprite->GetX();
+		batch->_vertices[0].y = (float)sprite->GetY();
+		batch->_vertices[1].x = (float)sprite->GetX();
+		batch->_vertices[1].y = (float)sprite->GetY() + (float)sprite->GetHeight();
+		batch->_vertices[2].x = (float)sprite->GetX() + (float)sprite->GetWidth();
+		batch->_vertices[2].y = (float)sprite->GetY() + (float)sprite->GetHeight();
+		batch->_vertices[3].x = (float)sprite->GetX() + (float)sprite->GetWidth();
+		batch->_vertices[3].y = (float)sprite->GetY();
+
+		batch->_VertexArray->Bind();
+		batch->_VertexBuffer->Update((float*)&batch->_vertices.at(0), sizeof(SpriteVertex) * (uint32_t)batch->_vertices.size(), offset);
+	}
+
 	SpriteBatch::SpriteBatch()
 	{
+		SpriteVertex verts = { 0.0f, 0.0f, 0.0f, 0.0f};
 
-		float vertices[3 * 2];
-
-		vertices[0] = -0.2f; vertices[1] = 0.0f;
-		vertices[2] = 0.0f; vertices[3] = 0.4f;
-		vertices[4] = 0.2f; vertices[5] = 0.0f;
-
-		_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+		_VertexBuffer.reset(VertexBuffer::Create((float*)&verts, sizeof(SpriteVertex)));
 
 		_VertexArray.reset(VertexArray::Create());
 		_VertexArray->SetAttribute(0, 0, 2);
 		_VertexArray->SetAttribute(1, 2, 2);
 
-		uint32_t indices[3] = { 0, 1, 2 };
+		uint32_t index = 0;
 
-		_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(unsigned int)));
+		_IndexBuffer.reset(IndexBuffer::Create(&index, sizeof(index) / sizeof(uint32_t)));
 	}
 
 	void SpriteBatch::AddSprite(Sprite* sprite)
 	{
-		size_t x = ((_indicies.size() / 6) * 4);
+		unsigned int x = (((unsigned int)_indicies.size() / 6) * 4);
 
-		_vertices.push_back(sprite->GetX());
-		_vertices.push_back(sprite->GetY());
-		
-		_vertices.push_back(0.0f);
-		_vertices.push_back(0.0f);
-
-		_vertices.push_back(sprite->GetX());
-		_vertices.push_back(sprite->GetY() + sprite->GetHeight());
-
-		_vertices.push_back(0.0f);
-		_vertices.push_back(-1.0f);
-
-		_vertices.push_back(sprite->GetX() + sprite->GetWidth());
-		_vertices.push_back(sprite->GetY() + sprite->GetHeight());
-
-		_vertices.push_back(1.0f);
-		_vertices.push_back(-1.0f);
-
-		_vertices.push_back(sprite->GetX() + sprite->GetWidth());
-		_vertices.push_back(sprite->GetY());
-
-		_vertices.push_back(1.0f);
-		_vertices.push_back(0.0f);
+		_vertices.push_back({ (float)sprite->GetX(), (float)sprite->GetY(), 0.0f, 0.0f });
+		_vertices.push_back({ (float)sprite->GetX(), (float)sprite->GetY() + (float)sprite->GetHeight(), 0.0f, -1.0f });
+		_vertices.push_back({ (float)sprite->GetX() + (float)sprite->GetWidth(), (float)sprite->GetY() + (float)sprite->GetHeight(), 1.0f, -1.0f });
+		_vertices.push_back({ (float)sprite->GetX() + (float)sprite->GetWidth(), (float)sprite->GetY(), 1.0f, 0.0f });
 
 		_indicies.push_back(x + 0);
 		_indicies.push_back(x + 1);
@@ -62,9 +54,11 @@ namespace Osiris
 
 		_VertexArray->Bind();
 
-		_VertexBuffer->Update(&_vertices.at(0), sizeof(float) * _vertices.size());
-		_IndexBuffer->Update(&_indicies.at(0), _indicies.size());
+		_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(SpriteVertex) * (uint32_t)_vertices.size(), 0);
+		_IndexBuffer->Update(&_indicies.at(0), (uint32_t)_indicies.size());
 
+		_SpriteMap.insert(std::pair<uint32_t, SpriteBatchEntry>(sprite->GetID(), { sprite, ((uint32_t)_vertices.size()) - 16 }));
+		sprite->SetBatchEntry(&_SpriteMap[sprite->GetID()]);
 	}
 
 	void SpriteBatch::SetTexture(Texture* texture)

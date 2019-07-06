@@ -27,7 +27,7 @@ namespace Osiris {
 	private:
 		std::string _Name;
 		std::vector<Sprite*> _Sprites;
-		std::unique_ptr<SpriteBatch> _StaticSpriteBatch;
+		std::shared_ptr<SpriteBatch> _StaticSpriteBatch;
 
 	};
 }

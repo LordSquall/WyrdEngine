@@ -11,7 +11,7 @@ namespace Osiris
 		~OpenGLVertexBuffer();
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
-		virtual void Update(float* vertices, uint32_t size) const override;
+		virtual void Update(float* vertices, uint32_t size, uint32_t offset) const override;
 
 	private:
 		uint32_t _rendererID;
