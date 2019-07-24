@@ -4,7 +4,8 @@
 
 #include "PropertiesViewer.h"
 
-#include "editor/events/EventsManager.h"
+#include "editor/services/ServiceManager.h"
+
 #include "core/Application.h"
 #include "core/Layer.h"
 
@@ -16,7 +17,7 @@ namespace Osiris::Editor
 
 	PropertiesViewer::PropertiesViewer() : EditorPlugin("Properties"), _Mode(None)
 	{
-		Events::EventsManager::Subscribe(Events::EventType::SelectedSpriteChanged, EVENT_FUNC(PropertiesViewer::OnSelectedSpriteChanged));
+		ServiceManager::Get<EventService>(ServiceManager::Service::Events).Subscribe(Events::EventType::SelectedSpriteChanged, EVENT_FUNC(PropertiesViewer::OnSelectedSpriteChanged));
 	}
 
 	PropertiesViewer::~PropertiesViewer() {}
@@ -65,21 +66,21 @@ namespace Osiris::Editor
 
 			if (ImGui::TreeNode("Position"))
 			{
-				float x = _SelectedSprite->GetX();
-				float y = _SelectedSprite->GetY();
+				float x = (float)_SelectedSprite->GetX();
+				float y = (float)_SelectedSprite->GetY();
 
 				ImGui::Text("X");
 				ImGui::SameLine();
 				ImGui::PushID("X");
 				if (ImGui::InputFloat("", &x))
-					_SelectedSprite->SetX(x);
+					_SelectedSprite->SetX((int)x);
 				ImGui::PopID();
 
 				ImGui::Text("Y");
 				ImGui::SameLine();
 				ImGui::PushID("Y");
 				if (ImGui::InputFloat("", &y))
-					_SelectedSprite->SetY(y);
+					_SelectedSprite->SetY((int)y);
 				ImGui::PopID();
 
 				ImGui::TreePop();

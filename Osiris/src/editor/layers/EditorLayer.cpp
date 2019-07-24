@@ -11,6 +11,8 @@
 #include "events/MouseEvent.h"
 #include "events/ApplicationEvent.h"
 
+#include "editor/services/ServiceManager.h"
+
 #include "editor/tools/PropertiesViewer/PropertiesViewer.h"
 #include "editor/tools/LayerViewer/LayerViewer.h"
 #include "editor/tools/SpriteLayerEditor/SpriteLayerEditor.h"
@@ -32,6 +34,9 @@ namespace Osiris::Editor
 	{
 		Application& app = Application::Get();
 		LayerStack* stack = app.GetLayerStack();
+
+		/* initialise editor services */
+		ServiceManager::StartServices();
 
 		m_plugins["Properties"] = std::make_shared<PropertiesViewer>();
 
@@ -118,6 +123,7 @@ namespace Osiris::Editor
 		static bool menu_app_close_show = false;
 		static bool menu_help_demo_window_show = false;
 
+		SceneService& sceneService = ServiceManager::Get<SceneService>(ServiceManager::Service::Scene);
 
 		float time = (float)glfwGetTime();
 		ImGuiIO& io = ImGui::GetIO();
@@ -138,15 +144,58 @@ namespace Osiris::Editor
 		if (ImGui::BeginMenu("Project"))
 		{
 			if (ImGui::BeginMenu("Create New Project...")) {
-				if (ImGui::MenuItem("New")) {}
+				if (ImGui::MenuItem("New")) 
+				{
+					ServiceManager::Get<DialogService>(ServiceManager::Service::Dialog).OpenDialog(Dialogs::CreateNewProject);
+				}
 				if (ImGui::MenuItem("Open File", "Ctrl+O")) {
-					OSR_INFO(util.OpenFileDialouge());
+					OSR_INFO(util.OpenFileDialog("*.scene.json"));
 				}
 				if (ImGui::MenuItem("Open Folder")) {
-					OSR_INFO(util.OpenFolderDialouge());
+					OSR_INFO(util.OpenFolderDialog());
 				}
+
 				ImGui::EndMenu();
 			}
+			if (ImGui::MenuItem("Open Project"))
+			{
+				ServiceManager::Get<ProjectService>(ServiceManager::Service::Project).LoadProject(util.OpenFileDialog(".oproj"));
+			}
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("New Scene", nullptr, nullptr, !sceneService.GetLoadedScenePath().empty())) {
+				std::string filepath = util.SaveFileDialog(".scene.json");
+				sceneService.SaveScene(filepath);
+				sceneService.LoadScene(filepath);
+			}
+
+			if (ImGui::MenuItem("Save Scene", nullptr, nullptr, !sceneService.GetLoadedScenePath().empty())) {
+				std::string filepath = util.SaveFileDialog(".scene.json");
+				if (sceneService.SaveScene() == true)
+				{
+					OSR_CORE_INFO("Saved Scene");
+				}
+			}
+
+			if (ImGui::MenuItem("Save Scene As..", nullptr, nullptr, !sceneService.GetLoadedScenePath().empty())) {
+				std::string filepath = util.SaveAsFileDialog(".scene.json");
+				if (sceneService.SaveScene(filepath) == true)
+				{
+					OSR_CORE_INFO("Saved Scene As");
+				}
+			}
+
+			if (ImGui::MenuItem("Open Scene", nullptr, nullptr, !sceneService.GetLoadedScenePath().empty())) {
+				std::string filepath = util.OpenFileDialog(".scene.json");
+				if (sceneService.LoadScene(filepath) == true)
+				{
+					OSR_CORE_INFO("Opened Scene");
+				}
+			}
+
+			ImGui::Separator();
+
 			if (ImGui::MenuItem("Exit"))
 			{
 				exit(0);
@@ -188,6 +237,12 @@ namespace Osiris::Editor
 
 		ImGui::End();
 		
+		for (auto const&[key, val] : ServiceManager::GetServices())
+		{
+			val->OnGUI();
+		}
+
+
 		/* test the plugin visibility flags */
 		for (std::map<std::string, std::shared_ptr<EditorPlugin>>::iterator it = m_plugins.begin(); it != m_plugins.end(); it++)
 		{

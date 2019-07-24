@@ -11,7 +11,7 @@
 #include "editor/support/IconLibrary.h"
 #include "editor/support/Utils.h"
 
-#include "editor/events/EventsManager.h"
+#include "editor/services/ServiceManager.h"
 
 namespace Osiris::Editor
 {

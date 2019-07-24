@@ -7,12 +7,17 @@
 #include "editor/support/IconLibrary.h"
 #include "editor/support/Utils.h"
 
+#include "editor/datamodels/Project.h"
 
+#include "core/pipeline/Scene.h"
 #include "core/pipeline/Sprite.h"
 
 namespace Osiris::Editor::Events
 {
-	enum EventType { SelectedCleared = 0, SelectedSpriteChanged = 1 };
+	enum EventType {
+		SelectedCleared, SelectedSpriteChanged,
+		CreateNewProject, OpenProject, CloseProject, ProjectLoaded
+	};
 
 	class Event
 	{
@@ -57,6 +62,83 @@ namespace Osiris::Editor::Events
 	{
 	public:
 		SelectedSpriteChangedEvent() : Event(EventType::SelectedSpriteChanged) { }
+	};
+
+#pragma endregion
+
+#pragma region CreateNewProjectEvent
+
+	class CreateNewProjectArgs : public EventArgs
+	{
+	public:
+		CreateNewProjectArgs(std::string name, std::string location) : name(name), location(location) {}
+
+		const std::string name;
+		const std::string location;
+	};
+
+	class CreateNewProjectEvent : public Event
+	{
+	public:
+		CreateNewProjectEvent() : Event(EventType::CreateNewProject) { }
+	};
+
+#pragma endregion
+
+#pragma region OpenProjectEvent
+
+	class OpenProjectArgs : public EventArgs
+	{
+	public:
+		OpenProjectArgs(std::string name, std::string location) : name(name), location(location) {}
+
+		const std::string name;
+		const std::string location;
+	};
+
+	class OpenProjectEvent : public Event
+	{
+	public:
+		OpenProjectEvent() : Event(EventType::OpenProject) { }
+	};
+
+#pragma endregion
+
+#pragma region CloseProjectEvent
+
+	class CloseProjectArgs : public EventArgs
+	{
+	public:
+		CloseProjectArgs(std::string name, std::string location) : name(name), location(location) {}
+
+		const std::string name;
+		const std::string location;
+	};
+
+	class CloseProjectEvent : public Event
+	{
+	public:
+		CloseProjectEvent() : Event(EventType::CloseProject) { }
+	};
+
+#pragma endregion
+
+#pragma region ProjectLoadedEvent
+
+	class ProjectLoadedArgs : public EventArgs
+	{
+	public:
+		ProjectLoadedArgs(std::string initialScene, std::shared_ptr<Project> project, std::string projectPath) : initialScene(initialScene), project(project), projectPath(projectPath) {}
+
+		const std::string initialScene;
+		std::shared_ptr<Project> project;
+		const std::string projectPath;
+	};
+
+	class ProjectLoadedEvent : public Event
+	{
+	public:
+		ProjectLoadedEvent() : Event(EventType::ProjectLoaded) { }
 	};
 
 #pragma endregion

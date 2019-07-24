@@ -22,11 +22,7 @@ namespace Osiris
 		_StaticSpriteBatch->SetTexture(Texture::Create(data, width, height, channels));
 
 		/* Load Test Sprites */
-		AddSprite(new Sprite("Test Sprite", Maths::RandomFloat(100.0f, 500.0f), Maths::RandomFloat(100.0f, 500.0f), 50, 50));
-		AddSprite(new Sprite("Test Sprite", Maths::RandomFloat(100.0f, 500.0f), Maths::RandomFloat(100.0f, 500.0f), 50, 50));
-		AddSprite(new Sprite("Test Sprite", Maths::RandomFloat(100.0f, 500.0f), Maths::RandomFloat(100.0f, 500.0f), 50, 50));
-		AddSprite(new Sprite("Test Sprite", Maths::RandomFloat(100.0f, 500.0f), Maths::RandomFloat(100.0f, 500.0f), 50, 50));
-		AddSprite(new Sprite("Test Sprite", Maths::RandomFloat(100.0f, 500.0f), Maths::RandomFloat(100.0f, 500.0f), 50, 50));
+		//AddSprite(new Sprite("Test Sprite", Maths::RandomFloat(100.0f, 500.0f), Maths::RandomFloat(100.0f, 500.0f), 50, 50));
 	}
 
 	void SpriteLayer::Render(Renderer& renderer)

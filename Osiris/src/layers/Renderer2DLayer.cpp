@@ -8,9 +8,9 @@ namespace Osiris::Layers
 	Renderer2DLayer::Renderer2DLayer(std::string name) : Layer(name)
 	{
 		/* Setup the Ortho Matrix */
-		float right = Application::Get().GetWindow().GetWidth();
+		float right = (float)Application::Get().GetWindow().GetWidth();
 		float left = 0.0f;
-		float top = Application::Get().GetWindow().GetHeight();
+		float top = (float)Application::Get().GetWindow().GetHeight();
 		float bottom = 0.0f;
 
 		_vpMat = glm::ortho(left, right, bottom, top);
@@ -69,15 +69,21 @@ namespace Osiris::Layers
 	}
 
 
-	void Renderer2DLayer::AddSpriteLayer(std::string name)
+	SpriteLayer* Renderer2DLayer::AddSpriteLayer(std::string name)
 	{
 		SpriteLayer* newLayer = new SpriteLayer();
 		newLayer->SetName(name);
 		_SpriteLayers.push_back(newLayer);
+		return newLayer;
 	}
 
 	void Renderer2DLayer::RemoveSpriteLayer(uint32_t index)
 	{
 		_SpriteLayers.erase(_SpriteLayers.begin() + index);
+	}
+	
+	void Renderer2DLayer::RemoveAllSpriteLayers()
+	{
+		_SpriteLayers.clear();
 	}
 }

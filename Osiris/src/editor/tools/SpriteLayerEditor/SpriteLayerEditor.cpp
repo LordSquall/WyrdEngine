@@ -4,7 +4,7 @@
 
 #include "SpriteLayerEditor.h"
 
-#include "editor/events/EventsManager.h"
+#include "editor/services/ServiceManager.h"
 #include "core/Application.h"
 #include "core/Layer.h"
 
@@ -46,23 +46,31 @@ namespace Osiris::Editor
 
 
 		/* Sprite Layer List */
-		static const Sprite* currentSprite = currentLayer->GetSprites()[0];
-
-		ImGui::ListBoxHeader("");
-		for (auto item : currentLayer->GetSprites())
+		static const Sprite* currentSprite;
+		
+		if (!currentLayer->GetSprites().empty())
 		{
-			ImGui::PushID(item->GetID());
-			bool selectedSprite = (item == currentSprite);
-			if (ImGui::Selectable(item->GetName().c_str(), selectedSprite))
+			currentSprite = currentLayer->GetSprites()[0];
+			ImGui::ListBoxHeader("");
+			for (auto item : currentLayer->GetSprites())
 			{
-				currentSprite = item;
-				Events::EventsManager::Publish(Events::EventType::SelectedSpriteChanged, Events::SelectedSpriteChangedArgs(currentSprite));
+				ImGui::PushID(item->GetID());
+				bool selectedSprite = (item == currentSprite);
+				if (ImGui::Selectable(item->GetName().c_str(), selectedSprite))
+				{
+					currentSprite = item;
+					ServiceManager::Get<EventService>(ServiceManager::Service::Events).Publish(Editor::Events::EventType::SelectedSpriteChanged, Events::SelectedSpriteChangedArgs(currentSprite));
+				}
+				if (currentSprite)
+					ImGui::SetItemDefaultFocus();
+				ImGui::PopID();
 			}
-			if (currentSprite)
-				ImGui::SetItemDefaultFocus();
-			ImGui::PopID();
+			ImGui::ListBoxFooter();
 		}
-		ImGui::ListBoxFooter();
+		else
+		{
+			ImGui::Text("No sprites :(");
+		}
 
 		ImGui::End();
 	}

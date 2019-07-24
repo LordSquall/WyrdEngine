@@ -1,0 +1,21 @@
+{
+    "name": "test",
+    "spritelayers": {
+        "Background": [
+            {
+                "height": 50,
+                "name": "Hello",
+                "width": 50,
+                "xpos": 325,
+                "ypos": 100
+            },
+            {
+                "height": 50,
+                "name": "Test Sprite",
+                "width": 50,
+                "xpos": 225,
+                "ypos": 200
+            }
+        ]
+    }
+}

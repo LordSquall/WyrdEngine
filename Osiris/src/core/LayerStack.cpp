@@ -53,6 +53,7 @@ namespace Osiris {
 			if (layer->GetName().compare(name) == 0)
 				return layer;
 		}
+		return NULL;
 	}
 
 }
