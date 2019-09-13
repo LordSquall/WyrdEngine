@@ -39,4 +39,18 @@ namespace Osiris
 
 		_StaticSpriteBatch->AddSprite(sprite);
 	}
+
+
+	void SpriteLayer::RemoveSprite(int spriteIdx)
+	{
+		_Sprites.erase(_Sprites.begin() + spriteIdx);
+	}
+
+
+	void SpriteLayer::SwapSprites(int spriteIdxSrc, int spriteIdxDst)
+	{
+		Sprite* tmp = _Sprites[spriteIdxSrc];
+		_Sprites[spriteIdxSrc] = _Sprites[spriteIdxDst];
+		_Sprites[spriteIdxDst] = tmp;
+	}
 }

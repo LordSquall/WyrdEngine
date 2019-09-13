@@ -33,10 +33,21 @@ namespace Osiris::Layers
 		_Shader->SetVPMatrix(_vpMat);
 
 		/* Add initial sprite layer */
-		SpriteLayer* spriteLayer = new SpriteLayer();
-		spriteLayer->SetName("Background");
+		SpriteLayer* spriteLayerBG = new SpriteLayer();
+		spriteLayerBG->SetName("Background");
+		spriteLayerBG->AddSprite(new Sprite("DefaultBG_0", 0, 0, 64, 64));
+		spriteLayerBG->AddSprite(new Sprite("DefaultBG_1", 100, 100, 64, 64));
+		spriteLayerBG->AddSprite(new Sprite("DefaultBG_2", 200, 200, 64, 64));
 
-		_SpriteLayers.push_back(spriteLayer);
+
+		SpriteLayer* spriteLayerFG = new SpriteLayer();
+		spriteLayerFG->SetName("Foreground");
+		spriteLayerFG->AddSprite(new Sprite("DefaultFG_0", 300, 300, 64, 64));
+		spriteLayerFG->AddSprite(new Sprite("DefaultFG_1", 400, 400, 64, 64));
+		spriteLayerFG->AddSprite(new Sprite("DefaultFG_2", 500, 500, 64, 64));
+
+		_SpriteLayers.push_back(spriteLayerBG);
+		_SpriteLayers.push_back(spriteLayerFG);
 	}
 
 	void Renderer2DLayer::OnDetach()

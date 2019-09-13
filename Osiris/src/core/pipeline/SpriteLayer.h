@@ -19,6 +19,10 @@ namespace Osiris {
 
 		void AddSprite(Sprite* sprite);
 
+		void RemoveSprite(int spriteIdx);
+
+		void SwapSprites(int spriteIdxSrc, int spriteIdxDst);
+
 		inline std::vector<Sprite*> GetSprites() const { return _Sprites; }
 
 		inline void SetName(std::string name) { _Name = name; }

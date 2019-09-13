@@ -70,11 +70,6 @@ project "Osiris"
 		"opengl32.dll"
 	}
 		
-	postbuildcommands
-	{
-		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/DevApp")
-	}
-	
 	filter "system:windows"
 		systemversion "latest"
 		
