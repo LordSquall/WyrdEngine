@@ -4,7 +4,6 @@
 
 #include "SpriteLayerEditor.h"
 
-#include "editor/services/ServiceManager.h"
 #include "core/Application.h"
 #include "core/Layer.h"
 
@@ -13,54 +12,71 @@
 
 namespace Osiris::Editor
 {
-	SpriteLayerEditor::SpriteLayerEditor() : EditorPlugin("Sprite Layer Editor"), _SelectedSprite(-1) {}
+	SpriteLayerEditor::SpriteLayerEditor() : EditorPlugin("Sprite Layer Editor"), _SelectedSprite(-1), _SelectedLayer2D(nullptr){}
 
 	SpriteLayerEditor::~SpriteLayerEditor() {}
+
+	void SpriteLayerEditor::OnInitialise() 
+	{
+		_SceneService = &ServiceManager::Get<SceneService>(ServiceManager::Service::Scene);
+
+		ServiceManager::Get<EventService>(ServiceManager::Service::Events).Subscribe(Editor::Events::SceneOpened, EVENT_FUNC(SpriteLayerEditor::OnSceneOpened));
+	}
 
 	void SpriteLayerEditor::OnEditorRender()
 	{
 		ImGui::Begin("Sprite Layer Editor");
 
 		/* Sprite Layer selection combobox */
-		std::vector<SpriteLayer*> spriteLayers = _RenderingLayer->GetSpriteLayers();
+		auto layers = _SceneService->GetLoadedScene()->layers2D;
 
-		static SpriteLayer* currentLayer = spriteLayers[0];
-		if (ImGui::BeginCombo("", currentLayer->GetName().c_str(), 0)) // The second parameter is the label previewed before opening the combo.
+		if (ImGui::BeginCombo("", (_SelectedLayer2D != nullptr) ? _SelectedLayer2D->name.c_str() : NULL, 0))
 		{
-			for (int n = 0; n < spriteLayers.size(); n++)
+			for (int n = 0; n < layers.size(); n++)
 			{
-				bool selectedLayer = (currentLayer == spriteLayers[n]);
-				if (ImGui::Selectable(spriteLayers[n]->GetName().c_str(), selectedLayer))
-					currentLayer = spriteLayers[n];
+				bool selectedLayer = (_SelectedLayer2D == layers[n]);
+				if (ImGui::Selectable(layers[n]->name.c_str(), selectedLayer))
+					_SelectedLayer2D = layers[n];
 				if (selectedLayer)
 					ImGui::SetItemDefaultFocus();
 			}
 			ImGui::EndCombo();
 		}
 
+		/* Add New Layer button */
 		ImGui::SameLine();
 		if (ImGui::Button("+") == true)
 		{
-			_RenderingLayer->AddSpriteLayer("New Layer " + std::to_string(_RenderingLayer->GetSpriteLayers().size()));
+			std::shared_ptr<Layer2D> newLayer2D = std::make_shared<Layer2D>(Layer2D{ std::string("New Layer " + std::to_string(layers.size() + 1)) });
+			layers.push_back(newLayer2D);
+			_SelectedLayer2D = newLayer2D;
+		}
+
+		/* Remove Current selected Layer button - Only want this button to appear if a layer to currently selected */
+		if (_SelectedLayer2D != nullptr)
+		{
+			ImGui::SameLine();
+			if (ImGui::Button("-") == true)
+			{
+				auto target = std::find(layers.begin(), layers.end(), _SelectedLayer2D);
+				layers.erase(target);
+				_SelectedLayer2D = *layers.begin();
+			}
 		}
 
 		/* Sprite Layer List */
-		static const Sprite* currentSprite;
 		int spriteIdx = 0;
 
-		if (!currentLayer->GetSprites().empty())
+		if (_SelectedLayer2D != nullptr && !_SelectedLayer2D->sprites.empty())
 		{
-			//currentSprite = currentLayer->GetSprites()[0];
 			ImGui::ListBoxHeader("", ImVec2(ImGui::GetWindowWidth(), -ImGui::GetItemsLineHeightWithSpacing()));
-			for (auto item : currentLayer->GetSprites())
+			for (int i = 0; i < _SelectedLayer2D->sprites.size(); i++)
 			{
-				ImGui::PushID(item->GetID());
-				bool selectedSprite = (item == currentSprite);
+				ImGui::PushID(spriteIdx);
 
-				if (ImGui::Selectable(item->GetName().c_str(), selectedSprite))
+				if (ImGui::Selectable(_SelectedLayer2D->sprites[i]->name.c_str(), _SelectedSprite == spriteIdx))
 				{
-					currentSprite = item;
-					ServiceManager::Get<EventService>(ServiceManager::Service::Events).Publish(Editor::Events::EventType::SelectedSpriteChanged, Events::SelectedSpriteChangedArgs(currentSprite));
+					_SelectedSprite = spriteIdx;
 				}
 
 				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
@@ -73,7 +89,7 @@ namespace Osiris::Editor
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SPRITE_DND_PAYLOAD"))
 					{
 						int payload_n = *(const int*)payload->Data;
-						currentLayer->SwapSprites(payload_n, spriteIdx);
+						_SelectedLayer2D->SwapSprite(payload_n, spriteIdx);
 					}
 					ImGui::EndDragDropTarget();
 				}
@@ -84,13 +100,12 @@ namespace Osiris::Editor
 				{
 					if (ImGui::Selectable("Delete"))
 					{
-						currentLayer->RemoveSprite(spriteIdx);
+						_SelectedLayer2D->RemoveSprite(spriteIdx);
+						_SelectedSprite--;
 					}
 					ImGui::EndPopup();
 				}
 
-				if (currentSprite)
-					ImGui::SetItemDefaultFocus();
 				ImGui::PopID();
 
 
@@ -104,10 +119,17 @@ namespace Osiris::Editor
 		}
 		if (ImGui::Button("Add Sprite...") == true)
 		{
-			currentLayer->AddSprite(new Sprite("New Sprite", 0, 0, 32, 32));
+			_SelectedLayer2D->AddSprite(GameObject2D{ "New Sprite " + std::to_string(_SelectedLayer2D->sprites.size()) });
 		}
 
 		ImGui::End();
 	}
 
+	void SpriteLayerEditor::OnSceneOpened(Events::EventArgs& args)
+	{
+		if (_SceneService->GetLoadedScene()->layers2D.size() > 0)
+		{
+			_SelectedLayer2D = _SceneService->GetLoadedScene()->layers2D[0];
+		}
+	}
 }

@@ -8,15 +8,16 @@
 #include "editor/support/Utils.h"
 
 #include "editor/datamodels/Project.h"
+#include "editor/datamodels/Scene.h"
 
-#include "core/pipeline/Scene.h"
 #include "core/pipeline/Sprite.h"
 
 namespace Osiris::Editor::Events
 {
 	enum EventType {
 		SelectedCleared, SelectedSpriteChanged,
-		CreateNewProject, OpenProject, CloseProject, ProjectLoaded
+		CreateNewProject, OpenProject, CloseProject, ProjectLoaded,
+		SceneClosed, SceneOpened
 	};
 
 	class Event
@@ -32,11 +33,7 @@ namespace Osiris::Editor::Events
 		EventType _Type;
 	};
 
-	class EventArgs
-	{
-	public:
-		int keepalive;
-	};
+	class EventArgs { };
 
 #pragma region SelectedClearedEvent
 
@@ -53,7 +50,7 @@ namespace Osiris::Editor::Events
 	class SelectedSpriteChangedArgs : public EventArgs
 	{
 	public:
-		SelectedSpriteChangedArgs(const Sprite* sprite) : sprite(sprite) { keepalive = 99; }
+		SelectedSpriteChangedArgs(const Sprite* sprite) : sprite(sprite) { }
 
 		const Sprite* sprite;
 	};
@@ -143,4 +140,38 @@ namespace Osiris::Editor::Events
 
 #pragma endregion
 
+#pragma region SceneClosedEvent
+
+	class SceneClosedArgs : public EventArgs
+	{
+	public:
+		SceneClosedArgs(std::string name, std::string location) : name(name), location(location) {}
+
+		const std::string name;
+		const std::string location;
+	};
+
+	class SceneClosedEvent : public Event
+	{
+	public:
+		SceneClosedEvent() : Event(EventType::SceneClosed) { }
+	};
+
+#pragma endregion
+
+#pragma region SceneOpenedEvent
+
+	class SceneOpenedArgs : public EventArgs
+	{
+	public:
+		SceneOpenedArgs() {}
+	};
+
+	class SceneOpenedEvent : public Event
+	{
+	public:
+		SceneOpenedEvent() : Event(EventType::SceneOpened) { }
+	};
+
+#pragma endregion
 }

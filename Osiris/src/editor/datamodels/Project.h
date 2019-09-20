@@ -2,22 +2,25 @@
 
 #include <Osiris.h>
 
-using namespace Osiris;
+#include "AssetManager.h"
 
+using namespace Osiris;
 
 namespace Osiris::Editor {
 
 	class Project
 	{
 	public:
-		Project() : _Name("untitled") {}
-		Project(std::string name) : _Name(name) {}
+		Project();
+		Project(std::string name);
 		~Project() {}
 		
-		inline const std::string GetName() const { return _Name; }
-		inline void SetName(const std::string name) { _Name = name; }
+		std::string name;
+		std::string initialScene;
+
+		inline const AssetManager& GetAssetManager() const { return _AssetManager; }
 
 	private:
-		std::string _Name;
+		AssetManager _AssetManager;
 	};
 }

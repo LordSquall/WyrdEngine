@@ -3,6 +3,7 @@
 #include <Osiris.h>
 
 #include "core/renderer/Shader.h"
+#include "editor/datamodels/Scene.h"
 #include "core/pipeline/SpriteLayer.h"
 #include "core/pipeline/SpriteBatch.h"
 

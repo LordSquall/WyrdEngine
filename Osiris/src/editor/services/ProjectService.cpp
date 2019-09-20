@@ -3,6 +3,7 @@
 #include "osrpch.h"
 #include "ServiceManager.h"
 #include "ProjectService.h"
+#include "editor/loaders/ProjectLoader.h"
 
 #include <nlohmann/json.hpp>
 
@@ -25,6 +26,7 @@ namespace Osiris::Editor
 		ServiceManager::Get<EventService>(ServiceManager::Events).Subscribe(Events::EventType::CloseProject, [this](Events::EventArgs& args) {
 
 		});
+
 	}
 
 	void Osiris::Editor::ProjectService::OnDestroy()
@@ -43,8 +45,8 @@ namespace Osiris::Editor
 
 		o.close();
 
-
-
+		/* Create default folders and files */
+		Utils::CreateProjectFileStructure(Utils::GetPath(projectpath));
 	}
 
 
@@ -56,10 +58,14 @@ namespace Osiris::Editor
 
 		_Project = std::make_shared<Project>();
 
-		_Project->SetName(j["name"]);
+		ProjectLoader::Load(projectfile.c_str(), *_Project, FileContent::Json);
+
+		Utils::SetRootProjectFolder(Utils::GetPath(projectfile.c_str()));
+
+		std::string initialScene = j["initialScene"];
 
 		std::string projectPath = Utils::GetPath(projectfile);
 		
-		ServiceManager::Get<EventService>(ServiceManager::Events).Publish(Events::EventType::ProjectLoaded, Events::ProjectLoadedArgs(j["initialScene"], _Project, projectPath));
+		ServiceManager::Get<EventService>(ServiceManager::Events).Publish(Events::EventType::ProjectLoaded, Events::ProjectLoadedArgs(initialScene, _Project, projectPath));
 	}
 }

@@ -1,13 +1,14 @@
 #pragma once
 
 #include <Osiris.h>
+#include "core/loaders/Loaders.h"
+#include "editor/datamodels/Scene.h"
+#include <nlohmann/json.hpp>
 
 using namespace Osiris;
+using namespace nlohmann;
 
-#include "core/loaders/Loaders.h"
-#include "core/pipeline/Scene.h"
-
-namespace Osiris {
+namespace Osiris::Editor {
 
 	class SceneLoader
 	{

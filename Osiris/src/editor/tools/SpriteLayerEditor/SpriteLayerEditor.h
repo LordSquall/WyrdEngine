@@ -1,6 +1,7 @@
 #include "core/export.h"
 #include "layers/Renderer2DLayer.h"
 
+#include "editor/services/ServiceManager.h"
 #include "editor/EditorPlugin.h"
 
 namespace Osiris::Editor
@@ -11,13 +12,15 @@ namespace Osiris::Editor
 		SpriteLayerEditor();
 		~SpriteLayerEditor();
 
+		void OnInitialise() override;
 		void OnEditorRender() override;
 
-		inline void SetRenderingLayer(Layers::Renderer2DLayer* renderingLayer) { _RenderingLayer = renderingLayer; }
+	private:
+		void OnSceneOpened(Events::EventArgs& args);
 
 	private:
-		Layers::Renderer2DLayer* _RenderingLayer;
-
+		SceneService* _SceneService;
 		int32_t _SelectedSprite;
+		std::shared_ptr<Layer2D> _SelectedLayer2D;
 	};
 }

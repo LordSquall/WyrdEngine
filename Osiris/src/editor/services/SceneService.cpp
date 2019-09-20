@@ -4,14 +4,15 @@
 #include "SceneService.h"
 
 #include "editor/services/ServiceManager.h"
-#include "core/loaders/SceneLoader.h"
+#include "editor/loaders/SceneLoader.h"
+#include "layers/Renderer2DLayer.h"
 
 namespace Osiris::Editor
 {
 	void SceneService::OnCreate() 
 	{
-
 		_loadedScene = std::make_shared<Scene>();
+		_loadedScene->BuildDefaults();
 
 		ServiceManager::Get<EventService>(ServiceManager::Events).Subscribe(Events::EventType::ProjectLoaded, [this](Events::EventArgs& args) {
 			Events::ProjectLoadedArgs& a = (Events::ProjectLoadedArgs&)args;
@@ -51,8 +52,16 @@ namespace Osiris::Editor
 		}
 		else
 		{
+			/* Retrieve the current 2D rendering layer */
+			Layers::Renderer2DLayer* renderer2DLayer = (Layers::Renderer2DLayer*)Application::Get().GetLayerStack()->FindLayer("2D Rendering Layer");
+
+			/* Clear out all the sprite layers */
+			renderer2DLayer->RemoveAllSpriteLayers();
+
 			/* trigger a scene swap on the core system */
-			/* Fire scene loaded event on the editor system */
+
+			/* fire scene loaded event on the editor system */
+			ServiceManager::Get<EventService>(ServiceManager::Events).Publish(Editor::Events::SceneOpened, Events::SceneOpenedArgs());
 			return true;
 		}
 	}

@@ -16,11 +16,13 @@
 #include "editor/tools/PropertiesViewer/PropertiesViewer.h"
 #include "editor/tools/LayerViewer/LayerViewer.h"
 #include "editor/tools/SpriteLayerEditor/SpriteLayerEditor.h"
+#include "editor/tools/AssetViewer/AssetViewer.h"
 
 #include "editor/platform/OpenGL/imgui_opengl_renderer.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <SOIL.h>
+#include <shellapi.h>
 
 namespace Osiris::Editor
 {
@@ -46,8 +48,9 @@ namespace Osiris::Editor
 		m_plugins["Layer Viewer"] = layerViewer;
 
 		std::shared_ptr<SpriteLayerEditor> spriteLayerEditor = std::make_shared<SpriteLayerEditor>();
-		spriteLayerEditor->SetRenderingLayer((Layers::Renderer2DLayer*)stack->FindLayer("2D Rendering Layer"));
 		m_plugins["Sprite Layer Editor"] = spriteLayerEditor;
+
+		m_plugins["Asset Viewer"] = std::make_shared<AssetViewer>();
 
 		util = Utils();
 	}
@@ -161,6 +164,10 @@ namespace Osiris::Editor
 			{
 				ServiceManager::Get<ProjectService>(ServiceManager::Service::Project).LoadProject(util.OpenFileDialog(".oproj"));
 			}
+			if (ImGui::MenuItem("Open Project In Explorer", nullptr, nullptr, !sceneService.GetLoadedScenePath().empty()))
+			{
+				ShellExecuteA(NULL, "open", Utils::GetAssetFolder().c_str(), NULL, NULL, SW_SHOWDEFAULT);
+			}
 
 			ImGui::Separator();
 
@@ -217,6 +224,16 @@ namespace Osiris::Editor
 		if (ImGui::BeginMenu("Help", true))
 		{
 			ImGui::MenuItem("Show Demo Window", NULL, &menu_help_demo_window_show);
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Debug", true))
+		{
+			if (ImGui::MenuItem("Save Scene Test"))
+			{
+				sceneService.SaveScene(std::string("C:\\Users\\Paul\\Desktop\\SampleProject\\Assets\\example.scene.json"));
+			}
 
 			ImGui::EndMenu();
 		}

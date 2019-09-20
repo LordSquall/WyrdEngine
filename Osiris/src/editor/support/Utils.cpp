@@ -10,7 +10,7 @@
 namespace Osiris::Editor {
 
 	std::string Utils::canonical_path = std::filesystem::current_path().generic_string();
-	std::string Utils::asset_path = "/res";
+	std::string Utils::asset_path = "/assets";
 
 	Utils::Utils()
 	{
@@ -21,12 +21,16 @@ namespace Osiris::Editor {
 
 	}
 
+	void Utils::SetRootProjectFolder(const std::string& rootFolder)
+	{
+		canonical_path = rootFolder;
+	}
+
 	std::string Utils::GetAssetFolder()
 	{
 		OSR_INFO(Utils::canonical_path + Utils::asset_path);
 		if (std::filesystem::exists(Utils::canonical_path + Utils::asset_path)) {
-			OSR_INFO("true");
-			Utils::asset_path = Utils::canonical_path + Utils::asset_path;
+			return Utils::canonical_path + Utils::asset_path;
 		}
 		return Utils::asset_path;
 	}
@@ -143,7 +147,6 @@ namespace Osiris::Editor {
 				IID_IFileSaveDialog, reinterpret_cast<void**>(&pFileSave));
 			if (SUCCEEDED(hr))
 			{
-
 				// Show the Open dialog box.
 				hr = pFileSave->Show(NULL);
 
@@ -179,6 +182,22 @@ namespace Osiris::Editor {
 	std::string Utils::SaveAsFileDialog(const std::string& filter)
 	{
 		return "not yet implemented";
+	}
+
+	std::string Utils::GetPath(const std::string& filename)
+	{
+		std::string directory;
+		const size_t last_slash_idx = filename.rfind('/');
+		if (std::string::npos != last_slash_idx)
+		{
+			directory = filename.substr(0, last_slash_idx);
+		}
+		return directory;
+	}
+
+	void Utils::CreateProjectFileStructure(const std::string& rootFolder)
+	{
+		std::filesystem::create_directory(GetAssetFolder());
 	}
 
 	void Utils::SwapSlashes(std::string& path, const std::string& find,
