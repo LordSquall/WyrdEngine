@@ -39,7 +39,7 @@ void ExampleLayer::OnAttach()
 		break;
 	}
 
-	_VertexBuffer.reset(VertexBuffer::Create(&vertices[0], sizeof(vertices)));
+	_VertexBuffer.reset(VertexBuffer::Create(&vertices[0], sizeof(vertices), "examplelayer"));
 
 	_VertexArray->SetAttribute(0, 0, 2);
 

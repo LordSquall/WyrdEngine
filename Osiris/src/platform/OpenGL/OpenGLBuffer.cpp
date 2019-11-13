@@ -1,21 +1,23 @@
 #include "osrpch.h"
 #include "OpenGLBuffer.h"
+#include "OpenGLError.h"
 
 #include <glad/glad.h>
 
 namespace Osiris
 {
 
-	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
+	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size, const std::string& description)
 	{
 		glCreateBuffers(1, &_rendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, _rendererID);
+		//glObjectLabel(GL_BUFFER, _rendererID, -1, description.c_str());
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 
 		GLenum err = glGetError();
 
 		if (err != GL_NO_ERROR)
-			OSR_CORE_ERROR(err);
+			OpenGLError::Resolve(err);
 
 	}
 

@@ -10,7 +10,7 @@ using namespace Osiris;
 namespace Osiris {
 
 	/* represents a single sprite vertex */
-	struct SpriteVertex
+	struct SpriteVertex2
 	{
 		float x, y;		/* 2D position		*/
 		float u, v;		/* texture coords	*/
@@ -28,13 +28,13 @@ namespace Osiris {
 
 		void Render(Renderer& renderer);
 
-		void AddSprite(Sprite* sprite);
+		void AddSprite(std::shared_ptr<Sprite> sprite);
 
 		void SetTexture(Texture* texture);
 
 	private:
 
-		std::vector<SpriteVertex> _vertices;
+		std::vector<SpriteVertex2> _vertices;
 		std::vector<unsigned int> _indicies;
 		std::unique_ptr<VertexArray> _VertexArray;
 		std::unique_ptr<VertexBuffer> _VertexBuffer;
@@ -49,12 +49,15 @@ namespace Osiris {
 	struct SpriteBatchEntry
 	{
 		/* sprite source data model */
-		Sprite* sprite;
+		std::shared_ptr<Sprite> sprite;
 
 		/* position within the parent batch data */
 		uint32_t offset;
 
+		/* current parent batch */
+		SpriteBatch* batch;
+
 		/* Update the batch data based on the source data model */
-		void Update(SpriteBatch* batch);
+		void Update();
 	};
 }

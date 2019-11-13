@@ -15,7 +15,7 @@
 namespace Osiris::Editor::Events
 {
 	enum EventType {
-		SelectedCleared, SelectedSpriteChanged,
+		SelectedCleared, SelectedGameObjectChanged,
 		CreateNewProject, OpenProject, CloseProject, ProjectLoaded,
 		SceneClosed, SceneOpened
 	};
@@ -45,20 +45,20 @@ namespace Osiris::Editor::Events
 
 #pragma endregion
 
-#pragma region SelectedSpriteChangedEvent
+#pragma region SelectedGameObjectChangedEvent
 
-	class SelectedSpriteChangedArgs : public EventArgs
+	class SelectedGameObjectChangedArgs : public EventArgs
 	{
 	public:
-		SelectedSpriteChangedArgs(const Sprite* sprite) : sprite(sprite) { }
+		SelectedGameObjectChangedArgs(const std::shared_ptr<GameObject> gameObject) : gameObject(gameObject) { }
 
-		const Sprite* sprite;
+		const std::shared_ptr<GameObject> gameObject;
 	};
 
-	class SelectedSpriteChangedEvent : public Event
+	class SelectedGameObjectChangedEvent : public Event
 	{
 	public:
-		SelectedSpriteChangedEvent() : Event(EventType::SelectedSpriteChanged) { }
+		SelectedGameObjectChangedEvent() : Event(EventType::SelectedGameObjectChanged) { }
 	};
 
 #pragma endregion
@@ -164,7 +164,10 @@ namespace Osiris::Editor::Events
 	class SceneOpenedArgs : public EventArgs
 	{
 	public:
-		SceneOpenedArgs() {}
+		SceneOpenedArgs(std::shared_ptr<Scene> scene) : scene(scene) {}
+
+
+		std::shared_ptr<Scene> scene;
 	};
 
 	class SceneOpenedEvent : public Event

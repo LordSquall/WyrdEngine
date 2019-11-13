@@ -35,6 +35,8 @@ namespace Osiris::Editor
 		bool OnKeyPressedEvent(KeyPressedEvent& e);
 		bool OnKeyTypedEvent(KeyTypedEvent& e);
 		bool OnWindowResizeEvent(WindowResizeEvent& e);
+
+		void OnSceneOpened(Events::EventArgs& args);
 		
 	private:
 		float	m_Time;
@@ -42,5 +44,9 @@ namespace Osiris::Editor
 		IconLibrary	m_IconLibrary;
 
 		std::map<std::string, std::shared_ptr<EditorPlugin>> m_plugins;
+
+		std::shared_ptr<EventService> _eventService;
+		std::shared_ptr<ProjectService> _projectService;
+		std::shared_ptr<SceneService> _sceneService;
 	};
 }

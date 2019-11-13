@@ -35,7 +35,7 @@ namespace Osiris::Layers
 		void RemoveSpriteLayer(uint32_t index);
 		void RemoveAllSpriteLayers();
 
-	private:
+	protected:
 		std::unique_ptr<Shader> _Shader;
 
 		std::vector<SpriteLayer*> _SpriteLayers;

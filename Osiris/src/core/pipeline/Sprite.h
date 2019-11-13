@@ -2,6 +2,10 @@
 
 #include <Osiris.h>
 
+#include "core/renderer/VertexArray.h"
+#include "core/renderer/Buffer.h"
+#include "core/pipeline/SpriteVertex.h"
+
 using namespace Osiris;
 
 
@@ -14,10 +18,7 @@ namespace Osiris {
 	class Sprite
 	{
 	public:
-		Sprite(std::string name, int x, int y, int width, int height) : _ID(_nextID), _Name(name), _X(x), _Y(y), _Width(width), _Height(width) 
-		{
-			_nextID = _nextID + 1;
-		}
+		Sprite(std::string name, int x, int y, int width, int height);
 
 		~Sprite() {}
 
@@ -39,14 +40,14 @@ namespace Osiris {
 		inline const int GetHeight() const { return _Height; }
 		void SetHeight(const int height);
 
-		inline const SpriteLayer* GetLayer() const { return _Layer; }
-		inline void SetLayer(SpriteLayer* layer) { _Layer = layer; }
+		inline const std::shared_ptr<Texture*> GetTexture() const { return _Texture; }
+		inline void SetTexture(std::shared_ptr<Texture*> texture) { _Texture = texture; }
 
-		inline const SpriteBatchEntry* GetBatchEntry() const { return _Entry; }
-		inline void SetBatchEntry(SpriteBatchEntry* entry) { _Entry = entry; }
+		inline const std::shared_ptr<VertexArray> GetVertexArray() const { return _VertexArray; }
 
-		inline const SpriteBatch* GetBatch() const { return _Batch; }
-		inline void SetBatch(SpriteBatch* batch) { _Batch = batch; }
+		inline const std::shared_ptr<IndexBuffer> GetIndexBuffer() const { return _IndexBuffer; }
+
+		inline const std::shared_ptr<VertexBuffer> GetVertexBuffer() const { return _VertexBuffer; }
 
 	private:
 		uint32_t _ID;
@@ -56,12 +57,16 @@ namespace Osiris {
 		int _Width;
 		int _Height;
 
-		SpriteLayer* _Layer;
-		SpriteBatch* _Batch;
-		SpriteBatchEntry* _Entry;
+		std::shared_ptr<Texture*> _Texture;
+
+		std::vector<SpriteVertex> _vertices;
+		std::vector<unsigned int> _indicies;
+		std::shared_ptr<VertexArray> _VertexArray;
+		std::shared_ptr<IndexBuffer> _IndexBuffer;
+		std::shared_ptr<VertexBuffer> _VertexBuffer;
 
 		static uint32_t _nextID;
 
-		void UpdateBatchData();
+		void UpdateBuffers();
 	};
 }

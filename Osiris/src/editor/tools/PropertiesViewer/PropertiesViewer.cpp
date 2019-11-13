@@ -3,6 +3,7 @@
 #include "osrpch.h"
 
 #include "PropertiesViewer.h"
+#include "IPropertyComponent.h"
 
 #include "editor/services/ServiceManager.h"
 
@@ -13,11 +14,11 @@
 
 namespace Osiris::Editor
 {
-	Sprite* PropertiesViewer::_SelectedSprite = NULL;
+	std::shared_ptr<GameObject> PropertiesViewer::_SelectedGameObject = NULL;
 
 	PropertiesViewer::PropertiesViewer() : EditorPlugin("Properties"), _Mode(None)
 	{
-		ServiceManager::Get<EventService>(ServiceManager::Service::Events).Subscribe(Events::EventType::SelectedSpriteChanged, EVENT_FUNC(PropertiesViewer::OnSelectedSpriteChanged));
+		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(PropertiesViewer::OnSelectedGameObjectChanged));
 	}
 
 	PropertiesViewer::~PropertiesViewer() {}
@@ -38,11 +39,11 @@ namespace Osiris::Editor
 
 	}
 
-	void PropertiesViewer::OnSelectedSpriteChanged(Events::EventArgs& args)
+	void PropertiesViewer::OnSelectedGameObjectChanged(Events::EventArgs& args)
 	{
-		Events::SelectedSpriteChangedArgs& evtArgs = static_cast<Events::SelectedSpriteChangedArgs&>(args);
+		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
 
-		_SelectedSprite = (Sprite*)evtArgs.sprite;
+		_SelectedGameObject = evtArgs.gameObject;
 
 		_Mode = SpriteUI;
 	}
@@ -50,41 +51,22 @@ namespace Osiris::Editor
 
 	void PropertiesViewer::DrawSpriteUI()
 	{
-		if (_SelectedSprite != NULL)
+		if (_SelectedGameObject != NULL)
 		{
 
 			static char spriteName[32] = "SpriteName";
-			strcpy(spriteName, _SelectedSprite->GetName().c_str());
+			strcpy(spriteName, _SelectedGameObject->name.c_str());
 			ImGui::Text("Name:");
 			ImGui::SameLine();
 			if (ImGui::InputText("##edit", spriteName, IM_ARRAYSIZE(spriteName)) == true)
 			{
-				_SelectedSprite->SetName(std::string(spriteName));
+				_SelectedGameObject->name = std::string(spriteName);
 			}
 
 			ImGui::Separator();
 
-			if (ImGui::TreeNode("Position"))
-			{
-				float x = (float)_SelectedSprite->GetX();
-				float y = (float)_SelectedSprite->GetY();
-
-				ImGui::Text("X");
-				ImGui::SameLine();
-				ImGui::PushID("X");
-				if (ImGui::InputFloat("", &x))
-					_SelectedSprite->SetX((int)x);
-				ImGui::PopID();
-
-				ImGui::Text("Y");
-				ImGui::SameLine();
-				ImGui::PushID("Y");
-				if (ImGui::InputFloat("", &y))
-					_SelectedSprite->SetY((int)y);
-				ImGui::PopID();
-
-				ImGui::TreePop();
-			}
+			_SelectedGameObject->transform2d->OnPropertyEditorDraw();
+			_SelectedGameObject->spriteRender->OnPropertyEditorDraw();
 		}
 	}
 }

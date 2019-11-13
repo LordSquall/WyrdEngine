@@ -1,28 +1,13 @@
 #pragma once
 
 #include <Osiris.h>
+#include <core/pipeline/SpriteBatch.h>
+
+#include "Layer2D.h"
 
 using namespace Osiris;
 
-
 namespace Osiris::Editor {
-
-	class GameObject2D
-	{
-	public:
-		std::string name;
-	};
-
-	class Layer2D
-	{
-	public:
-		std::string name;
-		std::vector<std::shared_ptr<GameObject2D>> sprites;
-
-		void AddSprite(const GameObject2D& gameObject);
-		void RemoveSprite(int uid);
-		void SwapSprite(int a, int b);
-	};
 
 	class Scene
 	{

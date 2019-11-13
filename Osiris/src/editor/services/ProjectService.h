@@ -21,8 +21,11 @@ namespace Osiris::Editor
 		void LoadProject(std::string projectfile);
 
 		inline std::shared_ptr<Project> GetCurrentProject() { return _Project; }
+		inline bool IsProjectLoaded() { return _isProjectLoaded; }
+		inline void IsProjectLoaded(bool value) { _isProjectLoaded = value; }
 
 	private:
+		bool _isProjectLoaded;
 		std::shared_ptr<Project> _Project;
 	};
 }

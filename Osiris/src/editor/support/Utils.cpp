@@ -3,6 +3,7 @@
 #include "osrpch.h"
 #include "Utils.h"
 #include <shobjidl.h>
+#include <shtypes.h>
 
 #include <corecrt_wstring.h>
 
@@ -28,7 +29,6 @@ namespace Osiris::Editor {
 
 	std::string Utils::GetAssetFolder()
 	{
-		OSR_INFO(Utils::canonical_path + Utils::asset_path);
 		if (std::filesystem::exists(Utils::canonical_path + Utils::asset_path)) {
 			return Utils::canonical_path + Utils::asset_path;
 		}
@@ -132,7 +132,7 @@ namespace Osiris::Editor {
 		return result;
 	}
 
-	std::string Utils::SaveFileDialog(const std::string& filter)
+	std::string Utils::SaveFileDialog(const std::string& name, const std::string& filter)
 	{
 		// Template modified from https://docs.microsoft.com/en-us/windows/desktop/learnwin32/example--the-open-dialog-box
 		HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
@@ -145,33 +145,53 @@ namespace Osiris::Editor {
 			// Create the FileOpenDialog object.
 			hr = CoCreateInstance(CLSID_FileSaveDialog, NULL, CLSCTX_ALL,
 				IID_IFileSaveDialog, reinterpret_cast<void**>(&pFileSave));
+
 			if (SUCCEEDED(hr))
 			{
-				// Show the Open dialog box.
-				hr = pFileSave->Show(NULL);
+				// Set the options on the dialog.
+				DWORD dwFlags;
 
-				// Get the file name from the dialog box.
+				// Before setting, always get the options first in order 
+				// not to override existing options.
+				hr = pFileSave->GetOptions(&dwFlags);
 				if (SUCCEEDED(hr))
 				{
-					IShellItem *pItem;
-					hr = pFileSave->GetResult(&pItem);
+					// In this case, get shell items only for file system items.
+					hr = pFileSave->SetOptions(dwFlags | FOS_FORCEFILESYSTEM);
 					if (SUCCEEDED(hr))
 					{
-						PWSTR pszFilePath;
-						hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+						// Set the default extension to be ".doc" file.
+						hr = pFileSave->SetDefaultExtension(L"doc;docx");
+								
+						// Show the Open dialog box.
+						hr = pFileSave->Show(NULL);
 
-						// Display the file name to the user.
+						// Get the file name from the dialog box.
 						if (SUCCEEDED(hr))
 						{
-							char str[MAX_PATH];
-							wcstombs(str, pszFilePath, MAX_PATH);
-							result = str;
-							SwapSlashes(result, "\\", "/");
-							CoTaskMemFree(pszFilePath);
+							IShellItem* pItem;
+							hr = pFileSave->GetResult(&pItem);
+							if (SUCCEEDED(hr))
+							{
+								PWSTR pszFilePath;
+								hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+
+								// Display the file name to the user.
+								if (SUCCEEDED(hr))
+								{
+									char str[MAX_PATH];
+									wcstombs(str, pszFilePath, MAX_PATH);
+									result = str;
+									SwapSlashes(result, "\\", "/");
+									CoTaskMemFree(pszFilePath);
+								}
+								pItem->Release();
+
+							}
 						}
-						pItem->Release();
 					}
 				}
+
 				pFileSave->Release();
 			}
 			CoUninitialize();
@@ -184,6 +204,12 @@ namespace Osiris::Editor {
 		return "not yet implemented";
 	}
 
+
+	bool Utils::FileExists(const std::string& filename)
+	{
+		return std::filesystem::exists(filename);
+	}
+
 	std::string Utils::GetPath(const std::string& filename)
 	{
 		std::string directory;
@@ -193,6 +219,73 @@ namespace Osiris::Editor {
 			directory = filename.substr(0, last_slash_idx);
 		}
 		return directory;
+	}
+
+
+	std::string Utils::GetFilename(const std::string& path, bool addExtension)
+	{
+		if (addExtension == true)
+		{
+			return std::filesystem::path(path).filename().string();
+		}
+		else
+		{
+			return std::filesystem::path(path).stem().string();
+		}
+	}
+
+
+	std::string Utils::GetFileExtension(const std::string& path)
+	{
+		return std::filesystem::path(path).extension().string();
+	}
+
+	std::vector<std::string> Utils::GetFolderList(const std::string& directory, bool asFullPaths)
+	{
+		std::vector<std::string> r;
+		for (auto& p : std::filesystem::directory_iterator(directory))
+			if (p.is_directory())
+				if (asFullPaths == true)
+				{
+					r.push_back(p.path().string());
+				}
+				else
+				{
+					r.push_back(p.path().filename().string());
+				}
+		return r;
+	}
+
+	std::vector<std::string> Utils::GetFileList(const std::string& directory, bool asFullPaths, bool recursive)
+	{
+		std::vector<std::string> r;
+		if(recursive  == true)
+		{
+			for (auto& p : std::filesystem::recursive_directory_iterator(directory))
+				if (!p.is_directory())
+					if (asFullPaths == true)
+					{
+						r.push_back(p.path().string());
+					}
+					else
+					{
+						r.push_back(p.path().filename().string());
+					}
+		}
+		else
+		{
+			for (auto& p : std::filesystem::directory_iterator(directory))
+				if (!p.is_directory())
+					if (asFullPaths == true)
+					{
+						r.push_back(p.path().string());
+					}
+					else
+					{
+						r.push_back(p.path().filename().string());
+					}
+		}
+		return r;
 	}
 
 	void Utils::CreateProjectFileStructure(const std::string& rootFolder)

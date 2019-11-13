@@ -1,11 +1,11 @@
 #pragma once
 #include "osrpch.h"
 
-#include "PRoject.h"
+#include "Project.h"
 
 namespace Osiris::Editor
 {
-	Project::Project() : name("Untitle")
+	Project::Project() : name("Untitled")
 	{
 
 	}

@@ -200,6 +200,15 @@ namespace Osiris {
 	}
 
 
+	void WindowsWindow::SetTitle(const std::string& title)
+	{
+		WindowData& data = *(WindowData*)glfwGetWindowUserPointer(m_Window);
+		data.Title = title;
+
+		glfwSetWindowTitle(m_Window, data.Title.c_str());
+	}
+
+
 	void* WindowsWindow::GetNativeWindowPointer() const
 	{
 		return (void*)m_Window;

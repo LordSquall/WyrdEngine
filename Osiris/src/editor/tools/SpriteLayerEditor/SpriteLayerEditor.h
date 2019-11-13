@@ -18,8 +18,11 @@ namespace Osiris::Editor
 	private:
 		void OnSceneOpened(Events::EventArgs& args);
 
+		void AddSpriteGO();
+
 	private:
-		SceneService* _SceneService;
+		std::shared_ptr<SceneService> _SceneService;
+		std::shared_ptr<ResourceService> _ResourceService;
 		int32_t _SelectedSprite;
 		std::shared_ptr<Layer2D> _SelectedLayer2D;
 	};

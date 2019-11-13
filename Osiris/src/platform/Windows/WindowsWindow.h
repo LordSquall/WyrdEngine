@@ -26,6 +26,7 @@ namespace Osiris {
 		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
+		void SetTitle(const std::string& title) override;
 
 		void* GetNativeWindowPointer() const override;
 

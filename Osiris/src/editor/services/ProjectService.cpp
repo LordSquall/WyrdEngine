@@ -13,20 +13,18 @@ namespace Osiris::Editor
 {
 	void Osiris::Editor::ProjectService::OnCreate()
 	{
-		ServiceManager::Get<EventService>(ServiceManager::Events).Subscribe(Events::EventType::CreateNewProject, [this](Events::EventArgs& args) {
+		/* Initialise Defaults */
+		IsProjectLoaded(false);
+
+		/* Subscribe to Project lifecycle events */
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::CreateNewProject, [this](Events::EventArgs& args) {
 			Events::CreateNewProjectArgs& a = (Events::CreateNewProjectArgs&)args;
 			CreateNewProject(a.location + "\\" + a.name + ".oproj");
-
 		});
 
-		ServiceManager::Get<EventService>(ServiceManager::Events).Subscribe(Events::EventType::OpenProject, [this](Events::EventArgs& args) {
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::OpenProject, [this](Events::EventArgs& args) {});
 
-		});
-
-		ServiceManager::Get<EventService>(ServiceManager::Events).Subscribe(Events::EventType::CloseProject, [this](Events::EventArgs& args) {
-
-		});
-
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::CloseProject, [this](Events::EventArgs& args) {});
 	}
 
 	void Osiris::Editor::ProjectService::OnDestroy()
@@ -36,36 +34,49 @@ namespace Osiris::Editor
 
 	void Osiris::Editor::ProjectService::CreateNewProject(std::string projectpath)
 	{
-		json j;
-		j["name"] = "test";
+		/* Create a new project shared pointer */
+		_Project = std::make_shared<Project>();
 
-		std::ofstream o(projectpath.c_str());
+		/* Save the project object to disk */
+		ProjectLoader::Result result = ProjectLoader::Save(projectpath, *_Project, Osiris::FileContent::Json);
+		
+		if (result == ProjectLoader::Result::Success)
+		{
+			/* Mark project as loaded */
+			IsProjectLoaded(true);
 
-		o << std::setw(4) << j << std::endl;
+			/* Create default folders and files */
+			Utils::CreateProjectFileStructure(Utils::GetPath(projectpath));
 
-		o.close();
+			/* Set the utilities to the base root folder */
+			Utils::SetRootProjectFolder(Utils::GetPath(projectpath.c_str()));
 
-		/* Create default folders and files */
-		Utils::CreateProjectFileStructure(Utils::GetPath(projectpath));
+			/* Send a Project Loaded Event */
+			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ProjectLoaded,
+				Events::ProjectLoadedArgs(_Project->initialScene, _Project, Utils::GetPath(projectpath)));
+		}
 	}
 
 
 	void Osiris::Editor::ProjectService::LoadProject(std::string projectfile)
 	{
-		std::ifstream i(projectfile.c_str());
-		json j;
-		i >> j;
-
+		/* Create a new project shared pointer */
 		_Project = std::make_shared<Project>();
 
-		ProjectLoader::Load(projectfile.c_str(), *_Project, FileContent::Json);
+		/* Load the project object */
+		ProjectLoader::Result result = ProjectLoader::Load(projectfile.c_str(), *_Project, Osiris::FileContent::Json);
 
-		Utils::SetRootProjectFolder(Utils::GetPath(projectfile.c_str()));
+		if (result == ProjectLoader::Result::Success)
+		{
+			/* Mark project as loaded */
+			IsProjectLoaded(true);
 
-		std::string initialScene = j["initialScene"];
+			/* Set the utilities to the base root folder */
+			Utils::SetRootProjectFolder(Utils::GetPath(projectfile.c_str()));
 
-		std::string projectPath = Utils::GetPath(projectfile);
-		
-		ServiceManager::Get<EventService>(ServiceManager::Events).Publish(Events::EventType::ProjectLoaded, Events::ProjectLoadedArgs(initialScene, _Project, projectPath));
+			/* Send a Project Loaded Event */
+			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ProjectLoaded, 
+				Events::ProjectLoadedArgs(_Project->initialScene, _Project, Utils::GetPath(projectfile)));
+		}
 	}
 }

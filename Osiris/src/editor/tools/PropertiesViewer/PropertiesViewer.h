@@ -21,10 +21,10 @@ namespace Osiris::Editor
 
 	private:
 		Mode _Mode;
-		void OnSelectedSpriteChanged(Events::EventArgs& args);
+		void OnSelectedGameObjectChanged(Events::EventArgs& args);
 		
 		void DrawSpriteUI();
 
-		static Sprite* _SelectedSprite;
+		static std::shared_ptr<GameObject> _SelectedGameObject;
 	};
 }

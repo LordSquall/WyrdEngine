@@ -11,13 +11,16 @@ namespace Osiris::Editor
 {
 	void SceneService::OnCreate() 
 	{
-		_loadedScene = std::make_shared<Scene>();
-		_loadedScene->BuildDefaults();
+		/* Initialise default values */
+		IsSceneLoaded(false);
 
-		ServiceManager::Get<EventService>(ServiceManager::Events).Subscribe(Events::EventType::ProjectLoaded, [this](Events::EventArgs& args) {
+		/* Subscribe to project lifecycle events */
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::ProjectLoaded, [this](Events::EventArgs& args) {
 			Events::ProjectLoadedArgs& a = (Events::ProjectLoadedArgs&)args;
 
-			LoadScene(a.projectPath + "/Assets/" + a.initialScene + ".scene.json");
+			std::string fileName = a.projectPath + "/Assets/" + a.initialScene + ".scene";
+			
+			Utils::FileExists(fileName) ? LoadScene(fileName) : CreateNewScene();
 		});
 	}
 
@@ -25,16 +28,24 @@ namespace Osiris::Editor
 	
 	bool SceneService::CreateNewScene()
 	{
-		_loadedScene.reset();
+		/* Create a new scene shared pointer */
+		_loadedScene = std::make_shared<Scene>();
+
+		/* Mark scene loaded */
+		IsSceneLoaded(true);
+
+		/* fire scene loaded event on the editor system */
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Editor::Events::SceneOpened, Events::SceneOpenedArgs(_loadedScene));
 
 		return true;
 	}
 
 	bool SceneService::LoadScene(std::string& path)
 	{
-		SceneLoader::Result result = SceneLoader::Load(path, *_loadedScene, FileContent::Json);
+		_loadedScene = std::make_shared<Scene>();
 
-		_loadedScenePath = path;
+		/* Load the scene object */
+		SceneLoader::Result result = SceneLoader::Load(path, *_loadedScene, Osiris::FileContent::Json);
 
 		if (result != SceneLoader::Result::Success)
 		{	
@@ -52,16 +63,15 @@ namespace Osiris::Editor
 		}
 		else
 		{
-			/* Retrieve the current 2D rendering layer */
-			Layers::Renderer2DLayer* renderer2DLayer = (Layers::Renderer2DLayer*)Application::Get().GetLayerStack()->FindLayer("2D Rendering Layer");
+			/* Mark scene loaded */
+			IsSceneLoaded(true);
 
-			/* Clear out all the sprite layers */
-			renderer2DLayer->RemoveAllSpriteLayers();
-
-			/* trigger a scene swap on the core system */
+			/* Update the loaded scene path */
+			_loadedScenePath = path;
 
 			/* fire scene loaded event on the editor system */
-			ServiceManager::Get<EventService>(ServiceManager::Events).Publish(Editor::Events::SceneOpened, Events::SceneOpenedArgs());
+			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Editor::Events::SceneOpened, Events::SceneOpenedArgs(_loadedScene));
+			
 			return true;
 		}
 	}

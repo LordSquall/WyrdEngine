@@ -8,12 +8,12 @@
 namespace Osiris
 {
 
-	VertexBuffer* VertexBuffer::Create(float* vertices, uint32_t size)
+	VertexBuffer* VertexBuffer::Create(float* vertices, uint32_t size, const std::string& description)
 	{
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::None:		OSR_CORE_ASSERT(false, "RendererAPI::None is currently not supported"); return nullptr;
-		case RendererAPI::OpenGL:	return new OpenGLVertexBuffer(vertices, size);
+		case RendererAPI::OpenGL:	return new OpenGLVertexBuffer(vertices, size, description);
 		}
 
 		OSR_CORE_ASSERT(false, "Unknown Renderer API");

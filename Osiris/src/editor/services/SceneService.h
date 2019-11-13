@@ -20,6 +20,8 @@ namespace Osiris::Editor
 		// Getters and Setters
 		inline std::shared_ptr<Scene> GetLoadedScene() { return _loadedScene; }
 		inline std::string& GetLoadedScenePath() { return _loadedScenePath; }
+		inline bool IsSceneLoaded() { return _isSceneLoaded; }
+		inline void IsSceneLoaded(bool value) { _isSceneLoaded = value; }
 
 		bool CreateNewScene();
 		bool LoadScene(std::string& path);
@@ -27,6 +29,7 @@ namespace Osiris::Editor
 		bool SaveScene(std::string& path);
 		
 	private:
+		bool _isSceneLoaded;
 		std::string _loadedScenePath;
 		std::shared_ptr<Scene> _loadedScene;
 

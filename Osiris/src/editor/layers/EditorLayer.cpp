@@ -37,9 +37,6 @@ namespace Osiris::Editor
 		Application& app = Application::Get();
 		LayerStack* stack = app.GetLayerStack();
 
-		/* initialise editor services */
-		ServiceManager::StartServices();
-
 		m_plugins["Properties"] = std::make_shared<PropertiesViewer>();
 
 		std::shared_ptr<LayerViewer> layerViewer = std::make_shared<LayerViewer>();
@@ -53,6 +50,14 @@ namespace Osiris::Editor
 		m_plugins["Asset Viewer"] = std::make_shared<AssetViewer>();
 
 		util = Utils();
+
+		_eventService = ServiceManager::Get<EventService>(ServiceManager::Service::Events);
+		_projectService = ServiceManager::Get<ProjectService>(ServiceManager::Service::Project);
+		_sceneService = ServiceManager::Get<SceneService>(ServiceManager::Service::Scene);
+
+		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Editor::Events::SceneOpened, EVENT_FUNC(EditorLayer::OnSceneOpened));
+
+		_projectService->LoadProject("D:/Projects/Tetris/Tetris.oproj");
 	}
 
 	EditorLayer::~EditorLayer()
@@ -60,6 +65,7 @@ namespace Osiris::Editor
 
 	}
 
+#include <direct.h>
 	void EditorLayer::OnAttach()
 	{
 		/* load in icons sets */
@@ -76,6 +82,8 @@ namespace Osiris::Editor
 		ImGui::CreateContext();
 		
 		ImGuiIO& io = ImGui::GetIO();
+
+		io.Fonts->AddFontFromFileTTF("Montserrat-Regular.otf", 16.0f);
 
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
@@ -126,7 +134,8 @@ namespace Osiris::Editor
 		static bool menu_app_close_show = false;
 		static bool menu_help_demo_window_show = false;
 
-		SceneService& sceneService = ServiceManager::Get<SceneService>(ServiceManager::Service::Scene);
+		_projectService = ServiceManager::Get<ProjectService>(ServiceManager::Service::Project);
+		_sceneService = ServiceManager::Get<SceneService>(ServiceManager::Service::Scene);
 
 		float time = (float)glfwGetTime();
 		ImGuiIO& io = ImGui::GetIO();
@@ -149,10 +158,10 @@ namespace Osiris::Editor
 			if (ImGui::BeginMenu("Create New Project...")) {
 				if (ImGui::MenuItem("New")) 
 				{
-					ServiceManager::Get<DialogService>(ServiceManager::Service::Dialog).OpenDialog(Dialogs::CreateNewProject);
+					ServiceManager::Get<DialogService>(ServiceManager::Service::Dialog)->OpenDialog(Dialogs::CreateNewProject);
 				}
 				if (ImGui::MenuItem("Open File", "Ctrl+O")) {
-					OSR_INFO(util.OpenFileDialog("*.scene.json"));
+					OSR_INFO(util.OpenFileDialog("*.scene"));
 				}
 				if (ImGui::MenuItem("Open Folder")) {
 					OSR_INFO(util.OpenFolderDialog());
@@ -162,40 +171,34 @@ namespace Osiris::Editor
 			}
 			if (ImGui::MenuItem("Open Project"))
 			{
-				ServiceManager::Get<ProjectService>(ServiceManager::Service::Project).LoadProject(util.OpenFileDialog(".oproj"));
+				_projectService->LoadProject(util.OpenFileDialog(".oproj"));
 			}
-			if (ImGui::MenuItem("Open Project In Explorer", nullptr, nullptr, !sceneService.GetLoadedScenePath().empty()))
+			if (ImGui::MenuItem("Open Project In Explorer", nullptr, nullptr, _projectService->IsProjectLoaded()))
 			{
 				ShellExecuteA(NULL, "open", Utils::GetAssetFolder().c_str(), NULL, NULL, SW_SHOWDEFAULT);
 			}
 
 			ImGui::Separator();
 
-			if (ImGui::MenuItem("New Scene", nullptr, nullptr, !sceneService.GetLoadedScenePath().empty())) {
-				std::string filepath = util.SaveFileDialog(".scene.json");
-				sceneService.SaveScene(filepath);
-				sceneService.LoadScene(filepath);
+			bool fileOperationsFlag = _sceneService->IsSceneLoaded() && _projectService->IsProjectLoaded();
+
+			if (ImGui::MenuItem("New Scene", nullptr, nullptr, _projectService->IsProjectLoaded())) {
+				std::string filepath = util.SaveFileDialog("Scene Json Files", "*.scene");
+				_sceneService->SaveScene(filepath);
+				_sceneService->LoadScene(filepath);
 			}
 
-			if (ImGui::MenuItem("Save Scene", nullptr, nullptr, !sceneService.GetLoadedScenePath().empty())) {
-				std::string filepath = util.SaveFileDialog(".scene.json");
-				if (sceneService.SaveScene() == true)
-				{
-					OSR_CORE_INFO("Saved Scene");
-				}
-			}
-
-			if (ImGui::MenuItem("Save Scene As..", nullptr, nullptr, !sceneService.GetLoadedScenePath().empty())) {
-				std::string filepath = util.SaveAsFileDialog(".scene.json");
-				if (sceneService.SaveScene(filepath) == true)
+			if (ImGui::MenuItem("Save Scene As..", nullptr, nullptr, _projectService->IsProjectLoaded() && _sceneService->IsSceneLoaded())) {
+				std::string filepath = util.SaveFileDialog("Scene Json Files", ".scene");
+				if (_sceneService->SaveScene(filepath) == true)
 				{
 					OSR_CORE_INFO("Saved Scene As");
 				}
 			}
 
-			if (ImGui::MenuItem("Open Scene", nullptr, nullptr, !sceneService.GetLoadedScenePath().empty())) {
-				std::string filepath = util.OpenFileDialog(".scene.json");
-				if (sceneService.LoadScene(filepath) == true)
+			if (ImGui::MenuItem("Open Scene", nullptr, nullptr, _projectService->IsProjectLoaded())) {
+				std::string filepath = util.OpenFileDialog(".scene");
+				if (_sceneService->LoadScene(filepath) == true)
 				{
 					OSR_CORE_INFO("Opened Scene");
 				}
@@ -232,7 +235,7 @@ namespace Osiris::Editor
 		{
 			if (ImGui::MenuItem("Save Scene Test"))
 			{
-				sceneService.SaveScene(std::string("C:\\Users\\Paul\\Desktop\\SampleProject\\Assets\\example.scene.json"));
+				_sceneService->SaveScene(std::string("C:\\Users\\Paul\\Desktop\\SampleProject\\Assets\\example.scene"));
 			}
 
 			ImGui::EndMenu();
@@ -240,20 +243,20 @@ namespace Osiris::Editor
 
 		ImGui::EndMainMenuBar();
 
-		/* system info window */
-		ImGui::SetNextWindowSize(ImVec2((float)app.GetWindow().GetWidth() * 0.25f, (float)app.GetWindow().GetHeight() * 0.25f));
-		ImGui::SetNextWindowPos(ImVec2(((float)app.GetWindow().GetWidth() * 0.75f) - 5.0f, 25.0f));
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoNav;
+		///* system info window */
+		//ImGui::SetNextWindowSize(ImVec2((float)app.GetWindow().GetWidth() * 0.25f, (float)app.GetWindow().GetHeight() * 0.25f));
+		//ImGui::SetNextWindowPos(ImVec2(((float)app.GetWindow().GetWidth() * 0.75f) - 5.0f, 25.0f));
+		//ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoNav;
 
-		ImGui::Begin("System Info", NULL, window_flags);
+		//ImGui::Begin("System Info", NULL, window_flags);
 
-		struct RendererInfo& info = renderer.GetVendorInfo();
-		ImGui::Text("Vendor: %s", info.vendor.c_str());
-		ImGui::Text("Version: %s", info.version.c_str());
-		ImGui::Text("Renderer: %s", info.renderer.c_str());
+		//struct RendererInfo& info = renderer.GetVendorInfo();
+		//ImGui::Text("Vendor: %s", info.vendor.c_str());
+		//ImGui::Text("Version: %s", info.version.c_str());
+		//ImGui::Text("Renderer: %s", info.renderer.c_str());
 
-		ImGui::End();
-		
+		//ImGui::End();
+		//
 		for (auto const&[key, val] : ServiceManager::GetServices())
 		{
 			val->OnGUI();
@@ -290,6 +293,18 @@ namespace Osiris::Editor
 		dispatcher.Dispatch<KeyPressedEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnKeyPressedEvent));
 		dispatcher.Dispatch<KeyTypedEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnKeyTypedEvent));
 		dispatcher.Dispatch<WindowResizeEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnWindowResizeEvent));
+	}
+
+	void EditorLayer::OnSceneOpened(Events::EventArgs& args)
+	{
+		/* cast the event args to correct type */
+		Events::SceneOpenedArgs& evtArgs = static_cast<Events::SceneOpenedArgs&>(args);
+
+		/* get the current loaded project name */
+		std::string projectName = _projectService->GetCurrentProject()->name;
+
+		/* set the title */
+		Application::Get().GetWindow().SetTitle("Osiris Engine - " + projectName + " [" + evtArgs.scene->name + "]");
 	}
 
 	bool EditorLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)

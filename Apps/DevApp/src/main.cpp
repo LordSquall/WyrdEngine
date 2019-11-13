@@ -7,22 +7,17 @@
 /* local headers */
 #include "layers/ExampleLayer.h"
 
-/* if editor is enabled we want to include the inbuild editor layers */
-#ifdef OSR_EDITOR_ENABLED 
 #include "editor/layers/EditorLayer.h"
-#endif
+#include "editor/layers/ServicesLayer.h"
+#include "editor/layers/EditorRenderer2DLayer.h"
 
 class ClientApplication : public Osiris::Application
 {
 public:
 	ClientApplication()
 	{
-		PushLayer(new Osiris::Layers::Renderer2DLayer("2D Rendering Layer"));
-
-#ifdef OSR_EDITOR_ENABLED
+		PushLayer(new Osiris::Editor::EditorRenderer2DLayer("Editor2DLayer"));
 		PushOverlay(new Osiris::Editor::EditorLayer());
-#endif
-		
 	}
 
 	~ClientApplication()
