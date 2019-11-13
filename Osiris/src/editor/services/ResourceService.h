@@ -32,6 +32,7 @@ namespace Osiris::Editor
 
 		inline std::map<uint32_t, std::shared_ptr<TextureRes>>& GetTextures() { return _textureResources; }
 		std::shared_ptr<TextureRes> GetTextureByName(const std::string& name);
+		std::shared_ptr<TextureRes> GetTextureByUID(const uint32_t uid);
 
 	private:
 		Type DetermineType(std::string& path);

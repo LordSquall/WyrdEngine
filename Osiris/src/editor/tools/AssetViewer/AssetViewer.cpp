@@ -84,16 +84,29 @@ namespace Osiris::Editor
 	{
 		std::map<uint32_t, std::shared_ptr<TextureRes>> resources = _resourcesService->GetTextures();
 
-		int col = 0;
+		int resIdx = 0;
+
 		for (auto res : resources)
 		{
+			uint32_t id = res.first;
+
 			ImGui::PushItemWidth(100.0f);
+		
+			ImGui::PushID(resIdx);
 			ImGui::BeginGroup();
-			ImGui::Image((ImTextureID)res.second->GetRendererHandle(), ImVec2(64, 64));
+			ImGui::ImageButton((ImTextureID)res.second->GetRendererHandle(), ImVec2(64, 64));
+			if (ImGui::BeginDragDropSource())
+			{
+				ImGui::SetDragDropPayload("ASSET_DND_PAYLOAD", &id, sizeof(uint32_t));
+				ImGui::Image((ImTextureID)res.second->GetRendererHandle(), ImVec2(32, 32));
+				ImGui::EndDragDropSource();
+			}
 			ImGui::Text(res.second->GetName().c_str());
 			ImGui::EndGroup();
+			ImGui::PopID();
+
 			ImGui::SameLine();
-			col++;
+			resIdx++;
 		}
 	}
 }

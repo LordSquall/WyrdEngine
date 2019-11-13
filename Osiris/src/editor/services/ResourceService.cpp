@@ -65,6 +65,17 @@ namespace Osiris::Editor
 		return nullptr;
 	}
 
+	std::shared_ptr<TextureRes> ResourceService::GetTextureByUID(const uint32_t uid)
+	{
+		auto it = _textureResources.find(uid);
+
+		if (it != _textureResources.end())
+		{
+			return _textureResources[uid];
+		}
+		return nullptr;
+	}
+
 	ResourceService::Type ResourceService::DetermineType(std::string& path)
 	{
 		std::string& extension = Utils::GetFileExtension(path);
