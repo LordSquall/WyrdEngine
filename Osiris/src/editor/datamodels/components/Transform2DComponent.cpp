@@ -32,38 +32,28 @@ namespace Osiris::Editor
 		{
 			char buffer[32];
 
-			ImGui::Text("Position");
-			ImGui::Text("x");
-			ImGui::PushID("pos.x");
-			ImGui::SameLine();
-			ImGui::InputFloat("##hidelabel", &position.x);
-			ImGui::PopID();
-			ImGui::Text("y");
-			ImGui::PushID("pos.y");
-			ImGui::SameLine();
-			ImGui::InputFloat("##hidelabel", &position.y);
-			ImGui::PopID();
+			float pos[2];
+			float rot;
+			float scl[2];
 
+			pos[0] = position.x;
+			pos[1] = position.y;
+			rot = rotation;
+			scl[0] = scale.x;
+			scl[1] = scale.y;
 
-			ImGui::Text("Rotation");
-			ImGui::Text("r");
-			ImGui::PushID("rot");
-			ImGui::SameLine();
-			ImGui::InputFloat("##hidelabel", &rotation);
-			ImGui::PopID();
-
-
-			ImGui::Text("Scale");
-			ImGui::Text("x");
-			ImGui::PushID("scale.x");
-			ImGui::SameLine();
-			ImGui::InputFloat("##hidelabel", &scale.x);
-			ImGui::PopID();
-			ImGui::Text("y");
-			ImGui::PushID("scale.y");
-			ImGui::SameLine();
-			ImGui::InputFloat("##hidelabel", &scale.y);
-			ImGui::PopID();
+			if (ImGui::InputFloat2("Pos     ", pos) == true)
+			{
+				//Sprite->SetPosition(position[0], position[1]);
+			}
+			if (ImGui::InputFloat("Rotation", &rot) == true)
+			{
+				//Sprite->SetPosition(position[0], position[1]);
+			}
+			if (ImGui::InputFloat2("Scale   ", scl) == true)
+			{
+				//Sprite->SetPosition(position[0], position[1]);
+			}
 
 			ImGui::TreePop();
 		}

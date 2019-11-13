@@ -67,6 +67,20 @@ namespace Osiris
 		UpdateBuffers();
 	}
 
+	void Sprite::SetPosition(const int x, const int y)
+	{
+		_X = x;
+		_Y = y;
+		UpdateBuffers();
+	}
+
+	void Sprite::SetSize(const int width, const int height)
+	{
+		_Width = width;
+		_Height = height;
+		UpdateBuffers();
+	}
+
 	void Sprite::UpdateBuffers()
 	{
 

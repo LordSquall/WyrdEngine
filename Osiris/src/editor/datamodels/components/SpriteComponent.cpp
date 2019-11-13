@@ -28,49 +28,31 @@ namespace Osiris::Editor
 
 	void SpriteComponent::OnPropertyEditorDraw()
 	{
-		int x, y, w, h;
+		int position[2];
+		int size[2];
 
-		x = Sprite->GetX();
-		y = Sprite->GetY();
-		w = Sprite->GetWidth();
-		h = Sprite->GetHeight();
+		position[0] = Sprite->GetX();
+		position[1] = Sprite->GetY();
+		size[0] = Sprite->GetWidth();
+		size[1] = Sprite->GetHeight();
 
 		if (ImGui::TreeNode("Sprite Renderer"))
 		{
-			ImGui::Text("Position");
-			ImGui::Text("x");
-			ImGui::PushID("pos.x");
-			ImGui::SameLine();
-			if (ImGui::InputInt("##hidelabel", &x) == true)
-				Sprite->SetX(x);
-			ImGui::PopID();
 
-			ImGui::Text("y");
-			ImGui::PushID("pos.y");
-			ImGui::SameLine();
-			if(ImGui::InputInt("##hidelabel", &y) == true)
-				Sprite->SetY(y);
-			ImGui::PopID();
+			if (ImGui::InputInt2("Pos ", position, 1) == true)
+			{
+				Sprite->SetPosition(position[0], position[1]);
+			}
 
-			ImGui::Text("Size");
-			ImGui::Text("w");
-			ImGui::PushID("pos.w");
-			ImGui::SameLine();
-			if (ImGui::InputInt("##hidelabel", &w) == true)
-				Sprite->SetWidth(w);
-			ImGui::PopID();
-
-			ImGui::Text("h");
-			ImGui::PushID("pos.h");
-			ImGui::SameLine();
-			if (ImGui::InputInt("##hidelabel", &h) == true)
-				Sprite->SetHeight(h);
-			ImGui::PopID();
+			if (ImGui::InputInt2("Size", size, 1))
+			{
+				Sprite->SetSize(size[0], size[1]);
+			}
 
 			ImGui::Text("Texture");
 			ImGui::PushID("texture");
 			ImGui::SameLine();
-			ImGui::Image((ImTextureID)BaseTexture->GetRendererHandle(), ImVec2(100.0f, 100.0f));
+			ImGui::Image((ImTextureID)BaseTexture->GetRendererHandle(), ImVec2(64.0f, 64.0f));
 			if (ImGui::BeginDragDropTarget())
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_DND_PAYLOAD"))

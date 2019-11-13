@@ -40,6 +40,9 @@ namespace Osiris {
 		inline const int GetHeight() const { return _Height; }
 		void SetHeight(const int height);
 
+		void SetPosition(const int x, const int y);
+		void SetSize(const int width, const int height);
+
 		inline const std::shared_ptr<Texture*> GetTexture() const { return _Texture; }
 		inline void SetTexture(std::shared_ptr<Texture*> texture) { _Texture = texture; }
 
