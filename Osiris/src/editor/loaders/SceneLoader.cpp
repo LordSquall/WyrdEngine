@@ -148,7 +148,7 @@ namespace Osiris::Editor
 	{
 		jSpriteComponent["position"] = { spriteComponent.Sprite->GetX(), spriteComponent.Sprite->GetY() };
 		jSpriteComponent["dimensions"] = { spriteComponent.Sprite->GetWidth(), spriteComponent.Sprite->GetHeight() };
-		jSpriteComponent["baseTexture"] = spriteComponent.BaseTexture->GetFilePath();
+		jSpriteComponent["baseTexture"] = spriteComponent.BaseTexture->GetName();
 	}
 
 	void from_json(const json& jSpriteComponent, SpriteComponent& spriteComponent)
@@ -162,7 +162,7 @@ namespace Osiris::Editor
 		std::string baseTextureName = jSpriteComponent.at("baseTexture");
 
 		spriteComponent.Sprite = std::make_shared<Sprite>("Temp", posx, posy, dimw, dimh);
-		spriteComponent.BaseTexture = ServiceManager::Get<ResourceService>(ServiceManager::Resources)->GetTextureByName("box_01");
+		spriteComponent.BaseTexture = ServiceManager::Get<ResourceService>(ServiceManager::Resources)->GetTextureByName(baseTextureName);
 
 		spriteComponent.Sprite->SetTexture(spriteComponent.BaseTexture->GetTexture());
 	}

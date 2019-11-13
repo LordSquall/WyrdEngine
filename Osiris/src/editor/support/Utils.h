@@ -12,8 +12,11 @@ namespace Osiris::Editor
 
 		static void SetRootProjectFolder(const std::string& rootFolder);
 
-		/* Dialog Functions */
+		/* Asset Folder Functions */
 		static std::string GetAssetFolder();
+		static std::string GetEditorResFolder();
+
+		/* Dialog Functions */
 		static std::string OpenFileDialog(const std::string& filter);
 		static std::string OpenFolderDialog();
 		static std::string SaveFileDialog(const std::string& name, const std::string& filter);
@@ -24,6 +27,7 @@ namespace Osiris::Editor
 		static std::string GetPath(const std::string& filename);
 		static std::string GetFilename(const std::string& path, bool addExtension = false);
 		static std::string GetFileExtension(const std::string& path);
+		static std::string GetRelativeAssetPath(const std::string& path);
 
 		static std::vector<std::string> GetFolderList(const std::string& directory, bool asFullPaths);
 		static std::vector<std::string> Utils::GetFileList(const std::string& directory, bool asFullPaths = false, bool recursive = false);

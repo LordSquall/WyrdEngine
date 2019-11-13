@@ -35,6 +35,11 @@ namespace Osiris::Editor {
 		return Utils::asset_path;
 	}
 
+	std::string Utils::GetEditorResFolder()
+	{
+		return std::filesystem::current_path().string();
+	}
+
 	std::string Utils::OpenFileDialog(const std::string& filter) {
 
 		// Template modified from https://docs.microsoft.com/en-us/windows/desktop/learnwin32/example--the-open-dialog-box
@@ -238,6 +243,11 @@ namespace Osiris::Editor {
 	std::string Utils::GetFileExtension(const std::string& path)
 	{
 		return std::filesystem::path(path).extension().string();
+	}
+
+	std::string Utils::GetRelativeAssetPath(const std::string& path)
+	{
+		return path.substr(Utils::GetAssetFolder().length(), path.length() - Utils::GetAssetFolder().length());
 	}
 
 	std::vector<std::string> Utils::GetFolderList(const std::string& directory, bool asFullPaths)

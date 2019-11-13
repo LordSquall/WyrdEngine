@@ -102,7 +102,6 @@ namespace Osiris::Editor
 						ImGui::EndDragDropTarget();
 					}
 
-
 					/* Sprite list context menu */
 					if (ImGui::BeginPopupContextItem("item context menu"))
 					{

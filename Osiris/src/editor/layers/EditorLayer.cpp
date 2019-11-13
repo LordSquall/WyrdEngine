@@ -243,20 +243,6 @@ namespace Osiris::Editor
 
 		ImGui::EndMainMenuBar();
 
-		///* system info window */
-		//ImGui::SetNextWindowSize(ImVec2((float)app.GetWindow().GetWidth() * 0.25f, (float)app.GetWindow().GetHeight() * 0.25f));
-		//ImGui::SetNextWindowPos(ImVec2(((float)app.GetWindow().GetWidth() * 0.75f) - 5.0f, 25.0f));
-		//ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoNav;
-
-		//ImGui::Begin("System Info", NULL, window_flags);
-
-		//struct RendererInfo& info = renderer.GetVendorInfo();
-		//ImGui::Text("Vendor: %s", info.vendor.c_str());
-		//ImGui::Text("Version: %s", info.version.c_str());
-		//ImGui::Text("Renderer: %s", info.renderer.c_str());
-
-		//ImGui::End();
-		//
 		for (auto const&[key, val] : ServiceManager::GetServices())
 		{
 			val->OnGUI();

@@ -40,5 +40,7 @@ namespace Osiris::Editor
 		std::map<uint32_t, std::shared_ptr<TextureRes>> _textureResources;
 
 		std::map<std::string, Type> _extensions;
+
+		std::shared_ptr<TextureRes> _defaultTexture;
 	};
 }

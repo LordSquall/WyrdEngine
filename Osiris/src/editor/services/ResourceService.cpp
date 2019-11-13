@@ -19,6 +19,9 @@ namespace Osiris::Editor
 		_extensions.insert(std::pair<std::string, Type>(".vs", SHADER));
 		_extensions.insert(std::pair<std::string, Type>(".fs", SHADER));
 
+		/* Load defaults from the editor resources */
+		_defaultTexture = std::make_shared<TextureRes>(Utils::GetEditorResFolder() + "\\res\\textures\\default.png");
+
 		/* Subscribe to project lifecycle events */
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::ProjectLoaded, [this](Events::EventArgs& args) {
 			Events::ProjectLoadedArgs& a = (Events::ProjectLoadedArgs&)args;
@@ -62,7 +65,7 @@ namespace Osiris::Editor
 				return val;
 			}
 		}
-		return nullptr;
+		return _defaultTexture;
 	}
 
 	std::shared_ptr<TextureRes> ResourceService::GetTextureByUID(const uint32_t uid)
