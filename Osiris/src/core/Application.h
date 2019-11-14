@@ -35,6 +35,7 @@ namespace Osiris {
 
 		inline LayerStack* GetLayerStack() { return &m_LayerStack; }
 
+		float color[3];
 	protected:
 		std::unique_ptr<Window> m_Window;
 		std::unique_ptr<Resources> m_Resources;

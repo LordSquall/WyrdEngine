@@ -6,6 +6,8 @@
 
 #include "SceneLoader.h"
 
+#include "core/Application.h"
+
 #include "editor/services/ServiceManager.h"
 #include "editor/services/ResourceService.h"
 
@@ -66,13 +68,19 @@ namespace Osiris::Editor
 	void to_json(json& jScene, const Scene& scene) {
 		jScene = json::object();
 
+		float* color = &Application::Get().color[0];
+
 		/* store scene wide parameters */
 		jScene["name"] = scene.name;
+		jScene["bgcolor"] = { color[0], color[1], color[2] };
 		jScene["layers2D"] = scene.layers2D;
 	}
 
 	void from_json(const json& jScene, Scene& scene) {
 		jScene.at("name").get_to(scene.name);
+		jScene.at("bgcolor")[0].get_to(scene.bgcolor[0]);
+		jScene.at("bgcolor")[1].get_to(scene.bgcolor[1]);
+		jScene.at("bgcolor")[2].get_to(scene.bgcolor[2]);
 		jScene.at("layers2D").get_to(scene.layers2D);
 	}
 

@@ -20,6 +20,7 @@ namespace Osiris::Editor
 		void TextureItemGui();
 		void ShaderItemGui();
 		void ModelsItemGui();
+		void SceneItemGui();
 
 		std::string _currentDir;
 		std::shared_ptr<ResourceService> _resourcesService;

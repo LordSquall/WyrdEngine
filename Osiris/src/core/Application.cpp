@@ -22,6 +22,11 @@ namespace Osiris {
 
 		/* create a renderer */
 		m_Renderer.reset(Renderer::Create());
+
+		/* set a default back buffer color */
+		color[0] = 0.1f;
+		color[1] = 0.1f;
+		color[2] = 0.1f;
 	}
 
 	Application::~Application()
@@ -54,11 +59,8 @@ namespace Osiris {
 	{
 		while (m_Running)
 		{
-			/* bind the sprite shader */
-			//_Shader->Bind();
-
 			/* clear the back buffer */
-			m_Renderer->Clear(0.1f, 0.1f, 0.1f);
+			m_Renderer->Clear(color[0], color[1], color[2]);
 
 			/* run the layer and window lifecycle */
 			for (Layer* layer : m_LayerStack)

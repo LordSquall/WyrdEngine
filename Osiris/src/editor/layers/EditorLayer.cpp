@@ -39,11 +39,6 @@ namespace Osiris::Editor
 
 		m_plugins["Properties"] = std::make_shared<PropertiesViewer>();
 
-		std::shared_ptr<LayerViewer> layerViewer = std::make_shared<LayerViewer>();
-		layerViewer->SetLayerStack(stack);
-
-		m_plugins["Layer Viewer"] = layerViewer;
-
 		std::shared_ptr<SpriteLayerEditor> spriteLayerEditor = std::make_shared<SpriteLayerEditor>();
 		m_plugins["Sprite Layer Editor"] = spriteLayerEditor;
 
@@ -65,7 +60,6 @@ namespace Osiris::Editor
 
 	}
 
-#include <direct.h>
 	void EditorLayer::OnAttach()
 	{
 		/* load in icons sets */
@@ -82,6 +76,7 @@ namespace Osiris::Editor
 		ImGui::CreateContext();
 		
 		ImGuiIO& io = ImGui::GetIO();
+		ImGuiStyle& style = ImGui::GetStyle();
 
 		io.Fonts->AddFontFromFileTTF("Montserrat-Regular.otf", 16.0f);
 
@@ -121,6 +116,9 @@ namespace Osiris::Editor
 		s_MouseCursors[ImGuiMouseCursor_ResizeNWSE] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);  // FIXME: GLFW doesn't have this.
 		s_MouseCursors[ImGuiMouseCursor_Hand] = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
 
+		/* Set style variables */
+		style.WindowRounding = 0.0f;
+
 		ImGui_ImplOpenGL3_Init("#version 410");
 	}
 
@@ -133,6 +131,9 @@ namespace Osiris::Editor
 	{
 		static bool menu_app_close_show = false;
 		static bool menu_help_demo_window_show = false;
+		static bool toolbar_settings_window_show = false;
+
+		ImVec2 menubar_size;
 
 		_projectService = ServiceManager::Get<ProjectService>(ServiceManager::Service::Project);
 		_sceneService = ServiceManager::Get<SceneService>(ServiceManager::Service::Scene);
@@ -212,6 +213,15 @@ namespace Osiris::Editor
 			}
 			ImGui::EndMenu();
 		}
+
+		if (ImGui::BeginMenu("Scene", true))
+		{
+			if (ImGui::MenuItem("Settings"))
+			{
+				toolbar_settings_window_show = !toolbar_settings_window_show;
+			}
+			ImGui::EndMenu();
+		}
 		
 
 		if (ImGui::BeginMenu("Tools", true))
@@ -224,6 +234,16 @@ namespace Osiris::Editor
 			ImGui::EndMenu();
 		}
 
+		if (ImGui::BeginMenu("Export", true))
+		{
+			if (ImGui::MenuItem("Export Windows Executable") == true)
+			{
+				OSR_CORE_TRACE("Windows Export...");
+			}
+
+			ImGui::EndMenu();
+		}
+
 		if (ImGui::BeginMenu("Help", true))
 		{
 			ImGui::MenuItem("Show Demo Window", NULL, &menu_help_demo_window_show);
@@ -231,17 +251,26 @@ namespace Osiris::Editor
 			ImGui::EndMenu();
 		}
 
-		if (ImGui::BeginMenu("Debug", true))
-		{
-			if (ImGui::MenuItem("Save Scene Test"))
-			{
-				_sceneService->SaveScene(std::string("C:\\Users\\Paul\\Desktop\\SampleProject\\Assets\\example.scene"));
-			}
-
-			ImGui::EndMenu();
-		}
+		menubar_size = ImGui::GetWindowSize();
 
 		ImGui::EndMainMenuBar();
+
+		//ImGui::SetNextWindowSize(ImVec2(Application::Get().GetWindow().GetWidth(), 25.0f));
+		ImGui::SetNextWindowSize(menubar_size);
+		ImGui::SetNextWindowPos(ImVec2(0.0f, menubar_size.y));
+		ImGui::Begin("Toolbar", 0, ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
+		
+		ImGui::End();
+
+		if (toolbar_settings_window_show == true)
+		{
+			ImGui::Begin("Scene Settings");
+
+			ImGui::ColorEdit3("BG Color", &Application::Get().color[0]);
+
+			ImGui::End();
+		}
+
 
 		for (auto const&[key, val] : ServiceManager::GetServices())
 		{
@@ -291,6 +320,11 @@ namespace Osiris::Editor
 
 		/* set the title */
 		Application::Get().GetWindow().SetTitle("Osiris Engine - " + projectName + " [" + evtArgs.scene->name + "]");
+
+		/* set the background color */
+		Application::Get().color[0] = evtArgs.scene->bgcolor[0];
+		Application::Get().color[1] = evtArgs.scene->bgcolor[1];
+		Application::Get().color[2] = evtArgs.scene->bgcolor[2];
 	}
 
 	bool EditorLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)

@@ -17,7 +17,8 @@ namespace Osiris::Editor
 			UNKNOWN = 1,
 			TEXTURE = 2,
 			SHADER = 3,
-			MODEL = 4
+			MODEL = 4,
+			SCENE = 5
 		};
 
 	public:

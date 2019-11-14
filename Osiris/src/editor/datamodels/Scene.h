@@ -22,5 +22,6 @@ namespace Osiris::Editor {
 
 		std::string name;
 		std::vector<std::shared_ptr<Layer2D>> layers2D;
+		float bgcolor[3];
 	};
 }
