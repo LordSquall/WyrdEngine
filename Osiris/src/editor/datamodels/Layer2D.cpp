@@ -3,6 +3,7 @@
 
 #include "Layer2D.h"
 #include "core/renderer/Renderer.h"
+#include "core/renderer/Shader.h"
 
 namespace Osiris::Editor
 {
@@ -27,7 +28,7 @@ namespace Osiris::Editor
 	}
 
 
-	void Layer2D::Render(Renderer& renderer)
+	void Layer2D::Render(Renderer& renderer, Shader& shader)
 	{
 		for (auto go : gameObjects)
 		{
@@ -37,6 +38,8 @@ namespace Osiris::Editor
 			sprite->GetVertexBuffer()->Bind();
 			sprite->GetIndexBuffer()->Bind();
 			(*sprite->GetTexture())->Bind();
+
+			shader.SetUniformVec3("blendColor", go->spriteRender->Color);
 
 			renderer.DrawElements(RendererDrawType::Triangles, 6);
 		}

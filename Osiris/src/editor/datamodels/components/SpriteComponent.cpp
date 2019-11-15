@@ -19,6 +19,7 @@ namespace Osiris::Editor
 	{
 		BaseTexture = obj.BaseTexture;
 		Sprite = obj.Sprite;
+		Color = obj.Color;
 	}
 
 	SpriteComponent::~SpriteComponent()
@@ -31,10 +32,15 @@ namespace Osiris::Editor
 		int position[2];
 		int size[2];
 
+		float color[3];
+
 		position[0] = Sprite->GetX();
 		position[1] = Sprite->GetY();
 		size[0] = Sprite->GetWidth();
 		size[1] = Sprite->GetHeight();
+		color[0] = Color.r;
+		color[1] = Color.g;
+		color[2] = Color.b;
 
 		if (ImGui::TreeNode("Sprite Renderer"))
 		{
@@ -64,6 +70,13 @@ namespace Osiris::Editor
 				ImGui::EndDragDropTarget();
 			}
 			ImGui::PopID();
+
+			if (ImGui::ColorEdit3("Color", color) == true)
+			{
+				Color.r = color[0];
+				Color.g = color[1];
+				Color.b = color[2];
+			}
 
 			ImGui::TreePop();
 		}

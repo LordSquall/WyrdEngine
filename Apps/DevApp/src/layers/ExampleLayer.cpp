@@ -53,7 +53,7 @@ void ExampleLayer::OnDetach()
 
 }
 
-void ExampleLayer::OnUpdate()
+void ExampleLayer::OnUpdate(Timestep ts)
 {
 
 }
@@ -63,7 +63,7 @@ void ExampleLayer::OnEvent(Event& event)
 
 }
 
-void ExampleLayer::OnRender(Renderer& renderer)
+void ExampleLayer::OnRender(Timestep ts, Renderer& renderer)
 {
 	_VertexArray->Bind();
 	_IndexBuffer->Bind();

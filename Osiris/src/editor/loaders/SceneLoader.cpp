@@ -157,20 +157,32 @@ namespace Osiris::Editor
 		jSpriteComponent["position"] = { spriteComponent.Sprite->GetX(), spriteComponent.Sprite->GetY() };
 		jSpriteComponent["dimensions"] = { spriteComponent.Sprite->GetWidth(), spriteComponent.Sprite->GetHeight() };
 		jSpriteComponent["baseTexture"] = spriteComponent.BaseTexture->GetName();
+		jSpriteComponent["color"] = { spriteComponent.Color.r, spriteComponent.Color.g, spriteComponent.Color.b };
 	}
 
 	void from_json(const json& jSpriteComponent, SpriteComponent& spriteComponent)
 	{
-		int posx = jSpriteComponent.at("position")[0];
-		int posy = jSpriteComponent.at("position")[1];
+		vec2 pos = {
+			jSpriteComponent.at("position")[0],
+			jSpriteComponent.at("position")[1]
+		};
 
-		int dimw = jSpriteComponent.at("dimensions")[0];
-		int dimh = jSpriteComponent.at("dimensions")[1];
+		vec2 dim = {
+			jSpriteComponent.at("dimensions")[0],
+			jSpriteComponent.at("dimensions")[1]
+		};
+		
+		vec3 color = {
+			jSpriteComponent.at("color")[0],
+			jSpriteComponent.at("color")[1],
+			jSpriteComponent.at("color")[2],
+		};
 
 		std::string baseTextureName = jSpriteComponent.at("baseTexture");
 
-		spriteComponent.Sprite = std::make_shared<Sprite>("Temp", posx, posy, dimw, dimh);
+		spriteComponent.Sprite = std::make_shared<Sprite>("Temp", pos.x, pos.y, dim.x, dim.y);
 		spriteComponent.BaseTexture = ServiceManager::Get<ResourceService>(ServiceManager::Resources)->GetTextureByName(baseTextureName);
+		spriteComponent.Color = color;
 
 		spriteComponent.Sprite->SetTexture(spriteComponent.BaseTexture->GetTexture());
 	}

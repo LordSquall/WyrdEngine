@@ -40,7 +40,7 @@ namespace Osiris::Editor
 		return true;
 	}
 
-	bool SceneService::LoadScene(std::string& path)
+	bool SceneService::LoadScene(const std::string& path)
 	{
 		_loadedScene = std::make_shared<Scene>();
 
@@ -100,7 +100,7 @@ namespace Osiris::Editor
 		}
 	}
 
-	bool SceneService::SaveScene(std::string& path)
+	bool SceneService::SaveScene(const std::string& path)
 	{
 		SceneLoader::Result result = SceneLoader::Save(path, *_loadedScene, FileContent::Json);
 

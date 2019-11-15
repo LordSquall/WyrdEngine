@@ -1,0 +1,127 @@
+{
+    "bgcolor": [
+        0.0156670194119215,
+        0.38407570123672485,
+        0.7426160573959351
+    ],
+    "layers2D": [
+        {
+            "gameObjects": [
+                {
+                    "name": "land_01",
+                    "spriteRenderer": {
+                        "baseTexture": "Drit",
+                        "dimensions": [
+                            32,
+                            32
+                        ],
+                        "position": [
+                            0,
+                            0
+                        ]
+                    },
+                    "transform2d": {
+                        "position": [
+                            0.0,
+                            0.0
+                        ],
+                        "rotation": [
+                            0.0
+                        ],
+                        "scale": [
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    "transform3d": null
+                },
+                {
+                    "name": "land_02",
+                    "spriteRenderer": {
+                        "baseTexture": "Drit",
+                        "dimensions": [
+                            32,
+                            32
+                        ],
+                        "position": [
+                            32,
+                            0
+                        ]
+                    },
+                    "transform2d": {
+                        "position": [
+                            0.0,
+                            0.0
+                        ],
+                        "rotation": [
+                            0.0
+                        ],
+                        "scale": [
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    "transform3d": null
+                },
+                {
+                    "name": "land_03",
+                    "spriteRenderer": {
+                        "baseTexture": "Drit",
+                        "dimensions": [
+                            32,
+                            32
+                        ],
+                        "position": [
+                            64,
+                            0
+                        ]
+                    },
+                    "transform2d": {
+                        "position": [
+                            0.0,
+                            0.0
+                        ],
+                        "rotation": [
+                            0.0
+                        ],
+                        "scale": [
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    "transform3d": null
+                },
+                {
+                    "name": "land_04",
+                    "spriteRenderer": {
+                        "baseTexture": "Drit",
+                        "dimensions": [
+                            32,
+                            32
+                        ],
+                        "position": [
+                            96,
+                            0
+                        ]
+                    },
+                    "transform2d": {
+                        "position": [
+                            0.0,
+                            0.0
+                        ],
+                        "rotation": [
+                            0.0
+                        ],
+                        "scale": [
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    "transform3d": null
+                }
+            ],
+            "name": "New Layer 1"
+        }
+    ],
+    "name": "Sample Scene"
+}

@@ -28,6 +28,7 @@ namespace Osiris::Editor
 		static std::string GetFilename(const std::string& path, bool addExtension = false);
 		static std::string GetFileExtension(const std::string& path);
 		static std::string GetRelativeAssetPath(const std::string& path);
+		static void CreateFolder(const std::string& path);
 
 		static std::vector<std::string> GetFolderList(const std::string& directory, bool asFullPaths);
 		static std::vector<std::string> Utils::GetFileList(const std::string& directory, bool asFullPaths = false, bool recursive = false);

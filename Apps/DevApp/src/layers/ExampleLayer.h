@@ -16,11 +16,11 @@ public:
 
 	void OnDetach() override;
 
-	void OnUpdate() override;
+	void OnUpdate(Timestep ts) override;
 
 	void OnEvent(Event& event) override;
 
-	void OnRender(Renderer& renderer) override;
+	void OnRender(Timestep ts, Renderer& renderer) override;
 
 private:
 	std::unique_ptr<VertexArray> _VertexArray;

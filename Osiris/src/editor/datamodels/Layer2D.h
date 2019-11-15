@@ -2,6 +2,7 @@
 
 #include <Osiris.h>
 #include <core/pipeline/SpriteBatch.h>
+#include <core/renderer/Shader.h>
 
 #include "GameObject.h"
 
@@ -20,11 +21,13 @@ namespace Osiris::Editor {
 		std::string name;
 		std::vector<std::shared_ptr<GameObject>> gameObjects;
 
-		void Render(Renderer& renderer);
+		void Render(Renderer& renderer, Shader& shader);
 		void AddSprite(const GameObject& gameObject);
 		void RemoveSprite(int uid);
 		void SwapSprite(int a, int b);
 
+
+		std::shared_ptr<Shader> _Shader;
 	};
 
 }

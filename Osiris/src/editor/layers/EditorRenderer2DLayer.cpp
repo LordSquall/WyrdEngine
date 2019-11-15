@@ -11,22 +11,35 @@ namespace Osiris::Editor
 		/* initialise editor services */
 		ServiceManager::StartServices();
 
+		/* Initialise the camera controller */
+		_CameraController = std::make_shared<OrthographicCameraController>(Application::Get().GetWindow().GetAspectRatio());
+
 		/* register for scene loaded event */
 		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Events::EventType::SceneOpened, EVENT_FUNC(EditorRenderer2DLayer::OnSceneOpened));
 	}
 
-	void EditorRenderer2DLayer::OnRender(Renderer& renderer)
+	void EditorRenderer2DLayer::OnRender(Timestep ts, Renderer& renderer)
 	{
+		_CameraController->OnUpdate(ts);
+
 		_Shader->Bind();
+
+		_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
 
 		if (_Scene != nullptr)
 		{
 			/* Render Each sprite layer */
 			for (auto sl : _Scene->layers2D)
 			{
-				sl->Render(renderer);
+				sl->Render(renderer, *_Shader);
 			}
 		}
+	}
+
+	void EditorRenderer2DLayer::OnEvent(Event& event)
+	{
+		_CameraController->OnEvent(event);
+		//OSR_CORE_INFO("event");
 	}
 
 

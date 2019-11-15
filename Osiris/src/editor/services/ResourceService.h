@@ -5,6 +5,7 @@
 #include "editor/services/IService.h"
 #include "editor/datamodels/resources/Resource.h"
 #include "editor/datamodels/resources/TextureRes.h"
+#include "editor/datamodels/resources/SceneRes.h"
 
 namespace Osiris::Editor
 {
@@ -31,17 +32,23 @@ namespace Osiris::Editor
 
 		void AddResource(std::string& resourcePath, ResourceService::Type type);
 
+		/* Texture Functions */
 		inline std::map<uint32_t, std::shared_ptr<TextureRes>>& GetTextures() { return _textureResources; }
 		std::shared_ptr<TextureRes> GetTextureByName(const std::string& name);
 		std::shared_ptr<TextureRes> GetTextureByUID(const uint32_t uid);
+
+		/* Scene Functions */
+		inline std::map<uint32_t, std::shared_ptr<SceneRes>>& GetScenes() { return _sceneResources; }
 
 	private:
 		Type DetermineType(std::string& path);
 
 		std::map<uint32_t, std::shared_ptr<TextureRes>> _textureResources;
+		std::map<uint32_t, std::shared_ptr<SceneRes>> _sceneResources;
 
 		std::map<std::string, Type> _extensions;
 
 		std::shared_ptr<TextureRes> _defaultTexture;
+		std::shared_ptr<SceneRes> _defaultScene;
 	};
 }

@@ -3,6 +3,8 @@
 #include "Application.h"
 #include "events/ApplicationEvent.h"
 
+#include "GLFW/glfw3.h"
+
 #ifdef OSR_EDITOR_ENABLED
 #include "editor/layers/EditorLayer.h"
 #endif
@@ -59,6 +61,10 @@ namespace Osiris {
 	{
 		while (m_Running)
 		{
+			float time = (float)glfwGetTime();			// should make this platform independant
+			Timestep timestep = time - _LastFrameTime;
+			_LastFrameTime = time;
+
 			/* clear the back buffer */
 			m_Renderer->Clear(color[0], color[1], color[2]);
 
@@ -66,7 +72,7 @@ namespace Osiris {
 			for (Layer* layer : m_LayerStack)
 			{
 				if(layer->IsEnabled())
-					layer->OnUpdate();
+					layer->OnUpdate(timestep);
 			}
 
 			m_Window->OnUpdate();
@@ -76,7 +82,7 @@ namespace Osiris {
 			for (Layer* layer : m_LayerStack)
 			{
 				if (layer->IsEnabled())
-					layer->OnRender(*m_Renderer);
+					layer->OnRender(timestep , *m_Renderer);
 			}
 
 			m_Window->OnPostRender();

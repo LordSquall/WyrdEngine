@@ -24,9 +24,9 @@ namespace Osiris::Editor
 		inline void IsSceneLoaded(bool value) { _isSceneLoaded = value; }
 
 		bool CreateNewScene();
-		bool LoadScene(std::string& path);
+		bool LoadScene(const std::string& path);
 		bool SaveScene();
-		bool SaveScene(std::string& path);
+		bool SaveScene(const std::string& path);
 		
 	private:
 		bool _isSceneLoaded;

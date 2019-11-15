@@ -3,7 +3,6 @@
 #include <Osiris.h>
 
 #include "core/renderer/Shader.h"
-#include "editor/datamodels/Scene.h"
 #include "core/pipeline/SpriteLayer.h"
 #include "core/pipeline/SpriteBatch.h"
 
@@ -22,11 +21,9 @@ namespace Osiris::Layers
 
 		void OnDetach() override;
 
-		void OnUpdate() override;
-
-		void OnEvent(Event& event) override;
-
-		void OnRender(Renderer& renderer) override;
+		void OnUpdate(Timestep ts) override;
+		
+		void OnRender(Timestep ts, Renderer& renderer) override;
 
 		inline std::vector<SpriteLayer*> GetSpriteLayers() { return _SpriteLayers; }
 
@@ -36,7 +33,7 @@ namespace Osiris::Layers
 		void RemoveAllSpriteLayers();
 
 	protected:
-		std::unique_ptr<Shader> _Shader;
+		std::shared_ptr<Shader> _Shader;
 
 		std::vector<SpriteLayer*> _SpriteLayers;
 

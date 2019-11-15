@@ -17,7 +17,7 @@ namespace Osiris::Editor
 
 		virtual void OnDestroy() override;
 
-		void CreateNewProject(std::string foldername);
+		void CreateNewProject(std::string location, std::string name);
 		void LoadProject(std::string projectfile);
 
 		inline std::shared_ptr<Project> GetCurrentProject() { return _Project; }

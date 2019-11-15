@@ -4,6 +4,7 @@
 #include "events/Event.h"
 
 #include "core/renderer/Renderer.h"
+#include "core/Timestep.h"
 
 namespace Osiris {
 
@@ -15,8 +16,8 @@ namespace Osiris {
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate() {}
-		virtual void OnRender(Renderer& renderer) {}
+		virtual void OnUpdate(Timestep ts) {}
+		virtual void OnRender(Timestep ts, Renderer& renderer) {}
 		virtual void OnEvent(Event& event) {}
 
 		/* Getters and Setters */

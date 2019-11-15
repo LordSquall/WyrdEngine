@@ -29,10 +29,7 @@ namespace Osiris::Editor {
 
 	std::string Utils::GetAssetFolder()
 	{
-		if (std::filesystem::exists(Utils::canonical_path + Utils::asset_path)) {
-			return Utils::canonical_path + Utils::asset_path;
-		}
-		return Utils::asset_path;
+		return Utils::canonical_path + Utils::asset_path;
 	}
 
 	std::string Utils::GetEditorResFolder()
@@ -209,7 +206,6 @@ namespace Osiris::Editor {
 		return "not yet implemented";
 	}
 
-
 	bool Utils::FileExists(const std::string& filename)
 	{
 		return std::filesystem::exists(filename);
@@ -226,7 +222,6 @@ namespace Osiris::Editor {
 		return directory;
 	}
 
-
 	std::string Utils::GetFilename(const std::string& path, bool addExtension)
 	{
 		if (addExtension == true)
@@ -238,7 +233,6 @@ namespace Osiris::Editor {
 			return std::filesystem::path(path).stem().string();
 		}
 	}
-
 
 	std::string Utils::GetFileExtension(const std::string& path)
 	{
@@ -296,6 +290,11 @@ namespace Osiris::Editor {
 					}
 		}
 		return r;
+	}
+
+	void Utils::CreateFolder(const std::string& path)
+	{
+		std::filesystem::create_directory(path);
 	}
 
 	void Utils::CreateProjectFileStructure(const std::string& rootFolder)

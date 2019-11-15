@@ -23,7 +23,7 @@ namespace Osiris::Editor
 
 		void OnAttach() override;
 		void OnDetach() override;
-		void OnRender(Renderer& renderer) override;
+		void OnRender(Timestep ts, Renderer& renderer) override;
 		void OnEvent(Event& event) override;
 		
 	private:

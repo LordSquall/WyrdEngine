@@ -6,9 +6,10 @@ in vec2 v_Position;
 in vec2 v_UV;
 
 uniform sampler2D s_Texture;
+uniform vec3 blendColor;
 
 void main()
 {
 	//color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	color = texture(s_Texture, v_UV);
+	color = texture(s_Texture, v_UV) * vec4(blendColor, 1.0f);
 }

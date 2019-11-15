@@ -41,6 +41,8 @@ namespace Osiris
 			glDeleteShader(vertexShader);
 
 			// Use the infoLog as you see fit.
+			std::string msg(infoLog.begin(), infoLog.end());
+			OSR_CORE_ERROR(msg);
 
 			// In this simple program, we'll just leave
 			return false;
@@ -73,6 +75,8 @@ namespace Osiris
 			glDeleteShader(vertexShader);
 
 			// Use the infoLog as you see fit.
+			std::string msg(infoLog.begin(), infoLog.end());
+			OSR_CORE_ERROR(msg);
 
 			// In this simple program, we'll just leave
 			return false;
@@ -109,6 +113,8 @@ namespace Osiris
 			glDeleteShader(fragmentShader);
 
 			// Use the infoLog as you see fit.
+			std::string msg(infoLog.begin(), infoLog.end());
+			OSR_CORE_ERROR(msg);
 
 			// In this simple program, we'll just leave
 			return false;
@@ -132,10 +138,43 @@ namespace Osiris
 		glUseProgram(0);
 	}
 
-	void OpenGLShader::SetVPMatrix(glm::mat4& mat)
+	void OpenGLShader::SetVPMatrix(const glm::mat4& mat)
 	{
 		GLuint location = glGetUniformLocation(m_RendererHandle, "viewProjection");
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
+
+		GLenum err = glGetError();
+
+		if (err != GL_NO_ERROR)
+			OSR_CORE_ERROR(err);
+	}
+
+	void OpenGLShader::SetUniformVec2(const std::string& name, glm::vec2& vec2)
+	{
+		GLuint location = glGetUniformLocation(m_RendererHandle, name.c_str());
+		glUniform2fv(location, 1, glm::value_ptr(vec2));
+
+		GLenum err = glGetError();
+
+		if (err != GL_NO_ERROR)
+			OSR_CORE_ERROR(err);
+	}
+
+	void OpenGLShader::SetUniformVec3(const std::string& name, glm::vec3& vec3)
+	{
+		GLuint location = glGetUniformLocation(m_RendererHandle, name.c_str());
+		glUniform3fv(location, 1, glm::value_ptr(vec3));
+
+		GLenum err = glGetError();
+
+		if (err != GL_NO_ERROR)
+			OSR_CORE_ERROR(err);
+	}
+
+	void OpenGLShader::SetUniformVec4(const std::string& name, glm::vec4& vec4)
+	{
+		GLuint location = glGetUniformLocation(m_RendererHandle, name.c_str());
+		glUniform4fv(location, 1, glm::value_ptr(vec4));
 
 		GLenum err = glGetError();
 

@@ -2,6 +2,7 @@
 
 #include <Osiris.h>
 
+#include "core/renderer/Shader.h"
 #include "core/pipeline/SpriteBatch.h"
 
 using namespace Osiris;
@@ -28,10 +29,12 @@ namespace Osiris {
 		inline void SetName(std::string name) { _Name = name; }
 		inline std::string GetName() const { return _Name; }
 
+		inline void SetShader(std::shared_ptr<Shader> shader) { _Shader = shader; }
+		inline std::shared_ptr<Shader> GetShader() const { return _Shader; }
+
 	private:
 		std::string _Name;
 		std::vector<std::shared_ptr<Sprite>> _Sprites;
-		//std::shared_ptr<SpriteBatch> _StaticSpriteBatch;
-
+		std::shared_ptr<Shader> _Shader;
 	};
 }

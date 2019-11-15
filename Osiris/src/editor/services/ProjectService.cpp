@@ -19,7 +19,7 @@ namespace Osiris::Editor
 		/* Subscribe to Project lifecycle events */
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::CreateNewProject, [this](Events::EventArgs& args) {
 			Events::CreateNewProjectArgs& a = (Events::CreateNewProjectArgs&)args;
-			CreateNewProject(a.location + "\\" + a.name + ".oproj");
+			CreateNewProject(a.location, a.name);
 		});
 
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::OpenProject, [this](Events::EventArgs& args) {});
@@ -32,10 +32,16 @@ namespace Osiris::Editor
 
 	}
 
-	void Osiris::Editor::ProjectService::CreateNewProject(std::string projectpath)
+	void Osiris::Editor::ProjectService::CreateNewProject(std::string location, std::string name)
 	{
+		/* Build project file name */
+		std::string projectpath = location + "/" + name + "/" + name + ".oproj";
+
 		/* Create a new project shared pointer */
 		_Project = std::make_shared<Project>();
+
+		/* Create the folder for the project */
+		Utils::CreateFolder(location + "/" + name);
 
 		/* Save the project object to disk */
 		ProjectLoader::Result result = ProjectLoader::Save(projectpath, *_Project, Osiris::FileContent::Json);
@@ -44,12 +50,12 @@ namespace Osiris::Editor
 		{
 			/* Mark project as loaded */
 			IsProjectLoaded(true);
+			
+			/* Set the utilities to the base root folder */
+			Utils::SetRootProjectFolder(Utils::GetPath(projectpath.c_str()));
 
 			/* Create default folders and files */
 			Utils::CreateProjectFileStructure(Utils::GetPath(projectpath));
-
-			/* Set the utilities to the base root folder */
-			Utils::SetRootProjectFolder(Utils::GetPath(projectpath.c_str()));
 
 			/* Send a Project Loaded Event */
 			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ProjectLoaded,

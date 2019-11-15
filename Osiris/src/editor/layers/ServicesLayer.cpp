@@ -46,7 +46,7 @@ namespace Osiris::Editor
 
 	}
 
-	void ServicesLayer::OnRender(Renderer& renderer)
+	void ServicesLayer::OnRender(Timestep ts, Renderer& renderer)
 	{
 	}
 }

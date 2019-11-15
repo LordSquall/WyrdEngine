@@ -8,6 +8,7 @@
 #include "core/renderer/Texture.h"
 #include "Resources.h"
 #include "LayerStack.h"
+#include "Timestep.h"
 
 #ifdef OSR_EDITOR_ENABLED
 #define LAYERID_CORE_EDITORLAYER "EditorLayer"
@@ -40,7 +41,7 @@ namespace Osiris {
 		std::unique_ptr<Window> m_Window;
 		std::unique_ptr<Resources> m_Resources;
 		std::unique_ptr<Renderer> m_Renderer;
-
+		float _LastFrameTime = 0.0f;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
 

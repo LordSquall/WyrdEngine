@@ -60,6 +60,9 @@ namespace Osiris::Editor
 		case ResourceService::Type::TEXTURE:
 			TextureItemGui();
 			break;
+		case ResourceService::Type::SCENE:
+			SceneItemGui();
+			break;
 		default:
 			break;
 		}
@@ -117,7 +120,7 @@ namespace Osiris::Editor
 
 	void AssetViewer::SceneItemGui()
 	{
-		std::map<uint32_t, std::shared_ptr<TextureRes>> resources = _resourcesService->GetTextures();
+		std::map<uint32_t, std::shared_ptr<SceneRes>> resources = _resourcesService->GetScenes();
 
 		int resIdx = 0;
 
@@ -129,12 +132,9 @@ namespace Osiris::Editor
 
 			ImGui::PushID(resIdx);
 			ImGui::BeginGroup();
-			ImGui::ImageButton((ImTextureID)res.second->GetRendererHandle(), ImVec2(64, 64));
-			if (ImGui::BeginDragDropSource())
+			if (ImGui::ImageButton(0, ImVec2(64, 64)) == true)
 			{
-				ImGui::SetDragDropPayload("ASSET_DND_PAYLOAD", &id, sizeof(uint32_t));
-				ImGui::Image((ImTextureID)res.second->GetRendererHandle(), ImVec2(32, 32));
-				ImGui::EndDragDropSource();
+				ServiceManager::Get<SceneService>(ServiceManager::Scene)->LoadScene(res.second->GetPath());
 			}
 			ImGui::Text(res.second->GetName().c_str());
 			ImGui::EndGroup();

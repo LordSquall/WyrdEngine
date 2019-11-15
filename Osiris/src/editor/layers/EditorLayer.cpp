@@ -127,7 +127,7 @@ namespace Osiris::Editor
 
 	}
 
-	void EditorLayer::OnRender(Renderer& renderer)
+	void EditorLayer::OnRender(Timestep ts, Renderer& renderer)
 	{
 		static bool menu_app_close_show = false;
 		static bool menu_help_demo_window_show = false;
@@ -264,7 +264,14 @@ namespace Osiris::Editor
 
 		if (toolbar_settings_window_show == true)
 		{
+			std::string sceneName = ServiceManager::Get<SceneService>(ServiceManager::Scene)->GetLoadedScene()->name;
+
 			ImGui::Begin("Scene Settings");
+
+			if (ImGui::InputText("Scene Name", (char*)sceneName.c_str(), sceneName.length()) == true)
+			{
+				ServiceManager::Get<SceneService>(ServiceManager::Scene)->GetLoadedScene()->name = sceneName;
+			}
 
 			ImGui::ColorEdit3("BG Color", &Application::Get().color[0]);
 
@@ -319,7 +326,7 @@ namespace Osiris::Editor
 		std::string projectName = _projectService->GetCurrentProject()->name;
 
 		/* set the title */
-		Application::Get().GetWindow().SetTitle("Osiris Engine - " + projectName + " [" + evtArgs.scene->name + "]");
+		Application::Get().GetWindow().SetTitle("Osiris Engine - " + projectName + " [" + evtArgs.scene->name + "] ");
 
 		/* set the background color */
 		Application::Get().color[0] = evtArgs.scene->bgcolor[0];

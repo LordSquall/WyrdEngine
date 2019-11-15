@@ -40,17 +40,12 @@ namespace Osiris::Layers
 		/* Release core resources */
 	}
 
-	void Renderer2DLayer::OnUpdate()
+	void Renderer2DLayer::OnUpdate(Timestep ts)
 	{
 		/* Perform any registers 2D Update functions */
 	}
 
-	void Renderer2DLayer::OnEvent(Event& event)
-	{
-		/* User Events ??*/
-	}
-
-	void Renderer2DLayer::OnRender(Renderer& renderer)
+	void Renderer2DLayer::OnRender(Timestep ts, Renderer& renderer)
 	{
 		/* Bind the sprite shader */
 		_Shader->Bind();
@@ -67,6 +62,7 @@ namespace Osiris::Layers
 	{
 		SpriteLayer* newLayer = new SpriteLayer();
 		newLayer->SetName(name);
+		newLayer->SetShader(_Shader);
 		_SpriteLayers.push_back(newLayer);
 		return newLayer;
 	}

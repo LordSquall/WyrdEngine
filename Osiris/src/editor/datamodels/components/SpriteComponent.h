@@ -21,6 +21,7 @@ namespace Osiris::Editor {
 
 		std::shared_ptr<TextureRes> BaseTexture;
 		std::shared_ptr<Sprite> Sprite;
+		vec3 Color;
 
 		// Inherited via TransformComponent
 		void OnPropertyEditorDraw() override;
