@@ -190,7 +190,7 @@ namespace Osiris::Editor
 			}
 
 			if (ImGui::MenuItem("Save Scene As..", nullptr, nullptr, _projectService->IsProjectLoaded() && _sceneService->IsSceneLoaded())) {
-				std::string filepath = util.SaveFileDialog("Scene Json Files", ".scene");
+				std::string filepath = util.SaveFileDialog("Scene Json Files", "scene");
 				if (_sceneService->SaveScene(filepath) == true)
 				{
 					OSR_CORE_INFO("Saved Scene As");

@@ -163,7 +163,8 @@ namespace Osiris::Editor {
 					if (SUCCEEDED(hr))
 					{
 						// Set the default extension to be ".doc" file.
-						hr = pFileSave->SetDefaultExtension(L"doc;docx");
+						std::wstring stemp = std::wstring(filter.begin(), filter.end());
+						hr = pFileSave->SetDefaultExtension(stemp.c_str());
 								
 						// Show the Open dialog box.
 						hr = pFileSave->Show(NULL);

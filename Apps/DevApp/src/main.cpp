@@ -8,7 +8,6 @@
 #include "layers/ExampleLayer.h"
 
 #include "editor/layers/EditorLayer.h"
-#include "editor/layers/ServicesLayer.h"
 #include "editor/layers/EditorRenderer2DLayer.h"
 
 class ClientApplication : public Osiris::Application
