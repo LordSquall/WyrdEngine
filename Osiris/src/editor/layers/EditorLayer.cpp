@@ -50,7 +50,7 @@ namespace Osiris::Editor
 		_projectService = ServiceManager::Get<ProjectService>(ServiceManager::Service::Project);
 		_sceneService = ServiceManager::Get<SceneService>(ServiceManager::Service::Scene);
 
-		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Editor::Events::SceneOpened, EVENT_FUNC(EditorLayer::OnSceneOpened));
+		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Editor::Events::EventType::SceneOpened, EVENT_FUNC(EditorLayer::OnSceneOpened));
 
 		_projectService->LoadProject("D:/Projects/Tetris/Tetris.oproj");
 	}

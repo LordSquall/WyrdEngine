@@ -21,7 +21,7 @@ namespace Osiris::Editor
 		_SceneService = ServiceManager::Get<SceneService>(ServiceManager::Service::Scene);
 		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources);
 
-		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Editor::Events::SceneOpened, EVENT_FUNC(SpriteLayerEditor::OnSceneOpened));
+		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Editor::Events::EventType::SceneOpened, EVENT_FUNC(SpriteLayerEditor::OnSceneOpened));
 	}
 
 	void SpriteLayerEditor::OnEditorRender()
@@ -72,19 +72,19 @@ namespace Osiris::Editor
 			/* Sprite Layer List */
 			int spriteIdx = 0;
 
-			if (_SelectedLayer2D != nullptr && !_SelectedLayer2D->gameObjects.empty())
+			if (_SelectedLayer2D != nullptr && !_SelectedLayer2D->gameobjects.empty())
 			{
 				ImGui::ListBoxHeader("", ImVec2(ImGui::GetWindowWidth(), -ImGui::GetItemsLineHeightWithSpacing()));
-				for (int i = 0; i < _SelectedLayer2D->gameObjects.size(); i++)
+				for (int i = 0; i < _SelectedLayer2D->gameobjects.size(); i++)
 				{
 					ImGui::PushID(spriteIdx);
 
-					if (ImGui::Selectable(_SelectedLayer2D->gameObjects[i]->name.c_str(), _SelectedSprite == spriteIdx))
+					if (ImGui::Selectable(_SelectedLayer2D->gameobjects[i]->name.c_str(), _SelectedSprite == spriteIdx))
 					{
 						_SelectedSprite = spriteIdx;
 
 						/* Fire a change of selection event */
-						ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Editor::Events::SelectedGameObjectChanged, Events::SelectedGameObjectChangedArgs(_SelectedLayer2D->gameObjects[_SelectedSprite]));
+						ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Editor::Events::EventType::SelectedGameObjectChanged, Events::SelectedGameObjectChangedArgs(_SelectedLayer2D->gameobjects[_SelectedSprite]));
 					}
 
 					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))

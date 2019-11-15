@@ -31,7 +31,19 @@ namespace Osiris::Editor
 			/* Render Each sprite layer */
 			for (auto sl : _Scene->layers2D)
 			{
-				sl->Render(renderer, *_Shader);
+				for (auto go : sl->gameobjects)
+				{
+					std::shared_ptr<Sprite> sprite = go->spriteRender->Sprite;
+
+					sprite->GetVertexArray()->Bind();
+					sprite->GetVertexBuffer()->Bind();
+					sprite->GetIndexBuffer()->Bind();
+					(*sprite->GetTexture())->Bind();
+
+					_Shader->SetUniformVec3("blendColor", go->spriteRender->Color);
+
+					renderer.DrawElements(RendererDrawType::Triangles, 6);
+				}
 			}
 		}
 	}

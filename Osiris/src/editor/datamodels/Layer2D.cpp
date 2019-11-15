@@ -1,47 +1,37 @@
 #pragma once
 #include "osrpch.h"
 
-#include "Layer2D.h"
+/* Core includes */
 #include "core/renderer/Renderer.h"
 #include "core/renderer/Shader.h"
 
+/* Local includes */
+#include "Layer2D.h"
+
 namespace Osiris::Editor
 {
-	Layer2D::Layer2D() : name("Untitled")
-	{
+	Layer2D::Layer2D() : name("Untitled") { }
 
+	Layer2D::Layer2D(const std::string& name) : name(name) { }
+
+	Layer2D::Layer2D(const Layer2D& obj) : name(obj.name), gameobjects(obj.gameobjects) { }
+
+	Layer2D::~Layer2D() { }
+
+	void Layer2D::AddSprite(const GameObject& gameObject)
+	{
+		gameobjects.push_back(std::make_shared<GameObject>(gameObject));
 	}
 
-	Layer2D::Layer2D(const std::string& name) : name(name)
+	void Layer2D::RemoveSprite(int idx)
 	{
-
+		gameobjects.erase(gameobjects.begin() + idx);
 	}
 
-	Layer2D::Layer2D(const Layer2D& obj) : name(obj.name), gameObjects(obj.gameObjects)
+	void Layer2D::SwapSprite(int a, int b)
 	{
-
-	}
-
-	Layer2D::~Layer2D()
-	{
-
-	}
-
-
-	void Layer2D::Render(Renderer& renderer, Shader& shader)
-	{
-		for (auto go : gameObjects)
-		{
-			std::shared_ptr<Sprite> sprite = go->spriteRender->Sprite;
-
-			sprite->GetVertexArray()->Bind();
-			sprite->GetVertexBuffer()->Bind();
-			sprite->GetIndexBuffer()->Bind();
-			(*sprite->GetTexture())->Bind();
-
-			shader.SetUniformVec3("blendColor", go->spriteRender->Color);
-
-			renderer.DrawElements(RendererDrawType::Triangles, 6);
-		}
+		std::shared_ptr<GameObject> tmp = gameobjects[a];
+		gameobjects[a] = gameobjects[b];
+		gameobjects[b] = tmp;
 	}
 }

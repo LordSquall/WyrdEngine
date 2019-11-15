@@ -87,12 +87,13 @@ namespace Osiris::Editor
 	void to_json(json& jLayer2d, const Layer2D& layer2d) {
 		jLayer2d = json::object();
 		jLayer2d["name"] = layer2d.name;
-		jLayer2d["gameObjects"] = layer2d.gameObjects;
+		jLayer2d["gameObjects"] = layer2d.gameobjects;
 	}
 
-	void from_json(const json& jLayer2d, Layer2D& layer2d) {
+	void from_json(const json& jLayer2d, Layer2D& layer2d)
+	{
 		jLayer2d.at("name").get_to(layer2d.name);
-		jLayer2d.at("gameObjects").get_to(layer2d.gameObjects);
+		jLayer2d.at("gameObjects").get_to(layer2d.gameobjects);
 	}
 
 	void to_json(json& jGameObject, const GameObject& gameObject) {

@@ -35,7 +35,7 @@ namespace Osiris::Editor
 		IsSceneLoaded(true);
 
 		/* fire scene loaded event on the editor system */
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Editor::Events::SceneOpened, Events::SceneOpenedArgs(_loadedScene));
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Editor::Events::EventType::SceneOpened, Events::SceneOpenedArgs(_loadedScene));
 
 		return true;
 	}
@@ -70,7 +70,7 @@ namespace Osiris::Editor
 			_loadedScenePath = path;
 
 			/* fire scene loaded event on the editor system */
-			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Editor::Events::SceneOpened, Events::SceneOpenedArgs(_loadedScene));
+			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Editor::Events::EventType::SceneOpened, Events::SceneOpenedArgs(_loadedScene));
 			
 			return true;
 		}

@@ -14,7 +14,7 @@
 
 namespace Osiris::Editor::Events
 {
-	enum EventType {
+	enum class EventType {
 		SelectedCleared, SelectedGameObjectChanged,
 		CreateNewProject, OpenProject, CloseProject, ProjectLoaded,
 		SceneClosed, SceneOpened
@@ -23,7 +23,7 @@ namespace Osiris::Editor::Events
 	class Event
 	{
 	public:
-		Event(EventType type) {}
+		Event(EventType type) : _Type(type) {}
 		~Event() {}
 
 		/* Getters and Setters */

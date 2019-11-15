@@ -1,25 +1,27 @@
 #pragma once
 
+/* Core includes */
+#include <Osiris.h>
 #include "core/pipeline/OrthographicCamera.h"
-#include "core/Timestep.h"
-
-#include "events/Event.h"
 #include "events/MouseEvent.h"
 #include "events/ApplicationEvent.h"
 
 namespace Osiris::Editor
 {
+	/* Editor Orthographic Camera Controller */
 	class OrthographicCameraController
 	{
 	public:
+		/* Constructors */
 		OrthographicCameraController(float aspectRatio, bool rotation = false);
 
+	public:
 		void OnUpdate(Timestep ts);
 		void OnEvent(Event& e);
 
+		/* Getters and Setters */
 		inline OrthographicCamera& GetCamera() { return _Camera; }
 		inline const OrthographicCamera& GetCamera() const { return _Camera; }
-
 		inline float GetZoomLevel() const { return _ZoomLevel; }
 		inline void SetZoomLevel(float level) { _ZoomLevel = level; }
 

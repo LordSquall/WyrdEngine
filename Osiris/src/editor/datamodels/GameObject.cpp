@@ -5,25 +5,17 @@
 
 namespace Osiris::Editor
 {
-	GameObject::GameObject() : name("Untitled")
+	GameObject::GameObject() : name("Untitled") { }
+
+	GameObject::GameObject(std::string name) : name(name) { }
+
+	GameObject::GameObject(const GameObject& obj)
 	{
-
-	}
-
-	GameObject::GameObject(std::string name) : name(name)
-	{
-
-	}
-
-	GameObject::GameObject(const GameObject& obj) : name(obj.name)
-	{
+		name = obj.name;
 		transform2d = obj.transform2d;
 		transform3d = obj.transform3d;
 		spriteRender = obj.spriteRender;
 	}
 
-	GameObject::~GameObject()
-	{
-
-	}
+	GameObject::~GameObject() { }
 }
