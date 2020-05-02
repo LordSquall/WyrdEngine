@@ -27,6 +27,29 @@ namespace Osiris
 		unsigned int m_Width, m_Height;
 	};
 
+	class WindowMoveEvent : public Event
+	{
+	public:
+		WindowMoveEvent(int x, int y)
+			: m_X(x), m_Y(y) {}
+
+		inline int GetX() const { return m_X; }
+		inline int GetY() const { return m_Y; }
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "WindowMoveEvent: " << m_X << ", " << m_Y;
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(WindowMove)
+			EVENT_CLASS_CATEGORY(EventCategoryApplication)
+	protected:
+
+		int m_X, m_Y;
+	};
+
 	class  WindowCloseEvent : public Event
 	{
 	public:

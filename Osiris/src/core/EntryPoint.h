@@ -9,7 +9,9 @@ void main(int argc, char** argv)
 	Osiris::Log::Init();
 	
 	auto app = Osiris::CreateApplication();
+
 	app->Run();
+	
 	delete app;
 }
 

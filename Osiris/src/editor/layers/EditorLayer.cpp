@@ -209,7 +209,8 @@ namespace Osiris::Editor
 
 			if (ImGui::MenuItem("Exit"))
 			{
-				exit(0);
+				WindowCloseEvent e;
+				app.OnEvent(e);
 			}
 			ImGui::EndMenu();
 		}

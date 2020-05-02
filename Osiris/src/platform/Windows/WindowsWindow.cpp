@@ -3,7 +3,6 @@
 #include "osrpch.h"
 #include "WindowsWindow.h"
 
-#include "events/ApplicationEvent.h"
 #include "events/MouseEvent.h"
 #include "events/KeyEvent.h"
 #include "platform/OpenGL/OpenGLContext.h"
@@ -34,9 +33,13 @@ namespace Osiris {
 
 	void WindowsWindow::Init(const WindowProps& props)
 	{
+		m_CloseRequested = false;
+
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
+		m_Data.X = props.X;
+		m_Data.Y = props.Y;
 
 		OSR_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
@@ -50,11 +53,10 @@ namespace Osiris {
 		}
 
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-
+		glfwSetWindowPos(m_Window, m_Data.X, m_Data.Y);
 
 		m_Context = new OpenGLContext(m_Window);
 		m_Context->Init();
-
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(false);
@@ -64,6 +66,16 @@ namespace Osiris {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 			WindowCloseEvent e;
+			data.EventCallback(e);
+		});
+
+		glfwSetWindowPosCallback(m_Window, [](GLFWwindow* window, int x, int y)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+			data.X = x;
+			data.Y = y;
+
+			WindowMoveEvent e(x, y);
 			data.EventCallback(e);
 		});
 
@@ -184,6 +196,26 @@ namespace Osiris {
 		m_Context->SwapBuffer();
 	}
 
+	void WindowsWindow::OnEvent(Event& e)
+	{
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<WindowResizeEvent>(OSR_BIND_EVENT_FN(WindowsWindow::OnWindowResizeEvent));
+		dispatcher.Dispatch<WindowCloseEvent>(OSR_BIND_EVENT_FN(WindowsWindow::OnWindowCloseEvent));
+	}
+
+	bool WindowsWindow::OnWindowResizeEvent(WindowResizeEvent& e)
+	{
+
+		return true;
+	}
+
+	bool WindowsWindow::OnWindowCloseEvent(WindowCloseEvent& e)
+	{
+		SetCloseRequested(true);
+
+		return true;
+	}
+
 	void WindowsWindow::SetVSync(bool enabled)
 	{
 		if (enabled)
@@ -208,6 +240,16 @@ namespace Osiris {
 		glfwSetWindowTitle(m_Window, data.Title.c_str());
 	}
 
+
+	void WindowsWindow::SetCloseRequested(bool close)
+	{
+		m_CloseRequested = close;
+	}
+
+	bool WindowsWindow::GetCloseRequested() const
+	{
+		return m_CloseRequested;
+	}
 
 	void* WindowsWindow::GetNativeWindowPointer() const
 	{

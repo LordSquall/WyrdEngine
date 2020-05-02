@@ -6,14 +6,14 @@
 
 /* local headers */
 #include "layers/ExampleLayer.h"
-
 #include "editor/layers/EditorLayer.h"
 #include "editor/layers/EditorRenderer2DLayer.h"
+#include "support/IniParser.h"
 
 class ClientApplication : public Osiris::Application
 {
 public:
-	ClientApplication()
+	ClientApplication(const AppProps& props) : Application(props)
 	{
 		PushLayer(new Osiris::Editor::EditorRenderer2DLayer("Editor2DLayer"));
 		PushOverlay(new Osiris::Editor::EditorLayer());
@@ -21,11 +21,30 @@ public:
 
 	~ClientApplication()
 	{
+		IniParser iniParser = IniParser("config.ini");
 
+		iniParser.SetValue(std::to_string(m_Window->GetWidth()), "Window", "width");
+		iniParser.SetValue(std::to_string(m_Window->GetHeight()), "Window", "height");
+		iniParser.SetValue(std::to_string(m_Window->GetX()), "Window", "x");
+		iniParser.SetValue(std::to_string(m_Window->GetY()), "Window", "y");
+
+		iniParser.Save("config.ini");
 	}
 };
 
 Osiris::Application* Osiris::CreateApplication()
 {
-	return new ClientApplication();
+	AppProps properties = AppProps();
+
+	IniParser iniParser = IniParser("config.ini");
+
+	if (iniParser.IsLoaded())
+	{
+		properties.windowProps.Width = std::stoul(iniParser.GetValue("Window", "width", "800"), NULL, 10);
+		properties.windowProps.Height = std::stoul(iniParser.GetValue("Window", "height", "600"), NULL, 10);
+		properties.windowProps.X = std::stol(iniParser.GetValue("Window", "x", "25"), NULL, 10);
+		properties.windowProps.Y = std::stol(iniParser.GetValue("Window", "y", "25"), NULL, 10);
+	}
+
+	return new ClientApplication(properties);
 }

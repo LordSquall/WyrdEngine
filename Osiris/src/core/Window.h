@@ -11,11 +11,15 @@ namespace Osiris
 		std::string Title;
 		unsigned int Width;
 		unsigned int Height;
+		int X;
+		int Y;
 
 		WindowProps(const std::string& title = "Osiris Engine",
 			unsigned int width  = 1280,
-			unsigned int height = 720)
-			: Title(title), Width(width), Height(height)
+			unsigned int height = 720,
+			int x = 50,
+			int y = 75)
+			: Title(title), Width(width), Height(height), X(x), Y(y)
 		{
 		}
 	};
@@ -33,8 +37,13 @@ namespace Osiris
 		virtual void OnPreRender() = 0;
 		virtual void OnPostRender() = 0;
 
+		virtual void OnEvent(Event& e) = 0;
+		
 		virtual unsigned int GetWidth() const = 0;
 		virtual unsigned int GetHeight() const = 0;
+
+		virtual int GetX() const = 0;
+		virtual int GetY() const = 0;
 
 		inline float GetAspectRatio() const { return (float)GetWidth() / (float)GetHeight(); }
 
@@ -42,6 +51,9 @@ namespace Osiris
 		virtual void SetVSync(bool enabled) = 0;
 		virtual bool IsVSync() const = 0;
 		virtual void SetTitle(const std::string& title) = 0;
+
+		virtual void SetCloseRequested(bool close) = 0;
+		virtual bool GetCloseRequested() const = 0;
 
 		virtual void* GetNativeWindowPointer() const = 0;
 

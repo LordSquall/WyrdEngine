@@ -16,11 +16,16 @@
 
 namespace Osiris {
 
-	class  Application
+	struct AppProps
+	{
+		WindowProps windowProps;
+	};
+
+	class Application
 	{
 	public:
-		Application();
-		~Application();
+		Application(const AppProps& props);
+		virtual ~Application();
 
 		void Run();
 

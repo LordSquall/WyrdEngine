@@ -10,17 +10,17 @@
 #endif
 
 namespace Osiris {
-	
+
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application()
+	Application::Application(const AppProps& props)
 	{
 		/* save the local instance of the application */
 		s_Instance = this;
 
 		/* create a windows and bind the event callback */
-		m_Window = std::unique_ptr<Window>(Window::Create());
-		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));	
+		m_Window = std::unique_ptr<Window>(Window::Create(props.windowProps));
+		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
 		/* create a renderer */
 		m_Renderer.reset(Renderer::Create());
@@ -49,6 +49,9 @@ namespace Osiris {
 
 	void Application::OnEvent(Event& e)
 	{
+		/* send the event of the window(s) first */
+		m_Window->OnEvent(e);
+
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
 		{
 			(*--it)->OnEvent(e);
@@ -86,6 +89,8 @@ namespace Osiris {
 			}
 
 			m_Window->OnPostRender();
+
+			m_Running = !m_Window->GetCloseRequested();
 		}
 	}
 }
