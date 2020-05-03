@@ -21,7 +21,7 @@ namespace Osiris::Editor
 		void AddSpriteGO();
 
 	private:
-		std::shared_ptr<SceneService> _SceneService;
+		std::shared_ptr<WorkspaceService> _WorkspaceService;
 		std::shared_ptr<ResourceService> _ResourceService;
 		int32_t _SelectedSprite;
 		std::shared_ptr<Layer2D> _SelectedLayer2D;

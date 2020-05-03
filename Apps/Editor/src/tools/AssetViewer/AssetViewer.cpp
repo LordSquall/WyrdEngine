@@ -134,7 +134,7 @@ namespace Osiris::Editor
 			ImGui::BeginGroup();
 			if (ImGui::ImageButton(0, ImVec2(64, 64)) == true)
 			{
-				ServiceManager::Get<SceneService>(ServiceManager::Scene)->LoadScene(res.second->GetPath());
+				ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace)->LoadScene(res.second->GetPath());
 			}
 			ImGui::Text(res.second->GetName().c_str());
 			ImGui::EndGroup();

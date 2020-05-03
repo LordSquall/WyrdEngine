@@ -48,12 +48,11 @@ namespace Osiris::Editor
 		util = Utils();
 
 		_eventService = ServiceManager::Get<EventService>(ServiceManager::Service::Events);
-		_projectService = ServiceManager::Get<ProjectService>(ServiceManager::Service::Project);
-		_sceneService = ServiceManager::Get<SceneService>(ServiceManager::Service::Scene);
+		_workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace);
 
 		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Editor::Events::EventType::SceneOpened, EVENT_FUNC(EditorLayer::OnSceneOpened));
 
-		_projectService->LoadProject(projectDirectory);
+		_workspaceService->LoadProject(projectDirectory);
 	}
 
 	EditorLayer::~EditorLayer()
@@ -136,8 +135,7 @@ namespace Osiris::Editor
 
 		ImVec2 menubar_size;
 
-		_projectService = ServiceManager::Get<ProjectService>(ServiceManager::Service::Project);
-		_sceneService = ServiceManager::Get<SceneService>(ServiceManager::Service::Scene);
+		_workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace);
 
 		float time = (float)glfwGetTime();
 		ImGuiIO& io = ImGui::GetIO();
@@ -173,34 +171,41 @@ namespace Osiris::Editor
 			}
 			if (ImGui::MenuItem("Open Project"))
 			{
-				_projectService->LoadProject(util.OpenFileDialog(".oproj"));
+				_workspaceService->LoadProject(util.OpenFileDialog(".oproj"));
 			}
-			if (ImGui::MenuItem("Open Project In Explorer", nullptr, nullptr, _projectService->IsProjectLoaded()))
+			if (ImGui::MenuItem("Open Project In Explorer", nullptr, nullptr, _workspaceService->IsProjectLoaded()))
 			{
 				ShellExecuteA(NULL, "open", Utils::GetAssetFolder().c_str(), NULL, NULL, SW_SHOWDEFAULT);
 			}
 
 			ImGui::Separator();
 
-			bool fileOperationsFlag = _sceneService->IsSceneLoaded() && _projectService->IsProjectLoaded();
+			bool fileOperationsFlag = _workspaceService->IsSceneLoaded() && _workspaceService->IsProjectLoaded();
 
-			if (ImGui::MenuItem("New Scene", nullptr, nullptr, _projectService->IsProjectLoaded())) {
+			if (ImGui::MenuItem("New Scene", nullptr, nullptr, _workspaceService->IsProjectLoaded())) {
 				std::string filepath = util.SaveFileDialog("Scene Json Files", "*.scene");
-				_sceneService->SaveScene(filepath);
-				_sceneService->LoadScene(filepath);
+				_workspaceService->SaveSceneAs(filepath);
+				_workspaceService->LoadScene(filepath);
 			}
 
-			if (ImGui::MenuItem("Save Scene As..", nullptr, nullptr, _projectService->IsProjectLoaded() && _sceneService->IsSceneLoaded())) {
+			if (ImGui::MenuItem("Save Scene", nullptr, nullptr, _workspaceService->IsProjectLoaded() && _workspaceService->IsSceneLoaded())) {
+				if (_workspaceService->SaveScene() == true)
+				{
+					OSR_CORE_INFO("Saved Scene");
+				}
+			}
+
+			if (ImGui::MenuItem("Save Scene As..", nullptr, nullptr, _workspaceService->IsProjectLoaded() && _workspaceService->IsSceneLoaded())) {
 				std::string filepath = util.SaveFileDialog("Scene Json Files", "scene");
-				if (_sceneService->SaveScene(filepath) == true)
+				if (_workspaceService->SaveSceneAs(filepath) == true)
 				{
 					OSR_CORE_INFO("Saved Scene As");
 				}
 			}
 
-			if (ImGui::MenuItem("Open Scene", nullptr, nullptr, _projectService->IsProjectLoaded())) {
+			if (ImGui::MenuItem("Open Scene", nullptr, nullptr, _workspaceService->IsProjectLoaded())) {
 				std::string filepath = util.OpenFileDialog(".scene");
-				if (_sceneService->LoadScene(filepath) == true)
+				if (_workspaceService->LoadScene(filepath) == true)
 				{
 					OSR_CORE_INFO("Opened Scene");
 				}
@@ -266,13 +271,13 @@ namespace Osiris::Editor
 
 		if (toolbar_settings_window_show == true)
 		{
-			std::string sceneName = ServiceManager::Get<SceneService>(ServiceManager::Scene)->GetLoadedScene()->name;
+			std::string sceneName = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace)->GetLoadedScene()->name;
 
 			ImGui::Begin("Scene Settings");
 
 			if (ImGui::InputText("Scene Name", (char*)sceneName.c_str(), sceneName.length()) == true)
 			{
-				ServiceManager::Get<SceneService>(ServiceManager::Scene)->GetLoadedScene()->name = sceneName;
+				ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace)->GetLoadedScene()->name = sceneName;
 			}
 
 			ImGui::ColorEdit3("BG Color", &Application::Get().color[0]);
@@ -325,7 +330,7 @@ namespace Osiris::Editor
 		Events::SceneOpenedArgs& evtArgs = static_cast<Events::SceneOpenedArgs&>(args);
 
 		/* get the current loaded project name */
-		std::string projectName = _projectService->GetCurrentProject()->name;
+		std::string projectName = _workspaceService->GetCurrentProject()->name;
 
 		/* set the title */
 		Application::Get().GetWindow().SetTitle("Osiris Engine - " + projectName + " [" + evtArgs.scene->name + "] ");

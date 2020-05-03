@@ -44,7 +44,6 @@ namespace Osiris::Editor
 
 		if (ImGui::TreeNode("Sprite Renderer"))
 		{
-
 			if (ImGui::InputInt2("Pos ", position, 1) == true)
 			{
 				Sprite->SetPosition(position[0], position[1]);

@@ -46,7 +46,6 @@ namespace Osiris::Editor
 		std::map<std::string, std::shared_ptr<EditorPlugin>> m_plugins;
 
 		std::shared_ptr<EventService> _eventService;
-		std::shared_ptr<ProjectService> _projectService;
-		std::shared_ptr<SceneService> _sceneService;
+		std::shared_ptr<WorkspaceService> _workspaceService;
 	};
 }

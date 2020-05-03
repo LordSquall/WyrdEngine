@@ -18,7 +18,7 @@ namespace Osiris::Editor
 
 	void SpriteLayerEditor::OnInitialise() 
 	{
-		_SceneService = ServiceManager::Get<SceneService>(ServiceManager::Service::Scene);
+		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace);
 		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources);
 
 		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Editor::Events::EventType::SceneOpened, EVENT_FUNC(SpriteLayerEditor::OnSceneOpened));
@@ -28,10 +28,10 @@ namespace Osiris::Editor
 	{
 		ImGui::Begin("Sprite Layer Editor");
 
-		if (_SceneService->IsSceneLoaded())
+		if (_WorkspaceService->IsSceneLoaded())
 		{
 			/* retrieve a pointer to the loaded scenes layer data structure */
-			auto layers = &_SceneService->GetLoadedScene()->layers2D;
+			auto layers = &_WorkspaceService->GetLoadedScene()->layers2D;
 
 			if (ImGui::BeginCombo("", (_SelectedLayer2D != nullptr) ? _SelectedLayer2D->name.c_str() : NULL, 0))
 			{
@@ -134,9 +134,9 @@ namespace Osiris::Editor
 
 	void SpriteLayerEditor::OnSceneOpened(Events::EventArgs& args)
 	{
-		if (_SceneService->GetLoadedScene()->layers2D.size() > 0)
+		if (_WorkspaceService->GetLoadedScene()->layers2D.size() > 0)
 		{
-			_SelectedLayer2D = _SceneService->GetLoadedScene()->layers2D[0];
+			_SelectedLayer2D = _WorkspaceService->GetLoadedScene()->layers2D[0];
 		}
 	}
 
