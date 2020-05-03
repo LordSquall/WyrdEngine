@@ -5,10 +5,6 @@
 
 #include "GLFW/glfw3.h"
 
-#ifdef OSR_EDITOR_ENABLED
-#include "editor/layers/EditorLayer.h"
-#endif
-
 namespace Osiris {
 
 	Application* Application::s_Instance = nullptr;
