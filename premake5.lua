@@ -114,7 +114,76 @@ project "Editor"
 
 			includedirs
 			{
-				"Apps/Editor/src",
+				"Apps/%{prj.name}/src",
+				"Osiris/src",
+				"%{includedir.glm}",
+				"Osiris/vendor/spdlog/include",
+				"%{includedir.GLFW}",
+				"%{includedir.GLAD}",
+				"%{includedir.SOIL}",
+				"%{includedir.imgui}",
+				"%{includedir.glm}",
+				"%{includedir.json}",
+				"%{includedir.tinyobjloader}"
+			}
+
+			links
+			{
+				"Osiris",
+				"GLFW",
+				"GLAD",
+				"SOIL",
+				"imgui",
+				"opengl32.dll"
+			}
+
+			filter "system:windows"
+				systemversion "latest"
+
+				defines
+				{
+					"OSR_PLATFORM_WINDOWS",
+					"OSR_EDITOR_ENABLED",
+					"GLM_ENABLE_EXPERIMENTAL"
+				}
+
+			filter "configurations:Debug"
+				defines "ORS_DEBUG"
+				runtime "Debug"
+				symbols "on"
+
+			filter "configurations:Release"
+				defines "ORS_RELEASE"
+				runtime "Debug"
+				symbols "on"
+
+			filter "configurations:Distribution"
+				defines "ORS_DISTRIBUTION"
+				runtime "Debug"
+				symbols "on"
+
+
+project "Experimental"
+			location "Apps/Experimental"
+			kind "ConsoleApp"
+			language "C++"
+			cppdialect "C++17"
+			staticruntime "on"
+
+			targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+			objdir ("obj/" .. outputdir .. "/%{prj.name}")
+
+			files
+			{
+				"Apps/%{prj.name}/src/**.h",
+				"Apps/%{prj.name}/src/**.cpp",
+				"Apps/%{prj.name}/res/**.vs",
+				"Apps/%{prj.name}/res/**.fs"
+			}
+
+			includedirs
+			{
+				"Apps/%{prj.name}/src",
 				"Osiris/src",
 				"%{includedir.glm}",
 				"Osiris/vendor/spdlog/include",

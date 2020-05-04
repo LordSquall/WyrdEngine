@@ -16,7 +16,7 @@ namespace Osiris::Layers
 		_vpMat = glm::ortho(left, right, bottom, top);
 	}
 
-	void Renderer2DLayer::OnAttach()
+	bool Renderer2DLayer::OnAttach()
 	{
 		/* Load any resources which are required to renderer (e.g. shaders) */
 		std::ifstream vertexStream("../../Osiris/res/shaders/sprite.vs");
@@ -31,6 +31,8 @@ namespace Osiris::Layers
 
 		/* Set the View * Projection Matrix */
 		_Shader->SetVPMatrix(_vpMat);
+
+		return true;
 	}
 
 	void Renderer2DLayer::OnDetach()

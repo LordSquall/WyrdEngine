@@ -17,7 +17,7 @@ namespace Osiris::Layers
 	public:
 		Renderer2DLayer(std::string name);
 
-		void OnAttach() override;
+		bool OnAttach() override;
 
 		void OnDetach() override;
 

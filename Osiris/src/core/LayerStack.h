@@ -13,8 +13,8 @@ namespace Osiris {
 		LayerStack();
 		~LayerStack();
 
-		void PushLayer(Layer* layer);
-		void PushOverlay(Layer* layer);
+		bool PushLayer(Layer* layer);
+		bool PushOverlay(Layer* layer);
 		void PopLayer(Layer* layer);
 		void PopOverlay(Layer* layer);
 

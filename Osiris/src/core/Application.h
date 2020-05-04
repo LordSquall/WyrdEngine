@@ -31,8 +31,8 @@ namespace Osiris {
 
 		virtual void OnEvent(Event& event);
 
-		void PushLayer(Layer* layer);
-		void PushOverlay(Layer* overlay);
+		bool PushLayer(Layer* layer);
+		bool PushOverlay(Layer* overlay);
 
 		inline static Application& Get() { return *s_Instance; }
 		inline Renderer& GetRenderer() { return *m_Renderer; }
@@ -40,6 +40,8 @@ namespace Osiris {
 		inline Resources& GetResources() { return *m_Resources; }
 
 		inline LayerStack* GetLayerStack() { return &m_LayerStack; }
+
+		void Close();
 
 		float color[3];
 	protected:

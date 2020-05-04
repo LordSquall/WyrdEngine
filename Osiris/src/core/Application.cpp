@@ -32,16 +32,22 @@ namespace Osiris {
 
 	}
 
-	void Application::PushLayer(Layer* layer)
+	bool Application::PushLayer(Layer* layer)
 	{
-		m_LayerStack.PushLayer(layer);
+		return m_LayerStack.PushLayer(layer);
 	}
 
-	void Application::PushOverlay(Layer* overlay)
+	bool Application::PushOverlay(Layer* overlay)
 	{	
-		m_LayerStack.PushOverlay(overlay);
+		return m_LayerStack.PushOverlay(overlay);
 	}
 
+
+	void Application::Close()
+	{
+		OnEvent(WindowCloseEvent());
+		m_Running = false;
+	}
 
 	void Application::OnEvent(Event& e)
 	{

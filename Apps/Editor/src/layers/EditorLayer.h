@@ -21,7 +21,7 @@ namespace Osiris::Editor
 		EditorLayer(std::string projectDirectory);
 		~EditorLayer();
 
-		void OnAttach() override;
+		bool OnAttach() override;
 		void OnDetach() override;
 		void OnRender(Timestep ts, Renderer& renderer) override;
 		void OnEvent(Event& event) override;

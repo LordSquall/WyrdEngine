@@ -14,16 +14,16 @@ namespace Osiris {
 			delete layer;
 	}
 
-	void LayerStack::PushLayer(Layer* layer)
+	bool LayerStack::PushLayer(Layer* layer)
 	{
 		m_LayerInsert = m_Layers.emplace(m_LayerInsert, layer);
-		layer->OnAttach();
+		return layer->OnAttach();
 	}
 
-	void LayerStack::PushOverlay(Layer* overlay)
+	bool LayerStack::PushOverlay(Layer* overlay)
 	{
 		m_Layers.emplace_back(overlay);
-		overlay->OnAttach();
+		return overlay->OnAttach();
 	}
 
 	void LayerStack::PopLayer(Layer* layer)

@@ -60,7 +60,7 @@ namespace Osiris::Editor
 
 	}
 
-	void EditorLayer::OnAttach()
+	bool EditorLayer::OnAttach()
 	{
 		/* load in icons sets */
 		m_IconLibrary.AddIconsFromFile(util.GetAssetFolder() + /*std::string("../../Osiris/res*/"/icons/filesystem_icons.json");//TODO confirm with Paul this is the correct way to do this
@@ -120,6 +120,8 @@ namespace Osiris::Editor
 		style.WindowRounding = 0.0f;
 
 		ImGui_ImplOpenGL3_Init("#version 410");
+
+		return true;
 	}
 
 	void EditorLayer::OnDetach()

@@ -14,7 +14,7 @@ namespace Osiris {
 		Layer(const std::string& name = "Layer");
 		virtual ~Layer();
 
-		virtual void OnAttach() {}
+		virtual bool OnAttach() { return true; }
 		virtual void OnDetach() {}
 		virtual void OnUpdate(Timestep ts) {}
 		virtual void OnRender(Timestep ts, Renderer& renderer) {}
