@@ -39,7 +39,7 @@ namespace Osiris::Editor
 		void OnSceneOpened(Events::EventArgs& args);
 		
 	private:
-		float	m_Time;
+		float m_Time;
 
 		IconLibrary	m_IconLibrary;
 

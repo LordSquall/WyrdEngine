@@ -4,6 +4,7 @@
 #include <Osiris.h>
 #include "core/pipeline/OrthographicCamera.h"
 #include "events/MouseEvent.h"
+#include "events/KeyEvent.h"
 #include "events/ApplicationEvent.h"
 
 namespace Osiris::Editor
@@ -28,15 +29,20 @@ namespace Osiris::Editor
 	private:
 		bool OnMouseScrolled(MouseScrolledEvent& e);
 		bool OnWindowResized(WindowResizeEvent& e);
+		bool OnKeyPressed(KeyPressedEvent& e);
+		bool OnKeyReleased(KeyReleasedEvent& e);
 
 	private:
 		float _AspectRatio;
 		float _ZoomLevel = 1.0f;
 		OrthographicCamera _Camera;
 
+		Timestep _timestep;
+
 		bool _Rotation;
 
 		glm::vec3 _CameraPosition = { 0.0f, 0.0f, 0.0f };
+		glm::vec2 _CameraPositionVelocity = { 0.0f, 0.0f };
 		float _CameraRotation = 0.0f;
 		float _InitialCameraTranslationSpeed = 5.0f, _InitialCameraRotationSpeed = 180.0f, _InitialCameraZoomSpeed = 0.75f;
 		float _CameraTranslationSpeed = _InitialCameraTranslationSpeed;

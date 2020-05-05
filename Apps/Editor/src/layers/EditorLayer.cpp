@@ -72,11 +72,15 @@ namespace Osiris::Editor
 			(it->second)->OnInitialise();
 		}
 
+		m_Time = 0.0f;
+
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		
 		ImGuiIO& io = ImGui::GetIO();
 		ImGuiStyle& style = ImGui::GetStyle();
+
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 
 		io.Fonts->AddFontFromFileTTF("Montserrat-Regular.otf", 16.0f);
 
@@ -146,6 +150,7 @@ namespace Osiris::Editor
 		io.DeltaTime = m_Time > 0.0 ? (time - m_Time) : (1.0f / 60.0f);
 		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 
+		m_Time = time;
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui::NewFrame();
@@ -378,7 +383,7 @@ namespace Osiris::Editor
 		ImGuiIO& io = ImGui::GetIO();
 		io.KeysDown[e.GetKeyCode()] = false;
 
-		return false;
+		return io.WantCaptureKeyboard;
 	}
 
 	bool EditorLayer::OnKeyPressedEvent(KeyPressedEvent& e)
@@ -391,7 +396,7 @@ namespace Osiris::Editor
 		io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
 		io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
 
-		return false;
+		return io.WantCaptureKeyboard;
 	}
 
 	bool EditorLayer::OnKeyTypedEvent(KeyTypedEvent& e)
@@ -400,7 +405,7 @@ namespace Osiris::Editor
 		if (e.GetKeyCode() > 0 && e.GetKeyCode() < 0x10000)
 			io.AddInputCharacter((unsigned short)e.GetKeyCode());
 
-		return false;
+		return io.WantCaptureKeyboard;
 	}
 
 	bool EditorLayer::OnWindowResizeEvent(WindowResizeEvent& e)
