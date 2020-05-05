@@ -5,6 +5,7 @@
 #include "events/EditorEvents.h"
 #include "layers/Renderer2DLayer.h"
 #include "datamodels/OrthographicCameraController.h"
+#include "gizmos/TranslationGizmo.h"
 
 using namespace Osiris;
 
@@ -22,7 +23,14 @@ namespace Osiris::Editor
 	private:
 		std::shared_ptr<OrthographicCameraController> _CameraController;
 		std::shared_ptr<Scene> _Scene;
+		std::shared_ptr<Shader> _GizmoShader;
+
+		std::shared_ptr<TranslationGizmo> _TranslationGizmo;
+
+		std::shared_ptr<GameObject> _SelectedGameObject;
 
 		void OnSceneOpened(Events::EventArgs& args);
+
+		void OnSelectedGameObjectChanged(Events::EventArgs& args);
 	};
 }

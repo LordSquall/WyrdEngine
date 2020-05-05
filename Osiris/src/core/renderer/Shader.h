@@ -16,6 +16,7 @@ namespace Osiris
 		virtual void Unbind() = 0;
 
 		virtual void SetVPMatrix(const glm::mat4& mat) = 0;
+		virtual void SetModelMatrix(const glm::mat4& mat) = 0;
 
 		virtual void SetUniformVec2(const std::string& name, glm::vec2& vec2) = 0;
 		virtual void SetUniformVec3(const std::string& name, glm::vec3& vec3) = 0;

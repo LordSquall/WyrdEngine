@@ -16,6 +16,12 @@ namespace Osiris::Editor
 
 		/* register for scene loaded event */
 		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Events::EventType::SceneOpened, EVENT_FUNC(EditorRenderer2DLayer::OnSceneOpened));
+
+		/* register context change events */
+		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(EditorRenderer2DLayer::OnSelectedGameObjectChanged));
+
+		_TranslationGizmo.reset(new TranslationGizmo());
+		_TranslationGizmo->SetCameraController(_CameraController);
 	}
 
 	void EditorRenderer2DLayer::OnRender(Timestep ts, Renderer& renderer)
@@ -40,12 +46,21 @@ namespace Osiris::Editor
 					sprite->GetIndexBuffer()->Bind();
 					(*sprite->GetTexture())->Bind();
 
+					_Shader->SetModelMatrix(go->transform2d->matrix);
+
 					_Shader->SetUniformVec3("blendColor", go->spriteRender->Color);
 
 					renderer.DrawElements(RendererDrawType::Triangles, 6);
 				}
 			}
 		}
+
+		if (_SelectedGameObject != NULL)
+		{
+			_TranslationGizmo->SetGameObject(_SelectedGameObject);
+			_TranslationGizmo->Render(ts, renderer);
+		}
+
 	}
 
 	void EditorRenderer2DLayer::OnEvent(Event& event)
@@ -60,5 +75,12 @@ namespace Osiris::Editor
 		Events::SceneOpenedArgs& evtArgs = static_cast<Events::SceneOpenedArgs&>(args);
 
 		_Scene = evtArgs.scene;
+	}
+
+	void EditorRenderer2DLayer::OnSelectedGameObjectChanged(Events::EventArgs& args)
+	{
+		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
+
+		_SelectedGameObject = evtArgs.gameObject;
 	}
 }

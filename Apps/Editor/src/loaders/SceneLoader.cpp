@@ -107,13 +107,6 @@ namespace Osiris::Editor
 	void from_json(const json& jGameObject, GameObject& gameObject) {
 		jGameObject.at("name").get_to(gameObject.name);
 		jGameObject.at("transform2d").get_to(gameObject.transform2d);
-		
-		auto it = jGameObject.find("transform3d");
-		if (it != jGameObject.end())
-		{
-			printf("Transform 3D found\n");
-		}
-
 		jGameObject.at("spriteRenderer").get_to(gameObject.spriteRender);
 	}
 

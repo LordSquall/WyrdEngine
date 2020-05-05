@@ -29,7 +29,7 @@ namespace Osiris
 
 	void OpenGLVertexArray::SetAttribute(uint32_t id, uint32_t offset, uint32_t size) const
 	{
-		glVertexAttribPointer(id, size, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(offset * sizeof(float)));
+		glVertexAttribPointer(id, size, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(offset * sizeof(float)));
 		glEnableVertexAttribArray(id);
 	}
 }
