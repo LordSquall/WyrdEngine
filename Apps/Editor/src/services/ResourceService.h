@@ -32,6 +32,9 @@ namespace Osiris::Editor
 
 		void AddResource(std::string& resourcePath, ResourceService::Type type);
 
+		/* Icon Functions */
+		inline IconLibrary& GetIconLibrary() { return _iconLibrary; }
+
 		/* Texture Functions */
 		inline std::map<uint32_t, std::shared_ptr<TextureRes>>& GetTextures() { return _textureResources; }
 		std::shared_ptr<TextureRes> GetTextureByName(const std::string& name);
@@ -42,6 +45,8 @@ namespace Osiris::Editor
 
 	private:
 		Type DetermineType(std::string& path);
+
+		IconLibrary _iconLibrary;
 
 		std::map<uint32_t, std::shared_ptr<TextureRes>> _textureResources;
 		std::map<uint32_t, std::shared_ptr<SceneRes>> _sceneResources;

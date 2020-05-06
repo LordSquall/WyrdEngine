@@ -4,27 +4,18 @@
 
 #include "TranslationGizmo.h"
 
+#include "services/ServiceManager.h"
+
 namespace Osiris::Editor
 {
-	TranslationGizmo::TranslationGizmo() 
+	TranslationGizmo::TranslationGizmo(std::shared_ptr<Shader> shader, std::shared_ptr<OrthographicCameraController> cameraController)
 	{
-		/* Load gizmo shader */
-		std::ifstream vertexStream("res/shaders/gizmo.vert");
-		std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
+		/* Store the shader and controller */
+		_Shader = shader;
+		_CameraController = cameraController;
 
-		std::ifstream fragmentStream("res/shaders/gizmo.frag");
-		std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
-
-		_Shader.reset(Shader::Create());
-
-		if (_Shader->Build(vertexSrc, fragmentSrc) == false)
-		{
-			OSR_ERROR("Unable to build shader.");
-		}
-		_Shader->Bind();
-
-		/* Set the shaders uniforms  */
-		_Shader->SetUniformVec3("blendColor", glm::vec3{ 0.8f, 0.2f, 0.2f });
+		/* retrive textures and icons */
+		_Icon = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetIconLibrary().GetIcon(std::string("gizmos"), std::string("gizmo_translate2D"));
 
 		/* Create and bind a default VAO */
 		_VertexArray.reset(VertexArray::Create());
@@ -33,10 +24,10 @@ namespace Osiris::Editor
 		/* define data for a simple rectangle with matching indices */
 		float vertices[16] =
 		{
-			-2.0f, -2.0f, 0.0f, 0.0f, 
-			-2.0f,  2.0f, 0.0f, 0.0f,
-			2.0f,   2.0f, 0.0f, 0.0f,
-			2.0f,  -2.0f, 0.0f, 0.0f
+			-2.0f, -2.0f, _Icon->uv[0].x, _Icon->uv[0].y,
+			-2.0f,  2.0f, _Icon->uv[1].x, _Icon->uv[1].y,
+			2.0f,   2.0f, _Icon->uv[2].x, _Icon->uv[2].y,
+			2.0f,  -2.0f, _Icon->uv[3].x, _Icon->uv[3].y
 		};
 
 		uint32_t indices[6] =
@@ -50,14 +41,12 @@ namespace Osiris::Editor
 
 		/* Setup the Vertex array attribute data */
 		_VertexArray->SetAttribute(0, 0, 2);
+		_VertexArray->SetAttribute(1, 2, 2);
+
+		return;
 	}
 
 	TranslationGizmo::~TranslationGizmo() {}
-
-	void TranslationGizmo::SetCameraController(std::shared_ptr<OrthographicCameraController> cameraController)
-	{
-		_CameraController = cameraController;
-	}
 
 	void TranslationGizmo::SetGameObject(std::shared_ptr<GameObject> gameObject)
 	{
@@ -70,6 +59,8 @@ namespace Osiris::Editor
 		_VertexBuffer->Bind();
 		_IndexBuffer->Bind(); 
 		_VertexArray->Bind();
+
+		(*_Icon->iconSet->Texture->GetTexture())->Bind();
 
 		_Shader->SetUniformVec2("positionOffset", _GameObject->transform2d->position);
 		_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());

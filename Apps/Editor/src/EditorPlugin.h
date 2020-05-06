@@ -6,7 +6,7 @@
 
 #include "support/IconLibrary.h"
 
-namespace Osiris
+namespace Osiris::Editor
 {
 	class EditorPlugin
 	{

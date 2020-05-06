@@ -9,15 +9,15 @@
 #include "datamodels/GameObject.h"
 #include "datamodels/OrthographicCameraController.h"
 
+#include "support/IconLibrary.h"
+
 namespace Osiris::Editor
 {
 	class TranslationGizmo
 	{
 	public:
-		TranslationGizmo();
+		TranslationGizmo(std::shared_ptr<Shader> shader, std::shared_ptr<OrthographicCameraController> cameraController);
 		~TranslationGizmo();
-
-		void SetCameraController(std::shared_ptr<OrthographicCameraController> cameraController);
 
 		void SetGameObject(std::shared_ptr<GameObject> gameObject);
 
@@ -31,5 +31,7 @@ namespace Osiris::Editor
 		std::shared_ptr<VertexArray>	_VertexArray;
 		std::shared_ptr<VertexBuffer>	_VertexBuffer; 
 		std::shared_ptr<IndexBuffer>	_IndexBuffer;
+
+		std::shared_ptr<Icon> _Icon;
 	};
 }

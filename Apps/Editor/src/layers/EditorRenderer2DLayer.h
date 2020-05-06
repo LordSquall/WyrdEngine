@@ -25,6 +25,8 @@ namespace Osiris::Editor
 		std::shared_ptr<Scene> _Scene;
 		std::shared_ptr<Shader> _GizmoShader;
 
+		std::shared_ptr<Texture> _IconsTexture;
+
 		std::shared_ptr<TranslationGizmo> _TranslationGizmo;
 
 		std::shared_ptr<GameObject> _SelectedGameObject;

@@ -1,0 +1,31 @@
+{
+	"name": "gizmos",
+	"texture-path": "gizmo-icons.png",
+	"texture-width": 1024,
+	"texture-height": 1024,
+	"icons": [
+    {
+      "name": "gizmo_translate2D",
+      "width": 64,
+      "height": 64,
+      "x": 0,
+      "y": 1024
+    },
+    {
+      "name": "gizmo_rotate2D",
+      "width": 64,
+      "height": 64,
+      "x": 0,
+      "y": 0,
+      "x": 64,
+      "y": 1024
+    },
+    {
+      "name": "gizmo_scale2D",
+      "width": 64,
+      "height": 64,
+      "x": 128,
+      "y": 1024
+    }
+	]
+}

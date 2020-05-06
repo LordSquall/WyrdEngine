@@ -63,7 +63,7 @@ namespace Osiris::Editor
 	bool EditorLayer::OnAttach()
 	{
 		/* load in icons sets */
-		m_IconLibrary.AddIconsFromFile(util.GetAssetFolder() + /*std::string("../../Osiris/res*/"/icons/filesystem_icons.json");//TODO confirm with Paul this is the correct way to do this
+		m_IconLibrary.AddIconsFromFile(std::string("res/icons/filesystem_icons.json"));
 
 		/* set the style and icons library for each of the plugins */
 		for (std::map<std::string, std::shared_ptr<EditorPlugin>>::iterator it = m_plugins.begin(); it != m_plugins.end(); it++)
