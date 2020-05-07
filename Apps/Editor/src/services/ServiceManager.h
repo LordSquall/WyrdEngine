@@ -6,6 +6,7 @@
 #include "WorkspaceService.h"
 #include "ResourceService.h"
 #include "DialogService.h"
+#include "SettingsService.h"
 
 namespace Osiris::Editor
 {
@@ -17,7 +18,8 @@ namespace Osiris::Editor
 			Events = 0,
 			Workspace,
 			Resources,
-			Dialog
+			Dialog,
+			Settings
 		};
 	public:
 		static void StartServices()
@@ -26,12 +28,23 @@ namespace Osiris::Editor
 			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Resources,	std::make_shared<ResourceService>()));
 			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Workspace,	std::make_shared<WorkspaceService>()));
 			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Dialog,		std::make_shared<DialogService>()));
+			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Settings,	std::make_shared<SettingsService>()));
 
 			/* Order matters!!! */
 			_Services[Service::Events]->OnCreate();
+			_Services[Service::Settings]->OnCreate();
 			_Services[Service::Resources]->OnCreate();
 			_Services[Service::Workspace]->OnCreate();
 			_Services[Service::Dialog]->OnCreate();
+		}
+
+		static void EndServices()
+		{
+			_Services[Service::Dialog]->OnDestroy();
+			_Services[Service::Workspace]->OnDestroy();
+			_Services[Service::Resources]->OnDestroy();
+			_Services[Service::Settings]->OnDestroy();
+			_Services[Service::Events]->OnDestroy();
 		}
 
 		template <class T>

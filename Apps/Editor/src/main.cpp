@@ -5,9 +5,17 @@
 #include "core/EntryPoint.h"
 
 /* local headers */
+#include "services/ServiceManager.h"
+#include "layers/RenderDocLayer.h"
 #include "layers/EditorLayer.h"
 #include "layers/EditorRenderer2DLayer.h"
 #include "support/IniParser.h"
+
+using namespace Osiris::Editor;
+
+#ifdef OSR_RENDERDOC_ENABLED
+void* renderdocContext;
+#endif
 
 class ClientApplication : public Osiris::Application
 {
@@ -16,12 +24,17 @@ public:
 	{
 		std::string defaultProject;
 
-		IniParser iniParser = IniParser("config.ini");
+		/* initialise editor services */
+		ServiceManager::StartServices();
 
-		if (iniParser.IsLoaded())
-		{
-			defaultProject = iniParser.GetValue("Project", "default", "");
-		}
+		_SettingsService = ServiceManager::Get<SettingsService>(ServiceManager::Settings);
+
+		defaultProject = _SettingsService->GetSetting("Project", "default", "");
+		
+		/* if we are building with renderdoc installed then we can add the layer in */
+#ifdef OSR_RENDERDOC_ENABLED
+		PushLayer(RenderDocLayer);
+#endif
 
 		PushLayer(new Osiris::Editor::EditorRenderer2DLayer("Editor2DLayer"));
 		PushOverlay(new Osiris::Editor::EditorLayer(defaultProject));
@@ -29,15 +42,23 @@ public:
 
 	~ClientApplication()
 	{
-		IniParser iniParser = IniParser("config.ini");
+		_SettingsService->SetSetting(std::to_string(m_Window->GetWidth()), "Window", "width");
+		_SettingsService->SetSetting(std::to_string(m_Window->GetHeight()), "Window", "height");
+		_SettingsService->SetSetting(std::to_string(m_Window->GetX()), "Window", "x");
+		_SettingsService->SetSetting(std::to_string(m_Window->GetY()), "Window", "y");
 
-		iniParser.SetValue(std::to_string(m_Window->GetWidth()), "Window", "width");
-		iniParser.SetValue(std::to_string(m_Window->GetHeight()), "Window", "height");
-		iniParser.SetValue(std::to_string(m_Window->GetX()), "Window", "x");
-		iniParser.SetValue(std::to_string(m_Window->GetY()), "Window", "y");
 
-		iniParser.Save("config.ini");
+		/* initialise editor services */
+		ServiceManager::EndServices();
 	}
+
+#ifdef OSR_RENDERDOC_ENABLED
+public:
+	RenderDocLayer* RenderDocLayer;
+#endif
+
+private:
+	std::shared_ptr<SettingsService> _SettingsService;
 };
 
 Osiris::Application* Osiris::CreateApplication()
@@ -55,4 +76,12 @@ Osiris::Application* Osiris::CreateApplication()
 	}
 
 	return new ClientApplication(properties);
+}
+
+void Osiris::OnPreAppCreation(Osiris::Application* application)
+{
+#ifdef OSR_RENDERDOC_ENABLED
+	ClientApplication* clientApplication = (ClientApplication*)application;
+	clientApplication->RenderDocLayer = new Osiris::Editor::RenderDocLayer();
+#endif
 }

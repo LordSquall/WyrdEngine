@@ -8,9 +8,6 @@ namespace Osiris::Editor
 {
 	EditorRenderer2DLayer::EditorRenderer2DLayer(std::string name) : Renderer2DLayer(name)
 	{
-		/* initialise editor services */
-		ServiceManager::StartServices();
-
 		/* Initialise the camera controller */
 		_CameraController = std::make_shared<OrthographicCameraController>(Application::Get().GetWindow().GetAspectRatio());
 

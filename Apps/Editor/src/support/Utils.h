@@ -35,6 +35,11 @@ namespace Osiris::Editor
 
 		static void CreateProjectFileStructure(const std::string& rootFolder);
 
+		/* String Convertors */
+		static bool ToBool(std::string& value);
+		static unsigned int ToUInt(std::string& value);
+		static int ToInt(std::string& value);
+
 	private:
 		static void SwapSlashes(std::string& path, const std::string& find, const std::string& replace);
 		static std::string Utils::canonical_path;

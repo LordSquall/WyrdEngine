@@ -21,6 +21,7 @@ namespace Osiris::Editor
 
 		inline const std::string& GetName() const { return m_Name; }
 
+		inline void Close() { m_ShowFlag = false; }
 
 		inline bool* GetShowFlagRef() { return &m_ShowFlag; }
 	protected:

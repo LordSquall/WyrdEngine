@@ -26,7 +26,7 @@ namespace Osiris {
 	public:
 		Application(const AppProps& props);
 		virtual ~Application();
-
+		
 		void Run();
 
 		virtual void OnEvent(Event& event);
@@ -57,4 +57,6 @@ namespace Osiris {
 	};
 
 	Application* CreateApplication();
+
+	void OnPreAppCreation(Application* app);
 }

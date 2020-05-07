@@ -56,6 +56,7 @@ namespace Osiris
 		virtual bool GetCloseRequested() const = 0;
 
 		virtual void* GetNativeWindowPointer() const = 0;
+		virtual void* GetNativeGFXContextPointer() const = 0;
 
 		static Window* Create(const WindowProps& props = WindowProps());
 	};

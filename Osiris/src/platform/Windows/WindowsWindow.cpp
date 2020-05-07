@@ -255,4 +255,9 @@ namespace Osiris {
 	{
 		return (void*)m_Window;
 	}
+
+	void* WindowsWindow::GetNativeGFXContextPointer() const
+	{
+		return (void*)glfwGetWGLContext(m_Window);
+	}
 }

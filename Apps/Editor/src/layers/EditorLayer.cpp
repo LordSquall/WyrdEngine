@@ -14,6 +14,7 @@
 #include "services/ServiceManager.h"
 
 #include "tools/PropertiesViewer/PropertiesViewer.h"
+#include "tools/PreferencesViewer/PreferencesViewer.h"
 #include "tools/LayerViewer/LayerViewer.h"
 #include "tools/SpriteLayerEditor/SpriteLayerEditor.h"
 #include "tools/AssetViewer/AssetViewer.h"
@@ -39,11 +40,9 @@ namespace Osiris::Editor
 		LayerStack* stack = app.GetLayerStack();
 
 		m_plugins["Properties"] = std::make_shared<PropertiesViewer>();
-
-		std::shared_ptr<SpriteLayerEditor> spriteLayerEditor = std::make_shared<SpriteLayerEditor>();
-		m_plugins["Sprite Layer Editor"] = spriteLayerEditor;
-
+		m_plugins["Sprite Layer Editor"] = std::make_shared<SpriteLayerEditor>();
 		m_plugins["Asset Viewer"] = std::make_shared<AssetViewer>();
+		m_plugins["Preferences"] = std::make_shared<PreferencesViewer>();
 
 		util = Utils();
 

@@ -303,6 +303,21 @@ namespace Osiris::Editor {
 		std::filesystem::create_directory(GetAssetFolder());
 	}
 
+	bool Utils::ToBool(std::string& value)
+	{
+		return value == "0" ? false : true;
+	}
+
+	unsigned int Utils::ToUInt(std::string& value)
+	{
+		return std::stoul(value, NULL, 10);
+	}
+
+	int Utils::ToInt(std::string& value)
+	{
+		return std::stol(value, NULL, 10);
+	}
+
 	void Utils::SwapSlashes(std::string& path, const std::string& find,
 		const std::string& replace) {
 		size_t pos = 0;

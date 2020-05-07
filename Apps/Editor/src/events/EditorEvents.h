@@ -15,6 +15,7 @@
 namespace Osiris::Editor::Events
 {
 	enum class EventType {
+		SettingsUpdated,
 		SelectedCleared, SelectedGameObjectChanged,
 		CreateNewProject, OpenProject, CloseProject, ProjectLoaded,
 		SceneClosed, SceneOpened
@@ -34,6 +35,22 @@ namespace Osiris::Editor::Events
 	};
 
 	class EventArgs { };
+
+#pragma region SettingsUpdatedEvent
+
+	class SettingsUpdateEventArgs : public EventArgs
+	{
+	public:
+		SettingsUpdateEventArgs() {}
+	};
+
+	class SettingsUpdateEvent : public Event
+	{
+	public:
+		SettingsUpdateEvent() : Event(EventType::SettingsUpdated) { }
+	};
+
+#pragma endregion
 
 #pragma region SelectedClearedEvent
 

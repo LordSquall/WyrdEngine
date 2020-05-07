@@ -14,6 +14,9 @@ namespace Osiris {
 		/* save the local instance of the application */
 		s_Instance = this;
 
+		/* call the pre init function */
+		OnPreAppCreation(this);
+
 		/* create a windows and bind the event callback */
 		m_Window = std::unique_ptr<Window>(Window::Create(props.windowProps));
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
@@ -70,17 +73,18 @@ namespace Osiris {
 			Timestep timestep = time - _LastFrameTime;
 			_LastFrameTime = time;
 
-			/* clear the back buffer */
-			m_Renderer->Clear(color[0], color[1], color[2]);
+			m_Window->OnUpdate();
 
 			/* run the layer and window lifecycle */
 			for (Layer* layer : m_LayerStack)
 			{
-				if(layer->IsEnabled())
+				if (layer->IsEnabled())
 					layer->OnUpdate(timestep);
 			}
 
-			m_Window->OnUpdate();
+			/* clear the back buffer */
+			m_Renderer->Clear(color[0], color[1], color[2]);
+
 			m_Window->OnPreRender();
 			m_Window->OnRender();
 

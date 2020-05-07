@@ -9,6 +9,16 @@ workspace "Osiris"
 		"Distribution"
 	}
 
+renderdocfound = false
+renderdocdir = ""
+
+-- check for the installation of the renderdoc api header file
+if os.isfile("C:/Program Files/RenderDoc/renderdoc_app.h") == true then
+	print("Render Doc header found")
+	renderdocfound = true
+	renderdocdir = "C:/Program Files/RenderDoc/"
+end
+
 outputdir = "%{cfg.buildcfg}"
 
 includedir = {}
@@ -20,6 +30,10 @@ includedir["imgui"] = "Osiris/vendor/imgui"
 includedir["json"] = "Osiris/vendor/json/include"
 includedir["tinyobjloader"] = "Osiris/vendor/tinyobjloader/include"
 
+-- if renderdoc was found, the add the in application to the include directories
+if renderdocfound then
+	includedir["renderdoc"] = renderdocdir
+end
 
 include "Osiris/vendor/GLFW"
 include "Osiris/vendor/GLAD"
@@ -261,9 +275,10 @@ group ""
 					"%{includedir.imgui}",
 					"%{includedir.glm}",
 					"%{includedir.json}",
-					"%{includedir.tinyobjloader}"
+					"%{includedir.tinyobjloader}",
+					iif(renderdocfound, includedir["renderdoc"], "")
 				}
-
+				
 				links
 				{
 					"Osiris",
@@ -281,8 +296,13 @@ group ""
 					{
 						"OSR_PLATFORM_WINDOWS",
 						"OSR_EDITOR_ENABLED",
-						"GLM_ENABLE_EXPERIMENTAL"
+						"GLM_ENABLE_EXPERIMENTAL",
+						iif(renderdocfound, "OSR_RENDERDOC_ENABLED", "")
 					}
+					
+					if renderdocfound then
+						debugenvs { renderdocFolder }
+					end
 
 				filter "configurations:Debug"
 					defines "ORS_DEBUG"
