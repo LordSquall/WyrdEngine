@@ -74,6 +74,10 @@ namespace Osiris::Editor
 		jScene["name"] = scene.name;
 		jScene["bgcolor"] = { color[0], color[1], color[2] };
 		jScene["layers2D"] = scene.layers2D;
+
+		/* store editor camera settings */
+		jScene["cameraPosition"] = { scene.cameraPosition.x, scene.cameraPosition.y };
+		jScene["cameraZoom"] = scene.cameraZoom;
 	}
 
 	void from_json(const json& jScene, Scene& scene) {
@@ -82,6 +86,10 @@ namespace Osiris::Editor
 		jScene.at("bgcolor")[1].get_to(scene.bgcolor[1]);
 		jScene.at("bgcolor")[2].get_to(scene.bgcolor[2]);
 		jScene.at("layers2D").get_to(scene.layers2D);
+
+		jScene.at("cameraPosition")[0].get_to(scene.cameraPosition.x);
+		jScene.at("cameraPosition")[1].get_to(scene.cameraPosition.y);
+		jScene.at("cameraZoom").get_to(scene.cameraZoom);
 	}
 
 	void to_json(json& jLayer2d, const Layer2D& layer2d) {

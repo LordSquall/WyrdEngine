@@ -32,6 +32,7 @@ namespace Osiris::Editor
 
 		bool CreateNewScene();
 		bool LoadScene(const std::string& path);
+		bool CloseScene();
 		bool SaveScene();
 		bool SaveSceneAs(const std::string& path);
 

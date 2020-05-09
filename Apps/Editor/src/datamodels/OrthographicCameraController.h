@@ -14,7 +14,7 @@ namespace Osiris::Editor
 	{
 	public:
 		/* Constructors */
-		OrthographicCameraController(float aspectRatio, bool rotation = false);
+		OrthographicCameraController(float aspectRatio, float zoom);
 
 	public:
 		void OnUpdate(Timestep ts);
@@ -23,8 +23,10 @@ namespace Osiris::Editor
 		/* Getters and Setters */
 		inline OrthographicCamera& GetCamera() { return _Camera; }
 		inline const OrthographicCamera& GetCamera() const { return _Camera; }
+		inline glm::vec3 GetPosition() const { return _Camera.GetPosition(); }
+		inline void SetPosition(glm::vec3 position) { _Camera.SetPosition(position); }
 		inline float GetZoomLevel() const { return _ZoomLevel; }
-		inline void SetZoomLevel(float level) { _ZoomLevel = level; }
+		inline void SetZoomLevel(float level) { _ZoomLevel = level; _Camera.SetProjection(-_AspectRatio * _ZoomLevel, _AspectRatio * _ZoomLevel, -_ZoomLevel, _ZoomLevel);}
 
 	private:
 		bool OnMouseScrolled(MouseScrolledEvent& e);
@@ -34,19 +36,14 @@ namespace Osiris::Editor
 
 	private:
 		float _AspectRatio;
-		float _ZoomLevel = 1.0f;
+		float _ZoomLevel;
 		OrthographicCamera _Camera;
 
 		Timestep _timestep;
-
-		bool _Rotation;
-
-		glm::vec3 _CameraPosition = { 0.0f, 0.0f, 0.0f };
+		
 		glm::vec2 _CameraPositionVelocity = { 0.0f, 0.0f };
-		float _CameraRotation = 0.0f;
 		float _InitialCameraTranslationSpeed = 5.0f, _InitialCameraRotationSpeed = 180.0f, _InitialCameraZoomSpeed = 0.75f;
 		float _CameraTranslationSpeed = _InitialCameraTranslationSpeed;
-		float _CameraRotationSpeed = _InitialCameraRotationSpeed;
 		float _CameraZoomSpeed = _InitialCameraZoomSpeed;
 	};
 }

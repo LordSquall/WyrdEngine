@@ -6,17 +6,20 @@
 
 namespace Osiris::Editor {
 
-	OrthographicCameraController::OrthographicCameraController(float aspectRatio, bool rotation)
-		: _AspectRatio(aspectRatio), _Camera(-_AspectRatio * _ZoomLevel, _AspectRatio* _ZoomLevel, -_ZoomLevel, _ZoomLevel), _Rotation(rotation)
+	OrthographicCameraController::OrthographicCameraController(float aspectRatio, float zoomLevel) : _AspectRatio(aspectRatio)
 	{
+		_Camera.SetProjection(-_AspectRatio * zoomLevel, _AspectRatio * zoomLevel, -zoomLevel, zoomLevel);
 	}
 
 	void OrthographicCameraController::OnUpdate(Timestep ts)
 	{
-		_CameraPosition.x += (_CameraPositionVelocity.x * ts);
-		_CameraPosition.y += (_CameraPositionVelocity.y * ts);
+		glm::vec3 position = _Camera.GetPosition();
+		position.x += (_CameraPositionVelocity.x * ts);
+		position.y += (_CameraPositionVelocity.y * ts);
 
-		_Camera.SetPosition(_CameraPosition);
+		_Camera.SetPosition(position);
+
+		_Camera.RecalulateViewProjection();
 	}
 
 	void OrthographicCameraController::OnEvent(Event& e)
@@ -32,6 +35,7 @@ namespace Osiris::Editor {
 	{
 		_ZoomLevel -= e.GetYOffset() * _CameraZoomSpeed;
 		_ZoomLevel = std::max(_ZoomLevel, _CameraZoomSpeed);
+
 		_Camera.SetProjection(-_AspectRatio * _ZoomLevel, _AspectRatio * _ZoomLevel, -_ZoomLevel, _ZoomLevel);
 
 		_InitialCameraTranslationSpeed = _ZoomLevel;
@@ -43,7 +47,7 @@ namespace Osiris::Editor {
 	{
 		_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
 		_Camera.SetProjection(-_AspectRatio * _ZoomLevel, _AspectRatio * _ZoomLevel, -_ZoomLevel, _ZoomLevel);
-		
+
 		return false;
 	}
 
@@ -57,33 +61,27 @@ namespace Osiris::Editor {
 		if (Input::IsKeyPressed(OSR_KEY_LEFT_SHIFT))
 		{
 			_CameraTranslationSpeed = _InitialCameraTranslationSpeed * 4.0f;
-			_CameraRotationSpeed = _InitialCameraRotationSpeed * 4.0f;
 			_CameraZoomSpeed = _InitialCameraZoomSpeed * 4.0f;
 		}
 		else
 		{
 			_CameraTranslationSpeed = _InitialCameraTranslationSpeed;
-			_CameraRotationSpeed = _InitialCameraRotationSpeed;
 			_CameraZoomSpeed = _InitialCameraZoomSpeed;
 		}
 
 		switch (e.GetKeyCode())
 		{
 		case OSR_KEY_A:
-			velocity.x += -(cos(glm::radians(_CameraRotation)) * _CameraTranslationSpeed);
-			velocity.y += -(sin(glm::radians(_CameraRotation)) * _CameraTranslationSpeed);
+			velocity.x -= _CameraTranslationSpeed;
 			break;
 		case OSR_KEY_D:
-			velocity.x += cos(glm::radians(_CameraRotation)) * _CameraTranslationSpeed;
-			velocity.y += sin(glm::radians(_CameraRotation)) * _CameraTranslationSpeed;
+			velocity.x += _CameraTranslationSpeed;
 			break;
 		case OSR_KEY_W:
-			velocity.x += -sin(glm::radians(_CameraRotation)) * _CameraTranslationSpeed;
-			velocity.y += cos(glm::radians(_CameraRotation)) * _CameraTranslationSpeed;
+			velocity.y += _CameraTranslationSpeed;
 			break;
 		case OSR_KEY_S:
-			velocity.x += -(-sin(glm::radians(_CameraRotation)) * _CameraTranslationSpeed);
-			velocity.y += -(cos(glm::radians(_CameraRotation)) * _CameraTranslationSpeed);
+			velocity.y -= _CameraTranslationSpeed;
 			break;
 		}
 

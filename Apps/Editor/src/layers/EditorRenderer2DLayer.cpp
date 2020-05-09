@@ -9,7 +9,7 @@ namespace Osiris::Editor
 	EditorRenderer2DLayer::EditorRenderer2DLayer(std::string name) : Renderer2DLayer(name)
 	{
 		/* Initialise the camera controller */
-		_CameraController = std::make_shared<OrthographicCameraController>(Application::Get().GetWindow().GetAspectRatio());
+		_CameraController = std::make_shared<OrthographicCameraController>(Application::Get().GetWindow().GetAspectRatio(), 1.0f);
 
 		/* register for scene loaded event */
 		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Events::EventType::SceneOpened, EVENT_FUNC(EditorRenderer2DLayer::OnSceneOpened));
@@ -82,7 +82,13 @@ namespace Osiris::Editor
 	void EditorRenderer2DLayer::OnEvent(Event& event)
 	{
 		_CameraController->OnEvent(event);
-		//OSR_CORE_INFO("event");
+
+		/* Set camera settings */
+		if (_Scene != nullptr)
+		{
+			_Scene->cameraZoom = _CameraController->GetZoomLevel();
+			_Scene->cameraPosition = _CameraController->GetPosition();
+		}
 	}
 
 
@@ -91,6 +97,10 @@ namespace Osiris::Editor
 		Events::SceneOpenedArgs& evtArgs = static_cast<Events::SceneOpenedArgs&>(args);
 
 		_Scene = evtArgs.scene;
+
+		/* Set camera settings */
+		_CameraController->SetZoomLevel(_Scene->cameraZoom);
+		_CameraController->SetPosition(_Scene->cameraPosition);
 	}
 
 	void EditorRenderer2DLayer::OnSelectedGameObjectChanged(Events::EventArgs& args)

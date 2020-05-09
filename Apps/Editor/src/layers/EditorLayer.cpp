@@ -44,6 +44,9 @@ namespace Osiris::Editor
 		m_plugins["Asset Viewer"] = std::make_shared<AssetViewer>();
 		m_plugins["Preferences"] = std::make_shared<PreferencesViewer>();
 
+
+		m_plugins["Preferences"]->Close();
+
 		util = Utils();
 
 		_eventService = ServiceManager::Get<EventService>(ServiceManager::Service::Events);

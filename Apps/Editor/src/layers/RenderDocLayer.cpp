@@ -74,8 +74,16 @@ namespace Osiris::Editor
 					OSR_ERROR("Failed to capture doc in Render Doc");
 				}
 				else
-				{
-					OSR_INFO("Renderdoc Capture Ended. Capture Successful");
+				{					
+					char* filenameBuffer = (char*)malloc(sizeof(char) * Utils::ToUInt(_SettingsService->GetSetting("Preferences-RenderDoc", "filepath_max", "256")));
+					uint32_t pathLength = 0;
+					uint64_t timestamp = 0;
+
+					_RDOCAPI->GetCapture(0, &filenameBuffer[0], &pathLength, &timestamp);
+				
+					OSR_INFO("Renderdoc Capture Ended. Capture Successful: {0}", filenameBuffer);
+
+					free(filenameBuffer);
 
 				}
 				_CaptureRunning = false;
@@ -118,7 +126,7 @@ namespace Osiris::Editor
 		{
 			if (Utils::ToBool(_SettingsService->GetSetting("Preferences-RenderDoc", "enabled", "0")))
 			{
-				_RDOCAPI->SetCaptureFilePathTemplate("my_captures/example");
+				_RDOCAPI->SetCaptureFilePathTemplate(_SettingsService->GetSetting("Preferences-RenderDoc", "capture_dir", "my_captures/example").c_str());
 				_RDOCAPI->StartFrameCapture(NULL, NULL);
 
 				int ret = _RDOCAPI->IsFrameCapturing();

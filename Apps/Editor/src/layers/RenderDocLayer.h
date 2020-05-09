@@ -43,7 +43,7 @@ namespace Osiris::Editor
 		RENDERDOC_API_1_1_2* _RDOCAPI = NULL;
 		bool _CaptureRunning = false;
 		unsigned int _FrameCounter = 0;
-		unsigned int _FrameCaptureCount = 3;
+		unsigned int _FrameCaptureCount = 1;
 
 		std::shared_ptr<SettingsService> _SettingsService;
 	};

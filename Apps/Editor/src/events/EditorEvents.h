@@ -162,10 +162,7 @@ namespace Osiris::Editor::Events
 	class SceneClosedArgs : public EventArgs
 	{
 	public:
-		SceneClosedArgs(std::string name, std::string location) : name(name), location(location) {}
-
-		const std::string name;
-		const std::string location;
+		SceneClosedArgs() {}
 	};
 
 	class SceneClosedEvent : public Event

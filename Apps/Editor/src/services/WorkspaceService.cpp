@@ -30,7 +30,7 @@ namespace Osiris::Editor
 
 	void Osiris::Editor::WorkspaceService::OnDestroy()
 	{
-
+		SaveScene();
 	}
 
 	void Osiris::Editor::WorkspaceService::CreateNewProject(std::string location, std::string name)
@@ -171,6 +171,16 @@ namespace Osiris::Editor
 
 			return true;
 		}
+	}
+
+	bool WorkspaceService::CloseScene()
+	{
+		/* Send a Scene Close Event */
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::SceneClosed, Events::SceneClosedArgs());
+
+		_LoadedScene = nullptr;
+
+		return true;
 	}
 
 	bool WorkspaceService::SaveScene()
