@@ -9,3 +9,6 @@ Osiris/vendor/*/bin-int/*
 *.vcxproj
 *.vcxproj.user
 /Apps/DevApp/imgui.ini
+Apps/Editor/config.ini
+Apps/Editor/Editor.args.json
+Apps/Editor/imgui.ini
