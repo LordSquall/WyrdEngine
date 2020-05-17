@@ -116,6 +116,14 @@ namespace Osiris::Editor
 		jGameObject.at("name").get_to(gameObject.name);
 		jGameObject.at("transform2d").get_to(gameObject.transform2d);
 		jGameObject.at("spriteRenderer").get_to(gameObject.spriteRender);
+
+		/* Associate Gameobject -> component ownership, as it's omitted from the file */
+		gameObject.spriteRender->OwnerGameObject = std::make_shared<GameObject>(gameObject);
+
+		gameObject.inputArea.x = gameObject.spriteRender->Sprite->GetX();
+		gameObject.inputArea.y = gameObject.spriteRender->Sprite->GetY();
+		gameObject.inputArea.z = gameObject.spriteRender->Sprite->GetWidth();
+		gameObject.inputArea.w = gameObject.spriteRender->Sprite->GetHeight();
 	}
 
 	void to_json(json& jTransform, const Transform2DComponent& transform2d)

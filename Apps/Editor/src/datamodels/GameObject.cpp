@@ -15,6 +15,7 @@ namespace Osiris::Editor
 		transform2d = obj.transform2d;
 		transform3d = obj.transform3d;
 		spriteRender = obj.spriteRender;
+		inputArea = obj.inputArea;
 	}
 
 	GameObject::~GameObject() { }

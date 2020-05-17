@@ -28,16 +28,14 @@ public:
 		ServiceManager::StartServices();
 
 		_SettingsService = ServiceManager::Get<SettingsService>(ServiceManager::Settings);
-
-		defaultProject = _SettingsService->GetSetting("Project", "default", "");
-		
+				
 		/* if we are building with renderdoc installed then we can add the layer in */
 #ifdef OSR_RENDERDOC_ENABLED
 		PushLayer(RenderDocLayer);
 #endif
 
 		PushLayer(new Osiris::Editor::EditorRenderer2DLayer("Editor2DLayer"));
-		PushOverlay(new Osiris::Editor::EditorLayer(defaultProject));
+		PushOverlay(new Osiris::Editor::EditorLayer());
 	}
 
 	~ClientApplication()

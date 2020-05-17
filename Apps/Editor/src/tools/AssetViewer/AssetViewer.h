@@ -2,7 +2,7 @@
 #include "layers/Renderer2DLayer.h"
 
 #include "EditorPlugin.h"
-#include "services/ResourceService.h"
+#include "services/ServiceManager.h"
 
 namespace Osiris::Editor
 {
@@ -25,6 +25,7 @@ namespace Osiris::Editor
 
 		std::string _currentDir;
 		std::shared_ptr<ResourceService> _resourcesService;
+		std::shared_ptr<WorkspaceService> _workspaceService;
 
 		/* Icons */
 		std::shared_ptr<Icon> _UnknownIcon;

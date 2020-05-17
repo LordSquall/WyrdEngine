@@ -81,7 +81,15 @@ namespace Osiris::Editor
 
 	void EditorRenderer2DLayer::OnEvent(Event& event)
 	{
-		_CameraController->OnEvent(event);
+		EventDispatcher dispatcher(event);
+		dispatcher.Dispatch<MouseButtonPressedEvent>(OSR_BIND_EVENT_FN(EditorRenderer2DLayer::OnMouseButtonPressedEvent));
+		dispatcher.Dispatch<MouseButtonReleasedEvent>(OSR_BIND_EVENT_FN(EditorRenderer2DLayer::OnMouseButtonReleasedEvent));
+
+		/* Only in the event of the renderer layer not processing the event, do we pass it on to the camera */
+		if (event.Handled == false)
+		{
+			_CameraController->OnEvent(event);
+		}
 
 		/* Set camera settings */
 		if (_Scene != nullptr)
@@ -91,6 +99,33 @@ namespace Osiris::Editor
 		}
 	}
 
+	bool EditorRenderer2DLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
+	{
+		if (_Scene != nullptr)
+		{
+			/* Query each of the layer scene objects */
+			for (auto& sl : _Scene->layers2D)
+			{
+				for (auto& go : sl->gameobjects)
+				{
+					glm::vec4 translatedInputArea = go->transform2d->matrix * glm::vec4(go->inputArea.x, go->inputArea.y, 0.0, 1.0);
+					translatedInputArea.z = go->inputArea.z;
+					translatedInputArea.w = go->inputArea.w;
+					if (Rect::Contains(translatedInputArea, { (float)e.GetPositionX(), Application::Get().GetWindow().GetHeight() - (float)e.GetPositionY() }) == true)
+					{
+						OSR_TRACE("Click on GameObject: {0}", go->name);
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	bool EditorRenderer2DLayer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e)
+	{
+		return true;
+	}
 
 	void EditorRenderer2DLayer::OnSceneOpened(Events::EventArgs& args)
 	{

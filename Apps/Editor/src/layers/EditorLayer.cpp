@@ -33,7 +33,7 @@ namespace Osiris::Editor
 	static ImFont*		s_defaultFont							= nullptr;
 	Utils util;
 
-	EditorLayer::EditorLayer(std::string projectDirectory)
+	EditorLayer::EditorLayer()
 		: Layer("EditorLayer")
 	{
 		Application& app = Application::Get();
@@ -51,10 +51,9 @@ namespace Osiris::Editor
 
 		_eventService = ServiceManager::Get<EventService>(ServiceManager::Service::Events);
 		_workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace);
+		_settingsService = ServiceManager::Get<SettingsService>(ServiceManager::Service::Settings);
 
 		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Editor::Events::EventType::SceneOpened, EVENT_FUNC(EditorLayer::OnSceneOpened));
-
-		_workspaceService->LoadProject(projectDirectory);
 	}
 
 	EditorLayer::~EditorLayer()
@@ -78,7 +77,7 @@ namespace Osiris::Editor
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
-		
+
 		ImGuiIO& io = ImGui::GetIO();
 		ImGuiStyle& style = ImGui::GetStyle();
 
@@ -89,7 +88,7 @@ namespace Osiris::Editor
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
 		io.BackendPlatformName = "imgui_openg3_renderer";
-		
+
 		// Keyboard mapping. ImGui will use those indices to peek into the io.KeysDown[] array.
 		io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB;
 		io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
@@ -126,6 +125,11 @@ namespace Osiris::Editor
 		style.WindowRounding = 0.0f;
 
 		ImGui_ImplOpenGL3_Init("#version 410");
+
+		if (_workspaceService->LoadProject(_settingsService->GetSetting("Project", "default", "")) == false)
+		{
+			ServiceManager::Get<DialogService>(ServiceManager::Service::Dialog)->OpenDialog(Dialogs::CreateNewProject);
+		}
 
 		return true;
 	}

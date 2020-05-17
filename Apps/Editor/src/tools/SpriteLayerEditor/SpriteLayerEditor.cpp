@@ -8,13 +8,13 @@
 #include "core/Layer.h"
 #include "datamodels/components/Transform2DComponent.h"
 
-#include "imgui.h"
+#include "support/ImGuiUtils.h"
 
 namespace Osiris::Editor
 {
-	SpriteLayerEditor::SpriteLayerEditor() : EditorPlugin("Sprite Layer Editor"), _SelectedSprite(-1), _SelectedLayer2D(nullptr){}
+	SpriteLayerEditor::SpriteLayerEditor() : EditorPlugin("Sprite Layer Editor"), _SelectedSprite(-1), _SelectedLayer2D(nullptr) { }
 
-	SpriteLayerEditor::~SpriteLayerEditor() {}
+	SpriteLayerEditor::~SpriteLayerEditor() { }
 
 	void SpriteLayerEditor::OnInitialise() 
 	{
@@ -61,7 +61,8 @@ namespace Osiris::Editor
 			if (_SelectedLayer2D != nullptr)
 			{
 				ImGui::SameLine();
-				if (ImGui::Button("-") == true)
+
+				if (ImGui::TextButton("-", (layers->size() > 1)) == true)
 				{
 					auto target = std::find(layers->begin(), layers->end(), _SelectedLayer2D);
 					layers->erase(target);

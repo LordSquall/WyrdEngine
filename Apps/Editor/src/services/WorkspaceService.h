@@ -28,7 +28,7 @@ namespace Osiris::Editor
 
 		void CreateNewProject(std::string location, std::string name);
 		bool SaveProject();
-		void LoadProject(std::string projectfile);
+		bool LoadProject(std::string projectfile);
 
 		bool CreateNewScene();
 		bool LoadScene(const std::string& path);
@@ -37,11 +37,11 @@ namespace Osiris::Editor
 		bool SaveSceneAs(const std::string& path);
 
 	private:
-		bool _IsProjectLoaded;
+		bool _IsProjectLoaded = false;
 		std::string _LoadedProjectPath;
 		std::shared_ptr<Project> _LoadedProject;
 
-		bool _IsSceneLoaded;
+		bool _IsSceneLoaded = false;
 		std::string _LoadedScenePath;
 		std::shared_ptr<Scene> _LoadedScene;
 	};

@@ -27,6 +27,8 @@ namespace Osiris::Editor {
 		std::shared_ptr<Transform2DComponent> transform2d;
 		std::shared_ptr<Transform3DComponent> transform3d;
 		std::shared_ptr<SpriteComponent> spriteRender;
+
+		glm::vec4 inputArea;
 	};
 
 }

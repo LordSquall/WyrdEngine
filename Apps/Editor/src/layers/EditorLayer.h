@@ -18,7 +18,7 @@ namespace Osiris::Editor
 	class  EditorLayer : public Layer
 	{
 	public:
-		EditorLayer(std::string projectDirectory);
+		EditorLayer();
 		~EditorLayer();
 
 		bool OnAttach() override;
@@ -47,5 +47,6 @@ namespace Osiris::Editor
 
 		std::shared_ptr<EventService> _eventService;
 		std::shared_ptr<WorkspaceService> _workspaceService;
+		std::shared_ptr<SettingsService> _settingsService;
 	};
 }

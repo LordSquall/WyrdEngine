@@ -65,6 +65,7 @@ namespace Osiris {
 			unsigned int Width, Height;
 			int X, Y;
 			bool VSync;
+			double CursorX, CursorY;
 
 			EventCallbackFn EventCallback;
 		};

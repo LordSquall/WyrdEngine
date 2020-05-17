@@ -54,20 +54,24 @@ namespace Osiris
 	{
 	public:
 		inline int GetMouseButton() const { return m_MouseButton; }
+		inline double GetPositionX() const { return m_PositionX; }
+		inline double GetPositionY() const { return m_PositionY; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	protected:
-		MouseButtonEvent(int mouseButton)
-			: m_MouseButton(mouseButton) {}
+		MouseButtonEvent(int mouseButton, double posX, double posY)
+			: m_MouseButton(mouseButton), m_PositionX(posX), m_PositionY(posY) {}
 
 		int m_MouseButton;
+		double m_PositionX;
+		double m_PositionY;
 	};
 
 	class  MouseButtonPressedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonPressedEvent(int mouseButton)
-			: MouseButtonEvent(mouseButton) {}
+		MouseButtonPressedEvent(int mouseButton, double posX, double posY)
+			: MouseButtonEvent(mouseButton, posX, posY) {}
 
 		std::string ToString() const override
 		{
@@ -82,8 +86,8 @@ namespace Osiris
 	class  MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonReleasedEvent(int mouseButton)
-			: MouseButtonEvent(mouseButton) {}
+		MouseButtonReleasedEvent(int mouseButton, double posX, double posY)
+			: MouseButtonEvent(mouseButton, posX, posY) {}
 
 		std::string ToString() const override
 		{

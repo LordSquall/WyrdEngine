@@ -139,13 +139,13 @@ namespace Osiris {
 			{
 				case GLFW_PRESS:
 				{
-					MouseButtonPressedEvent e(button);
+					MouseButtonPressedEvent e(button, data.CursorX, data.CursorY);
 					data.EventCallback(e);
 					break;
 				}
 				case GLFW_RELEASE:
 				{
-					MouseButtonReleasedEvent e(button);
+					MouseButtonReleasedEvent e(button, data.CursorX, data.CursorY);
 					data.EventCallback(e);
 					break;
 				}
@@ -163,6 +163,9 @@ namespace Osiris {
 		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
 		{
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+			data.CursorX = xPos; 
+			data.CursorY = yPos;
 
 			MouseMovedEvent e((float)xPos, (float)yPos);
 			data.EventCallback(e);

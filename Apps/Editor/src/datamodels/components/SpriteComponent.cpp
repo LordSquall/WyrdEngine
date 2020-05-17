@@ -4,7 +4,7 @@
 #include <imgui.h>
 
 #include "SpriteComponent.h"
-
+#include "datamodels/GameObject.h"
 #include "services/ServiceManager.h"
 #include "services/ResourceService.h"
 
@@ -47,11 +47,15 @@ namespace Osiris::Editor
 			if (ImGui::InputInt2("Pos ", position, 1) == true)
 			{
 				Sprite->SetPosition(position[0], position[1]);
+				OwnerGameObject->inputArea.x = position[0];
+				OwnerGameObject->inputArea.y = position[1];
 			}
 
 			if (ImGui::InputInt2("Size", size, 1))
 			{
 				Sprite->SetSize(size[0], size[1]);
+				OwnerGameObject->inputArea.z = size[0];
+				OwnerGameObject->inputArea.w = size[1];
 			}
 
 			ImGui::Text("Texture");

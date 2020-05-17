@@ -12,6 +12,8 @@ using namespace glm;
 
 namespace Osiris::Editor {
 
+	class GameObject;
+
 	class SpriteComponent : public IPropertiesComponent
 	{
 	public:
@@ -19,6 +21,7 @@ namespace Osiris::Editor {
 		SpriteComponent(const SpriteComponent& obj);
 		~SpriteComponent();
 
+		std::shared_ptr<GameObject> OwnerGameObject;
 		std::shared_ptr<TextureRes> BaseTexture;
 		std::shared_ptr<Sprite> Sprite;
 		vec3 Color;

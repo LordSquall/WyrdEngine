@@ -21,7 +21,7 @@ namespace Osiris::Editor
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::CreateNewProject, [this](Events::EventArgs& args) {
 			Events::CreateNewProjectArgs& a = (Events::CreateNewProjectArgs&)args;
 			CreateNewProject(a.location, a.name);
-			});
+		});
 
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::OpenProject, [this](Events::EventArgs& args) {});
 
@@ -30,7 +30,7 @@ namespace Osiris::Editor
 
 	void Osiris::Editor::WorkspaceService::OnDestroy()
 	{
-		SaveScene();
+		if(_LoadedScene != nullptr) SaveScene();
 	}
 
 	void Osiris::Editor::WorkspaceService::CreateNewProject(std::string location, std::string name)
@@ -57,6 +57,9 @@ namespace Osiris::Editor
 
 			/* Create default folders and files */
 			Utils::CreateProjectFileStructure(Utils::GetPath(_LoadedProjectPath));
+
+			/* Create a new default scene */
+			CreateNewScene();
 
 			/* Send a Project Loaded Event */
 			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ProjectLoaded,
@@ -88,8 +91,10 @@ namespace Osiris::Editor
 		}
 	}
 
-	void Osiris::Editor::WorkspaceService::LoadProject(std::string projectfile)
+	bool Osiris::Editor::WorkspaceService::LoadProject(std::string projectfile)
 	{
+		bool result = false;
+
 		/* Store the loaded project path */
 		_LoadedProjectPath = projectfile;
 
@@ -97,9 +102,9 @@ namespace Osiris::Editor
 		_LoadedProject = std::make_shared<Project>();
 
 		/* Load the project object */
-		ProjectLoader::Result result = ProjectLoader::Load(projectfile.c_str(), *_LoadedProject, Osiris::FileContent::Json);
+		ProjectLoader::Result r = ProjectLoader::Load(projectfile.c_str(), *_LoadedProject, Osiris::FileContent::Json);
 
-		if (result == ProjectLoader::Result::Success)
+		if (r == ProjectLoader::Result::Success)
 		{
 			/* Mark project as loaded */
 			IsProjectLoaded(true);
@@ -120,13 +125,25 @@ namespace Osiris::Editor
 				OSR_WARN("Unable to find scene {0}. Creating new Scene...", _LoadedProject->initialScene);
 				CreateNewScene();
 			}
+
+			result = true;
 		}
+		else
+		{
+			_LoadedProject = nullptr;
+			result = false;
+		}
+
+		return result;
 	}
 
 	bool WorkspaceService::CreateNewScene()
 	{
 		/* Create a new scene shared pointer */
 		_LoadedScene = std::make_shared<Scene>();
+
+		/* Add a default layer into the new scene */
+		_LoadedScene->layers2D.push_back(std::make_shared<Layer2D>("Default Layer"));
 
 		/* Mark scene loaded */
 		IsSceneLoaded(true);

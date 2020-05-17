@@ -15,8 +15,9 @@ namespace Osiris::Editor
 {
 	AssetViewer::AssetViewer() : EditorPlugin("Asset Viewer") 
 	{
-		/* cache the resource service */
+		/* cache the service(s) */
 		_resourcesService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
+		_workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
 
 		/* cache the icon pointers */
 		_UnknownIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_unknown");
@@ -33,43 +34,26 @@ namespace Osiris::Editor
 		static ResourceService::Type selectedType = ResourceService::Type::NONE;
 
 		ImGui::Begin("Asset Viewer");
-
-		ImGui::BeginChildFrame(1, ImVec2(navigationPanelWidth, ImGui::GetContentRegionAvail().y));
-
-		PopulateFolderNode(Utils::GetAssetFolder());
-
-		/*if (ImGui::Button("Textures", ImVec2(navigationPanelWidth, 0)) == true)
-		{
-			selectedType = ResourceService::Type::TEXTURE;
-		}
-
-		if (ImGui::Button("Scenes", ImVec2(navigationPanelWidth, 0)) == true)
-		{
-			selectedType = ResourceService::Type::SCENE;
-		}
-
-		if (ImGui::Button("Shaders", ImVec2(navigationPanelWidth, 0)) == true)
-		{
-			selectedType = ResourceService::Type::SHADER;
-		}
-
-		if (ImGui::Button("Models", ImVec2(navigationPanelWidth, 0)) == true)
-		{
-			selectedType = ResourceService::Type::MODEL;
-		}*/
-
-		ImGui::EndChildFrame();
-
-		ImGui::SameLine();
-		ImGui::BeginChildFrame(2, ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y));
-
-		DrawAssetsItems();
 		
-		ImGui::EndChildFrame();
+		if (_workspaceService->GetCurrentProject() != nullptr)
+		{
+		
+			ImGui::BeginChildFrame(1, ImVec2(navigationPanelWidth, ImGui::GetContentRegionAvail().y));
+
+			PopulateFolderNode(Utils::GetAssetFolder());
+			
+			ImGui::EndChildFrame();
+
+			ImGui::SameLine();
+			ImGui::BeginChildFrame(2, ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y));
+
+			DrawAssetsItems();
+		
+			ImGui::EndChildFrame();
+		}
 
 		ImGui::End();
 	}
-
 
 	void AssetViewer::PopulateFolderNode(const std::string& dir)
 	{
