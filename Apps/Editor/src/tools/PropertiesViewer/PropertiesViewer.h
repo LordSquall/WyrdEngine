@@ -9,7 +9,7 @@ namespace Osiris::Editor
 	{
 	public:
 		enum Mode {
-			None = 0, SpriteUI = 1
+			None = 0, GameObjectUI = 1, AssetUI = 2
 		};
 
 	public:
@@ -22,9 +22,12 @@ namespace Osiris::Editor
 	private:
 		Mode _Mode;
 		void OnSelectedGameObjectChanged(Events::EventArgs& args);
+		void OnSelectedAssetChanged(Events::EventArgs& args);
 		
-		void DrawSpriteUI();
+		void DrawGameObjectUI();
+		void DrawAssetUI();
 
 		static std::shared_ptr<GameObject> _SelectedGameObject;
+		static std::shared_ptr<Resource> _SelectedAsset;
 	};
 }

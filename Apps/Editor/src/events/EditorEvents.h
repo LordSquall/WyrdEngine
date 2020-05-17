@@ -16,7 +16,7 @@ namespace Osiris::Editor::Events
 {
 	enum class EventType {
 		SettingsUpdated,
-		SelectedCleared, SelectedGameObjectChanged,
+		SelectedCleared, SelectedGameObjectChanged, SelectedAssetChanged,
 		CreateNewProject, OpenProject, CloseProject, ProjectLoaded,
 		SceneClosed, SceneOpened
 	};
@@ -76,6 +76,24 @@ namespace Osiris::Editor::Events
 	{
 	public:
 		SelectedGameObjectChangedEvent() : Event(EventType::SelectedGameObjectChanged) { }
+	};
+
+#pragma endregion
+
+#pragma region SelectedAssetChangedEvent
+
+	class SelectedAssetChangedArgs : public EventArgs
+	{
+	public:
+		SelectedAssetChangedArgs(const std::shared_ptr<Resource> resource) : resource(resource) { }
+
+		const std::shared_ptr<Resource> resource;
+	};
+
+	class SelectedAssetChangedEvent : public Event
+	{
+	public:
+		SelectedAssetChangedEvent() : Event(EventType::SelectedAssetChanged) { }
 	};
 
 #pragma endregion

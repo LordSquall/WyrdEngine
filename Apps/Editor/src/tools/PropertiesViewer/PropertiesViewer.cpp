@@ -15,10 +15,13 @@
 namespace Osiris::Editor
 {
 	std::shared_ptr<GameObject> PropertiesViewer::_SelectedGameObject = NULL;
+	std::shared_ptr<Resource> PropertiesViewer::_SelectedAsset = NULL;
+
 
 	PropertiesViewer::PropertiesViewer() : EditorPlugin("Properties"), _Mode(None)
 	{
 		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(PropertiesViewer::OnSelectedGameObjectChanged));
+		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Events::EventType::SelectedAssetChanged, EVENT_FUNC(PropertiesViewer::OnSelectedAssetChanged));
 	}
 
 	PropertiesViewer::~PropertiesViewer() {}
@@ -31,8 +34,11 @@ namespace Osiris::Editor
 		{
 		case None:
 			break;
-		case SpriteUI:
-			DrawSpriteUI();
+		case GameObjectUI:
+			DrawGameObjectUI();
+			break;
+		case AssetUI:
+			DrawAssetUI();
 			break;
 		}
 		ImGui::End();
@@ -45,15 +51,21 @@ namespace Osiris::Editor
 
 		_SelectedGameObject = evtArgs.gameObject;
 
-		_Mode = SpriteUI;
+		_Mode = GameObjectUI;
 	}
 
+	void PropertiesViewer::OnSelectedAssetChanged(Events::EventArgs& args)
+	{
+		Events::SelectedAssetChangedArgs& evtArgs = static_cast<Events::SelectedAssetChangedArgs&>(args);
 
-	void PropertiesViewer::DrawSpriteUI()
+		_SelectedAsset = evtArgs.resource;
+		_Mode = AssetUI;
+	}
+
+	void PropertiesViewer::DrawGameObjectUI()
 	{
 		if (_SelectedGameObject != NULL)
 		{
-
 			static char spriteName[32] = "SpriteName";
 			strcpy(spriteName, _SelectedGameObject->name.c_str());
 			ImGui::Text("Name:");
@@ -67,6 +79,14 @@ namespace Osiris::Editor
 
 			_SelectedGameObject->transform2d->OnPropertyEditorDraw();
 			_SelectedGameObject->spriteRender->OnPropertyEditorDraw();
+		}
+	}
+
+	void PropertiesViewer::DrawAssetUI()
+	{
+		if (_SelectedAsset != NULL)
+		{
+			ImGui::TextColored(ImVec4(1, 0, 0, 1), "No Assets");
 		}
 	}
 }

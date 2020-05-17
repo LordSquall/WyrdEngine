@@ -15,6 +15,6 @@ namespace Osiris::Editor
 		nlohmann::json j;
 		i >> j;
 
-		j.at("name").get_to(_name);
+		_name = Utils::GetFilename(path, false);
 	}
 }

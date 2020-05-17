@@ -42,10 +42,13 @@ namespace Osiris::Editor
 
 		/* Scene Functions */
 		inline std::map<uint32_t, std::shared_ptr<SceneRes>>& GetScenes() { return _sceneResources; }
+		std::shared_ptr<SceneRes> GetSceneByName(const std::string& name);
+		std::shared_ptr<SceneRes> GetSceneByUID(const uint32_t uid);
+
+		/* Helper Functions */
+		Type DetermineType(const std::string& path);
 
 	private:
-		Type DetermineType(std::string& path);
-
 		IconLibrary _iconLibrary;
 
 		std::map<uint32_t, std::shared_ptr<TextureRes>> _textureResources;

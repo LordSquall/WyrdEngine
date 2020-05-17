@@ -8,6 +8,7 @@
 #include "core/Application.h"
 #include "core/Layer.h"
 
+#include "support/ImGuiUtils.h"
 #include "imgui.h"
 
 namespace Osiris::Editor
@@ -16,6 +17,11 @@ namespace Osiris::Editor
 	{
 		/* cache the resource service */
 		_resourcesService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
+
+		/* cache the icon pointers */
+		_UnknownIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_unknown");
+		_SceneIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_scene");
+		_TextureIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_texture");
 	}
 
 	AssetViewer::~AssetViewer() {}
@@ -30,7 +36,9 @@ namespace Osiris::Editor
 
 		ImGui::BeginChildFrame(1, ImVec2(navigationPanelWidth, ImGui::GetContentRegionAvail().y));
 
-		if (ImGui::Button("Textures", ImVec2(navigationPanelWidth, 0)) == true)
+		PopulateFolderNode(Utils::GetAssetFolder());
+
+		/*if (ImGui::Button("Textures", ImVec2(navigationPanelWidth, 0)) == true)
 		{
 			selectedType = ResourceService::Type::TEXTURE;
 		}
@@ -48,100 +56,138 @@ namespace Osiris::Editor
 		if (ImGui::Button("Models", ImVec2(navigationPanelWidth, 0)) == true)
 		{
 			selectedType = ResourceService::Type::MODEL;
-		}
+		}*/
 
 		ImGui::EndChildFrame();
 
 		ImGui::SameLine();
 		ImGui::BeginChildFrame(2, ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y));
 
-		switch (selectedType)
-		{
-		case ResourceService::Type::TEXTURE:
-			TextureItemGui();
-			break;
-		case ResourceService::Type::SCENE:
-			SceneItemGui();
-			break;
-		default:
-			break;
-		}
-
+		DrawAssetsItems();
+		
 		ImGui::EndChildFrame();
 
 		ImGui::End();
 	}
 
 
-	void AssetViewer::PopulateFolderNode(std::string& dir, std::string& name)
+	void AssetViewer::PopulateFolderNode(const std::string& dir)
 	{
 		std::vector<std::string> folders = Utils::GetFolderList(dir, false);
 
 		for (auto folder : folders)
 		{
-			if (ImGui::TreeNodeEx(folder.c_str()))
+			std::vector<std::string> subFolders = Utils::GetFolderList(dir + "/" + folder, false);
+
+			if (ImGui::TreeNodeEx(folder.c_str(), subFolders.size() == 0 ? ImGuiTreeNodeFlags_Bullet : ImGuiTreeNodeFlags_None))
 			{
-				PopulateFolderNode(dir + "/" + folder, folder);
+				if (ImGui::IsItemClicked())
+				{
+					_currentDir = dir + "/" + folder;
+				}
+				
+				PopulateFolderNode(dir + "/" + folder);
 
 				ImGui::TreePop();
 			}
 		}
 	}
 
-	void AssetViewer::TextureItemGui()
+
+	void AssetViewer::DrawAssetsItems()
 	{
-		std::map<uint32_t, std::shared_ptr<TextureRes>> resources = _resourcesService->GetTextures();
+		uint32_t resIdx = 0;
+		uint32_t rowCnt = 0;
+		uint32_t colCnt = 4;
+		std::vector<std::string> files = Utils::GetFileList(_currentDir, false);
 
-		int resIdx = 0;
+		ImGui::Columns(colCnt, NULL, false);
+		for each (auto& file in files)
+		{	
+			ResourceService::Type resType = _resourcesService->DetermineType(file);
 
-		for (auto res : resources)
-		{
-			uint32_t id = res.first;
-
-			ImGui::PushItemWidth(100.0f);
-		
 			ImGui::PushID(resIdx);
-			ImGui::BeginGroup();
-			ImGui::ImageButton((ImTextureID)res.second->GetRendererHandle(), ImVec2(64, 64));
-			if (ImGui::BeginDragDropSource())
-			{
-				ImGui::SetDragDropPayload("ASSET_DND_PAYLOAD", &id, sizeof(uint32_t));
-				ImGui::Image((ImTextureID)res.second->GetRendererHandle(), ImVec2(32, 32));
-				ImGui::EndDragDropSource();
-			}
-			ImGui::Text(res.second->GetName().c_str());
-			ImGui::EndGroup();
-			ImGui::PopID();
 
-			ImGui::SameLine();
+			switch (resType)
+			{
+			case ResourceService::Type::TEXTURE: DrawTextureItem(resIdx, _resourcesService->GetTextureByName(Utils::GetFilename(file, false))); break;
+			case ResourceService::Type::SCENE: DrawSceneItem(resIdx, _resourcesService->GetSceneByName(Utils::GetFilename(file, false))); break;
+			case ResourceService::Type::SHADER:break;
+			case ResourceService::Type::NONE:
+			default:
+				DrawUnknownItem(resIdx, Utils::GetFilename(file, false)); break;
+				break;
+			}
+
+			ImGui::PopID();
+			ImGui::NextColumn();
 			resIdx++;
 		}
 	}
 
-	void AssetViewer::SceneItemGui()
+	void AssetViewer::DrawTextureItem(uint32_t resIdx, std::shared_ptr<TextureRes> textureResource)
 	{
-		std::map<uint32_t, std::shared_ptr<SceneRes>> resources = _resourcesService->GetScenes();
-
-		int resIdx = 0;
-
-		for (auto res : resources)
+		uint32_t id = textureResource->GetUID();
+		ImGui::BeginGroup();
+		if (ImGui::ImageButton((ImTextureID)textureResource->GetRendererHandle(), ImVec2(64, 64)))
 		{
-			uint32_t id = res.first;
-
-			ImGui::PushItemWidth(100.0f);
-
-			ImGui::PushID(resIdx);
-			ImGui::BeginGroup();
-			if (ImGui::ImageButton(0, ImVec2(64, 64)) == true)
-			{
-				ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace)->LoadScene(res.second->GetPath());
-			}
-			ImGui::Text(res.second->GetName().c_str());
-			ImGui::EndGroup();
-			ImGui::PopID();
-
-			ImGui::SameLine();
-			resIdx++;
+			/* Fire a change of selection event */
+			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Editor::Events::EventType::SelectedAssetChanged, Events::SelectedAssetChangedArgs(textureResource));
 		}
+		if (ImGui::BeginDragDropSource())
+		{
+			ImGui::SetDragDropPayload("ASSET_DND_PAYLOAD", &id, sizeof(uint32_t));
+			ImGui::Image((ImTextureID)textureResource->GetRendererHandle(), ImVec2(32, 32));
+			ImGui::EndDragDropSource();
+		}
+		if (ImGui::BeginPopupContextWindow())
+		{
+			if (ImGui::MenuItem("Copy")) { OSR_TRACE("Texture Copied"); };
+			if (ImGui::MenuItem("Cut")) { OSR_TRACE("Texture Cut"); };
+			if (ImGui::MenuItem("Pase")) { OSR_TRACE("Texture Paste"); };
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Delete")) { OSR_TRACE("Texture Deleted"); };
+			ImGui::Separator();
+
+			if (ImGui::BeginMenu("Convert To ..."))
+			{
+				if (ImGui::MenuItem("Sprite Sheet"))
+				{
+					OSR_TRACE("Texture Convert To -> Sprite Scene");
+					ImGui::OpenPopup("SpriteSheet?");
+				};
+
+				ImGui::EndMenu();
+			};
+			ImGui::EndPopup();
+		}
+
+		ImGui::SameLine(56.0f);
+		ImGui::Icon(_TextureIcon, ImVec2(16, 16));
+		ImGui::Text(textureResource->GetName().c_str());
+		ImGui::EndGroup();
+	}
+
+	void AssetViewer::DrawSceneItem(uint32_t resIdx, std::shared_ptr<SceneRes> sceneResource)
+	{
+		ImGui::BeginGroup();
+		if (ImGui::IconButton(_SceneIcon, ImVec2(64, 64)))
+		{
+			ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace)->LoadScene(sceneResource->GetPath());
+		}
+		ImGui::Text(sceneResource->GetName().c_str());
+		ImGui::EndGroup();
+	}
+
+	void AssetViewer::DrawUnknownItem(uint32_t resIdx, std::string& unknownResourceName)
+	{
+		ImGui::BeginGroup();
+		if (ImGui::IconButton(_UnknownIcon, ImVec2(64, 64)))
+		{
+			//ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace)->LoadScene(sceneResource->GetPath());
+		}
+		ImGui::Text(unknownResourceName.c_str());
+		ImGui::EndGroup();
 	}
 }

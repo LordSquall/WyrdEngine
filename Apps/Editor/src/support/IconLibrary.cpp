@@ -55,7 +55,7 @@ namespace Osiris::Editor
 		return false;
 	}
 
-	std::shared_ptr<Icon> IconLibrary::GetIcon(std::string& setName, std::string& name)
+	std::shared_ptr<Icon> IconLibrary::GetIcon(std::string setName, std::string name)
 	{
 		auto setIt = _IconSets.find(setName);
 		if (setIt != _IconSets.end())

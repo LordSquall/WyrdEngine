@@ -15,14 +15,20 @@ namespace Osiris::Editor
 		void OnEditorRender() override;
 
 	private:
-		void PopulateFolderNode(std::string& dir, std::string& name);
+		void PopulateFolderNode(const std::string& dir);
 
-		void TextureItemGui();
-		void ShaderItemGui();
-		void ModelsItemGui();
-		void SceneItemGui();
+		void DrawAssetsItems();
+
+		void DrawTextureItem(uint32_t resIdx, std::shared_ptr<TextureRes> textureResource);
+		void DrawSceneItem(uint32_t resIdx, std::shared_ptr<SceneRes> sceneResource);
+		void DrawUnknownItem(uint32_t resIdx, std::string& unknownResourceName);
 
 		std::string _currentDir;
 		std::shared_ptr<ResourceService> _resourcesService;
+
+		/* Icons */
+		std::shared_ptr<Icon> _UnknownIcon;
+		std::shared_ptr<Icon> _SceneIcon;
+		std::shared_ptr<Icon> _TextureIcon;
 	};
 }

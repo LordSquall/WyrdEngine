@@ -51,7 +51,7 @@ namespace Osiris::Editor
 
 		bool AddIconsFromFile(std::string& filepath);
 
-		std::shared_ptr<Icon> GetIcon(std::string& setName, std::string& name);
+		std::shared_ptr<Icon> GetIcon(std::string setName, std::string name);
 		
 	private:
 		std::map<std::string, IconSet> _IconSets;

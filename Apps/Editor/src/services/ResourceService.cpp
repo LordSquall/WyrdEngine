@@ -24,6 +24,9 @@ namespace Osiris::Editor
 		_defaultTexture = std::make_shared<TextureRes>(Utils::GetEditorResFolder() + "\\res\\textures\\default.png");
 		//_defaultScene = std::make_shared<SceneRes>(Utils::GetEditorResFolder() + "\\res\\scenes\\default.scene");
 
+		/* Load default icons into the icon library */
+		_iconLibrary.AddIconsFromFile(Utils::GetEditorResFolder() + "/res/icons/common-icons.json");
+
 		/* Subscribe to project lifecycle events */
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::ProjectLoaded, [this](Events::EventArgs& args) {
 			Events::ProjectLoadedArgs& a = (Events::ProjectLoadedArgs&)args;
@@ -95,7 +98,31 @@ namespace Osiris::Editor
 		return nullptr;
 	}
 
-	ResourceService::Type ResourceService::DetermineType(std::string& path)
+	/* Scene Functions */
+	std::shared_ptr<SceneRes> ResourceService::GetSceneByName(const std::string& name)
+	{
+		for (auto const& [key, val] : _sceneResources)
+		{
+			if (val->GetName().compare(name) == 0)
+			{
+				return val;
+			}
+		}
+		return nullptr;
+	}
+
+	std::shared_ptr<SceneRes> ResourceService::GetSceneByUID(const uint32_t uid)
+	{
+		auto it = _sceneResources.find(uid);
+
+		if (it != _sceneResources.end())
+		{
+			return _sceneResources[uid];
+		}
+		return nullptr;
+	}
+
+	ResourceService::Type ResourceService::DetermineType(const std::string& path)
 	{
 		std::string& extension = Utils::GetFileExtension(path);
 
