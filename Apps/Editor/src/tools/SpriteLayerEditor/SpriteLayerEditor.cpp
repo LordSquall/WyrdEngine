@@ -18,10 +18,12 @@ namespace Osiris::Editor
 
 	void SpriteLayerEditor::OnInitialise() 
 	{
+		_EventService = ServiceManager::Get<EventService>(ServiceManager::Service::Events);
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace);
 		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources);
 
-		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Editor::Events::EventType::SceneOpened, EVENT_FUNC(SpriteLayerEditor::OnSceneOpened));
+		_EventService->Subscribe(Events::EventType::SceneOpened, EVENT_FUNC(SpriteLayerEditor::OnSceneOpened));
+		_EventService->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(SpriteLayerEditor::OnSelectedGameObjectChanged));
 	}
 
 	void SpriteLayerEditor::OnEditorRender()
@@ -85,7 +87,7 @@ namespace Osiris::Editor
 						_SelectedSprite = spriteIdx;
 
 						/* Fire a change of selection event */
-						ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Editor::Events::EventType::SelectedGameObjectChanged, Events::SelectedGameObjectChangedArgs(_SelectedLayer2D->gameobjects[_SelectedSprite]));
+						_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, Events::SelectedGameObjectChangedArgs(_SelectedLayer2D->gameobjects[_SelectedSprite]));
 					}
 
 					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
@@ -141,6 +143,11 @@ namespace Osiris::Editor
 		}
 	}
 
+	void SpriteLayerEditor::OnSelectedGameObjectChanged(Events::EventArgs& args)
+	{
+		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
+
+	}
 
 	void SpriteLayerEditor::AddSpriteGO()
 	{

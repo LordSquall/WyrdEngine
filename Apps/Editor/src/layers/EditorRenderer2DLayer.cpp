@@ -2,7 +2,6 @@
 #include "osrpch.h"
 
 #include "EditorRenderer2DLayer.h"
-#include "services/ServiceManager.h"
 
 namespace Osiris::Editor
 {
@@ -11,11 +10,12 @@ namespace Osiris::Editor
 		/* Initialise the camera controller */
 		_CameraController = std::make_shared<OrthographicCameraController>(Application::Get().GetWindow().GetAspectRatio(), 1.0f);
 
-		/* register for scene loaded event */
-		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Events::EventType::SceneOpened, EVENT_FUNC(EditorRenderer2DLayer::OnSceneOpened));
+		/* Cache services */
+		_EventService = ServiceManager::Get<EventService>(ServiceManager::Service::Events);
 
-		/* register context change events */
-		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(EditorRenderer2DLayer::OnSelectedGameObjectChanged));
+		/* register events */
+		_EventService->Subscribe(Events::EventType::SceneOpened, EVENT_FUNC(EditorRenderer2DLayer::OnSceneOpened));
+		_EventService->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(EditorRenderer2DLayer::OnSelectedGameObjectChanged));
 
 		/* setup the iconset */
 		ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetIconLibrary().AddIconsFromFile(std::string("res/icons/gizmo-icons.json"));
@@ -101,6 +101,14 @@ namespace Osiris::Editor
 
 	bool EditorRenderer2DLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
 	{
+		Osiris::Window& window = Application::Get().GetWindow();
+
+		glm::vec2 normalisedMouseCoords;
+		normalisedMouseCoords.x = (2.0f * e.GetPositionX() / window.GetWidth()) - 1.0f;
+		normalisedMouseCoords.y = -((2.0f * e.GetPositionY() / window.GetHeight()) - 1.0f);
+
+		//OSR_TRACE("Normalised Mouse Coords: {0},{1}", normalisedMouseCoords.x, normalisedMouseCoords.y);
+
 		if (_Scene != nullptr)
 		{
 			/* Query each of the layer scene objects */
@@ -108,12 +116,17 @@ namespace Osiris::Editor
 			{
 				for (auto& go : sl->gameobjects)
 				{
-					glm::vec4 translatedInputArea = go->transform2d->matrix * glm::vec4(go->inputArea.x, go->inputArea.y, 0.0, 1.0);
+					glm::mat4 mvpInverse = glm::inverse(_CameraController->GetCamera().GetViewProjectionMatrix() * go->transform2d->matrix);
+
+					glm::vec4 nearPoint = mvpInverse * glm::vec4(normalisedMouseCoords, 0.0f, 1.0f);
+
+					glm::vec4 translatedInputArea = _CameraController->GetCamera().GetViewProjectionMatrix() * (glm::vec4(go->inputArea.x, go->inputArea.y, 0.0, 1.0));
 					translatedInputArea.z = go->inputArea.z;
 					translatedInputArea.w = go->inputArea.w;
-					if (Rect::Contains(translatedInputArea, { (float)e.GetPositionX(), Application::Get().GetWindow().GetHeight() - (float)e.GetPositionY() }) == true)
+
+					if (Rect::Contains(translatedInputArea, { nearPoint.x, nearPoint.y }) == true)
 					{
-						OSR_TRACE("Click on GameObject: {0}", go->name);
+						_EventService->Publish(Events::EventType::SelectedGameObjectChanged, Events::SelectedGameObjectChangedArgs(go));
 					}
 				}
 			}

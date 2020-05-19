@@ -3,6 +3,7 @@
 #include <Osiris.h>
 
 #include "events/EditorEvents.h"
+#include "services/ServiceManager.h"
 #include "layers/Renderer2DLayer.h"
 #include "datamodels/OrthographicCameraController.h"
 #include "gizmos/TranslationGizmo.h"
@@ -27,6 +28,7 @@ namespace Osiris::Editor
 		void OnSelectedGameObjectChanged(Events::EventArgs& args);
 
 	private:
+		std::shared_ptr<EventService>					_EventService;
 		std::shared_ptr<OrthographicCameraController>	_CameraController;
 		std::shared_ptr<Scene>							_Scene;
 		std::shared_ptr<Shader>							_GizmoShader;

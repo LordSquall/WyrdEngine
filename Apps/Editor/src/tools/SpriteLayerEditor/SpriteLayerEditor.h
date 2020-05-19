@@ -18,9 +18,12 @@ namespace Osiris::Editor
 	private:
 		void OnSceneOpened(Events::EventArgs& args);
 
+		void OnSelectedGameObjectChanged(Events::EventArgs& args);
+
 		void AddSpriteGO();
 
 	private:
+		std::shared_ptr<EventService> _EventService;
 		std::shared_ptr<WorkspaceService> _WorkspaceService;
 		std::shared_ptr<ResourceService> _ResourceService;
 		int32_t _SelectedSprite;

@@ -11,8 +11,8 @@
 namespace Osiris::Editor
 {
 	SpriteComponent::SpriteComponent()
+		: Color(1.0f, 1.0f, 1.0f)
 	{
-
 	}
 
 	SpriteComponent::SpriteComponent(const SpriteComponent& obj)
