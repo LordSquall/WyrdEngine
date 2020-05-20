@@ -21,6 +21,8 @@ namespace Osiris::Editor
 
 		void OnEvent(Event& event) override;
 
+		void OnGUI();
+
 	private:
 		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
 		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
@@ -38,5 +40,7 @@ namespace Osiris::Editor
 		std::shared_ptr<GameObject>						_SelectedGameObject;
 
 		glm::vec2 _LastMousePos;
+		glm::vec2 _MenuPos;
+		bool _OpenContextMenu;
 	};
 }

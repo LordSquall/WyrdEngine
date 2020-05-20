@@ -151,21 +151,26 @@ namespace Osiris::Editor
 
 	void SpriteLayerEditor::AddSpriteGO()
 	{
-		GameObject go;
-		go.name = "New Sprite";
+		std::shared_ptr<GameObject> go = std::make_shared<GameObject>("New Sprite");
 
 		/* add base sprite components */
-		go.transform2d = std::make_shared<Transform2DComponent>();
-		go.spriteRender = std::make_shared<SpriteComponent>();
+		go->transform2d = std::make_shared<Transform2DComponent>();
+		go->spriteRender = std::make_shared<SpriteComponent>(go);
 
 		/* setup the default sprite renderer */
-		go.spriteRender->Sprite = std::make_shared<Sprite>("New Sprite", 0, 0, 256, 256);
+		go->spriteRender->Sprite = std::make_shared<Sprite>("New Sprite", 0, 0, 256, 256);
 
 		/* setup the base texture */
-		go.spriteRender->BaseTexture = _ResourceService->GetTextureByName("box_01");
+		go->spriteRender->BaseTexture = _ResourceService->GetTextureByName("box_01");
 
 		/* link the base texture to the sprite */
-		go.spriteRender->Sprite->SetTexture(go.spriteRender->BaseTexture->GetTexture());
+		go->spriteRender->Sprite->SetTexture(go->spriteRender->BaseTexture->GetTexture());
+
+		/* setup initial input area for editor input */
+		go->inputArea.x = go->spriteRender->Sprite->GetX();
+		go->inputArea.y = go->spriteRender->Sprite->GetY();
+		go->inputArea.z = go->spriteRender->Sprite->GetWidth();
+		go->inputArea.w = go->spriteRender->Sprite->GetHeight();
 
 		_SelectedLayer2D->AddSprite(go);
 	}

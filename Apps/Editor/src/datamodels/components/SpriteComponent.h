@@ -18,6 +18,7 @@ namespace Osiris::Editor {
 	{
 	public:
 		SpriteComponent();
+		SpriteComponent(std::shared_ptr<GameObject> owner);
 		SpriteComponent(const SpriteComponent& obj);
 		~SpriteComponent();
 

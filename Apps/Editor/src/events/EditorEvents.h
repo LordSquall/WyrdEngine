@@ -18,7 +18,8 @@ namespace Osiris::Editor::Events
 		SettingsUpdated,
 		SelectedCleared, SelectedGameObjectChanged, SelectedAssetChanged,
 		CreateNewProject, OpenProject, CloseProject, ProjectLoaded,
-		SceneClosed, SceneOpened
+		SceneClosed, SceneOpened,
+		OpenSceneViewerContextMenu,
 	};
 
 	class Event
@@ -206,6 +207,25 @@ namespace Osiris::Editor::Events
 	{
 	public:
 		SceneOpenedEvent() : Event(EventType::SceneOpened) { }
+	};
+
+#pragma endregion
+
+#pragma region OpenSceneViewerContextMenu
+
+	class OpenSceneViewerContextMenuArgs : public EventArgs
+	{
+	public:
+		OpenSceneViewerContextMenuArgs(std::shared_ptr<GameObject> gameObject) : gameobject(gameObject) {}
+
+
+		std::shared_ptr<GameObject> gameobject;
+	};
+
+	class OpenSceneViewerContextMenuEvent : public Event
+	{
+	public:
+		OpenSceneViewerContextMenuEvent() : Event(EventType::OpenSceneViewerContextMenu) { }
 	};
 
 #pragma endregion

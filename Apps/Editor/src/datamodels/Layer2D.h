@@ -21,7 +21,7 @@ namespace Osiris::Editor {
 		virtual ~Layer2D();
 
 	public:
-		void AddSprite(const GameObject& gameObject);
+		void AddSprite(std::shared_ptr<GameObject> gameObject);
 		void RemoveSprite(int uid);
 		void SwapSprite(int a, int b);
 

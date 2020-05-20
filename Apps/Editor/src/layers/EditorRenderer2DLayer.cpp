@@ -3,6 +3,8 @@
 
 #include "EditorRenderer2DLayer.h"
 
+#include <imgui.h>
+
 namespace Osiris::Editor
 {
 	EditorRenderer2DLayer::EditorRenderer2DLayer(std::string name) : Renderer2DLayer(name)
@@ -100,11 +102,29 @@ namespace Osiris::Editor
 		}
 	}
 
+
+	void EditorRenderer2DLayer::OnGUI()
+	{
+		if (_OpenContextMenu == true)
+		{
+			ImGui::SetNextWindowPos({ ImVec2(_MenuPos.x, _MenuPos.y) });
+			ImGui::Begin("Test Window", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize);
+
+			if (ImGui::MenuItem("Copy", 0, false, false) == false) { /* TODO */ }
+			if (ImGui::MenuItem("Paste", 0, false, false) == false) { /* TODO */ }
+			if (ImGui::MenuItem("Cut", 0, false, false) == false) { /* TODO */ }
+			ImGui::Separator();
+			if (ImGui::MenuItem("Delete", 0, false, true) == false) { /* TODO */ }
+
+			ImGui::End();
+		}
+	}
+
 	bool EditorRenderer2DLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
 	{
 		bool itemFound = false;
 		glm::vec2 normalisedMouseCoords;
-
+		std::shared_ptr<GameObject> selectedGameObject = nullptr;
 		Osiris::Window& window = Application::Get().GetWindow();
 
 		normalisedMouseCoords.x = (2.0f * e.GetPositionX() / window.GetWidth()) - 1.0f;
@@ -127,16 +147,24 @@ namespace Osiris::Editor
 
 					if (Rect::Contains(translatedInputArea, { nearPoint.x, nearPoint.y }) == true)
 					{
-						_EventService->Publish(Events::EventType::SelectedGameObjectChanged, Events::SelectedGameObjectChangedArgs(go));
+						selectedGameObject = go;
 						itemFound = true;
 					}
 				}
 			}
 
-			/* we didn't click anything so unselect any gameobject */
-			if (itemFound == false)
+			switch (e.GetMouseButton())
 			{
-				_EventService->Publish(Events::EventType::SelectedGameObjectChanged, Events::SelectedGameObjectChangedArgs(nullptr));
+			case OSR_MOUSE_BUTTON_LEFT:
+				_EventService->Publish(Events::EventType::SelectedGameObjectChanged, Events::SelectedGameObjectChangedArgs(selectedGameObject));
+				_OpenContextMenu = false;
+				break;
+			case OSR_MOUSE_BUTTON_RIGHT:
+				_EventService->Publish(Events::EventType::SelectedGameObjectChanged, Events::SelectedGameObjectChangedArgs(selectedGameObject));
+				_MenuPos.x = e.GetPositionX();
+				_MenuPos.y = e.GetPositionY();
+				_OpenContextMenu = true;
+				break;
 			}
 		}
 

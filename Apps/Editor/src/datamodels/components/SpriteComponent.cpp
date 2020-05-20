@@ -15,6 +15,12 @@ namespace Osiris::Editor
 	{
 	}
 
+	SpriteComponent::SpriteComponent(std::shared_ptr<GameObject> owner)
+		: Color(1.0f, 1.0f, 1.0f)
+	{
+		OwnerGameObject = owner;
+	}
+
 	SpriteComponent::SpriteComponent(const SpriteComponent& obj)
 	{
 		BaseTexture = obj.BaseTexture;

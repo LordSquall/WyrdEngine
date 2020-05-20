@@ -18,9 +18,9 @@ namespace Osiris::Editor
 
 	Layer2D::~Layer2D() { }
 
-	void Layer2D::AddSprite(const GameObject& gameObject)
+	void Layer2D::AddSprite(std::shared_ptr<GameObject> gameObject)
 	{
-		gameobjects.push_back(std::make_shared<GameObject>(gameObject));
+		gameobjects.push_back(gameObject);
 	}
 
 	void Layer2D::RemoveSprite(int idx)

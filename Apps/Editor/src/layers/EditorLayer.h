@@ -48,5 +48,7 @@ namespace Osiris::Editor
 		std::shared_ptr<EventService> _eventService;
 		std::shared_ptr<WorkspaceService> _workspaceService;
 		std::shared_ptr<SettingsService> _settingsService;
+
+		static bool _showSceneViewerContextMenu;
 	};
 }

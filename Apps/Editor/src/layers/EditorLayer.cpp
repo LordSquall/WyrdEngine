@@ -13,6 +13,8 @@
 
 #include "services/ServiceManager.h"
 
+#include "layers/EditorRenderer2DLayer.h"
+
 #include "tools/PropertiesViewer/PropertiesViewer.h"
 #include "tools/PreferencesViewer/PreferencesViewer.h"
 #include "tools/LayerViewer/LayerViewer.h"
@@ -33,6 +35,8 @@ namespace Osiris::Editor
 	static ImFont*		s_defaultFont							= nullptr;
 	Utils util;
 
+	static EditorRenderer2DLayer* renderer2DLayer;
+
 	EditorLayer::EditorLayer()
 		: Layer("EditorLayer")
 	{
@@ -44,7 +48,6 @@ namespace Osiris::Editor
 		m_plugins["Asset Viewer"] = std::make_shared<AssetViewer>();
 		m_plugins["Preferences"] = std::make_shared<PreferencesViewer>();
 
-
 		m_plugins["Preferences"]->Close();
 
 		util = Utils();
@@ -54,6 +57,9 @@ namespace Osiris::Editor
 		_settingsService = ServiceManager::Get<SettingsService>(ServiceManager::Service::Settings);
 
 		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Editor::Events::EventType::SceneOpened, EVENT_FUNC(EditorLayer::OnSceneOpened));
+
+		/* retrieve the renderer 2D layer */
+		renderer2DLayer = (EditorRenderer2DLayer*)Application::Get().GetLayerStack()->FindLayer("Editor2DLayer");
 	}
 
 	EditorLayer::~EditorLayer()
@@ -316,6 +322,8 @@ namespace Osiris::Editor
 		}
 
 		if (menu_help_demo_window_show == true) ImGui::ShowDemoWindow();
+
+		renderer2DLayer->OnGUI();
 
 		ImGui::PopFont();
 
