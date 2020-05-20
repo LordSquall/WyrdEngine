@@ -57,11 +57,14 @@ namespace Osiris {
 		/* send the event of the window(s) first */
 		m_Window->OnEvent(e);
 
-		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
+		if (e.Handled == false)
 		{
-			(*--it)->OnEvent(e);
-			if (e.Handled)
-				break;
+			for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
+			{
+				(*--it)->OnEvent(e);
+				if (e.Handled)
+					break;
+			}
 		}
 	}
 

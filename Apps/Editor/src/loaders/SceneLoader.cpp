@@ -47,6 +47,16 @@ namespace Osiris::Editor
 		{
 			i >> j;
 			scene = j.get<Scene>();
+
+			/* there are a number of operations that now need to be performed on the model before continuing */
+			for each (auto& layer in scene.layers2D)
+			{
+				for each (auto& go in layer->gameobjects)
+				{
+					go->spriteRender->OwnerGameObject = go;
+				}
+			}
+
 			return Success;
 		}
 		return FileNotFound;
@@ -116,9 +126,6 @@ namespace Osiris::Editor
 		jGameObject.at("name").get_to(gameObject.name);
 		jGameObject.at("transform2d").get_to(gameObject.transform2d);
 		jGameObject.at("spriteRenderer").get_to(gameObject.spriteRender);
-
-		/* Associate Gameobject -> component ownership, as it's omitted from the file */
-		gameObject.spriteRender->OwnerGameObject = std::make_shared<GameObject>(gameObject);
 
 		gameObject.inputArea.x = gameObject.spriteRender->Sprite->GetX();
 		gameObject.inputArea.y = gameObject.spriteRender->Sprite->GetY();

@@ -358,21 +358,21 @@ namespace Osiris::Editor
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.MouseDown[e.GetMouseButton()] = true;
-		return false;
+		return io.WantCaptureMouse;
 	}
 
 	bool EditorLayer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.MouseDown[e.GetMouseButton()] = false;
-		return false;
+		return io.WantCaptureMouse;
 	}
 
 	bool EditorLayer::OnMouseMovedEvent(MouseMovedEvent& e)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.MousePos = ImVec2(e.GetX(), e.GetY());
-		return false;
+		return io.WantCaptureMouse;
 	}
 
 	bool EditorLayer::OnMouseScrolledEvent(MouseScrolledEvent& e)
@@ -381,7 +381,7 @@ namespace Osiris::Editor
 		io.MouseWheel += e.GetYOffset();
 		io.MouseWheelH += e.GetXOffset();
 
-		return false;
+		return io.WantCaptureMouse;
 	}
 
 	bool EditorLayer::OnKeyReleasedEvent(KeyReleasedEvent& e)

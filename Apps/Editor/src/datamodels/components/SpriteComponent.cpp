@@ -20,6 +20,7 @@ namespace Osiris::Editor
 		BaseTexture = obj.BaseTexture;
 		Sprite = obj.Sprite;
 		Color = obj.Color;
+		OwnerGameObject = obj.OwnerGameObject;
 	}
 
 	SpriteComponent::~SpriteComponent()

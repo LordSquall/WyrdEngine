@@ -102,13 +102,13 @@ namespace Osiris::Editor
 
 	bool EditorRenderer2DLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
 	{
+		bool itemFound = false;
+		glm::vec2 normalisedMouseCoords;
+
 		Osiris::Window& window = Application::Get().GetWindow();
 
-		glm::vec2 normalisedMouseCoords;
 		normalisedMouseCoords.x = (2.0f * e.GetPositionX() / window.GetWidth()) - 1.0f;
 		normalisedMouseCoords.y = -((2.0f * e.GetPositionY() / window.GetHeight()) - 1.0f);
-
-		//OSR_TRACE("Normalised Mouse Coords: {0},{1}", normalisedMouseCoords.x, normalisedMouseCoords.y);
 
 		if (_Scene != nullptr)
 		{
@@ -128,8 +128,15 @@ namespace Osiris::Editor
 					if (Rect::Contains(translatedInputArea, { nearPoint.x, nearPoint.y }) == true)
 					{
 						_EventService->Publish(Events::EventType::SelectedGameObjectChanged, Events::SelectedGameObjectChangedArgs(go));
+						itemFound = true;
 					}
 				}
+			}
+
+			/* we didn't click anything so unselect any gameobject */
+			if (itemFound == false)
+			{
+				_EventService->Publish(Events::EventType::SelectedGameObjectChanged, Events::SelectedGameObjectChangedArgs(nullptr));
 			}
 		}
 
