@@ -21,6 +21,8 @@ namespace Osiris::Editor
 
 		void SetGameObject(std::shared_ptr<GameObject> gameObject);
 
+		void OnDrag(glm::vec2 delta);
+
 		void Render(Timestep ts, Renderer& renderer);
 
 	private:

@@ -31,6 +31,9 @@ namespace Osiris
 		inline float GetBottom() const { return _Bottom; }
 		inline void SetBottom(float bottom) { _Bottom = bottom; RecalulateProjection(); }
 
+		inline float GetHeight() const { return fabs(_Right) + fabs(_Left); }
+		inline float GetWidth() const { return fabs(_Top) + fabs(_Bottom); }
+
 		inline const glm::mat4& GetProjectionMatrix() const { return _ProjectionMatrix; }
 		inline const glm::mat4& GetViewMatrix() const { return _ViewMatrix; }
 		inline const glm::mat4& GetViewProjectionMatrix() const { return _ViewProjectionMatrix; }

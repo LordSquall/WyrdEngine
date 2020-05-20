@@ -5,6 +5,7 @@
 #include "TranslationGizmo.h"
 
 #include "services/ServiceManager.h"
+#include "datamodels/components/Transform2DComponent.h"
 
 namespace Osiris::Editor
 {
@@ -51,6 +52,11 @@ namespace Osiris::Editor
 	void TranslationGizmo::SetGameObject(std::shared_ptr<GameObject> gameObject)
 	{
 		_GameObject = gameObject;
+	}
+
+	void TranslationGizmo::OnDrag(glm::vec2 delta)
+	{
+		_GameObject->transform2d->Translate(delta);
 	}
 
 	void TranslationGizmo::Render(Timestep ts, Renderer& renderer)

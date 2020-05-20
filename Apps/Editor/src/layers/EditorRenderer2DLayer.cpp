@@ -84,6 +84,7 @@ namespace Osiris::Editor
 		EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<MouseButtonPressedEvent>(OSR_BIND_EVENT_FN(EditorRenderer2DLayer::OnMouseButtonPressedEvent));
 		dispatcher.Dispatch<MouseButtonReleasedEvent>(OSR_BIND_EVENT_FN(EditorRenderer2DLayer::OnMouseButtonReleasedEvent));
+		dispatcher.Dispatch<MouseMovedEvent>(OSR_BIND_EVENT_FN(EditorRenderer2DLayer::OnMouseMovedEvent));
 
 		/* Only in the event of the renderer layer not processing the event, do we pass it on to the camera */
 		if (event.Handled == false)
@@ -137,6 +138,32 @@ namespace Osiris::Editor
 
 	bool EditorRenderer2DLayer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e)
 	{
+		return true;
+	}
+
+	bool EditorRenderer2DLayer::OnMouseMovedEvent(MouseMovedEvent& e)
+	{
+		/* calculate the mouse positions and deltas */
+		glm::vec2 mouseCoords = { e.GetX(), Application::Get().GetWindow().GetHeight() - e.GetY() };
+		glm::vec2 mouseDelta = _LastMousePos - mouseCoords;
+		glm::vec2 unitDelta = { mouseDelta.x * (1.0f / (Application::Get().GetWindow().GetWidth() * 0.5f)),  mouseDelta.y * (1.0f / ((Application::Get().GetWindow().GetHeight() * 0.5f) * _CameraController->GetAspectRatio())) };
+
+		unitDelta = unitDelta * (_CameraController->GetAspectRatio() * _CameraController->GetZoomLevel());
+
+		/* on middle mouse click we want to drag the camera around */
+		if (Input::IsMouseButtonPressed(OSR_MOUSE_BUTTON_MIDDLE) == true)
+		{
+			_CameraController->Translate(unitDelta);
+		}
+
+		/* on left click with selected game object we want to feed the mouse events to the currently selected gizmo */
+		if (Input::IsMouseButtonPressed(OSR_MOUSE_BUTTON_LEFT) && _SelectedGameObject != NULL)
+		{
+			_TranslationGizmo->OnDrag(-unitDelta);
+		}
+
+		_LastMousePos = mouseCoords;
+		
 		return true;
 	}
 

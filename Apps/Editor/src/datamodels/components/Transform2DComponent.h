@@ -22,6 +22,10 @@ namespace Osiris::Editor {
 		inline void SetRotation(const float rot);
 		inline void SetScale(const vec2& scl);
 
+		void Translate(const vec2& pos);
+		void Rotate(const float rot);
+		void Scale(const vec2& scl);
+
 		vec2 position;
 		float rotation;
 		vec2 scale;

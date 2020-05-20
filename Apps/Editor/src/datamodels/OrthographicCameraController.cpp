@@ -31,6 +31,12 @@ namespace Osiris::Editor {
 		dispatcher.Dispatch<KeyReleasedEvent>(OSR_BIND_EVENT_FN(OrthographicCameraController::OnKeyReleased));
 	}
 
+
+	void OrthographicCameraController::Translate(glm::vec2 delta)
+	{
+		_Camera.SetPosition(_Camera.GetPosition() + (glm::vec3(delta, 0.0f)));
+	}
+
 	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
 	{
 		_ZoomLevel -= e.GetYOffset() * _CameraZoomSpeed;

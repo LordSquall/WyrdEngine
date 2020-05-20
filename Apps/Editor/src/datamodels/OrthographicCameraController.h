@@ -27,6 +27,9 @@ namespace Osiris::Editor
 		inline void SetPosition(glm::vec3 position) { _Camera.SetPosition(position); }
 		inline float GetZoomLevel() const { return _ZoomLevel; }
 		inline void SetZoomLevel(float level) { _ZoomLevel = level; _Camera.SetProjection(-_AspectRatio * _ZoomLevel, _AspectRatio * _ZoomLevel, -_ZoomLevel, _ZoomLevel);}
+		inline float GetAspectRatio() const { return _AspectRatio; }
+
+		void Translate(glm::vec2 delta);
 
 	private:
 		bool OnMouseScrolled(MouseScrolledEvent& e);

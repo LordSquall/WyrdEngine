@@ -47,6 +47,24 @@ namespace Osiris::Editor
 		UpdateModelMatrix();
 	}
 
+	void Transform2DComponent::Translate(const vec2& pos)
+	{
+		position += pos;
+		UpdateModelMatrix();
+	}
+
+	void Transform2DComponent::Rotate(const float rot)
+	{
+		rotation += rot;
+		UpdateModelMatrix();
+	}
+
+	void Transform2DComponent::Scale(const vec2& scl)
+	{
+		scale += scl;
+		UpdateModelMatrix();
+	}
+
 	void Transform2DComponent::UpdateModelMatrix()
 	{
 		matrix = glm::translate(glm::identity<glm::mat4>(), glm::vec3(position.x, position.y, 0.0f));
@@ -56,8 +74,6 @@ namespace Osiris::Editor
 	{
 		if (ImGui::TreeNode("Transform (2D)"))
 		{
-			char buffer[32];
-
 			float pos[2];
 			float rot;
 			float scl[2];

@@ -24,6 +24,7 @@ namespace Osiris::Editor
 	private:
 		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
 		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
+		bool OnMouseMovedEvent(MouseMovedEvent& e);
 		void OnSceneOpened(Events::EventArgs& args);
 		void OnSelectedGameObjectChanged(Events::EventArgs& args);
 
@@ -35,5 +36,7 @@ namespace Osiris::Editor
 		std::shared_ptr<Texture>						_IconsTexture;
 		std::shared_ptr<TranslationGizmo>				_TranslationGizmo;
 		std::shared_ptr<GameObject>						_SelectedGameObject;
+
+		glm::vec2 _LastMousePos;
 	};
 }
