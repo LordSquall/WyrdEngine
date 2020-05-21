@@ -9,7 +9,7 @@ namespace Osiris
 {
 	uint32_t Sprite::_nextID = 0;
 
-	Sprite::Sprite(std::string name, int x, int y, int width, int height) : _ID(_nextID), _Name(name), _X(x), _Y(y), _Width(width), _Height(width)
+	Sprite::Sprite(std::string name, int x, int y, int width, int height) : _ID(_nextID), _Name(name), _X(x), _Y(y), _Width(width), _Height(height)
 	{
 		/* Initialie the vertex buffer */
 		_vertices.push_back({ (float)_X, (float)_Y, 0.0f, 0.0f });
