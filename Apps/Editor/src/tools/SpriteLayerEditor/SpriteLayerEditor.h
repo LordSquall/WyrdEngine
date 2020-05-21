@@ -28,5 +28,7 @@ namespace Osiris::Editor
 		std::shared_ptr<ResourceService> _ResourceService;
 		int32_t _SelectedSprite;
 		std::shared_ptr<Layer2D> _SelectedLayer2D;
+
+		std::shared_ptr<Icon> _LayerRenameIcon;
 	};
 }

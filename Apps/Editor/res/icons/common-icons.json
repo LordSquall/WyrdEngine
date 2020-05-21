@@ -3,7 +3,7 @@
 	"texture-path": "common-icons.png",
 	"texture-width": 1024,
 	"texture-height": 1024,
-	"icons": [
+  "icons": [
     {
       "name": "assets_scene",
       "width": 128,
@@ -24,6 +24,13 @@
       "height": 128,
       "x": 256,
       "y": 1024
+    },
+    {
+      "name": "layer_rename",
+      "width": 64,
+      "height": 64,
+      "x": 0,
+      "y": 896
     }
 	]
 }

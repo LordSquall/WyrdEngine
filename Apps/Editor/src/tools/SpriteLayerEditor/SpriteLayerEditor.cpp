@@ -24,10 +24,15 @@ namespace Osiris::Editor
 
 		_EventService->Subscribe(Events::EventType::SceneOpened, EVENT_FUNC(SpriteLayerEditor::OnSceneOpened));
 		_EventService->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(SpriteLayerEditor::OnSelectedGameObjectChanged));
+
+		/* cache icons */
+		_LayerRenameIcon = _ResourceService->GetIconLibrary().GetIcon("common", "layer_rename");
 	}
 
 	void SpriteLayerEditor::OnEditorRender()
 	{
+		static char layerName[64] = "LayerName";
+
 		ImGui::Begin("Sprite Layer Editor");
 
 		if (_WorkspaceService->IsSceneLoaded())
@@ -69,6 +74,26 @@ namespace Osiris::Editor
 					auto target = std::find(layers->begin(), layers->end(), _SelectedLayer2D);
 					layers->erase(target);
 					_SelectedLayer2D = *layers->begin();
+				}
+
+				ImGui::SameLine();
+
+				
+				if (ImGui::IconButton(_LayerRenameIcon, ImVec2(16.0f, 16.0f)) == true)
+					ImGui::OpenPopup("Rename Layer");
+
+				if (ImGui::BeginPopupModal("Rename Layer", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+				{
+					ImGui::InputText(_SelectedLayer2D->name.c_str(), &layerName[0], 64);
+					if (ImGui::Button("Confirm"))
+					{
+						_SelectedLayer2D->name = layerName;
+						ImGui::CloseCurrentPopup();
+					}
+					ImGui::SameLine();
+					if (ImGui::Button("Cancel"))
+						ImGui::CloseCurrentPopup();
+					ImGui::EndPopup();
 				}
 			}
 
