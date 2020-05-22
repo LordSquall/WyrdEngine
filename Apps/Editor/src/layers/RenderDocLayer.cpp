@@ -68,23 +68,26 @@ namespace Osiris::Editor
 		{
 			if (_FrameCounter == _FrameCaptureCount)
 			{
-				int result = _RDOCAPI->EndFrameCapture(NULL, NULL);
-				if (result == 0)
+				if (_RDOCAPI != NULL)
 				{
-					OSR_ERROR("Failed to capture doc in Render Doc");
-				}
-				else
-				{					
-					char* filenameBuffer = (char*)malloc(sizeof(char) * Utils::ToUInt(_SettingsService->GetSetting("Preferences-RenderDoc", "filepath_max", "256")));
-					uint32_t pathLength = 0;
-					uint64_t timestamp = 0;
+					int result = _RDOCAPI->EndFrameCapture(NULL, NULL);
+					if (result == 0)
+					{
+						OSR_ERROR("Failed to capture doc in Render Doc");
+					}
+					else
+					{
+						char* filenameBuffer = (char*)malloc(sizeof(char) * Utils::ToUInt(_SettingsService->GetSetting("Preferences-RenderDoc", "filepath_max", "256")));
+						uint32_t pathLength = 0;
+						uint64_t timestamp = 0;
 
-					_RDOCAPI->GetCapture(0, &filenameBuffer[0], &pathLength, &timestamp);
-				
-					OSR_INFO("Renderdoc Capture Ended. Capture Successful: {0}", filenameBuffer);
+						_RDOCAPI->GetCapture(0, &filenameBuffer[0], &pathLength, &timestamp);
 
-					free(filenameBuffer);
+						OSR_INFO("Renderdoc Capture Ended. Capture Successful: {0}", filenameBuffer);
 
+						free(filenameBuffer);
+
+					}
 				}
 				_CaptureRunning = false;
 				_FrameCounter = 0;
@@ -104,13 +107,16 @@ namespace Osiris::Editor
 
 	void RenderDocLayer::UpdateSettings()
 	{
-		if(Utils::ToBool(_SettingsService->GetSetting("Preferences-RenderDoc", "display_overlay", "0")) == false)
+		if (_RDOCAPI != NULL)
 		{
-			_RDOCAPI->MaskOverlayBits(0, 0);
-		}
-		else
-		{
-			_RDOCAPI->MaskOverlayBits(~0U, ~0U);
+			if (Utils::ToBool(_SettingsService->GetSetting("Preferences-RenderDoc", "display_overlay", "0")) == false)
+			{
+				_RDOCAPI->MaskOverlayBits(0, 0);
+			}
+			else
+			{
+				_RDOCAPI->MaskOverlayBits(~0U, ~0U);
+			}
 		}
 	}
 
@@ -124,18 +130,21 @@ namespace Osiris::Editor
 	{
 		if (e.GetKeyCode() == OSR_KEY_F4)
 		{
-			if (Utils::ToBool(_SettingsService->GetSetting("Preferences-RenderDoc", "enabled", "0")))
+			if (_RDOCAPI != NULL)
 			{
-				_RDOCAPI->SetCaptureFilePathTemplate(_SettingsService->GetSetting("Preferences-RenderDoc", "capture_dir", "my_captures/example").c_str());
-				_RDOCAPI->StartFrameCapture(NULL, NULL);
+				if (Utils::ToBool(_SettingsService->GetSetting("Preferences-RenderDoc", "enabled", "0")))
+				{
+					_RDOCAPI->SetCaptureFilePathTemplate(_SettingsService->GetSetting("Preferences-RenderDoc", "capture_dir", "my_captures/example").c_str());
+					_RDOCAPI->StartFrameCapture(NULL, NULL);
 
-				int ret = _RDOCAPI->IsFrameCapturing();
+					int ret = _RDOCAPI->IsFrameCapturing();
 
-				_FrameCounter = 0;
-				_CaptureRunning = true;
+					_FrameCounter = 0;
+					_CaptureRunning = true;
 
-				OSR_INFO("Renderdoc Capture Started");
-				return true;
+					OSR_INFO("Renderdoc Capture Started");
+					return true;
+				}
 			}
 		}
 

@@ -102,51 +102,53 @@ namespace Osiris::Editor
 
 			if (_SelectedLayer2D != nullptr && !_SelectedLayer2D->gameobjects.empty())
 			{
-				ImGui::ListBoxHeader("", ImVec2(ImGui::GetWindowWidth(), -ImGui::GetItemsLineHeightWithSpacing()));
-				for (int i = 0; i < _SelectedLayer2D->gameobjects.size(); i++)
+				if (ImGui::ListBoxHeader("", ImVec2(ImGui::GetWindowWidth(), -ImGui::GetItemsLineHeightWithSpacing())) == true)
 				{
-					ImGui::PushID(spriteIdx);
-
-					if (ImGui::Selectable(_SelectedLayer2D->gameobjects[i]->name.c_str(), _SelectedSprite == spriteIdx))
+					for (int i = 0; i < _SelectedLayer2D->gameobjects.size(); i++)
 					{
-						_SelectedSprite = spriteIdx;
+						ImGui::PushID(spriteIdx);
 
-						/* Fire a change of selection event */
-						_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, Events::SelectedGameObjectChangedArgs(_SelectedLayer2D->gameobjects[_SelectedSprite]));
-					}
-
-					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
-					{
-						ImGui::SetDragDropPayload("SPRITE_DND_PAYLOAD", &spriteIdx, sizeof(int));        // Set payload to carry the index of our item (could be anything)
-						ImGui::EndDragDropSource();
-					}
-					if (ImGui::BeginDragDropTarget())
-					{
-						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SPRITE_DND_PAYLOAD"))
+						if (ImGui::Selectable(_SelectedLayer2D->gameobjects[i]->name.c_str(), _SelectedSprite == spriteIdx))
 						{
-							int payload_n = *(const int*)payload->Data;
-							_SelectedLayer2D->SwapSprite(payload_n, spriteIdx);
-						}
-						ImGui::EndDragDropTarget();
-					}
+							_SelectedSprite = spriteIdx;
 
-					/* Sprite list context menu */
-					if (ImGui::BeginPopupContextItem("item context menu"))
-					{
-						if (ImGui::Selectable("Delete"))
+							/* Fire a change of selection event */
+							_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, Events::SelectedGameObjectChangedArgs(_SelectedLayer2D->gameobjects[_SelectedSprite]));
+						}
+
+						if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
 						{
-							_SelectedLayer2D->RemoveSprite(spriteIdx);
-							_SelectedSprite--;
+							ImGui::SetDragDropPayload("SPRITE_DND_PAYLOAD", &spriteIdx, sizeof(int));        // Set payload to carry the index of our item (could be anything)
+							ImGui::EndDragDropSource();
 						}
-						ImGui::EndPopup();
+						if (ImGui::BeginDragDropTarget())
+						{
+							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SPRITE_DND_PAYLOAD"))
+							{
+								int payload_n = *(const int*)payload->Data;
+								_SelectedLayer2D->SwapSprite(payload_n, spriteIdx);
+							}
+							ImGui::EndDragDropTarget();
+						}
+
+						/* Sprite list context menu */
+						if (ImGui::BeginPopupContextItem("item context menu"))
+						{
+							if (ImGui::Selectable("Delete"))
+							{
+								_SelectedLayer2D->RemoveSprite(spriteIdx);
+								_SelectedSprite--;
+							}
+							ImGui::EndPopup();
+						}
+
+						ImGui::PopID();
+
+
+						spriteIdx += 1;
 					}
-
-					ImGui::PopID();
-
-
-					spriteIdx += 1;
+					ImGui::ListBoxFooter();
 				}
-				ImGui::ListBoxFooter();
 			}
 			else
 			{
