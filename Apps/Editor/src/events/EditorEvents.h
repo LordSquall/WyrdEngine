@@ -104,9 +104,10 @@ namespace Osiris::Editor::Events
 	class CreateNewProjectArgs : public EventArgs
 	{
 	public:
-		CreateNewProjectArgs(std::string name, std::string location) : name(name), location(location) {}
+		CreateNewProjectArgs(std::string name, std::string scene, std::string location) : name(name), sceneName(scene), location(location) {}
 
 		const std::string name;
+		const std::string sceneName;
 		const std::string location;
 	};
 

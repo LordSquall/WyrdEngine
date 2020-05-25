@@ -18,11 +18,18 @@ namespace Osiris::Editor
 		/* cache the service(s) */
 		_resourcesService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
 		_workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
+		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
 
 		/* cache the icon pointers */
 		_UnknownIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_unknown");
 		_SceneIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_scene");
 		_TextureIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_texture");
+
+		/* register from events */
+		_EventService->Subscribe(Events::EventType::ProjectLoaded, [this](Events::EventArgs& args)
+			{
+				_currentDir = Utils::GetAssetFolder();
+			});
 	}
 
 	AssetViewer::~AssetViewer() {}

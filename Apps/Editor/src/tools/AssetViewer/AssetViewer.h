@@ -26,6 +26,7 @@ namespace Osiris::Editor
 		std::string _currentDir;
 		std::shared_ptr<ResourceService> _resourcesService;
 		std::shared_ptr<WorkspaceService> _workspaceService;
+		std::shared_ptr<EventService> _EventService;
 
 		/* Icons */
 		std::shared_ptr<Icon> _UnknownIcon;

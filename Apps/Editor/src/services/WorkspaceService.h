@@ -26,11 +26,11 @@ namespace Osiris::Editor
 		inline bool IsSceneLoaded() { return _IsSceneLoaded; }
 		inline void IsSceneLoaded(bool value) { _IsSceneLoaded = value; }
 
-		void CreateNewProject(std::string location, std::string name);
+		void CreateNewProject(std::string location, std::string sceneName, std::string name);
 		bool SaveProject();
 		bool LoadProject(std::string projectfile);
 
-		bool CreateNewScene();
+		bool CreateNewScene(const std::string& name);
 		bool LoadScene(const std::string& path);
 		bool CloseScene();
 		bool SaveScene();

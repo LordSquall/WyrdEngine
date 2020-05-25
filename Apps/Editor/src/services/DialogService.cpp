@@ -22,6 +22,7 @@ namespace Osiris::Editor
 			if (ImGui::BeginPopupModal("Create New Project...", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 			{
 				static char name_buffer[255];
+				static char scenename_buffer[255] = "default";
 				static char folder_buffer[255];
 
 				ImGui::AlignTextToFramePadding();
@@ -32,9 +33,16 @@ namespace Osiris::Editor
 				ImGui::PopID();
 
 				ImGui::AlignTextToFramePadding();
-				ImGui::Text("Folder:");
+				ImGui::Text("Default Scene Name:");
 				ImGui::SameLine();
 				ImGui::PushID(1);
+				ImGui::InputText("##hidelabel", scenename_buffer, 255);
+				ImGui::PopID();
+
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("Folder:");
+				ImGui::SameLine();
+				ImGui::PushID(2);
 				ImGui::InputText("##hidelabel", folder_buffer, 255);
 				ImGui::PopID();
 				ImGui::SameLine();
@@ -48,7 +56,7 @@ namespace Osiris::Editor
 
 				if (ImGui::Button("OK", ImVec2(120, 0))) 
 				{ 
-					ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::CreateNewProject, Events::CreateNewProjectArgs(std::string(name_buffer), std::string(folder_buffer)));
+					ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::CreateNewProject, Events::CreateNewProjectArgs(std::string(name_buffer), std::string(scenename_buffer), std::string(folder_buffer)));
 					ImGui::CloseCurrentPopup();
 					_isDialogOpen = false;
 				}
