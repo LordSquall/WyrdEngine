@@ -16,3 +16,9 @@
 [submodule "Osiris/vendor/glm"]
 	path = Osiris/vendor/glm
 	url = https://github.com/PaulRichardHickman/glm.git
+[submodule "Osiris/vendor/lua"]
+	path = Osiris/vendor/lua
+	url = https://github.com/lua/lua
+[submodule "Osiris/vendor/LuaBridge"]
+	path = Osiris/vendor/LuaBridge
+	url = https://github.com/PaulRichardHickman/LuaBridge
