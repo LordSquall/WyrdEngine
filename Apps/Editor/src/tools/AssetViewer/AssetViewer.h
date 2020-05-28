@@ -21,6 +21,7 @@ namespace Osiris::Editor
 
 		void DrawTextureItem(uint32_t resIdx, std::shared_ptr<TextureRes> textureResource);
 		void DrawSceneItem(uint32_t resIdx, std::shared_ptr<SceneRes> sceneResource);
+		void DrawScriptItem(uint32_t resIdx, std::shared_ptr<ScriptRes> scriptResource);
 		void DrawUnknownItem(uint32_t resIdx, std::string& unknownResourceName);
 
 		std::string _currentDir;
@@ -32,5 +33,6 @@ namespace Osiris::Editor
 		std::shared_ptr<Icon> _UnknownIcon;
 		std::shared_ptr<Icon> _SceneIcon;
 		std::shared_ptr<Icon> _TextureIcon;
+		std::shared_ptr<Icon> _ScriptIcon;
 	};
 }

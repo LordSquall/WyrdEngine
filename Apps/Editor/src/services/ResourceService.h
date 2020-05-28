@@ -6,6 +6,7 @@
 #include "datamodels/resources/Resource.h"
 #include "datamodels/resources/TextureRes.h"
 #include "datamodels/resources/SceneRes.h"
+#include "datamodels/resources/ScriptRes.h"
 
 namespace Osiris::Editor
 {
@@ -19,7 +20,8 @@ namespace Osiris::Editor
 			TEXTURE = 2,
 			SHADER = 3,
 			MODEL = 4,
-			SCENE = 5
+			SCENE = 5,
+			SCRIPT = 6
 		};
 
 	public:
@@ -45,6 +47,11 @@ namespace Osiris::Editor
 		std::shared_ptr<SceneRes> GetSceneByName(const std::string& name);
 		std::shared_ptr<SceneRes> GetSceneByUID(const uint32_t uid);
 
+		/* Script Functions */
+		inline std::map<uint32_t, std::shared_ptr<ScriptRes>>& GetScripts() { return _scriptResources; }
+		std::shared_ptr<ScriptRes> GetScriptByName(const std::string& name);
+		std::shared_ptr<ScriptRes> GetScriptByUID(const uint32_t uid);
+
 		/* Helper Functions */
 		Type DetermineType(const std::string& path);
 
@@ -53,6 +60,7 @@ namespace Osiris::Editor
 
 		std::map<uint32_t, std::shared_ptr<TextureRes>> _textureResources;
 		std::map<uint32_t, std::shared_ptr<SceneRes>> _sceneResources;
+		std::map<uint32_t, std::shared_ptr<ScriptRes>> _scriptResources;
 
 		std::map<std::string, Type> _extensions;
 

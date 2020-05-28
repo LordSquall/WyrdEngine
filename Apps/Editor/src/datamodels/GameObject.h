@@ -7,6 +7,7 @@
 #include "components/Transform2DComponent.h"
 #include "components/Transform3DComponent.h"
 #include "components/SpriteComponent.h"
+#include "components/ScriptComponent.h"
 
 using namespace Osiris;
 
@@ -22,13 +23,19 @@ namespace Osiris::Editor {
 		GameObject(const GameObject& obj);
 		~GameObject();
 
+		inline uint32_t GetUID() { return _uid; }
+
 	public:
 		std::string name;
-		std::shared_ptr<Transform2DComponent> transform2d;
-		std::shared_ptr<Transform3DComponent> transform3d;
-		std::shared_ptr<SpriteComponent> spriteRender;
+		Transform2DComponent transform2d;
+		SpriteComponent spriteRender;
+		ScriptComponent script;
 
 		glm::vec4 inputArea;
+
+	private:
+		uint32_t _uid = 0u;
+		static uint32_t _nextUid;
 	};
 
 }

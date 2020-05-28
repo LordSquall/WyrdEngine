@@ -49,7 +49,7 @@ namespace Osiris::Editor
 		color[1] = Color.g;
 		color[2] = Color.b;
 
-		if (ImGui::TreeNode("Sprite Renderer"))
+		if (ImGui::TreeNodeEx("Sprite Renderer", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			if (ImGui::InputInt2("Pos ", position, 1) == true)
 			{

@@ -23,6 +23,8 @@
 
 #include "platform/OpenGL/imgui_opengl_renderer.h"
 
+#include "support/ImGuiUtils.h"
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <SOIL.h>
@@ -46,20 +48,27 @@ namespace Osiris::Editor
 		m_plugins["Properties"] = std::make_shared<PropertiesViewer>();
 		m_plugins["Sprite Layer Editor"] = std::make_shared<SpriteLayerEditor>();
 		m_plugins["Asset Viewer"] = std::make_shared<AssetViewer>();
-		m_plugins["Preferences"] = std::make_shared<PreferencesViewer>();
-
-		m_plugins["Preferences"]->Close();
+		//m_plugins["Preferences"] = std::make_shared<PreferencesViewer>();
+		//m_plugins["Preferences"]->Close();
 
 		util = Utils();
 
+		/* cache services */
 		_eventService = ServiceManager::Get<EventService>(ServiceManager::Service::Events);
 		_workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace);
 		_settingsService = ServiceManager::Get<SettingsService>(ServiceManager::Service::Settings);
+		_resourceService = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources);
+		_simulationService = ServiceManager::Get<SimulationService>(ServiceManager::Service::Simulation);
 
-		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Editor::Events::EventType::SceneOpened, EVENT_FUNC(EditorLayer::OnSceneOpened));
+		/* cache icon resources */
+		_playButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "sim_play");
+		_stopButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "sim_stop");
 
 		/* retrieve the renderer 2D layer */
 		renderer2DLayer = (EditorRenderer2DLayer*)Application::Get().GetLayerStack()->FindLayer("Editor2DLayer");
+
+		/* setup event bindings */
+		_eventService->Subscribe(Editor::Events::EventType::SceneOpened, EVENT_FUNC(EditorLayer::OnSceneOpened));
 	}
 
 	EditorLayer::~EditorLayer()
@@ -70,12 +79,11 @@ namespace Osiris::Editor
 	bool EditorLayer::OnAttach()
 	{
 		/* load in icons sets */
-		m_IconLibrary.AddIconsFromFile(std::string("res/icons/filesystem_icons.json"));
+		_resourceService->GetIconLibrary().AddIconsFromFile(std::string("res/icons/filesystem_icons.json"));
 
 		/* set the style and icons library for each of the plugins */
 		for (std::map<std::string, std::shared_ptr<EditorPlugin>>::iterator it = m_plugins.begin(); it != m_plugins.end(); it++)
 		{
-			(it->second)->SetIconLibrary(&m_IconLibrary);
 			(it->second)->OnInitialise();
 		}
 
@@ -143,6 +151,12 @@ namespace Osiris::Editor
 	void EditorLayer::OnDetach()
 	{
 
+	}
+
+
+	void EditorLayer::OnUpdate(Timestep ts)
+	{
+		_simulationService->Update(ts);
 	}
 
 	void EditorLayer::OnRender(Timestep ts, Renderer& renderer)
@@ -285,7 +299,22 @@ namespace Osiris::Editor
 		ImGui::SetNextWindowSize(menubar_size);
 		ImGui::SetNextWindowPos(ImVec2(0.0f, menubar_size.y));
 		ImGui::Begin("Toolbar", 0, ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
-		
+	
+		ImGui::SetCursorPosX(menubar_size.x * 0.5f);
+		ImGui::PushID("Sim_Play_Btn");
+		if (ImGui::IconButton(_playButtonIcon, ImVec2(16.0f, 16.0f)) == true)
+		{
+			_simulationService->Start();
+		}
+		ImGui::PopID();
+		ImGui::SameLine();
+		ImGui::PushID("Sim_Stop_Btn");
+		if (ImGui::IconButton(_stopButtonIcon, ImVec2(16.0f, 16.0f)) == true)
+		{
+			_simulationService->Stop();
+		}
+		ImGui::PopID();
+
 		ImGui::End();
 
 		if (toolbar_settings_window_show == true)

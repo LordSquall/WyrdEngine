@@ -22,12 +22,13 @@ namespace Osiris::Editor {
 		SpriteComponent(const SpriteComponent& obj);
 		~SpriteComponent();
 
-		std::shared_ptr<GameObject> OwnerGameObject;
 		std::shared_ptr<TextureRes> BaseTexture;
 		std::shared_ptr<Sprite> Sprite;
 		vec3 Color;
 
 		// Inherited via TransformComponent
 		void OnPropertyEditorDraw() override;
+
+		std::string toString() const { return "Hello"; }
 	};
 }

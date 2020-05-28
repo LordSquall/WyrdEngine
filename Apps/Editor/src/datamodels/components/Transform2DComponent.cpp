@@ -72,7 +72,7 @@ namespace Osiris::Editor
 
 	void Transform2DComponent::OnPropertyEditorDraw()
 	{
-		if (ImGui::TreeNode("Transform (2D)"))
+		if (ImGui::TreeNodeEx("Transform (2D)", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			float pos[2];
 			float rot;

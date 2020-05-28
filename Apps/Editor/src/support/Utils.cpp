@@ -4,7 +4,7 @@
 #include "Utils.h"
 #include <shobjidl.h>
 #include <shtypes.h>
-
+#include <shellapi.h>
 #include <corecrt_wstring.h>
 
 
@@ -301,6 +301,11 @@ namespace Osiris::Editor {
 	void Utils::CreateProjectFileStructure(const std::string& rootFolder)
 	{
 		std::filesystem::create_directory(GetAssetFolder());
+	}
+
+	void Utils::OpenFileWithSystem(const std::string& path)
+	{
+		ShellExecuteA(NULL, "open", path.c_str(), NULL, NULL, SW_SHOW);
 	}
 
 	bool Utils::ToBool(std::string& value)

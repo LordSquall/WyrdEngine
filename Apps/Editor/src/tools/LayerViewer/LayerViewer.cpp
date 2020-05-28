@@ -17,7 +17,7 @@ namespace Osiris::Editor
 {
 	bool v;
 
-	LayerViewer::LayerViewer() : EditorPlugin("Layer Viewer") {}
+	LayerViewer::LayerViewer() : EditorPlugin("Layer Viewer"), _LayerStack(NULL) {}
 
 	LayerViewer::~LayerViewer() {}
 

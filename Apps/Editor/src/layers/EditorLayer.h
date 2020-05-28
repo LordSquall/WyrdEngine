@@ -23,6 +23,7 @@ namespace Osiris::Editor
 
 		bool OnAttach() override;
 		void OnDetach() override;
+		void OnUpdate(Timestep ts) override;
 		void OnRender(Timestep ts, Renderer& renderer) override;
 		void OnEvent(Event& event) override;
 		
@@ -40,14 +41,17 @@ namespace Osiris::Editor
 		
 	private:
 		float m_Time;
-
-		IconLibrary	m_IconLibrary;
-
+		
 		std::map<std::string, std::shared_ptr<EditorPlugin>> m_plugins;
 
 		std::shared_ptr<EventService> _eventService;
 		std::shared_ptr<WorkspaceService> _workspaceService;
 		std::shared_ptr<SettingsService> _settingsService;
+		std::shared_ptr<ResourceService> _resourceService;
+		std::shared_ptr<SimulationService> _simulationService;
+
+		std::shared_ptr<Icon> _playButtonIcon;
+		std::shared_ptr<Icon> _stopButtonIcon;
 
 		static bool _showSceneViewerContextMenu;
 	};

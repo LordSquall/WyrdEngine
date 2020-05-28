@@ -57,16 +57,16 @@ namespace Osiris::Editor
 			{
 				for (auto go : sl->gameobjects)
 				{
-					std::shared_ptr<Sprite> sprite = go->spriteRender->Sprite;
+					std::shared_ptr<Sprite> sprite = go->spriteRender.Sprite;
 
 					sprite->GetVertexArray()->Bind();
 					sprite->GetVertexBuffer()->Bind();
 					sprite->GetIndexBuffer()->Bind();
 					(*sprite->GetTexture())->Bind();
 
-					_Shader->SetModelMatrix(go->transform2d->matrix);
+					_Shader->SetModelMatrix(go->transform2d.matrix);
 
-					_Shader->SetUniformVec3("blendColor", go->spriteRender->Color);
+					_Shader->SetUniformVec3("blendColor", go->spriteRender.Color);
 
 					renderer.DrawElements(RendererDrawType::Triangles, 6);
 				}
@@ -137,7 +137,7 @@ namespace Osiris::Editor
 			{
 				for (auto& go : sl->gameobjects)
 				{
-					glm::mat4 mvpInverse = glm::inverse(_CameraController->GetCamera().GetViewProjectionMatrix() * go->transform2d->matrix);
+					glm::mat4 mvpInverse = glm::inverse(_CameraController->GetCamera().GetViewProjectionMatrix() * go->transform2d.matrix);
 
 					glm::vec4 nearPoint = mvpInverse * glm::vec4(normalisedMouseCoords, 0.0f, 1.0f);
 

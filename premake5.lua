@@ -29,6 +29,8 @@ includedir["glm"] = "Osiris/vendor/glm"
 includedir["imgui"] = "Osiris/vendor/imgui"
 includedir["json"] = "Osiris/vendor/json/include"
 includedir["tinyobjloader"] = "Osiris/vendor/tinyobjloader/include"
+includedir["luabridge"] = "Osiris/vendor/luabridge/source"
+includedir["lua"] = "Osiris/vendor/lua/"
 
 -- if renderdoc was found, the add the in application to the include directories
 if renderdocfound then
@@ -40,6 +42,7 @@ include "Osiris/vendor/GLAD"
 include "Osiris/vendor/SOIL"
 include "Osiris/vendor/imgui"
 include "Osiris/vendor/json"
+include "Osiris/vendor/LuaBridge"
 
 group "Examples"
 	project "01_WindowCreation"
@@ -208,15 +211,18 @@ group ""
 			"%{includedir.SOIL}",
 			"%{includedir.json}",
 			"%{includedir.glm}",
-			"%{includedir.tinyobjloader}"
+			"%{includedir.tinyobjloader}",
+			"%{includedir.luabridge}",
+			"%{includedir.lua}"
 		}
-
+		
 		links
 		{
 			"GLFW",
 			"GLAD",
 			"SOIL",
-			"opengl32.dll"
+			"LuaBridge",
+			"opengl32.dll",
 		}
 
 		filter "system:windows"
@@ -276,6 +282,8 @@ group ""
 					"%{includedir.glm}",
 					"%{includedir.json}",
 					"%{includedir.tinyobjloader}",
+					"%{includedir.luabridge}",
+					"%{includedir.lua}",
 					iif(renderdocfound, includedir["renderdoc"], "")
 				}
 				
@@ -286,6 +294,7 @@ group ""
 					"GLAD",
 					"SOIL",
 					"imgui",
+					"LuaBridge",
 					"opengl32.dll"
 				}
 

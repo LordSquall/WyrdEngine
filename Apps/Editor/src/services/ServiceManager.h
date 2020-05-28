@@ -7,6 +7,7 @@
 #include "ResourceService.h"
 #include "DialogService.h"
 #include "SettingsService.h"
+#include "SimulationService.h"
 
 namespace Osiris::Editor
 {
@@ -19,7 +20,8 @@ namespace Osiris::Editor
 			Workspace,
 			Resources,
 			Dialog,
-			Settings
+			Settings,
+			Simulation
 		};
 	public:
 		static void StartServices()
@@ -29,6 +31,7 @@ namespace Osiris::Editor
 			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Workspace,	std::make_shared<WorkspaceService>()));
 			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Dialog,		std::make_shared<DialogService>()));
 			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Settings,	std::make_shared<SettingsService>()));
+			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Simulation, std::make_shared<SimulationService>()));
 
 			/* Order matters!!! */
 			_Services[Service::Events]->OnCreate();
@@ -36,10 +39,12 @@ namespace Osiris::Editor
 			_Services[Service::Resources]->OnCreate();
 			_Services[Service::Workspace]->OnCreate();
 			_Services[Service::Dialog]->OnCreate();
+			_Services[Service::Simulation]->OnCreate();
 		}
 
 		static void EndServices()
 		{
+			_Services[Service::Simulation]->OnDestroy();
 			_Services[Service::Dialog]->OnDestroy();
 			_Services[Service::Workspace]->OnDestroy();
 			_Services[Service::Resources]->OnDestroy();

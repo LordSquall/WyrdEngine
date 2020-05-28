@@ -77,8 +77,10 @@ namespace Osiris::Editor
 
 			ImGui::Separator();
 
-			_SelectedGameObject->transform2d->OnPropertyEditorDraw();
-			_SelectedGameObject->spriteRender->OnPropertyEditorDraw();
+			_SelectedGameObject->transform2d.OnPropertyEditorDraw();			
+			_SelectedGameObject->spriteRender.OnPropertyEditorDraw();
+			_SelectedGameObject->script.OnPropertyEditorDraw();
+
 		}
 	}
 

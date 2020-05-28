@@ -19,6 +19,7 @@ namespace Osiris::Editor
 		_extensions.insert(std::pair<std::string, Type>(".vs", SHADER));
 		_extensions.insert(std::pair<std::string, Type>(".fs", SHADER));
 		_extensions.insert(std::pair<std::string, Type>(".scene", SCENE));
+		_extensions.insert(std::pair<std::string, Type>(".lua", SCRIPT));
 
 		/* Load defaults from the editor resources */
 		_defaultTexture = std::make_shared<TextureRes>(Utils::GetEditorResFolder() + "\\res\\textures\\default.png");
@@ -34,13 +35,12 @@ namespace Osiris::Editor
 			/* Clear all resources */
 			_textureResources.clear();
 			_sceneResources.clear();
+			_scriptResources.clear();
 
 			auto files = Utils::GetFileList(Utils::GetAssetFolder(), true, true);
 
 			for(auto t : files)
 			{
-				OSR_CORE_TRACE("Asset File: " + t);
-
 				AddResource(t, TEXTURE);
 			}
 
@@ -60,12 +60,24 @@ namespace Osiris::Editor
 			{
 				std::shared_ptr<TextureRes> textureResource = std::make_shared<TextureRes>(resourcePath);
 				_textureResources.insert(std::pair<uint32_t, std::shared_ptr<TextureRes>>(textureResource->GetUID(), textureResource));
+
+				OSR_CORE_INFO("Asset Texture Added: [{0}] - {1}", textureResource->GetUID(), textureResource->GetName());
 			}
 			break;
 		case Type::SCENE:
 			{
 				std::shared_ptr<SceneRes> sceneResource = std::make_shared<SceneRes>(resourcePath);
 				_sceneResources.insert(std::pair<uint32_t, std::shared_ptr<SceneRes>>(sceneResource->GetUID(), sceneResource));
+
+				OSR_CORE_INFO("Asset Scene Added: [{0}] - {1}", sceneResource->GetUID(), sceneResource->GetName());
+			}
+			break;
+		case Type::SCRIPT:
+			{
+				std::shared_ptr<ScriptRes> scriptResource = std::make_shared<ScriptRes>(resourcePath);
+				_scriptResources.insert(std::pair<uint32_t, std::shared_ptr<ScriptRes>>(scriptResource->GetUID(), scriptResource));
+
+				OSR_CORE_INFO("Asset Script Added: [{0}] - {1}", scriptResource->GetUID(), scriptResource->GetName());
 			}
 			break;
 		default:
@@ -118,6 +130,30 @@ namespace Osiris::Editor
 		if (it != _sceneResources.end())
 		{
 			return _sceneResources[uid];
+		}
+		return nullptr;
+	}
+
+	/* Script Functions */
+	std::shared_ptr<ScriptRes> ResourceService::GetScriptByName(const std::string& name)
+	{
+		for (auto const& [key, val] : _scriptResources)
+		{
+			if (val->GetName().compare(name) == 0)
+			{
+				return val;
+			}
+		}
+		return nullptr;
+	}
+
+	std::shared_ptr<ScriptRes> ResourceService::GetScriptByUID(const uint32_t uid)
+	{
+		auto it = _scriptResources.find(uid);
+
+		if (it != _scriptResources.end())
+		{
+			return _scriptResources[uid];
 		}
 		return nullptr;
 	}

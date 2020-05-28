@@ -24,6 +24,7 @@ namespace Osiris::Editor
 		_UnknownIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_unknown");
 		_SceneIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_scene");
 		_TextureIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_texture");
+		_ScriptIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_script");
 
 		/* register from events */
 		_EventService->Subscribe(Events::EventType::ProjectLoaded, [this](Events::EventArgs& args)
@@ -103,6 +104,7 @@ namespace Osiris::Editor
 			{
 			case ResourceService::Type::TEXTURE: DrawTextureItem(resIdx, _resourcesService->GetTextureByName(Utils::GetFilename(file, false))); break;
 			case ResourceService::Type::SCENE: DrawSceneItem(resIdx, _resourcesService->GetSceneByName(Utils::GetFilename(file, false))); break;
+			case ResourceService::Type::SCRIPT: DrawScriptItem(resIdx, _resourcesService->GetScriptByName(Utils::GetFilename(file, false))); break;
 			case ResourceService::Type::SHADER:break;
 			case ResourceService::Type::NONE:
 			default:
@@ -168,6 +170,40 @@ namespace Osiris::Editor
 			ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace)->LoadScene(sceneResource->GetPath());
 		}
 		ImGui::Text(sceneResource->GetName().c_str());
+		ImGui::EndGroup();
+	}
+
+	void AssetViewer::DrawScriptItem(uint32_t resIdx, std::shared_ptr<ScriptRes> scriptResource)
+	{
+		uint32_t id = scriptResource->GetUID();
+
+		ImGui::BeginGroup();
+		ImGui::IconButton(_ScriptIcon, ImVec2(64, 64));
+		if (ImGui::BeginDragDropSource())
+		{
+			ImGui::SetDragDropPayload("ASSET_DND_PAYLOAD", &id, sizeof(uint32_t));
+			ImGui::Icon(_ScriptIcon, ImVec2(32, 32));
+			ImGui::EndDragDropSource();
+		}
+
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Open") == true)
+			{
+				Utils::OpenFileWithSystem(scriptResource->GetPath());
+			}
+
+			ImGui::MenuItem("Rename");
+			ImGui::MenuItem("Edit");
+			ImGui::Separator();
+			if(ImGui::MenuItem("Delete") == true)
+			{
+			}
+
+			ImGui::EndPopup();
+		}
+
+		ImGui::Text(scriptResource->GetName().c_str());
 		ImGui::EndGroup();
 	}
 

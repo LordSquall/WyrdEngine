@@ -56,7 +56,7 @@ namespace Osiris::Editor
 
 	void TranslationGizmo::OnDrag(glm::vec2 delta)
 	{
-		_GameObject->transform2d->Translate(delta);
+		_GameObject->transform2d.Translate(delta);
 	}
 
 	void TranslationGizmo::Render(Timestep ts, Renderer& renderer)
@@ -68,7 +68,7 @@ namespace Osiris::Editor
 
 		(*_Icon->iconSet->Texture->GetTexture())->Bind();
 
-		_Shader->SetUniformVec2("positionOffset", _GameObject->transform2d->position);
+		_Shader->SetUniformVec2("positionOffset", _GameObject->transform2d.position);
 		_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
 
 		renderer.DrawElements(RendererDrawType::Triangles, _IndexBuffer->GetCount());

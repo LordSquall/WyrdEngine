@@ -26,6 +26,8 @@ namespace Osiris::Editor {
 		void Rotate(const float rot);
 		void Scale(const vec2& scl);
 
+		inline void UpdateModelMatrix();
+
 		vec2 position;
 		float rotation;
 		vec2 scale;
@@ -34,8 +36,5 @@ namespace Osiris::Editor {
 
 		// Inherited via TransformComponent
 		void OnPropertyEditorDraw() override;
-
-	private:
-		inline void UpdateModelMatrix();
 	};
 }

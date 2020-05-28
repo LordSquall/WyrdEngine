@@ -38,6 +38,10 @@ namespace Osiris::Editor
 	void from_json(const json& jSpriteComponent, SpriteComponent& spriteComponent);
 
 
+	void to_json(json& jScriptComponent, const ScriptComponent& scriptComponent);
+	void from_json(const json& jScriptComponent, ScriptComponent& scriptComponent);
+
+
 	SceneLoader::Result SceneLoader::Load(std::string path, Scene& scene, FileContent content)
 	{
 		json j;
@@ -53,7 +57,9 @@ namespace Osiris::Editor
 			{
 				for each (auto& go in layer->gameobjects)
 				{
-					go->spriteRender->OwnerGameObject = go;
+					go->spriteRender.OwnerGameObject = go;
+					go->script.OwnerGameObject = go;
+					go->transform2d.OwnerGameObject = go;
 				}
 			}
 
@@ -118,8 +124,8 @@ namespace Osiris::Editor
 		jGameObject = json::object();
 		jGameObject["name"] = gameObject.name;
 		jGameObject["transform2d"] = gameObject.transform2d;
-		jGameObject["transform3d"] = gameObject.transform3d;
 		jGameObject["spriteRenderer"] = gameObject.spriteRender;
+		jGameObject["script"] = gameObject.script;
 	}
 
 	void from_json(const json& jGameObject, GameObject& gameObject) {
@@ -127,10 +133,13 @@ namespace Osiris::Editor
 		jGameObject.at("transform2d").get_to(gameObject.transform2d);
 		jGameObject.at("spriteRenderer").get_to(gameObject.spriteRender);
 
-		gameObject.inputArea.x = gameObject.spriteRender->Sprite->GetX();
-		gameObject.inputArea.y = gameObject.spriteRender->Sprite->GetY();
-		gameObject.inputArea.z = gameObject.spriteRender->Sprite->GetWidth();
-		gameObject.inputArea.w = gameObject.spriteRender->Sprite->GetHeight();
+		if(jGameObject.find("script") != jGameObject.end())
+			jGameObject.at("script").get_to(gameObject.script);
+
+		gameObject.inputArea.x = gameObject.spriteRender.Sprite->GetX();
+		gameObject.inputArea.y = gameObject.spriteRender.Sprite->GetY();
+		gameObject.inputArea.z = gameObject.spriteRender.Sprite->GetWidth();
+		gameObject.inputArea.w = gameObject.spriteRender.Sprite->GetHeight();
 	}
 
 	void to_json(json& jTransform, const Transform2DComponent& transform2d)
@@ -147,6 +156,8 @@ namespace Osiris::Editor
 		jTransform.at("rotation")[0].get_to(transform2d.rotation);
 		jTransform.at("scale")[0].get_to(transform2d.scale.x);
 		jTransform.at("scale")[1].get_to(transform2d.scale.y);
+		
+		transform2d.UpdateModelMatrix();
 	}
 
 	void to_json(json& jTransform3d, const Transform3DComponent& transform3d)
@@ -204,4 +215,20 @@ namespace Osiris::Editor
 		spriteComponent.Sprite->SetTexture(spriteComponent.BaseTexture->GetTexture());
 	}
 
+	void to_json(json& jScriptComponent, const ScriptComponent& scriptComponent)
+	{
+		if(scriptComponent.GetScriptResource() != nullptr)
+			jScriptComponent["scriptres"] = scriptComponent.GetScriptResource()->GetName();
+		else
+			jScriptComponent["scriptres"] = "";
+	}
+
+	void from_json(const json& jScriptComponent, ScriptComponent& scriptComponent)
+	{
+		if (jScriptComponent.find("scriptres") != jScriptComponent.end())
+		{
+			std::string baseScriptName = jScriptComponent.at("scriptres");
+			scriptComponent.SetScriptResource(ServiceManager::Get<ResourceService>(ServiceManager::Resources)->GetScriptByName(baseScriptName));
+		}
+	}
 }

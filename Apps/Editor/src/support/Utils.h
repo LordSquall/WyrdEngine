@@ -35,6 +35,9 @@ namespace Osiris::Editor
 
 		static void CreateProjectFileStructure(const std::string& rootFolder);
 
+		/* System operations */
+		static void OpenFileWithSystem(const std::string& file);
+
 		/* String Convertors */
 		static bool ToBool(std::string& value);
 		static unsigned int ToUInt(std::string& value);

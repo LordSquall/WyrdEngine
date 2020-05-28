@@ -14,8 +14,6 @@ namespace Osiris::Editor
 		EditorPlugin(const std::string& name = "ImGuiPlugin") { m_Name = name; }
 		virtual ~EditorPlugin() { }
 
-		void SetIconLibrary(IconLibrary* iconLibrary) { m_IconLibrary = iconLibrary; }
-
 		virtual void OnInitialise() {};
 		virtual void OnEditorRender() {};
 
@@ -29,6 +27,5 @@ namespace Osiris::Editor
 
 		bool m_ShowFlag = true;
 
-		IconLibrary* m_IconLibrary;
 	};
 }
