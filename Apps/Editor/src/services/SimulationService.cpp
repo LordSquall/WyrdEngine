@@ -159,50 +159,48 @@ namespace Osiris::Editor
 		}
 	}
 
-	bool SimulationService::RunScript(const std::string& src)
+	SimulationService::RunReturnVal SimulationService::RunScript(const std::string& src)
 	{
 		int res = luaL_dostring(_LuaState, src.c_str());
 
 		if (res != LUA_OK)
 		{
-			OSR_ERROR("{0}", lua_tostring(_LuaState, -1));
-			return false;
+			return RunReturnVal{ false, lua_tostring(_LuaState, -1) };
 		}
-		return true;
+
+		return RunReturnVal{ true, "" };
 	}
 
-	bool SimulationService::RunScriptFile(const std::string& path)
+	SimulationService::RunReturnVal SimulationService::RunScriptFile(const std::string& path)
 	{
 		int res = luaL_dofile(_LuaState, path.c_str());
 
 		if (res != LUA_OK)
 		{
-			OSR_ERROR("{0}", lua_tostring(_LuaState, -1));
-			return false;
+			return RunReturnVal{ false, lua_tostring(_LuaState, -1) };
 		}
-		return true;
+
+		return RunReturnVal{ true, "" };
 	}
 
 
-	std::shared_ptr<ScriptedObjectTemplate> SimulationService::CreateScriptableObjectTemplate(const std::string& source)
+	SimulationService::CreateReturnVal SimulationService::CreateScriptableObjectTemplate(const std::string& source)
 	{
 		std::shared_ptr<ScriptedObjectTemplate> newTemplate = std::make_shared<ScriptedObjectTemplate>();
 
 		/* run the script in the lua context */
-		if (RunScript(source) == true)
+		RunReturnVal runResult = RunScript(source);
+
+		if (runResult.result == true)
 		{
 			newTemplate->OnStartFunc = std::make_shared<luabridge::LuaRef>(luabridge::getGlobal(_LuaState, "onStart"));
 			newTemplate->OnUpdateFunc = std::make_shared<luabridge::LuaRef>(luabridge::getGlobal(_LuaState, "onUpdate"));
 
-			/* TEMP */
-			///(*newTemplate->OnStartFunc)(); 
-			//(*newTemplate->OnUpdateFunc)();
+			return CreateReturnVal{ true, "", newTemplate };
 		}
 		else
 		{
-
+			return CreateReturnVal{ false, runResult.error, newTemplate };
 		}
-
-		return newTemplate;
 	}
 }

@@ -22,6 +22,8 @@ namespace Osiris
 		virtual void SetUniformVec3(const std::string& name, glm::vec3& vec3) = 0;
 		virtual void SetUniformVec4(const std::string& name, glm::vec4& vec4) = 0;
 
+		virtual void SetMatrix(const std::string& name, const glm::mat4& mat) = 0;
+
 		static Shader* Create();
 
 	};

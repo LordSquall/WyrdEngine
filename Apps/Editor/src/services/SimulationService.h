@@ -19,6 +19,19 @@ namespace Osiris::Editor
 		SimulationService() : _IsRunning(false) {}
 		~SimulationService() {}
 
+	public:
+		struct RunReturnVal {
+			bool result;
+			std::string error;
+			std::shared_ptr<ScriptedObjectTemplate> scriptedObjectTemplate;
+		};
+
+		struct CreateReturnVal {
+			bool result;
+			std::string error;
+			std::shared_ptr<ScriptedObjectTemplate> scriptedObjectTemplate;
+		};
+
 	private:
 		// Inherited via IService
 		virtual void OnCreate() override;
@@ -29,10 +42,10 @@ namespace Osiris::Editor
 		void Stop();
 		void Update(Timestep ts);
 
-		bool RunScript(const std::string& src);
-		bool RunScriptFile(const std::string& path);
+		RunReturnVal RunScript(const std::string& src);
+		RunReturnVal RunScriptFile(const std::string& path);
 
-		std::shared_ptr<ScriptedObjectTemplate> CreateScriptableObjectTemplate(const std::string& source);
+		CreateReturnVal CreateScriptableObjectTemplate(const std::string& source);
 
 	private:
 		static void DebugPrintFunc(const std::string& s);

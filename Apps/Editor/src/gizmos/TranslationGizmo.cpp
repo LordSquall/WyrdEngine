@@ -7,6 +7,8 @@
 #include "services/ServiceManager.h"
 #include "datamodels/components/Transform2DComponent.h"
 
+#include <glm/glm.hpp>
+
 namespace Osiris::Editor
 {
 	TranslationGizmo::TranslationGizmo(std::shared_ptr<Shader> shader, std::shared_ptr<OrthographicCameraController> cameraController)
@@ -25,10 +27,10 @@ namespace Osiris::Editor
 		/* define data for a simple rectangle with matching indices */
 		float vertices[16] =
 		{
-			-2.0f, -2.0f, _Icon->uv[0].x, _Icon->uv[0].y,
-			-2.0f,  2.0f, _Icon->uv[1].x, _Icon->uv[1].y,
-			2.0f,   2.0f, _Icon->uv[2].x, _Icon->uv[2].y,
-			2.0f,  -2.0f, _Icon->uv[3].x, _Icon->uv[3].y
+			-1.0f, -1.0f, _Icon->uv[0].x, _Icon->uv[0].y,
+			-1.0f,  1.0f, _Icon->uv[1].x, _Icon->uv[1].y,
+			1.0f,   1.0f, _Icon->uv[2].x, _Icon->uv[2].y,
+			1.0f,  -1.0f, _Icon->uv[3].x, _Icon->uv[3].y
 		};
 
 		uint32_t indices[6] =
@@ -43,6 +45,9 @@ namespace Osiris::Editor
 		/* Setup the Vertex array attribute data */
 		_VertexArray->SetAttribute(0, 0, 2);
 		_VertexArray->SetAttribute(1, 2, 2);
+
+		/* set the vp matrix to a standard otho matrix */
+		//_Shader->SetVPMatrix(glm::ortho(0.0f, _CameraController->GetCamera().GetRight(), 0.0f, _CameraController->GetCamera().GetTop()));
 
 		return;
 	}
@@ -61,15 +66,17 @@ namespace Osiris::Editor
 
 	void TranslationGizmo::Render(Timestep ts, Renderer& renderer)
 	{
+		float scaleFactor = _CameraController->GetZoomLevel() / _CameraController->GetAspectRatio();
+
 		_Shader->Bind();
 		_VertexBuffer->Bind();
 		_IndexBuffer->Bind(); 
 		_VertexArray->Bind();
 
 		(*_Icon->iconSet->Texture->GetTexture())->Bind();
-
-		_Shader->SetUniformVec2("positionOffset", _GameObject->transform2d.position);
+		
 		_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
+		_Shader->SetMatrix("model", _GameObject->transform2d.matrix * glm::scale(glm::vec3(8.0f)));
 
 		renderer.DrawElements(RendererDrawType::Triangles, _IndexBuffer->GetCount());
 	}

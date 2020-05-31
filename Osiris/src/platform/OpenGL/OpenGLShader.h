@@ -21,6 +21,8 @@ namespace Osiris
 		void SetUniformVec3(const std::string& name, glm::vec3& vec3) override;
 		void SetUniformVec4(const std::string& name, glm::vec4& vec4) override;
 
+		void SetMatrix(const std::string& name, const glm::mat4& mat) override;
+
 	private:
 		uint32_t m_RendererHandle;
 	};

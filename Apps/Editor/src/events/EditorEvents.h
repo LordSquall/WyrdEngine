@@ -10,6 +10,8 @@
 #include "datamodels/Project.h"
 #include "datamodels/Scene.h"
 
+#include "datamodels/logging/LogMessage.h"
+
 #include "core/pipeline/Sprite.h"
 
 namespace Osiris::Editor::Events
@@ -20,6 +22,7 @@ namespace Osiris::Editor::Events
 		CreateNewProject, OpenProject, CloseProject, ProjectLoaded,
 		SceneClosed, SceneOpened,
 		OpenSceneViewerContextMenu,
+		AddLogEntry
 	};
 
 	class Event
@@ -227,6 +230,24 @@ namespace Osiris::Editor::Events
 	{
 	public:
 		OpenSceneViewerContextMenuEvent() : Event(EventType::OpenSceneViewerContextMenu) { }
+	};
+
+#pragma endregion
+
+#pragma region AddLogEntry
+
+	class AddLogEntryArgs : public EventArgs
+	{
+	public:
+		AddLogEntryArgs(std::shared_ptr<const LogMessage> msg) : msg(msg) {}
+
+		std::shared_ptr<const LogMessage> msg;
+	};
+
+	class AddLogEntryEvent : public Event
+	{
+	public:
+		AddLogEntryEvent() : Event(EventType::AddLogEntry) { }
 	};
 
 #pragma endregion

@@ -5,6 +5,9 @@
 #include "ScriptRes.h"
 
 #include "services/ServiceManager.h"
+#include "services/SimulationService.h"
+
+#include "datamodels/logging/ScriptLogMsg.h"
 
 #include <nlohmann/json.hpp>
 
@@ -20,6 +23,16 @@ namespace Osiris::Editor
 		std::string source = std::string((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
 		
 		/* create a new scriped object template from the source code */
-		ScriptedObjectTemplate = ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->CreateScriptableObjectTemplate(source);
+		auto createResult = ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->CreateScriptableObjectTemplate(source);
+
+		if (createResult.result == true)
+		{
+			ScriptedObjectTemplate = createResult.scriptedObjectTemplate;
+		}
+		else
+		{
+			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddLogEntry, 
+				Events::AddLogEntryArgs(std::make_shared<ScriptLogMsg>(_name, createResult.error, LogMessage::Error)));
+		}
 	}
 }

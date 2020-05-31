@@ -20,6 +20,7 @@
 #include "tools/LayerViewer/LayerViewer.h"
 #include "tools/SpriteLayerEditor/SpriteLayerEditor.h"
 #include "tools/AssetViewer/AssetViewer.h"
+#include "tools/OutputView/OutputView.h"
 
 #include "platform/OpenGL/imgui_opengl_renderer.h"
 
@@ -48,6 +49,7 @@ namespace Osiris::Editor
 		m_plugins["Properties"] = std::make_shared<PropertiesViewer>();
 		m_plugins["Sprite Layer Editor"] = std::make_shared<SpriteLayerEditor>();
 		m_plugins["Asset Viewer"] = std::make_shared<AssetViewer>();
+		m_plugins["Output"] = std::make_shared<OutputView>();
 		//m_plugins["Preferences"] = std::make_shared<PreferencesViewer>();
 		//m_plugins["Preferences"]->Close();
 

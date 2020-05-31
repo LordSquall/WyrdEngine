@@ -192,4 +192,15 @@ namespace Osiris
 		if (err != GL_NO_ERROR)
 			OSR_CORE_ERROR(err);
 	}
+
+	void OpenGLShader::SetMatrix(const std::string& name, const glm::mat4& mat)
+	{
+		GLuint location = glGetUniformLocation(m_RendererHandle, name.c_str());
+		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
+
+		GLenum err = glGetError();
+
+		if (err != GL_NO_ERROR)
+			OSR_CORE_ERROR(err);
+	}
 }
