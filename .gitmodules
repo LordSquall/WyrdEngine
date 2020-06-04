@@ -22,3 +22,6 @@
 [submodule "Osiris/vendor/LuaBridge"]
 	path = Osiris/vendor/LuaBridge
 	url = https://github.com/PaulRichardHickman/LuaBridge
+[submodule "Osiris/vendor/efsw"]
+	path = Osiris/vendor/efsw
+	url = https://github.com/PaulRichardHickman/efsw.git
