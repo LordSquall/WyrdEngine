@@ -45,7 +45,7 @@ namespace Osiris::Editor
 		RunReturnVal RunScript(const std::string& src);
 		RunReturnVal RunScriptFile(const std::string& path);
 
-		CreateReturnVal CreateScriptableObjectTemplate(const std::string& source);
+		CreateReturnVal LoadScriptableObjectTemplate(std::shared_ptr<ScriptedObjectTemplate> scriptedObjectTemplate, const std::string& source);
 
 	private:
 		static void DebugPrintFunc(const std::string& s);

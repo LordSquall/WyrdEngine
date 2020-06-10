@@ -9,6 +9,12 @@ namespace Osiris::Editor
 {
 	class OutputView : public EditorPlugin
 	{
+		struct LogItem
+		{
+			Severity severity;
+			const std::string message;
+		};
+
 	public:
 		OutputView();
 		~OutputView();
@@ -16,8 +22,7 @@ namespace Osiris::Editor
 		void OnEditorRender() override;
 
 	private:
-		void DrawInformationLogItem(const LogMessage& msg);
-		void DrawScriptLogItem(const LogMessage& msg);
+		void DrawLogItem(const LogItem& msg);
 
 	private:
 		std::shared_ptr<EventService> _EventService;
@@ -28,6 +33,6 @@ namespace Osiris::Editor
 		bool _ShowErrors = true;
 		bool _ShowDebug = true;
 
-		std::vector<std::shared_ptr<const LogMessage>> _LogItems;
+		std::vector<LogItem> _LogItems;
 	};
 }

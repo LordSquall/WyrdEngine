@@ -39,7 +39,7 @@ namespace Osiris::Editor
 	{
 		float navigationPanelWidth = 100.0f;
 		float itemGroupWidth = 64.0f;
-		static ResourceService::Type selectedType = ResourceService::Type::NONE;
+		static ResourceService::Type selectedType = ResourceService::NONE;
 
 		ImGui::Begin("Asset Viewer");
 		
@@ -49,7 +49,7 @@ namespace Osiris::Editor
 			ImGui::BeginChildFrame(1, ImVec2(navigationPanelWidth, ImGui::GetContentRegionAvail().y));
 
 			PopulateFolderNode(Utils::GetAssetFolder());
-			
+						
 			ImGui::EndChildFrame();
 
 			ImGui::SameLine();
@@ -122,15 +122,15 @@ namespace Osiris::Editor
 	{
 		uint32_t id = textureResource->GetUID();
 		ImGui::BeginGroup();
-		if (ImGui::ImageButton((ImTextureID)textureResource->GetRendererHandle(), ImVec2(64, 64)))
+		if (ImGui::ImageButton((ImTextureID)(INT_PTR)textureResource->GetRendererHandle(), ImVec2(64, 64)))
 		{
 			/* Fire a change of selection event */
-			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Editor::Events::EventType::SelectedAssetChanged, Events::SelectedAssetChangedArgs(textureResource));
+			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Editor::Events::EventType::SelectedAssetChanged, std::make_shared<Events::SelectedAssetChangedArgs>(textureResource));
 		}
 		if (ImGui::BeginDragDropSource())
 		{
 			ImGui::SetDragDropPayload("ASSET_DND_PAYLOAD", &id, sizeof(uint32_t));
-			ImGui::Image((ImTextureID)textureResource->GetRendererHandle(), ImVec2(32, 32));
+			ImGui::Image((ImTextureID)(INT_PTR)textureResource->GetRendererHandle(), ImVec2(32, 32));
 			ImGui::EndDragDropSource();
 		}
 		if (ImGui::BeginPopupContextWindow())

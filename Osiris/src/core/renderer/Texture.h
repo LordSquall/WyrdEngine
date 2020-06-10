@@ -14,6 +14,10 @@ namespace Osiris
 
 		virtual uint32_t GetHandle() const = 0;
 
+		virtual void Update(unsigned char* data, int xOffset, int yOffset, int width, int height) = 0;
+
+		virtual void Delete() = 0;
+
 		static Texture* Create(unsigned char* data, int width, int height, int channels, const std::string& description);
 	};
 }

@@ -40,6 +40,7 @@ namespace Osiris::Editor
 		inline uint32_t GetRendererHandle() { return (*_texture)->GetHandle(); }
 
 		void Load();
+		void Reload();
 		void Unload();
 
 	private:

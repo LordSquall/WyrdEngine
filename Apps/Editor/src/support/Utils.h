@@ -30,6 +30,11 @@ namespace Osiris::Editor
 		static std::string GetRelativeAssetPath(const std::string& path);
 		static void CreateFolder(const std::string& path);
 
+		/* File Functions */
+		static bool CreateRawFile(const std::string& filename, const std::string& content);
+
+		static const std::string Utils::BuildPath(std::initializer_list<std::reference_wrapper<std::string>> args);
+
 		static std::vector<std::string> GetFolderList(const std::string& directory, bool asFullPaths);
 		static std::vector<std::string> Utils::GetFileList(const std::string& directory, bool asFullPaths = false, bool recursive = false);
 

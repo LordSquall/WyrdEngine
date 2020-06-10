@@ -24,7 +24,7 @@ namespace Osiris::Editor {
 		~ScriptedObjectTemplate() {}
 
 	public:
-		std::shared_ptr<luabridge::LuaRef> OnStartFunc;
-		std::shared_ptr<luabridge::LuaRef> OnUpdateFunc;
+		luabridge::LuaRef OnStartFunc;
+		luabridge::LuaRef OnUpdateFunc;
 	};
 }

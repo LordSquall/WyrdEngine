@@ -298,9 +298,29 @@ namespace Osiris::Editor {
 		std::filesystem::create_directory(path);
 	}
 
+	bool Utils::CreateRawFile(const std::string& filename, const std::string& content)
+	{
+		std::ofstream file(filename);
+		file << content;
+		file.close();
+
+		return true;
+	}
+
+
 	void Utils::CreateProjectFileStructure(const std::string& rootFolder)
 	{
 		std::filesystem::create_directory(GetAssetFolder());
+	}
+
+
+	const std::string Utils::BuildPath(std::initializer_list<std::reference_wrapper<std::string>> args) {
+		std::ostringstream stream; 
+		for (auto arg : args) {
+			stream << arg.get();
+		}
+
+		return stream.str();
 	}
 
 	void Utils::OpenFileWithSystem(const std::string& path)

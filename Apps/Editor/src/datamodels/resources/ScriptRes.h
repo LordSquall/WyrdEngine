@@ -25,6 +25,8 @@ namespace Osiris::Editor
 		inline void SetPath(const std::string& path) { _path = path; }
 
 		inline const std::string& GetName() { return _name; }
+
+		void Reload();
 		
 	public:
 		std::shared_ptr<ScriptedObjectTemplate> ScriptedObjectTemplate;

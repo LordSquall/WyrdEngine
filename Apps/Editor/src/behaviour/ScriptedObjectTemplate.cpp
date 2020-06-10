@@ -6,7 +6,7 @@
 
 namespace Osiris::Editor
 {
-	ScriptedObjectTemplate::ScriptedObjectTemplate()
+	ScriptedObjectTemplate::ScriptedObjectTemplate() : OnStartFunc(NULL), OnUpdateFunc(NULL)
 	{
 	}
 }

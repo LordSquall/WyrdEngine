@@ -47,4 +47,17 @@ namespace Osiris
 	{
 		return _rendererID;
 	}
+
+	void OpenGLTexture::Update(unsigned char* data, int xOffset, int yOffset, int width, int height)
+	{
+
+		glBindTexture(GL_TEXTURE_2D, _rendererID);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, xOffset, yOffset, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	}
+
+
+	void OpenGLTexture::Delete()
+	{
+		glDeleteTextures(1, &_rendererID);
+	}
 }

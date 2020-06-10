@@ -10,9 +10,11 @@
 #include "datamodels/Project.h"
 #include "datamodels/Scene.h"
 
+#include "core/pipeline/Sprite.h"
+
 #include "datamodels/logging/LogMessage.h"
 
-#include "core/pipeline/Sprite.h"
+#define EVENT_ARGS_CLONE(type)	public:  std::shared_ptr<EventArgs> Clone() { return std::make_shared<type>(*this); } 
 
 namespace Osiris::Editor::Events
 {
@@ -22,7 +24,8 @@ namespace Osiris::Editor::Events
 		CreateNewProject, OpenProject, CloseProject, ProjectLoaded,
 		SceneClosed, SceneOpened,
 		OpenSceneViewerContextMenu,
-		AddLogEntry
+		AddLogEntry,
+		AddResource, DeleteResource, ReloadResource
 	};
 
 	class Event
@@ -38,7 +41,10 @@ namespace Osiris::Editor::Events
 		EventType _Type;
 	};
 
-	class EventArgs { };
+	class EventArgs { 
+	public:
+		virtual std::shared_ptr<EventArgs> Clone() = 0;
+	};
 
 #pragma region SettingsUpdatedEvent
 
@@ -46,6 +52,8 @@ namespace Osiris::Editor::Events
 	{
 	public:
 		SettingsUpdateEventArgs() {}
+
+		EVENT_ARGS_CLONE(SettingsUpdateEventArgs)
 	};
 
 	class SettingsUpdateEvent : public Event
@@ -74,6 +82,8 @@ namespace Osiris::Editor::Events
 		SelectedGameObjectChangedArgs(const std::shared_ptr<GameObject> gameObject) : gameObject(gameObject) { }
 
 		const std::shared_ptr<GameObject> gameObject;
+
+		EVENT_ARGS_CLONE(SelectedGameObjectChangedArgs)
 	};
 
 	class SelectedGameObjectChangedEvent : public Event
@@ -92,6 +102,8 @@ namespace Osiris::Editor::Events
 		SelectedAssetChangedArgs(const std::shared_ptr<Resource> resource) : resource(resource) { }
 
 		const std::shared_ptr<Resource> resource;
+
+		EVENT_ARGS_CLONE(SelectedAssetChangedArgs)
 	};
 
 	class SelectedAssetChangedEvent : public Event
@@ -112,6 +124,8 @@ namespace Osiris::Editor::Events
 		const std::string name;
 		const std::string sceneName;
 		const std::string location;
+
+		EVENT_ARGS_CLONE(CreateNewProjectArgs)
 	};
 
 	class CreateNewProjectEvent : public Event
@@ -131,6 +145,8 @@ namespace Osiris::Editor::Events
 
 		const std::string name;
 		const std::string location;
+
+		EVENT_ARGS_CLONE(OpenProjectArgs)
 	};
 
 	class OpenProjectEvent : public Event
@@ -150,6 +166,8 @@ namespace Osiris::Editor::Events
 
 		const std::string name;
 		const std::string location;
+
+		EVENT_ARGS_CLONE(CloseProjectArgs)
 	};
 
 	class CloseProjectEvent : public Event
@@ -170,6 +188,8 @@ namespace Osiris::Editor::Events
 		const std::string initialScene;
 		std::shared_ptr<Project> project;
 		const std::string projectPath;
+
+		EVENT_ARGS_CLONE(ProjectLoadedArgs)
 	};
 
 	class ProjectLoadedEvent : public Event
@@ -186,6 +206,8 @@ namespace Osiris::Editor::Events
 	{
 	public:
 		SceneClosedArgs() {}
+
+		EVENT_ARGS_CLONE(SceneClosedArgs)
 	};
 
 	class SceneClosedEvent : public Event
@@ -203,8 +225,9 @@ namespace Osiris::Editor::Events
 	public:
 		SceneOpenedArgs(std::shared_ptr<Scene> scene) : scene(scene) {}
 
-
 		std::shared_ptr<Scene> scene;
+
+		EVENT_ARGS_CLONE(SceneOpenedArgs)
 	};
 
 	class SceneOpenedEvent : public Event
@@ -222,8 +245,9 @@ namespace Osiris::Editor::Events
 	public:
 		OpenSceneViewerContextMenuArgs(std::shared_ptr<GameObject> gameObject) : gameobject(gameObject) {}
 
-
 		std::shared_ptr<GameObject> gameobject;
+
+		EVENT_ARGS_CLONE(OpenSceneViewerContextMenuArgs)
 	};
 
 	class OpenSceneViewerContextMenuEvent : public Event
@@ -239,15 +263,89 @@ namespace Osiris::Editor::Events
 	class AddLogEntryArgs : public EventArgs
 	{
 	public:
-		AddLogEntryArgs(std::shared_ptr<const LogMessage> msg) : msg(msg) {}
+		AddLogEntryArgs(const AddLogEntryArgs& obj)
+		{
+			this->severity = obj.severity;
+			this->msg = obj.msg;
+		}
 
-		std::shared_ptr<const LogMessage> msg;
+		AddLogEntryArgs(Severity severity, const std::string& message)
+		{
+			this->severity = severity;
+			this->msg = message;
+		}
+
+		Severity	severity;
+		std::string msg;
+
+		EVENT_ARGS_CLONE(AddLogEntryArgs)
 	};
 
 	class AddLogEntryEvent : public Event
 	{
 	public:
 		AddLogEntryEvent() : Event(EventType::AddLogEntry) { }
+	};
+
+#pragma endregion
+
+#pragma region AddResource
+
+	class AddResourceArgs : public EventArgs
+	{
+	public:
+		AddResourceArgs(const std::string filepath) : filepath(filepath){}
+
+		std::string filepath;
+
+		EVENT_ARGS_CLONE(AddResourceArgs)
+	};
+
+	class AddResourceEvent : public Event
+	{
+	public:
+		AddResourceEvent() : Event(EventType::AddResource) { }
+	};
+
+#pragma endregion
+
+#pragma region DeleteResource
+
+	class DeleteResourceArgs : public EventArgs
+	{
+	public:
+		DeleteResourceArgs(const std::string filepath) : filepath(filepath) {}
+
+		std::string filepath;
+
+
+		EVENT_ARGS_CLONE(DeleteResourceArgs)
+	};
+
+	class DeleteResourceEvent : public Event
+	{
+	public:
+		DeleteResourceEvent() : Event(EventType::DeleteResource) { }
+	};
+
+#pragma endregion
+
+#pragma region ReloadResource
+
+	class ReloadResourceArgs : public EventArgs
+	{
+	public:
+		ReloadResourceArgs(const std::string filepath) : filepath(filepath) {}
+
+		std::string filepath;
+		
+		EVENT_ARGS_CLONE(ReloadResourceArgs)
+	};
+
+	class ReloadResourceEvent : public Event
+	{
+	public:
+		ReloadResourceEvent() : Event(EventType::ReloadResource) { }
 	};
 
 #pragma endregion

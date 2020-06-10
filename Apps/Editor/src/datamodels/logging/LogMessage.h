@@ -1,44 +1,18 @@
 #pragma once
 
-#include "osrpch.h"
+/* Core includes */
+#include <Osiris.h>
 
-#include "core/export.h"
+/* Local includes */
+using namespace Osiris;
 
-namespace Osiris::Editor
-{
-	class LogMessage
+namespace Osiris::Editor {
+	
+	enum class Severity
 	{
-	public:
-		enum Serverity
-		{
-			Info, Warning, Error, Debug
-		};
-
-		enum Type
-		{
-			Information,
-			Script
-			// e.g. ResourceImport
-		};
-
-	public:
-		LogMessage() : _uid(_nextUid)
-		{
-			_nextUid++;
-		}
-
-		virtual ~LogMessage() {};
-
-		// Getters and Setters
-		inline uint32_t GetUID() { return _uid; }
-
-	public:
-		Type type;
-		Serverity serverity;
-
-	private:
-		uint32_t _uid = 0u;
-
-		static uint32_t _nextUid;
+		Info,
+		Warning,
+		Error,
+		Debug
 	};
 }

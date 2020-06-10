@@ -120,7 +120,7 @@ namespace Osiris::Editor
 
 					if (go->script.GetScriptResource() != nullptr)
 					{
-						(*go->script.GetScriptResource()->ScriptedObjectTemplate->OnStartFunc)();
+						go->script.GetScriptResource()->ScriptedObjectTemplate->OnStartFunc();
 					}
 				}
 			}
@@ -151,7 +151,7 @@ namespace Osiris::Editor
 
 						if (go->script.GetScriptResource() != nullptr)
 						{
-							(*go->script.GetScriptResource()->ScriptedObjectTemplate->OnUpdateFunc)();
+							go->script.GetScriptResource()->ScriptedObjectTemplate->OnUpdateFunc();
 						}
 					}
 				}
@@ -161,9 +161,8 @@ namespace Osiris::Editor
 
 	SimulationService::RunReturnVal SimulationService::RunScript(const std::string& src)
 	{
-		int res = luaL_dostring(_LuaState, src.c_str());
 
-		if (res != LUA_OK)
+		if (luaL_dostring(_LuaState, src.c_str()) != LUA_OK)
 		{
 			return RunReturnVal{ false, lua_tostring(_LuaState, -1) };
 		}
@@ -184,23 +183,21 @@ namespace Osiris::Editor
 	}
 
 
-	SimulationService::CreateReturnVal SimulationService::CreateScriptableObjectTemplate(const std::string& source)
+	SimulationService::CreateReturnVal SimulationService::LoadScriptableObjectTemplate(std::shared_ptr<ScriptedObjectTemplate> scriptedObjectTemplate, const std::string& source)
 	{
-		std::shared_ptr<ScriptedObjectTemplate> newTemplate = std::make_shared<ScriptedObjectTemplate>();
-
 		/* run the script in the lua context */
 		RunReturnVal runResult = RunScript(source);
 
 		if (runResult.result == true)
 		{
-			newTemplate->OnStartFunc = std::make_shared<luabridge::LuaRef>(luabridge::getGlobal(_LuaState, "onStart"));
-			newTemplate->OnUpdateFunc = std::make_shared<luabridge::LuaRef>(luabridge::getGlobal(_LuaState, "onUpdate"));
+			scriptedObjectTemplate->OnStartFunc = luabridge::getGlobal(_LuaState, "onStart");
+			scriptedObjectTemplate->OnUpdateFunc = luabridge::getGlobal(_LuaState, "onUpdate");
 
-			return CreateReturnVal{ true, "", newTemplate };
+			return CreateReturnVal{ true, "", scriptedObjectTemplate };
 		}
 		else
 		{
-			return CreateReturnVal{ false, runResult.error, newTemplate };
+			return CreateReturnVal{ false, runResult.error, scriptedObjectTemplate };
 		}
 	}
 }

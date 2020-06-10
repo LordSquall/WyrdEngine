@@ -113,7 +113,7 @@ namespace Osiris::Editor
 							_SelectedSprite = spriteIdx;
 
 							/* Fire a change of selection event */
-							_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, Events::SelectedGameObjectChangedArgs(_SelectedLayer2D->gameobjects[_SelectedSprite]));
+							_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(_SelectedLayer2D->gameobjects[_SelectedSprite]));
 						}
 
 						if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
@@ -173,7 +173,6 @@ namespace Osiris::Editor
 	void SpriteLayerEditor::OnSelectedGameObjectChanged(Events::EventArgs& args)
 	{
 		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
-
 	}
 
 	void SpriteLayerEditor::AddSpriteGO()
@@ -195,10 +194,10 @@ namespace Osiris::Editor
 		go->spriteRender.Sprite->SetTexture(go->spriteRender.BaseTexture->GetTexture());
 
 		/* setup initial input area for editor input */
-		go->inputArea.x = go->spriteRender.Sprite->GetX();
-		go->inputArea.y = go->spriteRender.Sprite->GetY();
-		go->inputArea.z = go->spriteRender.Sprite->GetWidth();
-		go->inputArea.w = go->spriteRender.Sprite->GetHeight();
+		go->inputArea.x = (float)go->spriteRender.Sprite->GetX();
+		go->inputArea.y = (float)go->spriteRender.Sprite->GetY();
+		go->inputArea.z = (float)go->spriteRender.Sprite->GetWidth();
+		go->inputArea.w = (float)go->spriteRender.Sprite->GetHeight();
 
 		_SelectedLayer2D->AddSprite(go);
 	}

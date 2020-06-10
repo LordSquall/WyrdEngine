@@ -54,21 +54,21 @@ namespace Osiris::Editor
 			if (ImGui::InputInt2("Pos ", position, 1) == true)
 			{
 				Sprite->SetPosition(position[0], position[1]);
-				OwnerGameObject->inputArea.x = position[0];
-				OwnerGameObject->inputArea.y = position[1];
+				OwnerGameObject->inputArea.x = (float)position[0];
+				OwnerGameObject->inputArea.y = (float)position[1];
 			}
 
 			if (ImGui::InputInt2("Size", size, 1))
 			{
 				Sprite->SetSize(size[0], size[1]);
-				OwnerGameObject->inputArea.z = size[0];
-				OwnerGameObject->inputArea.w = size[1];
+				OwnerGameObject->inputArea.z = (float)size[0];
+				OwnerGameObject->inputArea.w = (float)size[1];
 			}
 
 			ImGui::Text("Texture");
 			ImGui::PushID("texture");
 			ImGui::SameLine();
-			ImGui::Image((ImTextureID)BaseTexture->GetRendererHandle(), ImVec2(64.0f, 64.0f));
+			ImGui::Image((ImTextureID)(INT_PTR)BaseTexture->GetRendererHandle(), ImVec2(64.0f, 64.0f));
 			if (ImGui::BeginDragDropTarget())
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_DND_PAYLOAD"))

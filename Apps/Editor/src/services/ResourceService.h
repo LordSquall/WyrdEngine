@@ -7,6 +7,7 @@
 #include "datamodels/resources/TextureRes.h"
 #include "datamodels/resources/SceneRes.h"
 #include "datamodels/resources/ScriptRes.h"
+#include "events/EditorEvents.h"
 
 namespace Osiris::Editor
 {
@@ -33,6 +34,8 @@ namespace Osiris::Editor
 		virtual void OnDestroy() override;
 
 		void AddResource(std::string& resourcePath, ResourceService::Type type);
+		void ReloadResource(std::string& resourcePath);
+		void DeleteResource(std::string& resourcePath);
 
 		/* Icon Functions */
 		inline IconLibrary& GetIconLibrary() { return _iconLibrary; }
@@ -54,6 +57,12 @@ namespace Osiris::Editor
 
 		/* Helper Functions */
 		Type DetermineType(const std::string& path);
+
+	private:
+		void OnProjectLoadedEvent(Events::EventArgs& args);
+		void OnAddResourceEvent(Events::EventArgs& args);
+		void OnDeleteResourceEvent(Events::EventArgs& args);
+		void OnReloadResourceEvent(Events::EventArgs& args);
 
 	private:
 		IconLibrary _iconLibrary;

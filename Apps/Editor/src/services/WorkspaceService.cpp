@@ -6,12 +6,53 @@
 #include "loaders/ProjectLoader.h"
 #include "loaders/SceneLoader.h"
 
+#include <efsw/efsw.hpp>
+
 #include <nlohmann/json.hpp>
 
 using namespace nlohmann;
 
 namespace Osiris::Editor
 {
+	class FSUpdateListener : public efsw::FileWatchListener
+	{
+	public:
+		FSUpdateListener() {}
+		~FSUpdateListener() {}
+
+		void handleFileAction(efsw::WatchID watchID, const std::string& dir, const std::string& filename, efsw::Action action, std::string oldFilename = "") override
+		{
+			switch (action)
+			{
+			case efsw::Actions::Add:
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddResource, std::make_shared<Events::AddResourceArgs>(dir + "/" + filename));
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddLogEntry, std::make_shared<Events::AddLogEntryArgs>(Severity::Info,
+					"DIR (" + dir + ") FILE (" + filename + ") has event Added"));
+				break;
+			case efsw::Actions::Delete:
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::DeleteResource, std::make_shared<Events::DeleteResourceArgs>(dir + "/" + filename));
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddLogEntry, std::make_shared<Events::AddLogEntryArgs>(Severity::Info,
+					"DIR (" + dir + ") FILE (" + filename + ") has event Delete"));
+				break;
+			case efsw::Actions::Modified:				
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ReloadResource, std::make_shared<Events::ReloadResourceArgs>(dir + "/" + filename));
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddLogEntry, 
+					std::make_shared<Events::AddLogEntryArgs>(Severity::Info, "DIR (" + dir + ") FILE (" + filename + ") has event Modified"));
+				break;
+			case efsw::Actions::Moved:				
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddLogEntry, std::make_shared<Events::AddLogEntryArgs>(Severity::Info,
+					"DIR (" + dir + ") FILE (" + filename + ") has event Moved from (" + oldFilename + ")"));
+				break;
+			default:
+				std::cout << "Should never happen!" << std::endl;
+			}
+		}
+	};
+
+	efsw::FileWatcher	fileSystemWatcher;
+	efsw::WatchID		watchID;
+	FSUpdateListener	updateListener;
+
 	void Osiris::Editor::WorkspaceService::OnCreate()
 	{
 		/* Initialise Defaults */
@@ -76,7 +117,7 @@ namespace Osiris::Editor
 
 			/* Send a Project Loaded Event */
 			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ProjectLoaded,
-				Events::ProjectLoadedArgs(_LoadedProject->initialScene, _LoadedProject, Utils::GetPath(_LoadedProjectPath)));
+				std::make_shared<Events::ProjectLoadedArgs>(_LoadedProject->initialScene, _LoadedProject, Utils::GetPath(_LoadedProjectPath)));
 		}
 	}
 
@@ -134,9 +175,14 @@ namespace Osiris::Editor
 			/* Set the utilities to the base root folder */
 			Utils::SetRootProjectFolder(Utils::GetPath(projectfile.c_str()));
 
+			/* Start filesystem watcher */
+			watchID = fileSystemWatcher.addWatch(Utils::GetAssetFolder(), &updateListener, true);
+			fileSystemWatcher.watch();
+
 			/* Send a Project Loaded Event */
 			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ProjectLoaded,
-				Events::ProjectLoadedArgs(_LoadedProject->initialScene, _LoadedProject, Utils::GetPath(projectfile)));
+				std::make_shared<Events::ProjectLoadedArgs>(_LoadedProject->initialScene, _LoadedProject, Utils::GetPath(projectfile)));
+
 
 			if (Utils::FileExists(_LoadedProject->initialScene) == true)
 			{
@@ -172,7 +218,7 @@ namespace Osiris::Editor
 		IsSceneLoaded(true);
 
 		/* fire scene loaded event on the editor system */
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Editor::Events::EventType::SceneOpened, Events::SceneOpenedArgs(_LoadedScene));
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Editor::Events::EventType::SceneOpened, std::make_shared<Events::SceneOpenedArgs>(_LoadedScene));
 
 		return true;
 	}
@@ -207,7 +253,7 @@ namespace Osiris::Editor
 			_LoadedScenePath = path;
 
 			/* fire scene loaded event on the editor system */
-			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Editor::Events::EventType::SceneOpened, Events::SceneOpenedArgs(_LoadedScene));
+			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Editor::Events::EventType::SceneOpened, std::make_shared<Events::SceneOpenedArgs>(_LoadedScene));
 
 			return true;
 		}
@@ -216,7 +262,7 @@ namespace Osiris::Editor
 	bool WorkspaceService::CloseScene()
 	{
 		/* Send a Scene Close Event */
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::SceneClosed, Events::SceneClosedArgs());
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::SceneClosed, std::make_shared<Events::SceneClosedArgs>());
 
 		_LoadedScene = nullptr;
 

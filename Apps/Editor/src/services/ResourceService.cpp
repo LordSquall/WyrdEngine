@@ -3,7 +3,6 @@
 #include "osrpch.h"
 #include "ResourceService.h"
 #include "services/ServiceManager.h"
-
 #include "loaders/TextureLoader.h"
 #include "datamodels/resources/TextureRes.h"
 
@@ -28,23 +27,11 @@ namespace Osiris::Editor
 		/* Load default icons into the icon library */
 		_iconLibrary.AddIconsFromFile(Utils::GetEditorResFolder() + "/res/icons/common-icons.json");
 
-		/* Subscribe to project lifecycle events */
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::ProjectLoaded, [this](Events::EventArgs& args) {
-			Events::ProjectLoadedArgs& a = (Events::ProjectLoadedArgs&)args;
-
-			/* Clear all resources */
-			_textureResources.clear();
-			_sceneResources.clear();
-			_scriptResources.clear();
-
-			auto files = Utils::GetFileList(Utils::GetAssetFolder(), true, true);
-
-			for(auto t : files)
-			{
-				AddResource(t, TEXTURE);
-			}
-
-		});
+		/* Subscribe to project events */
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::ProjectLoaded, EVENT_FUNC(ResourceService::OnProjectLoadedEvent));
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::AddResource, EVENT_FUNC(ResourceService::OnAddResourceEvent));
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::DeleteResource, EVENT_FUNC(ResourceService::OnDeleteResourceEvent));
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::ReloadResource, EVENT_FUNC(ResourceService::OnReloadResourceEvent));
 	}
 
 	void ResourceService::OnDestroy() {}
@@ -80,6 +67,62 @@ namespace Osiris::Editor
 				OSR_CORE_INFO("Asset Script Added: [{0}] - {1}", scriptResource->GetUID(), scriptResource->GetName());
 			}
 			break;
+		default:
+			break;
+		}
+	}
+
+	void ResourceService::ReloadResource(std::string& resourcePath)
+	{
+		Type resourceType = DetermineType(resourcePath);
+
+		switch (resourceType)
+		{
+		case Type::TEXTURE:
+		{
+			std::shared_ptr<TextureRes> textureResource = GetTextureByName(Utils::GetFilename(resourcePath));
+			textureResource->Reload();
+		}
+		break;
+		case Type::SCRIPT:
+		{
+			std::shared_ptr<ScriptRes> scriptResource = GetScriptByName(Utils::GetFilename(resourcePath));
+			scriptResource->Reload();
+		}
+		break;
+		case Type::SCENE:
+		default:
+			break;
+		}
+
+	}
+
+	void ResourceService::DeleteResource(std::string& resourcePath)
+	{
+		Type resourceType = DetermineType(resourcePath);
+
+		switch (resourceType)
+		{
+		case Type::TEXTURE:
+		{
+			std::shared_ptr<TextureRes> textureResource = GetTextureByName(Utils::GetFilename(resourcePath));
+			textureResource->Unload();
+
+			_textureResources.erase(textureResource->GetUID());
+
+			OSR_CORE_INFO("Asset Texture Deleted: [{0}] - {1}", textureResource->GetUID(), textureResource->GetName());
+		}
+		break;
+		case Type::SCENE:
+		{
+			OSR_CORE_INFO("Asset Scene Delete - not yet implemented");
+		}
+		break;
+		case Type::SCRIPT:
+		{
+			OSR_CORE_INFO("Asset Script Delete - not yet implemented");
+		}
+		break;
 		default:
 			break;
 		}
@@ -172,5 +215,43 @@ namespace Osiris::Editor
 		{
 			return NONE;
 		}
+	}
+
+	void ResourceService::OnProjectLoadedEvent(Events::EventArgs& args)
+	{
+		Events::ProjectLoadedArgs& a = (Events::ProjectLoadedArgs&)args;
+
+		/* Clear all resources */
+		_textureResources.clear();
+		_sceneResources.clear();
+		_scriptResources.clear();
+
+		auto files = Utils::GetFileList(Utils::GetAssetFolder(), true, true);
+
+		for (auto t : files)
+		{
+			AddResource(t, TEXTURE);
+		}
+	}
+
+	void ResourceService::OnAddResourceEvent(Events::EventArgs& args)
+	{
+		Events::AddResourceArgs& a = (Events::AddResourceArgs&)args;
+	
+		AddResource(a.filepath, TEXTURE);
+	}
+
+	void ResourceService::OnDeleteResourceEvent(Events::EventArgs& args)
+	{
+		Events::DeleteResourceArgs& a = (Events::DeleteResourceArgs&)args;
+
+		DeleteResource(a.filepath);
+	}
+
+	void ResourceService::OnReloadResourceEvent(Events::EventArgs& args)
+	{
+		Events::ReloadResourceArgs& a = (Events::ReloadResourceArgs&)args;
+
+		ReloadResource(a.filepath);
 	}
 }

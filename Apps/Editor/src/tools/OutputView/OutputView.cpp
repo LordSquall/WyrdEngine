@@ -4,9 +4,6 @@
 
 #include "OutputView.h"
 
-#include "datamodels/logging/InformationLogMsg.h"
-#include "datamodels/logging/ScriptLogMsg.h"
-
 #include "support/ImGuiUtils.h"
 #include "imgui.h"
 
@@ -26,7 +23,7 @@ namespace Osiris::Editor
 			{
 				Events::AddLogEntryArgs& evtArgs = (Events::AddLogEntryArgs&)args;
 
-				_LogItems.push_back(evtArgs.msg);
+				_LogItems.push_back({ evtArgs.severity, evtArgs.msg });
 			});
 	}
 
@@ -50,15 +47,10 @@ namespace Osiris::Editor
 		
 		for each (auto & item in _LogItems)
 		{
-			if (((_ShowInfo == true) && (item->serverity == LogMessage::Info)) || ((_ShowWarnings == true) && (item->serverity == LogMessage::Warning)) ||
-				((_ShowErrors == true) && (item->serverity == LogMessage::Error)) || ((_ShowDebug == true) && (item->serverity == LogMessage::Debug)))
+			if (((_ShowInfo == true) && (item.severity == Severity::Info)) || ((_ShowWarnings == true) && (item.severity == Severity::Warning)) ||
+				((_ShowErrors == true) && (item.severity == Severity::Error)) || ((_ShowDebug == true) && (item.severity == Severity::Debug)))
 			{
-				switch (item->type)
-				{
-				case LogMessage::Type::Information: DrawInformationLogItem(*item); break;
-				case LogMessage::Type::Script: DrawScriptLogItem(*item); break;
-				default: break;
-				}
+				DrawLogItem(item);
 			}
 		}
 
@@ -68,20 +60,8 @@ namespace Osiris::Editor
 		ImGui::End();
 	}
 
-	void OutputView::DrawInformationLogItem(const LogMessage& msg)
+	void OutputView::DrawLogItem(const LogItem& msg)
 	{
-		const InformationLogMsg& informationLogMsg = (const InformationLogMsg&)msg;
-		ImGui::Selectable(informationLogMsg.msg.c_str());
-	}
-
-	void OutputView::DrawScriptLogItem(const LogMessage& msg)
-	{
-		const ScriptLogMsg& scriptLogMsg = (const ScriptLogMsg&)msg;
-		ImGui::Selectable(scriptLogMsg.script.c_str());
-		ImGui::SameLine();
-
-		ImGui::PushStyleColor(ImGuiCol_Text, { 1.0, 0.0, 0.0, 1.0 });
-		ImGui::Selectable(scriptLogMsg.msg.c_str());
-		ImGui::PopStyleColor();
+		ImGui::Selectable(msg.message.c_str());
 	}
 }

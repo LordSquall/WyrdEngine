@@ -127,8 +127,8 @@ namespace Osiris::Editor
 		std::shared_ptr<GameObject> selectedGameObject = nullptr;
 		Osiris::Window& window = Application::Get().GetWindow();
 
-		normalisedMouseCoords.x = (2.0f * e.GetPositionX() / window.GetWidth()) - 1.0f;
-		normalisedMouseCoords.y = -((2.0f * e.GetPositionY() / window.GetHeight()) - 1.0f);
+		normalisedMouseCoords.x = (2.0f * ((float)e.GetPositionX()) / ((float)window.GetWidth())) - 1.0f;
+		normalisedMouseCoords.y = -((2.0f * ((float)e.GetPositionY()) / ((float)window.GetHeight())) - 1.0f);
 
 		if (_Scene != nullptr)
 		{
@@ -156,13 +156,13 @@ namespace Osiris::Editor
 			switch (e.GetMouseButton())
 			{
 			case OSR_MOUSE_BUTTON_LEFT:
-				_EventService->Publish(Events::EventType::SelectedGameObjectChanged, Events::SelectedGameObjectChangedArgs(selectedGameObject));
+				_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(selectedGameObject));
 				_OpenContextMenu = false;
 				break;
 			case OSR_MOUSE_BUTTON_RIGHT:
-				_EventService->Publish(Events::EventType::SelectedGameObjectChanged, Events::SelectedGameObjectChangedArgs(selectedGameObject));
-				_MenuPos.x = e.GetPositionX();
-				_MenuPos.y = e.GetPositionY();
+				_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(selectedGameObject));
+				_MenuPos.x = (float)e.GetPositionX();
+				_MenuPos.y = (float)e.GetPositionY();
 				_OpenContextMenu = true;
 				break;
 			}

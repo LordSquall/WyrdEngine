@@ -136,10 +136,10 @@ namespace Osiris::Editor
 		if(jGameObject.find("script") != jGameObject.end())
 			jGameObject.at("script").get_to(gameObject.script);
 
-		gameObject.inputArea.x = gameObject.spriteRender.Sprite->GetX();
-		gameObject.inputArea.y = gameObject.spriteRender.Sprite->GetY();
-		gameObject.inputArea.z = gameObject.spriteRender.Sprite->GetWidth();
-		gameObject.inputArea.w = gameObject.spriteRender.Sprite->GetHeight();
+		gameObject.inputArea.x = (float)gameObject.spriteRender.Sprite->GetX();
+		gameObject.inputArea.y = (float)gameObject.spriteRender.Sprite->GetY();
+		gameObject.inputArea.z = (float)gameObject.spriteRender.Sprite->GetWidth();
+		gameObject.inputArea.w = (float)gameObject.spriteRender.Sprite->GetHeight();
 	}
 
 	void to_json(json& jTransform, const Transform2DComponent& transform2d)
@@ -208,7 +208,7 @@ namespace Osiris::Editor
 
 		std::string baseTextureName = jSpriteComponent.at("baseTexture");
 
-		spriteComponent.Sprite = std::make_shared<Sprite>("Temp", pos.x, pos.y, dim.x, dim.y);
+		spriteComponent.Sprite = std::make_shared<Sprite>("Temp", (int)pos.x, (int)pos.y, (int)dim.x, (int)dim.y);
 		spriteComponent.BaseTexture = ServiceManager::Get<ResourceService>(ServiceManager::Resources)->GetTextureByName(baseTextureName);
 		spriteComponent.Color = color;
 

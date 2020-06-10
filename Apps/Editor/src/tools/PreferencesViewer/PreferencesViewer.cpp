@@ -67,7 +67,7 @@ namespace Osiris::Editor
 		{
 			_SettingsService->SetSetting(std::to_string(enableRenderDoc), "Preferences-RenderDoc", "enabled");
 
-			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, Events::SettingsUpdateEventArgs());
+			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_shared<Events::SettingsUpdateEventArgs>());
 
 			Close();
 		}

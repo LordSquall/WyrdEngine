@@ -158,6 +158,7 @@ namespace Osiris::Editor
 
 	void EditorLayer::OnUpdate(Timestep ts)
 	{
+		_eventService->OnUpdate();
 		_simulationService->Update(ts);
 	}
 
@@ -291,6 +292,11 @@ namespace Osiris::Editor
 			ImGui::MenuItem("Show Demo Window", NULL, &menu_help_demo_window_show);
 
 			ImGui::EndMenu();
+		}
+
+		if(ImGui::Button("Temp") == true)
+		{
+			Utils::CreateRawFile(Utils::GetAssetFolder() + "/Temp/testrawfile.txt", "Hello World");
 		}
 
 		menubar_size = ImGui::GetWindowSize();
