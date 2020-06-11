@@ -1,27 +1,22 @@
-[submodule "Osiris/vendor/spdlog"]
-	path = Osiris/vendor/spdlog
-	url = https://github.com/gabime/spdlog
-[submodule "Osiris/vendor/GLFW"]
-	path = Osiris/vendor/GLFW
-	url = https://github.com/PaulRichardHickman/glfw
-[submodule "Osiris/vendor/imgui"]
-	path = Osiris/vendor/imgui
-	url = https://github.com/PaulRichardHickman/imgui
+[submodule "Osiris/vendor/glfw"]
+	path = Osiris/vendor/glfw
+	url = https://github.com/glfw/glfw
 [submodule "Osiris/vendor/soil"]
 	path = Osiris/vendor/soil
-	url = https://github.com/PaulRichardHickman/Simple-OpenGL-Image-Library.git
-[submodule "Osiris/vendor/json"]
-	path = Osiris/vendor/json
-	url = https://github.com/PaulRichardHickman/json
+	url = https://github.com/kbranigan/Simple-OpenGL-Image-Library
 [submodule "Osiris/vendor/glm"]
 	path = Osiris/vendor/glm
-	url = https://github.com/PaulRichardHickman/glm.git
+	url = https://github.com/g-truc/glm
+[submodule "Osiris/vendor/imgui"]
+	path = Osiris/vendor/imgui
+	url = https://github.com/ocornut/imgui
+	branch = docking
+[submodule "Osiris/vendor/json"]
+	path = Osiris/vendor/json
+	url = https://github.com/nlohmann/json
 [submodule "Osiris/vendor/lua"]
 	path = Osiris/vendor/lua
-	url = https://github.com/PaulRichardHickman/lua
-[submodule "Osiris/vendor/LuaBridge"]
-	path = Osiris/vendor/LuaBridge
-	url = https://github.com/PaulRichardHickman/LuaBridge
-[submodule "Osiris/vendor/efsw"]
-	path = Osiris/vendor/efsw
-	url = https://github.com/PaulRichardHickman/efsw.git
+	url = https://github.com/lua/lua
+[submodule "Osiris/vendor/luabridge"]
+	path = Osiris/vendor/luabridge
+	url = https://github.com/vinniefalco/LuaBridge
