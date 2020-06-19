@@ -8,7 +8,17 @@ namespace Osiris::Editor {
 
 	OrthographicCameraController::OrthographicCameraController(float aspectRatio, float zoomLevel) : _AspectRatio(aspectRatio)
 	{
-		_Camera.SetProjection(-_AspectRatio * zoomLevel, _AspectRatio * zoomLevel, -zoomLevel, zoomLevel);
+		_ZoomLevel = zoomLevel;
+		_AspectRatio = aspectRatio;
+
+		UpdateProjection(aspectRatio);
+	}
+
+	void OrthographicCameraController::UpdateProjection(float aspectRatio) {
+
+		_AspectRatio = aspectRatio;
+
+		_Camera.SetProjection(-_AspectRatio * _ZoomLevel, _AspectRatio * _ZoomLevel, -_ZoomLevel, _ZoomLevel);
 	}
 
 	void OrthographicCameraController::OnUpdate(Timestep ts)

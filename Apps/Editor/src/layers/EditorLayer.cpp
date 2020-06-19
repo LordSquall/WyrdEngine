@@ -15,12 +15,15 @@
 
 #include "layers/EditorRenderer2DLayer.h"
 
-#include "tools/PropertiesViewer/PropertiesViewer.h"
-#include "tools/PreferencesViewer/PreferencesViewer.h"
-#include "tools/LayerViewer/LayerViewer.h"
-#include "tools/SpriteLayerEditor/SpriteLayerEditor.h"
-#include "tools/AssetViewer/AssetViewer.h"
-#include "tools/OutputView/OutputView.h"
+#include "views/SceneViewer/SceneViewer.h"
+#include "views/PropertiesViewer/PropertiesViewer.h"
+#include "views/PreferencesViewer/PreferencesViewer.h"
+#include "views/LayerViewer/LayerViewer.h"
+#include "views/SpriteLayerEditor/SpriteLayerEditor.h"
+#include "views/AssetViewer/AssetViewer.h"
+#include "views/OutputView/OutputView.h"
+
+#include "export/Exporter.h"
 
 #include "platform/OpenGL/imgui_opengl_renderer.h"
 
@@ -46,12 +49,13 @@ namespace Osiris::Editor
 		Application& app = Application::Get();
 		LayerStack* stack = app.GetLayerStack();
 
-		m_plugins["Properties"] = std::make_shared<PropertiesViewer>();
-		m_plugins["Sprite Layer Editor"] = std::make_shared<SpriteLayerEditor>();
-		m_plugins["Asset Viewer"] = std::make_shared<AssetViewer>();
-		m_plugins["Output"] = std::make_shared<OutputView>();
-		//m_plugins["Preferences"] = std::make_shared<PreferencesViewer>();
-		//m_plugins["Preferences"]->Close();
+		_views["Scene Viewer"] = std::make_shared<SceneViewer>();
+		_views["Properties"] = std::make_shared<PropertiesViewer>();
+		_views["Sprite Layer Editor"] = std::make_shared<SpriteLayerEditor>();
+		_views["Asset Viewer"] = std::make_shared<AssetViewer>();
+		_views["Output"] = std::make_shared<OutputView>();
+		//_views["Preferences"] = std::make_shared<PreferencesViewer>();
+		//_views["Preferences"]->Close();
 
 		util = Utils();
 
@@ -84,23 +88,30 @@ namespace Osiris::Editor
 		_resourceService->GetIconLibrary().AddIconsFromFile(std::string("res/icons/filesystem_icons.json"));
 
 		/* set the style and icons library for each of the plugins */
-		for (std::map<std::string, std::shared_ptr<EditorPlugin>>::iterator it = m_plugins.begin(); it != m_plugins.end(); it++)
+		for (std::map<std::string, std::shared_ptr<EditorViewBase>>::iterator it = _views.begin(); it != _views.end(); it++)
 		{
 			(it->second)->OnInitialise();
 		}
 
-		m_Time = 0.0f;
+		/* set the starting tile field */
+		_time = 0.0f;
 
+		/* create the ImGui content info */
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 
+		/* retrieve the io and style subsystems from imgui*/
 		ImGuiIO& io = ImGui::GetIO();
 		ImGuiStyle& style = ImGui::GetStyle();
 
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+		/* set the configuration flags for imgui */
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
+		/* add the editor gui font */
 		io.Fonts->AddFontFromFileTTF("Montserrat-Regular.otf", 16.0f);
 
+		/* set the background flags for imgui flags */
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
 		io.BackendPlatformName = "imgui_openg3_renderer";
@@ -128,6 +139,7 @@ namespace Osiris::Editor
 		io.KeyMap[ImGuiKey_Y] = GLFW_KEY_Y;
 		io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
 
+		/* build the array of cursors to map to imgui */
 		s_MouseCursors[ImGuiMouseCursor_Arrow] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
 		s_MouseCursors[ImGuiMouseCursor_TextInput] = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
 		s_MouseCursors[ImGuiMouseCursor_ResizeAll] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);   // FIXME: GLFW doesn't have this.
@@ -140,8 +152,74 @@ namespace Osiris::Editor
 		/* Set style variables */
 		style.WindowRounding = 0.0f;
 
+		ImVec4* colors = style.Colors;
+
+		colors[ImGuiCol_Text] = ImVec4(1.000f, 1.000f, 1.000f, 1.000f);
+		colors[ImGuiCol_TextDisabled] = ImVec4(0.500f, 0.500f, 0.500f, 1.000f);
+		colors[ImGuiCol_WindowBg] = ImVec4(0.180f, 0.180f, 0.180f, 1.000f);
+		colors[ImGuiCol_ChildBg] = ImVec4(0.280f, 0.280f, 0.280f, 0.000f);
+		colors[ImGuiCol_PopupBg] = ImVec4(0.313f, 0.313f, 0.313f, 1.000f);
+		colors[ImGuiCol_Border] = ImVec4(0.266f, 0.266f, 0.266f, 1.000f);
+		colors[ImGuiCol_BorderShadow] = ImVec4(0.000f, 0.000f, 0.000f, 0.000f);
+		colors[ImGuiCol_FrameBg] = ImVec4(0.160f, 0.160f, 0.160f, 1.000f);
+		colors[ImGuiCol_FrameBgHovered] = ImVec4(0.200f, 0.200f, 0.200f, 1.000f);
+		colors[ImGuiCol_FrameBgActive] = ImVec4(0.280f, 0.280f, 0.280f, 1.000f);
+		colors[ImGuiCol_TitleBg] = ImVec4(0.148f, 0.148f, 0.148f, 1.000f);
+		colors[ImGuiCol_TitleBgActive] = ImVec4(0.148f, 0.148f, 0.148f, 1.000f);
+		colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.148f, 0.148f, 0.148f, 1.000f);
+		colors[ImGuiCol_MenuBarBg] = ImVec4(0.195f, 0.195f, 0.195f, 1.000f);
+		colors[ImGuiCol_ScrollbarBg] = ImVec4(0.160f, 0.160f, 0.160f, 1.000f);
+		colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.277f, 0.277f, 0.277f, 1.000f);
+		colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.300f, 0.300f, 0.300f, 1.000f);
+		colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(1.000f, 0.391f, 0.000f, 1.000f);
+		colors[ImGuiCol_CheckMark] = ImVec4(1.000f, 1.000f, 1.000f, 1.000f);
+		colors[ImGuiCol_SliderGrab] = ImVec4(0.391f, 0.391f, 0.391f, 1.000f);
+		colors[ImGuiCol_SliderGrabActive] = ImVec4(1.000f, 0.391f, 0.000f, 1.000f);
+		colors[ImGuiCol_Button] = ImVec4(1.000f, 1.000f, 1.000f, 0.000f);
+		colors[ImGuiCol_ButtonHovered] = ImVec4(1.000f, 1.000f, 1.000f, 0.156f);
+		colors[ImGuiCol_ButtonActive] = ImVec4(1.000f, 1.000f, 1.000f, 0.391f);
+		colors[ImGuiCol_Header] = ImVec4(0.313f, 0.313f, 0.313f, 1.000f);
+		colors[ImGuiCol_HeaderHovered] = ImVec4(0.469f, 0.469f, 0.469f, 1.000f);
+		colors[ImGuiCol_HeaderActive] = ImVec4(0.469f, 0.469f, 0.469f, 1.000f);
+		colors[ImGuiCol_Separator] = colors[ImGuiCol_Border];
+		colors[ImGuiCol_SeparatorHovered] = ImVec4(0.391f, 0.391f, 0.391f, 1.000f);
+		colors[ImGuiCol_SeparatorActive] = ImVec4(1.000f, 0.391f, 0.000f, 1.000f);
+		colors[ImGuiCol_ResizeGrip] = ImVec4(1.000f, 1.000f, 1.000f, 0.250f);
+		colors[ImGuiCol_ResizeGripHovered] = ImVec4(1.000f, 1.000f, 1.000f, 0.670f);
+		colors[ImGuiCol_ResizeGripActive] = ImVec4(1.000f, 0.391f, 0.000f, 1.000f);
+		colors[ImGuiCol_Tab] = ImVec4(0.098f, 0.098f, 0.098f, 1.000f);
+		colors[ImGuiCol_TabHovered] = ImVec4(0.352f, 0.352f, 0.352f, 1.000f);
+		colors[ImGuiCol_TabActive] = ImVec4(0.195f, 0.195f, 0.195f, 1.000f);
+		colors[ImGuiCol_TabUnfocused] = ImVec4(0.098f, 0.098f, 0.098f, 1.000f);
+		colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.195f, 0.195f, 0.195f, 1.000f);
+		colors[ImGuiCol_DockingPreview] = ImVec4(1.000f, 0.391f, 0.000f, 0.781f);
+		colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.180f, 0.180f, 0.180f, 1.000f);
+		colors[ImGuiCol_PlotLines] = ImVec4(0.469f, 0.469f, 0.469f, 1.000f);
+		colors[ImGuiCol_PlotLinesHovered] = ImVec4(1.000f, 0.391f, 0.000f, 1.000f);
+		colors[ImGuiCol_PlotHistogram] = ImVec4(0.586f, 0.586f, 0.586f, 1.000f);
+		colors[ImGuiCol_PlotHistogramHovered] = ImVec4(1.000f, 0.391f, 0.000f, 1.000f);
+		colors[ImGuiCol_TextSelectedBg] = ImVec4(1.000f, 1.000f, 1.000f, 0.156f);
+		colors[ImGuiCol_DragDropTarget] = ImVec4(1.000f, 0.391f, 0.000f, 1.000f);
+		colors[ImGuiCol_NavHighlight] = ImVec4(1.000f, 0.391f, 0.000f, 1.000f);
+		colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.000f, 0.391f, 0.000f, 1.000f);
+		colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.000f, 0.000f, 0.000f, 0.586f);
+		colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.000f, 0.000f, 0.000f, 0.586f);
+
+		style.ChildRounding = 4.0f;
+		style.FrameBorderSize = 1.0f;
+		style.FrameRounding = 2.0f;
+		style.GrabMinSize = 7.0f;
+		style.PopupRounding = 2.0f;
+		style.ScrollbarRounding = 12.0f;
+		style.ScrollbarSize = 13.0f;
+		style.TabBorderSize = 1.0f;
+		style.TabRounding = 0.0f;
+		style.WindowRounding = 4.0f;
+
+		/* initialise imgui */
 		ImGui_ImplOpenGL3_Init("#version 410");
 
+		/* attempt to load the default project otherwise asked the user to create a new one */
 		if (_workspaceService->LoadProject(_settingsService->GetSetting("Project", "default", "")) == false)
 		{
 			ServiceManager::Get<DialogService>(ServiceManager::Service::Dialog)->OpenDialog(Dialogs::CreateNewProject);
@@ -152,9 +230,8 @@ namespace Osiris::Editor
 
 	void EditorLayer::OnDetach()
 	{
-
+		ImGui::SaveIniSettingsToDisk("imgui.ini");
 	}
-
 
 	void EditorLayer::OnUpdate(Timestep ts)
 	{
@@ -164,30 +241,47 @@ namespace Osiris::Editor
 
 	void EditorLayer::OnRender(Timestep ts, Renderer& renderer)
 	{
-		static bool menu_app_close_show = false;
-		static bool menu_help_demo_window_show = false;
-		static bool toolbar_settings_window_show = false;
-
-		ImVec2 menubar_size;
-
-		_workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace);
-
+		/* retrieve the time to glfw */
 		float time = (float)glfwGetTime();
+
+		/* get references to the imgui io and Application objects */
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
 
-		io.DeltaTime = m_Time > 0.0 ? (time - m_Time) : (1.0f / 60.0f);
+		/* update the io time and size fields */
+		io.DeltaTime = _time > 0.0 ? (time - _time) : (1.0f / 60.0f);
 		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 
-		m_Time = time;
+		/* store to the time */
+		_time = time;
 
+		/* start a new imgui frame */
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui::NewFrame();
 
+		/* push the editor font */
 		ImGui::PushFont(s_defaultFont);
 
-		/* menu bar */
+		/* create the main windows flags */
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+		
+		/* set the next window to match the viewport position and size */
+		ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImGui::SetNextWindowPos(viewport->Pos);
+		ImGui::SetNextWindowSize(viewport->Size);
+		ImGui::SetNextWindowViewport(viewport->ID);
+
+		/* setup the root window flags */
+		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
+		/* start root dockspace window */
+		ImGui::Begin("DockspaceRoot", 0, window_flags);
+
+		/* menu menu start */
 		ImGui::BeginMainMenuBar();
+
+		static bool menu_help_demo_window_show = false;
 
 		if (ImGui::BeginMenu("Project"))
 		{
@@ -202,7 +296,6 @@ namespace Osiris::Editor
 				if (ImGui::MenuItem("Open Folder")) {
 					OSR_INFO(util.OpenFolderDialog());
 				}
-
 				ImGui::EndMenu();
 			}
 			if (ImGui::MenuItem("Open Project"))
@@ -261,15 +354,13 @@ namespace Osiris::Editor
 		{
 			if (ImGui::MenuItem("Settings"))
 			{
-				toolbar_settings_window_show = !toolbar_settings_window_show;
 			}
 			ImGui::EndMenu();
 		}
 		
-
-		if (ImGui::BeginMenu("Tools", true))
+		if (ImGui::BeginMenu("Views", true))
 		{
-			for (std::map<std::string, std::shared_ptr<EditorPlugin>>::iterator it = m_plugins.begin(); it != m_plugins.end(); it++)
+			for (std::map<std::string, std::shared_ptr<EditorViewBase>>::iterator it = _views.begin(); it != _views.end(); it++)
 			{
 				ImGui::MenuItem((it->second)->GetName().c_str(), NULL, (it->second)->GetShowFlagRef());
 			}
@@ -281,9 +372,8 @@ namespace Osiris::Editor
 		{
 			if (ImGui::MenuItem("Export Windows Executable") == true)
 			{
-				OSR_CORE_TRACE("Windows Export...");
+				Exporter::Export();
 			}
-
 			ImGui::EndMenu();
 		}
 
@@ -294,73 +384,47 @@ namespace Osiris::Editor
 			ImGui::EndMenu();
 		}
 
-		if(ImGui::Button("Temp") == true)
-		{
-			Utils::CreateRawFile(Utils::GetAssetFolder() + "/Temp/testrawfile.txt", "Hello World");
-		}
-
-		menubar_size = ImGui::GetWindowSize();
-
 		ImGui::EndMainMenuBar();
 
-		//ImGui::SetNextWindowSize(ImVec2(Application::Get().GetWindow().GetWidth(), 25.0f));
-		ImGui::SetNextWindowSize(menubar_size);
-		ImGui::SetNextWindowPos(ImVec2(0.0f, menubar_size.y));
-		ImGui::Begin("Toolbar", 0, ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
-	
-		ImGui::SetCursorPosX(menubar_size.x * 0.5f);
-		ImGui::PushID("Sim_Play_Btn");
-		if (ImGui::IconButton(_playButtonIcon, ImVec2(16.0f, 16.0f)) == true)
+		ImGui::SetCursorPosX((ImGui::GetWindowWidth() - 64.0f) * 0.5f);
+
+		/* primary control bar */
+		if (ImGui::IconButton(_playButtonIcon, 1) == true)
 		{
 			_simulationService->Start();
 		}
-		ImGui::PopID();
 		ImGui::SameLine();
-		ImGui::PushID("Sim_Stop_Btn");
-		if (ImGui::IconButton(_stopButtonIcon, ImVec2(16.0f, 16.0f)) == true)
+		if (ImGui::IconButton(_stopButtonIcon, 2) == true)
 		{
 			_simulationService->Stop();
 		}
-		ImGui::PopID();
 
-		ImGui::End();
+		/* setup the dockspace */
+		ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiWindowFlags_NoBackground);
 
-		if (toolbar_settings_window_show == true)
-		{
-			std::string sceneName = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace)->GetLoadedScene()->name;
-
-			ImGui::Begin("Scene Settings");
-
-			if (ImGui::InputText("Scene Name", (char*)sceneName.c_str(), sceneName.length()) == true)
-			{
-				ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace)->GetLoadedScene()->name = sceneName;
-			}
-
-			ImGui::ColorEdit3("BG Color", &Application::Get().color[0]);
-
-			ImGui::End();
-		}
-
-
-		for (auto const&[key, val] : ServiceManager::GetServices())
-		{
-			val->OnGUI();
-		}
-
-
-		/* test the plugin visibility flags */
-		for (std::map<std::string, std::shared_ptr<EditorPlugin>>::iterator it = m_plugins.begin(); it != m_plugins.end(); it++)
+		/* render of the currently open views */
+		for (std::map<std::string, std::shared_ptr<EditorViewBase>>::iterator it = _views.begin(); it != _views.end(); it++)
 		{
 			bool showFlag = *(it->second)->GetShowFlagRef();
 			if (showFlag == true)
 			{
+				(it->second)->OnRender(ts, renderer);
+
+				(it->second)->OnPreEditorRender();
 				(it->second)->OnEditorRender();
+				(it->second)->OnPostEditorRender();
 			}
 		}
 
-		if (menu_help_demo_window_show == true) ImGui::ShowDemoWindow();
+		if (menu_help_demo_window_show == true)
+		{
+			ImGui::ShowDemoWindow();
+		}
 
-		renderer2DLayer->OnGUI();
+		ImGui::End();
+
+		//renderer2DLayer->OnGUI();
 
 		ImGui::PopFont();
 
@@ -403,21 +467,53 @@ namespace Osiris::Editor
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.MouseDown[e.GetMouseButton()] = true;
-		return io.WantCaptureMouse;
+
+		/* mouse button pressed events should be routed to the correct view */
+		for (auto& it = _views.begin(); it != _views.end(); it++)
+		{
+			glm::vec2 mousePos = { e.GetPositionX(), e.GetPositionY() };
+
+			if (Rect::Contains((it->second)->GetBoundary(), mousePos) == true)
+			{
+				/* store the view as the event owner */
+				_mouseEventOwner = (it->second);
+
+				(it->second)->OnEvent(e);
+			}
+		}
+
+		return false;
 	}
 
 	bool EditorLayer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.MouseDown[e.GetMouseButton()] = false;
-		return io.WantCaptureMouse;
+
+		for (auto& it = _views.begin(); it != _views.end(); it++)
+		{
+			glm::vec2 mousePos = { e.GetPositionX(), e.GetPositionY() };
+
+			if (Rect::Contains((it->second)->GetBoundary(), mousePos) == true)
+			{
+				(it->second)->OnEvent(e);
+			}
+		}
+
+		_mouseEventOwner = nullptr;
+
+		return false;
 	}
 
 	bool EditorLayer::OnMouseMovedEvent(MouseMovedEvent& e)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.MousePos = ImVec2(e.GetX(), e.GetY());
-		return io.WantCaptureMouse;
+
+		if(_mouseEventOwner != nullptr)
+			_mouseEventOwner->OnEvent(e);
+
+		return false;
 	}
 
 	bool EditorLayer::OnMouseScrolledEvent(MouseScrolledEvent& e)
@@ -426,7 +522,17 @@ namespace Osiris::Editor
 		io.MouseWheel += e.GetYOffset();
 		io.MouseWheelH += e.GetXOffset();
 
-		return io.WantCaptureMouse;
+		for (auto& it = _views.begin(); it != _views.end(); it++)
+		{
+			glm::vec2 mousePos = { io.MousePos.x, io.MousePos.y };
+
+			if (Rect::Contains((it->second)->GetBoundary(), mousePos) == true)
+			{
+				(it->second)->OnEvent(e);
+			}
+		}
+
+		return false;
 	}
 
 	bool EditorLayer::OnKeyReleasedEvent(KeyReleasedEvent& e)
@@ -434,7 +540,7 @@ namespace Osiris::Editor
 		ImGuiIO& io = ImGui::GetIO();
 		io.KeysDown[e.GetKeyCode()] = false;
 
-		return io.WantCaptureKeyboard;
+		return false;
 	}
 
 	bool EditorLayer::OnKeyPressedEvent(KeyPressedEvent& e)
@@ -447,7 +553,7 @@ namespace Osiris::Editor
 		io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
 		io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
 
-		return io.WantCaptureKeyboard;
+		return false;
 	}
 
 	bool EditorLayer::OnKeyTypedEvent(KeyTypedEvent& e)

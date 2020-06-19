@@ -14,6 +14,7 @@ namespace Osiris::Editor
 
 		/* Asset Folder Functions */
 		static std::string GetAssetFolder();
+		static std::string GetBuildsFolder();
 		static std::string GetEditorResFolder();
 
 		/* Dialog Functions */
@@ -52,6 +53,7 @@ namespace Osiris::Editor
 		static void SwapSlashes(std::string& path, const std::string& find, const std::string& replace);
 		static std::string Utils::canonical_path;
 		static std::string Utils::asset_path;
+		static std::string Utils::builds_path;
 	};
 
 

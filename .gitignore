@@ -12,3 +12,5 @@ Osiris/vendor/*/bin-int/*
 Apps/Editor/config.ini
 Apps/Editor/Editor.args.json
 Apps/Editor/imgui.ini
+externalbuild/bin/
+externalbuild/bin-int/

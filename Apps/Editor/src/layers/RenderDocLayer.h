@@ -10,7 +10,7 @@
 #include "events/MouseEvent.h"
 #include "events/ApplicationEvent.h"
 
-#include "EditorPlugin.h"
+#include "views/EditorViewBase.h"
 #include "support/IconLibrary.h"
 #include "support/Utils.h"
 

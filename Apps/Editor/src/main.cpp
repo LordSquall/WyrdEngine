@@ -8,7 +8,6 @@
 #include "services/ServiceManager.h"
 #include "layers/RenderDocLayer.h"
 #include "layers/EditorLayer.h"
-#include "layers/EditorRenderer2DLayer.h"
 #include "support/IniParser.h"
 
 using namespace Osiris::Editor;
@@ -34,7 +33,6 @@ public:
 		PushLayer(RenderDocLayer);
 #endif
 
-		PushLayer(new Osiris::Editor::EditorRenderer2DLayer("Editor2DLayer"));
 		PushOverlay(new Osiris::Editor::EditorLayer());
 	}
 

@@ -29,4 +29,26 @@ namespace Osiris
 
 		static IndexBuffer* Create(uint32_t* indices, uint32_t size);
 	};
+
+	struct FrameBufferConfig
+	{
+		uint32_t width = 800;
+		uint32_t height = 600;
+	};
+
+	class FrameBuffer
+	{
+	public:
+		virtual ~FrameBuffer() {}
+
+		virtual void Bind() const = 0;
+		virtual void Unbind() const = 0;
+
+		virtual void Resize(uint32_t width, uint32_t height) = 0;
+
+		virtual uint32_t GetColorAttachmentID() const = 0;
+		virtual const FrameBufferConfig& GetConfig() const = 0;
+
+		static FrameBuffer* Create(const FrameBufferConfig& config);
+	};
 }

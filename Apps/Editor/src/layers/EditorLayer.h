@@ -7,7 +7,7 @@
 #include "events/MouseEvent.h"
 #include "events/ApplicationEvent.h"
 
-#include "EditorPlugin.h"
+#include "views/EditorViewBase.h"
 #include "support/IconLibrary.h"
 #include "support/Utils.h"
 
@@ -40,18 +40,20 @@ namespace Osiris::Editor
 		void OnSceneOpened(Events::EventArgs& args);
 		
 	private:
-		float m_Time;
+		float _time;
 		
-		std::map<std::string, std::shared_ptr<EditorPlugin>> m_plugins;
+		std::map<std::string, std::shared_ptr<EditorViewBase>> _views;
 
-		std::shared_ptr<EventService> _eventService;
-		std::shared_ptr<WorkspaceService> _workspaceService;
-		std::shared_ptr<SettingsService> _settingsService;
-		std::shared_ptr<ResourceService> _resourceService;
-		std::shared_ptr<SimulationService> _simulationService;
+		std::shared_ptr<EventService>		_eventService;
+		std::shared_ptr<WorkspaceService>	_workspaceService;
+		std::shared_ptr<SettingsService>	_settingsService;
+		std::shared_ptr<ResourceService>	_resourceService;
+		std::shared_ptr<SimulationService>	_simulationService;
 
 		std::shared_ptr<Icon> _playButtonIcon;
 		std::shared_ptr<Icon> _stopButtonIcon;
+
+		std::shared_ptr<EditorViewBase> _mouseEventOwner;
 
 		static bool _showSceneViewerContextMenu;
 	};

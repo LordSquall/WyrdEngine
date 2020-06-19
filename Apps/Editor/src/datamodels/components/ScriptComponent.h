@@ -3,7 +3,7 @@
 #include <Osiris.h>
 #include <glm/glm.hpp>
 
-#include "tools/PropertiesViewer/IPropertyComponent.h"
+#include "views/PropertiesViewer/IPropertyComponent.h"
 #include "datamodels/resources/ScriptRes.h"
 #include "behaviour/ScriptedObject.h"
 #include "support/IconLibrary.h"

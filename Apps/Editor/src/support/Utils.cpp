@@ -12,6 +12,7 @@ namespace Osiris::Editor {
 
 	std::string Utils::canonical_path = std::filesystem::current_path().generic_string();
 	std::string Utils::asset_path = "/assets";
+	std::string Utils::builds_path = "/builds";
 
 	Utils::Utils()
 	{
@@ -30,6 +31,11 @@ namespace Osiris::Editor {
 	std::string Utils::GetAssetFolder()
 	{
 		return Utils::canonical_path + Utils::asset_path;
+	}
+
+	std::string Utils::GetBuildsFolder()
+	{
+		return Utils::canonical_path + Utils::builds_path;
 	}
 
 	std::string Utils::GetEditorResFolder()

@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-#include "tools/PropertiesViewer/IPropertyComponent.h"
+#include "views/PropertiesViewer/IPropertyComponent.h"
 
 using namespace Osiris;
 using namespace glm;

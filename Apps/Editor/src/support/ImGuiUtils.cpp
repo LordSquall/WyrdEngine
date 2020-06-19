@@ -12,7 +12,7 @@ namespace ImGui
 		ImGui::Image((ImTextureID)(INT_PTR)texture->GetRendererHandle(), size, ImVec2(icon->uv[0].x, icon->uv[0].y), ImVec2(icon->uv[2].x, icon->uv[2].y), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 1));
 	}
 
-	bool ImGui::IconButton(std::shared_ptr<Osiris::Editor::Icon> icon, ImVec2& size, bool enabled, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
+	bool ImGui::IconButton(std::shared_ptr<Osiris::Editor::Icon> icon, ImGuiID id, ImVec2& size, bool enabled, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
 	{
 		std::shared_ptr<Osiris::Editor::TextureRes> texture = icon->iconSet->Texture;
 
@@ -31,26 +31,26 @@ namespace ImGui
 
 		// Default to using texture ID as ID. User can still push string/integer prefixes.
 		// We could hash the size/uv to create a unique ID but that would prevent the user from animating UV.
-		PushID((void*)(intptr_t)texture->GetRendererHandle());
-		const ImGuiID id = window->GetID("#image");
+		PushID(id);
+		const ImGuiID imgId = window->GetID("#image");
 		PopID();
 
 		const ImVec2 padding = (frame_padding >= 0) ? ImVec2((float)frame_padding, (float)frame_padding) : style.FramePadding;
 		const ImRect bb(window->DC.CursorPos, window->DC.CursorPos + size + padding * 2);
 		const ImRect image_bb(window->DC.CursorPos + padding, window->DC.CursorPos + padding + size);
 		ItemSize(bb);
-		if (!ItemAdd(bb, id))
+		if (!ItemAdd(bb, imgId))
 			return false;
 
 		bool hovered, held;
-		bool pressed = ButtonBehavior(bb, id, &hovered, &held, flags);
+		bool pressed = ButtonBehavior(bb, imgId, &hovered, &held, flags);
 
 		// Render
 		const ImU32 col = GetColorU32((held && hovered) ? ImGuiCol_ButtonActive : hovered ? ImGuiCol_ButtonHovered : ImGuiCol_Button);
 
 		if (enabled == false) enabledTint = GetColorU32(ImGuiCol_TabUnfocused);
 
-		RenderNavHighlight(bb, id);
+		RenderNavHighlight(bb, imgId);
 		RenderFrame(bb.Min, bb.Max, col, true, ImClamp((float)ImMin(padding.x, padding.y), 0.0f, style.FrameRounding));
 		if (bg_col.w > 0.0f)
 			window->DrawList->AddRectFilled(image_bb.Min, image_bb.Max, GetColorU32(bg_col));
@@ -72,8 +72,8 @@ namespace ImGui
 		const ImVec2 label_size = CalcTextSize(label, NULL, true);
 
 		ImVec2 pos = window->DC.CursorPos;
-		if ((flags & ImGuiButtonFlags_AlignTextBaseLine) && style.FramePadding.y < window->DC.CurrentLineTextBaseOffset) // Try to vertically align buttons that are smaller/have no padding so that text baseline matches (bit hacky, since it shouldn't be a flag)
-			pos.y += window->DC.CurrentLineTextBaseOffset - style.FramePadding.y;
+		//if ((flags & ImGuiButtonFlags_AlignTextBaseLine) && style.FramePadding.y < window->DC.CurrentLineTextBaseOffset) // Try to vertically align buttons that are smaller/have no padding so that text baseline matches (bit hacky, since it shouldn't be a flag)
+		//	pos.y += window->DC.CurrentLineTextBaseOffset - style.FramePadding.y;
 		ImVec2 size = CalcItemSize(size_arg, label_size.x + style.FramePadding.x * 2.0f, label_size.y + style.FramePadding.y * 2.0f);
 
 		const ImRect bb(pos, pos + size);

@@ -4,6 +4,7 @@
 
 #include "IconLibrary.h"
 
+#include "support/JsonExtensions.hpp"
 #include <nlohmann/json.hpp>
 #include <SOIL.h>
 

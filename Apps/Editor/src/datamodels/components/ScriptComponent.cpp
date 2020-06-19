@@ -64,7 +64,7 @@ namespace Osiris::Editor
 				ImGui::EndDragDropTarget();
 			} 
 			ImGui::SameLine();
-			if (ImGui::IconButton(_RemoveIcon, ImVec2(16.0f, 16.0f), _ScriptResource != nullptr) == true)
+			if (ImGui::IconButton(_RemoveIcon, 1, ImVec2(16.0f, 16.0f), _ScriptResource != nullptr) == true)
 			{
 				_ScriptResource = nullptr;
 			}

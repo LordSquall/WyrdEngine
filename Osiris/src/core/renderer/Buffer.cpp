@@ -31,4 +31,16 @@ namespace Osiris
 		OSR_CORE_ASSERT(false, "Unknown Renderer API");
 		return nullptr;
 	}
+
+	FrameBuffer* FrameBuffer::Create(const FrameBufferConfig& config)
+	{
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPI::None:		OSR_CORE_ASSERT(false, "RendererAPI::None is currently not supported"); return nullptr;
+		case RendererAPI::OpenGL:	return new OpenGLFrameBuffer(config);
+		}
+
+		OSR_CORE_ASSERT(false, "Unknown Renderer API");
+		return nullptr;
+	}
 }

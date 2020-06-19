@@ -108,15 +108,15 @@ namespace Osiris::Editor
 		if (_OpenContextMenu == true)
 		{
 			ImGui::SetNextWindowPos({ ImVec2(_MenuPos.x, _MenuPos.y) });
-			ImGui::Begin("Test Window", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize);
-
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, 8.0f);
+			ImGui::Begin("_ContextMenu", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize);
 			if (ImGui::MenuItem("Copy", 0, false, false) == false) { /* TODO */ }
 			if (ImGui::MenuItem("Paste", 0, false, false) == false) { /* TODO */ }
 			if (ImGui::MenuItem("Cut", 0, false, false) == false) { /* TODO */ }
 			ImGui::Separator();
 			if (ImGui::MenuItem("Delete", 0, false, true) == false) { /* TODO */ }
-
 			ImGui::End();
+			ImGui::PopStyleVar();
 		}
 	}
 

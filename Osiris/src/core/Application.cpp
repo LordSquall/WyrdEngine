@@ -101,5 +101,11 @@ namespace Osiris {
 
 			m_Running = !m_Window->GetCloseRequested();
 		}
+
+		/* detach each of the layers */
+		for (Layer* layer : m_LayerStack)
+		{
+			layer->OnDetach();
+		}
 	}
 }

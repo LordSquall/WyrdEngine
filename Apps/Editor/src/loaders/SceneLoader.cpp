@@ -4,6 +4,8 @@
 #include <nlohmann/json.hpp>
 #include <glm/glm.hpp>
 
+#include "support/JsonExtensions.hpp"
+
 #include "SceneLoader.h"
 
 #include "core/Application.h"

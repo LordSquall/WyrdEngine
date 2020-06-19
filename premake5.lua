@@ -28,7 +28,6 @@ includedir["SOIL"] = "Osiris/vendor/soil/src"
 includedir["glm"] = "Osiris/vendor/glm"
 includedir["imgui"] = "Osiris/vendor/imgui"
 includedir["json"] = "Osiris/vendor/json/include"
-includedir["tinyobjloader"] = "Osiris/vendor/tinyobjloader/include"
 includedir["luabridge"] = "Osiris/vendor/luabridge/source"
 includedir["lua"] = "Osiris/vendor/lua/"
 includedir["efsw"] = "Osiris/vendor/efsw/include/"
@@ -39,148 +38,14 @@ if renderdocfound then
 end
 
 group "ThirdParty"
-include "Osiris/vendor/GLFW"
-include "Osiris/vendor/GLAD"
-include "Osiris/vendor/SOIL"
-include "Osiris/vendor/imgui"
-include "Osiris/vendor/json"
-include "Osiris/vendor/LuaBridge"
-include "Osiris/vendor/efsw"
-
-group "Examples"
-	project "01_WindowCreation"
-		location "Apps/%{prj.name}"
-		kind "ConsoleApp"
-		language "C++"
-		cppdialect "C++17"
-		staticruntime "on"
-
-		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-		objdir ("obj/" .. outputdir .. "/%{prj.name}")
-
-		files
-		{
-			"Apps/%{prj.name}/src/**.h",
-			"Apps/%{prj.name}/src/**.cpp",
-			"Apps/%{prj.name}/res/**.vs",
-			"Apps/%{prj.name}/res/**.fs"
-		}
-
-		includedirs
-		{
-			"Apps/%{prj.name}/src",
-			"Osiris/src",
-			"%{includedir.glm}",
-			"Osiris/vendor/spdlog/include",
-			"%{includedir.GLFW}",
-			"%{includedir.GLAD}",
-			"%{includedir.SOIL}",
-			"%{includedir.glm}",
-			"%{includedir.json}",
-			"%{includedir.tinyobjloader}"
-		}
-
-		links
-		{
-			"Osiris",
-			"GLFW",
-			"GLAD",
-			"SOIL",
-			"imgui",
-			"opengl32.dll"
-		}
-
-		filter "system:windows"
-			systemversion "latest"
-
-			defines
-			{
-				"OSR_PLATFORM_WINDOWS",
-				"OSR_EDITOR_ENABLED",
-				"GLM_ENABLE_EXPERIMENTAL"
-			}
-
-		filter "configurations:Debug"
-			defines "ORS_DEBUG"
-			runtime "Debug"
-			symbols "on"
-
-		filter "configurations:Release"
-			defines "ORS_RELEASE"
-			runtime "Debug"
-			symbols "on"
-
-		filter "configurations:Distribution"
-			defines "ORS_DISTRIBUTION"
-			runtime "Debug"
-			symbols "on"
-			
-	project "02_BasicShapes"
-		location "Apps/%{prj.name}"
-		kind "ConsoleApp"
-		language "C++"
-		cppdialect "C++17"
-		staticruntime "on"
-
-		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-		objdir ("obj/" .. outputdir .. "/%{prj.name}")
-
-		files
-		{
-			"Apps/%{prj.name}/src/**.h",
-			"Apps/%{prj.name}/src/**.cpp",
-			"Apps/%{prj.name}/res/**.vs",
-			"Apps/%{prj.name}/res/**.fs"
-		}
-
-		includedirs
-		{
-			"Apps/%{prj.name}/src",
-			"Osiris/src",
-			"%{includedir.glm}",
-			"Osiris/vendor/spdlog/include",
-			"%{includedir.GLFW}",
-			"%{includedir.GLAD}",
-			"%{includedir.SOIL}",
-			"%{includedir.glm}",
-			"%{includedir.json}",
-			"%{includedir.tinyobjloader}"
-		}
-
-		links
-		{
-			"Osiris",
-			"GLFW",
-			"GLAD",
-			"SOIL",
-			"imgui",
-			"opengl32.dll"
-		}
-
-		filter "system:windows"
-			systemversion "latest"
-
-			defines
-			{
-				"OSR_PLATFORM_WINDOWS",
-				"OSR_EDITOR_ENABLED",
-				"GLM_ENABLE_EXPERIMENTAL"
-			}
-
-		filter "configurations:Debug"
-			defines "ORS_DEBUG"
-			runtime "Debug"
-			symbols "on"
-
-		filter "configurations:Release"
-			defines "ORS_RELEASE"
-			runtime "Debug"
-			symbols "on"
-
-		filter "configurations:Distribution"
-			defines "ORS_DISTRIBUTION"
-			runtime "Debug"
-			symbols "on"
+include "externalbuild/premake5-glfw.lua"
+include "externalbuild/premake5-glad.lua"
+include "externalbuild/premake5-soil.lua"
+include "externalbuild/premake5-imgui.lua"
+include "externalbuild/premake5-json.lua"
+include "externalbuild/premake5-efsw.lua"
+include "externalbuild/premake5-lua.lua"
+include "externalbuild/premake5-luabridge.lua"
 
 group ""
 	project "Osiris"
@@ -224,7 +89,6 @@ group ""
 			"GLFW",
 			"GLAD",
 			"SOIL",
-			"LuaBridge",
 			"opengl32.dll",
 		}
 
@@ -298,7 +162,7 @@ group ""
 					"GLAD",
 					"SOIL",
 					"imgui",
-					"LuaBridge",
+					"lua",
 					"efsw",
 					"opengl32.dll"
 				}
@@ -333,71 +197,68 @@ group ""
 					runtime "Debug"
 					symbols "on"
 
+	project "WindowsPlayer"
+			location "Apps/WindowsPlayer"
+			kind "ConsoleApp"
+			language "C++"
+			cppdialect "C++17"
+			staticruntime "on"
 
-	project "Experimental"
-				location "Apps/Experimental"
-				kind "ConsoleApp"
-				language "C++"
-				cppdialect "C++17"
-				staticruntime "on"
+			targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+			objdir ("obj/" .. outputdir .. "/%{prj.name}")
 
-				targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-				objdir ("obj/" .. outputdir .. "/%{prj.name}")
+			files
+			{
+				"Apps/%{prj.name}/src/**.h",
+				"Apps/%{prj.name}/src/**.cpp"
+			}
 
-				files
+			includedirs
+			{
+				"Apps/%{prj.name}/src",
+				"Osiris/src",
+				"%{includedir.glm}",
+				"Osiris/vendor/spdlog/include",
+				"%{includedir.GLFW}",
+				"%{includedir.GLAD}",
+				"%{includedir.SOIL}",
+				"%{includedir.imgui}",
+				"%{includedir.glm}",
+				"%{includedir.json}",
+				"%{includedir.tinyobjloader}"
+			}
+
+			links
+			{
+				"Osiris",
+				"GLFW",
+				"GLAD",
+				"SOIL",
+				"imgui",
+				"opengl32.dll"
+			}
+
+			filter "system:windows"
+				systemversion "latest"
+
+				defines
 				{
-					"Apps/%{prj.name}/src/**.h",
-					"Apps/%{prj.name}/src/**.cpp",
-					"Apps/%{prj.name}/res/**.vs",
-					"Apps/%{prj.name}/res/**.fs"
+					"OSR_PLATFORM_WINDOWS",
+					"OSR_EDITOR_ENABLED",
+					"GLM_ENABLE_EXPERIMENTAL"
 				}
 
-				includedirs
-				{
-					"Apps/%{prj.name}/src",
-					"Osiris/src",
-					"%{includedir.glm}",
-					"Osiris/vendor/spdlog/include",
-					"%{includedir.GLFW}",
-					"%{includedir.GLAD}",
-					"%{includedir.SOIL}",
-					"%{includedir.imgui}",
-					"%{includedir.glm}",
-					"%{includedir.json}",
-					"%{includedir.tinyobjloader}"
-				}
+			filter "configurations:Debug"
+				defines "ORS_DEBUG"
+				runtime "Debug"
+				symbols "on"
 
-				links
-				{
-					"Osiris",
-					"GLFW",
-					"GLAD",
-					"SOIL",
-					"imgui",
-					"opengl32.dll"
-				}
+			filter "configurations:Release"
+				defines "ORS_RELEASE"
+				runtime "Debug"
+				symbols "on"
 
-				filter "system:windows"
-					systemversion "latest"
-
-					defines
-					{
-						"OSR_PLATFORM_WINDOWS",
-						"OSR_EDITOR_ENABLED",
-						"GLM_ENABLE_EXPERIMENTAL"
-					}
-
-				filter "configurations:Debug"
-					defines "ORS_DEBUG"
-					runtime "Debug"
-					symbols "on"
-
-				filter "configurations:Release"
-					defines "ORS_RELEASE"
-					runtime "Debug"
-					symbols "on"
-
-				filter "configurations:Distribution"
-					defines "ORS_DISTRIBUTION"
-					runtime "Debug"
-					symbols "on"
+			filter "configurations:Distribution"
+				defines "ORS_DISTRIBUTION"
+				runtime "Debug"
+				symbols "on"

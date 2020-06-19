@@ -23,14 +23,20 @@ namespace Osiris::Editor
 		/* Getters and Setters */
 		inline OrthographicCamera& GetCamera() { return _Camera; }
 		inline const OrthographicCamera& GetCamera() const { return _Camera; }
+		
+		inline void UpdateProjection(float aspectRatio);
+
 		inline glm::vec3 GetPosition() const { return _Camera.GetPosition(); }
 		inline void SetPosition(glm::vec3 position) { _Camera.SetPosition(position); }
+		
 		inline float GetZoomLevel() const { return _ZoomLevel; }
 		inline void SetZoomLevel(float level) { _ZoomLevel = level; _Camera.SetProjection(-_AspectRatio * _ZoomLevel, _AspectRatio * _ZoomLevel, -_ZoomLevel, _ZoomLevel);}
+
 		inline float GetAspectRatio() const { return _AspectRatio; }
+		inline void SetAspectRatio(const float aspectRatio) { _AspectRatio = aspectRatio; }
 
 		void Translate(glm::vec2 delta);
-
+		
 	private:
 		bool OnMouseScrolled(MouseScrolledEvent& e);
 		bool OnWindowResized(WindowResizeEvent& e);

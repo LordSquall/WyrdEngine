@@ -3,7 +3,7 @@
 #include "core/export.h"
 #include "core/Layer.h"
 
-#include "EditorPlugin.h"
+#include "views/EditorViewBase.h"
 #include "support/IconLibrary.h"
 #include "support/Utils.h"
 

@@ -20,3 +20,9 @@
 [submodule "Osiris/vendor/luabridge"]
 	path = Osiris/vendor/luabridge
 	url = https://github.com/vinniefalco/LuaBridge
+[submodule "Osiris/vendor/spdlog"]
+	path = Osiris/vendor/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "Osiris/vendor/efsw"]
+	path = Osiris/vendor/efsw
+	url = https://github.com/SpartanJ/efsw

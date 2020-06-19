@@ -3,7 +3,7 @@
 #include <Osiris.h>
 #include <glm/glm.hpp>
 
-#include "tools/PropertiesViewer/IPropertyComponent.h"
+#include "views/PropertiesViewer/IPropertyComponent.h"
 
 using namespace Osiris;
 using namespace glm;
