@@ -28,5 +28,5 @@ Osiris::Application* Osiris::CreateApplication()
 
 	properties.windowProps.Title = "01 - Window Creation";
 
-	return new WindowCreationApp(properties);
+	return new WindowCreationApp(properties);  
 }

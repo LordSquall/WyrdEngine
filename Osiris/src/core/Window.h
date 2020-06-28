@@ -9,14 +9,14 @@ namespace Osiris
 	struct WindowProps
 	{
 		std::string Title;
-		unsigned int Width;
-		unsigned int Height;
+		int Width;
+		int Height;
 		int X;
 		int Y;
 
 		WindowProps(const std::string& title = "Osiris Engine",
-			unsigned int width  = 1280,
-			unsigned int height = 720,
+			int width  = 1280,
+			int height = 720,
 			int x = 50,
 			int y = 75)
 			: Title(title), Width(width), Height(height), X(x), Y(y)
