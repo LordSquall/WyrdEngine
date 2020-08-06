@@ -1,6 +1,8 @@
 #pragma once
 
+/* local includes */
 #include "osrpch.h"
+#include "core/export.h"
 #include "events/Event.h"
 
 namespace Osiris
@@ -22,7 +24,7 @@ namespace Osiris
 		std::string renderer;
 	};
 
-	class Renderer
+	class OSR_LIBRARY_API Renderer
 	{
 	public:
 		virtual ~Renderer() {}

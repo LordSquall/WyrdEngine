@@ -1,17 +1,18 @@
 #pragma once
 
-#include "core/export.h"
-#include "core/Layer.h"
+/* core osiris includes */
+#include <core/export.h>
+#include <core/Layer.h>
+#include <core/scene/Scene.h>
+#include <core/scene/GameObject.h>
+#include <core/pipeline/Sprite.h>
 
+/* local includes */
 #include "views/EditorViewBase.h"
 #include "support/IconLibrary.h"
 #include "support/Utils.h"
-
 #include "datamodels/Project.h"
-#include "datamodels/Scene.h"
-
-#include "core/pipeline/Sprite.h"
-
+#include "datamodels/resources/Resource.h"
 #include "datamodels/logging/LogMessage.h"
 
 #define EVENT_ARGS_CLONE(type)	public:  std::shared_ptr<EventArgs> Clone() { return std::make_shared<type>(*this); } 
@@ -79,9 +80,9 @@ namespace Osiris::Editor::Events
 	class SelectedGameObjectChangedArgs : public EventArgs
 	{
 	public:
-		SelectedGameObjectChangedArgs(const std::shared_ptr<GameObject> gameObject) : gameObject(gameObject) { }
+		SelectedGameObjectChangedArgs(const std::shared_ptr<Osiris::GameObject> gameObject) : gameObject(gameObject) { }
 
-		const std::shared_ptr<GameObject> gameObject;
+		const std::shared_ptr<Osiris::GameObject> gameObject;
 
 		EVENT_ARGS_CLONE(SelectedGameObjectChangedArgs)
 	};

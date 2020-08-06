@@ -1,54 +1,59 @@
 #pragma once
-#include "osrpch.h"
 
+/* core osiris includes */
+#include <osrpch.h>
+
+/* local includes */
 #include "ProjectLoader.h"
 
-#include <nlohmann/json.hpp>
-
-using namespace nlohmann;
+/* external include */
+#include <jsonxx.h>
 
 namespace Osiris::Editor
-{
-	/* Json operation overloader functions */
-	void to_json(json& jProject, const Project& project);
-	void from_json(const json& jProject, Project& project);
-
-	ProjectLoader::Result ProjectLoader::Load(std::string path, Project& project, FileContent content)
+{;
+	ProjectLoader::Result ProjectLoader::Load(std::string path, Project& project)
 	{
-		json j;
-		std::ifstream i(path);
+		ProjectLoader::Result result = Success;
+		jsonxx::Object o;
+		
+		std::ifstream f(path);
 
-		if (i.is_open())
-		{
-			i >> j;
-			project = j.get<Project>();
-			return Success;
+		if (f.is_open() == true) {
+			std::ostringstream ss;
+			ss << f.rdbuf();
+			
+			if (o.parse(ss.str()) == true)
+			{
+				project.name = o.get<jsonxx::String>("name");
+				project.initialScene = o.get<jsonxx::String>("initialScene");
+			}
+			else
+			{
+				result = FileMalformed;
+			}
 		}
-		return FileNotFound;
+		else
+		{
+			result = FileNotFound;
+		}
+
+		return result;
 	}
 
-	ProjectLoader::Result ProjectLoader::Save(std::string path, Project& project, FileContent content)
+	ProjectLoader::Result ProjectLoader::Save(std::string path, Project& project)
 	{
-		json j = project;
+		ProjectLoader::Result result = Success;
+		jsonxx::Object o;
 
-		std::ofstream o(path);
 
-		o << std::setw(4) << j << std::endl;
+		o << "name" << project.name;
+		o << "initialScene" << project.initialScene;
 
-		o.close();
+		std::ofstream out(path);
+		out << o.json();
+		out.close();
 
-		return Success;
+		return result;
 	}
 
-	void to_json(json& jProject, const Project& project) {
-		jProject = json::object();
-
-		jProject["name"] = project.name;
-		jProject["initialScene"] = project.initialScene;
-	}
-
-	void from_json(const json& jProject, Project& project) {
-		jProject.at("name").get_to(project.name);
-		jProject.at("initialScene").get_to(project.initialScene);
-	}
 }

@@ -1,12 +1,14 @@
 #pragma once
 
-#include "osrpch.h"
+/* core osiris includes */
+#include <osrpch.h>
+#include <core/scene/components/Transform2DComponent.h>
 
+/* local includes */
 #include "TranslationGizmo.h"
-
 #include "services/ServiceManager.h"
-#include "datamodels/components/Transform2DComponent.h"
 
+/* external includes */
 #include <glm/glm.hpp>
 
 namespace Osiris::Editor
@@ -47,7 +49,7 @@ namespace Osiris::Editor
 		_VertexArray->SetAttribute(1, 2, 2);
 
 		/* set the vp matrix to a standard otho matrix */
-		//_Shader->SetVPMatrix(glm::ortho(0.0f, _CameraController->GetCamera().GetRight(), 0.0f, _CameraController->GetCamera().GetTop()));
+		_Shader->SetVPMatrix(glm::ortho(0.0f, _CameraController->GetCamera().GetRight(), 0.0f, _CameraController->GetCamera().GetTop()));
 
 		return;
 	}
@@ -61,7 +63,7 @@ namespace Osiris::Editor
 
 	void TranslationGizmo::OnDrag(glm::vec2 delta)
 	{
-		_GameObject->transform2d.Translate(delta);
+		_GameObject->transform2D->Translate(delta);
 	}
 
 	void TranslationGizmo::Render(Timestep ts, Renderer& renderer)
@@ -73,10 +75,10 @@ namespace Osiris::Editor
 		_IndexBuffer->Bind(); 
 		_VertexArray->Bind();
 
-		(*_Icon->iconSet->Texture->GetTexture())->Bind();
+		_Icon->iconSet->Texture->GetTexture()->Bind();
 		
 		_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
-		_Shader->SetMatrix("model", _GameObject->transform2d.matrix * glm::scale(glm::vec3(8.0f)));
+		_Shader->SetMatrix("model", _GameObject->transform2D->matrix * glm::scale(glm::vec3(8.0f)));
 
 		renderer.DrawElements(RendererDrawType::Triangles, _IndexBuffer->GetCount());
 	}

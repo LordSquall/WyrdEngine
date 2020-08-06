@@ -1,12 +1,10 @@
 #pragma once
 
+/* core osiris includes */
 #include <Osiris.h>
-#include "core/loaders/Loaders.h"
-#include "datamodels/Scene.h"
-#include <nlohmann/json.hpp>
+#include <core/scene/Scene.h>
 
 using namespace Osiris;
-using namespace nlohmann;
 
 namespace Osiris::Editor {
 
@@ -20,8 +18,8 @@ namespace Osiris::Editor {
 			DirectoryNotFound = 4, FileAlreadyExists = 5, InsufficientSpace = 6
 		};
 
-		static SceneLoader::Result Load(std::string path, Scene& scene, FileContent content);
+		static SceneLoader::Result Load(std::string path, Scene& scene);
 
-		static SceneLoader::Result Save(std::string path, Scene& scene, FileContent content);
+		static SceneLoader::Result Save(std::string path, Scene& scene);
 	};
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "osrpch.h"
+#include "core/Log.h"
 #include "ResourceService.h"
 #include "services/ServiceManager.h"
 #include "loaders/TextureLoader.h"
@@ -18,7 +19,16 @@ namespace Osiris::Editor
 		_extensions.insert(std::pair<std::string, Type>(".vs", SHADER));
 		_extensions.insert(std::pair<std::string, Type>(".fs", SHADER));
 		_extensions.insert(std::pair<std::string, Type>(".scene", SCENE));
-		_extensions.insert(std::pair<std::string, Type>(".lua", SCRIPT));
+		_extensions.insert(std::pair<std::string, Type>(".cs", SCRIPT));
+
+		/* Add resources from the osiris core to make then accessible with in the editor */
+		for each (auto textures in Resources::Get().Textures)
+		{
+			std::shared_ptr<TextureRes> textureResource = std::make_shared<TextureRes>(textures.second, "default");
+			_textureResources.insert(std::pair<uint32_t, std::shared_ptr<TextureRes>>(textureResource->GetResourceID(), textureResource));
+
+			OSR_CORE_INFO("Asset Texture Added: [{0}] - {1}", textureResource->GetResourceID(), textureResource->GetName());
+		}
 
 		/* Load defaults from the editor resources */
 		_defaultTexture = std::make_shared<TextureRes>(Utils::GetEditorResFolder() + "\\res\\textures\\default.png");
@@ -46,25 +56,25 @@ namespace Osiris::Editor
 		case Type::TEXTURE:
 			{
 				std::shared_ptr<TextureRes> textureResource = std::make_shared<TextureRes>(resourcePath);
-				_textureResources.insert(std::pair<uint32_t, std::shared_ptr<TextureRes>>(textureResource->GetUID(), textureResource));
+				_textureResources.insert(std::pair<uint32_t, std::shared_ptr<TextureRes>>(textureResource->GetResourceID(), textureResource));
 
-				OSR_CORE_INFO("Asset Texture Added: [{0}] - {1}", textureResource->GetUID(), textureResource->GetName());
+				OSR_CORE_INFO("Asset Texture Added: [{0}] - {1}", textureResource->GetResourceID(), textureResource->GetName());
 			}
 			break;
 		case Type::SCENE:
 			{
 				std::shared_ptr<SceneRes> sceneResource = std::make_shared<SceneRes>(resourcePath);
-				_sceneResources.insert(std::pair<uint32_t, std::shared_ptr<SceneRes>>(sceneResource->GetUID(), sceneResource));
+				_sceneResources.insert(std::pair<uint32_t, std::shared_ptr<SceneRes>>(sceneResource->GetResourceID(), sceneResource));
 
-				OSR_CORE_INFO("Asset Scene Added: [{0}] - {1}", sceneResource->GetUID(), sceneResource->GetName());
+				OSR_CORE_INFO("Asset Scene Added: [{0}] - {1}", sceneResource->GetResourceID(), sceneResource->GetName());
 			}
 			break;
 		case Type::SCRIPT:
 			{
 				std::shared_ptr<ScriptRes> scriptResource = std::make_shared<ScriptRes>(resourcePath);
-				_scriptResources.insert(std::pair<uint32_t, std::shared_ptr<ScriptRes>>(scriptResource->GetUID(), scriptResource));
+				_scriptResources.insert(std::pair<uint32_t, std::shared_ptr<ScriptRes>>(scriptResource->GetResourceID(), scriptResource));
 
-				OSR_CORE_INFO("Asset Script Added: [{0}] - {1}", scriptResource->GetUID(), scriptResource->GetName());
+				//OSR_CORE_INFO("Asset Script Added: [{0}] - {1}", scriptResource->GetResourceID(), scriptResource->GetName());
 			}
 			break;
 		default:
@@ -80,7 +90,7 @@ namespace Osiris::Editor
 		{
 		case Type::TEXTURE:
 		{
-			std::shared_ptr<TextureRes> textureResource = GetTextureByName(Utils::GetFilename(resourcePath));
+			std::shared_ptr<TextureRes> textureResource = GetTextureResourceByName(Utils::GetFilename(resourcePath));
 			textureResource->Reload();
 		}
 		break;
@@ -105,12 +115,12 @@ namespace Osiris::Editor
 		{
 		case Type::TEXTURE:
 		{
-			std::shared_ptr<TextureRes> textureResource = GetTextureByName(Utils::GetFilename(resourcePath));
+			std::shared_ptr<TextureRes> textureResource = GetTextureResourceByName(Utils::GetFilename(resourcePath));
 			textureResource->Unload();
 
-			_textureResources.erase(textureResource->GetUID());
+			_textureResources.erase(textureResource->GetResourceID());
 
-			OSR_CORE_INFO("Asset Texture Deleted: [{0}] - {1}", textureResource->GetUID(), textureResource->GetName());
+			OSR_CORE_INFO("Asset Texture Deleted: [{0}] - {1}", textureResource->GetResourceID(), textureResource->GetName());
 		}
 		break;
 		case Type::SCENE:
@@ -130,7 +140,7 @@ namespace Osiris::Editor
 	}
 
 	/* Texture Functions */
-	std::shared_ptr<TextureRes> ResourceService::GetTextureByName(const std::string& name)
+	std::shared_ptr<TextureRes> ResourceService::GetTextureResourceByName(const std::string& name)
 	{
 		for (auto const& [key, val] : _textureResources)
 		{
@@ -142,14 +152,25 @@ namespace Osiris::Editor
 		return _defaultTexture;
 	}
 
-	std::shared_ptr<TextureRes> ResourceService::GetTextureByUID(const uint32_t uid)
+	std::shared_ptr<TextureRes> ResourceService::GetTextureResourceByID(const uint32_t resourceId)
 	{
-		auto it = _textureResources.find(uid);
+		auto it = _textureResources.find(resourceId);
 
 		if (it != _textureResources.end())
 		{
-			return _textureResources[uid];
+			return _textureResources[resourceId];
 		}
+		return nullptr;
+	}
+
+	std::shared_ptr<TextureRes> ResourceService::GetTextureResourceByNativeID(const uint32_t nativeId)
+	{
+		for each (auto resource in _textureResources)
+		{
+			if (resource.second->GetTexture()->GetUID() == nativeId)
+				return resource.second;
+		}
+		
 		return nullptr;
 	}
 
@@ -182,7 +203,7 @@ namespace Osiris::Editor
 	{
 		for (auto const& [key, val] : _scriptResources)
 		{
-			if (val->GetName().compare(name) == 0)
+			if (val->Script->GetName().compare(name) == 0)
 			{
 				return val;
 			}
@@ -222,9 +243,9 @@ namespace Osiris::Editor
 		Events::ProjectLoadedArgs& a = (Events::ProjectLoadedArgs&)args;
 
 		/* Clear all resources */
-		_textureResources.clear();
-		_sceneResources.clear();
-		_scriptResources.clear();
+		//_textureResources.clear();
+		//_sceneResources.clear();
+		//_scriptResources.clear();
 
 		auto files = Utils::GetFileList(Utils::GetAssetFolder(), true, true);
 

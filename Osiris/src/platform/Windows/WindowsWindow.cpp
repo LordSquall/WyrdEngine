@@ -6,6 +6,7 @@
 #include "events/MouseEvent.h"
 #include "events/KeyEvent.h"
 #include "platform/OpenGL/OpenGLContext.h"
+#include "platform/OpenGL/OpenGLError.h"
 
 namespace Osiris {
 
@@ -170,6 +171,8 @@ namespace Osiris {
 			MouseMovedEvent e((float)xPos, (float)yPos);
 			data.EventCallback(e);
 		});
+
+		glfwSetWindowSize(m_Window, m_Data.Width, m_Data.Height);
 	}
 
 	void WindowsWindow::Shutdown()
@@ -233,7 +236,11 @@ namespace Osiris {
 	{
 		return m_Data.VSync;
 	}
-
+	
+	void WindowsWindow::SetSize(int width, int height)
+	{
+		glfwSetWindowSize(m_Window, width, height);
+	}
 
 	void WindowsWindow::SetTitle(const std::string& title)
 	{

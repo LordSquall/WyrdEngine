@@ -1,9 +1,13 @@
+/* local includes */
 #include "osrpch.h"
-
 #include "Application.h"
 #include "events/ApplicationEvent.h"
+#include "layers/BehaviourLayer.h"
+#include "layers/PhysicsLayer.h"
 
-#include "GLFW/glfw3.h"
+/* external includes */
+#include <GLFW/glfw3.h>
+#include <SOIL.h>
 
 namespace Osiris {
 
@@ -15,19 +19,59 @@ namespace Osiris {
 		s_Instance = this;
 
 		/* call the pre init function */
-		OnPreAppCreation(this);
+		//OnPreAppCreation(this);
 
 		/* create a windows and bind the event callback */
-		m_Window = std::unique_ptr<Window>(Window::Create(props.windowProps));
-		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+		_Window = std::unique_ptr<Window>(Window::Create(props.windowProps));
+		_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
 		/* create a renderer */
-		m_Renderer.reset(Renderer::Create());
+		_Renderer.reset(Renderer::Create());
+
+		/* create the resource subsystem */
+		_Resources = std::make_unique<Resources>();
+
+		/* add the inbuilt resources */
+		{
+			/* default sprite shader */
+			std::ifstream vertexStream("../../Osiris/res/shaders/sprite.vs");
+			std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
+
+			std::ifstream fragmentStream("../../Osiris/res/shaders/sprite.fs");
+			std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
+
+			std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
+			shader->Build(vertexSrc, fragmentSrc);
+			shader->Bind();
+			_Resources->Shaders.insert(std::pair<std::string, std::shared_ptr<Shader>>("Sprite", shader));
+		}
+		{
+			/* default sprite texture */
+			int width, height, channels;
+			unsigned char* data;
+
+			data = SOIL_load_image("../../Osiris/res/textures/box_01.png", &width, &height, &channels, 4);
+
+			std::shared_ptr<Texture> texture = std::shared_ptr<Texture>(Texture::Create(data, width, height, channels, "Default Sprite Texture"));
+			_Resources->Textures.insert(std::pair<std::string, std::shared_ptr<Texture>>("DefaultSprite", texture));
+		}
+		
+		/* create behaviour subsystem */
+		_Behaviour = std::make_unique<Behaviour>();
+
+		/* add engine layers */
+		PushLayer(new Layers::BehaviourLayer());
+
+		/* create physics subsystem */
+		_Physics = std::make_unique<Physics>();
+
+		/* add engine layers */
+		PushLayer(new Layers::PhysicsLayer());
 
 		/* set a default back buffer color */
-		color[0] = 0.1f;
-		color[1] = 0.1f;
-		color[2] = 0.1f;
+		color.r = 0.1f;
+		color.g = 0.1f;
+		color.b = 0.1f;
 	}
 
 	Application::~Application()
@@ -37,29 +81,35 @@ namespace Osiris {
 
 	bool Application::PushLayer(Layer* layer)
 	{
-		return m_LayerStack.PushLayer(layer);
+		return _LayerStack.PushLayer(layer);
 	}
 
 	bool Application::PushOverlay(Layer* overlay)
 	{	
-		return m_LayerStack.PushOverlay(overlay);
+		return _LayerStack.PushOverlay(overlay);
 	}
 
 
 	void Application::Close()
 	{
 		OnEvent(WindowCloseEvent());
-		m_Running = false;
+		_Running = false;
+	}
+
+
+	void Application::Terminate()
+	{
+		exit(0);
 	}
 
 	void Application::OnEvent(Event& e)
 	{
 		/* send the event of the window(s) first */
-		m_Window->OnEvent(e);
+		_Window->OnEvent(e);
 
 		if (e.Handled == false)
 		{
-			for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
+			for (auto it = _LayerStack.end(); it != _LayerStack.begin(); )
 			{
 				(*--it)->OnEvent(e);
 				if (e.Handled)
@@ -70,40 +120,40 @@ namespace Osiris {
 
 	void Application::Run()
 	{
-		while (m_Running)
+		while (_Running)
 		{
 			float time = (float)glfwGetTime();			// should make this platform independant
 			Timestep timestep = time - _LastFrameTime;
 			_LastFrameTime = time;
 
-			m_Window->OnUpdate();
+			_Window->OnUpdate();
 
 			/* run the layer and window lifecycle */
-			for (Layer* layer : m_LayerStack)
+			for (Layer* layer : _LayerStack)
 			{
 				if (layer->IsEnabled())
 					layer->OnUpdate(timestep);
 			}
 
 			/* clear the back buffer */
-			m_Renderer->Clear(color[0], color[1], color[2]);
+			_Renderer->Clear(color.r, color.g, color.b);
 
-			m_Window->OnPreRender();
-			m_Window->OnRender();
+			_Window->OnPreRender();
+			_Window->OnRender();
 
-			for (Layer* layer : m_LayerStack)
+			for (Layer* layer : _LayerStack)
 			{
 				if (layer->IsEnabled())
-					layer->OnRender(timestep , *m_Renderer);
+					layer->OnRender(timestep , *_Renderer);
 			}
 
-			m_Window->OnPostRender();
+			_Window->OnPostRender();
 
-			m_Running = !m_Window->GetCloseRequested();
+			_Running = !_Window->GetCloseRequested();
 		}
 
 		/* detach each of the layers */
-		for (Layer* layer : m_LayerStack)
+		for (Layer* layer : _LayerStack)
 		{
 			layer->OnDetach();
 		}

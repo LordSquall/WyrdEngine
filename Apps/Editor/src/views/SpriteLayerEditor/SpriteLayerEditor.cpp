@@ -1,13 +1,17 @@
 #pragma once
 
-#include "osrpch.h"
+/* core osiris includes */
+#include <osrpch.h>
+#include <core/Application.h>
+#include <core/Layer.h>
+#include <core/scene/Layer2D.h>
+#include <core/scene/components/Transform2DComponent.h>
+#include <core/scene/components/SpriteComponent.h>
+#include <core/scene/components/ScriptComponent.h>
+#include <core/scene/components/PhysicsComponent.h>
 
+/* local includes */
 #include "SpriteLayerEditor.h"
-
-#include "core/Application.h"
-#include "core/Layer.h"
-#include "datamodels/components/Transform2DComponent.h"
-
 #include "support/ImGuiUtils.h"
 
 namespace Osiris::Editor
@@ -132,6 +136,30 @@ namespace Osiris::Editor
 						/* Sprite list context menu */
 						if (ImGui::BeginPopupContextItem("item context menu"))
 						{
+							if (ImGui::BeginMenu("Add Component"))
+							{
+								if (ImGui::MenuItem("Sprite") == true)
+								{
+									_SelectedLayer2D->gameobjects[spriteIdx]->components.push_back(std::make_shared<SpriteComponent>(_SelectedLayer2D->gameobjects[spriteIdx]));
+								}
+								if (ImGui::MenuItem("Script") == true)
+								{
+									_SelectedLayer2D->gameobjects[spriteIdx]->components.push_back(std::make_shared<ScriptComponent>(_SelectedLayer2D->gameobjects[spriteIdx]));
+								}
+								if (ImGui::MenuItem("Physics") == true)
+								{
+									_SelectedLayer2D->gameobjects[spriteIdx]->components.push_back(std::make_shared<PhysicsComponent>(_SelectedLayer2D->gameobjects[spriteIdx]));
+								}
+
+								ImGui::EndMenu();
+							}
+
+							if (ImGui::Selectable("Duplicate"))
+							{
+								_SelectedLayer2D->DuplicateSprite(spriteIdx);
+								_SelectedSprite--;
+							}
+							ImGui::Separator();
 							if (ImGui::Selectable("Delete"))
 							{
 								_SelectedLayer2D->RemoveSprite(spriteIdx);
@@ -152,9 +180,9 @@ namespace Osiris::Editor
 			{
 				ImGui::Text("No sprites :(");
 			}
-			if (ImGui::Button("Add Sprite...") == true)
+			if (ImGui::Button("Add GameObject...") == true)
 			{
-				AddSpriteGO();
+				AddGameObject();
 			}
 		}
 	}
@@ -172,29 +200,31 @@ namespace Osiris::Editor
 		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
 	}
 
-	void SpriteLayerEditor::AddSpriteGO()
+	void SpriteLayerEditor::AddGameObject()
 	{
-		std::shared_ptr<GameObject> go = std::make_shared<GameObject>("New Sprite");
+		std::shared_ptr<GameObject> go = std::make_shared<GameObject>("Game Object");
 
-		/* add base sprite components */
-		go->transform2d.OwnerGameObject = go;
-		go->spriteRender.OwnerGameObject = go;
-		go->script.OwnerGameObject = go;
+		/* add transform 2D */
+		go->transform2D = std::make_shared<Transform2DComponent>(go);
+
+
+		//go->spriteRender.OwnerGameObject = go;
+		//go->script.OwnerGameObject = go;
 		
 		/* setup the default sprite renderer */
-		go->spriteRender.Sprite = std::make_shared<Sprite>("New Sprite", 0, 0, 256, 256);
+		//go->spriteRender.Sprite = std::make_shared<Sprite>("New Sprite", 0, 0, 256, 256);
 
 		/* setup the base texture */
-		go->spriteRender.BaseTexture = _ResourceService->GetTextureByName("box_01");
+		//go->spriteRender.BaseTexture = _ResourceService->GetTextureByName("box_01");
 
 		/* link the base texture to the sprite */
-		go->spriteRender.Sprite->SetTexture(go->spriteRender.BaseTexture->GetTexture());
+		//go->spriteRender.Sprite->SetTexture(go->spriteRender.BaseTexture->GetTexture());
 
 		/* setup initial input area for editor input */
-		go->inputArea.x = (float)go->spriteRender.Sprite->GetX();
-		go->inputArea.y = (float)go->spriteRender.Sprite->GetY();
-		go->inputArea.z = (float)go->spriteRender.Sprite->GetWidth();
-		go->inputArea.w = (float)go->spriteRender.Sprite->GetHeight();
+		//go->inputArea.x = (float)go->spriteRender.Sprite->GetX();
+		//go->inputArea.y = (float)go->spriteRender.Sprite->GetY();
+		//go->inputArea.z = (float)go->spriteRender.Sprite->GetWidth();
+		//go->inputArea.w = (float)go->spriteRender.Sprite->GetHeight();
 
 		_SelectedLayer2D->AddSprite(go);
 	}

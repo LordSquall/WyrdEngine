@@ -8,7 +8,7 @@
 
 namespace Osiris {
 
-	class  Layer
+	class OSR_LIBRARY_API Layer
 	{
 	public:
 		Layer(const std::string& name = "Layer");

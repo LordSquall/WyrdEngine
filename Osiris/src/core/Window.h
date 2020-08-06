@@ -24,7 +24,7 @@ namespace Osiris
 		}
 	};
 
-	class  Window
+	class OSR_LIBRARY_API Window
 	{
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;
@@ -44,6 +44,8 @@ namespace Osiris
 
 		virtual int GetX() const = 0;
 		virtual int GetY() const = 0;
+
+		virtual void SetSize(int width, int height) = 0;
 
 		inline float GetAspectRatio() const { return (float)GetWidth() / (float)GetHeight(); }
 

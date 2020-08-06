@@ -1,8 +1,10 @@
 #pragma once
 #include "osrpch.h"
+#include "core/Log.h"
 
 #include "EditorRenderer2DLayer.h"
 
+#include "core/scene/Layer2D.h"
 #include <imgui.h>
 
 namespace Osiris::Editor
@@ -57,18 +59,10 @@ namespace Osiris::Editor
 			{
 				for (auto go : sl->gameobjects)
 				{
-					std::shared_ptr<Sprite> sprite = go->spriteRender.Sprite;
-
-					sprite->GetVertexArray()->Bind();
-					sprite->GetVertexBuffer()->Bind();
-					sprite->GetIndexBuffer()->Bind();
-					(*sprite->GetTexture())->Bind();
-
-					_Shader->SetModelMatrix(go->transform2d.matrix);
-
-					_Shader->SetUniformVec3("blendColor", go->spriteRender.Color);
-
-					renderer.DrawElements(RendererDrawType::Triangles, 6);
+					for (auto component : go->components)
+					{
+						component->Render(ts, renderer);
+					}
 				}
 			}
 		}
@@ -137,7 +131,7 @@ namespace Osiris::Editor
 			{
 				for (auto& go : sl->gameobjects)
 				{
-					glm::mat4 mvpInverse = glm::inverse(_CameraController->GetCamera().GetViewProjectionMatrix() * go->transform2d.matrix);
+					/*glm::mat4 mvpInverse = glm::inverse(_CameraController->GetCamera().GetViewProjectionMatrix() * go->transform2d.matrix);
 
 					glm::vec4 nearPoint = mvpInverse * glm::vec4(normalisedMouseCoords, 0.0f, 1.0f);
 
@@ -149,7 +143,7 @@ namespace Osiris::Editor
 					{
 						selectedGameObject = go;
 						itemFound = true;
-					}
+					}*/
 				}
 			}
 

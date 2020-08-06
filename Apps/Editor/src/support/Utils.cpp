@@ -349,6 +349,21 @@ namespace Osiris::Editor {
 		return std::stol(value, NULL, 10);
 	}
 
+	std::string Utils::ToString(unsigned int value)
+	{
+		return std::to_string(value);
+	}
+
+	std::string Utils::ToString(int value)
+	{
+		return std::to_string(value);
+	}
+
+	std::string Utils::ToString(float value)
+	{
+		return std::to_string(value);
+	}
+
 	void Utils::SwapSlashes(std::string& path, const std::string& find,
 		const std::string& replace) {
 		size_t pos = 0;

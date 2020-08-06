@@ -1,7 +1,9 @@
 #pragma once
 
+/* core osiris includes */
 #include <Osiris.h>
-#include "core/loaders/Loaders.h"
+
+/* local includes */
 #include "datamodels/Project.h"
 
 using namespace Osiris;
@@ -18,8 +20,8 @@ namespace Osiris::Editor {
 			DirectoryNotFound = 4, FileAlreadyExists = 5, InsufficientSpace = 6
 		};
 
-		static ProjectLoader::Result Load(std::string path, Project& project, FileContent content);
-
-		static ProjectLoader::Result Save(std::string path, Project& project, FileContent content);
+		static ProjectLoader::Result Load(std::string path, Project& project);
+																			
+		static ProjectLoader::Result Save(std::string path, Project& project);
 	};
 }

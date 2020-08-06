@@ -1,18 +1,17 @@
 #pragma once
 
-#include "osrpch.h"
+/* core osiris includes */
+#include <osrpch.h>
+#include <core/export.h>
+#include <core/behaviour/ScriptedClass.h>
 
-#include "core/export.h"
+/* local project includes */
 #include "Resource.h"
-
 #include "support/Utils.h"
 
-#include "behaviour/ScriptedObjectTemplate.h"
 
 namespace Osiris::Editor
 {
-	class LuaRef;
-
 	class ScriptRes : public Resource
 	{
 	public:
@@ -24,15 +23,14 @@ namespace Osiris::Editor
 		inline const std::string& GetPath() { return _path; }
 		inline void SetPath(const std::string& path) { _path = path; }
 
-		inline const std::string& GetName() { return _name; }
+		inline const std::string& GetName() { return Script->GetName(); }
 
 		void Reload();
 		
 	public:
-		std::shared_ptr<ScriptedObjectTemplate> ScriptedObjectTemplate;
+		std::shared_ptr<Osiris::ScriptedClass> Script;
 
 	private:
 		std::string _path;
-		std::string _name;
 	};
 }

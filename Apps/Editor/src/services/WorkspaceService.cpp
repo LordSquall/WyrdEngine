@@ -1,16 +1,18 @@
 #pragma once
 
-#include "osrpch.h"
-#include "ServiceManager.h"
+/* core osiris includes */
+#include <osrpch.h>
+#include <core/Log.h>
+#include <core/scene/Layer2D.h>
+
+/* local includes */
 #include "WorkspaceService.h"
-#include "loaders/ProjectLoader.h"
+#include "ServiceManager.h"
 #include "loaders/SceneLoader.h"
+#include "loaders/ProjectLoader.h"
 
+/* external includes */
 #include <efsw/efsw.hpp>
-
-#include <nlohmann/json.hpp>
-
-using namespace nlohmann;
 
 namespace Osiris::Editor
 {
@@ -71,7 +73,7 @@ namespace Osiris::Editor
 
 	void Osiris::Editor::WorkspaceService::OnDestroy()
 	{
-		if (_LoadedProject != nullptr) SaveProject();
+		/* TEMP if (_LoadedProject != nullptr) */ SaveProject();
 		if (_LoadedScene != nullptr) SaveScene();
 	}
 
@@ -87,7 +89,7 @@ namespace Osiris::Editor
 		Utils::CreateFolder(location + "/" + name);
 
 		/* Save the project object to disk */
-		ProjectLoader::Result result = ProjectLoader::Save(_LoadedProjectPath, *_LoadedProject, Osiris::FileContent::Json);
+		ProjectLoader::Result result = ProjectLoader::Save(_LoadedProjectPath, *_LoadedProject);
 
 		if (result == ProjectLoader::Result::Success)
 		{
@@ -129,7 +131,7 @@ namespace Osiris::Editor
 		if (_LoadedScene != nullptr) _LoadedProject->initialScene = _LoadedScenePath;
 		
 
-		result = ProjectLoader::Save(_LoadedProjectPath, *_LoadedProject, FileContent::Json);
+		result = ProjectLoader::Save(_LoadedProjectPath, *_LoadedProject);
 
 		if (result != ProjectLoader::Result::Success)
 		{
@@ -162,7 +164,7 @@ namespace Osiris::Editor
 		_LoadedProject = std::make_shared<Project>();
 
 		/* Load the project object */
-		ProjectLoader::Result r = ProjectLoader::Load(projectfile.c_str(), *_LoadedProject, Osiris::FileContent::Json);
+		ProjectLoader::Result r = ProjectLoader::Load(projectfile.c_str(), *_LoadedProject);
 
 		if (r == ProjectLoader::Result::Success)
 		{
@@ -228,7 +230,7 @@ namespace Osiris::Editor
 		_LoadedScene = std::make_shared<Scene>();
 
 		/* Load the scene object */
-		SceneLoader::Result result = SceneLoader::Load(path, *_LoadedScene, Osiris::FileContent::Json);
+		SceneLoader::Result result = SceneLoader::Load(path, *_LoadedScene);
 
 		if (result != SceneLoader::Result::Success)
 		{
@@ -271,7 +273,7 @@ namespace Osiris::Editor
 
 	bool WorkspaceService::SaveScene()
 	{
-		SceneLoader::Result result = SceneLoader::Save(_LoadedScenePath, *_LoadedScene, FileContent::Json);
+		SceneLoader::Result result = SceneLoader::Save(_LoadedScenePath, *_LoadedScene);
 
 		if (result != SceneLoader::Result::Success)
 		{
@@ -298,7 +300,7 @@ namespace Osiris::Editor
 
 	bool WorkspaceService::SaveSceneAs(const std::string& path)
 	{
-		SceneLoader::Result result = SceneLoader::Save(path, *_LoadedScene, FileContent::Json);
+		SceneLoader::Result result = SceneLoader::Save(path, *_LoadedScene);
 
 		if (result != SceneLoader::Result::Success)
 		{

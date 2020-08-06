@@ -3,6 +3,7 @@
 #include "osrpch.h"
 #include "EditorLayer.h"
 
+#include "core/Log.h"
 #include "core/Application.h"
 #include "core/Layer.h"
 
@@ -409,6 +410,8 @@ namespace Osiris::Editor
 			bool showFlag = *(it->second)->GetShowFlagRef();
 			if (showFlag == true)
 			{
+				(it->second)->OnUpdate(ts);
+
 				(it->second)->OnRender(ts, renderer);
 
 				(it->second)->OnPreEditorRender();
@@ -458,9 +461,9 @@ namespace Osiris::Editor
 		Application::Get().GetWindow().SetTitle("Osiris Engine - " + projectName + " [" + evtArgs.scene->name + "] ");
 
 		/* set the background color */
-		Application::Get().color[0] = evtArgs.scene->bgcolor[0];
-		Application::Get().color[1] = evtArgs.scene->bgcolor[1];
-		Application::Get().color[2] = evtArgs.scene->bgcolor[2];
+		Application::Get().color.r = evtArgs.scene->bgcolor.r;
+		Application::Get().color.g = evtArgs.scene->bgcolor.g;
+		Application::Get().color.b = evtArgs.scene->bgcolor.b;
 	}
 
 	bool EditorLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
@@ -540,6 +543,14 @@ namespace Osiris::Editor
 		ImGuiIO& io = ImGui::GetIO();
 		io.KeysDown[e.GetKeyCode()] = false;
 
+		for (auto& it = _views.begin(); it != _views.end(); it++)
+		{
+			/* store the view as the event owner */
+			_mouseEventOwner = (it->second);
+
+			(it->second)->OnEvent(e);
+		}
+
 		return false;
 	}
 
@@ -552,6 +563,14 @@ namespace Osiris::Editor
 		io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
 		io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
 		io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
+
+		for (auto& it = _views.begin(); it != _views.end(); it++)
+		{
+			/* store the view as the event owner */
+			_mouseEventOwner = (it->second);
+
+			(it->second)->OnEvent(e);
+		}
 
 		return false;
 	}

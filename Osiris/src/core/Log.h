@@ -1,12 +1,15 @@
 #pragma once
 
+/* local includes */
 #include "core/export.h"
-#include "spdlog/spdlog.h"
-#include "spdlog/fmt/ostr.h"
+
+/* external includes */
+#include <spdlog/spdlog.h>
+#include <spdlog/fmt/ostr.h>
 
 namespace Osiris {
 
-	class  Log
+	class OSR_LIBRARY_API Log
 	{
 	public:
 		static void Init();

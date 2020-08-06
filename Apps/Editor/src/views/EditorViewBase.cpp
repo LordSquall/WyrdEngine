@@ -36,7 +36,7 @@ namespace Osiris::Editor
 
 		// DEBUG: Display a yellow border around each view bounary
 		//{
-		//	ImGui::GetForegroundDrawList()->AddRect({ _Boundary.x, _Boundary.y }, { _Boundary.x + _Boundary.z, _Boundary.y + _Boundary.w }, IM_COL32(255, 255, 0, 255));
+			//ImGui::GetForegroundDrawList()->AddRect({ _Boundary.x, _Boundary.y }, { _Boundary.x + _Boundary.z, _Boundary.y + _Boundary.w }, IM_COL32(255, 255, 0, 255));
 		//}
 
 		/* end the window */

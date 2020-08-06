@@ -7,7 +7,7 @@
 
 namespace Osiris {
 
-	class  LayerStack
+	class OSR_LIBRARY_API LayerStack
 	{
 	public: 
 		LayerStack();

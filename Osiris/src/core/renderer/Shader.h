@@ -1,14 +1,17 @@
 #pragma once
 
-#include <string>
+/* local includes */
+#include "core/export.h"
 
+/* external includes */
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
+#include <string>
 
 namespace Osiris
 {
-	class Shader
+	class OSR_LIBRARY_API Shader
 	{
 	public:
 		virtual bool Build(const std::string& vertexSrc, const std::string& fragment) = 0;

@@ -1,7 +1,8 @@
 #pragma once
 
-#include <Osiris.h>
-
+/* local includes */
+#include "Osiris.h"
+#include "core/export.h"
 #include "core/renderer/VertexArray.h"
 #include "core/renderer/Buffer.h"
 #include "core/pipeline/SpriteVertex.h"
@@ -15,7 +16,7 @@ namespace Osiris {
 	class SpriteBatch;
 	struct SpriteBatchEntry;
 
-	class Sprite
+	class OSR_LIBRARY_API Sprite
 	{
 	public:
 		Sprite(std::string name, int x, int y, int width, int height);
@@ -43,8 +44,8 @@ namespace Osiris {
 		void SetPosition(const int x, const int y);
 		void SetSize(const int width, const int height);
 
-		inline const std::shared_ptr<Texture*> GetTexture() const { return _Texture; }
-		inline void SetTexture(std::shared_ptr<Texture*> texture) { _Texture = texture; }
+		inline const std::shared_ptr<Texture> GetTexture() const { return _Texture; }
+		inline void SetTexture(std::shared_ptr<Texture> texture) { _Texture = texture; }
 
 		inline const std::shared_ptr<VertexArray> GetVertexArray() const { return _VertexArray; }
 
@@ -60,7 +61,7 @@ namespace Osiris {
 		int _Width;
 		int _Height;
 
-		std::shared_ptr<Texture*> _Texture;
+		std::shared_ptr<Texture> _Texture;
 
 		std::vector<SpriteVertex> _vertices;
 		std::vector<unsigned int> _indicies;

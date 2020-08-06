@@ -42,8 +42,9 @@ namespace Osiris::Editor
 
 		/* Texture Functions */
 		inline std::map<uint32_t, std::shared_ptr<TextureRes>>& GetTextures() { return _textureResources; }
-		std::shared_ptr<TextureRes> GetTextureByName(const std::string& name);
-		std::shared_ptr<TextureRes> GetTextureByUID(const uint32_t uid);
+		std::shared_ptr<TextureRes> GetTextureResourceByName(const std::string& name);
+		std::shared_ptr<TextureRes> GetTextureResourceByID(const uint32_t resourceId);
+		std::shared_ptr<TextureRes> GetTextureResourceByNativeID(const uint32_t nativeId);
 
 		/* Scene Functions */
 		inline std::map<uint32_t, std::shared_ptr<SceneRes>>& GetScenes() { return _sceneResources; }

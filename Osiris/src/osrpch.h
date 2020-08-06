@@ -21,8 +21,6 @@
 #include <unordered_set>
 #include <iterator>
 
-#include "core/Log.h"
-
 #ifdef OSR_PLATFORM_WINDOWS	
 	#include <Windows.h>
 #endif

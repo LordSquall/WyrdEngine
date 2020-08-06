@@ -1,10 +1,14 @@
 #pragma once
 
+/* local includes */
+#include "core/export.h"
+
+/* external includes */
 #include <string>
 
 namespace Osiris
 {
-	class VertexArray
+	class OSR_LIBRARY_API VertexArray
 	{
 	public:
 		virtual ~VertexArray() {}

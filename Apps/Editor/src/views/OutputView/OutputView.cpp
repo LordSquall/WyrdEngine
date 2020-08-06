@@ -23,7 +23,7 @@ namespace Osiris::Editor
 			{
 				Events::AddLogEntryArgs& evtArgs = (Events::AddLogEntryArgs&)args;
 
-				_LogItems.push_back({ evtArgs.severity, evtArgs.msg });
+				//_LogItems.push_back({ evtArgs.severity, evtArgs.msg });
 			});
 	}
 

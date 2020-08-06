@@ -25,7 +25,7 @@ namespace Osiris
 
 
 			if (sprite->GetTexture() != nullptr)
-				(*sprite->GetTexture())->Bind();
+				sprite->GetTexture()->Bind();
 
 
 			renderer.DrawElements(RendererDrawType::Triangles, sprite->GetIndexBuffer()->GetCount());

@@ -1,10 +1,14 @@
 #pragma once
 
+/* local includes */
+#include "core/export.h"
+
+/* external includes */
 #include <glm/glm.hpp>
 
 namespace Osiris
 {
-	class OrthographicCamera
+	class OSR_LIBRARY_API OrthographicCamera
 	{
 	public:
 		OrthographicCamera();

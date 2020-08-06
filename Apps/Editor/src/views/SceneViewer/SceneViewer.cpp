@@ -1,16 +1,21 @@
 #pragma once
 
-#include "osrpch.h"
+/* core osiris includes */
+#include <osrpch.h>
+#include <core/Log.h>
+#include <core/Application.h>
+#include <core/Layer.h>
+#include <core/pipeline/SpriteLayer.h>
+#include <core/scene/Layer2D.h>
+#include <core/scene/components/Transform2DComponent.h>
 
+/* local include */
 #include "SceneViewer.h"
 #include "gizmos/TranslationGizmo.h"
-
-#include "core/Application.h"
-#include "core/Layer.h"
-#include "core/pipeline/SpriteLayer.h"
-
-#include <imgui.h>
 #include "support/ImGuiUtils.h"
+
+/* external includes */
+#include <imgui.h>
 
 namespace Osiris::Editor
 {
@@ -19,6 +24,7 @@ namespace Osiris::Editor
 		/* retrieve services */
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
 		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
+		_SimulationService = ServiceManager::Get<SimulationService>(ServiceManager::Simulation);
 
 		/* setup event bindings */
 		_EventService->Subscribe(Events::EventType::SceneOpened, EVENT_FUNC(SceneViewer::OnSceneOpened));
@@ -72,6 +78,25 @@ namespace Osiris::Editor
 
 	SceneViewer::~SceneViewer() {}
 
+	void SceneViewer::OnUpdate(Timestep ts)
+	{
+		if (_Scene != nullptr)
+		{
+			/* Render Each sprite layer */
+			for (auto sl : _Scene->layers2D)
+			{
+				for (auto go : sl->gameobjects)
+				{
+					if (go->transform2D->IsMatrixValid() == false)
+					{
+						go->transform2D->Recalculate();
+						//go->physics.Update();
+					}
+				}
+			}
+		}
+	}
+
 	void SceneViewer::OnRender(Timestep ts, Renderer& renderer)
 	{
 		_CameraController->OnUpdate(ts);
@@ -91,18 +116,10 @@ namespace Osiris::Editor
 			{
 				for (auto go : sl->gameobjects)
 				{
-					std::shared_ptr<Sprite> sprite = go->spriteRender.Sprite;
-
-					sprite->GetVertexArray()->Bind();
-					sprite->GetVertexBuffer()->Bind();
-					sprite->GetIndexBuffer()->Bind();
-					(*sprite->GetTexture())->Bind();
-
-					_Shader->SetModelMatrix(go->transform2d.matrix);
-
-					_Shader->SetUniformVec3("blendColor", go->spriteRender.Color);
-
-					renderer.DrawElements(RendererDrawType::Triangles, 6);
+					for (auto component : go->components)
+					{
+						component->Render(ts, renderer);
+					}
 				}
 			}
 
@@ -123,6 +140,8 @@ namespace Osiris::Editor
 		dispatcher.Dispatch<MouseButtonReleasedEvent>(OSR_BIND_EVENT_FN(SceneViewer::OnMouseButtonReleasedEvent));
 		dispatcher.Dispatch<MouseScrolledEvent>(OSR_BIND_EVENT_FN(SceneViewer::OnMouseScrolledEvent));
 		dispatcher.Dispatch<MouseMovedEvent>(OSR_BIND_EVENT_FN(SceneViewer::OnMouseMovedEvent));
+		dispatcher.Dispatch<KeyPressedEvent>(OSR_BIND_EVENT_FN(SceneViewer::OnKeyPressedEvent));
+		dispatcher.Dispatch<KeyReleasedEvent>(OSR_BIND_EVENT_FN(SceneViewer::OnKeyReleasedEvent));
 
 		/* Set camera settings */
 		if (_Scene != nullptr)
@@ -215,7 +234,7 @@ namespace Osiris::Editor
 				{
 					for (auto& go : sl->gameobjects)
 					{
-						glm::mat4 mvpInverse = glm::inverse(_CameraController->GetCamera().GetViewProjectionMatrix() * go->transform2d.matrix);
+						glm::mat4 mvpInverse = glm::inverse(_CameraController->GetCamera().GetViewProjectionMatrix() * go->transform2D->matrix);
 
 						glm::vec4 nearPoint = mvpInverse * glm::vec4(normalisedMouseCoords, 0.0f, 1.0f);
 
@@ -293,6 +312,20 @@ namespace Osiris::Editor
 		_LastMousePos = mouseCoords;
 
 		return true;
+	}
+
+	bool SceneViewer::OnKeyPressedEvent(KeyPressedEvent& e)
+	{
+		_SimulationService->SetInputState(e.GetKeyCode(), 1);
+
+		return false;
+	}
+
+	bool SceneViewer::OnKeyReleasedEvent(KeyReleasedEvent& e)
+	{
+		_SimulationService->SetInputState(e.GetKeyCode(), 2);
+
+		return false;
 	}
 
 	void SceneViewer::OnSceneOpened(Events::EventArgs& args)

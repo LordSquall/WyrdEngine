@@ -1,10 +1,14 @@
 #pragma once
 
+/* local includes */
+#include "core/export.h"
+
+/* external includes */
 #include <string>
 
 namespace Osiris
 {
-	class Texture
+	class OSR_LIBRARY_API Texture
 	{
 	public:
 		virtual ~Texture() {}
@@ -18,6 +22,14 @@ namespace Osiris
 
 		virtual void Delete() = 0;
 
-		static Texture* Create(unsigned char* data, int width, int height, int channels, const std::string& description);
+		inline uint32_t GetUID() { return _uid; }
+
+		static std::shared_ptr<Texture> Create(unsigned char* data, int width, int height, int channels, const std::string& description);
+
+	protected:
+		uint32_t _uid = 0u;
+
+	private:
+		static uint32_t _nextUid;
 	};
 }

@@ -1,10 +1,15 @@
 #pragma once
 
+/* local includes */
+#include "core/export.h"
+
+/* external includes */
 #include <string>
+
 
 namespace Osiris
 {
-	class VertexBuffer
+	class OSR_LIBRARY_API VertexBuffer
 	{
 	public:
 		virtual ~VertexBuffer() {}
@@ -16,7 +21,7 @@ namespace Osiris
 		static VertexBuffer* Create(float* vertices, uint32_t size, const std::string& description);
 	};
 
-	class IndexBuffer
+	class OSR_LIBRARY_API IndexBuffer
 	{
 	public:
 		virtual ~IndexBuffer() {}
@@ -36,7 +41,7 @@ namespace Osiris
 		uint32_t height = 600;
 	};
 
-	class FrameBuffer
+	class OSR_LIBRARY_API FrameBuffer
 	{
 	public:
 		virtual ~FrameBuffer() {}

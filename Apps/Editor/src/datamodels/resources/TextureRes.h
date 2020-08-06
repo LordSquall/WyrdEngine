@@ -13,6 +13,11 @@ namespace Osiris::Editor
 	class TextureRes : public Resource
 	{
 	public:
+		TextureRes(std::shared_ptr<Osiris::Texture> texture, std::string name) : _texture(texture), _name(name)
+		{
+
+		}
+
 		TextureRes(std::string& filepath) : _filePath(filepath), _loaded(false), _width(0u), _height(0u), _channels(0u), _data(0)
 		{
 			/* generate the name based on the file name */
@@ -36,8 +41,7 @@ namespace Osiris::Editor
 		inline void SetChannels(uint32_t channels) { _channels = channels; }
 		inline BYTE* GetData() { return _data; }
 		inline void SetData(BYTE* data) { _data = data; }
-		inline std::shared_ptr<Texture*> GetTexture() { return _texture; }
-		inline uint32_t GetRendererHandle() { return (*_texture)->GetHandle(); }
+		inline std::shared_ptr<Texture> GetTexture() { return _texture; }
 
 		void Load();
 		void Reload();
@@ -52,6 +56,6 @@ namespace Osiris::Editor
 		uint32_t _channels;
 		BYTE* _data;
 
-		std::shared_ptr<Texture*> _texture;
+		std::shared_ptr<Texture> _texture;
 	};
 }

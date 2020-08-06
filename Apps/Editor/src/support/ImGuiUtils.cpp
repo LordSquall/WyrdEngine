@@ -1,7 +1,10 @@
 #pragma once
 
-#include "osrpch.h"
+/* core osiris includes */
+#include <osrpch.h>
+#include <core/renderer/Texture.h>
 
+/* local includes */
 #include "ImGuiUtils.h"
 
 namespace ImGui 
@@ -9,7 +12,7 @@ namespace ImGui
 	void ImGui::Icon(std::shared_ptr<Osiris::Editor::Icon> icon, ImVec2& size)
 	{
 		std::shared_ptr<Osiris::Editor::TextureRes> texture = icon->iconSet->Texture;
-		ImGui::Image((ImTextureID)(INT_PTR)texture->GetRendererHandle(), size, ImVec2(icon->uv[0].x, icon->uv[0].y), ImVec2(icon->uv[2].x, icon->uv[2].y), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 1));
+		ImGui::Image((ImTextureID)(INT_PTR)texture->GetTexture()->GetHandle(), size, ImVec2(icon->uv[0].x, icon->uv[0].y), ImVec2(icon->uv[2].x, icon->uv[2].y), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 1));
 	}
 
 	bool ImGui::IconButton(std::shared_ptr<Osiris::Editor::Icon> icon, ImGuiID id, ImVec2& size, bool enabled, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
@@ -54,7 +57,10 @@ namespace ImGui
 		RenderFrame(bb.Min, bb.Max, col, true, ImClamp((float)ImMin(padding.x, padding.y), 0.0f, style.FrameRounding));
 		if (bg_col.w > 0.0f)
 			window->DrawList->AddRectFilled(image_bb.Min, image_bb.Max, GetColorU32(bg_col));
-		window->DrawList->AddImage((ImTextureID)texture->GetRendererHandle(), image_bb.Min, image_bb.Max, ImVec2(icon->uv[0].x, icon->uv[0].y), ImVec2(icon->uv[2].x, icon->uv[2].y), enabledTint);
+
+		std::shared_ptr<Osiris::Texture> tex = texture->GetTexture();
+		uint32_t tempid = texture->GetTexture()->GetHandle();
+		window->DrawList->AddImage((ImTextureID)tempid, image_bb.Min, image_bb.Max, ImVec2(icon->uv[0].x, icon->uv[0].y), ImVec2(icon->uv[2].x, icon->uv[2].y), enabledTint);
 
 		return pressed;
 	}

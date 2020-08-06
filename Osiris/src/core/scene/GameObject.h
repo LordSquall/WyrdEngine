@@ -1,0 +1,40 @@
+#pragma once
+
+/* Local includes */
+#include "core/export.h"
+#include "core/scene/components/IBaseComponent.h"
+
+/* external includes */
+#include <glm/glm.hpp>
+
+namespace Osiris {
+
+	class Transform2DComponent;
+
+	/* Editor GameObject Data Model Structure */
+	class OSR_LIBRARY_API GameObject
+	{
+	public:
+		/* Constructors */
+		GameObject();
+		GameObject(std::string name);
+		GameObject(const GameObject& obj);
+		~GameObject();
+
+		inline uint32_t GetUID() { return _uid; }
+
+	public:
+		std::string name;
+
+		std::shared_ptr<Transform2DComponent> transform2D;
+
+		std::vector<std::shared_ptr<IBaseComponent>> components;
+
+
+		glm::vec4 inputArea;
+	private:
+		uint32_t _uid = 0u;
+		static uint32_t _nextUid;
+	};
+
+}

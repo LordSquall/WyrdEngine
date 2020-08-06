@@ -1,7 +1,12 @@
-#include "core/export.h"
-#include "views/EditorViewBase.h"
+/* core osiris includes */
+#include <core/export.h>
+#include <core/scene/GameObject.h>
 
+/* local includes */
+#include "IPropertyView.h"
+#include "views/EditorViewBase.h"
 #include "events/EditorEvents.h"
+#include "datamodels/resources/Resource.h"
 
 namespace Osiris::Editor
 {
@@ -27,7 +32,8 @@ namespace Osiris::Editor
 		void DrawGameObjectUI();
 		void DrawAssetUI();
 
-		static std::shared_ptr<GameObject> _SelectedGameObject;
+		std::list<std::shared_ptr<IPropertiesView>> _PropertiesViews;
+		static std::shared_ptr<Osiris::GameObject> _SelectedGameObject;
 		static std::shared_ptr<Resource> _SelectedAsset;
 	};
 }

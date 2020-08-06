@@ -1,19 +1,22 @@
 #pragma once
 
-#include "osrpch.h"
+/* core osiris includes */
+#include <osrpch.h>
+#include <core/Application.h>
+#include <core/Layer.h>
 
+/* local includes */
 #include "PropertiesViewer.h"
-#include "IPropertyComponent.h"
-
-#include "core/Application.h"
-#include "core/Layer.h"
+#include "PropertyViewFactory.h"
+#include "views/DataModels/components/Transform2DView.h"
 #include "services/ServiceManager.h"
 
+/* external includes */
 #include <imgui.h>
 
 namespace Osiris::Editor
 {
-	std::shared_ptr<GameObject> PropertiesViewer::_SelectedGameObject = NULL;
+	std::shared_ptr<Osiris::GameObject> PropertiesViewer::_SelectedGameObject = NULL;
 	std::shared_ptr<Resource> PropertiesViewer::_SelectedAsset = NULL;
 
 	PropertiesViewer::PropertiesViewer() : EditorViewBase("Properties"), _Mode(None)
@@ -46,7 +49,22 @@ namespace Osiris::Editor
 
 		_SelectedGameObject = evtArgs.gameObject;
 
-		_Mode = GameObjectUI;
+		/* clear the property views */
+		_PropertiesViews.clear();
+
+		/* we only need to create new views if we have a selected game object */
+		if (_SelectedGameObject != nullptr)
+		{
+			/* create the required views */
+			_PropertiesViews.push_back(std::make_shared<Transform2DView>(&*_SelectedGameObject->transform2D));
+
+			for (auto component : _SelectedGameObject->components)
+			{
+				_PropertiesViews.push_back(PropertyViewFactory::Create(component, &*_SelectedGameObject));
+			}
+
+			_Mode = GameObjectUI;
+		}
 	}
 
 	void PropertiesViewer::OnSelectedAssetChanged(Events::EventArgs& args)
@@ -71,9 +89,16 @@ namespace Osiris::Editor
 
 			ImGui::Separator();
 
-			_SelectedGameObject->transform2d.OnPropertyEditorDraw();			
-			_SelectedGameObject->spriteRender.OnPropertyEditorDraw();
-			_SelectedGameObject->script.OnPropertyEditorDraw();
+
+			for (auto& view : _PropertiesViews)
+			{
+				view->OnPropertyEditorDraw();
+			}
+
+			//_SelectedGameObject->transform2d.OnPropertyEditorDraw();			
+			//_SelectedGameObject->spriteRender.OnPropertyEditorDraw();
+			//_SelectedGameObject->script.OnPropertyEditorDraw();
+			//_SelectedGameObject->physics.OnPropertyEditorDraw();
 
 		}
 	}

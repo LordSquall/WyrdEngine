@@ -18,6 +18,7 @@ namespace Osiris::Editor
 		~SceneViewer();
 
 		/* EditorPlugin functions */
+		void OnUpdate(Timestep ts) override;
 		void OnRender(Timestep ts, Renderer& renderer) override;
 		void OnEvent(Event& event) override;
 		void OnEditorRender() override;
@@ -29,6 +30,8 @@ namespace Osiris::Editor
 		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
 		bool OnMouseScrolledEvent(MouseScrolledEvent& e);
 		bool OnMouseMovedEvent(MouseMovedEvent& e);
+		bool OnKeyPressedEvent(KeyPressedEvent& e);
+		bool OnKeyReleasedEvent(KeyReleasedEvent& e);
 
 		void OnSceneOpened(Events::EventArgs& args);
 		void OnSelectedGameObjectChanged(Events::EventArgs& args);
@@ -36,6 +39,7 @@ namespace Osiris::Editor
 	private:
 		std::shared_ptr<WorkspaceService>		_WorkspaceService;
 		std::shared_ptr<EventService>			_EventService;
+		std::shared_ptr<SimulationService>		_SimulationService;
 		std::unique_ptr<Osiris::FrameBuffer>	_Framebuffer;
 
 		std::shared_ptr<Scene>							_Scene;

@@ -1,14 +1,15 @@
-#include "core/export.h"
+/* core osiris includes */
+#include <core/export.h>
+#include <core/Timestep.h>
+#include <core/renderer/Renderer.h>
+#include <core/renderer/Shader.h>
+#include <core/renderer/Buffer.h>
+#include <core/renderer/VertexArray.h>
+#include <core/scene/GameObject.h>
 
-#include "core/Timestep.h"
-#include "core/renderer/Renderer.h"
-#include "core/renderer/Shader.h"
-#include "core/renderer/Buffer.h"
-#include "core/renderer/VertexArray.h"
 
-#include "datamodels/GameObject.h"
+/* local includes */
 #include "datamodels/OrthographicCameraController.h"
-
 #include "support/IconLibrary.h"
 
 namespace Osiris::Editor

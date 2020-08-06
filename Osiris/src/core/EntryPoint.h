@@ -1,5 +1,7 @@
 #pragma once
 
+#include "core/Log.h"
+
 #ifdef OSR_PLATFORM_WINDOWS
 
 extern Osiris::Application* Osiris::CreateApplication();

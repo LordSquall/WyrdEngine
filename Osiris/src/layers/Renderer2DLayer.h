@@ -1,18 +1,20 @@
 #pragma once
 
-#include <Osiris.h>
-
+/* local includes */
+#include "Osiris.h"
+#include "core/export.h"
 #include "core/renderer/Shader.h"
 #include "core/pipeline/SpriteLayer.h"
 #include "core/pipeline/SpriteBatch.h"
 
+/* external includes */
 #include <glm/gtx/transform.hpp>
 
 using namespace Osiris;
 
 namespace Osiris::Layers
 {
-	class Renderer2DLayer : public Layer
+	class OSR_LIBRARY_API Renderer2DLayer : public Layer
 	{
 	public:
 		Renderer2DLayer(std::string name);

@@ -15,7 +15,7 @@
 
 namespace Osiris::Editor
 {
-	class  EditorLayer : public Layer
+	class EditorLayer : public Layer
 	{
 	public:
 		EditorLayer();

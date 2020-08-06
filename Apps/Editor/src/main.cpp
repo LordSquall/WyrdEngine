@@ -1,3 +1,5 @@
+
+#undef OSR_RENDERDOC_ENABLED
 /* engine headers */
 #include <Osiris.h>
 
@@ -38,10 +40,10 @@ public:
 
 	~ClientApplication()
 	{
-		_SettingsService->SetSetting(std::to_string(m_Window->GetWidth()), "Window", "width");
-		_SettingsService->SetSetting(std::to_string(m_Window->GetHeight()), "Window", "height");
-		_SettingsService->SetSetting(std::to_string(m_Window->GetX()), "Window", "x");
-		_SettingsService->SetSetting(std::to_string(m_Window->GetY()), "Window", "y");
+		_SettingsService->SetSetting(std::to_string(_Window->GetWidth()), "Window", "width");
+		_SettingsService->SetSetting(std::to_string(_Window->GetHeight()), "Window", "height");
+		_SettingsService->SetSetting(std::to_string(_Window->GetX()), "Window", "x");
+		_SettingsService->SetSetting(std::to_string(_Window->GetY()), "Window", "y");
 
 
 		/* initialise editor services */

@@ -9,19 +9,19 @@ namespace Osiris::Editor
 	class Resource
 	{
 	public:
-		Resource() : _uid(_nextUid)
+		Resource() : _resourceID(_nextResourceID)
 		{
-			_nextUid++;
+			_nextResourceID++;
 		}
 
 		~Resource() {}
 		
 		// Getters and Setters
-		inline uint32_t GetUID() { return _uid; }
+		inline uint32_t GetResourceID() { return _resourceID; }
 
 	private:
-		uint32_t _uid = 0u;
+		uint32_t _resourceID = 0u;
 
-		static uint32_t _nextUid;
+		static uint32_t _nextResourceID;
 	};
 }

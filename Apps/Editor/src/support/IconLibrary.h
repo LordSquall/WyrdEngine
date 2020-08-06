@@ -1,10 +1,13 @@
 #pragma once
 
-#include "core/export.h"
-#include "core/Layer.h"
+/* core osiris includes */
+#include <core/export.h>
+#include <core/Layer.h>
 
+/* local includes */
 #include "datamodels/resources/TextureRes.h"
 
+/* external includes */
 #include <glm/glm.hpp>
 
 namespace Osiris::Editor
@@ -54,20 +57,7 @@ namespace Osiris::Editor
 		std::shared_ptr<Icon> GetIcon(std::string setName, std::string name);
 		
 	private:
-		std::map<std::string, IconSet> _IconSets;
+		std::map<std::string, std::shared_ptr<IconSet>> _IconSets;
 		std::shared_ptr<Icon> _DefaultIcon;
-	};
-
-	class IconSetLoader
-	{
-	public:
-
-		enum Result
-		{
-			Success = 0, FileNotFound = 1, FileInUse = 2, FileMalformed = 3,
-			DirectoryNotFound = 4, FileAlreadyExists = 5, InsufficientSpace = 6
-		};
-
-		static IconSetLoader::Result Load(std::string path, IconSet& iconSet);
 	};
 }

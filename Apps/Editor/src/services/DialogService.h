@@ -3,7 +3,6 @@
 #include "core/export.h"
 
 #include "services/IService.h"
-#include "datamodels/Scene.h"
 
 namespace Osiris::Editor
 {

@@ -11,9 +11,6 @@
 	path = Osiris/vendor/imgui
 	url = https://github.com/ocornut/imgui
 	branch = docking
-[submodule "Osiris/vendor/json"]
-	path = Osiris/vendor/json
-	url = https://github.com/nlohmann/json
 [submodule "Osiris/vendor/lua"]
 	path = Osiris/vendor/lua
 	url = https://github.com/lua/lua

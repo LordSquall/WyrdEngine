@@ -1,11 +1,10 @@
 #pragma once
 
-#include "core/export.h"
+/* core osiris includes */
+#include <core/export.h>
 
+/* local includes */
 #include "services/IService.h"
-
-#include "behaviour/ScriptedObjectTemplate.h"
-
 #include "events/EditorEvents.h"
 
 namespace Osiris::Editor
@@ -19,19 +18,6 @@ namespace Osiris::Editor
 		SimulationService() : _IsRunning(false) {}
 		~SimulationService() {}
 
-	public:
-		struct RunReturnVal {
-			bool result;
-			std::string error;
-			std::shared_ptr<ScriptedObjectTemplate> scriptedObjectTemplate;
-		};
-
-		struct CreateReturnVal {
-			bool result;
-			std::string error;
-			std::shared_ptr<ScriptedObjectTemplate> scriptedObjectTemplate;
-		};
-
 	private:
 		// Inherited via IService
 		virtual void OnCreate() override;
@@ -42,20 +28,15 @@ namespace Osiris::Editor
 		void Stop();
 		void Update(Timestep ts);
 
-		RunReturnVal RunScript(const std::string& src);
-		RunReturnVal RunScriptFile(const std::string& path);
+		void SetInputState(int keyCode, int state);
 
-		CreateReturnVal LoadScriptableObjectTemplate(std::shared_ptr<ScriptedObjectTemplate> scriptedObjectTemplate, const std::string& source);
-
-	private:
-		static void DebugPrintFunc(const std::string& s);
+		Osiris::Behaviour::CreateCustomClassResult AddCustomScriptClass(const std::string& name, const std::string& filename);
 
 	private:
 		bool _IsRunning;
 
-		std::shared_ptr<Scene> _CurrentScene;
-
-		std::shared_ptr<EventService> _EventService;
-		std::shared_ptr<WorkspaceService> _WorkspaceService;
+		std::shared_ptr<Scene>				_CurrentScene;
+		std::shared_ptr<EventService>		_EventService;
+		std::shared_ptr<WorkspaceService>	_WorkspaceService;
 	};
 }

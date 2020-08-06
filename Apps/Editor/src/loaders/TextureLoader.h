@@ -1,9 +1,10 @@
 #pragma once
 
+/* core osiris includes */
 #include <Osiris.h>
-#include "core/loaders/Loaders.h"
-#include "datamodels/resources/TextureRes.h"
 
+/* local includes */
+#include "datamodels/resources/TextureRes.h"
 
 namespace Osiris::Editor {
 

@@ -4,6 +4,7 @@
 #ifdef OSR_RENDERDOC_ENABLED
 
 #include "osrpch.h"
+#include "core/Log.h"
 #include "RenderDocLayer.h"
 
 #include "core/Application.h"

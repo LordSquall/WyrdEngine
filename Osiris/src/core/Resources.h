@@ -1,25 +1,27 @@
 #pragma once
 
-#include <osrpch.h>
-#include <core/Layer.h>
-#include <core/renderer/Renderer.h>
-
+/* local project */
+#include "osrpch.h"
+#include "core/Layer.h"
+#include "core/renderer/Shader.h"
+#include "core/renderer/Texture.h"
+#include "core/behaviour/ScriptedClass.h"
+#include "core/behaviour/ScriptedGameObject.h"
 
 namespace Osiris {
 
-	class  Resources
+	class OSR_LIBRARY_API Resources
 	{
 	public:
 		Resources();
 
-		inline static Resources& Get() { return *s_Instance; };
-
-		void SetRenderer(std::shared_ptr<Osiris::Renderer> renderer);
+		inline static Resources& Get() { return *_Instance; };
 
 	public:
-		static Resources* s_Instance;
-
-		std::shared_ptr<Osiris::Renderer> m_Renderer;
-
+		std::map<std::string, std::shared_ptr<Shader>> Shaders;
+		std::map<std::string, std::shared_ptr<Texture>> Textures;
+		std::map<std::string, std::shared_ptr<ScriptedClass>> Scripts;
+	public:
+		static Resources* _Instance;
 	};
 }

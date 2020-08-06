@@ -20,7 +20,7 @@ namespace Osiris::Editor
 
 		void OnSelectedGameObjectChanged(Events::EventArgs& args);
 
-		void AddSpriteGO();
+		void AddGameObject();
 
 	private:
 		std::shared_ptr<EventService> _EventService;

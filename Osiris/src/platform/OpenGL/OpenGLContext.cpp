@@ -1,6 +1,7 @@
 #pragma once
 
 #include "osrpch.h"
+#include "core/Log.h"
 #include "OpenGLContext.h"
 
 #include <GLFW/glfw3.h>

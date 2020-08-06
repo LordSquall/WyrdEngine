@@ -1,8 +1,11 @@
 #pragma once
 
+/* local includes */
 #include "osrpch.h"
 #include "OpenGLShader.h"
+#include "OpenGLError.h"
 
+/* external includes */
 #include <glad/glad.h>
 
 namespace Osiris
@@ -157,7 +160,7 @@ namespace Osiris
 		GLenum err = glGetError();
 
 		if (err != GL_NO_ERROR)
-			OSR_CORE_ERROR(err);
+			OpenGLError::Resolve(err);
 	}
 
 	void OpenGLShader::SetUniformVec2(const std::string& name, glm::vec2& vec2)
@@ -168,7 +171,7 @@ namespace Osiris
 		GLenum err = glGetError();
 
 		if (err != GL_NO_ERROR)
-			OSR_CORE_ERROR(err);
+			OpenGLError::Resolve(err);
 	}
 
 	void OpenGLShader::SetUniformVec3(const std::string& name, glm::vec3& vec3)
@@ -179,7 +182,7 @@ namespace Osiris
 		GLenum err = glGetError();
 
 		if (err != GL_NO_ERROR)
-			OSR_CORE_ERROR(err);
+			OpenGLError::Resolve(err);
 	}
 
 	void OpenGLShader::SetUniformVec4(const std::string& name, glm::vec4& vec4)
@@ -190,7 +193,7 @@ namespace Osiris
 		GLenum err = glGetError();
 
 		if (err != GL_NO_ERROR)
-			OSR_CORE_ERROR(err);
+			OpenGLError::Resolve(err);
 	}
 
 	void OpenGLShader::SetMatrix(const std::string& name, const glm::mat4& mat)
@@ -201,6 +204,6 @@ namespace Osiris
 		GLenum err = glGetError();
 
 		if (err != GL_NO_ERROR)
-			OSR_CORE_ERROR(err);
+			OpenGLError::Resolve(err);
 	}
 }

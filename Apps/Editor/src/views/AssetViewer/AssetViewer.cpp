@@ -1,6 +1,7 @@
 #pragma once
 
 #include "osrpch.h"
+#include "core/Log.h"
 
 #include "AssetViewer.h"
 
@@ -98,7 +99,7 @@ namespace Osiris::Editor
 
 			switch (resType)
 			{
-			case ResourceService::Type::TEXTURE: DrawTextureItem(resIdx, _resourcesService->GetTextureByName(Utils::GetFilename(file, false))); break;
+			case ResourceService::Type::TEXTURE: DrawTextureItem(resIdx, _resourcesService->GetTextureResourceByName(Utils::GetFilename(file, false))); break;
 			case ResourceService::Type::SCENE: DrawSceneItem(resIdx, _resourcesService->GetSceneByName(Utils::GetFilename(file, false))); break;
 			case ResourceService::Type::SCRIPT: DrawScriptItem(resIdx, _resourcesService->GetScriptByName(Utils::GetFilename(file, false))); break;
 			case ResourceService::Type::SHADER:break;
@@ -116,9 +117,9 @@ namespace Osiris::Editor
 
 	void AssetViewer::DrawTextureItem(uint32_t resIdx, std::shared_ptr<TextureRes> textureResource)
 	{
-		uint32_t id = textureResource->GetUID();
+		uint32_t id = textureResource->GetResourceID();
 		ImGui::BeginGroup();
-		if (ImGui::ImageButton((ImTextureID)(INT_PTR)textureResource->GetRendererHandle(), ImVec2(64, 64)))
+		if (ImGui::ImageButton((ImTextureID)(INT_PTR)textureResource->GetTexture()->GetHandle(), ImVec2(64, 64)))
 		{
 			/* Fire a change of selection event */
 			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Editor::Events::EventType::SelectedAssetChanged, std::make_shared<Events::SelectedAssetChangedArgs>(textureResource));
@@ -126,7 +127,7 @@ namespace Osiris::Editor
 		if (ImGui::BeginDragDropSource())
 		{
 			ImGui::SetDragDropPayload("ASSET_DND_PAYLOAD", &id, sizeof(uint32_t));
-			ImGui::Image((ImTextureID)(INT_PTR)textureResource->GetRendererHandle(), ImVec2(32, 32));
+			ImGui::Image((ImTextureID)(INT_PTR)textureResource->GetTexture()->GetHandle(), ImVec2(32, 32));
 			ImGui::EndDragDropSource();
 		}
 		if (ImGui::BeginPopupContextWindow())
@@ -171,7 +172,7 @@ namespace Osiris::Editor
 
 	void AssetViewer::DrawScriptItem(uint32_t resIdx, std::shared_ptr<ScriptRes> scriptResource)
 	{
-		uint32_t id = scriptResource->GetUID();
+		uint32_t id = scriptResource->GetResourceID();
 
 		ImGui::BeginGroup();
 		ImGui::IconButton(_ScriptIcon, 1, ImVec2(64, 64));

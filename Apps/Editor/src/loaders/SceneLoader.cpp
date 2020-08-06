@@ -1,236 +1,412 @@
 #pragma once
-#include "osrpch.h"
 
-#include <nlohmann/json.hpp>
-#include <glm/glm.hpp>
+/* core osiris includes */
+#include <osrpch.h>
+#include <core/Application.h>
+#include <layers/Renderer2DLayer.h>
+#include <core/scene/Scene.h>
+#include <core/scene/Layer2D.h>
+#include <core/scene/GameObject.h>
+#include <core/scene/components/Transform2DComponent.h>
+#include <core/scene/components/Transform3DComponent.h>
+#include <core/scene/components/SpriteComponent.h>
+#include <core/scene/components/ScriptComponent.h>
+#include <core/scene/components/PhysicsComponent.h>
 
-#include "support/JsonExtensions.hpp"
-
+/* local includes */
 #include "SceneLoader.h"
-
-#include "core/Application.h"
-
 #include "services/ServiceManager.h"
 #include "services/ResourceService.h"
 
-#include "layers/Renderer2DLayer.h"
-#include "datamodels/components/Transform2DComponent.h"
-#include "datamodels/components/Transform3DComponent.h"
-#include "datamodels/components/SpriteComponent.h"
+/* external includes */
+#include <glm/glm.hpp>
+#include <jsonxx.h>
 
-using namespace nlohmann;
 using namespace glm;
 
 namespace Osiris::Editor
 {
-	/* Json operation overloader functions */
-	void to_json(json& jScene, const Scene& scene);
-	void from_json(const json& jScene, Scene& scene);
-	void to_json(json& jLayer2d, const Layer2D& layer2d);
-	void from_json(const json& jLayer2d, Layer2D& layer2d);
-	void to_json(json& jGameObject2D, const GameObject& gameObject2d);
-	void from_json(const json& jGameObject2D, GameObject& gameObject2d);
-
-	void to_json(json& jTransform2d, const Transform2DComponent& transform2d);
-	void from_json(const json& jTransform2d, Transform2DComponent& transform2d);
-	void to_json(json& jTransform3d, const Transform3DComponent& transform3d);
-	void from_json(const json& jTransform3d, Transform3DComponent& transform3d);
-
-	void to_json(json& jSpriteComponent, const SpriteComponent& spriteComponent);
-	void from_json(const json& jSpriteComponent, SpriteComponent& spriteComponent);
-
-
-	void to_json(json& jScriptComponent, const ScriptComponent& scriptComponent);
-	void from_json(const json& jScriptComponent, ScriptComponent& scriptComponent);
-
-
-	SceneLoader::Result SceneLoader::Load(std::string path, Scene& scene, FileContent content)
+	static void Read_Color(jsonxx::Array& json, glm::vec4* color)
 	{
-		json j;
-		std::ifstream i(path);
+		color->r = json.get<jsonxx::Number>(0);
+		color->g = json.get<jsonxx::Number>(1);
+		color->b = json.get<jsonxx::Number>(2);
+		color->a = json.get<jsonxx::Number>(3);
+	}
 
-		if (i.is_open())
+	static void Write_Color(jsonxx::Object& object, std::string name, const glm::vec4* color)
+	{
+		jsonxx::Array colorArray;
+		colorArray << color->r;
+		colorArray << color->g;
+		colorArray << color->b;
+		colorArray << color->a;
+
+		object << name << colorArray;
+	}
+
+	static void Read_Vec2(jsonxx::Array& json, glm::vec2* vector)
+	{
+		vector->x = json.get<jsonxx::Number>(0);
+		vector->y = json.get<jsonxx::Number>(1);
+	}
+
+	static void Write_Vec2(jsonxx::Object& object, std::string name, const glm::vec2* vector)
+	{
+		jsonxx::Array vectorArray;
+		vectorArray << vector->x;
+		vectorArray << vector->y;
+
+		object << name << vectorArray;
+	}
+
+	static void Read_Vec3(jsonxx::Array& json, glm::vec3* vector)
+	{
+		vector->x = json.get<jsonxx::Number>(0);
+		vector->y = json.get<jsonxx::Number>(1);
+		vector->z = json.get<jsonxx::Number>(2);
+	}
+
+	static void Write_Vec3(jsonxx::Object& object, std::string name, float* vector)
+	{
+		jsonxx::Array vectorArray;
+		vectorArray << vector[0];
+		vectorArray << vector[1];
+		vectorArray << vector[2];
+
+		object << name << vectorArray;
+	}
+
+	static std::shared_ptr<Transform2DComponent> Read_Transform2DComponent(jsonxx::Object& json, std::shared_ptr<GameObject> owner)
+	{
+		/* create a component */
+		std::shared_ptr<Osiris::Transform2DComponent> component = std::make_shared<Osiris::Transform2DComponent>(owner);
+
+		/* configure properties */
+		Read_Vec2(json.get<jsonxx::Array>("position"), &component->position);
+		component->rotation = json.get<jsonxx::Number>("rotation");
+		Read_Vec2(json.get<jsonxx::Array>("scale"), &component->scale);
+
+		return component;
+	}
+
+	static jsonxx::Object Write_Transform2DComponent(std::shared_ptr<IBaseComponent> transform2DComponent)
+	{
+		/* case the base object to a transform 2d */
+		std::shared_ptr<Transform2DComponent> transform2D = std::static_pointer_cast<Transform2DComponent>(transform2DComponent);
+
+		/* create new component json object */
+		jsonxx::Object componentJson;
+
+		/* base properties */
+		componentJson << "Type" << (uint32_t)transform2DComponent->GetType();
+		Write_Vec2(componentJson, "position", &transform2D->position);
+		componentJson << "rotation" << transform2D->rotation;
+		Write_Vec2(componentJson, "scale", &transform2D->scale);
+
+		return componentJson;
+	}
+
+	static jsonxx::Object Write_Transform3DComponent(std::shared_ptr<IBaseComponent> transform3DComponent)
+	{
+		/* create new component json object */
+		jsonxx::Object componentJson;
+
+		/* base properties */
+		componentJson << "Type" << transform3DComponent->GetType();
+
+		return componentJson;
+	}
+
+	static std::shared_ptr<SpriteComponent> Read_SpriteComponent(jsonxx::Object& json, std::shared_ptr<GameObject> owner)
+	{
+		/* create a component */
+		std::shared_ptr<Osiris::SpriteComponent> component = std::make_shared<Osiris::SpriteComponent>(owner);
+
+		/* configure properties */
+		Read_Color(json.get<jsonxx::Array>("color"), &component->Color);
+		component->BaseTexture = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetTextureResourceByName(json.get<jsonxx::String>("baseTexture"))->GetTexture();
+
+		return component;
+	}
+
+	static jsonxx::Object Write_SpriteComponent(std::shared_ptr<IBaseComponent> spriteComponent)
+	{
+		/* case the base object to a sprite component */
+		std::shared_ptr<SpriteComponent> sprite = std::static_pointer_cast<SpriteComponent>(spriteComponent);
+
+		/* create new component json object */
+		jsonxx::Object componentJson;
+
+		/* base properties */
+		componentJson << "Type" << (uint32_t)spriteComponent->GetType();
+
+		Write_Color(componentJson, "color", &sprite->Color);
+
+		componentJson << "baseTexture" << ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetTextureResourceByNativeID(sprite->BaseTexture->GetUID())->GetName();
+		
+		return componentJson;
+	}
+
+	static std::shared_ptr<ScriptComponent> Read_ScriptComponent(jsonxx::Object& json, std::shared_ptr<GameObject> owner)
+	{
+		/* create a component */
+		std::shared_ptr<Osiris::ScriptComponent> component = std::make_shared<Osiris::ScriptComponent>(owner);
+
+		/* configure properties */
+		std::shared_ptr<ScriptRes> scriptResource = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetScriptByName(json.get<jsonxx::String>("ScriptName"));
+		if (scriptResource != nullptr)
 		{
-			i >> j;
-			scene = j.get<Scene>();
+			component->Class = scriptResource->Script;
+		}
 
-			/* there are a number of operations that now need to be performed on the model before continuing */
-			for each (auto& layer in scene.layers2D)
+		return component;
+	}
+
+	static jsonxx::Object Write_ScriptComponent(std::shared_ptr<IBaseComponent> scriptComponent)
+	{
+		/* case the base object to a script component */
+		std::shared_ptr<ScriptComponent> script = std::static_pointer_cast<ScriptComponent>(scriptComponent);
+
+		/* create new component json object */
+		jsonxx::Object componentJson;
+
+		/* base properties */
+		componentJson << "Type" << (uint32_t)scriptComponent->GetType();
+		componentJson << "ScriptName" << script->Class->GetName();
+
+		return componentJson;
+	}
+
+	static std::shared_ptr<PhysicsComponent> Read_PhysicsComponent(jsonxx::Object& json, std::shared_ptr<GameObject> owner)
+	{
+		/* create a component */
+		std::shared_ptr<Osiris::PhysicsComponent> component = std::make_shared<Osiris::PhysicsComponent>(owner);
+
+		/* configure properties */
+		component->SetIsStatic(json.get<jsonxx::Boolean>("IsStatic"));
+		component->SetIsTrigger(json.get<jsonxx::Boolean>("IsTrigger"));
+
+		return component;
+	}
+
+	static jsonxx::Object Write_PhysicsComponent(std::shared_ptr<IBaseComponent> physicsComponent)
+	{
+		/* case the base object to a physics component */
+		std::shared_ptr<PhysicsComponent> physics = std::static_pointer_cast<PhysicsComponent>(physicsComponent);
+
+		/* create new component json object */
+		jsonxx::Object componentJson;
+
+		/* base properties */
+		componentJson << "Type" << (uint32_t)physicsComponent->GetType();
+		componentJson << "IsStatic" << physics->IsStatic();
+		componentJson << "IsTrigger" << physics->IsTrigger();
+
+		return componentJson;
+	}
+
+	static std::shared_ptr<GameObject> Read_GameObject(jsonxx::Object& json)
+	{
+		/* create a new game object */
+		std::shared_ptr<Osiris::GameObject> gameObject = std::make_shared<Osiris::GameObject>();
+
+		/* configure properties */
+		gameObject->name = json.get<jsonxx::String>("name", "untitled");
+
+		/* write requried components */
+		gameObject->transform2D = Read_Transform2DComponent(json.get<jsonxx::Object>("transform2D"), gameObject);
+
+		/* process component */
+		if (json.has<jsonxx::Array>("components") == true)
+		{
+			for (size_t i = 0; i < json.get<jsonxx::Array>("components").size(); i++)
 			{
-				for each (auto& go in layer->gameobjects)
+				jsonxx::Object componentObj = json.get<jsonxx::Array>("components").get<jsonxx::Object>(i);
+				SceneComponentType typeId = (SceneComponentType)(uint32_t)componentObj.get<jsonxx::Number>("Type");
+
+				switch (typeId)
 				{
-					go->spriteRender.OwnerGameObject = go;
-					go->script.OwnerGameObject = go;
-					go->transform2d.OwnerGameObject = go;
+					case SceneComponentType::SpriteRenderer:
+						gameObject->components.push_back(Read_SpriteComponent(componentObj, gameObject));
+						break;
+					case SceneComponentType::ScriptComponent:
+						gameObject->components.push_back(Read_ScriptComponent(componentObj, gameObject));
+						break;
+					case SceneComponentType::PhysicsComponent:
+						gameObject->components.push_back(Read_PhysicsComponent(componentObj, gameObject));
+						break;
 				}
 			}
-
-			return Success;
 		}
-		return FileNotFound;
+
+		return gameObject;
 	}
 
-	SceneLoader::Result SceneLoader::Save(std::string path, Scene& scene, FileContent content)
+	static jsonxx::Object Write_GameObject(std::shared_ptr<GameObject> gameObject)
 	{
-		json j = scene;
+		/* create new Game Object json object */
+		jsonxx::Object gameObjectJson;
 
-		std::ofstream o(path);
+		/* base properties */
+		gameObjectJson << "name" << gameObject->name;
 
-		o << std::setw(4) << j << std::endl;
+		/* write requried components */
+		gameObjectJson << "transform2D" << Write_Transform2DComponent(gameObject->transform2D);
 
-		o.close();
-
-		return Success;
-	}
-
-	void to_json(json& jScene, const Scene& scene) {
-		jScene = json::object();
-
-		float* color = &Application::Get().color[0];
-
-		/* store scene wide parameters */
-		jScene["name"] = scene.name;
-		jScene["bgcolor"] = { color[0], color[1], color[2] };
-		jScene["layers2D"] = scene.layers2D;
-
-		/* store editor camera settings */
-		jScene["cameraPosition"] = { scene.cameraPosition.x, scene.cameraPosition.y };
-		jScene["cameraZoom"] = scene.cameraZoom;
-	}
-
-	void from_json(const json& jScene, Scene& scene) {
-		jScene.at("name").get_to(scene.name);
-		jScene.at("bgcolor")[0].get_to(scene.bgcolor[0]);
-		jScene.at("bgcolor")[1].get_to(scene.bgcolor[1]);
-		jScene.at("bgcolor")[2].get_to(scene.bgcolor[2]);
-		jScene.at("layers2D").get_to(scene.layers2D);
-
-		jScene.at("cameraPosition")[0].get_to(scene.cameraPosition.x);
-		jScene.at("cameraPosition")[1].get_to(scene.cameraPosition.y);
-		jScene.at("cameraZoom").get_to(scene.cameraZoom);
-	}
-
-	void to_json(json& jLayer2d, const Layer2D& layer2d) {
-		jLayer2d = json::object();
-		jLayer2d["name"] = layer2d.name;
-		jLayer2d["gameObjects"] = layer2d.gameobjects;
-	}
-
-	void from_json(const json& jLayer2d, Layer2D& layer2d)
-	{
-		jLayer2d.at("name").get_to(layer2d.name);
-		jLayer2d.at("gameObjects").get_to(layer2d.gameobjects);
-	}
-
-	void to_json(json& jGameObject, const GameObject& gameObject) {
-		jGameObject = json::object();
-		jGameObject["name"] = gameObject.name;
-		jGameObject["transform2d"] = gameObject.transform2d;
-		jGameObject["spriteRenderer"] = gameObject.spriteRender;
-		jGameObject["script"] = gameObject.script;
-	}
-
-	void from_json(const json& jGameObject, GameObject& gameObject) {
-		jGameObject.at("name").get_to(gameObject.name);
-		jGameObject.at("transform2d").get_to(gameObject.transform2d);
-		jGameObject.at("spriteRenderer").get_to(gameObject.spriteRender);
-
-		if(jGameObject.find("script") != jGameObject.end())
-			jGameObject.at("script").get_to(gameObject.script);
-
-		gameObject.inputArea.x = (float)gameObject.spriteRender.Sprite->GetX();
-		gameObject.inputArea.y = (float)gameObject.spriteRender.Sprite->GetY();
-		gameObject.inputArea.z = (float)gameObject.spriteRender.Sprite->GetWidth();
-		gameObject.inputArea.w = (float)gameObject.spriteRender.Sprite->GetHeight();
-	}
-
-	void to_json(json& jTransform, const Transform2DComponent& transform2d)
-	{
-		jTransform["position"] = { transform2d.position.x, transform2d.position.y };
-		jTransform["rotation"] = { transform2d.rotation };
-		jTransform["scale"] = { transform2d.scale.x, transform2d.scale.y };
-	}
-
-	void from_json(const json& jTransform, Transform2DComponent& transform2d)
-	{
-		jTransform.at("position")[0].get_to(transform2d.position.x);
-		jTransform.at("position")[1].get_to(transform2d.position.y);
-		jTransform.at("rotation")[0].get_to(transform2d.rotation);
-		jTransform.at("scale")[0].get_to(transform2d.scale.x);
-		jTransform.at("scale")[1].get_to(transform2d.scale.y);
-		
-		transform2d.UpdateModelMatrix();
-	}
-
-	void to_json(json& jTransform3d, const Transform3DComponent& transform3d)
-	{
-		jTransform3d["position"] = { transform3d.position.x, transform3d.position.y, transform3d.position.z };
-		jTransform3d["rotation"] = { transform3d.rotation.x, transform3d.rotation.y, transform3d.rotation.y };
-		jTransform3d["scale"] = { transform3d.scale.x, transform3d.scale.y, transform3d.scale.y };
-	}
-
-	void from_json(const json& jTransform3d, Transform3DComponent& transform3d)
-	{
-		jTransform3d.at("position")[0].get_to(transform3d.position.x);
-		jTransform3d.at("position")[1].get_to(transform3d.position.y);
-		jTransform3d.at("position")[2].get_to(transform3d.position.y);
-		jTransform3d.at("rotation")[0].get_to(transform3d.rotation.x);
-		jTransform3d.at("rotation")[1].get_to(transform3d.rotation.y);
-		jTransform3d.at("rotation")[2].get_to(transform3d.rotation.z);
-		jTransform3d.at("scale")[0].get_to(transform3d.scale.x);
-		jTransform3d.at("scale")[1].get_to(transform3d.scale.y);
-		jTransform3d.at("scale")[2].get_to(transform3d.scale.y);
-	}
-
-	void to_json(json& jSpriteComponent, const SpriteComponent& spriteComponent)
-	{
-		jSpriteComponent["position"] = { spriteComponent.Sprite->GetX(), spriteComponent.Sprite->GetY() };
-		jSpriteComponent["dimensions"] = { spriteComponent.Sprite->GetWidth(), spriteComponent.Sprite->GetHeight() };
-		jSpriteComponent["baseTexture"] = spriteComponent.BaseTexture->GetName();
-		jSpriteComponent["color"] = { spriteComponent.Color.r, spriteComponent.Color.g, spriteComponent.Color.b };
-	}
-
-	void from_json(const json& jSpriteComponent, SpriteComponent& spriteComponent)
-	{
-		vec2 pos = {
-			jSpriteComponent.at("position")[0],
-			jSpriteComponent.at("position")[1]
-		};
-
-		vec2 dim = {
-			jSpriteComponent.at("dimensions")[0],
-			jSpriteComponent.at("dimensions")[1]
-		};
-		
-		vec3 color = {
-			jSpriteComponent.at("color")[0],
-			jSpriteComponent.at("color")[1],
-			jSpriteComponent.at("color")[2],
-		};
-
-		std::string baseTextureName = jSpriteComponent.at("baseTexture");
-
-		spriteComponent.Sprite = std::make_shared<Sprite>("Temp", (int)pos.x, (int)pos.y, (int)dim.x, (int)dim.y);
-		spriteComponent.BaseTexture = ServiceManager::Get<ResourceService>(ServiceManager::Resources)->GetTextureByName(baseTextureName);
-		spriteComponent.Color = color;
-
-		spriteComponent.Sprite->SetTexture(spriteComponent.BaseTexture->GetTexture());
-	}
-
-	void to_json(json& jScriptComponent, const ScriptComponent& scriptComponent)
-	{
-		if(scriptComponent.GetScriptResource() != nullptr)
-			jScriptComponent["scriptres"] = scriptComponent.GetScriptResource()->GetName();
-		else
-			jScriptComponent["scriptres"] = "";
-	}
-
-	void from_json(const json& jScriptComponent, ScriptComponent& scriptComponent)
-	{
-		if (jScriptComponent.find("scriptres") != jScriptComponent.end())
+		/* write components */
+		jsonxx::Array componentsJson;
+		for (size_t i = 0; i < gameObject->components.size(); i++)
 		{
-			std::string baseScriptName = jScriptComponent.at("scriptres");
-			scriptComponent.SetScriptResource(ServiceManager::Get<ResourceService>(ServiceManager::Resources)->GetScriptByName(baseScriptName));
+			switch (gameObject->components[i]->GetType())
+			{
+				case SceneComponentType::SpriteRenderer:
+					componentsJson << Write_SpriteComponent(gameObject->components[i]);
+					break;
+				case SceneComponentType::ScriptComponent:
+					componentsJson << Write_ScriptComponent(gameObject->components[i]);
+					break;
+				case SceneComponentType::PhysicsComponent:
+					componentsJson << Write_PhysicsComponent(gameObject->components[i]);
+					break;
+			}
 		}
+
+		gameObjectJson << "components" << componentsJson;
+
+
+		return gameObjectJson;
+	}
+
+	static std::shared_ptr<Layer2D> Read_Layer2D(jsonxx::Object& json)
+	{
+		/* create a new layer2D object */
+		std::shared_ptr<Osiris::Layer2D> layer2D = std::make_shared<Osiris::Layer2D>();
+
+		/* configure properties */
+		layer2D->name = json.get<jsonxx::String>("name", "untitled");
+
+		/* process game objects */
+		if (json.has<jsonxx::Array>("gameObjects") == true)
+		{
+			for (size_t i = 0; i < json.get<jsonxx::Array>("gameObjects").size(); i++)
+			{
+				layer2D->gameobjects.push_back(Read_GameObject(json.get<jsonxx::Array>("gameObjects").get<jsonxx::Object>(i)));
+			}
+		}
+
+		return layer2D;
+	}
+
+	static jsonxx::Object Write_Layer2D(std::shared_ptr<Layer2D> layer2D)
+	{
+		/* create new Layer2D json object */
+		jsonxx::Object layer2DJson;
+
+		/* base properties */
+		layer2DJson << "name" << layer2D->name;
+		
+		/* write game objects */
+		jsonxx::Array gameObjectJson;
+		for (size_t i = 0; i < layer2D->gameobjects.size(); i++)
+		{
+			gameObjectJson << Write_GameObject(layer2D->gameobjects[i]);
+		}
+
+		layer2DJson << "gameObjects" << gameObjectJson;
+
+		return layer2DJson;
+	}
+
+	SceneLoader::Result SceneLoader::Load(std::string path, Scene& scene)
+	{
+		SceneLoader::Result result = Success;
+		jsonxx::Object o;
+
+		std::ifstream f(path);
+
+		if (f.is_open() == true) {
+			std::ostringstream ss;
+			ss << f.rdbuf();
+
+			if (o.parse(ss.str()) == true)
+			{
+				/*  background color */
+				if (o.has<jsonxx::Array>("bgcolor") == true)
+					Read_Color(o.get<jsonxx::Array>("bgcolor"), &scene.bgcolor);
+
+				/* camera position */
+				if (o.has<jsonxx::Array>("cameraPosition") == true)
+					Read_Vec3(o.get<jsonxx::Array>("cameraPosition"), &scene.cameraPosition);
+
+				/* camera Zoom */
+				if (o.has<jsonxx::Number>("cameraZoom") == true)
+					scene.cameraZoom = o.get<jsonxx::Number>("cameraZoom");
+
+				/* layer 2D */
+				if (o.has<jsonxx::Array>("layers2D") == true)
+				{
+					for (size_t i = 0; i < o.get<jsonxx::Array>("layers2D").size(); i++)
+					{
+						scene.layers2D.push_back(Read_Layer2D(o.get<jsonxx::Array>("layers2D").get<jsonxx::Object>(i)));
+					}
+				}
+
+				for each (auto layers in scene.layers2D)
+				{
+					for each (auto gameobject in layers->gameobjects)
+					{
+						gameobject->transform2D->Recalculate();
+
+						for each (auto component in gameobject->components)
+						{
+							component->Recalculate();
+						}
+					}
+				}
+			}
+			else
+			{
+				result = FileMalformed;
+			}
+		}
+		else
+		{
+			result = FileNotFound;
+		}
+
+		return result;
+	}
+
+	SceneLoader::Result SceneLoader::Save(std::string path, Scene& scene)
+	{
+		SceneLoader::Result result = Success;
+		jsonxx::Object o;
+
+		/*  background color */
+		Write_Color(o, "bgcolor", &scene.bgcolor);
+
+		/* camera position */
+		Write_Vec3(o, "cameraPosition", &scene.cameraPosition[0]);
+		
+		/* camera Zoom */
+		o << "cameraZoom" << scene.cameraZoom;
+
+		/* layer 2D */
+		jsonxx::Array layer2DJson;
+
+		for (size_t i = 0; i < scene.layers2D.size(); i++)
+		{
+			/* create new Layer2D object array */
+			layer2DJson << Write_Layer2D(scene.layers2D[i]);
+		}
+
+		o << "layers2D" << layer2DJson;
+
+		std::ofstream out(path);
+		out << o.json();
+		out.close();
+
+		return result;
 	}
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "osrpch.h"
+#include "core/Log.h"
 #include "EventsService.h"
 
 namespace Osiris::Editor
@@ -27,26 +28,16 @@ namespace Osiris::Editor
 
 	void EventService::Publish(Events::EventType type, std::shared_ptr<Events::EventArgs> args)
 	{
-		std::thread::id msgThreadID = std::this_thread::get_id();
-		if (msgThreadID == _MainThreadId)
-		{
+
 			for (auto endpoint : _eventChannels[type])
 			{
 				endpoint(*args);
 			}
-		}
-		else
-		{
-			_BackgroundEventLock.lock();
-			_BackgroundEvents.push_back({ type, std::move(args) });
-			_BackgroundEventLock.unlock();
-		}
 	}
 
 	void EventService::OnUpdate()
 	{
 
-		_BackgroundEventLock.lock();
 		for (auto& evt : _BackgroundEvents)
 		{
 			for (auto& endpoint : _eventChannels[evt.first])
@@ -54,14 +45,10 @@ namespace Osiris::Editor
 				endpoint(*evt.second);
 			}
 		}
-
-		_BackgroundEvents.clear();
-		_BackgroundEventLock.unlock();
 	}
 
 	void EventService::OnCreate()
 	{
-		_MainThreadId = std::this_thread::get_id();
 	}
 	void EventService::OnDestroy()
 	{

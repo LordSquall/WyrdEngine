@@ -20,6 +20,7 @@ namespace Osiris::Editor
 		virtual ~EditorViewBase() { }
 
 		virtual void OnInitialise() {};
+		virtual void OnUpdate(Timestep ts) {};
 		virtual void OnRender(Timestep ts, Renderer& renderer) {};
 		virtual void OnEvent(Event& event) {};
 		virtual void OnEditorRender() {};

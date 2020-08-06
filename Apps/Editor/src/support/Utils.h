@@ -49,6 +49,11 @@ namespace Osiris::Editor
 		static unsigned int ToUInt(std::string& value);
 		static int ToInt(std::string& value);
 
+		/* String Convertors */
+		static std::string ToString(unsigned int value);
+		static std::string ToString(int value);
+		static std::string ToString(float value);
+
 	private:
 		static void SwapSlashes(std::string& path, const std::string& find, const std::string& replace);
 		static std::string Utils::canonical_path;
