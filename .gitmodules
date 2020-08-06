@@ -26,3 +26,9 @@
 [submodule "Osiris/vendor/efsw"]
 	path = Osiris/vendor/efsw
 	url = https://github.com/SpartanJ/efsw
+[submodule "Osiris/vendor/jsonxx"]
+	path = Osiris/vendor/jsonxx
+	url = https://github.com/hjiang/jsonxx.git
+[submodule "Osiris/vendor/mono"]
+	path = Osiris/vendor/mono
+	url = https://github.com/mono/mono.git
