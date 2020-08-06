@@ -53,7 +53,7 @@ namespace Osiris {
 			s_GLFWInitialised = true;
 		}
 
-		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
+		m_Window = glfwCreateWindow(props.Width, props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		glfwSetWindowPos(m_Window, m_Data.X, m_Data.Y);
 
 		m_Context = new OpenGLContext(m_Window);

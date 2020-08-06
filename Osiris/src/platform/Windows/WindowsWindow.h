@@ -64,7 +64,7 @@ namespace Osiris {
 		struct WindowData
 		{
 			std::string Title;
-			unsigned int Width, Height;
+			int Width, Height;
 			int X, Y;
 			bool VSync;
 			double CursorX, CursorY;
