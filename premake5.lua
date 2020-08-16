@@ -111,7 +111,8 @@ group ""
 			"SOIL",
 			"jsonxx",
 			"mono-2.0-sgen",
-			"opengl32.dll"
+			"opengl32.dll",
+			"OsirisAPI"
 		}
 
 		filter "system:windows"
