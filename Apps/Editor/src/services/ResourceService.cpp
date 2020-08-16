@@ -12,6 +12,10 @@ namespace Osiris::Editor
 {
 	void ResourceService::OnCreate()
 	{
+		/* Register the ignored file extensions */
+		_ignoredExtensions.insert(".dll");
+		_ignoredExtensions.insert(".mdb");
+
 		/* Register the file extensions for each of the resource types */
 		_extensions.insert(std::pair<std::string, Type>(".png", TEXTURE));
 		_extensions.insert(std::pair<std::string, Type>(".jpg", TEXTURE));
@@ -49,19 +53,21 @@ namespace Osiris::Editor
 
 	void ResourceService::AddResource(std::string& resourcePath, ResourceService::Type type)
 	{
-		Type resourceType = DetermineType(resourcePath);
-
-		switch (resourceType)
+		if (CheckIgnored(resourcePath) == false)
 		{
-		case Type::TEXTURE:
+			Type resourceType = DetermineType(resourcePath);
+
+			switch (resourceType)
+			{
+			case Type::TEXTURE:
 			{
 				std::shared_ptr<TextureRes> textureResource = std::make_shared<TextureRes>(resourcePath);
-				_textureResources.insert(std::pair<uint32_t, std::shared_ptr<TextureRes>>(textureResource->GetResourceID(), textureResource));
+					_textureResources.insert(std::pair<uint32_t, std::shared_ptr<TextureRes>>(textureResource->GetResourceID(), textureResource));
 
-				OSR_CORE_INFO("Asset Texture Added: [{0}] - {1}", textureResource->GetResourceID(), textureResource->GetName());
+					OSR_CORE_INFO("Asset Texture Added: [{0}] - {1}", textureResource->GetResourceID(), textureResource->GetName());
 			}
 			break;
-		case Type::SCENE:
+			case Type::SCENE:
 			{
 				std::shared_ptr<SceneRes> sceneResource = std::make_shared<SceneRes>(resourcePath);
 				_sceneResources.insert(std::pair<uint32_t, std::shared_ptr<SceneRes>>(sceneResource->GetResourceID(), sceneResource));
@@ -69,16 +75,21 @@ namespace Osiris::Editor
 				OSR_CORE_INFO("Asset Scene Added: [{0}] - {1}", sceneResource->GetResourceID(), sceneResource->GetName());
 			}
 			break;
-		case Type::SCRIPT:
+			case Type::SCRIPT:
 			{
 				std::shared_ptr<ScriptRes> scriptResource = std::make_shared<ScriptRes>(resourcePath);
 				_scriptResources.insert(std::pair<uint32_t, std::shared_ptr<ScriptRes>>(scriptResource->GetResourceID(), scriptResource));
 
-				//OSR_CORE_INFO("Asset Script Added: [{0}] - {1}", scriptResource->GetResourceID(), scriptResource->GetName());
+				OSR_CORE_INFO("Asset Script Added: [{0}] - {1}", scriptResource->GetResourceID(), scriptResource->GetName());
 			}
 			break;
-		default:
-			break;
+			default:
+				break;
+			}
+		}
+		else
+		{
+			OSR_CORE_INFO("Skipping Asset file: [{0}] - As extension is on the ignored list!", resourcePath);
 		}
 	}
 
@@ -220,6 +231,13 @@ namespace Osiris::Editor
 			return _scriptResources[uid];
 		}
 		return nullptr;
+	}
+
+	bool ResourceService::CheckIgnored(const std::string& path)
+	{
+		std::string fileExtension = Utils::GetFileExtension(path);
+
+		return (_ignoredExtensions.find(Utils::GetFileExtension(path)) != _ignoredExtensions.end());
 	}
 
 	ResourceService::Type ResourceService::DetermineType(const std::string& path)

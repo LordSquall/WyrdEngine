@@ -57,6 +57,7 @@ namespace Osiris::Editor
 		std::shared_ptr<ScriptRes> GetScriptByUID(const uint32_t uid);
 
 		/* Helper Functions */
+		bool CheckIgnored(const std::string& path);
 		Type DetermineType(const std::string& path);
 
 	private:
@@ -73,6 +74,8 @@ namespace Osiris::Editor
 		std::map<uint32_t, std::shared_ptr<ScriptRes>> _scriptResources;
 
 		std::map<std::string, Type> _extensions;
+
+		std::set<std::string> _ignoredExtensions;
 
 		std::shared_ptr<TextureRes> _defaultTexture;
 		std::shared_ptr<SceneRes> _defaultScene;

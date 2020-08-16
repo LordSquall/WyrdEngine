@@ -93,25 +93,28 @@ namespace Osiris::Editor
 		ImGui::Columns(colCnt, NULL, false);
 		for each (auto& file in files)
 		{	
-			ResourceService::Type resType = _resourcesService->DetermineType(file);
-
-			ImGui::PushID(resIdx);
-
-			switch (resType)
+			if (_resourcesService->CheckIgnored(file) == false)
 			{
-			case ResourceService::Type::TEXTURE: DrawTextureItem(resIdx, _resourcesService->GetTextureResourceByName(Utils::GetFilename(file, false))); break;
-			case ResourceService::Type::SCENE: DrawSceneItem(resIdx, _resourcesService->GetSceneByName(Utils::GetFilename(file, false))); break;
-			case ResourceService::Type::SCRIPT: DrawScriptItem(resIdx, _resourcesService->GetScriptByName(Utils::GetFilename(file, false))); break;
-			case ResourceService::Type::SHADER:break;
-			case ResourceService::Type::NONE:
-			default:
-				DrawUnknownItem(resIdx, Utils::GetFilename(file, false)); break;
-				break;
-			}
+				ResourceService::Type resType = _resourcesService->DetermineType(file);
 
-			ImGui::PopID();
-			ImGui::NextColumn();
-			resIdx++;
+				ImGui::PushID(resIdx);
+
+				switch (resType)
+				{
+				case ResourceService::Type::TEXTURE: DrawTextureItem(resIdx, _resourcesService->GetTextureResourceByName(Utils::GetFilename(file, false))); break;
+				case ResourceService::Type::SCENE: DrawSceneItem(resIdx, _resourcesService->GetSceneByName(Utils::GetFilename(file, false))); break;
+				case ResourceService::Type::SCRIPT: DrawScriptItem(resIdx, _resourcesService->GetScriptByName(Utils::GetFilename(file, false))); break;
+				case ResourceService::Type::SHADER:break;
+				case ResourceService::Type::NONE:
+				default:
+					DrawUnknownItem(resIdx, Utils::GetFilename(file, false)); break;
+					break;
+				}
+
+				ImGui::PopID();
+				ImGui::NextColumn();
+				resIdx++;
+			}
 		}
 	}
 
