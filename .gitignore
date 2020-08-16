@@ -8,6 +8,7 @@ Osiris/vendor/*/bin-int/*
 *.sln
 *.vcxproj
 *.vcxproj.user
+OsirisAPI/OsirisAPI.csproj
 /Apps/DevApp/imgui.ini
 Apps/Editor/config.ini
 Apps/Editor/Editor.args.json
