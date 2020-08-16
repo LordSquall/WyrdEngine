@@ -120,11 +120,19 @@ namespace Osiris::Editor
 
 	static std::shared_ptr<SpriteComponent> Read_SpriteComponent(jsonxx::Object& json, std::shared_ptr<GameObject> owner)
 	{
+		glm::vec2 spriteSize, spritePosition;
+
 		/* create a component */
 		std::shared_ptr<Osiris::SpriteComponent> component = std::make_shared<Osiris::SpriteComponent>(owner);
 
 		/* configure properties */
 		Read_Color(json.get<jsonxx::Array>("color"), &component->Color);
+		Read_Vec2(json.get<jsonxx::Array>("size"), &spriteSize);
+		Read_Vec2(json.get<jsonxx::Array>("position"), &spritePosition);
+
+		component->Sprite->SetSize(spriteSize.x, spriteSize.y);
+		component->Sprite->SetPosition(spritePosition.x, spritePosition.y);
+
 		component->BaseTexture = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetTextureResourceByName(json.get<jsonxx::String>("baseTexture"))->GetTexture();
 
 		return component;
@@ -138,10 +146,16 @@ namespace Osiris::Editor
 		/* create new component json object */
 		jsonxx::Object componentJson;
 
+		//TODO - this is only require as sprite is a nested object, not sure if this is required
+		glm::vec2 spriteSize = { sprite->Sprite->GetWidth(), sprite->Sprite->GetHeight() };
+		glm::vec2 spritePosition = { sprite->Sprite->GetX(), sprite->Sprite->GetY() };
+
 		/* base properties */
 		componentJson << "Type" << (uint32_t)spriteComponent->GetType();
 
 		Write_Color(componentJson, "color", &sprite->Color);
+		Write_Vec2(componentJson, "size", &spriteSize);
+		Write_Vec2(componentJson, "position", &spritePosition);
 
 		componentJson << "baseTexture" << ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetTextureResourceByNativeID(sprite->BaseTexture->GetUID())->GetName();
 		

@@ -16,8 +16,6 @@ namespace Osiris::Editor
 	{
 		if (ImGui::TreeNodeEx("Script", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			ImGui::Text("This is Script Component View");
-
 			if (_BaseComponent->Class != nullptr)
 			{
 				ImGui::Text(_BaseComponent->Class->GetName().c_str());
