@@ -40,6 +40,8 @@ namespace Osiris
 		void Stop();
 		void Update(Timestep ts);
 
+		void SetInputState(int key, int state);
+
 		CreateCustomClassResult AddScriptedClassFromFile(const std::string& name, const std::string& filename);
 
 		inline std::shared_ptr<ScriptedClass> GetGameObjectManager() const { return _GameObjectManagerClass; }

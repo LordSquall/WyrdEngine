@@ -1,7 +1,6 @@
 #pragma once
 
 /* local includes */
-#include "Osiris.h"
 #include "core/scene/components/IBaseComponent.h"
 
 /* external includes */

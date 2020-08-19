@@ -5,6 +5,7 @@
 #include "core/Log.h"
 #include "core/Application.h"
 #include "core/scene/GameObject.h"
+#include "core/scene/components/ScriptComponent.h"
 #include "ScriptedClass.h"
 #include "ScriptedGameObject.h"
 #include "MonoUtils.h"
@@ -16,6 +17,14 @@
 
 namespace Osiris
 {
+	void* MonoUtils::ExecuteScriptMethod(ScriptComponent* scriptComponent, std::string& functionName, std::vector<void*> args)
+	{
+		mono_runtime_invoke(&*scriptComponent->Object->GetMethod(functionName), &*scriptComponent->Object->Object, &args[0], nullptr);
+
+		return nullptr;
+	}
+
+
 	MonoObject* MonoUtils::CreateNewObject(MonoDomain* domain, std::shared_ptr<ScriptedClass> monoClass)
 	{
 		MonoObject* object = mono_object_new((MonoDomain*)domain, &*monoClass->Class);

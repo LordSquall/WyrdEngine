@@ -316,7 +316,14 @@ namespace Osiris::Editor
 
 	bool SceneViewer::OnKeyPressedEvent(KeyPressedEvent& e)
 	{
-		_SimulationService->SetInputState(e.GetKeyCode(), 1);
+		if (e.GetRepeatCount() == 1)
+		{
+			_SimulationService->SetInputState(e.GetKeyCode(), 0);
+		}
+		else
+		{
+			_SimulationService->SetInputState(e.GetKeyCode(), 1);
+		}
 
 		return false;
 	}

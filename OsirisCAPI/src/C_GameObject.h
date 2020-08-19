@@ -10,6 +10,8 @@ extern "C" {
 
 LIBRARY_API const char* GameObject_Name_Get(void* obj);
 
+LIBRARY_API void GameObject_Move(void* obj, float x, float y);
+
 #ifdef __cplusplus
 }
 #endif

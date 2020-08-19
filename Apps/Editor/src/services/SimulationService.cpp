@@ -34,6 +34,8 @@ namespace Osiris::Editor
 	{
 		OSR_TRACE("Starting Simulation Service");
 
+		_IsRunning = true;
+
 		Application::Get().GetBehaviour().Start(_WorkspaceService->GetLoadedScene());
 	}
 
@@ -61,14 +63,7 @@ namespace Osiris::Editor
 	{
 		if (_IsRunning == true)
 		{
-			if (_CurrentScene != nullptr)
-			{
-				/* Query each of the layer scene objects */
-				for (auto& sl : _CurrentScene->layers2D)
-				{
-
-				}
-			}
+			Application::Get().GetBehaviour().SetInputState(keyCode, state);
 		}
 	}
 

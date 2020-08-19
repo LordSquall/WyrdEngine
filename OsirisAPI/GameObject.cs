@@ -14,7 +14,7 @@ namespace OsirisAPI
                 return Marshal.PtrToStringAnsi(GameObject_Name_Get(_NativePointer));
             }
         }
-
+       
         #endregion
 
         /// <summary>
@@ -27,6 +27,15 @@ namespace OsirisAPI
 
             Console.WriteLine("C#: Game Object linked to Native GameObject: " + Name);
         }
+
+        #region Public Functions
+
+        public void Move(float x, float y)
+        {
+            GameObject_Move(_NativePointer, x, y);
+        }
+
+        #endregion
 
         #region Object Overrides
 
@@ -44,6 +53,9 @@ namespace OsirisAPI
         
         [DllImport("OsirisCAPI")]
         public static extern IntPtr GameObject_Name_Get(IntPtr value);
+
+        [DllImport("OsirisCAPI")]
+        public static extern IntPtr GameObject_Move(IntPtr value, float x, float y);
 
         #endregion
     }

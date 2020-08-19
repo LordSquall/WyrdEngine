@@ -4,6 +4,7 @@
 #include "osrpch.h"
 #include "core/Log.h"
 #include "core/behaviour/Behaviour.h"
+#include "core/behaviour/MonoUtils.h"
 #include "core/scene/Scene.h"
 #include "core/scene/Layer2D.h"
 #include "core/scene/GameObject.h"
@@ -228,6 +229,62 @@ namespace Osiris
 		_ScriptedCustomClasses.emplace(name, newScript);
 
 		return Behaviour::CreateCustomClassResult{ true, "", newScript };
+	}
+
+	void Behaviour::SetInputState(int key, int state)
+	{
+		if (_IsRunning == true)
+		{
+			if (_CurrentScene != nullptr)
+			{
+				/* traverse each of the gameobjects within the scene*/
+				for (auto& sl : _CurrentScene->layers2D)
+				{
+					for (auto& go : sl->gameobjects)
+					{
+						for (auto& component : go->components)
+						{
+							if (component->GetType() == SceneComponentType::ScriptComponent)
+							{
+
+								ScriptComponent* scriptComponent = (ScriptComponent*) & *component;
+								//MonoObject* object = &*scriptComponent->Object->Object;
+								//MonoMethod* method = nullptr;
+								//
+
+								//// TEMP
+								//switch (state)
+								//{
+								//	case 0: method = &*scriptComponent->Object->GetMethod("OnKeyPress");
+								//		break;
+								//	case 1:
+								//		method = &*scriptComponent->Object->GetMethod("OnKeyDown");
+								//		break;
+								//	case 2:
+								//		method = &*scriptComponent->Object->GetMethod("OnKeyUp");
+								//		break;
+								//}
+								//
+								//void* args[1];
+								//args[0] = &key;
+
+
+								std::map<int, std::string> _functionKeyStateMap;
+								_functionKeyStateMap[0] = "OnKeyPress";
+								_functionKeyStateMap[1] = "OnKeyDown";
+								_functionKeyStateMap[2] = "OnKeyUp";
+
+								//mono_runtime_invoke(method, object, args, nullptr);
+
+								std::vector<void*> args = std::vector<void*>({ &key });
+
+								MonoUtils::ExecuteScriptMethod(scriptComponent, _functionKeyStateMap[state], args);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	std::shared_ptr<ScriptedClass> Behaviour::GetClass(std::string name) 
