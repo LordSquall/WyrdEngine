@@ -38,11 +38,11 @@ namespace Osiris::Editor
 		ImGui::Checkbox("Errors", &_ShowErrors);
 		ImGui::SameLine();
 		ImGui::Checkbox("Debug", &_ShowDebug);
-		
+
 
 		ImGui::PushItemWidth(-1);
-		ImGui::ListBoxHeader("##label");
-		
+		if (ImGui::ListBoxHeader("##label"))
+		{
 		for each (auto & item in _LogItems)
 		{
 			if (((_ShowInfo == true) && (item.severity == Severity::Info)) || ((_ShowWarnings == true) && (item.severity == Severity::Warning)) ||
@@ -51,8 +51,8 @@ namespace Osiris::Editor
 				DrawLogItem(item);
 			}
 		}
-
-		ImGui::ListBoxFooter();
+			ImGui::ListBoxFooter();
+		}
 		ImGui::PopItemWidth();
 	}
 

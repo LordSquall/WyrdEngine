@@ -30,7 +30,11 @@ namespace Osiris {
 		inline unsigned int GetWidth() const override { return m_Data.Width; }
 		inline unsigned int GetHeight() const override { return m_Data.Height; }
 
+<<<<<<< Updated upstream
 		void SetSize(int Width, int height) override;
+=======
+		void SetSize(int width, int height) override;
+>>>>>>> Stashed changes
 
 		inline int GetX() const override { 
 			return m_Data.X; 

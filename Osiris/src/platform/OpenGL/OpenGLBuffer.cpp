@@ -17,7 +17,10 @@ namespace Osiris
 		GLenum err = glGetError();
 
 		if (err != GL_NO_ERROR)
+		{
+			OSR_CORE_ERROR("OpenGLVertexBuffer");
 			OpenGLError::Resolve(err);
+		}
 
 	}
 
@@ -44,7 +47,14 @@ namespace Osiris
 		GLenum err = glGetError();
 
 		if (err != GL_NO_ERROR)
+<<<<<<< Updated upstream
 			OpenGLError::Resolve(err);
+=======
+		{
+			OSR_CORE_ERROR("OpenGLVertexBuffer");
+			OpenGLError::Resolve(err);
+		}
+>>>>>>> Stashed changes
 
 	}
 
@@ -82,7 +92,10 @@ namespace Osiris
 		GLenum err = glGetError();
 
 		if (err != GL_NO_ERROR)
-			OSR_CORE_ERROR(err);
+		{
+			OSR_CORE_ERROR("OpenGLIndexBuffer");
+			OpenGLError::Resolve(err);
+		}
 	}
 
 	OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferConfig& config)
@@ -115,6 +128,13 @@ namespace Osiris
 		glGenTextures(1, &_colorAttachmentID);
 		glBindTexture(GL_TEXTURE_2D, _colorAttachmentID);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _config.width, _config.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		GLenum err = glGetError();
+
+		if (err != GL_NO_ERROR)
+		{
+			OpenGLError::Resolve(err);
+		}
+
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 

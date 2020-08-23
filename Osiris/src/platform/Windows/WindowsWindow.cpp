@@ -11,6 +11,8 @@
 namespace Osiris {
 
 	static bool s_GLFWInitialised = false;
+	
+	
 
 	static void GLFWErrorCallback(int error, const char* description)
 	{
@@ -52,9 +54,14 @@ namespace Osiris {
 			glfwSetErrorCallback(GLFWErrorCallback);
 			s_GLFWInitialised = true;
 		}
-
+		int count;
+		GLFWmonitor** monitors = glfwGetMonitors(&count);
+		
+		
 		m_Window = glfwCreateWindow(props.Width, props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		glfwSetWindowPos(m_Window, m_Data.X, m_Data.Y);
+		int width, height;
+		glfwGetWindowSize(m_Window, &width, &height);
 
 		m_Context = new OpenGLContext(m_Window);
 		m_Context->Init();
@@ -172,7 +179,10 @@ namespace Osiris {
 			data.EventCallback(e);
 		});
 
+<<<<<<< Updated upstream
 		glfwSetWindowSize(m_Window, m_Data.Width, m_Data.Height);
+=======
+>>>>>>> Stashed changes
 	}
 
 	void WindowsWindow::Shutdown()
@@ -211,7 +221,7 @@ namespace Osiris {
 
 	bool WindowsWindow::OnWindowResizeEvent(WindowResizeEvent& e)
 	{
-
+		
 		return true;
 	}
 
@@ -269,5 +279,13 @@ namespace Osiris {
 	void* WindowsWindow::GetNativeGFXContextPointer() const
 	{
 		return (void*)glfwGetWGLContext(m_Window);
+	}
+
+	void WindowsWindow::SetSize(int width, int height) 
+	{
+		//glfwSetWindowSize(m_Window, width, height);
+		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+		glfwSetWindowMonitor(m_Window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
 	}
 }

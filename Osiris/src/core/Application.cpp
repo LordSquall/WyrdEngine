@@ -25,6 +25,8 @@ namespace Osiris {
 		_Window = std::unique_ptr<Window>(Window::Create(props.windowProps));
 		_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
+		m_Window->SetSize(600, 400);
+
 		/* create a renderer */
 		_Renderer.reset(Renderer::Create());
 

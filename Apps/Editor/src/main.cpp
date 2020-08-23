@@ -73,7 +73,7 @@ Osiris::Application* Osiris::CreateApplication()
 		properties.windowProps.Y = std::stol(iniParser.GetValue("Window", "y", "25"), NULL, 10);
 	}
 
-	return new ClientApplication(properties);
+	return new ClientApplication(properties); // may override full screen
 }
 
 void Osiris::OnPreAppCreation(Osiris::Application* application)

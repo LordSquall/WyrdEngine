@@ -42,6 +42,8 @@ namespace Osiris
 		virtual unsigned int GetWidth() const = 0;
 		virtual unsigned int GetHeight() const = 0;
 
+		virtual void SetSize(int width, int height) = 0;
+
 		virtual int GetX() const = 0;
 		virtual int GetY() const = 0;
 
