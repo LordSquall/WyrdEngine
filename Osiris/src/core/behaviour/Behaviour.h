@@ -62,6 +62,8 @@ namespace Osiris
 		std::map<uint32_t, std::shared_ptr<ScriptedGameObject>>		_ScriptedGameObjects;
 		std::map<uint32_t, std::shared_ptr<ScriptedCustomObject>>	_ScriptedCustomObjects;
 
+		std::map<int, std::string> _FunctionKeyStateMap;
+
 		std::shared_ptr<Scene>	_CurrentScene;
 		bool					_IsRunning;
 		void*					_Domain;

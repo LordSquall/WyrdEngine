@@ -8,5 +8,9 @@ namespace OsirisAPI
 
         void OnStart() { }
         void OnUpdate() { }
+
+        bool OnKeyDown(KeyCode key) { return false; }
+        bool OnKeyPressed(KeyCode key) { return false; }
+        bool OnKeyUp(KeyCode key) { return false; }
     }
 }

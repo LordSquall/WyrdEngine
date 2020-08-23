@@ -92,6 +92,11 @@ namespace Osiris
 
 		/* Retrieve the Script side management classes */
 		_GameObjectManagerClass = std::make_shared<ScriptedClass>((void*)monoAssembly, (void*)monoImage, "GameObjectManager");
+
+		/* Build up mapping between Osiris Key States and managed key state functions */
+		_FunctionKeyStateMap[0] = "OnKeyPress";
+		_FunctionKeyStateMap[1] = "OnKeyDown";
+		_FunctionKeyStateMap[2] = "OnKeyUp";
 	}
 
 	Behaviour::~Behaviour()
@@ -246,39 +251,14 @@ namespace Osiris
 						{
 							if (component->GetType() == SceneComponentType::ScriptComponent)
 							{
-
+								/* convert to script component type */
 								ScriptComponent* scriptComponent = (ScriptComponent*) & *component;
-								//MonoObject* object = &*scriptComponent->Object->Object;
-								//MonoMethod* method = nullptr;
-								//
 
-								//// TEMP
-								//switch (state)
-								//{
-								//	case 0: method = &*scriptComponent->Object->GetMethod("OnKeyPress");
-								//		break;
-								//	case 1:
-								//		method = &*scriptComponent->Object->GetMethod("OnKeyDown");
-								//		break;
-								//	case 2:
-								//		method = &*scriptComponent->Object->GetMethod("OnKeyUp");
-								//		break;
-								//}
-								//
-								//void* args[1];
-								//args[0] = &key;
-
-
-								std::map<int, std::string> _functionKeyStateMap;
-								_functionKeyStateMap[0] = "OnKeyPress";
-								_functionKeyStateMap[1] = "OnKeyDown";
-								_functionKeyStateMap[2] = "OnKeyUp";
-
-								//mono_runtime_invoke(method, object, args, nullptr);
-
+								/* build arg list for the key event functions */
 								std::vector<void*> args = std::vector<void*>({ &key });
 
-								MonoUtils::ExecuteScriptMethod(scriptComponent, _functionKeyStateMap[state], args);
+								/* call custom script object key event function */
+								MonoUtils::ExecuteScriptMethod(scriptComponent, _FunctionKeyStateMap[state], args);
 							}
 						}
 					}
