@@ -1,10 +1,12 @@
+externallibsdir = os.getenv("OSIRIS_EXTERN_REPOS")
+
 project "glfw"
     kind "StaticLib"
     language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
     
-	srcdir = "../Osiris/vendor/glfw/"
+	srcdir = externallibsdir .. "/glfw/"
 	
 	basedir("../")
 	

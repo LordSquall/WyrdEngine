@@ -1,10 +1,12 @@
+externallibsdir = os.getenv("OSIRIS_EXTERN_REPOS")
+
 project "imgui"
     kind "StaticLib"
     language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
     
-	srcdir = "../Osiris/vendor/imgui/"
+	srcdir = externallibsdir .. "/imgui/"
 	
 	basedir("../")
 	

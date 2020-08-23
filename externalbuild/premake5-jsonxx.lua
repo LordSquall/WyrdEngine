@@ -1,11 +1,13 @@
+externallibsdir = os.getenv("OSIRIS_EXTERN_REPOS")
+
 project "jsonxx"
     kind "StaticLib"
     language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
     
-	src_dir = "../Osiris/vendor/jsonxx/"
-	include_dir = "../Osiris/vendor/jsonxx/"
+	src_dir = externallibsdir .. "/jsonxx/"
+	include_dir = externallibsdir .. "/jsonxx/"
 	
 	basedir("../")
 	

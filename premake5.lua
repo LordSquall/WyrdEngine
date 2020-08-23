@@ -9,6 +9,8 @@ workspace "Osiris"
 		"Distribution"
 	}
 
+externallibsdir = os.getenv("OSIRIS_EXTERN_REPOS")
+
 renderdocfound = false
 renderdocdir = ""
 
@@ -34,13 +36,14 @@ end
 outputdir = "%{cfg.buildcfg}"
 
 includedir = {}
-includedir["GLFW"] = "Osiris/vendor/GLFW/include"
+includedir["GLFW"] = externallibsdir .. "/GLFW/include"
 includedir["GLAD"] = "Osiris/vendor/GLAD/include"
-includedir["SOIL"] = "Osiris/vendor/soil/src"
-includedir["glm"] = "Osiris/vendor/glm"
-includedir["jsonxx"] = "Osiris/vendor/jsonxx"
-includedir["imgui"] = "Osiris/vendor/imgui"
-includedir["efsw"] = "Osiris/vendor/efsw/include/"
+includedir["SOIL"] = externallibsdir .. "/Simple-OpenGL-Image-Library/src"
+includedir["glm"] = externallibsdir .. "/glm"
+includedir["jsonxx"] = externallibsdir .. "/jsonxx"
+includedir["imgui"] = externallibsdir .. "/imgui"
+includedir["efsw"] = externallibsdir .. "/efsw/include/"
+includedir["spdlog"] = externallibsdir .. "/spdlog/include/"
 
 -- if mono was found, the add the in application to the include directories
 if monofound then
@@ -61,6 +64,7 @@ include "externalbuild/premake5-jsonxx.lua"
 include "externalbuild/premake5-soil.lua"
 include "externalbuild/premake5-imgui.lua"
 include "externalbuild/premake5-efsw.lua"
+include "externalbuild/premake5-spdlog.lua"
 
 group ""
 	project "Osiris"
@@ -89,7 +93,6 @@ group ""
 		includedirs
 		{
 			"%{prj.name}/src/",
-			"%{prj.name}/vendor/spdlog/include",
 			"%{includedir.GLFW}",
 			"%{includedir.GLAD}",
 			"%{includedir.jsonxx}",
@@ -97,6 +100,7 @@ group ""
 			"%{includedir.glm}",
 			"%{includedir.tinyobjloader}",
 			"%{includedir.mono}",
+			"%{includedir.spdlog}"
 		}
 		
 		libdirs
@@ -260,7 +264,6 @@ project "OsirisAPI"
 					"Apps/%{prj.name}/src",
 					"Osiris/src",
 					"%{includedir.glm}",
-					"Osiris/vendor/spdlog/include",
 					"%{includedir.GLFW}",
 					"%{includedir.GLAD}",
 					"%{includedir.jsonxx}",
@@ -270,6 +273,7 @@ project "OsirisAPI"
 					"%{includedir.tinyobjloader}",
 					"%{includedir.mono}",
 					"%{includedir.efsw}",
+					"%{includedir.spdlog}",
 					iif(renderdocfound, includedir["renderdoc"], "")
 				}
 				

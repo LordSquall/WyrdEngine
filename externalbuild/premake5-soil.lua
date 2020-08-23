@@ -1,10 +1,12 @@
+externallibsdir = os.getenv("OSIRIS_EXTERN_REPOS")
+
 project "soil"
     kind "StaticLib"
     language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
     
-	srcdir = "../Osiris/vendor/soil/"
+	srcdir = externallibsdir .. "/Simple-OpenGL-Image-Library/"
 	
 	basedir("../")
 	

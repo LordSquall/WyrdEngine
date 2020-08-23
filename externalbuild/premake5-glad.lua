@@ -1,11 +1,13 @@
+externallibsdir = os.getenv("OSIRIS_EXTERN_REPOS")
+
 project "glad"
     kind "StaticLib"
     language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
     
-	src_dir = "../Osiris/vendor/glad/"
-	include_dir = "../Osiris/vendor/glad/include/"
+	src_dir = externallibsdir .. "/glad/"
+	include_dir = externallibsdir .. "/glad/include/"
 	
 	basedir("../")
 	

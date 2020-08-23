@@ -1,11 +1,13 @@
+externallibsdir = os.getenv("OSIRIS_EXTERN_REPOS")
+
 project "efsw"
     kind "StaticLib"
     language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
     
-	src_dir = "../Osiris/vendor/efsw/src/"
-	include_dir = "../Osiris/vendor/efsw/include/"
+	src_dir = externallibsdir .. "/efsw/src/"
+	include_dir = externallibsdir .. "/efsw/include/"
 	
 	basedir("../")
 	
