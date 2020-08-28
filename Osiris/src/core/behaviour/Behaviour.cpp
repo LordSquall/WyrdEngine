@@ -181,8 +181,6 @@ namespace Osiris
 
 	void Behaviour::Stop()
 	{
-		//Application::Get().GetPhysics().IsRunning(false);
-		//Application::Get().GetPhysics().Reset();
 		_IsRunning = false;
 	}
 

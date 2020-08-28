@@ -37,14 +37,14 @@ namespace Osiris::Editor
 		_IsRunning = true;
 
 		Application::Get().GetBehaviour().Start(_WorkspaceService->GetLoadedScene());
+		Application::Get().GetPhysics().Start(_WorkspaceService->GetLoadedScene());
 	}
 
 	void SimulationService::Stop()
 	{
+		Application::Get().GetPhysics().Stop();
 		Application::Get().GetBehaviour().Stop();
 
-		Application::Get().GetPhysics().IsRunning(false);
-		Application::Get().GetPhysics().Reset();
 		OSR_TRACE("Stopping Simulation Service");
 
 		_IsRunning = false;
@@ -56,6 +56,7 @@ namespace Osiris::Editor
 		if (_IsRunning == true)
 		{
 			Application::Get().GetBehaviour().Update(ts);
+			Application::Get().GetPhysics().Update(ts);
 		}
 	}
 
