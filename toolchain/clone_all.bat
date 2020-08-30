@@ -1,3 +1,8 @@
+cd ..
+mkdir sub_modules
+MOVE /Y %CD%\toolchain\pull_all.bat %CD%\sub_modules
+cd %CD%\sub_modules\
+
 git clone https://github.com/glfw/glfw
 git clone https://github.com/kbranigan/Simple-OpenGL-Image-Library
 git clone https://github.com/g-truc/glm
@@ -10,3 +15,5 @@ git clone https://github.com/hjiang/jsonxx.git
 git clone https://github.com/mono/mono.git
 
 setx OSIRIS_EXTERN_REPOS %CD%
+call pull_all.bat
+pause
