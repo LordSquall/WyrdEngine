@@ -7,6 +7,7 @@ project "spdlog"
 	staticruntime "on"
     
 	srcdir = externallibsdir .. "/spdlog/src/"
+	include_dir = externallibsdir .. "/spdlog/include"
 	
 	basedir("../")
 	
@@ -18,10 +19,21 @@ project "spdlog"
         srcdir .. "**.h",
 		srcdir .. "**.cpp"
     }
+	
+	includedirs	
+	{
+		include_dir
+	}
+	
     
 	filter "system:windows"
 		systemversion "latest"
 
+		defines
+		{
+			"SPDLOG_COMPILED_LIB"
+		}
+		
 	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "on"
