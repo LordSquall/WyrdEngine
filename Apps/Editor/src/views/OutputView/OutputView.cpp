@@ -38,22 +38,6 @@ namespace Osiris::Editor
 		ImGui::Checkbox("Errors", &_ShowErrors);
 		ImGui::SameLine();
 		ImGui::Checkbox("Debug", &_ShowDebug);
-		
-
-		ImGui::PushItemWidth(-1);
-		ImGui::ListBoxHeader("##label");
-		
-		for each (auto & item in _LogItems)
-		{
-			if (((_ShowInfo == true) && (item.severity == Severity::Info)) || ((_ShowWarnings == true) && (item.severity == Severity::Warning)) ||
-				((_ShowErrors == true) && (item.severity == Severity::Error)) || ((_ShowDebug == true) && (item.severity == Severity::Debug)))
-			{
-				DrawLogItem(item);
-			}
-		}
-
-		ImGui::ListBoxFooter();
-		ImGui::PopItemWidth();
 	}
 
 	void OutputView::DrawLogItem(const LogItem& msg)

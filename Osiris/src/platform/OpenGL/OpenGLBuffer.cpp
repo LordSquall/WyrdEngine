@@ -163,12 +163,16 @@ namespace Osiris
 
 	void OpenGLFrameBuffer::Resize(uint32_t width, uint32_t height)
 	{
-		/* update the configuration */
-		_config.width = width;
-		_config.height = height;
+		/* check to ensure the resize is valid before applying */
+		if(width > 1 && height > 1)
+		{
+			/* update the configuration */
+			_config.width = width;
+			_config.height = height;
 
-		/* re-build framebuffer */
-		Build();
+			/* re-build framebuffer */
+			Build();
+		}
 	}
 
 
