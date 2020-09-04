@@ -9,24 +9,20 @@ namespace Osiris::Editor
 {
 	void PhysicsComponentView::OnPropertyEditorDraw()
 	{
-		if (ImGui::TreeNodeEx("Phsyics", ImGuiTreeNodeFlags_DefaultOpen))
+		if (ImGui::TreeNodeEx("Physics", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			ImGui::Text("This is Physics Component View");
-			///ImGui::Text((_BaseComponent != nullptr) ? _BaseComponent->GetName().c_str() : "<<unbound>>");
-			/*if (ImGui::BeginDragDropTarget())
-			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_DND_PAYLOAD"))
-				{
-					uint32_t payload_n = *(const uint32_t*)payload->Data;
-					OwnerGameObject->script.SetScriptResource(ServiceManager::Get<ResourceService>(ServiceManager::Resources)->GetScriptByUID(payload_n));
-				}
-				ImGui::EndDragDropTarget();
-			}
-			ImGui::SameLine();
-			if (ImGui::IconButton(_RemoveIcon, 1, ImVec2(16.0f, 16.0f), _ScriptResource != nullptr) == true)
-			{
-				_ScriptResource = nullptr;
-			}*/
+			bool isTrigger = _BaseComponent->IsTrigger();
+			bool isStatic = _BaseComponent->IsStatic();
+			bool useSpriteBoundary = _BaseComponent->UseSpriteBoundary();
+
+			if (ImGui::Checkbox("Is Trigger", &isTrigger) == true)
+				_BaseComponent->SetIsTrigger(isTrigger);
+
+			if (ImGui::Checkbox("Is Static", &isStatic) == true)
+				_BaseComponent->SetIsStatic(isStatic);
+
+			if (ImGui::Checkbox("Use Sprite Boundary", &useSpriteBoundary) == true)
+				_BaseComponent->SetUseSpriteBoundary(useSpriteBoundary);
 
 			ImGui::TreePop();
 		}

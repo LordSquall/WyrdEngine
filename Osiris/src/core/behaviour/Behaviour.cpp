@@ -181,6 +181,8 @@ namespace Osiris
 
 	void Behaviour::Stop()
 	{
+		mono_runtime_invoke(MonoUtils::FindMethodInClass(GetClass("GameObjectManager"), "Reset", 0, true), NULL, NULL, NULL);
+
 		_IsRunning = false;
 	}
 

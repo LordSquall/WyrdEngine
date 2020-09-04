@@ -165,7 +165,7 @@ namespace Osiris::Editor
 	void AssetViewer::DrawSceneItem(uint32_t resIdx, std::shared_ptr<SceneRes> sceneResource)
 	{
 		ImGui::BeginGroup();
-		if (ImGui::IconButton(_SceneIcon, 1, ImVec2(64, 64)))
+		if (ImGui::IconButton(_SceneIcon, 1, true, ImVec2(64, 64)))
 		{
 			ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace)->LoadScene(sceneResource->GetPath());
 		}
@@ -178,7 +178,7 @@ namespace Osiris::Editor
 		uint32_t id = scriptResource->GetResourceID();
 
 		ImGui::BeginGroup();
-		ImGui::IconButton(_ScriptIcon, 1, ImVec2(64, 64));
+		ImGui::IconButton(_ScriptIcon, 1, true, ImVec2(64, 64));
 		if (ImGui::BeginDragDropSource())
 		{
 			ImGui::SetDragDropPayload("ASSET_DND_PAYLOAD", &id, sizeof(uint32_t));
@@ -210,7 +210,7 @@ namespace Osiris::Editor
 	void AssetViewer::DrawUnknownItem(uint32_t resIdx, std::string& unknownResourceName)
 	{
 		ImGui::BeginGroup();
-		if (ImGui::IconButton(_UnknownIcon, 1, ImVec2(64, 64)))
+		if (ImGui::IconButton(_UnknownIcon, 1, true, ImVec2(64, 64)))
 		{
 			//ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace)->LoadScene(sceneResource->GetPath());
 		}

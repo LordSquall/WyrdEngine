@@ -81,7 +81,7 @@ namespace Osiris::Editor
 				ImGui::SameLine();
 
 				
-				if (ImGui::IconButton(_LayerRenameIcon, 1, ImVec2(16.0f, 16.0f)) == true)
+				if (ImGui::IconButton(_LayerRenameIcon, 1, true, ImVec2(16.0f, 16.0f)) == true)
 					ImGui::OpenPopup("Rename Layer");
 
 				if (ImGui::BeginPopupModal("Rename Layer", NULL, ImGuiWindowFlags_AlwaysAutoResize))

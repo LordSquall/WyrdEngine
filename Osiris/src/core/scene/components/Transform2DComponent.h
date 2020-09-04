@@ -27,6 +27,8 @@ namespace Osiris {
 
 		inline void SetMatrixValid(const bool isValid) { _IsMatrixValid = isValid; }
 		inline const bool IsMatrixValid() const { return _IsMatrixValid; }
+		
+		void ClearTransformationDelta();
 
 		void Recalculate();
 		
@@ -41,6 +43,10 @@ namespace Osiris {
 		std::string toString() const { return "Hello"; }
 
 	private:
-		bool _IsMatrixValid;
+		vec2	_PositionDelta;
+		float	_RotationDelta;
+		vec2	_ScaleDelta;
+
+		bool	_IsMatrixValid;
 	};
 }

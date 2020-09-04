@@ -16,6 +16,8 @@ namespace Osiris {
 		Scene(std::string name);
 		~Scene() {}
 
+		void Update();
+
 	public:
 		std::string name;
 		std::vector<std::shared_ptr<Layer2D>> layers2D;

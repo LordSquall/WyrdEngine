@@ -38,6 +38,7 @@ namespace Osiris::Editor
 
 		Application::Get().GetBehaviour().Start(_WorkspaceService->GetLoadedScene());
 		Application::Get().GetPhysics().Start(_WorkspaceService->GetLoadedScene());
+
 	}
 
 	void SimulationService::Stop()
@@ -57,6 +58,8 @@ namespace Osiris::Editor
 		{
 			Application::Get().GetBehaviour().Update(ts);
 			Application::Get().GetPhysics().Update(ts);
+
+			_WorkspaceService->GetLoadedScene()->Update();
 		}
 	}
 

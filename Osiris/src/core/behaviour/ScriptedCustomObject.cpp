@@ -26,12 +26,13 @@ namespace Osiris
 		Osiris::Behaviour& behaviour = Application::Get().GetBehaviour();
 
 		/* Map methods */
-		_Properties["GameObject"]	= MonoUtils::FindPropertyInClass(scriptedClass, "GameObject");
-		_Methods["OnStart"]			= MonoUtils::FindMethodInClass(scriptedClass, "OnStart", 0, false);
-		_Methods["OnUpdate"]		= MonoUtils::FindMethodInClass(scriptedClass, "OnUpdate", 0, false);
-		_Methods["OnKeyDown"]		= MonoUtils::FindMethodInClass(scriptedClass, "OnKeyDown", 1, false);
-		_Methods["OnKeyPress"]		= MonoUtils::FindMethodInClass(scriptedClass, "OnKeyPress", 1, false);
-		_Methods["OnKeyUp"]			= MonoUtils::FindMethodInClass(scriptedClass, "OnKeyUp", 1, false);
+		_Properties["GameObject"]		= MonoUtils::FindPropertyInClass(scriptedClass, "GameObject");
+		_Methods["OnStart"]				= MonoUtils::FindMethodInClass(scriptedClass, "OnStart", 0, false);
+		_Methods["OnUpdate"]			= MonoUtils::FindMethodInClass(scriptedClass, "OnUpdate", 0, false);
+		_Methods["OnTriggerCollision"]	= MonoUtils::FindMethodInClass(scriptedClass, "OnTriggerCollision", 1, false);
+		_Methods["OnKeyDown"]			= MonoUtils::FindMethodInClass(scriptedClass, "OnKeyDown", 1, false);
+		_Methods["OnKeyPress"]			= MonoUtils::FindMethodInClass(scriptedClass, "OnKeyPress", 1, false);
+		_Methods["OnKeyUp"]				= MonoUtils::FindMethodInClass(scriptedClass, "OnKeyUp", 1, false);
 
 		/* Create Object */
 		Object = MonoUtils::CreateNewObject((MonoDomain*)domain, scriptedClass);

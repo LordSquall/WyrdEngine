@@ -33,4 +33,14 @@ namespace Osiris {
 		return xOverlap && yOverlap;
 	}
 
+
+	glm::vec2 Rect::GetDepth(const glm::vec4 rectA, const glm::vec4 rectB)
+	{
+		glm::vec2 centerA = { (rectA.x + (rectA.z * 0.5f)), (rectA.y + (rectA.w * 0.5f)) };
+		glm::vec2 centerB = { (rectB.x + (rectB.z * 0.5f)), (rectB.y + (rectB.w * 0.5f)) };
+
+		glm::vec2 maxDepth = { (rectA.z * 0.5f) + (rectB.z * 0.5f), (rectA.w * 0.5f) + (rectB.w * 0.5f) };
+
+		return { (centerA.x + centerB.x) - maxDepth.x, (centerA.y - centerB.y) - maxDepth.y };
+	}
 }

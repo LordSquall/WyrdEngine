@@ -80,17 +80,21 @@ namespace Osiris::Editor
 
 	void SceneViewer::OnUpdate(Timestep ts)
 	{
-		if (_Scene != nullptr)
+		/* when the simulation service is not running we want the scene view update to trigger any update events*/
+		if (_SimulationService->IsRunning() == false)
 		{
-			/* Render Each sprite layer */
-			for (auto sl : _Scene->layers2D)
+			if (_Scene != nullptr)
 			{
-				for (auto go : sl->gameobjects)
+				/* Render Each sprite layer */
+				for (auto sl : _Scene->layers2D)
 				{
-					if (go->transform2D->IsMatrixValid() == false)
+					for (auto go : sl->gameobjects)
 					{
-						go->transform2D->Recalculate();
-						//go->physics.Update();
+						if (go->transform2D->IsMatrixValid() == false)
+						{
+							go->transform2D->Recalculate();
+							//go->physics.Update();
+						}
 					}
 				}
 			}

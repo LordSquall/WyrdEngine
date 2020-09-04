@@ -3,13 +3,15 @@
 /* local includes */
 #include "osrpch.h"
 #include "PhysicsComponent.h"
+#include "core/scene/GameObject.h"
 #include "core/scene/components/PhysicsComponent.h"
+#include "core/scene/components/Transform2DComponent.h"
+#include "core/scene/components/SpriteComponent.h"
 
 namespace Osiris
 {
 	PhysicsComponent::PhysicsComponent(std::shared_ptr<GameObject> owner) : IBaseComponent(owner, SceneComponentType::PhysicsComponent)
 	{
-		//OwnerGameObject = owner;
 	}
 
 	PhysicsComponent::PhysicsComponent(const PhysicsComponent& obj) : IBaseComponent(obj.Owner, SceneComponentType::PhysicsComponent)
@@ -22,13 +24,13 @@ namespace Osiris
 
 	}
 
-	void PhysicsComponent::Update()
+	void PhysicsComponent::Update(Timestep ts)
 	{
 		/* Update AABB global position */
-		//glm::vec4 spritePos = OwnerGameObject->transform2d.matrix * glm::vec4(OwnerGameObject->spriteRender.Sprite->GetX(), OwnerGameObject->spriteRender.Sprite->GetY(), 0.0f, 1.0f);
+		glm::vec4 spritePos = Owner->transform2D->matrix * glm::vec4(Owner->inputArea.x, Owner->inputArea.y, 0.0f, 1.0f);
 		
-		//_AABB = { spritePos.x, spritePos.y, OwnerGameObject->spriteRender.Sprite->GetWidth(), OwnerGameObject->spriteRender.Sprite->GetHeight() };
+		_AABB = { spritePos.x, spritePos.y, Owner->inputArea.z, Owner->inputArea.w };
 
-		//_Polygon.BuildFromRectangle(_AABB);
+		_Polygon.BuildFromRectangle(_AABB);
 	}
 }

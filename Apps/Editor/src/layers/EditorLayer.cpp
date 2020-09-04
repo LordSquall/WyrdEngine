@@ -390,12 +390,12 @@ namespace Osiris::Editor
 		ImGui::SetCursorPosX((ImGui::GetWindowWidth() - 64.0f) * 0.5f);
 
 		/* primary control bar */
-		if (ImGui::IconButton(_playButtonIcon, 1) == true)
+		if (ImGui::IconButton(_playButtonIcon, 1, !_simulationService->IsRunning()) == true)
 		{
 			_simulationService->Start();
 		}
 		ImGui::SameLine();
-		if (ImGui::IconButton(_stopButtonIcon, 2) == true)
+		if (ImGui::IconButton(_stopButtonIcon, 2, _simulationService->IsRunning()) == true)
 		{
 			_simulationService->Stop();
 		}
@@ -427,7 +427,7 @@ namespace Osiris::Editor
 
 		ImGui::End();
 
-		//renderer2DLayer->OnGUI();
+		ServiceManager::Get<DialogService>(ServiceManager::Service::Dialog)->OnGUI();
 
 		ImGui::PopFont();
 

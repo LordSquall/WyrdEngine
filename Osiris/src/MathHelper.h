@@ -14,5 +14,7 @@ namespace Osiris {
 	public:
 		static bool Contains(const glm::vec4 rect, const glm::vec2 point);
 		static bool Contains(const glm::vec4 rectA, const glm::vec4 rectB);
+
+		static glm::vec2 GetDepth(const glm::vec4 rectA, const glm::vec4 rectB);
 	};
 }

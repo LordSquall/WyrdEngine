@@ -29,8 +29,7 @@ namespace Osiris {
 		std::shared_ptr<Transform2DComponent> transform2D;
 
 		std::vector<std::shared_ptr<IBaseComponent>> components;
-
-
+		
 		glm::vec4 inputArea;
 	private:
 		uint32_t _uid = 0u;

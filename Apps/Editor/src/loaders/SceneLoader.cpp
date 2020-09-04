@@ -200,6 +200,7 @@ namespace Osiris::Editor
 		/* configure properties */
 		component->SetIsStatic(json.get<jsonxx::Boolean>("IsStatic"));
 		component->SetIsTrigger(json.get<jsonxx::Boolean>("IsTrigger"));
+		component->SetUseSpriteBoundary(json.get<jsonxx::Boolean>("UseSpriteBoundary"));
 
 		return component;
 	}
@@ -216,6 +217,7 @@ namespace Osiris::Editor
 		componentJson << "Type" << (uint32_t)physicsComponent->GetType();
 		componentJson << "IsStatic" << physics->IsStatic();
 		componentJson << "IsTrigger" << physics->IsTrigger();
+		componentJson << "UseSpriteBoundary" << physics->UseSpriteBoundary();
 
 		return componentJson;
 	}

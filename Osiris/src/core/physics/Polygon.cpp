@@ -129,6 +129,8 @@ namespace Osiris
 	{
 		Polygon* poly1 = polygonA;
 		Polygon* poly2 = polygonB;
+
+		bool isColliding = false;
 	
 		for (int shape = 0; shape < 2; shape++)
 		{
@@ -160,6 +162,8 @@ namespace Osiris
 					{
 						displacement.x += (1.0f - t1) * (line_r1e.x - line_r1s.x);
 						displacement.y += (1.0f - t1) * (line_r1e.y - line_r1s.y);
+
+						isColliding = true;
 					}
 				}
 
@@ -173,10 +177,6 @@ namespace Osiris
 			}
 		}
 
-		if (correctionVector != nullptr)
-		{
-			return false;
-		}
-		return true;
+		return isColliding;
 	}
 }

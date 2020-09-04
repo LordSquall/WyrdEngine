@@ -28,6 +28,8 @@ namespace Osiris::Editor
 		void Stop();
 		void Update(Timestep ts);
 
+		inline bool IsRunning() const { return _IsRunning; }
+
 		void SetInputState(int keyCode, int state);
 
 		Osiris::Behaviour::CreateCustomClassResult AddCustomScriptClass(const std::string& name, const std::string& filename);

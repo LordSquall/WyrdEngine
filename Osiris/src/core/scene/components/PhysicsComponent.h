@@ -34,7 +34,10 @@ namespace Osiris {
 
 		inline const glm::vec4 GetAABB() const { return _AABB; }
 
-		void Update();
+		void Update(Timestep ts);
+
+	public:
+		glm::vec2 previousPosition;
 
 	private:
 		bool _UseSpriteBoundary;

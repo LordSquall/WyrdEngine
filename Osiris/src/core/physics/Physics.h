@@ -10,6 +10,8 @@
 namespace Osiris
 {
 	class Scene;
+	class GameObject;
+	class PhysicsComponent;
 
 	class OSR_LIBRARY_API Physics
 	{
@@ -26,5 +28,7 @@ namespace Osiris
 
 	private:
 		bool _IsRunning;
+
+		std::vector<PhysicsComponent*> _physicsObjects;
 	};
 }

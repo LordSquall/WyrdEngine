@@ -10,6 +10,11 @@ namespace OsirisAPI
     {
         private static Dictionary<int, GameObject> _GameObjects = new Dictionary<int, GameObject>();
 
+        public static void Reset()
+        {
+            _GameObjects.Clear();
+        }
+
         public static GameObject CreateGameObject(ref int uid)
         {
             GameObject newGameObject = new GameObject();

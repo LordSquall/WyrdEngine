@@ -15,7 +15,7 @@ namespace ImGui
 		ImGui::Image((ImTextureID)(INT_PTR)texture->GetTexture()->GetHandle(), size, ImVec2(icon->uv[0].x, icon->uv[0].y), ImVec2(icon->uv[2].x, icon->uv[2].y), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 1));
 	}
 
-	bool ImGui::IconButton(std::shared_ptr<Osiris::Editor::Icon> icon, ImGuiID id, ImVec2& size, bool enabled, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
+	bool ImGui::IconButton(std::shared_ptr<Osiris::Editor::Icon> icon, ImGuiID id, bool enabled, ImVec2& size, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
 	{
 		std::shared_ptr<Osiris::Editor::TextureRes> texture = icon->iconSet->Texture;
 

@@ -3,7 +3,9 @@
 
 /* Local includes */
 #include "Scene.h"
+#include "Layer2D.h"
 #include "GameObject.h"
+#include "core/scene/components/Transform2DComponent.h"
 
 namespace Osiris
 {
@@ -19,5 +21,11 @@ namespace Osiris
 		bgcolor[0] = 0.2f;
 		bgcolor[1] = 0.2f;
 		bgcolor[2] = 0.2f;
+	}
+
+
+	void Scene::Update()
+	{
+		
 	}
 }
