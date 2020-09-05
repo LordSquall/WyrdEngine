@@ -25,7 +25,7 @@ namespace Osiris
 
 	Behaviour::Behaviour() : _IsRunning(false)
 	{
-		std::string apiLibraryLocation = "D:/Projects/Osiris/OsirisEngine/lib/Debug/OsirisAPI/OsirisAPI.dll";
+		std::string apiLibraryLocation = "C:/Projects/Osiris/OsirisEngine/lib/Debug/OsirisAPI/OsirisAPI.dll";
 		std::string monoLibraryDirectory = "C:/Program Files/Mono/lib"; 
 		std::string monoExtensionDirectory = "C:/Program Files/Mono/etc";
 
@@ -221,7 +221,7 @@ namespace Osiris
 	{
 		//TODO: Fix location of OsirisAPI dlls
 		// Compile the class into a mono compatible DLL
-		std::string command = "mcs " + filename + " -target:library -lib:C:/PROGRA~1/Mono/lib/mono/4.5/Facades/,D:/Projects/Osiris/OsirisEngine/lib/Debug/OsirisAPI/ -r:System.Runtime.InteropServices.dll,OsirisAPI.dll -debug";
+		std::string command = "mcs " + filename + " -target:library -lib:C:/PROGRA~1/Mono/lib/mono/4.5/Facades/,C:/Projects/Osiris/OsirisEngine/lib/Debug/OsirisAPI/ -r:System.Runtime.InteropServices.dll,OsirisAPI.dll -debug";
 		system(command.c_str());
 
 		/* Determine the output file name */
