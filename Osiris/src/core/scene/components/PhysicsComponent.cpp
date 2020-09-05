@@ -10,14 +10,9 @@
 
 namespace Osiris
 {
-	PhysicsComponent::PhysicsComponent(std::shared_ptr<GameObject> owner) : IBaseComponent(owner, SceneComponentType::PhysicsComponent)
-	{
-	}
+	PhysicsComponent::PhysicsComponent(std::shared_ptr<GameObject> owner) : IBaseComponent(owner, SceneComponentType::PhysicsComponent) { }
 
-	PhysicsComponent::PhysicsComponent(const PhysicsComponent& obj) : IBaseComponent(obj.Owner, SceneComponentType::PhysicsComponent)
-	{
-		//OwnerGameObject = obj.OwnerGameObject;
-	}
+	PhysicsComponent::PhysicsComponent(const PhysicsComponent& obj) : IBaseComponent(obj.Owner, SceneComponentType::PhysicsComponent) { }
 
 	PhysicsComponent::~PhysicsComponent()
 	{
@@ -29,8 +24,6 @@ namespace Osiris
 		/* Update AABB global position */
 		glm::vec4 spritePos = Owner->transform2D->matrix * glm::vec4(Owner->inputArea.x, Owner->inputArea.y, 0.0f, 1.0f);
 		
-		_AABB = { spritePos.x, spritePos.y, Owner->inputArea.z, Owner->inputArea.w };
-
-		_Polygon.BuildFromRectangle(_AABB);
+		_AABB = { { spritePos.x, spritePos.y }, { Owner->inputArea.z, Owner->inputArea.w } };
 	}
 }

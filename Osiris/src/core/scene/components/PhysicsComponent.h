@@ -3,7 +3,7 @@
 /* local includes */
 #include "Osiris.h"
 #include "core/scene/components/IBaseComponent.h"
-#include "core/physics/Polygon.h"
+#include "core/maths/Rect.h"
 
 /* external includes */
 #include <glm/glm.hpp>
@@ -30,9 +30,7 @@ namespace Osiris {
 		inline void SetIsTrigger(const bool isTrigger) { _IsTrigger = isTrigger; }
 		inline const bool IsTrigger() const { return _IsTrigger; }
 
-		inline Osiris::Polygon* GetPolygon() { return &_Polygon; }
-
-		inline const glm::vec4 GetAABB() const { return _AABB; }
+		inline const Rect GetAABB() const { return _AABB; }
 
 		void Update(Timestep ts);
 
@@ -43,9 +41,7 @@ namespace Osiris {
 		bool _UseSpriteBoundary;
 		bool _IsStatic;
 		bool _IsTrigger;
-
-		Osiris::Polygon _Polygon;
-
-		glm::vec4 _AABB;
+		
+		Rect _AABB;
 	};
 }
