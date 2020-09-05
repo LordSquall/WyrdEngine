@@ -29,10 +29,8 @@ namespace Osiris::Editor
 	void EditorViewBase::OnPostEditorRender()
 	{
 		/* calculate the boundary for the window, this is reqiured to help route mouse events*/
-		_Boundary.x = ImGui::GetWindowPos().x;
-		_Boundary.y = ImGui::GetWindowPos().y;
-		_Boundary.z = ImGui::GetWindowSize().x;
-		_Boundary.w = ImGui::GetWindowSize().y;
+		_Boundary.position = { ImGui::GetWindowPos().x, ImGui::GetWindowPos().y };
+		_Boundary.size = { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y };
 
 		// DEBUG: Display a yellow border around each view bounary
 		//{

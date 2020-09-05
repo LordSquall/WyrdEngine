@@ -1,8 +1,6 @@
 #include "osrpch.h"
 #include "Polygon.h"
 
-#include "MathHelper.h"
-
 namespace Osiris
 {
 	Polygon::Polygon()
@@ -36,33 +34,34 @@ namespace Osiris
 
 	Polygon::Direction Polygon::CollisionTest_AABB(Polygon* polygonA, Polygon* polygonB)
 	{
-		if (Rect::Contains(polygonA->aabb, polygonB->aabb) == true)
-		{
-			glm::vec2 compass[] = {
-				glm::vec2(0.0f, 1.0f),	// up
-				glm::vec2(1.0f, 0.0f),	// right
-				glm::vec2(0.0f, -1.0f),	// down
-				glm::vec2(-1.0f, 0.0f)	// left
-			};
+		//if (Rect::Contains(polygonA->aabb, polygonB->aabb) == true)
+		//{
+		//	glm::vec2 compass[] = {
+		//		glm::vec2(0.0f, 1.0f),	// up
+		//		glm::vec2(1.0f, 0.0f),	// right
+		//		glm::vec2(0.0f, -1.0f),	// down
+		//		glm::vec2(-1.0f, 0.0f)	// left
+		//	};
 
-			float max = 0.0f;
-			unsigned int best_match = -1;
-			for (unsigned int i = 0; i < 4; i++)
-			{
-				float dot_product = glm::dot(glm::normalize(polygonB->center), compass[i]);
-				if (dot_product > max)
-				{
-					max = dot_product;
-					best_match = i;
-				}
-			}
+		//	float max = 0.0f;
+		//	unsigned int best_match = -1;
+		//	for (unsigned int i = 0; i < 4; i++)
+		//	{
+		//		float dot_product = glm::dot(glm::normalize(polygonB->center), compass[i]);
+		//		if (dot_product > max)
+		//		{
+		//			max = dot_product;
+		//			best_match = i;
+		//		}
+		//	}
 
-			return (Polygon::Direction)(best_match);
-		}
-		else
-		{
-			return Polygon::Direction::NONE;
-		}
+		//	return (Polygon::Direction)(best_match);
+		//}
+		//else
+		//{
+		//	return Polygon::Direction::NONE;
+		//}
+		return Polygon::Direction::NONE;
 	}
 
 	bool Polygon::CollisionTest_SAT(Polygon* polygonA, Polygon* polygonB, glm::vec2* correctionVector, float* correctionDepth)

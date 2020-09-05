@@ -6,4 +6,3 @@
 #include "core/KeyCodes.h"
 #include "core/Layer.h"
 #include "core/Timestep.h"
-#include "MathHelper.h"

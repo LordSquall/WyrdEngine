@@ -57,6 +57,6 @@ namespace Osiris::Editor
 		bool _mouseEventStarted;
 
 		glm::vec2 _mouseOffset;
-		glm::vec4 _Viewport;
+		Osiris::Rect _Viewport;
 	};
 }

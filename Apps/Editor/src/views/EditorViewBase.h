@@ -1,7 +1,12 @@
 #pragma once
 
+/* local includes */
 #include "support/IconLibrary.h"
 
+/* core includes */
+#include "core/maths/Rect.h"
+
+/* external includes */
 #include <glm/glm.hpp>
 
 namespace Osiris::Editor
@@ -31,7 +36,7 @@ namespace Osiris::Editor
 		void OnPostEditorRender();
 
 		inline const std::string& GetName() const { return _Name; }
-		inline glm::vec4 GetBoundary() const { return _Boundary; }
+		inline Osiris::Rect GetBoundary() const { return _Boundary; }
 
 		inline void Close() { _ShowFlag = false; }
 		inline bool* GetShowFlagRef() { return &_ShowFlag; }
@@ -42,7 +47,7 @@ namespace Osiris::Editor
 	protected:
 		std::string			_Name;
 		bool				_ShowFlag = true;
-		glm::vec4			_Boundary;
-		glm::vec4			_PrevBoundary;
+		Osiris::Rect		_Boundary;
+		Osiris::Rect		_PrevBoundary;
 	};
 }

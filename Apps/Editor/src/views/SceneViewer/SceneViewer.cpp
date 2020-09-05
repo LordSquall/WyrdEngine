@@ -166,9 +166,9 @@ namespace Osiris::Editor
 		_mouseOffset = { ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y };
 
 		/* calculate the viewport size */
-		_Viewport = { 0.0f, 0.0f, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y - ImGui::GetCursorPos().y };
+		_Viewport = { { 0.0f, 0.0f }, { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y - ImGui::GetCursorPos().y } };
 
-		ImGui::Image((ImTextureID)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport.z, _Viewport.w), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((ImTextureID)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport.size.x, _Viewport.size.y), ImVec2(0, 1), ImVec2(1, 0));
 
 		if (showStats == true)
 		{
@@ -179,13 +179,13 @@ namespace Osiris::Editor
 			ImGui::Text("\tPosition		[%f, %f, %f]", _CameraController->GetPosition().x, _CameraController->GetPosition().y, _CameraController->GetPosition().z);
 
 			ImGui::Text("Window:");
-			ImGui::Text("\tAspect Ratio [%f]", _Boundary.z / _Boundary.w);
+			ImGui::Text("\tAspect Ratio [%f]", _Boundary.size.x / _Boundary.size.y);
 
 			ImGui::Text("Viewport:");
-			ImGui::Text("X [%f]", _Viewport.x);
-			ImGui::Text("Y [%f]", _Viewport.y);
-			ImGui::Text("W [%f]", _Viewport.z);
-			ImGui::Text("H [%f]", _Viewport.w);
+			ImGui::Text("X [%f]", _Viewport.size.x);
+			ImGui::Text("Y [%f]", _Viewport.size.y);
+			ImGui::Text("W [%f]", _Viewport.position.x);
+			ImGui::Text("H [%f]", _Viewport.position.y);
 
 			ImGui::Text("FrameBuffer:");
 			ImGui::Text("Width [%d]", _Framebuffer->GetConfig().width);
@@ -214,8 +214,8 @@ namespace Osiris::Editor
 
 	void SceneViewer::OnResize()
 	{
-		_Framebuffer->Resize(_Viewport.z, _Viewport.w);
-		_CameraController->UpdateProjection(_Viewport.z / _Viewport.w);
+		_Framebuffer->Resize(_Viewport.size.x, _Viewport.size.y);
+		_CameraController->UpdateProjection(_Viewport.size.x / _Viewport.size.y);
 	}
 
 	bool SceneViewer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
@@ -226,10 +226,10 @@ namespace Osiris::Editor
 		glm::vec2 mouseCoords = glm::vec2(e.GetPositionX(), e.GetPositionY()) - _mouseOffset;
 
 
-		if (Rect::Contains(_Viewport, mouseCoords) == true)
+		if (_Viewport.ContainsPoint(mouseCoords) == true)
 		{
-			normalisedMouseCoords.x = (2.0f * (mouseCoords.x) / (_Viewport.z)) - 1.0f;
-			normalisedMouseCoords.y = -((2.0f * (mouseCoords.y) / (_Viewport.w)) - 1.0f);
+			normalisedMouseCoords.x = (2.0f * (mouseCoords.x) / (_Viewport.size.x)) - 1.0f;
+			normalisedMouseCoords.y = -((2.0f * (mouseCoords.y) / (_Viewport.size.y)) - 1.0f);
 
 			if (_Scene != nullptr)
 			{
@@ -242,11 +242,12 @@ namespace Osiris::Editor
 
 						glm::vec4 nearPoint = mvpInverse * glm::vec4(normalisedMouseCoords, 0.0f, 1.0f);
 
-						glm::vec4 translatedInputArea = _CameraController->GetCamera().GetViewProjectionMatrix() * (glm::vec4(go->inputArea.x, go->inputArea.y, 0.0, 1.0));
-						translatedInputArea.z = go->inputArea.z;
-						translatedInputArea.w = go->inputArea.w;
+						Rect inputArea = { { go->inputArea.x, go->inputArea.y }, { 0.0, 1.0 } };
+						Rect translatedInputArea = _CameraController->GetCamera().GetViewProjectionMatrix() * inputArea;
+						translatedInputArea.size.x = go->inputArea.z;
+						translatedInputArea.size.y = go->inputArea.w;
 
-						if (Rect::Contains(translatedInputArea, { nearPoint.x, nearPoint.y }) == true)
+						if (translatedInputArea.ContainsPoint({ nearPoint.x, nearPoint.y }) == true)
 						{
 							selectedGameObject = go;
 							itemFound = true;
@@ -292,11 +293,11 @@ namespace Osiris::Editor
 		/* calculate the mouse positions and deltas */
 		glm::vec2 mouseCoords = glm::vec2(e.GetX(), e.GetY()) - _mouseOffset;
 
-		if (Rect::Contains(_Viewport, mouseCoords) == true)
+		if (_Viewport.ContainsPoint(mouseCoords) == true)
 		{
 
 			glm::vec2 mouseDelta = _LastMousePos - mouseCoords;
-			glm::vec2 unitDelta = { mouseDelta.x * (1.0f / (_Boundary.z * 0.5f)),  -(mouseDelta.y * (1.0f / ((_Boundary.w * 0.5f) * _CameraController->GetAspectRatio()))) };
+			glm::vec2 unitDelta = { mouseDelta.x * (1.0f / (_Boundary.size.x * 0.5f)),  -(mouseDelta.y * (1.0f / ((_Boundary.size.y * 0.5f) * _CameraController->GetAspectRatio()))) };
 
 			unitDelta = unitDelta * (_CameraController->GetAspectRatio() * _CameraController->GetZoomLevel());
 

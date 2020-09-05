@@ -1,21 +1,13 @@
 #pragma once
 
-#include "osrpch.h"
+/* local includes */
 #include "EditorLayer.h"
-
-#include "core/Log.h"
-#include "core/Application.h"
-#include "core/Layer.h"
-
 #include "events/Event.h"
 #include "events/KeyEvent.h"
 #include "events/MouseEvent.h"
 #include "events/ApplicationEvent.h"
-
 #include "services/ServiceManager.h"
-
 #include "layers/EditorRenderer2DLayer.h"
-
 #include "views/SceneViewer/SceneViewer.h"
 #include "views/PropertiesViewer/PropertiesViewer.h"
 #include "views/PreferencesViewer/PreferencesViewer.h"
@@ -23,13 +15,18 @@
 #include "views/SpriteLayerEditor/SpriteLayerEditor.h"
 #include "views/AssetViewer/AssetViewer.h"
 #include "views/OutputView/OutputView.h"
-
 #include "export/Exporter.h"
-
 #include "platform/OpenGL/imgui_opengl_renderer.h"
-
 #include "support/ImGuiUtils.h"
 
+/* core includes */
+#include <osrpch.h>
+#include <core/Log.h>
+#include <core/Application.h>
+#include <core/Layer.h>
+#include <core/maths/Rect.h>
+
+/* external includes */
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <SOIL.h>
@@ -451,7 +448,8 @@ namespace Osiris::Editor
 
 	void EditorLayer::OnSceneOpened(Events::EventArgs& args)
 	{
-		/* cast the event args to correct type */
+		/* cast the event args to cor
+		type */
 		Events::SceneOpenedArgs& evtArgs = static_cast<Events::SceneOpenedArgs&>(args);
 
 		/* get the current loaded project name */
@@ -476,7 +474,7 @@ namespace Osiris::Editor
 		{
 			glm::vec2 mousePos = { e.GetPositionX(), e.GetPositionY() };
 
-			if (Rect::Contains((it->second)->GetBoundary(), mousePos) == true)
+			if ((it->second)->GetBoundary().ContainsPoint(mousePos) == true)
 			{
 				/* store the view as the event owner */
 				_mouseEventOwner = (it->second);
@@ -497,7 +495,7 @@ namespace Osiris::Editor
 		{
 			glm::vec2 mousePos = { e.GetPositionX(), e.GetPositionY() };
 
-			if (Rect::Contains((it->second)->GetBoundary(), mousePos) == true)
+			if ((it->second)->GetBoundary().ContainsPoint(mousePos) == true)
 			{
 				(it->second)->OnEvent(e);
 			}
@@ -529,7 +527,7 @@ namespace Osiris::Editor
 		{
 			glm::vec2 mousePos = { io.MousePos.x, io.MousePos.y };
 
-			if (Rect::Contains((it->second)->GetBoundary(), mousePos) == true)
+			if ((it->second)->GetBoundary().ContainsPoint(mousePos) == true)
 			{
 				(it->second)->OnEvent(e);
 			}

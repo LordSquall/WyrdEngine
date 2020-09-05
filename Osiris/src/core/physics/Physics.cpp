@@ -10,9 +10,6 @@
 #include "core/behaviour/ScriptedGameObject.h"
 #include "core/behaviour/MonoUtils.h"
 
-/* external includes */
-#include <MathHelper.h>
-
 namespace Osiris
 {
 	Physics::Physics() : _IsRunning(false)
@@ -113,51 +110,51 @@ namespace Osiris
 						/* non-trigger on non-trigger */
 						else if (physicsA->IsTrigger() == false && physicsB->IsTrigger() == false)
 						{
-							if (Rect::Contains(physicsA->GetAABB(), physicsB->GetAABB()) == true)
-							{
-								// perform a north check
-								if (physicsB->IsStatic() == true)
-								{
-									vec2 collisionDepth = Rect::GetDepth(physicsA->GetAABB(), physicsB->GetAABB());
+							//if (Rect::Contains(physicsA->GetAABB(), physicsB->GetAABB()) == true)
+							//{
+							//	// perform a north check
+							//	if (physicsB->IsStatic() == true)
+							//	{
+							//		vec2 collisionDepth = Rect::GetDepth(physicsA->GetAABB(), physicsB->GetAABB());
 
-									physicsA->Owner->transform2D->Translate({ collisionDepth.x, 0.0f });
+							//		physicsA->Owner->transform2D->Translate({ collisionDepth.x, 0.0f });
 
-									physicsA->Update(0.0f);
-								}
+							//		physicsA->Update(0.0f);
+							//	}
 
-								//if (physicsB->IsStatic() == true)
-								//{
-									//player.x += velocity.x;
-									//player.updateAABB();
-									//for (int tx = left - 1; tx <= right + 1; tx++)
-									//{
-									//	for (int ty = top - 1; ty <= bottom + 1; ty++)
-									//	{
-									//		aabb = world.getTileAABB(tx, ty);
-									//		if (aabb.collidesWith(player.aabb))
-									//		{
-									//			depth = player.aabb.getXDepth(aabb);
-									//			player.x -= depth;
-									//		}
-									//	}
-									//}
-									
-									//player.y += velocity.y;
-									//player.updateAABB();
-									//for (int tx = left - 1; tx <= right + 1; tx++)
-									//{
-									//	for (int ty = top - 1; ty <= bottom + 1; ty++)
-									//	{
-									//		aabb = world.getTileAABB(tx, ty);
-									//		if (aabb.collidesWith(player.aabb))
-									//		{
-									//			depth = player.aabb.getYDepth(aabb);
-									//			player.y -= depth;
-									//		}
-									//	}
-									//}
-								//}
-							}
+							//	//if (physicsB->IsStatic() == true)
+							//	//{
+							//		//player.x += velocity.x;
+							//		//player.updateAABB();
+							//		//for (int tx = left - 1; tx <= right + 1; tx++)
+							//		//{
+							//		//	for (int ty = top - 1; ty <= bottom + 1; ty++)
+							//		//	{
+							//		//		aabb = world.getTileAABB(tx, ty);
+							//		//		if (aabb.collidesWith(player.aabb))
+							//		//		{
+							//		//			depth = player.aabb.getXDepth(aabb);
+							//		//			player.x -= depth;
+							//		//		}
+							//		//	}
+							//		//}
+							//		
+							//		//player.y += velocity.y;
+							//		//player.updateAABB();
+							//		//for (int tx = left - 1; tx <= right + 1; tx++)
+							//		//{
+							//		//	for (int ty = top - 1; ty <= bottom + 1; ty++)
+							//		//	{
+							//		//		aabb = world.getTileAABB(tx, ty);
+							//		//		if (aabb.collidesWith(player.aabb))
+							//		//		{
+							//		//			depth = player.aabb.getYDepth(aabb);
+							//		//			player.y -= depth;
+							//		//		}
+							//		//	}
+							//		//}
+							//	//}
+							//}
 						}
 					}
 				}
