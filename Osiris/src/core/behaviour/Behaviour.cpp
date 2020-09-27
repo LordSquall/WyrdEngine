@@ -19,15 +19,23 @@
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
 
+#ifndef NATIVE_API_LIB_LOC
+#define NATIVE_API_LIB_LOC "C:/Projects/Osiris/OsirisEngine/lib/Debug/"
+#endif
+
+#ifndef MONO_INSTALL_LOC
+#define MONO_INSTALL_LOC "C:/PROGRA~1/Mono/"
+#endif
+
 namespace Osiris
 {
 	Timestep _Timestep;
 
 	Behaviour::Behaviour() : _IsRunning(false)
 	{
-		std::string apiLibraryLocation = "C:/Projects/Osiris/OsirisEngine/lib/Debug/OsirisAPI/OsirisAPI.dll";
-		std::string monoLibraryDirectory = "C:/Program Files/Mono/lib"; 
-		std::string monoExtensionDirectory = "C:/Program Files/Mono/etc";
+		std::string apiLibraryLocation = NATIVE_API_LIB_LOC "OsirisAPI/OsirisAPI.dll";
+		std::string monoLibraryDirectory = MONO_INSTALL_LOC "lib";
+		std::string monoExtensionDirectory = MONO_INSTALL_LOC "etc";
 
 		mono_set_dirs(monoLibraryDirectory.c_str(),
 			monoExtensionDirectory.c_str());
@@ -221,7 +229,7 @@ namespace Osiris
 	{
 		//TODO: Fix location of OsirisAPI dlls
 		// Compile the class into a mono compatible DLL
-		std::string command = "mcs " + filename + " -target:library -lib:C:/PROGRA~1/Mono/lib/mono/4.5/Facades/,C:/Projects/Osiris/OsirisEngine/lib/Debug/OsirisAPI/ -r:System.Runtime.InteropServices.dll,OsirisAPI.dll -debug";
+		std::string command = "mcs " + filename + " -target:library -lib:" MONO_INSTALL_LOC  "lib/mono/4.5/Facades/," NATIVE_API_LIB_LOC "OsirisAPI/ -r:System.Runtime.InteropServices.dll,OsirisAPI.dll -debug";
 		system(command.c_str());
 
 		/* Determine the output file name */

@@ -19,18 +19,21 @@ monolibdir = ""
 monodir = ""
 
 -- check for the installation of the renderdoc api header file
-if os.isfile("C:/Program Files/RenderDoc/renderdoc_app.h") == true then
+if os.isfile("C:/PROGRA~1/RenderDoc/renderdoc_app.h") == true then
 	print("Render Doc header found")
 	renderdocfound = true
 	renderdocdir = "C:/Program Files/RenderDoc/"
 end
 
 -- check for the installation of the mono file
-if os.isfile("C:/Program Files/Mono/etc/mono/config") == true then
+if os.isfile("C:/PROGRA~1/Mono/etc/mono/config") == true then
 	print("Mono installation found")
 	monofound = true
 	monolibdir = "C:/Program Files/Mono/lib/"
-	monodir = "C:/Program Files/Mono/"
+	monodir = "C:/PROGRA~1/Mono/"
+else
+	print("Unable to find Mono installation. Please install before continuing")
+	os.exit()
 end
 
 outputdir = "%{cfg.buildcfg}"
@@ -297,7 +300,10 @@ project "OsirisAPI"
 						"OSR_PLATFORM_WINDOWS",
 						"OSR_EDITOR_ENABLED",
 						"GLM_ENABLE_EXPERIMENTAL",
+						"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
+						"MONO_INSTALL_LOC=" .. monodir,
 						iif(renderdocfound, "OSR_RENDERDOC_ENABLED", "")
+
 					}
 					
 					if renderdocfound then
