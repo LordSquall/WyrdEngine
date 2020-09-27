@@ -28,22 +28,16 @@ namespace Osiris::Editor
 			{
 			case efsw::Actions::Add:
 				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddResource, std::make_shared<Events::AddResourceArgs>(dir + "/" + filename));
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddLogEntry, std::make_shared<Events::AddLogEntryArgs>(Severity::Info,
-					"DIR (" + dir + ") FILE (" + filename + ") has event Added"));
 				break;
 			case efsw::Actions::Delete:
 				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::DeleteResource, std::make_shared<Events::DeleteResourceArgs>(dir + "/" + filename));
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddLogEntry, std::make_shared<Events::AddLogEntryArgs>(Severity::Info,
-					"DIR (" + dir + ") FILE (" + filename + ") has event Delete"));
+
 				break;
 			case efsw::Actions::Modified:				
 				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ReloadResource, std::make_shared<Events::ReloadResourceArgs>(dir + "/" + filename));
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddLogEntry, 
-					std::make_shared<Events::AddLogEntryArgs>(Severity::Info, "DIR (" + dir + ") FILE (" + filename + ") has event Modified"));
 				break;
 			case efsw::Actions::Moved:				
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddLogEntry, std::make_shared<Events::AddLogEntryArgs>(Severity::Info,
-					"DIR (" + dir + ") FILE (" + filename + ") has event Moved from (" + oldFilename + ")"));
+
 				break;
 			default:
 				std::cout << "Should never happen!" << std::endl;

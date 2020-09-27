@@ -1,7 +1,6 @@
 #pragma once
 
 /* local includes */
-#include "Osiris.h"
 #include "core/scene/components/IBaseComponent.h"
 #include "core/maths/Rect.h"
 
@@ -30,6 +29,9 @@ namespace Osiris {
 		inline void SetIsTrigger(const bool isTrigger) { _IsTrigger = isTrigger; }
 		inline const bool IsTrigger() const { return _IsTrigger; }
 
+		inline void SetVelocity(const glm::vec2 velocity) { _velocity = velocity; }
+		inline glm::vec2 GetVelocity() const { return _velocity; }
+
 		inline const Rect GetAABB() const { return _AABB; }
 
 		void Update(Timestep ts);
@@ -43,5 +45,7 @@ namespace Osiris {
 		bool _IsTrigger;
 		
 		Rect _AABB;
+
+		glm::vec2 _velocity;
 	};
 }

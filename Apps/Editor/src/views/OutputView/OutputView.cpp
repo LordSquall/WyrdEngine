@@ -23,7 +23,7 @@ namespace Osiris::Editor
 			{
 				Events::AddLogEntryArgs& evtArgs = (Events::AddLogEntryArgs&)args;
 
-				//_LogItems.push_back({ evtArgs.severity, evtArgs.msg });
+				_LogItems.push_back({ evtArgs.severity, evtArgs.msg });
 			});
 	}
 
@@ -38,6 +38,18 @@ namespace Osiris::Editor
 		ImGui::Checkbox("Errors", &_ShowErrors);
 		ImGui::SameLine();
 		ImGui::Checkbox("Debug", &_ShowDebug);
+
+		ImGui::PushItemWidth(-1);
+		ImGui::ListBoxHeader("##label");
+
+		for each (auto item in _LogItems)
+		{
+			ImGui::Selectable(item.message.c_str());
+
+		}
+
+		ImGui::ListBoxFooter();
+		ImGui::PopItemWidth();
 	}
 
 	void OutputView::DrawLogItem(const LogItem& msg)

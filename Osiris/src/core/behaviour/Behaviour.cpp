@@ -230,6 +230,7 @@ namespace Osiris
 		//TODO: Fix location of OsirisAPI dlls
 		// Compile the class into a mono compatible DLL
 		std::string command = "mcs " + filename + " -target:library -lib:" MONO_INSTALL_LOC  "lib/mono/4.5/Facades/," NATIVE_API_LIB_LOC "OsirisAPI/ -r:System.Runtime.InteropServices.dll,OsirisAPI.dll -debug";
+		
 		system(command.c_str());
 
 		/* Determine the output file name */

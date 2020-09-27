@@ -12,6 +12,8 @@ LIBRARY_API const char* GameObject_Name_Get(void* obj);
 
 LIBRARY_API void GameObject_Move(void* obj, float x, float y);
 
+LIBRARY_API void GameObject_SetVelocity(void* obj, float vX, float vY);
+
 #ifdef __cplusplus
 }
 #endif

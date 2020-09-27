@@ -7,6 +7,7 @@ namespace OsirisAPI
         public GameObject GameObject { get; set; }
 
         void OnStart() { }
+
         void OnUpdate() { }
 
         void OnTriggerCollision(GameObject other) { }

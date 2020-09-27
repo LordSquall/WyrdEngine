@@ -106,7 +106,14 @@ namespace ImGui
 		RenderFrame(bb.Min, bb.Max, col, true, style.FrameRounding);
 		RenderTextClipped(bb.Min + style.FramePadding, bb.Max - style.FramePadding, label, NULL, &label_size, style.ButtonTextAlign, &bb);
 
-
 		return pressed;
+	}
+
+	/* Vector Outputs */
+	void ImGui::LabelVec2(const char* label, glm::vec2& vector, const std::string& xcompLabel, const std::string& ycompLabel)
+	{
+		ImGui::PushItemWidth(-1);
+		ImGui::LabelText("##label", "%s \t%s:%.4f\t%s:%.4f", label, xcompLabel.c_str(), vector.x, ycompLabel.c_str(), vector.y);
+		ImGui::PopItemWidth();
 	}
 }

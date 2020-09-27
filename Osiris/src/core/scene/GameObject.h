@@ -10,6 +10,8 @@
 namespace Osiris {
 
 	class Transform2DComponent;
+	class SpriteComponent;
+	class PhysicsComponent;
 
 	/* Editor GameObject Data Model Structure */
 	class OSR_LIBRARY_API GameObject
@@ -27,6 +29,8 @@ namespace Osiris {
 		std::string name;
 
 		std::shared_ptr<Transform2DComponent> transform2D;
+		std::shared_ptr<SpriteComponent> sprite;
+		std::shared_ptr<PhysicsComponent> physics;
 
 		std::vector<std::shared_ptr<IBaseComponent>> components;
 		

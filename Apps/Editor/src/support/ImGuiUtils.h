@@ -15,4 +15,7 @@ namespace ImGui
 
 	/* Buttons */
 	bool TextButton(const char* label, bool enabled = true, const ImVec2& size = { 0, 0 }, ImGuiButtonFlags = 0);
+
+	/* Vector Outputs */
+	void LabelVec2(const char* label, glm::vec2& vector, const std::string& xcompLabel = "x", const std::string& ycompLabel = "y");
 }

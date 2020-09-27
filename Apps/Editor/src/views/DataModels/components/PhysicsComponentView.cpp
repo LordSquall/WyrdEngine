@@ -4,6 +4,7 @@
 #include <imgui.h>
 
 #include "PhysicsComponentView.h"
+#include "support/ImGuiUtils.h"
 
 namespace Osiris::Editor
 {
@@ -23,6 +24,8 @@ namespace Osiris::Editor
 
 			if (ImGui::Checkbox("Use Sprite Boundary", &useSpriteBoundary) == true)
 				_BaseComponent->SetUseSpriteBoundary(useSpriteBoundary);
+
+			ImGui::LabelVec2("Velocity", _BaseComponent->GetVelocity());
 
 			ImGui::TreePop();
 		}

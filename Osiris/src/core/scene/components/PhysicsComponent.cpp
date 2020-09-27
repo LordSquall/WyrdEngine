@@ -10,9 +10,13 @@
 
 namespace Osiris
 {
-	PhysicsComponent::PhysicsComponent(std::shared_ptr<GameObject> owner) : IBaseComponent(owner, SceneComponentType::PhysicsComponent) { }
+	PhysicsComponent::PhysicsComponent(std::shared_ptr<GameObject> owner) : IBaseComponent(owner, SceneComponentType::PhysicsComponent),
+		_velocity({ 0.0f, 0.0 })
+	{ }
 
-	PhysicsComponent::PhysicsComponent(const PhysicsComponent& obj) : IBaseComponent(obj.Owner, SceneComponentType::PhysicsComponent) { }
+	PhysicsComponent::PhysicsComponent(const PhysicsComponent& obj) : IBaseComponent(obj.Owner, SceneComponentType::PhysicsComponent),
+		_velocity({ 0.0f, 0.0 })
+	{ }
 
 	PhysicsComponent::~PhysicsComponent()
 	{
@@ -21,6 +25,10 @@ namespace Osiris
 
 	void PhysicsComponent::Update(Timestep ts)
 	{
+		/* Apply physics position update */
+		Owner->transform2D->position += _velocity * ts.GetSeconds();
+		Owner->transform2D->SetMatrixValid(false);
+		
 		/* Update AABB global position */
 		glm::vec4 spritePos = Owner->transform2D->matrix * glm::vec4(Owner->inputArea.x, Owner->inputArea.y, 0.0f, 1.0f);
 		

@@ -135,6 +135,8 @@ namespace Osiris::Editor
 
 		component->BaseTexture = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetTextureResourceByName(json.get<jsonxx::String>("baseTexture"))->GetTexture();
 
+		owner->sprite = component;
+
 		return component;
 	}
 
@@ -201,6 +203,8 @@ namespace Osiris::Editor
 		component->SetIsStatic(json.get<jsonxx::Boolean>("IsStatic"));
 		component->SetIsTrigger(json.get<jsonxx::Boolean>("IsTrigger"));
 		component->SetUseSpriteBoundary(json.get<jsonxx::Boolean>("UseSpriteBoundary"));
+
+		owner->physics = component;
 
 		return component;
 	}

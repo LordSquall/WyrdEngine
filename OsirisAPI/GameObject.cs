@@ -35,6 +35,11 @@ namespace OsirisAPI
             GameObject_Move(_NativePointer, x, y);
         }
 
+        public void SetVelocity(float vX, float vY)
+        {
+            GameObject_SetVelocity(_NativePointer, vX, vY);
+        }
+
         #endregion
 
         #region Object Overrides
@@ -56,6 +61,9 @@ namespace OsirisAPI
 
         [DllImport("OsirisCAPI")]
         public static extern IntPtr GameObject_Move(IntPtr value, float x, float y);
+
+        [DllImport("OsirisCAPI")]
+        public static extern IntPtr GameObject_SetVelocity(IntPtr value, float vX, float vY);
 
         #endregion
     }
