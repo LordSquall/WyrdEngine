@@ -3,6 +3,7 @@
 
 #include <imgui.h>
 
+#include "core/Log.h"
 #include "PhysicsComponentView.h"
 #include "support/ImGuiUtils.h"
 

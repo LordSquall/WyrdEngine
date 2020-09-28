@@ -8,7 +8,7 @@
 
 namespace Osiris::Editor
 {
-	PreferencesViewer::PreferencesViewer() : EditorViewBase("Preferences Viewer")
+	PreferencesViewer::PreferencesViewer(EditorLayer* editorLayer) : EditorViewBase("Preferences Viewer", editorLayer)
 	{
 		_SettingsService = ServiceManager::Get<SettingsService>(ServiceManager::Service::Settings);
 	}

@@ -9,7 +9,7 @@ namespace Osiris::Editor
 	class AssetViewer : public EditorViewBase
 	{
 	public:
-		AssetViewer();
+		AssetViewer(EditorLayer* editorLayer);
 		~AssetViewer();
 
 		void OnEditorRender() override;

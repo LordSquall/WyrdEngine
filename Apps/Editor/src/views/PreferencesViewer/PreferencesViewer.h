@@ -10,7 +10,7 @@ namespace Osiris::Editor
 	class PreferencesViewer : public EditorViewBase
 	{
 	public:
-		PreferencesViewer();
+		PreferencesViewer(EditorLayer* editorLayer);
 		~PreferencesViewer();
 
 		void OnEditorRender() override;

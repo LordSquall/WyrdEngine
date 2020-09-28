@@ -14,7 +14,7 @@
 
 namespace Osiris::Editor
 {
-	AssetViewer::AssetViewer() : EditorViewBase("Asset Viewer")
+	AssetViewer::AssetViewer(EditorLayer* editorLayer) : EditorViewBase("Asset Viewer", editorLayer)
 	{
 		/* cache the service(s) */
 		_resourcesService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);

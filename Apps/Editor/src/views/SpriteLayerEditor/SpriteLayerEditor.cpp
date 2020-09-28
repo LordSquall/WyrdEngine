@@ -16,7 +16,7 @@
 
 namespace Osiris::Editor
 {
-	SpriteLayerEditor::SpriteLayerEditor() : EditorViewBase("Sprite Layer Editor"), _SelectedSprite(-1), _SelectedLayer2D(nullptr) { }
+	SpriteLayerEditor::SpriteLayerEditor(EditorLayer* editorLayer) : EditorViewBase("Sprite Layer Editor", editorLayer), _SelectedSprite(-1), _SelectedLayer2D(nullptr) { }
 
 	SpriteLayerEditor::~SpriteLayerEditor() { }
 

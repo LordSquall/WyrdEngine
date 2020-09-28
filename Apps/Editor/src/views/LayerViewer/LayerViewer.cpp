@@ -17,7 +17,7 @@ namespace Osiris::Editor
 {
 	bool v;
 
-	LayerViewer::LayerViewer() : EditorViewBase("Layer Viewer"), _LayerStack(NULL) {}
+	LayerViewer::LayerViewer(EditorLayer* editorLayer) : EditorViewBase("Layer Viewer", editorLayer), _LayerStack(NULL) {}
 
 	LayerViewer::~LayerViewer() {}
 

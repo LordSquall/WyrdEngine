@@ -47,13 +47,11 @@ namespace Osiris::Editor
 		Application& app = Application::Get();
 		LayerStack* stack = app.GetLayerStack();
 
-		_views["Scene Viewer"] = std::make_shared<SceneViewer>();
-		_views["Properties"] = std::make_shared<PropertiesViewer>();
-		_views["Sprite Layer Editor"] = std::make_shared<SpriteLayerEditor>();
-		_views["Asset Viewer"] = std::make_shared<AssetViewer>();
-		_views["Output"] = std::make_shared<OutputView>();
-		//_views["Preferences"] = std::make_shared<PreferencesViewer>();
-		//_views["Preferences"]->Close();
+		_views["Scene Viewer"] = std::make_shared<SceneViewer>(this);
+		_views["Properties"] = std::make_shared<PropertiesViewer>(this);
+		_views["Sprite Layer Editor"] = std::make_shared<SpriteLayerEditor>(this);
+		_views["Asset Viewer"] = std::make_shared<AssetViewer>(this);
+		_views["Output"] = std::make_shared<OutputView>(this);
 
 		util = Utils();
 

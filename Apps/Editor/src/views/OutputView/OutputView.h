@@ -16,7 +16,7 @@ namespace Osiris::Editor
 		};
 
 	public:
-		OutputView();
+		OutputView(EditorLayer* editorLayer);
 		~OutputView();
 
 		void OnEditorRender() override;

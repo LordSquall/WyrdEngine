@@ -19,7 +19,7 @@ namespace Osiris::Editor
 	std::shared_ptr<Osiris::GameObject> PropertiesViewer::_SelectedGameObject = NULL;
 	std::shared_ptr<Resource> PropertiesViewer::_SelectedAsset = NULL;
 
-	PropertiesViewer::PropertiesViewer() : EditorViewBase("Properties"), _Mode(None)
+	PropertiesViewer::PropertiesViewer(EditorLayer* editorLayer) : EditorViewBase("Properties", editorLayer), _Mode(None)
 	{
 		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(PropertiesViewer::OnSelectedGameObjectChanged));
 		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Events::EventType::SelectedAssetChanged, EVENT_FUNC(PropertiesViewer::OnSelectedAssetChanged));
@@ -94,12 +94,6 @@ namespace Osiris::Editor
 			{
 				view->OnPropertyEditorDraw();
 			}
-
-			//_SelectedGameObject->transform2d.OnPropertyEditorDraw();			
-			//_SelectedGameObject->spriteRender.OnPropertyEditorDraw();
-			//_SelectedGameObject->script.OnPropertyEditorDraw();
-			//_SelectedGameObject->physics.OnPropertyEditorDraw();
-
 		}
 	}
 

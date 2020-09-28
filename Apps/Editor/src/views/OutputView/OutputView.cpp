@@ -9,7 +9,7 @@
 
 namespace Osiris::Editor
 {
-	OutputView::OutputView() : EditorViewBase("Output")
+	OutputView::OutputView(EditorLayer* editorLayer) : EditorViewBase("Output", editorLayer)
 	{
 		/* cache the service(s) */
 		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);

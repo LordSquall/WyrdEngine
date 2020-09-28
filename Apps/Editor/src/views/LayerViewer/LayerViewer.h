@@ -8,7 +8,7 @@ namespace Osiris::Editor
 	class LayerViewer : public EditorViewBase
 	{
 	public:
-		LayerViewer();
+		LayerViewer(EditorLayer* editorLayer);
 		~LayerViewer();
 
 		void OnEditorRender() override;

@@ -14,7 +14,7 @@ namespace Osiris::Editor
 	class SceneViewer : public EditorViewBase
 	{
 	public:
-		SceneViewer();
+		SceneViewer(EditorLayer* editorLayer);
 		~SceneViewer();
 
 		/* EditorPlugin functions */

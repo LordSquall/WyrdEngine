@@ -18,7 +18,7 @@ namespace Osiris::Editor
 		};
 
 	public:
-		PropertiesViewer();
+		PropertiesViewer(EditorLayer* editorLayer);
 		~PropertiesViewer();
 
 		/* EditorPlugin functions */

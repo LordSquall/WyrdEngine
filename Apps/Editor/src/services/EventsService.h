@@ -26,8 +26,6 @@ namespace Osiris::Editor
 		std::map<Events::EventType, std::vector<std::function<void(Events::EventArgs&)>>> _eventChannels;
 
 		std::vector<std::pair<Events::EventType, std::shared_ptr<Events::EventArgs>>> _BackgroundEvents;
-		//std::thread::id _MainThreadId;
-		//std::mutex _BackgroundEventLock;
 		
 		// Inherited via IService
 		virtual void OnCreate() override;

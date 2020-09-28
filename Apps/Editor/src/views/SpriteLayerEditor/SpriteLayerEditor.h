@@ -9,7 +9,7 @@ namespace Osiris::Editor
 	class SpriteLayerEditor : public EditorViewBase
 	{
 	public:
-		SpriteLayerEditor();
+		SpriteLayerEditor(EditorLayer* editorLayer);
 		~SpriteLayerEditor();
 
 		void OnInitialise() override;

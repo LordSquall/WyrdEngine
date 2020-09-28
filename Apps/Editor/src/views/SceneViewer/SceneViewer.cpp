@@ -19,7 +19,7 @@
 
 namespace Osiris::Editor
 {
-	SceneViewer::SceneViewer() : EditorViewBase("Scene Viewer")
+	SceneViewer::SceneViewer(EditorLayer* editorLayer) : EditorViewBase("Scene Viewer", editorLayer)
 	{
 		/* retrieve services */
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
@@ -90,7 +90,6 @@ namespace Osiris::Editor
 					if (go->transform2D->IsMatrixValid() == false)
 					{
 						go->transform2D->Recalculate();
-						//go->physics.Update();
 					}
 				}
 			}

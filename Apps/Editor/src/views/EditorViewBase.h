@@ -11,6 +11,8 @@
 
 namespace Osiris::Editor
 {
+	class EditorLayer;
+
 	struct EditorViewConfig
 	{
 		bool allowMenuBar = false;
@@ -21,7 +23,7 @@ namespace Osiris::Editor
 	class EditorViewBase
 	{
 	public:
-		EditorViewBase(const std::string& name) { _Name = name; }
+		EditorViewBase(const std::string& name, EditorLayer* editorLayer) { _Name = name; _EditorLayer = editorLayer; }
 		virtual ~EditorViewBase() { }
 
 		virtual void OnInitialise() {};
@@ -45,6 +47,7 @@ namespace Osiris::Editor
 		EditorViewConfig	config;
 
 	protected:
+		EditorLayer*		_EditorLayer;
 		std::string			_Name;
 		bool				_ShowFlag = true;
 		Osiris::Rect		_Boundary;
