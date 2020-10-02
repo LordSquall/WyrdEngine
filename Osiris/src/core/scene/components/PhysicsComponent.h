@@ -32,7 +32,7 @@ namespace Osiris {
 		inline void SetVelocity(const glm::vec2 velocity) { _velocity = velocity; }
 		inline glm::vec2 GetVelocity() const { return _velocity; }
 
-		inline const Rect GetAABB() const { return _AABB; }
+		inline Rect GetAABB() const { return _AABB; }
 
 		void Update(Timestep ts);
 

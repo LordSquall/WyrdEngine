@@ -325,14 +325,14 @@ namespace Osiris::Editor
 			_SimulationService->SetInputState(e.GetKeyCode(), 1);
 		}
 
-		return false;
+		return true;
 	}
 
 	bool SceneViewer::OnKeyReleasedEvent(KeyReleasedEvent& e)
 	{
 		_SimulationService->SetInputState(e.GetKeyCode(), 2);
 
-		return false;
+		return true;
 	}
 
 	void SceneViewer::OnSceneOpened(Events::EventArgs& args)

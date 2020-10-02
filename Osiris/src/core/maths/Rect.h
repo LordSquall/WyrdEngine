@@ -2,21 +2,27 @@
 
 /* local includes */
 #include "core/export.h"
+#include "core/maths/Ray.h"
 
 /* external includes */
 #include <glm/glm.hpp>
 
 namespace Osiris {
 
+	class Rect;
+
 	class OSR_LIBRARY_API Rect
 	{
 	public:
 		bool ContainsPoint(glm::vec2 r);
 		bool ContainsRect(Rect r);
+		bool ContainsRay(Ray r, Ray::Hit& hit);
 
 	public:
 		glm::vec2 position;
 		glm::vec2 size;
+
+		std::array<Osiris::Rect*, 4> contact;
 	};
 
 	/* comparison operators */

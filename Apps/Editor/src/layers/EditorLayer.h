@@ -42,6 +42,8 @@ namespace Osiris::Editor
 	private:
 		float _time;
 		
+
+		std::shared_ptr<EditorViewBase> _sceneViewer;
 		std::map<std::string, std::shared_ptr<EditorViewBase>> _views;
 
 		std::shared_ptr<EventService>		_eventService;
