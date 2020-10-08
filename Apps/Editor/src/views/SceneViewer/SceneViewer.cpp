@@ -122,6 +122,20 @@ namespace Osiris::Editor
 				}
 			}
 
+			for (auto sl : _Scene->layers2D)
+			{
+				for (auto go : sl->gameobjects)
+				{
+					for (auto component : go->components)
+					{
+						if (component->debugOverlayFunction)
+						{
+							component->debugOverlayFunction(_CameraController->GetCamera().GetViewProjectionMatrix());
+						}
+					}
+				}
+			}
+
 			if (_SelectedGameObject != NULL)
 			{
 				_TranslationGizmo->SetGameObject(_SelectedGameObject);

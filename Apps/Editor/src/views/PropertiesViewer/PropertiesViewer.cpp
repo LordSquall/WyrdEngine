@@ -47,6 +47,15 @@ namespace Osiris::Editor
 	{
 		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
 
+		/* before changes the selected game object, we need to clear any component state values such as debug overlays etc.... */
+		if (_SelectedGameObject != nullptr)
+		{
+			for (auto component : _SelectedGameObject->components)
+			{
+				component->debugOverlayFunction = nullptr;
+			}
+		}
+
 		_SelectedGameObject = evtArgs.gameObject;
 
 		/* clear the property views */
@@ -60,7 +69,9 @@ namespace Osiris::Editor
 
 			for (auto component : _SelectedGameObject->components)
 			{
-				_PropertiesViews.push_back(PropertyViewFactory::Create(component, &*_SelectedGameObject));
+				std::shared_ptr<IPropertiesView> newView = PropertyViewFactory::Create(component, &*_SelectedGameObject);
+				_PropertiesViews.push_back(newView);
+				component->debugOverlayFunction = std::bind(&IPropertiesView::OnSceneViewerDraw, newView, std::placeholders::_1);
 			}
 
 			_Mode = GameObjectUI;

@@ -16,7 +16,7 @@ namespace Osiris
 	{
 		Osiris::PhysicsComponent* a;
 		Osiris::PhysicsComponent* b;
-		Ray::Hit& hit;
+		Ray::Hit* hit;
 	};
 
 	Physics::Physics() : _IsRunning(false)
@@ -57,12 +57,6 @@ namespace Osiris
 
 		if (_IsRunning == true)
 		{
-			/* update all the physics components */
-			for (auto& component : _physicsObjects)
-			{
-				component->Update(ts);
-			}
-
 			for (auto& physicsA : _physicsObjects)
 			{				
 				/* start check against all other gameobject */
@@ -84,7 +78,7 @@ namespace Osiris
 								// Create Ray
 								Ray ray = { 
 									{ physicsA->GetAABB().position + physicsA->GetAABB().size / 2.0f },
-									{ physicsA->GetVelocity() * ts.GetSeconds() } 
+									{ glm::normalize(physicsA->GetVelocity()) }
 								};
 
 								Ray::Hit hit;
@@ -93,31 +87,31 @@ namespace Osiris
 								{
 									if ((hit.distance >= 0.0f && hit.distance < 1.0f))
 									{
-										OSR_TRACE("Detected");
-										collisions.push_back({ physicsA, physicsB, hit });
+										collisions.push_back({ physicsA, physicsB, &hit });
 									}
 								}
 							}
 						}
 					}
 				}
+
+				std::sort(collisions.begin(), collisions.end(), [](const CollisionHit& a, const CollisionHit& b)
+					{
+						return a.hit->distance < b.hit->distance;
+					});
+
+				for each (auto collision in collisions)
+				{
+					glm::vec2 currentVelocity = collision.a->GetVelocity();
+					collision.a->SetVelocity(currentVelocity + (collision.hit->normal * glm::vec2(std::abs(currentVelocity.x), std::abs(currentVelocity.y)) * (1 - collision.hit->distance)));
+				}
 			}
 
-			// Sort collisions based on distance
-			/*std::sort(collisions.begin(), collisions.end(), [](const CollisionHit& a, const CollisionHit& b)
-				{
-					return a.hit.distance < b.hit.distance;
-				});*/
-
-		/*	for each (auto collision in collisions)
+			/* update all the physics components */
+			for (auto& component : _physicsObjects)
 			{
-				if (collision.hit.normal.y > 0) collision.a->GetAABB().contact[0] = &collision.b->GetAABB(); else nullptr;
-				if (collision.hit.normal.x < 0) collision.a->GetAABB().contact[1] = &collision.b->GetAABB(); else nullptr;
-				if (collision.hit.normal.y < 0) collision.a->GetAABB().contact[2] = &collision.b->GetAABB(); else nullptr;
-				if (collision.hit.normal.x > 0) collision.a->GetAABB().contact[3] = &collision.b->GetAABB(); else nullptr;
-
-				collision.a->SetVelocity(collision.a->GetVelocity() + collision.hit.normal * glm::vec2(std::abs(collision.a->GetVelocity().x), std::abs(collision.a->GetVelocity().y)) * (1 - collision.hit.distance));
-			}*/
+				component->Update(ts);
+			}
 		}
 	}
 

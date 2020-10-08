@@ -1,5 +1,3 @@
-
-#undef OSR_RENDERDOC_ENABLED
 /* engine headers */
 #include <Osiris.h>
 

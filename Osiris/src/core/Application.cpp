@@ -19,7 +19,7 @@ namespace Osiris {
 		s_Instance = this;
 
 		/* call the pre init function */
-		//OnPreAppCreation(this);
+		OnPreAppCreation(this);
 
 		/* create a windows and bind the event callback */
 		_Window = std::unique_ptr<Window>(Window::Create(props.windowProps));

@@ -1,6 +1,7 @@
 /* local includes */
 #include "osrpch.h"
 #include "Rect.h"
+#include "core/Log.h"
 
 namespace Osiris {
 
@@ -19,6 +20,8 @@ namespace Osiris {
 	{
 		// Cache division
 		glm::vec2 invdir = 1.0f / r.dir;
+
+		//OSR_TRACE("Ray: {0},{1},{2},{3}", r.origin.x, r.origin.y, invdir.x, invdir.y);
 
 		// Calculate intersections with rectangle bounding axes
 		glm::vec2 t_near = (position - r.origin) * invdir;

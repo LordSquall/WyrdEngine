@@ -11,5 +11,6 @@ namespace Osiris::Editor
 	{
 	public:
 		virtual void OnPropertyEditorDraw() = 0;
+		virtual void OnSceneViewerDraw(const glm::mat4& viewProjectMatrix) {};
 	};
 }

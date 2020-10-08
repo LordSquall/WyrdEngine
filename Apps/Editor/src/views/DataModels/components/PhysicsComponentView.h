@@ -23,6 +23,7 @@ namespace Osiris::Editor {
 		PhysicsComponentView(const PhysicsComponentView& obj) {}
 
 		void OnPropertyEditorDraw() override;
+		void OnSceneViewerDraw(const glm::mat4& viewProjectMatrix) override;
 
 	private:
 		PhysicsComponent* _BaseComponent;

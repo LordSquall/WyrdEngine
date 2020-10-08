@@ -32,6 +32,8 @@ namespace Osiris {
 	public:
 		std::shared_ptr<GameObject> Owner;
 
+		std::function<void(const glm::mat4&)> debugOverlayFunction;
+
 	private:
 		SceneComponentType _type;
 
