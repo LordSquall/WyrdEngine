@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config.h"
-
 #ifdef OSR_SHARED_LIB
 #ifdef OSR_LIBRARY_EXPORT
 #define OSR_LIBRARY_API __declspec(dllexport)

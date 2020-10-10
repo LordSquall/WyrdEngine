@@ -6,14 +6,44 @@
 
 namespace Osiris
 {
+	/**
+	 * @brief Window Properties
+	*/
 	struct WindowProps
 	{
+		/**
+		 * @brief Primary window Title
+		*/
 		std::string Title;
+
+		/**
+		 * @brief Window width in pixels
+		*/
 		int Width;
+
+		/**
+		 * @brief Window height in pixels
+		*/
 		int Height;
+
+		/**
+		 * @brief Window x position in pixels
+		*/
 		int X;
+
+		/**
+		 * @brief Window y position in pixels
+		*/
 		int Y;
 
+		/**
+		 * @brief Constructor
+		 * @param title 
+		 * @param width 
+		 * @param height 
+		 * @param x 
+		 * @param y 
+		*/
 		WindowProps(const std::string& title = "Osiris Engine",
 			int width  = 1280,
 			int height = 720,
@@ -24,6 +54,12 @@ namespace Osiris
 		}
 	};
 
+	/**
+	 * @brief Window SubSystem
+	 * This class provides a abstract interface for a Operating system window.
+	 * Also this class offers a simple set of functions to manipulate the window state, as well
+	 * as a number of overrideable functions to supplied windows with callbacks and events
+	*/
 	class OSR_LIBRARY_API Window
 	{
 	public:
