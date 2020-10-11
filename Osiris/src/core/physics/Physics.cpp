@@ -53,21 +53,25 @@ namespace Osiris
 
 	void Physics::Update(Timestep ts)
 	{
-		std::vector<CollisionHit> collisions;
+		std::vector<CollisionHit> resolvableCollisions;
 
 		if (_IsRunning == true)
 		{
-			for (auto& physicsA : _physicsObjects)
+			for (auto &physicsA : _physicsObjects)
 			{				
 				/* start check against all other gameobject */
-				for (auto physicsB : _physicsObjects)
+				for (auto &physicsB : _physicsObjects)
 				{
 					/* we don't want to evaluate self colisions */
 					if (physicsA->Owner->GetUID() != physicsB->Owner->GetUID())
 					{
-						if (physicsA->IsTrigger() == false && (physicsB->IsTrigger() == false && physicsB->IsStatic() == true))
-						{	
-							// Check if dynamic rectangle is actually moving - we assume rectangles are NOT in collision to start
+						/* first of all, if the AABB is overlapping then we need to update the collision states */
+						if (physicsA->GetAABB().ContainsRect(physicsB->GetAABB()))
+						{
+							physicsA->AddCollisionState(physicsB);
+						}
+						else
+						{
 							if (physicsA->GetVelocity().x != 0 || physicsA->GetVelocity().y != 0)
 							{
 								// Expand target rectangle by source dimensions
@@ -76,31 +80,69 @@ namespace Osiris
 								expanded_target.size = physicsB->GetAABB().size + physicsA->GetAABB().size;
 
 								// Create Ray
-								Ray ray = { 
+								Ray ray = {
 									{ physicsA->GetAABB().position + physicsA->GetAABB().size / 2.0f },
 									{ glm::normalize(physicsA->GetVelocity()) }
 								};
 
 								Ray::Hit hit;
+								bool shouldResolve = !physicsA->IsTrigger() && !physicsB->IsTrigger();
 
 								if (expanded_target.ContainsRay(ray, hit) == true)
 								{
 									if ((hit.distance >= 0.0f && hit.distance < 1.0f))
 									{
-										collisions.push_back({ physicsA, physicsB, &hit });
+										/**
+										* At this point the collision has been detected between the gameobjects,
+										* however depending on the physics properties we either need to
+										* trigger or resolve
+										*/
+										physicsA->AddCollisionState(physicsB);
+
+										if (shouldResolve)
+										{
+											resolvableCollisions.push_back({ physicsA, physicsB, &hit });
+										}
 									}
+									else
+									{
+										if (shouldResolve)
+										{
+											if (physicsA->CurrentCollisionState(physicsB) != 0)
+											{
+												physicsA->RemoveCollisionState(physicsB);
+											}
+										}
+									}
+								}
+								else
+								{
+									if (shouldResolve)
+									{
+										if (physicsA->CurrentCollisionState(physicsB) != 0)
+										{
+											physicsA->RemoveCollisionState(physicsB);
+										}
+									}
+								}
+							}
+							else
+							{
+								if (physicsA->CurrentCollisionState(physicsB) != 0)
+								{
+									physicsA->RemoveCollisionState(physicsB);
 								}
 							}
 						}
 					}
 				}
 
-				std::sort(collisions.begin(), collisions.end(), [](const CollisionHit& a, const CollisionHit& b)
+				std::sort(resolvableCollisions.begin(), resolvableCollisions.end(), [](const CollisionHit& a, const CollisionHit& b)
 					{
 						return a.hit->distance < b.hit->distance;
 					});
 
-				for each (auto collision in collisions)
+				for each (auto collision in resolvableCollisions)
 				{
 					glm::vec2 currentVelocity = collision.a->GetVelocity();
 					collision.a->SetVelocity(currentVelocity + (collision.hit->normal * glm::vec2(std::abs(currentVelocity.x), std::abs(currentVelocity.y)) * (1 - collision.hit->distance)));

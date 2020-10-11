@@ -296,6 +296,20 @@ namespace Osiris
 		return _ScriptedCustomObjects[uid]; 
 	}
 
+	void Behaviour::BroadcastTriggerCall(std::shared_ptr<GameObject> gameObject, std::string& funcName, std::shared_ptr<GameObject> triggerObject, std::vector<void*> args)
+	{
+		for each (auto &component in gameObject->components)
+		{
+			if (component->GetType() == SceneComponentType::ScriptComponent)
+			{
+				ScriptComponent* scriptComponent = (ScriptComponent*)&*component;
+
+				args.insert(args.begin(), _ScriptedGameObjects[triggerObject->GetUID()]->Object);
+
+				MonoUtils::ExecuteScriptMethod((ScriptComponent*)&*component, funcName, args);
+			}
+		}
+	}
 
 	void Behaviour::DebugPrintFunc(const std::string& s)
 	{

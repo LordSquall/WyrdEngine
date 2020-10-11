@@ -28,10 +28,10 @@ namespace Osiris::Editor
 {
 	static void Read_Color(jsonxx::Array& json, glm::vec4* color)
 	{
-		color->r = json.get<jsonxx::Number>(0);
-		color->g = json.get<jsonxx::Number>(1);
-		color->b = json.get<jsonxx::Number>(2);
-		color->a = json.get<jsonxx::Number>(3);
+		color->r = (float)json.get<jsonxx::Number>(0);
+		color->g = (float)json.get<jsonxx::Number>(1);
+		color->b = (float)json.get<jsonxx::Number>(2);
+		color->a = (float)json.get<jsonxx::Number>(3);
 	}
 
 	static void Write_Color(jsonxx::Object& object, std::string name, const glm::vec4* color)
@@ -47,8 +47,8 @@ namespace Osiris::Editor
 
 	static void Read_Vec2(jsonxx::Array& json, glm::vec2* vector)
 	{
-		vector->x = json.get<jsonxx::Number>(0);
-		vector->y = json.get<jsonxx::Number>(1);
+		vector->x = (float)json.get<jsonxx::Number>(0);
+		vector->y = (float)json.get<jsonxx::Number>(1);
 	}
 
 	static void Write_Vec2(jsonxx::Object& object, std::string name, const glm::vec2* vector)
@@ -62,9 +62,9 @@ namespace Osiris::Editor
 
 	static void Read_Vec3(jsonxx::Array& json, glm::vec3* vector)
 	{
-		vector->x = json.get<jsonxx::Number>(0);
-		vector->y = json.get<jsonxx::Number>(1);
-		vector->z = json.get<jsonxx::Number>(2);
+		vector->x = (float)json.get<jsonxx::Number>(0);
+		vector->y = (float)json.get<jsonxx::Number>(1);
+		vector->z = (float)json.get<jsonxx::Number>(2);
 	}
 
 	static void Write_Vec3(jsonxx::Object& object, std::string name, float* vector)
@@ -84,7 +84,7 @@ namespace Osiris::Editor
 
 		/* configure properties */
 		Read_Vec2(json.get<jsonxx::Array>("position"), &component->position);
-		component->rotation = json.get<jsonxx::Number>("rotation");
+		component->rotation = (float)json.get<jsonxx::Number>("rotation");
 		Read_Vec2(json.get<jsonxx::Array>("scale"), &component->scale);
 
 		return component;
@@ -130,8 +130,8 @@ namespace Osiris::Editor
 		Read_Vec2(json.get<jsonxx::Array>("size"), &spriteSize);
 		Read_Vec2(json.get<jsonxx::Array>("position"), &spritePosition);
 
-		component->Sprite->SetSize(spriteSize.x, spriteSize.y);
-		component->Sprite->SetPosition(spritePosition.x, spritePosition.y);
+		component->Sprite->SetSize((int)spriteSize.x, (int)spriteSize.y);
+		component->Sprite->SetPosition((int)spritePosition.x, (int)spritePosition.y);
 
 		component->BaseTexture = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetTextureResourceByName(json.get<jsonxx::String>("baseTexture"))->GetTexture();
 

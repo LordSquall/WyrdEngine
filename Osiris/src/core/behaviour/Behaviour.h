@@ -50,6 +50,9 @@ namespace Osiris
 		std::shared_ptr<ScriptedClass> GetCustomClass(std::string name);
 		std::shared_ptr<ScriptedGameObject> GetGameObject(uint32_t uid);
 		std::shared_ptr<ScriptedCustomObject> GetCustomObject(uint32_t uid);
+
+		void BroadcastTriggerCall(std::shared_ptr<GameObject> gameObject, std::string& funcName, std::shared_ptr<GameObject> triggerObject, std::vector<void*> args);
+
 	private:
 		static void DebugPrintFunc(const std::string& s);
 

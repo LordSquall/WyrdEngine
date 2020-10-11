@@ -36,6 +36,10 @@ namespace Osiris {
 
 		void Update(Timestep ts);
 
+		void AddCollisionState(PhysicsComponent* collisionKey);
+		unsigned int CurrentCollisionState(PhysicsComponent* collisionKey);
+		void RemoveCollisionState(PhysicsComponent* collisionKey);
+
 	public:
 		glm::vec2 previousPosition;
 
@@ -47,5 +51,7 @@ namespace Osiris {
 		Rect _AABB;
 
 		glm::vec2 _velocity;
+
+		std::map<PhysicsComponent*, unsigned int> _CollisionStates;
 	};
 }

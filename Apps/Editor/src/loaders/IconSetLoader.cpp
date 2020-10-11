@@ -27,8 +27,8 @@ namespace Osiris::Editor
 			{
 				iconSet->name = o.get<jsonxx::String>("name");
 				iconSet->imagePath = o.get<jsonxx::String>("texture-path");
-				iconSet->width = o.get<jsonxx::Number>("texture-width");
-				iconSet->height = o.get<jsonxx::Number>("texture-height");
+				iconSet->width = (int)o.get<jsonxx::Number>("texture-width");
+				iconSet->height = (int)o.get<jsonxx::Number>("texture-height");
 				iconSet->Texture = std::make_shared<TextureRes>(Utils::GetPath(path) + "/" + iconSet->imagePath);
 
 				jsonxx::Array icons = o.get<jsonxx::Array>("icons");
@@ -39,10 +39,10 @@ namespace Osiris::Editor
 					std::shared_ptr<Icon> icon = std::make_shared<Icon>();
 
 					icon->name = iconJson.get<jsonxx::String>("name");
-					icon->x = iconJson.get<jsonxx::Number>("x");
-					icon->y = iconJson.get<jsonxx::Number>("y"); 
-					icon->width = iconJson.get<jsonxx::Number>("width");
-					icon->height = iconJson.get<jsonxx::Number>("height");
+					icon->x = (unsigned int)iconJson.get<jsonxx::Number>("x");
+					icon->y = (unsigned int)iconJson.get<jsonxx::Number>("y");
+					icon->width = (unsigned int)iconJson.get<jsonxx::Number>("width");
+					icon->height = (unsigned int)iconJson.get<jsonxx::Number>("height");
 
 					float widthNorm = (float)icon->width / (float)iconSet->width;
 					float heightNorm = (float)icon->height / (float)iconSet->height;
