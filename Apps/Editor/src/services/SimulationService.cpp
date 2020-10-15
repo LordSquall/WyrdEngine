@@ -34,6 +34,9 @@ namespace Osiris::Editor
 	{
 		OSR_TRACE("Starting Simulation Service");
 
+		/* ensure the scene is saved before starting the simulation */
+		_WorkspaceService->SaveScene();
+
 		_IsRunning = true;
 
 		Application::Get().GetBehaviour().Start(_WorkspaceService->GetLoadedScene());
@@ -45,6 +48,8 @@ namespace Osiris::Editor
 	{
 		Application::Get().GetPhysics().Stop();
 		Application::Get().GetBehaviour().Stop();
+
+		_WorkspaceService->ReloadScene();
 
 		OSR_TRACE("Stopping Simulation Service");
 

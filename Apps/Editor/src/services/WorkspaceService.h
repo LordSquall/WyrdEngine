@@ -29,6 +29,7 @@ namespace Osiris::Editor
 		void CreateNewProject(std::string location, std::string sceneName, std::string name);
 		bool SaveProject();
 		bool LoadProject(std::string projectfile);
+		bool ReloadScene();
 
 		bool CreateNewScene(const std::string& name);
 		bool LoadScene(const std::string& path);

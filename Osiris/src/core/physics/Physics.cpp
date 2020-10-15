@@ -166,6 +166,8 @@ namespace Osiris
 	{
 		OSR_CORE_TRACE("Physics::Stop() called!");
 
+		_physicsObjects.clear();
+
 		_IsRunning = false;
 	}
 }

@@ -201,7 +201,6 @@ namespace Osiris::Editor
 		return result;
 	}
 
-
 	bool WorkspaceService::CreateNewScene(const std::string& name)
 	{
 		/* Create a new scene shared pointer */
@@ -253,6 +252,11 @@ namespace Osiris::Editor
 
 			return true;
 		}
+	}
+
+	bool WorkspaceService::ReloadScene()
+	{
+		return LoadScene(_LoadedScenePath);
 	}
 
 	bool WorkspaceService::CloseScene()
