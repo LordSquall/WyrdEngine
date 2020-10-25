@@ -118,8 +118,7 @@ group ""
 			"SOIL",
 			"jsonxx",
 			"mono-2.0-sgen",
-			"opengl32.dll",
-			"OsirisAPI"
+			"opengl32.dll"
 		}
 
 		filter "system:windows"
@@ -212,10 +211,6 @@ project "OsirisAPI"
 		files
 		{
 			"%{prj.name}/**.cs"
-		}
-		
-        links { 
-			"OsirisCAPI"
 		}
 
 		filter "system:windows"

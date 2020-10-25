@@ -3,6 +3,9 @@
 #include <core/scene/GameObject.h>
 #include <core/scene/components/Transform2DComponent.h>
 #include <core/scene/components/PhysicsComponent.h>
+#include <core/scene/Layer2D.h>
+
+#include <core/physics/Physics.h>
 
 const char* GameObject_Name_Get(void* obj)
 {

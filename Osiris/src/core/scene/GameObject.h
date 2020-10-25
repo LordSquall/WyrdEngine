@@ -9,6 +9,7 @@
 
 namespace Osiris {
 
+	class Layer2D;
 	class Transform2DComponent;
 	class SpriteComponent;
 	class PhysicsComponent;
@@ -34,6 +35,8 @@ namespace Osiris {
 
 		std::vector<std::shared_ptr<IBaseComponent>> components;
 		
+		std::shared_ptr<Layer2D> layer;
+
 		glm::vec4 inputArea;
 	private:
 		uint32_t _uid = 0u;

@@ -55,7 +55,7 @@ namespace OsirisAPI
         #endregion
 
         #region P/Invoke functions
-        
+
         [DllImport("OsirisCAPI")]
         public static extern IntPtr GameObject_Name_Get(IntPtr value);
 

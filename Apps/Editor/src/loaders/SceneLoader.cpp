@@ -311,7 +311,12 @@ namespace Osiris::Editor
 		{
 			for (size_t i = 0; i < json.get<jsonxx::Array>("gameObjects").size(); i++)
 			{
-				layer2D->gameobjects.push_back(Read_GameObject(json.get<jsonxx::Array>("gameObjects").get<jsonxx::Object>(i)));
+				std::shared_ptr<Osiris::GameObject> gameObject = Read_GameObject(json.get<jsonxx::Array>("gameObjects").get<jsonxx::Object>(i));
+
+				// store the layer reference in the gameobject
+				gameObject->layer = layer2D;
+
+				layer2D->gameobjects.push_back(gameObject);
 			}
 		}
 

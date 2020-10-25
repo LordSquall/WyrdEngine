@@ -48,10 +48,11 @@ namespace Osiris::Editor
 			ImGui::BeginChildFrame(1, ImVec2(navigationPanelWidth, ImGui::GetContentRegionAvail().y));
 
 			PopulateFolderNode(Utils::GetAssetFolder());
-						
+
 			ImGui::EndChildFrame();
 
 			ImGui::SameLine();
+
 			ImGui::BeginChildFrame(2, ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y));
 
 			DrawAssetsItems();
@@ -78,6 +79,26 @@ namespace Osiris::Editor
 				PopulateFolderNode(dir + "/" + folder);
 
 				ImGui::TreePop();
+			}
+
+			if (ImGui::BeginPopupContextItem())
+			{
+				if (ImGui::BeginMenu("Add"))
+				{
+					if (ImGui::MenuItem("Script"))
+					{
+					}
+
+					ImGui::EndMenu();
+				}
+
+				ImGui::MenuItem("Rename");
+				if (ImGui::MenuItem("Delete") == true)
+				{
+
+				}
+
+				ImGui::EndPopup();
 			}
 		}
 	}
@@ -186,7 +207,7 @@ namespace Osiris::Editor
 			ImGui::EndDragDropSource();
 		}
 
-		if (ImGui::BeginPopupContextItem())
+		if (ImGui::BeginPopupContextItem("AssetTest"))
 		{
 			if (ImGui::MenuItem("Open") == true)
 			{

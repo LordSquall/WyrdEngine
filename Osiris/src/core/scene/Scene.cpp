@@ -26,6 +26,10 @@ namespace Osiris
 
 	void Scene::Update()
 	{
-		
+		/* update each layer */
+		for each (auto layer in layers2D)
+		{
+			layer->Update();
+		}
 	}
 }

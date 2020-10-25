@@ -1,7 +1,7 @@
 #pragma once
 
 /* local includes */
-#include "Osiris.h"
+#include <core/scene/GameObject.h>
 
 using namespace Osiris;
 
@@ -25,6 +25,7 @@ namespace Osiris {
 		void DuplicateSprite(int uid);
 		void SwapSprite(int a, int b);
 
+		void Update();
 	public:
 		std::string name;
 		std::vector<std::shared_ptr<GameObject>> gameobjects;

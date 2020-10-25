@@ -18,6 +18,8 @@ namespace Osiris
 
 	Layer2D::~Layer2D() { }
 
+	void Layer2D::Update() { }
+
 	void Layer2D::AddSprite(std::shared_ptr<GameObject> gameObject)
 	{
 		gameobjects.push_back(gameObject);
