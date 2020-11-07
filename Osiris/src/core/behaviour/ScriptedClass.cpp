@@ -12,57 +12,9 @@
 
 namespace Osiris
 {
-	ScriptedClass::ScriptedClass(void* domain, const std::string& filename, const std::string& name) : _Name(name)
+	ScriptedClass::ScriptedClass(const std::string& className, void* managedClass) : _Name(className)
 	{
-		/* Create Assembly */
-		MonoAssembly* monoAssembly;
-		std::string assemblyPath = (filename.substr(0, filename.find_last_of('.')) + ".dll").c_str();
-		monoAssembly = mono_domain_assembly_open((MonoDomain*)domain, assemblyPath.c_str());
-		if (!monoAssembly)
-		{
-			OSR_CORE_ERROR("mono_domain_assembly_open failed for {0}", assemblyPath);
-			system("pause");
-		}
-
-		/* Create image */
-		MonoImage* monoImage = mono_assembly_get_image(monoAssembly);
-		if (!monoImage)
-		{
-			OSR_CORE_ERROR("mono_assembly_get_image failed for {0}", assemblyPath);
-			system("pause");
-		}
-
-		/* Create class */
-		MonoClass* monoClass;
-		std::string className = (name);
-		monoClass = mono_class_from_name(monoImage, "", className.c_str());
-
-		if (!monoClass)
-		{
-			OSR_CORE_ERROR("mono_class_from_name failed for {0}", className);
-			system("pause");
-		}
-
-		Assembly = monoAssembly;
-		Image = monoImage;
-		Class = monoClass;
-	}
-
-	ScriptedClass::ScriptedClass(void* assembly, void* image, const std::string& name) : _Name(name)
-	{
-		/* Create class */
-		MonoClass* monoClass;
-		std::string className = (name);
-		monoClass = mono_class_from_name((MonoImage*)image, "OsirisAPI", className.c_str());
-
-		if (!monoClass)
-		{
-			OSR_CORE_ERROR("mono_class_from_name failed for {0}", className);
-		}
-
-		Assembly = (MonoAssembly*)assembly;
-		Image = (MonoImage*)image;
-		Class = monoClass;
+		ManagedClass = managedClass;
 	}
 
 	ScriptedClass::~ScriptedClass()

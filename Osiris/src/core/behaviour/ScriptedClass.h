@@ -12,17 +12,14 @@ namespace Osiris
 	class OSR_LIBRARY_API ScriptedClass
 	{
 	public:
-		ScriptedClass(void* domain, const std::string& filename, const std::string& name);
-		ScriptedClass(void* assembly, void* image, const std::string& name);
+		ScriptedClass(const std::string& className, void* managedClass);
 		virtual ~ScriptedClass();
 
 		inline const std::string& GetName() const { return _Name; }
 		inline void SetName(const std::string& name) { _Name = name; }
 
 	public:
-		MonoAssembly* Assembly;
-		MonoImage* Image;
-		MonoClass* Class;
+		void* ManagedClass;
 
 	private:
 		std::string _Name;

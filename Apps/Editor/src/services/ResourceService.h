@@ -33,7 +33,7 @@ namespace Osiris::Editor
 		virtual void OnCreate() override;
 		virtual void OnDestroy() override;
 
-		void AddResource(std::string& resourcePath, ResourceService::Type type);
+		void AddResource(std::string& resourcePath);
 		void ReloadResource(std::string& resourcePath);
 		void DeleteResource(std::string& resourcePath);
 

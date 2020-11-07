@@ -24,7 +24,7 @@ namespace Osiris
 		_GameObject = gameObject;
 
 		/* Store the class */
-		Class = scriptedClass->Class;
+		Class = (MonoClass*)scriptedClass->ManagedClass;
 
 		/* Get a reference to the Behaviour subsystem */
 		Osiris::Behaviour& behaviour = Application::Get().GetBehaviour();

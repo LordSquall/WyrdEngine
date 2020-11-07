@@ -36,7 +36,6 @@ namespace Osiris::Editor
 
 		/* Load defaults from the editor resources */
 		_defaultTexture = std::make_shared<TextureRes>(Utils::GetEditorResFolder() + "\\res\\textures\\default.png");
-		//_defaultScene = std::make_shared<SceneRes>(Utils::GetEditorResFolder() + "\\res\\scenes\\default.scene");
 
 		/* Load default icons into the icon library */
 		_iconLibrary.AddIconsFromFile(Utils::GetEditorResFolder() + "/res/icons/common-icons.json");
@@ -51,7 +50,7 @@ namespace Osiris::Editor
 	void ResourceService::OnDestroy() {}
 
 
-	void ResourceService::AddResource(std::string& resourcePath, ResourceService::Type type)
+	void ResourceService::AddResource(std::string& resourcePath)
 	{
 		if (CheckIgnored(resourcePath) == false)
 		{
@@ -62,9 +61,9 @@ namespace Osiris::Editor
 			case Type::TEXTURE:
 			{
 				std::shared_ptr<TextureRes> textureResource = std::make_shared<TextureRes>(resourcePath);
-					_textureResources.insert(std::pair<uint32_t, std::shared_ptr<TextureRes>>(textureResource->GetResourceID(), textureResource));
+				_textureResources.insert(std::pair<uint32_t, std::shared_ptr<TextureRes>>(textureResource->GetResourceID(), textureResource));
 
-					OSR_CORE_INFO("Asset Texture Added: [{0}] - {1}", textureResource->GetResourceID(), textureResource->GetName());
+				OSR_CORE_INFO("Asset Texture Added: [{0}] - {1}", textureResource->GetResourceID(), textureResource->GetName());
 			}
 			break;
 			case Type::SCENE:
@@ -80,7 +79,7 @@ namespace Osiris::Editor
 				std::shared_ptr<ScriptRes> scriptResource = std::make_shared<ScriptRes>(resourcePath);
 				_scriptResources.insert(std::pair<uint32_t, std::shared_ptr<ScriptRes>>(scriptResource->GetResourceID(), scriptResource));
 
-				OSR_CORE_INFO("Asset Script Added: [{0}] - {1}", scriptResource->GetResourceID(), scriptResource->GetName());
+				OSR_CORE_INFO("Asset Script Added: [{0}]", scriptResource->GetResourceID());
 			}
 			break;
 			default:
@@ -89,7 +88,7 @@ namespace Osiris::Editor
 		}
 		else
 		{
-			OSR_CORE_INFO("Skipping Asset file: [{0}] - As extension is on the ignored list!", resourcePath);
+			//OSR_CORE_INFO("Skipping Asset file: [{0}] - As extension is on the ignored list!", resourcePath);
 		}
 	}
 
@@ -212,9 +211,12 @@ namespace Osiris::Editor
 	/* Script Functions */
 	std::shared_ptr<ScriptRes> ResourceService::GetScriptByName(const std::string& name)
 	{
+		if (name == "")
+			return nullptr;
+
 		for (auto const& [key, val] : _scriptResources)
 		{
-			if (val->Script->GetName().compare(name) == 0)
+			if (val->GetName().compare(name) == 0)
 			{
 				return val;
 			}
@@ -269,7 +271,16 @@ namespace Osiris::Editor
 
 		for (auto t : files)
 		{
-			AddResource(t, TEXTURE);
+			AddResource(t);
+		}
+
+		/* Once all the resources are loaded, now we can compile the all the scripts */
+		ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->CompileAll();
+
+		// Resolve all the script resources to the scripted classes
+		for (auto& [key, value] : _scriptResources)
+		{
+			value->Script = ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->GetClass(value->GetName());
 		}
 	}
 
@@ -277,7 +288,7 @@ namespace Osiris::Editor
 	{
 		Events::AddResourceArgs& a = (Events::AddResourceArgs&)args;
 	
-		AddResource(a.filepath, TEXTURE);
+		AddResource(a.filepath);
 	}
 
 	void ResourceService::OnDeleteResourceEvent(Events::EventArgs& args)

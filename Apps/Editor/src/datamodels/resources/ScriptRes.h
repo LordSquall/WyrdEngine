@@ -23,7 +23,7 @@ namespace Osiris::Editor
 		inline const std::string& GetPath() { return _path; }
 		inline void SetPath(const std::string& path) { _path = path; }
 
-		inline const std::string& GetName() { return Script->GetName(); }
+		inline const std::string& GetName() { return _name; }
 
 		void Reload();
 		
@@ -31,6 +31,7 @@ namespace Osiris::Editor
 		std::shared_ptr<Osiris::ScriptedClass> Script;
 
 	private:
+		std::string _name;
 		std::string _path;
 	};
 }

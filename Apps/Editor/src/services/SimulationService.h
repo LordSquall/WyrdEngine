@@ -10,6 +10,7 @@
 namespace Osiris::Editor
 {
 	class EventService;
+	class ResourceService;
 	class WorkspaceService;
 
 	class SimulationService : public IService
@@ -32,6 +33,10 @@ namespace Osiris::Editor
 
 		void SetInputState(int keyCode, int state);
 
+		void CompileAll();
+
+		std::shared_ptr<Osiris::ScriptedClass> GetClass(const std::string& className);
+
 		Osiris::Behaviour::CreateCustomClassResult AddCustomScriptClass(const std::string& name, const std::string& filename);
 
 	private:
@@ -39,6 +44,7 @@ namespace Osiris::Editor
 
 		std::shared_ptr<Scene>				_CurrentScene;
 		std::shared_ptr<EventService>		_EventService;
+		std::shared_ptr<ResourceService>	_ResourceService;
 		std::shared_ptr<WorkspaceService>	_WorkspaceService;
 	};
 }

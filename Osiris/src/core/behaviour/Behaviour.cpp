@@ -49,18 +49,17 @@ namespace Osiris
 		}
 		
 		/* need to add the OsirisAPI dll to the assembly to allow runtime access */
-		MonoAssembly* monoAssembly;
 		std::string assemblyPath = (apiLibraryLocation);
-		monoAssembly = mono_domain_assembly_open((MonoDomain*)_Domain, assemblyPath.c_str());
-		if (!monoAssembly)
+		_CoreAssembly = mono_domain_assembly_open((MonoDomain*)_Domain, assemblyPath.c_str());
+		if (!_CoreAssembly)
 		{
 			OSR_CORE_ERROR("mono_domain_assembly_open failed for {0}", assemblyPath);
 			system("pause");
 		}
 
 		/* Create image */
-		MonoImage* monoImage = mono_assembly_get_image(monoAssembly);
-		if (!monoImage)
+		_CoreImage = mono_assembly_get_image((MonoAssembly*)_CoreAssembly);
+		if (!_CoreImage)
 		{
 			OSR_CORE_ERROR("mono_assembly_get_image failed for {0}", assemblyPath);
 			system("pause");
@@ -68,23 +67,24 @@ namespace Osiris
 
 
 		/* Search for all valid classes in the DLL and add build the scripted classes */
-		const MonoTableInfo* table_info = mono_image_get_table_info(monoImage, MONO_TABLE_TYPEDEF);
+		const MonoTableInfo* table_info = mono_image_get_table_info((MonoImage*)_CoreImage, MONO_TABLE_TYPEDEF);
 		for (int i = 0; i < mono_table_info_get_rows(table_info); i++)
 		{
-			MonoClass* _class = nullptr;
 			uint32_t cols[MONO_TYPEDEF_SIZE];
 			mono_metadata_decode_row(table_info, i, cols, MONO_TYPEDEF_SIZE);
-			const char* name = mono_metadata_string_heap(monoImage, cols[MONO_TYPEDEF_NAME]);
-			const char* nameSpace = mono_metadata_string_heap(monoImage, cols[MONO_TYPEDEF_NAMESPACE]);
+			const char* name = mono_metadata_string_heap((MonoImage*)_CoreImage, cols[MONO_TYPEDEF_NAME]);
+			const char* nameSpace = mono_metadata_string_heap((MonoImage*)_CoreImage, cols[MONO_TYPEDEF_NAMESPACE]);
 			
 			/** There will mostly be a large number of classes exported due to dependancies,
 				However we only care about the OsirisAPI.* namespace 	
 			*/
 			if (strcmp(nameSpace, "OsirisAPI") == 0)
 			{
+				MonoClass* monoClass;
+				monoClass = mono_class_from_name((MonoImage*)_CoreImage, "OsirisAPI", name);
 
 				/* Create a new Scripted Class */
-				std::shared_ptr<ScriptedClass> newScriptedClass = std::make_shared<ScriptedClass>((void*)monoAssembly, (void*)monoImage, name);
+				std::shared_ptr<ScriptedClass> newScriptedClass = std::make_shared<ScriptedClass>(name, monoClass);
 
 				/* Store within the Behaviour Subsystem */
 				_ScriptedClasses.emplace(name, newScriptedClass);
@@ -99,7 +99,9 @@ namespace Osiris
 		}
 
 		/* Retrieve the Script side management classes */
-		_GameObjectManagerClass = std::make_shared<ScriptedClass>((void*)monoAssembly, (void*)monoImage, "GameObjectManager");
+		MonoClass* monoClass;
+		monoClass = mono_class_from_name((MonoImage*)_CoreImage, "OsirisAPI", "GameObjectManager");
+		_GameObjectManagerClass = std::make_shared<ScriptedClass>("GameObjectManager", monoClass);
 
 		/* Build up mapping between Osiris Key States and managed key state functions */
 		_FunctionKeyStateMap[0] = "OnKeyPress";
@@ -146,18 +148,22 @@ namespace Osiris
 						{
 							ScriptComponent* scriptComponent = (ScriptComponent*)&*component;
 
-							/* Create the Scripted custom object */
-							std::shared_ptr<ScriptedCustomObject> newCustomObject = std::make_shared<ScriptedCustomObject>(_Domain, scriptComponent->Class);
+							/* Check if we have an assigned class */
+							if (scriptComponent->Class != nullptr)
+							{
+								/* Create the Scripted custom object */
+								std::shared_ptr<ScriptedCustomObject> newCustomObject = std::make_shared<ScriptedCustomObject>(_Domain, scriptComponent->Class);
 
-							/* Store within the Behaviour Subsystem */
-							_ScriptedCustomObjects.emplace(go->GetUID(), newCustomObject);
+								/* Store within the Behaviour Subsystem */
+								_ScriptedCustomObjects.emplace(go->GetUID(), newCustomObject);
 
-							/* Set the native game object pointer */
-							newCustomObject->SetGameObject(_ScriptedGameObjects[go->GetUID()]);
+								/* Set the native game object pointer */
+								newCustomObject->SetGameObject(_ScriptedGameObjects[go->GetUID()]);
 
-							newCustomObject->SetName(scriptComponent->Class->GetName() + "_inst");
+								newCustomObject->SetName(scriptComponent->Class->GetName() + "_inst");
 
-							scriptComponent->Object = newCustomObject;
+								scriptComponent->Object = newCustomObject;
+							}
 						}
 					}
 				}
@@ -177,9 +183,14 @@ namespace Osiris
 						if (component->GetType() == SceneComponentType::ScriptComponent)
 						{
 							ScriptComponent* scriptComponent = (ScriptComponent*)&*component;
-							MonoObject* object = (scriptComponent->Object)->Object;
-							MonoMethod* method = scriptComponent->Object->GetMethod("OnStart");
-							mono_runtime_invoke(method, object, nullptr, nullptr);
+
+							/* Check if we have an assigned object */
+							if (scriptComponent->Object != nullptr)
+							{
+								MonoObject* object = (scriptComponent->Object)->Object;
+								MonoMethod* method = scriptComponent->Object->GetMethod("OnStart");
+								mono_runtime_invoke(method, object, nullptr, nullptr);
+							}
 						}
 					}
 				}
@@ -214,9 +225,14 @@ namespace Osiris
 							if (component->GetType() == SceneComponentType::ScriptComponent)
 							{
 								ScriptComponent* scriptComponent = (ScriptComponent*) & *component;
-								MonoObject* object = &*scriptComponent->Object->Object;
-								MonoMethod* method = &*scriptComponent->Object->GetMethod("OnUpdate");
-								mono_runtime_invoke(method, object, nullptr, nullptr);
+								
+								/* Check if we have an assigned object */
+								if (scriptComponent->Object != nullptr)
+								{
+									MonoObject* object = &*scriptComponent->Object->Object;
+									MonoMethod* method = &*scriptComponent->Object->GetMethod("OnUpdate");
+									mono_runtime_invoke(method, object, nullptr, nullptr);
+								}
 							}
 						}
 					}
@@ -227,22 +243,22 @@ namespace Osiris
 
 	Behaviour::CreateCustomClassResult Behaviour::AddScriptedClassFromFile(const std::string& name, const std::string& filename)
 	{
-		//TODO: Fix location of OsirisAPI dlls
-		// Compile the class into a mono compatible DLL
-		std::string command = "mcs " + filename + " -target:library -lib:" MONO_INSTALL_LOC  "lib/mono/4.5/Facades/," NATIVE_API_LIB_LOC "OsirisAPI/ -r:System.Runtime.InteropServices.dll,OsirisAPI.dll -debug";
-		
-		system(command.c_str());
+		////TODO: Fix location of OsirisAPI dlls
+		//// Compile the class into a mono compatible DLL
+		//std::string command = "mcs " + filename + " -target:library -lib:" MONO_INSTALL_LOC  "lib/mono/4.5/Facades/," NATIVE_API_LIB_LOC "OsirisAPI/ -r:System.Runtime.InteropServices.dll,OsirisAPI.dll -debug";
+		//
+		//system(command.c_str());
 
-		/* Determine the output file name */
-		std::string outputFileName = filename.substr(filename.find_last_of('\\') + 1);
+		///* Determine the output file name */
+		//std::string outputFileName = filename.substr(filename.find_last_of('\\') + 1);
 
-		/* Create a new Scripted Class */
-		std::shared_ptr<ScriptedClass> newScript = std::make_shared<ScriptedClass>(_Domain, filename, outputFileName.substr(0, outputFileName.find_last_of('.')));
+		///* Create a new Scripted Class */
+		//std::shared_ptr<ScriptedClass> newScript = std::make_shared<ScriptedClass>(_Domain, filename, outputFileName.substr(0, outputFileName.find_last_of('.')));
 
-		/* Store within the Behaviour Subsystem */
-		_ScriptedCustomClasses.emplace(name, newScript);
+		///* Store within the Behaviour Subsystem */
+		//_ScriptedCustomClasses.emplace(name, newScript);
 
-		return Behaviour::CreateCustomClassResult{ true, "", newScript };
+		return Behaviour::CreateCustomClassResult{ true, "", nullptr };
 	}
 
 	void Behaviour::SetInputState(int key, int state)
@@ -263,11 +279,15 @@ namespace Osiris
 								/* convert to script component type */
 								ScriptComponent* scriptComponent = (ScriptComponent*) & *component;
 
-								/* build arg list for the key event functions */
-								std::vector<void*> args = std::vector<void*>({ &key });
+								/* Check if we have an assigned object */
+								if (scriptComponent->Object != nullptr)
+								{
+									/* build arg list for the key event functions */
+									std::vector<void*> args = std::vector<void*>({ &key });
 
-								/* call custom script object key event function */
-								MonoUtils::ExecuteScriptMethod(scriptComponent, _FunctionKeyStateMap[state], args);
+									/* call custom script object key event function */
+									MonoUtils::ExecuteScriptMethod(scriptComponent, _FunctionKeyStateMap[state], args);
+								}
 							}
 						}
 					}
@@ -308,6 +328,68 @@ namespace Osiris
 
 				MonoUtils::ExecuteScriptMethod((ScriptComponent*)&*component, funcName, args);
 			}
+		}
+	}
+
+	void Behaviour::CompileAll(const std::vector<std::string>& files, const std::string& outputDir, const std::string& projectName)
+	{
+		// mono compiler script command
+		std::string command = "mcs ";
+
+		// add all the files in the project
+		for (auto& file : files)
+		{
+			command += file + " ";
+		}
+
+		// add library and osiris runtime 
+		command += " -target:library -lib:" MONO_INSTALL_LOC  "lib/mono/4.5/Facades/," NATIVE_API_LIB_LOC "OsirisAPI/ -r:System.Runtime.InteropServices.dll,OsirisAPI.dll -debug ";
+
+		// set the putput file
+		command += "-out:" + outputDir + projectName;
+
+		// run the command to compile
+		system(command.c_str());
+
+		// TODO
+		// At the moment we shall assume we have a successfully compiled dll
+
+		/* Create Assembly */
+		MonoAssembly* monoAssembly;
+		std::string assemblyPath = (outputDir + projectName).c_str();
+		monoAssembly = mono_domain_assembly_open((MonoDomain*)_Domain, assemblyPath.c_str());
+		if (!monoAssembly)
+		{
+			OSR_CORE_ERROR("mono_domain_assembly_open failed for {0}", assemblyPath);
+			system("pause");
+		}
+
+		/* Create image */
+		MonoImage* monoImage = mono_assembly_get_image(monoAssembly);
+		if (!monoImage)
+		{
+			OSR_CORE_ERROR("mono_assembly_get_image failed for {0}", assemblyPath);
+			system("pause");
+		}
+
+		/* Create each of the new scripted classes */
+		for (auto& file : files)
+		{
+			// Get the file name
+			std::filesystem::path filename = file;
+			std::string className = filename.stem().string();
+			MonoClass* monoClass;
+			monoClass = mono_class_from_name(monoImage, "", className.c_str());
+
+			if (!monoClass)
+			{
+				OSR_CORE_ERROR("mono_class_from_name failed for {0}", className);
+				system("pause");
+			}
+
+			std::shared_ptr<ScriptedClass> newScript = std::make_shared<ScriptedClass>(className, monoClass);
+
+			_ScriptedCustomClasses.emplace(className, newScript);
 		}
 	}
 

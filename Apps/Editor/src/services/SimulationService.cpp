@@ -21,6 +21,7 @@ namespace Osiris::Editor
 	{
 		/* cache services */
 		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
+		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
 
 		_IsRunning = false;
@@ -74,6 +75,22 @@ namespace Osiris::Editor
 		{
 			Application::Get().GetBehaviour().SetInputState(keyCode, state);
 		}
+	}
+
+
+	void SimulationService::CompileAll()
+	{
+		std::vector<std::string> scriptFiles;
+		for (auto& [key, value] : _ResourceService->GetScripts())
+		{
+			scriptFiles.push_back(value->GetPath());
+		}
+		Application::Get().GetBehaviour().CompileAll(scriptFiles, "./", _WorkspaceService->GetCurrentProject()->name + ".dll");
+	}
+
+	std::shared_ptr<Osiris::ScriptedClass> SimulationService::GetClass(const std::string& className)
+	{
+		return Application::Get().GetBehaviour().GetCustomClass(className);
 	}
 
 	Osiris::Behaviour::CreateCustomClassResult SimulationService::AddCustomScriptClass(const std::string& name, const std::string& filename)

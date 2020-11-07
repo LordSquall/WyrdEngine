@@ -169,8 +169,11 @@ namespace Osiris::Editor
 		/* create a component */
 		std::shared_ptr<Osiris::ScriptComponent> component = std::make_shared<Osiris::ScriptComponent>(owner);
 
+		/* retrieve json parameters */
+		std::string script = json.get<jsonxx::String>("ScriptName", "");
+
 		/* configure properties */
-		std::shared_ptr<ScriptRes> scriptResource = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetScriptByName(json.get<jsonxx::String>("ScriptName"));
+		std::shared_ptr<ScriptRes> scriptResource = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetScriptByName(script);
 		if (scriptResource != nullptr)
 		{
 			component->Class = scriptResource->Script;
@@ -189,7 +192,9 @@ namespace Osiris::Editor
 
 		/* base properties */
 		componentJson << "Type" << (uint32_t)scriptComponent->GetType();
-		componentJson << "ScriptName" << script->Class->GetName();
+
+		if(script->Class != nullptr)
+			componentJson << "ScriptName" << script->Class->GetName();
 
 		return componentJson;
 	}

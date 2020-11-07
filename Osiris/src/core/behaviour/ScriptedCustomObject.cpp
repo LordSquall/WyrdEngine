@@ -20,7 +20,7 @@ namespace Osiris
 	ScriptedCustomObject::ScriptedCustomObject(void* domain, std::shared_ptr<ScriptedClass> scriptedClass)
 	{
 		/* Store the class */
-		Class = scriptedClass->Class;
+		Class = (MonoClass*)scriptedClass->ManagedClass;
 
 		/* Get a reference to the Behaviour subsystem */
 		Osiris::Behaviour& behaviour = Application::Get().GetBehaviour();

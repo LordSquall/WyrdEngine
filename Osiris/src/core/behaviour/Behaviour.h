@@ -42,6 +42,8 @@ namespace Osiris
 
 		void SetInputState(int key, int state);
 
+		void CompileAll(const std::vector<std::string>& files, const std::string& outputDir, const std::string& projectName);
+
 		CreateCustomClassResult AddScriptedClassFromFile(const std::string& name, const std::string& filename);
 
 		inline std::shared_ptr<ScriptedClass> GetGameObjectManager() const { return _GameObjectManagerClass; }
@@ -54,6 +56,7 @@ namespace Osiris
 		void BroadcastTriggerCall(std::shared_ptr<GameObject> gameObject, std::string& funcName, std::shared_ptr<GameObject> triggerObject, std::vector<void*> args);
 
 	private:
+
 		static void DebugPrintFunc(const std::string& s);
 
 	private:
@@ -69,6 +72,11 @@ namespace Osiris
 
 		std::shared_ptr<Scene>	_CurrentScene;
 		bool					_IsRunning;
-		void*					_Domain;
+
+		void*			_Domain;
+		void*			_CoreAssembly;
+		void*			_ClientAssembly;
+		void*			_CoreImage;
+		void*			_ClientImage;
 	};
 }
