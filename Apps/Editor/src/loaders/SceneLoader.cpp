@@ -265,6 +265,16 @@ namespace Osiris::Editor
 			}
 		}
 
+		/* process children */
+		if (json.has<jsonxx::Array>("children") == true)
+		{
+			for (size_t i = 0; i < json.get<jsonxx::Array>("children").size(); i++)
+			{
+				jsonxx::Object childObj = json.get<jsonxx::Array>("children").get<jsonxx::Object>(i);
+				gameObject->children.push_back(Read_GameObject(childObj));
+			}
+		}
+
 		return gameObject;
 	}
 
@@ -296,9 +306,15 @@ namespace Osiris::Editor
 					break;
 			}
 		}
-
 		gameObjectJson << "components" << componentsJson;
 
+		/* write child gameobjects */
+		jsonxx::Array childrenJson;
+		for (auto& child : gameObject->children)
+		{
+			childrenJson << Write_GameObject(child);
+		}
+		gameObjectJson << "children" << childrenJson;
 
 		return gameObjectJson;
 	}

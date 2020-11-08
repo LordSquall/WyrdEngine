@@ -59,6 +59,7 @@ namespace Osiris::Editor
 		/* Helper Functions */
 		bool CheckIgnored(const std::string& path);
 		Type DetermineType(const std::string& path);
+		void BuildScripts();
 
 	private:
 		void OnProjectLoadedEvent(Events::EventArgs& args);

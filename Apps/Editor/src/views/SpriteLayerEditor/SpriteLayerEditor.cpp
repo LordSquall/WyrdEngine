@@ -2,6 +2,7 @@
 
 /* core osiris includes */
 #include <osrpch.h>
+#include <core/Log.h>
 #include <core/Application.h>
 #include <core/Layer.h>
 #include <core/scene/Layer2D.h>
@@ -16,7 +17,7 @@
 
 namespace Osiris::Editor
 {
-	SpriteLayerEditor::SpriteLayerEditor(EditorLayer* editorLayer) : EditorViewBase("Sprite Layer Editor", editorLayer), _SelectedSprite(-1), _SelectedLayer2D(nullptr) { }
+	SpriteLayerEditor::SpriteLayerEditor(EditorLayer* editorLayer) : EditorViewBase("Sprite Layer Editor", editorLayer), _SelectedGameObject(nullptr), _SelectedLayer2D(nullptr) { }
 
 	SpriteLayerEditor::~SpriteLayerEditor() { }
 
@@ -104,86 +105,78 @@ namespace Osiris::Editor
 
 			if (_SelectedLayer2D != nullptr && !_SelectedLayer2D->gameobjects.empty())
 			{
-				if (ImGui::ListBoxHeader("", ImVec2(ImGui::GetWindowWidth(), 0.0f)) == true)
+				for (int i = 0; i < _SelectedLayer2D->gameobjects.size(); i++)
 				{
-					for (int i = 0; i < _SelectedLayer2D->gameobjects.size(); i++)
-					{
-						ImGui::PushID(spriteIdx);
-
-						if (ImGui::Selectable(_SelectedLayer2D->gameobjects[i]->name.c_str(), _SelectedSprite == spriteIdx))
-						{
-							_SelectedSprite = spriteIdx;
-
-							/* Fire a change of selection event */
-							_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(_SelectedLayer2D->gameobjects[_SelectedSprite]));
-						}
-
-						if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
-						{
-							ImGui::SetDragDropPayload("SPRITE_DND_PAYLOAD", &spriteIdx, sizeof(int));        // Set payload to carry the index of our item (could be anything)
-							ImGui::EndDragDropSource();
-						}
-						if (ImGui::BeginDragDropTarget())
-						{
-							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SPRITE_DND_PAYLOAD"))
-							{
-								int payload_n = *(const int*)payload->Data;
-								_SelectedLayer2D->SwapSprite(payload_n, spriteIdx);
-							}
-							ImGui::EndDragDropTarget();
-						}
-
-						/* Sprite list context menu */
-						if (ImGui::BeginPopupContextItem("item context menu"))
-						{
-							if (ImGui::BeginMenu("Add Component"))
-							{
-								if (ImGui::MenuItem("Sprite") == true)
-								{
-									_SelectedLayer2D->gameobjects[spriteIdx]->components.push_back(std::make_shared<SpriteComponent>(_SelectedLayer2D->gameobjects[spriteIdx]));
-								}
-								if (ImGui::MenuItem("Script") == true)
-								{
-									_SelectedLayer2D->gameobjects[spriteIdx]->components.push_back(std::make_shared<ScriptComponent>(_SelectedLayer2D->gameobjects[spriteIdx]));
-								}
-								if (ImGui::MenuItem("Physics") == true)
-								{
-									_SelectedLayer2D->gameobjects[spriteIdx]->components.push_back(std::make_shared<PhysicsComponent>(_SelectedLayer2D->gameobjects[spriteIdx]));
-								}
-
-								ImGui::EndMenu();
-							}
-
-							if (ImGui::Selectable("Duplicate"))
-							{
-								_SelectedLayer2D->DuplicateSprite(spriteIdx);
-								_SelectedSprite--;
-							}
-							ImGui::Separator();
-							if (ImGui::Selectable("Delete"))
-							{
-								_SelectedLayer2D->RemoveSprite(spriteIdx);
-								_SelectedSprite--;
-							}
-							ImGui::EndPopup();
-						}
-
-						ImGui::PopID();
-
-
-						spriteIdx += 1;
-					}
-					ImGui::ListBoxFooter();
+					RenderGameObjectTreeNode(_SelectedLayer2D->gameobjects[i]);
 				}
+
+
+				//		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+				//		{
+				//			ImGui::SetDragDropPayload("SPRITE_DND_PAYLOAD", &spriteIdx, sizeof(int));        // Set payload to carry the index of our item (could be anything)
+				//			ImGui::EndDragDropSource();
+				//		}
+				//		if (ImGui::BeginDragDropTarget())
+				//		{
+				//			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SPRITE_DND_PAYLOAD"))
+				//			{
+				//				int payload_n = *(const int*)payload->Data;
+				//				_SelectedLayer2D->SwapSprite(payload_n, spriteIdx);
+				//			}
+				//			ImGui::EndDragDropTarget();
+				//		}
+
+				//		/* Sprite list context menu */
+				//		if (ImGui::BeginPopupContextItem("item context menu"))
+				//		{
+				//			if (ImGui::BeginMenu("Add Component"))
+				//			{
+				//				if (ImGui::MenuItem("Sprite") == true)
+				//				{
+				//					_SelectedLayer2D->gameobjects[spriteIdx]->components.push_back(std::make_shared<SpriteComponent>(_SelectedLayer2D->gameobjects[spriteIdx]));
+				//				}
+				//				if (ImGui::MenuItem("Script") == true)
+				//				{
+				//					_SelectedLayer2D->gameobjects[spriteIdx]->components.push_back(std::make_shared<ScriptComponent>(_SelectedLayer2D->gameobjects[spriteIdx]));
+				//				}
+				//				if (ImGui::MenuItem("Physics") == true)
+				//				{
+				//					_SelectedLayer2D->gameobjects[spriteIdx]->components.push_back(std::make_shared<PhysicsComponent>(_SelectedLayer2D->gameobjects[spriteIdx]));
+				//				}
+
+				//				ImGui::EndMenu();
+				//			}
+
+				//			if (ImGui::Selectable("Duplicate"))
+				//			{
+				//				_SelectedLayer2D->DuplicateSprite(spriteIdx);
+				//				_SelectedSprite--;
+				//			}
+				//			ImGui::Separator();
+				//			if (ImGui::Selectable("Delete"))
+				//			{
+				//				_SelectedLayer2D->RemoveSprite(spriteIdx);
+				//				_SelectedSprite--;
+				//			}
+				//			ImGui::EndPopup();
+				//		}
+
+				//		ImGui::PopID();
+
+
+				//		spriteIdx += 1;
+				//	}
+				//	ImGui::ListBoxFooter();
+				//}
 			}
 			else
 			{
 				ImGui::Text("No sprites :(");
 			}
-			if (ImGui::Button("Add GameObject...") == true)
+			/*if (ImGui::Button("Add GameObject...") == true)
 			{
-				AddGameObject();
-			}
+				CreateEmptyGameObject();
+			}*/
 		}
 	}
 
@@ -200,13 +193,74 @@ namespace Osiris::Editor
 		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
 	}
 
-	void SpriteLayerEditor::AddGameObject()
+
+	void SpriteLayerEditor::RenderGameObjectTreeNode(std::shared_ptr<GameObject> gameObject)
+	{
+		ImGui::PushID(gameObject->GetUID());
+
+		/* Build treenode flags */
+		ImGuiTreeNodeFlags TreeNodeEx_flags = ImGuiTreeNodeFlags_None;
+		TreeNodeEx_flags |= ImGuiTreeNodeFlags_OpenOnArrow;
+		gameObject->children.size() == 0 ? TreeNodeEx_flags |= ImGuiTreeNodeFlags_Leaf : ImGuiTreeNodeFlags_None;			/* add children */
+		gameObject == _SelectedGameObject ? TreeNodeEx_flags |= ImGuiTreeNodeFlags_Selected : ImGuiTreeNodeFlags_None;		/* currently selected */
+		
+		if (ImGui::TreeNodeEx(gameObject->name.c_str(), TreeNodeEx_flags))
+		{
+			/* clicking functions */
+			if (ImGui::IsItemClicked())
+			{
+				_SelectedGameObject = gameObject;
+
+				/* Fire a change of selection event */
+				_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
+			}
+
+			/* Sprite list context menu */
+			if (ImGui::BeginPopupContextItem("item context menu"))
+			{
+				if (ImGui::Selectable("Add Child") == true)
+				{
+					OSR_TRACE("Add Child");
+					gameObject->children.push_back(CreateEmptyGameObject());
+				}
+				if (ImGui::BeginMenu("Add Component"))
+				{
+					if (ImGui::MenuItem("Sprite") == true)
+					{
+						_SelectedGameObject->components.push_back(std::make_shared<SpriteComponent>(_SelectedGameObject));
+					}
+					if (ImGui::MenuItem("Script") == true)
+					{
+						_SelectedGameObject->components.push_back(std::make_shared<ScriptComponent>(_SelectedGameObject));
+					}
+					if (ImGui::MenuItem("Physics") == true)
+					{
+						_SelectedGameObject->components.push_back(std::make_shared<PhysicsComponent>(_SelectedGameObject));
+					}
+
+					ImGui::EndMenu();
+				}
+				ImGui::EndPopup();
+			}
+
+			for (int i = 0; i < gameObject->children.size(); i++)
+			{
+				RenderGameObjectTreeNode(gameObject->children[i]);
+			}
+
+			ImGui::TreePop();
+		}
+		ImGui::PopID();
+	}
+
+	std::shared_ptr<GameObject> SpriteLayerEditor::CreateEmptyGameObject()
 	{
 		std::shared_ptr<GameObject> go = std::make_shared<GameObject>("Game Object");
 
 		/* add transform 2D */
 		go->transform2D = std::make_shared<Transform2DComponent>(go);
 
+		return go;
 
 		//go->spriteRender.OwnerGameObject = go;
 		//go->script.OwnerGameObject = go;
@@ -226,6 +280,6 @@ namespace Osiris::Editor
 		//go->inputArea.z = (float)go->spriteRender.Sprite->GetWidth();
 		//go->inputArea.w = (float)go->spriteRender.Sprite->GetHeight();
 
-		_SelectedLayer2D->AddSprite(go);
+		//_SelectedLayer2D->AddSprite(go);
 	}
 }

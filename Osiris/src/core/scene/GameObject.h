@@ -37,10 +37,13 @@ namespace Osiris {
 		
 		std::shared_ptr<Layer2D> layer;
 
+		std::vector<std::shared_ptr<GameObject>> children;
+
 		glm::vec4 inputArea;
 	private:
 		uint32_t _uid = 0u;
 		static uint32_t _nextUid;
+
 	};
 
 }

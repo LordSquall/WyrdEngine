@@ -108,6 +108,8 @@ namespace Osiris::Editor
 		{
 			std::shared_ptr<ScriptRes> scriptResource = GetScriptByName(Utils::GetFilename(resourcePath));
 			scriptResource->Reload();
+
+			BuildScripts();
 		}
 		break;
 		case Type::SCENE:
@@ -235,6 +237,17 @@ namespace Osiris::Editor
 		return nullptr;
 	}
 
+	void ResourceService::BuildScripts()
+	{
+		ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->CompileAll();
+
+		// Resolve all the script resources to the scripted classes
+		for (auto& [key, value] : _scriptResources)
+		{
+			value->Script = ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->GetClass(value->GetName());
+		}
+	}
+
 	bool ResourceService::CheckIgnored(const std::string& path)
 	{
 		std::string fileExtension = Utils::GetFileExtension(path);
@@ -275,13 +288,7 @@ namespace Osiris::Editor
 		}
 
 		/* Once all the resources are loaded, now we can compile the all the scripts */
-		ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->CompileAll();
-
-		// Resolve all the script resources to the scripted classes
-		for (auto& [key, value] : _scriptResources)
-		{
-			value->Script = ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->GetClass(value->GetName());
-		}
+		BuildScripts();
 	}
 
 	void ResourceService::OnAddResourceEvent(Events::EventArgs& args)
