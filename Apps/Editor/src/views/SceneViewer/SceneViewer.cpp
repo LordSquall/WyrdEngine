@@ -87,10 +87,7 @@ namespace Osiris::Editor
 			{
 				for (auto go : sl->gameobjects)
 				{
-					if (go->transform2D->IsMatrixValid() == false)
-					{
-						go->transform2D->Recalculate();
-					}
+					UpdateGameObject(go, ts, false);
 				}
 			}
 		}
@@ -115,10 +112,7 @@ namespace Osiris::Editor
 			{
 				for (auto go : sl->gameobjects)
 				{
-					for (auto component : go->components)
-					{
-						component->Render(ts, renderer);
-					}
+					RenderGameObject(go, ts, renderer);
 				}
 			}
 
@@ -347,6 +341,34 @@ namespace Osiris::Editor
 		_SimulationService->SetInputState(e.GetKeyCode(), 2);
 
 		return true;
+	}
+
+	void SceneViewer::RenderGameObject(std::shared_ptr<GameObject> gameObject, Timestep ts, Renderer& renderer)
+	{
+		for (auto component : gameObject->components)
+		{
+			component->Render(ts, renderer);
+		}
+
+		for (auto child : gameObject->children)
+		{
+			RenderGameObject(child, ts, renderer);
+		}
+	}
+
+
+	void SceneViewer::UpdateGameObject(std::shared_ptr<GameObject> gameObject, Timestep ts, bool invalidateChildren)
+	{
+		if (gameObject->transform2D->IsMatrixValid() == false || invalidateChildren)
+		{
+			gameObject->transform2D->Recalculate();
+			invalidateChildren = true;
+		}
+
+		for (auto& child : gameObject->children)
+		{
+			UpdateGameObject(child, ts, invalidateChildren);
+		}
 	}
 
 	void SceneViewer::OnSceneOpened(Events::EventArgs& args)

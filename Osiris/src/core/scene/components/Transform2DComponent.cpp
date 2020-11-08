@@ -2,6 +2,7 @@
 #include "osrpch.h"
 #include "core/Log.h"
 #include "Transform2DComponent.h"
+#include "core/scene/GameObject.h"
 
 
 namespace Osiris
@@ -28,19 +29,19 @@ namespace Osiris
 
 	void Transform2DComponent::SetPosition(const vec2& pos)
 	{ 
-		_PositionDelta = pos;
+		position = pos;
 		_IsMatrixValid = false;
 	}
 
 	void Transform2DComponent::SetRotation(const float rot)
 	{ 
-		_RotationDelta = rot;
+		rotation = rot;
 		_IsMatrixValid = false;
 	}
 
 	void Transform2DComponent::SetScale(const vec2& scl)
 	{ 
-		_ScaleDelta = scl;
+		scale = scl;
 		_IsMatrixValid = false;
 	}
 
@@ -72,13 +73,15 @@ namespace Osiris
 
 	void Transform2DComponent::Recalculate()
 	{
+		glm::mat4 parentMatrix = Owner->parent != nullptr ? Owner->parent->transform2D->matrix : glm::mat4(1.0);
+
 		position += _PositionDelta;
 		rotation += _RotationDelta; 
 		scale += _ScaleDelta;
 
-		matrix = glm::translate(glm::identity<glm::mat4>(), glm::vec3(position.x, position.y, 0.0f));
+		matrix = parentMatrix * glm::translate(glm::identity<glm::mat4>(), glm::vec3(position.x, position.y, 0.0f));
 
-		globalPosition = matrix * glm::vec4(position.x, position.y, 0.0f, 1.0f);
+		globalPosition = parentMatrix * matrix * glm::vec4(position.x, position.y, 0.0f, 1.0f);
 
 		_IsMatrixValid = true;
 

@@ -36,6 +36,9 @@ namespace Osiris::Editor
 		void OnSceneOpened(Events::EventArgs& args);
 		void OnSelectedGameObjectChanged(Events::EventArgs& args);
 
+		void RenderGameObject(std::shared_ptr<GameObject> gameObject, Timestep ts, Renderer& renderer);
+		void UpdateGameObject(std::shared_ptr<GameObject> gameObject, Timestep ts, bool invalidateChildren);
+
 	private:
 		std::shared_ptr<WorkspaceService>		_WorkspaceService;
 		std::shared_ptr<EventService>			_EventService;

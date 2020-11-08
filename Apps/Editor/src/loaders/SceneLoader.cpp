@@ -231,10 +231,13 @@ namespace Osiris::Editor
 		return componentJson;
 	}
 
-	static std::shared_ptr<GameObject> Read_GameObject(jsonxx::Object& json)
+	static std::shared_ptr<GameObject> Read_GameObject(jsonxx::Object& json, std::shared_ptr<GameObject> parent)
 	{
 		/* create a new game object */
 		std::shared_ptr<Osiris::GameObject> gameObject = std::make_shared<Osiris::GameObject>();
+
+		/* set parent */
+		gameObject->parent = parent;
 
 		/* configure properties */
 		gameObject->name = json.get<jsonxx::String>("name", "untitled");
@@ -271,7 +274,7 @@ namespace Osiris::Editor
 			for (size_t i = 0; i < json.get<jsonxx::Array>("children").size(); i++)
 			{
 				jsonxx::Object childObj = json.get<jsonxx::Array>("children").get<jsonxx::Object>(i);
-				gameObject->children.push_back(Read_GameObject(childObj));
+				gameObject->children.push_back(Read_GameObject(childObj, gameObject));
 			}
 		}
 
@@ -332,7 +335,7 @@ namespace Osiris::Editor
 		{
 			for (size_t i = 0; i < json.get<jsonxx::Array>("gameObjects").size(); i++)
 			{
-				std::shared_ptr<Osiris::GameObject> gameObject = Read_GameObject(json.get<jsonxx::Array>("gameObjects").get<jsonxx::Object>(i));
+				std::shared_ptr<Osiris::GameObject> gameObject = Read_GameObject(json.get<jsonxx::Array>("gameObjects").get<jsonxx::Object>(i), nullptr);
 
 				// store the layer reference in the gameobject
 				gameObject->layer = layer2D;

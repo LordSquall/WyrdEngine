@@ -37,6 +37,7 @@ namespace Osiris {
 		
 		std::shared_ptr<Layer2D> layer;
 
+		std::shared_ptr<GameObject> parent;
 		std::vector<std::shared_ptr<GameObject>> children;
 
 		glm::vec4 inputArea;

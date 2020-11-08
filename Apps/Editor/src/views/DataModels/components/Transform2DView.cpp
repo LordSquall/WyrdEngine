@@ -23,20 +23,15 @@ namespace Osiris::Editor
 
 			if (ImGui::InputFloat2("Pos     ", pos) == true)
 			{
-				_BaseComponent->position.x = pos[0];
-				_BaseComponent->position.y = pos[1];
-				//_IsMatrixValid = false;
+				_BaseComponent->SetPosition({ pos[0], pos[1] });
 			}
 			if (ImGui::InputFloat("Rotation", &rot) == true)
 			{
-				_BaseComponent->rotation = rot;
-				//_IsMatrixValid = false;
+				_BaseComponent->SetRotation(rot);
 			}
 			if (ImGui::InputFloat2("Scale   ", scl) == true)
 			{
-				_BaseComponent->scale.x = scl[0];
-				_BaseComponent->scale.x = scl[1];
-				//_IsMatrixValid = false;
+				_BaseComponent->SetScale({ scl[0], scl[1] });
 			}
 
 			ImGui::TreePop();
