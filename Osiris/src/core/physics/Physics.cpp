@@ -35,7 +35,7 @@ namespace Osiris
 		// iterate the scene and find all objects with a physics component 
 		for (auto& layer : scene->layers2D)
 		{
-			for (auto gameObject : layer->gameobjects)
+			for (auto gameObject : layer->children)
 			{
 				for (auto component : gameObject->components)
 				{

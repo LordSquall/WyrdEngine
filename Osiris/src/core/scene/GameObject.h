@@ -24,6 +24,11 @@ namespace Osiris {
 		GameObject(const GameObject& obj);
 		~GameObject();
 
+		void AddChild(std::shared_ptr<GameObject> gameObject);
+		void RemoveChild(int uid);
+		void DuplicateChild(int uid);
+		void SwapChild(int a, int b);
+
 		inline uint32_t GetUID() { return _uid; }
 
 	public:

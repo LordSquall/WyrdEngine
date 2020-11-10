@@ -340,7 +340,7 @@ namespace Osiris::Editor
 				// store the layer reference in the gameobject
 				gameObject->layer = layer2D;
 
-				layer2D->gameobjects.push_back(gameObject);
+				layer2D->AddChild(gameObject);
 			}
 		}
 
@@ -357,9 +357,9 @@ namespace Osiris::Editor
 		
 		/* write game objects */
 		jsonxx::Array gameObjectJson;
-		for (size_t i = 0; i < layer2D->gameobjects.size(); i++)
+		for (size_t i = 0; i < layer2D->children.size(); i++)
 		{
-			gameObjectJson << Write_GameObject(layer2D->gameobjects[i]);
+			gameObjectJson << Write_GameObject(layer2D->children[i]);
 		}
 
 		layer2DJson << "gameObjects" << gameObjectJson;
@@ -403,7 +403,7 @@ namespace Osiris::Editor
 
 				for each (auto layers in scene.layers2D)
 				{
-					for each (auto gameobject in layers->gameobjects)
+					for each (auto gameobject in layers->children)
 					{
 						gameobject->transform2D->Recalculate();
 

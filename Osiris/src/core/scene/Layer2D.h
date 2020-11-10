@@ -7,10 +7,8 @@ using namespace Osiris;
 
 namespace Osiris {
 
-	class GameObject;
-
 	/* Editor Layer 2D Data Model Structure */
-	class OSR_LIBRARY_API Layer2D
+	class OSR_LIBRARY_API Layer2D : public GameObject
 	{
 	public:
 		/* Constructors */
@@ -19,16 +17,7 @@ namespace Osiris {
 		Layer2D(const Layer2D& obj);
 		virtual ~Layer2D();
 
-	public:
-		void AddSprite(std::shared_ptr<GameObject> gameObject);
-		void RemoveSprite(int uid);
-		void DuplicateSprite(int uid);
-		void SwapSprite(int a, int b);
-
 		void Update();
-	public:
-		std::string name;
-		std::vector<std::shared_ptr<GameObject>> gameobjects;
 	};
 
 }

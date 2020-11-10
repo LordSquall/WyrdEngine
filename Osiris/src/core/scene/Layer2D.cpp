@@ -10,35 +10,14 @@
 
 namespace Osiris
 {
-	Layer2D::Layer2D() : name("Untitled") { }
+	Layer2D::Layer2D() : GameObject("Untitled") { }
 
-	Layer2D::Layer2D(const std::string& name) : name(name) { }
+	Layer2D::Layer2D(const std::string& name) : GameObject(name) { }
 
-	Layer2D::Layer2D(const Layer2D& obj) : name(obj.name), gameobjects(obj.gameobjects) { }
+	Layer2D::Layer2D(const Layer2D& obj) : GameObject(obj.name) { }
 
 	Layer2D::~Layer2D() { }
 
 	void Layer2D::Update() { }
 
-	void Layer2D::AddSprite(std::shared_ptr<GameObject> gameObject)
-	{
-		gameobjects.push_back(gameObject);
-	}
-
-	void Layer2D::RemoveSprite(int idx)
-	{
-		gameobjects.erase(gameobjects.begin() + idx);
-	}
-
-	void Layer2D::DuplicateSprite(int idx)
-	{
-		//TODO
-	}
-
-	void Layer2D::SwapSprite(int a, int b)
-	{
-		std::shared_ptr<GameObject> tmp = gameobjects[a];
-		gameobjects[a] = gameobjects[b];
-		gameobjects[b] = tmp;
-	}
 }

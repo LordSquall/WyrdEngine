@@ -34,4 +34,29 @@ namespace Osiris
 	}
 
 	GameObject::~GameObject() { }
+
+	void GameObject::AddChild(std::shared_ptr<GameObject> gameObject)
+	{
+		children.push_back(gameObject);
+	}
+
+	void GameObject::RemoveChild(int uid)
+	{
+		children.erase(std::remove_if(children.begin(), children.end(),
+			[&](const std::shared_ptr<GameObject>& child)
+			{ return child->GetUID() == uid; }),
+			children.end());
+	}
+
+	void GameObject::DuplicateChild(int uid)
+	{
+		// TODO
+	}
+
+	void GameObject::SwapChild(int a, int b)
+	{
+		std::shared_ptr<GameObject> tmp = children[a];
+		children[a] = children[b];
+		children[b] = tmp;
+	}
 }

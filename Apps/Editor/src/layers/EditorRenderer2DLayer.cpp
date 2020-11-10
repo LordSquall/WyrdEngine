@@ -57,7 +57,7 @@ namespace Osiris::Editor
 			/* Render Each sprite layer */
 			for (auto sl : _Scene->layers2D)
 			{
-				for (auto go : sl->gameobjects)
+				for (auto go : sl->children)
 				{
 					for (auto component : go->components)
 					{
@@ -129,7 +129,7 @@ namespace Osiris::Editor
 			/* Query each of the layer scene objects */
 			for (auto& sl : _Scene->layers2D)
 			{
-				for (auto& go : sl->gameobjects)
+				for (auto& go : sl->children)
 				{
 					/*glm::mat4 mvpInverse = glm::inverse(_CameraController->GetCamera().GetViewProjectionMatrix() * go->transform2d.matrix);
 

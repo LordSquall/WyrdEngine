@@ -127,7 +127,7 @@ namespace Osiris
 
 			for (auto& sl : _CurrentScene->layers2D)
 			{
-				for (auto& go : sl->gameobjects)
+				for (auto& go : sl->children)
 				{
 					_ScriptedGameObjects[go->GetUID()] = std::make_shared<ScriptedGameObject>(_Domain, gameObjectClass, go);
 				}
@@ -140,7 +140,7 @@ namespace Osiris
 			/* Query each of the layer scene objects */
 			for (auto& sl : _CurrentScene->layers2D)
 			{
-				for (auto& go : sl->gameobjects)
+				for (auto& go : sl->children)
 				{
 					for (auto component : go->components)
 					{
@@ -176,7 +176,7 @@ namespace Osiris
 			/* Query each of the layer scene objects */
 			for (auto& sl : _CurrentScene->layers2D)
 			{
-				for (auto& go : sl->gameobjects)
+				for (auto& go : sl->children)
 				{					
 					for (auto component : go->components)
 					{
@@ -218,7 +218,7 @@ namespace Osiris
 				/* traverse each of the gameobjects within the scene*/
 				for (auto& sl : _CurrentScene->layers2D)
 				{
-					for (auto& go : sl->gameobjects)
+					for (auto& go : sl->children)
 					{
 						for (auto& component : go->components)
 						{
@@ -270,7 +270,7 @@ namespace Osiris
 				/* traverse each of the gameobjects within the scene*/
 				for (auto& sl : _CurrentScene->layers2D)
 				{
-					for (auto& go : sl->gameobjects)
+					for (auto& go : sl->children)
 					{
 						for (auto& component : go->components)
 						{
