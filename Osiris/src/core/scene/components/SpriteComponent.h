@@ -23,9 +23,9 @@ namespace Osiris {
 		SpriteComponent(const SpriteComponent& obj);
 		~SpriteComponent();
 
-		std::shared_ptr<Shader> Shader;
+		std::shared_ptr<Shader> shader;
 		std::shared_ptr<Texture> BaseTexture;
-		std::shared_ptr<Sprite> Sprite;
+		std::shared_ptr<Sprite> sprite;
 		vec4 Color;
 
 	public:

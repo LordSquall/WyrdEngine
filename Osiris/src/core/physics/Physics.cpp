@@ -142,7 +142,7 @@ namespace Osiris
 						return a.hit->distance < b.hit->distance;
 					});
 
-				for each (auto collision in resolvableCollisions)
+				for(auto collision : resolvableCollisions)
 				{
 					glm::vec2 currentVelocity = collision.a->GetVelocity();
 					collision.a->SetVelocity(currentVelocity + (collision.hit->normal * glm::vec2(std::abs(currentVelocity.x), std::abs(currentVelocity.y)) * (1 - collision.hit->distance)));

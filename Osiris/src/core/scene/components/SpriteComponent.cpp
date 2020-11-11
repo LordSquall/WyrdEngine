@@ -11,17 +11,17 @@ namespace Osiris
 	SpriteComponent::SpriteComponent(std::shared_ptr<GameObject> owner) : IBaseComponent(owner, SceneComponentType::SpriteRenderer)
 		, Color({ 1.0f, 1.0f, 1.0f, 1.0f })
 	{
-		Shader = Resources::Get().Shaders["Sprite"];
-		Sprite = std::make_shared<Osiris::Sprite>("NewSprite", 0.0f, 0.0f, 64.0f, 64.0f);
+		shader = Resources::Get().Shaders["Sprite"];
+		sprite = std::make_shared<Osiris::Sprite>("NewSprite", 0.0f, 0.0f, 64.0f, 64.0f);
 		BaseTexture = Resources::Get().Textures["DefaultSprite"];
 		Color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	}
 
 	SpriteComponent::SpriteComponent(const SpriteComponent& obj) : IBaseComponent(obj.Owner, SceneComponentType::SpriteRenderer)
 	{
-		Shader = obj.Shader;
+		shader = obj.shader;
 		BaseTexture = obj.BaseTexture;
-		Sprite = obj.Sprite;
+		sprite = obj.sprite;
 		Color = obj.Color;
 	}
 
@@ -32,18 +32,18 @@ namespace Osiris
 
 	void SpriteComponent::Recalculate()
 	{
-		Owner->inputArea = { 0.0, 0.0, Sprite->GetWidth(), Sprite->GetHeight()};
+		Owner->inputArea = { 0.0, 0.0, sprite->GetWidth(), sprite->GetHeight()};
 	}
 
 	void SpriteComponent::Render(Timestep ts, Renderer& renderer)
 	{
-		Sprite->GetVertexArray()->Bind();
-		Sprite->GetVertexBuffer()->Bind();
-		Sprite->GetIndexBuffer()->Bind();
+		sprite->GetVertexArray()->Bind();
+		sprite->GetVertexBuffer()->Bind();
+		sprite->GetIndexBuffer()->Bind();
 		BaseTexture->Bind();
 
-		Shader->SetModelMatrix(Owner->transform2D->matrix);
-		Shader->SetUniformVec4("blendColor", Color);
+		shader->SetModelMatrix(Owner->transform2D->matrix);
+		shader->SetUniformVec4("blendColor", Color);
 
 		renderer.DrawElements(RendererDrawType::Triangles, 6);
 	}

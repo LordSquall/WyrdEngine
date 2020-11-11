@@ -20,10 +20,10 @@ namespace Osiris::Editor
 
 		float color[3];
 
-		position[0] = _BaseComponent->Sprite->GetX();
-		position[1] = _BaseComponent->Sprite->GetY();
-		size[0] = _BaseComponent->Sprite->GetWidth();
-		size[1] = _BaseComponent->Sprite->GetHeight();
+		position[0] = _BaseComponent->sprite->GetX();
+		position[1] = _BaseComponent->sprite->GetY();
+		size[0] = _BaseComponent->sprite->GetWidth();
+		size[1] = _BaseComponent->sprite->GetHeight();
 		color[0] = _BaseComponent->Color.r;
 		color[1] = _BaseComponent->Color.g;
 		color[2] = _BaseComponent->Color.b;
@@ -32,14 +32,14 @@ namespace Osiris::Editor
 		{
 			if (ImGui::InputInt2("Pos ", position, 1) == true)
 			{
-				_BaseComponent->Sprite->SetPosition(position[0], position[1]);
+				_BaseComponent->sprite->SetPosition(position[0], position[1]);
 				_BaseComponent->Owner->inputArea.x = (float)position[0];
 				_BaseComponent->Owner->inputArea.y = (float)position[1];
 			}
 
 			if (ImGui::InputInt2("Size", size, 1))
 			{
-				_BaseComponent->Sprite->SetSize(size[0], size[1]);
+				_BaseComponent->sprite->SetSize(size[0], size[1]);
 				_BaseComponent->Owner->inputArea.z = (float)size[0];
 				_BaseComponent->Owner->inputArea.w = (float)size[1];
 			}

@@ -93,7 +93,7 @@ namespace Osiris
 
 		/* Output all the classes found in the OsirisAPI dll */
 		OSR_CORE_TRACE("Classes found in OsirisAPI.dll:");
-		for each (auto scriptedClass in _ScriptedClasses)
+		for(auto scriptedClass : _ScriptedClasses)
 		{
 			OSR_CORE_TRACE("\t{0}", scriptedClass.second->GetName());
 		}
@@ -318,7 +318,7 @@ namespace Osiris
 
 	void Behaviour::BroadcastTriggerCall(std::shared_ptr<GameObject> gameObject, std::string& funcName, std::shared_ptr<GameObject> triggerObject, std::vector<void*> args)
 	{
-		for each (auto &component in gameObject->components)
+		for(auto &component : gameObject->components)
 		{
 			if (component->GetType() == SceneComponentType::ScriptComponent)
 			{

@@ -130,8 +130,8 @@ namespace Osiris::Editor
 		Read_Vec2(json.get<jsonxx::Array>("size"), &spriteSize);
 		Read_Vec2(json.get<jsonxx::Array>("position"), &spritePosition);
 
-		component->Sprite->SetSize((int)spriteSize.x, (int)spriteSize.y);
-		component->Sprite->SetPosition((int)spritePosition.x, (int)spritePosition.y);
+		component->sprite->SetSize((int)spriteSize.x, (int)spriteSize.y);
+		component->sprite->SetPosition((int)spritePosition.x, (int)spritePosition.y);
 
 		component->BaseTexture = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetTextureResourceByName(json.get<jsonxx::String>("baseTexture"))->GetTexture();
 
@@ -149,8 +149,8 @@ namespace Osiris::Editor
 		jsonxx::Object componentJson;
 
 		//TODO - this is only require as sprite is a nested object, not sure if this is required
-		glm::vec2 spriteSize = { sprite->Sprite->GetWidth(), sprite->Sprite->GetHeight() };
-		glm::vec2 spritePosition = { sprite->Sprite->GetX(), sprite->Sprite->GetY() };
+		glm::vec2 spriteSize = { sprite->sprite->GetWidth(), sprite->sprite->GetHeight() };
+		glm::vec2 spritePosition = { sprite->sprite->GetX(), sprite->sprite->GetY() };
 
 		/* base properties */
 		componentJson << "Type" << (uint32_t)spriteComponent->GetType();
