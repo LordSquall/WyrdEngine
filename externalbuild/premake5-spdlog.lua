@@ -33,6 +33,14 @@ project "spdlog"
 		{
 			"SPDLOG_COMPILED_LIB"
 		}
+	
+	filter "system:linux"
+		systemversion "latest"
+
+		defines
+		{
+			"SPDLOG_COMPILED_LIB"
+		}
 		
 	filter "configurations:Debug"
 		runtime "Debug"

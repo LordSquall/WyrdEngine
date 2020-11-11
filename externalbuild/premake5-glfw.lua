@@ -1,5 +1,7 @@
 externallibsdir = os.getenv("OSIRIS_EXTERN_REPOS")
 
+print("GLFW Premake build started")
+
 project "glfw"
     kind "StaticLib"
     language "C++"
@@ -26,7 +28,28 @@ project "glfw"
         srcdir .. "src/window.c"
     }
     
-	filter "system:windows"
+	filter "system:linux"
+		systemversion "latest"
+		
+		files
+        {
+            srcdir .. "src/x11_init.c",
+            srcdir .. "src/linux_joystick.c",
+			srcdir ..  "src/x11_monitor.c",
+            srcdir .. "src/posix_time.c",
+            srcdir .. "src/posix_thread.c",
+            srcdir .. "src/x11_window.c",
+            srcdir .. "src/glx_context.c",
+            srcdir .. "src/egl_context.c",
+            srcdir .. "src/osmesa_context.c"
+        }
+
+        defines 
+		{ 
+            "_GLFW_X11"
+		}
+        
+    filter "system:windows"
 		systemversion "latest"
 		
 		files

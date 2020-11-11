@@ -18,22 +18,36 @@ monofound = false
 monolibdir = ""
 monodir = ""
 
--- check for the installation of the renderdoc api header file
-if os.isfile("C:/PROGRA~1/RenderDoc/renderdoc_app.h") == true then
-	print("Render Doc header found")
-	renderdocfound = true
-	renderdocdir = "C:/Program Files/RenderDoc/"
+if os.istarget("windows") then
+	-- check for the installation of the renderdoc api header file
+	if os.isfile("C:/PROGRA~1/RenderDoc/renderdoc_app.h") == true then
+		print("Render Doc header found")
+		renderdocfound = true
+		renderdocdir = "C:/Program Files/RenderDoc/"
+	end
 end
 
 -- check for the installation of the mono file
-if os.isfile("C:/PROGRA~1/Mono/etc/mono/config") == true then
-	print("Mono installation found")
-	monofound = true
-	monolibdir = "C:/Program Files/Mono/lib/"
-	monodir = "C:/PROGRA~1/Mono/"
-else
-	print("Unable to find Mono installation. Please install before continuing")
-	os.exit()
+if os.istarget("windows") then
+	if os.isfile("C:/PROGRA~1/Mono/etc/mono/config") == true then
+		print("Mono installation found")
+		monofound = true
+		monolibdir = "C:/Program Files/Mono/lib/"
+		monodir = "C:/PROGRA~1/Mono/"
+	else
+		print("Unable to find Mono installation. Please install before continuing")
+		os.exit()
+	end
+elseif os.istarget("linux") then
+	if os.isfile("/bin/mono") == true then
+		print("Mono installation found")
+		monofound = true
+		monolibdir = "/usr/lib/"
+		monodir = "/usr/"
+	else
+		print("Unable to find Mono installation. Please install before continuing")
+		os.exit()
+	end
 end
 
 outputdir = "%{cfg.buildcfg}"
@@ -57,8 +71,6 @@ end
 if renderdocfound then
 	includedir["renderdoc"] = renderdocdir
 end
-
-
 
 group "ThirdParty"
 include "externalbuild/premake5-glfw.lua"

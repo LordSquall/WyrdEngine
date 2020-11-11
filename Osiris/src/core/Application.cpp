@@ -92,7 +92,7 @@ namespace Osiris {
 
 	void Application::Close()
 	{
-		OnEvent(WindowCloseEvent());
+		//OnEvent(WindowCloseEvent());
 		_Running = false;
 	}
 
