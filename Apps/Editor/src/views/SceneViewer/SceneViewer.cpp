@@ -87,7 +87,7 @@ namespace Osiris::Editor
 			{
 				for (auto go : sl->children)
 				{
-					UpdateGameObject(go, ts, false);
+					UpdateGameObject(go, ts);
 				}
 			}
 		}
@@ -225,7 +225,6 @@ namespace Osiris::Editor
 	{
 		bool itemFound = false;
 		glm::vec2 normalisedMouseCoords;
-		std::shared_ptr<GameObject> selectedGameObject = nullptr;
 		glm::vec2 mouseCoords = glm::vec2(e.GetPositionX(), e.GetPositionY()) - _mouseOffset;
 
 
@@ -236,27 +235,8 @@ namespace Osiris::Editor
 
 			if (_Scene != nullptr)
 			{
-				/* Query each of the layer scene objects */
-				for (auto& sl : _Scene->layers2D)
-				{
-					for (auto& go : sl->children)
-					{
-						glm::mat4 mvpInverse = glm::inverse(_CameraController->GetCamera().GetViewProjectionMatrix() * go->transform2D->matrix);
-
-						glm::vec4 nearPoint = mvpInverse * glm::vec4(normalisedMouseCoords, 0.0f, 1.0f);
-
-						Rect inputArea = { { go->inputArea.x, go->inputArea.y }, { 0.0, 1.0 } };
-						Rect translatedInputArea = _CameraController->GetCamera().GetViewProjectionMatrix() * inputArea;
-						translatedInputArea.size.x = go->inputArea.z;
-						translatedInputArea.size.y = go->inputArea.w;
-
-						if (translatedInputArea.ContainsPoint({ nearPoint.x, nearPoint.y }) == true)
-						{
-							selectedGameObject = go;
-							itemFound = true;
-						}
-					}
-				}
+				/* this point we need to run a check on the scene tree to find which child has been clicked */
+				std::shared_ptr<GameObject> selectedGameObject = FindGameObjectInScene(normalisedMouseCoords);
 
 				switch (e.GetMouseButton())
 				{
@@ -356,19 +336,61 @@ namespace Osiris::Editor
 		}
 	}
 
-
-	void SceneViewer::UpdateGameObject(std::shared_ptr<GameObject> gameObject, Timestep ts, bool invalidateChildren)
+	void SceneViewer::UpdateGameObject(std::shared_ptr<GameObject> gameObject, Timestep ts)
 	{
-		if (gameObject->transform2D->IsMatrixValid() == false || invalidateChildren)
+		gameObject->transform2D->Recalculate();
+		for (auto& component : gameObject->components)
 		{
-			gameObject->transform2D->Recalculate();
-			invalidateChildren = true;
+			component->Recalculate();
 		}
 
 		for (auto& child : gameObject->children)
 		{
-			UpdateGameObject(child, ts, invalidateChildren);
+			UpdateGameObject(child, ts);
 		}
+	}
+
+	std::shared_ptr<GameObject> SceneViewer::FindGameObjectInScene(glm::vec2 inputPosition)
+	{
+		/* Query each of the layer scene objects in reverse */
+		for (std::vector<std::shared_ptr<Layer2D>>::reverse_iterator layer = _Scene->layers2D.rbegin(); layer != _Scene->layers2D.rend(); ++layer)
+		{
+			for (std::vector<std::shared_ptr<GameObject>>::reverse_iterator gameObject = (*layer)->children.rbegin(); gameObject != (*layer)->children.rend(); ++gameObject)
+			{
+				std::shared_ptr<GameObject> foundGameObject = FindGameObjectInGameObject(*gameObject, inputPosition);
+				if (foundGameObject != nullptr)
+				{
+					return foundGameObject;
+				}
+			}
+		}
+
+		return nullptr;
+	}
+
+	std::shared_ptr<GameObject> SceneViewer::FindGameObjectInGameObject(std::shared_ptr<GameObject> gameObject, glm::vec2 inputPosition)
+	{
+		for (std::vector<std::shared_ptr<GameObject>>::reverse_iterator child = gameObject->children.rbegin(); child != gameObject->children.rend(); ++child)
+		{
+			if (FindGameObjectInGameObject(*child, inputPosition) != nullptr)
+			{
+				return *child;
+			}
+		}
+
+		glm::mat4 mvpInverse = glm::inverse(_CameraController->GetCamera().GetViewProjectionMatrix() * gameObject->transform2D->matrix);
+		glm::vec4 nearPoint = mvpInverse * glm::vec4(inputPosition, 0.0f, 1.0f);
+		Rect inputArea = { { gameObject->inputArea.x, gameObject->inputArea.y }, { 0.0, 1.0 } };
+		Rect translatedInputArea = _CameraController->GetCamera().GetViewProjectionMatrix() * inputArea;
+		translatedInputArea.size.x = gameObject->inputArea.z;
+		translatedInputArea.size.y = gameObject->inputArea.w;
+		if (translatedInputArea.ContainsPoint({ nearPoint.x, nearPoint.y }) == true)
+		{
+			return gameObject;
+		}
+
+
+		return nullptr;
 	}
 
 	void SceneViewer::OnSceneOpened(Events::EventArgs& args)

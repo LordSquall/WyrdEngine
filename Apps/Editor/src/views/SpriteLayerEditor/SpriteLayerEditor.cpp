@@ -175,6 +175,8 @@ namespace Osiris::Editor
 	void SpriteLayerEditor::OnSelectedGameObjectChanged(Events::EventArgs& args)
 	{
 		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
+
+		_SelectedGameObject = evtArgs.gameObject;
 	}
 
 

@@ -7,7 +7,7 @@
 
 namespace Osiris
 {
-	Transform2DComponent::Transform2DComponent(std::shared_ptr<GameObject> gameObject) : IBaseComponent(gameObject, SceneComponentType::Transform2D), matrix(glm::identity<glm::mat4>())
+	Transform2DComponent::Transform2DComponent(std::shared_ptr<GameObject> gameObject) : IBaseComponent(gameObject, SceneComponentType::Transform2D), matrix(glm::identity<glm::mat4>()), _IsMatrixValid(false)
 	{
 		position = vec2(0.0f, 0.0f);
 		rotation = 0.0f;
@@ -73,18 +73,21 @@ namespace Osiris
 
 	void Transform2DComponent::Recalculate()
 	{
-		glm::mat4 parentMatrix = Owner->parent != nullptr ? Owner->parent->transform2D->matrix : glm::mat4(1.0);
+		if (_IsMatrixValid == false)
+		{
+			glm::mat4 parentMatrix = Owner->parent != nullptr ? Owner->parent->transform2D->matrix : glm::mat4(1.0);
 
-		position += _PositionDelta;
-		rotation += _RotationDelta; 
-		scale += _ScaleDelta;
+			position += _PositionDelta;
+			rotation += _RotationDelta;
+			scale += _ScaleDelta;
 
-		matrix = parentMatrix * glm::translate(glm::identity<glm::mat4>(), glm::vec3(position.x, position.y, 0.0f));
+			matrix = parentMatrix * glm::translate(glm::identity<glm::mat4>(), glm::vec3(position.x, position.y, 0.0f));
 
-		globalPosition = parentMatrix * matrix * glm::vec4(position.x, position.y, 0.0f, 1.0f);
+			globalPosition = parentMatrix * matrix * glm::vec4(position.x, position.y, 0.0f, 1.0f);
 
-		_IsMatrixValid = true;
+			_IsMatrixValid = true;
 
-		ClearTransformationDelta();
+			ClearTransformationDelta();
+		}
 	}
 }
