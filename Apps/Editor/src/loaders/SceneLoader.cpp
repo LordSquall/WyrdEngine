@@ -338,7 +338,7 @@ namespace Osiris::Editor
 				std::shared_ptr<Osiris::GameObject> gameObject = Read_GameObject(json.get<jsonxx::Array>("gameObjects").get<jsonxx::Object>(i), nullptr);
 
 				// store the layer reference in the gameobject
-				gameObject->layer = layer2D;
+				gameObject->parent = layer2D;
 
 				layer2D->AddChild(gameObject);
 			}

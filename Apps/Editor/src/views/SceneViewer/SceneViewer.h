@@ -37,7 +37,7 @@ namespace Osiris::Editor
 		void OnSelectedGameObjectChanged(Events::EventArgs& args);
 
 		void RenderGameObject(std::shared_ptr<GameObject> gameObject, Timestep ts, Renderer& renderer);
-		void UpdateGameObject(std::shared_ptr<GameObject> gameObject, Timestep ts);
+		void UpdateGameObject(std::shared_ptr<GameObject> gameObject, Timestep ts, bool updateTransform);
 
 		std::shared_ptr<GameObject> FindGameObjectInScene(glm::vec2 inputPosition);
 		std::shared_ptr<GameObject> FindGameObjectInGameObject(std::shared_ptr<GameObject>, glm::vec2 inputPosition);

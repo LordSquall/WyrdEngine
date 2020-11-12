@@ -54,7 +54,7 @@ namespace Osiris
 			OSR_TRACE("Collision State Added: {0} -> {1}", this->Owner->name, collisionKey->Owner->name);
 
 			Application::Get().GetBehaviour().BroadcastTriggerCall(Owner, std::string("OnTriggerCollision"), collisionKey->Owner, { });
-			Application::Get().GetBehaviour().BroadcastTriggerCall(collisionKey->Owner, std::string("OnTriggerCollision"), Owner, { });
+			//Application::Get().GetBehaviour().BroadcastTriggerCall(collisionKey->Owner, std::string("OnTriggerCollision"), Owner, { });
 		}
 	}
 

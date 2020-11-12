@@ -137,14 +137,17 @@ namespace Osiris::Editor
 					if (ImGui::MenuItem("Sprite") == true)
 					{
 						_SelectedGameObject->components.push_back(std::make_shared<SpriteComponent>(_SelectedGameObject));
+						_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
 					}
 					if (ImGui::MenuItem("Script") == true)
 					{
 						_SelectedGameObject->components.push_back(std::make_shared<ScriptComponent>(_SelectedGameObject));
+						_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
 					}
 					if (ImGui::MenuItem("Physics") == true)
 					{
 						_SelectedGameObject->components.push_back(std::make_shared<PhysicsComponent>(_SelectedGameObject));
+						_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
 					}
 
 					ImGui::EndMenu();

@@ -87,7 +87,7 @@ namespace Osiris::Editor
 			{
 				for (auto go : sl->children)
 				{
-					UpdateGameObject(go, ts);
+					UpdateGameObject(go, ts, false);
 				}
 			}
 		}
@@ -199,20 +199,19 @@ namespace Osiris::Editor
 			ImGui::Text("Evt Start Coords: [%d, %d]", (int32_t)_LastMousePos.x, (int32_t)_LastMousePos.y);
 		}
 
-		/* Context Menu */
-		if (_OpenContextMenu == true)
+		if (_SelectedGameObject != nullptr)
 		{
-			ImGui::SetNextWindowPos({ ImVec2(_MenuPos.x, _MenuPos.y) });
-			ImGui::Begin("Test Window", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize);
-
-			if (ImGui::MenuItem("Copy", 0, false, false) == false) { /* TODO */ }
-			if (ImGui::MenuItem("Paste", 0, false, false) == false) { /* TODO */ }
-			if (ImGui::MenuItem("Cut", 0, false, false) == false) { /* TODO */ }
-			ImGui::Separator();
-			if (ImGui::MenuItem("Delete", 0, false, true) == false) { /* TODO */ }
-
-			ImGui::End();
+			if (ImGui::BeginPopupContextWindow())
+			{
+				if (ImGui::MenuItem("Delete"))
+				{
+					_SelectedGameObject->parent->RemoveChild(_SelectedGameObject->GetUID());
+					_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(nullptr));
+				}
+				ImGui::EndPopup();
+			}
 		}
+			
 	}
 
 	void SceneViewer::OnResize()
@@ -318,7 +317,22 @@ namespace Osiris::Editor
 
 	bool SceneViewer::OnKeyReleasedEvent(KeyReleasedEvent& e)
 	{
-		_SimulationService->SetInputState(e.GetKeyCode(), 2);
+		if (_SimulationService->IsRunning())
+		{
+			_SimulationService->SetInputState(e.GetKeyCode(), 2);
+			return true;
+		}
+
+		switch (e.GetKeyCode())
+		{
+		case OSR_KEY_DELETE:
+			if (_SelectedGameObject != nullptr)
+			{
+				_SelectedGameObject->parent->RemoveChild(_SelectedGameObject->GetUID());
+				_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(nullptr));
+			}
+			break;
+		}
 
 		return true;
 	}
@@ -336,8 +350,14 @@ namespace Osiris::Editor
 		}
 	}
 
-	void SceneViewer::UpdateGameObject(std::shared_ptr<GameObject> gameObject, Timestep ts)
+	void SceneViewer::UpdateGameObject(std::shared_ptr<GameObject> gameObject, Timestep ts, bool updateTransform)
 	{
+		// check if the game has an invalid matrix as this will need to be propogated
+		bool transformPropogation = gameObject->transform2D->IsMatrixValid();
+
+		if (updateTransform == true)
+			gameObject->transform2D->SetMatrixValid(false);
+
 		gameObject->transform2D->Recalculate();
 		for (auto& component : gameObject->components)
 		{
@@ -346,7 +366,7 @@ namespace Osiris::Editor
 
 		for (auto& child : gameObject->children)
 		{
-			UpdateGameObject(child, ts);
+			UpdateGameObject(child, ts, transformPropogation);
 		}
 	}
 

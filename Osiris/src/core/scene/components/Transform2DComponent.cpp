@@ -75,7 +75,7 @@ namespace Osiris
 	{
 		if (_IsMatrixValid == false)
 		{
-			glm::mat4 parentMatrix = Owner->parent != nullptr ? Owner->parent->transform2D->matrix : glm::mat4(1.0);
+			glm::mat4 parentMatrix = (Owner->parent != nullptr && Owner->parent->transform2D != nullptr) ? Owner->parent->transform2D->matrix : glm::mat4(1.0);
 
 			position += _PositionDelta;
 			rotation += _RotationDelta;
