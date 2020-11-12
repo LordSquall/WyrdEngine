@@ -26,7 +26,7 @@ namespace Osiris::Editor
 		_extensions.insert(std::pair<std::string, Type>(".cs", SCRIPT));
 
 		/* Add resources from the osiris core to make then accessible with in the editor */
-		for each (auto textures in Resources::Get().Textures)
+		for(auto& textures : Resources::Get().Textures)
 		{
 			std::shared_ptr<TextureRes> textureResource = std::make_shared<TextureRes>(textures.second, "default");
 			_textureResources.insert(std::pair<uint32_t, std::shared_ptr<TextureRes>>(textureResource->GetResourceID(), textureResource));
@@ -177,7 +177,7 @@ namespace Osiris::Editor
 
 	std::shared_ptr<TextureRes> ResourceService::GetTextureResourceByNativeID(const uint32_t nativeId)
 	{
-		for each (auto resource in _textureResources)
+		for(auto& resource : _textureResources)
 		{
 			if (resource.second->GetTexture()->GetUID() == nativeId)
 				return resource.second;

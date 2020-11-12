@@ -42,7 +42,7 @@ namespace Osiris::Editor
 		ImGui::PushItemWidth(-1);
 		ImGui::ListBoxHeader("##label");
 
-		for each (auto item in _LogItems)
+		for(auto item : _LogItems)
 		{
 			ImGui::Selectable(item.message.c_str());
 

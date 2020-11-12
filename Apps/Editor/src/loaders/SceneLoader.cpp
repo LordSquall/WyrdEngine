@@ -401,13 +401,13 @@ namespace Osiris::Editor
 					}
 				}
 
-				for each (auto layers in scene.layers2D)
+				for(auto layers : scene.layers2D)
 				{
-					for each (auto gameobject in layers->children)
+					for(auto gameobject : layers->children)
 					{
 						gameobject->transform2D->Recalculate();
 
-						for each (auto component in gameobject->components)
+						for(auto component : gameobject->components)
 						{
 							component->Recalculate();
 						}

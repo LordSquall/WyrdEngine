@@ -112,7 +112,7 @@ namespace Osiris::Editor
 		std::vector<std::string> files = Utils::GetFileList(_currentDir, false);
 
 		ImGui::Columns(colCnt, NULL, false);
-		for each (auto& file in files)
+		for(auto& file : files)
 		{	
 			if (_resourcesService->CheckIgnored(file) == false)
 			{
