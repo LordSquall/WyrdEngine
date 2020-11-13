@@ -51,10 +51,8 @@ namespace Osiris
 		if (_CollisionStates.find(collisionKey) == _CollisionStates.end())
 		{
 			_CollisionStates.insert({ collisionKey, 1 });
-			OSR_TRACE("Collision State Added: {0} -> {1}", this->Owner->name, collisionKey->Owner->name);
-
 			Application::Get().GetBehaviour().BroadcastTriggerCall(Owner, std::string("OnTriggerCollision"), collisionKey->Owner, { });
-			//Application::Get().GetBehaviour().BroadcastTriggerCall(collisionKey->Owner, std::string("OnTriggerCollision"), Owner, { });
+			
 		}
 	}
 
@@ -71,7 +69,6 @@ namespace Osiris
 		if (_CollisionStates.find(collisionKey) != _CollisionStates.end())
 		{
 			_CollisionStates.erase(collisionKey);
-			OSR_TRACE("Collision State Removed: {0} -> {1}", this->Owner->name, collisionKey->Owner->name);
 		}
 	}
 }

@@ -56,6 +56,11 @@ namespace Osiris
 		void BroadcastTriggerCall(std::shared_ptr<GameObject> gameObject, std::string& funcName, std::shared_ptr<GameObject> triggerObject, std::vector<void*> args);
 
 	private:
+		void BuildManagedGameObjects();
+		void BuildManagedGameObjects(std::shared_ptr<GameObject> gameObject, std::shared_ptr<ScriptedClass> gameObjectClass);
+
+		void LinkManagedGameObjects();
+		void LinkManagedGameObjects(std::shared_ptr<GameObject> gameObject);
 
 		static void DebugPrintFunc(const std::string& s);
 

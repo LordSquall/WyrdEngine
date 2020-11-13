@@ -37,18 +37,9 @@ namespace Osiris
 		{
 			for (auto gameObject : layer->children)
 			{
-				for (auto component : gameObject->components)
-				{
-					if (component->GetType() == SceneComponentType::PhysicsComponent)
-					{
-						OSR_CORE_INFO("Found Physics Component on : {0}", gameObject->name);
-						
-						_physicsObjects.push_back((PhysicsComponent*)&*component);
-					}
-				}
+				SearchGameObject(gameObject);
 			}
 		}
-
 	}
 
 	void Physics::Update(Timestep ts)
@@ -169,5 +160,24 @@ namespace Osiris
 		_physicsObjects.clear();
 
 		_IsRunning = false;
+	}
+
+
+	void Physics::SearchGameObject(std::shared_ptr<GameObject> gameObject)
+	{
+		for (auto& child : gameObject->children)
+		{
+			SearchGameObject(child);
+		}
+
+		for (auto component : gameObject->components)
+		{
+			if (component->GetType() == SceneComponentType::PhysicsComponent)
+			{
+				OSR_CORE_INFO("Found Physics Component on : {0}", gameObject->name);
+
+				_physicsObjects.push_back((PhysicsComponent*)&*component);
+			}
+		}
 	}
 }

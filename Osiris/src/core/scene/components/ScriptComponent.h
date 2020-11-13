@@ -20,11 +20,20 @@ namespace Osiris {
 		ScriptComponent(const ScriptComponent& obj);
 		~ScriptComponent();
 		
+		void SetClass(std::shared_ptr<ScriptedClass> scriptedClass);
+		void SetCustomObject(std::shared_ptr<ScriptedCustomObject> scriptedObject);
+
+		inline const std::shared_ptr<ScriptedClass> GetClass() const { return _Class; }
+		inline const std::shared_ptr<ScriptedCustomObject> GetCustomObject() const { return _Object; }
+		
+	public:
+		std::vector<ScriptedClass::PropertyDesc> Properties;
+
 	private:
 		void CacheResources();
 
-	public:
-		std::shared_ptr<ScriptedClass> Class;
-		std::shared_ptr<ScriptedCustomObject> Object;
+	private:
+		std::shared_ptr<ScriptedClass> _Class;
+		std::shared_ptr<ScriptedCustomObject> _Object;
 	};
 }

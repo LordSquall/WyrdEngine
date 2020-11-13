@@ -176,7 +176,7 @@ namespace Osiris::Editor
 		std::shared_ptr<ScriptRes> scriptResource = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetScriptByName(script);
 		if (scriptResource != nullptr)
 		{
-			component->Class = scriptResource->Script;
+			component->SetClass(scriptResource->Script);
 		}
 
 		return component;
@@ -193,8 +193,8 @@ namespace Osiris::Editor
 		/* base properties */
 		componentJson << "Type" << (uint32_t)scriptComponent->GetType();
 
-		if(script->Class != nullptr)
-			componentJson << "ScriptName" << script->Class->GetName();
+		if(script->GetClass() != nullptr)
+			componentJson << "ScriptName" << script->GetClass()->GetName();
 
 		return componentJson;
 	}

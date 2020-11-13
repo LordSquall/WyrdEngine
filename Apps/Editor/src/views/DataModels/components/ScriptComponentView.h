@@ -25,6 +25,11 @@ namespace Osiris::Editor {
 		void OnPropertyEditorDraw() override;
 
 	private:
+		void DrawIntUI(ScriptedClass::PropertyDesc& prop);
+		void DrawFloatUI(ScriptedClass::PropertyDesc& prop);
+
+	private:
 		ScriptComponent* _BaseComponent;
+
 	};
 }

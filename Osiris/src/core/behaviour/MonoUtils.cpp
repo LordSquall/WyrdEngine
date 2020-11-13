@@ -19,7 +19,7 @@ namespace Osiris
 {
 	void* MonoUtils::ExecuteScriptMethod(ScriptComponent* scriptComponent, std::string& functionName, std::vector<void*> args)
 	{
-		mono_runtime_invoke(&*scriptComponent->Object->GetMethod(functionName), &*scriptComponent->Object->Object, &args[0], nullptr);
+		mono_runtime_invoke(&*scriptComponent->GetCustomObject()->GetMethod(functionName), &*scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
 
 		return nullptr;
 	}

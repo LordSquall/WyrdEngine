@@ -84,7 +84,7 @@ namespace Osiris
 				monoClass = mono_class_from_name((MonoImage*)_CoreImage, "OsirisAPI", name);
 
 				/* Create a new Scripted Class */
-				std::shared_ptr<ScriptedClass> newScriptedClass = std::make_shared<ScriptedClass>(name, monoClass);
+				std::shared_ptr<ScriptedClass> newScriptedClass = std::make_shared<ScriptedClass>(name, monoClass, _Domain);
 
 				/* Store within the Behaviour Subsystem */
 				_ScriptedClasses.emplace(name, newScriptedClass);
@@ -101,7 +101,7 @@ namespace Osiris
 		/* Retrieve the Script side management classes */
 		MonoClass* monoClass;
 		monoClass = mono_class_from_name((MonoImage*)_CoreImage, "OsirisAPI", "GameObjectManager");
-		_GameObjectManagerClass = std::make_shared<ScriptedClass>("GameObjectManager", monoClass);
+		_GameObjectManagerClass = std::make_shared<ScriptedClass>("GameObjectManager", monoClass, _Domain);
 
 		/* Build up mapping between Osiris Key States and managed key state functions */
 		_FunctionKeyStateMap[0] = "OnKeyPress";
@@ -123,53 +123,14 @@ namespace Osiris
 		/* first stage it to create a instance of each gameobject within mono */
 		if (_CurrentScene != nullptr)
 		{
-			std::shared_ptr<ScriptedClass> gameObjectClass = _ScriptedClasses["GameObject"];
-
-			for (auto& sl : _CurrentScene->layers2D)
-			{
-				for (auto& go : sl->children)
-				{
-					_ScriptedGameObjects[go->GetUID()] = std::make_shared<ScriptedGameObject>(_Domain, gameObjectClass, go);
-				}
-			}
+			BuildManagedGameObjects();
 		}
 
 		/* next stage is to pass over any script components and create custom objects for each one */
 		if (_CurrentScene != nullptr)
 		{
-			/* Query each of the layer scene objects */
-			for (auto& sl : _CurrentScene->layers2D)
-			{
-				for (auto& go : sl->children)
-				{
-					for (auto component : go->components)
-					{
-						if (component->GetType() == SceneComponentType::ScriptComponent)
-						{
-							ScriptComponent* scriptComponent = (ScriptComponent*)&*component;
-
-							/* Check if we have an assigned class */
-							if (scriptComponent->Class != nullptr)
-							{
-								/* Create the Scripted custom object */
-								std::shared_ptr<ScriptedCustomObject> newCustomObject = std::make_shared<ScriptedCustomObject>(_Domain, scriptComponent->Class);
-
-								/* Store within the Behaviour Subsystem */
-								_ScriptedCustomObjects.emplace(go->GetUID(), newCustomObject);
-
-								/* Set the native game object pointer */
-								newCustomObject->SetGameObject(_ScriptedGameObjects[go->GetUID()]);
-
-								newCustomObject->SetName(scriptComponent->Class->GetName() + "_inst");
-
-								scriptComponent->Object = newCustomObject;
-							}
-						}
-					}
-				}
-			}
+			LinkManagedGameObjects();
 		}
-
 
 		if (_CurrentScene != nullptr)
 		{
@@ -185,10 +146,10 @@ namespace Osiris
 							ScriptComponent* scriptComponent = (ScriptComponent*)&*component;
 
 							/* Check if we have an assigned object */
-							if (scriptComponent->Object != nullptr)
+							if (scriptComponent->GetCustomObject() != nullptr)
 							{
-								MonoObject* object = (scriptComponent->Object)->Object;
-								MonoMethod* method = scriptComponent->Object->GetMethod("OnStart");
+								MonoObject* object = (scriptComponent->GetCustomObject())->Object;
+								MonoMethod* method = scriptComponent->GetCustomObject()->GetMethod("OnStart");
 								mono_runtime_invoke(method, object, nullptr, nullptr);
 							}
 						}
@@ -227,10 +188,10 @@ namespace Osiris
 								ScriptComponent* scriptComponent = (ScriptComponent*) & *component;
 								
 								/* Check if we have an assigned object */
-								if (scriptComponent->Object != nullptr)
+								if (scriptComponent->GetCustomObject() != nullptr)
 								{
-									MonoObject* object = &*scriptComponent->Object->Object;
-									MonoMethod* method = &*scriptComponent->Object->GetMethod("OnUpdate");
+									MonoObject* object = &*scriptComponent->GetCustomObject()->Object;
+									MonoMethod* method = &*scriptComponent->GetCustomObject()->GetMethod("OnUpdate");
 									mono_runtime_invoke(method, object, nullptr, nullptr);
 								}
 							}
@@ -280,7 +241,7 @@ namespace Osiris
 								ScriptComponent* scriptComponent = (ScriptComponent*) & *component;
 
 								/* Check if we have an assigned object */
-								if (scriptComponent->Object != nullptr)
+								if (scriptComponent->GetCustomObject() != nullptr)
 								{
 									/* build arg list for the key event functions */
 									std::vector<void*> args = std::vector<void*>({ &key });
@@ -387,9 +348,84 @@ namespace Osiris
 				system("pause");
 			}
 
-			std::shared_ptr<ScriptedClass> newScript = std::make_shared<ScriptedClass>(className, monoClass);
+			std::shared_ptr<ScriptedClass> newScript = std::make_shared<ScriptedClass>(className, monoClass, _Domain);
 
 			_ScriptedCustomClasses.emplace(className, newScript);
+		}
+	}
+
+	void Behaviour::BuildManagedGameObjects()
+	{
+		std::shared_ptr<ScriptedClass> gameObjectClass = _ScriptedClasses["GameObject"];
+
+		for (auto& sl : _CurrentScene->layers2D)
+		{
+			for (auto& go : sl->children)
+			{
+				BuildManagedGameObjects(go, gameObjectClass);
+			}
+		}
+	}
+
+	void Behaviour::BuildManagedGameObjects(std::shared_ptr<GameObject> gameObject, std::shared_ptr<ScriptedClass> gameObjectClass)
+	{
+		for (auto& go : gameObject->children)
+		{
+			BuildManagedGameObjects(go, gameObjectClass);
+		}
+
+		_ScriptedGameObjects[gameObject->GetUID()] = std::make_shared<ScriptedGameObject>(_Domain, gameObjectClass, gameObject);
+	}
+
+	void Behaviour::LinkManagedGameObjects()
+	{
+		/* Query each of the layer scene objects */
+		for (auto& sl : _CurrentScene->layers2D)
+		{
+			for (auto& go : sl->children)
+			{
+				LinkManagedGameObjects(go);
+			}
+		}
+	}
+
+	void Behaviour::LinkManagedGameObjects(std::shared_ptr<GameObject> gameObject)
+	{
+		for (auto& go : gameObject->children)
+		{
+			LinkManagedGameObjects(go);
+		}
+
+		for (auto component : gameObject->components)
+		{
+			if (component->GetType() == SceneComponentType::ScriptComponent)
+			{
+				ScriptComponent* scriptComponent = (ScriptComponent*)&*component;
+
+				/* Check if we have an assigned class */
+				if (scriptComponent->GetClass() != nullptr)
+				{
+					/* Create the Scripted custom object */
+					std::shared_ptr<ScriptedCustomObject> newCustomObject = std::make_shared<ScriptedCustomObject>(_Domain, scriptComponent->GetClass());
+
+					/* Store within the Behaviour Subsystem */
+					_ScriptedCustomObjects.emplace(gameObject->GetUID(), newCustomObject);
+
+					/* Set the native game object pointer */
+					newCustomObject->SetGameObject(_ScriptedGameObjects[gameObject->GetUID()]);
+
+					newCustomObject->SetName(scriptComponent->GetClass()->GetName() + "_inst");
+
+					scriptComponent->SetCustomObject(newCustomObject);
+
+					/* we now need to pass each of the property values to allow UI configured props */
+					for (auto prop : scriptComponent->Properties)
+					{
+						std::vector<void*> args = { &prop.value };
+						mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
+					}
+				}
+			}
 		}
 	}
 

@@ -2,6 +2,7 @@
 
 /* core osiris includes */
 #include <osrpch.h>
+#include <core/behaviour/MonoUtils.h>
 
 /* local includes */
 #include "ScriptComponentView.h"
@@ -16,9 +17,9 @@ namespace Osiris::Editor
 	{
 		if (ImGui::TreeNodeEx("Script", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			if (_BaseComponent->Class != nullptr)
+			if (_BaseComponent->GetClass() != nullptr)
 			{
-				ImGui::Text(_BaseComponent->Class->GetName().c_str());
+				ImGui::Text(_BaseComponent->GetClass()->GetName().c_str());
 			}
 			else
 			{
@@ -30,12 +31,47 @@ namespace Osiris::Editor
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_DND_PAYLOAD"))
 				{
 					int32_t payload_n = *(const uint32_t*)payload->Data;
-					_BaseComponent->Class = ServiceManager::Get<ResourceService>(ServiceManager::Resources)->GetScriptByUID(payload_n)->Script;
+					_BaseComponent->SetClass(ServiceManager::Get<ResourceService>(ServiceManager::Resources)->GetScriptByUID(payload_n)->Script);
 				}
 				ImGui::EndDragDropTarget();
 			}
 
+			for (auto& prop : _BaseComponent->Properties)
+			{
+				MonoTypeEnum type = static_cast<MonoTypeEnum>(prop.type);
+
+				switch (type)
+				{
+				case MONO_TYPE_I4:
+					DrawIntUI(prop);
+					break;
+				case MONO_TYPE_R4:
+					DrawFloatUI(prop);
+					break;
+				default:
+					ImGui::Text("%s - Unknown Type", prop.name.c_str());
+				}
+			}
+
 			ImGui::TreePop();
+		}
+	}
+
+	void ScriptComponentView::DrawIntUI(ScriptedClass::PropertyDesc& prop)
+	{
+		int value = prop.value.i;
+		if (ImGui::DragInt(prop.name.c_str(), &value))
+		{
+			prop.value.i = value;
+		}
+	}
+
+	void ScriptComponentView::DrawFloatUI(ScriptedClass::PropertyDesc& prop)
+	{
+		float value = prop.value.f;
+		if (ImGui::DragFloat(prop.name.c_str(), &value))
+		{
+			prop.value.f = value;
 		}
 	}
 }
