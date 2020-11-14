@@ -12,6 +12,13 @@ namespace Osiris
 	class OSR_LIBRARY_API ScriptedClass
 	{
 	public:
+		enum PropType
+		{
+			INT = 1,
+			FLOAT = 2,
+			UNSUPPORTED = 0
+		};
+
 		/**
 		 * @brief Description of a runtime property of the script
 		*/
@@ -26,7 +33,7 @@ namespace Osiris
 			std::string name;
 			void* getter;
 			void* setter;
-			int type;
+			enum PropType type;
 			PropValue value;
 		};
 

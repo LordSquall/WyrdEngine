@@ -38,14 +38,12 @@ namespace Osiris::Editor
 
 			for (auto& prop : _BaseComponent->Properties)
 			{
-				MonoTypeEnum type = static_cast<MonoTypeEnum>(prop.type);
-
-				switch (type)
+				switch (prop.type)
 				{
-				case MONO_TYPE_I4:
+				case ScriptedClass::PropType::INT:
 					DrawIntUI(prop);
 					break;
-				case MONO_TYPE_R4:
+				case ScriptedClass::PropType::FLOAT:
 					DrawFloatUI(prop);
 					break;
 				default:

@@ -4,9 +4,11 @@
 #include "osrpch.h"
 #include "core/Log.h"
 #include "ScriptedClass.h"
+#include "MonoUtils.h"
 
 /* external includes */
 #include <mono/jit/jit.h>
+#include <mono/metadata/reflection.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
 
@@ -30,10 +32,21 @@ namespace Osiris
 			{
 				MonoMethodSignature* getterSignature = mono_method_get_signature((MonoMethod*)propertyDesc.getter, 0, 0);
 				MonoType* propertyType = mono_signature_get_return_type(getterSignature);
+				int type = mono_type_get_type(propertyType);
 				
-				propertyDesc.type = mono_type_get_type(propertyType);
-
-				// At this point we need to create an instance to get the default property values
+				/* map the mono type */
+				switch (static_cast<MonoTypeEnum>(type))
+				{
+					case MONO_TYPE_I4:
+						propertyDesc.type = PropType::INT;
+						break;
+					case MONO_TYPE_R4:
+						propertyDesc.type = PropType::FLOAT;
+						break;
+					default:
+						propertyDesc.type = PropType::UNSUPPORTED;
+						break;
+				}
 
 				_Properties.push_back(propertyDesc);
 			}

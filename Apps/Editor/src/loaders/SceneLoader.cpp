@@ -2,6 +2,7 @@
 
 /* core osiris includes */
 #include <osrpch.h>
+#include <core/Log.h>
 #include <core/Application.h>
 #include <layers/Renderer2DLayer.h>
 #include <core/scene/Scene.h>
@@ -177,6 +178,32 @@ namespace Osiris::Editor
 		if (scriptResource != nullptr)
 		{
 			component->SetClass(scriptResource->Script);
+
+			jsonxx::Array properties = json.get<jsonxx::Array>("properties", jsonxx::Array());
+			for (size_t i = 0; i < properties.size(); i++)
+			{
+				jsonxx::Object propObj = properties.get<jsonxx::Object>(i);
+				jsonxx::String propName = propObj.get<jsonxx::String>("name");
+
+				auto& foundPro = std::find_if(component->Properties.begin(),
+					component->Properties.end(),
+					[&propName](const ScriptedClass::PropertyDesc& obj)
+					{
+						return obj.name == propName; 
+					});
+
+				switch (static_cast<ScriptedClass::PropType>(propObj.get<jsonxx::Number>("type")))
+				{
+				case ScriptedClass::PropType::INT:
+					foundPro->value.i = propObj.get<jsonxx::Number>("value");
+					break;
+				case ScriptedClass::PropType::FLOAT:
+					foundPro->value.f = propObj.get<jsonxx::Number>("value");
+					break;
+				default:
+					break;
+				}
+			}
 		}
 
 		return component;
@@ -193,9 +220,33 @@ namespace Osiris::Editor
 		/* base properties */
 		componentJson << "Type" << (uint32_t)scriptComponent->GetType();
 
-		if(script->GetClass() != nullptr)
+		if (script->GetClass() != nullptr)
+		{
 			componentJson << "ScriptName" << script->GetClass()->GetName();
+		
+			/* write components */
+			jsonxx::Array properties;
+			for (auto& prop : script->Properties)
+			{
+				jsonxx::Object propObj;
+				propObj << "name" << prop.name;
+				propObj << "type" << static_cast<std::underlying_type<ScriptedClass::PropType>::type>(prop.type);
+				switch (prop.type)
+				{
+				case ScriptedClass::PropType::INT:
+					propObj << "value" << prop.value.i;
+					break;
+				case ScriptedClass::PropType::FLOAT:
+					propObj << "value" << prop.value.f;
+					break;
+				default:
+					break;
+				}
 
+				properties << propObj;
+			}
+			componentJson << "properties" << properties;
+		}
 		return componentJson;
 	}
 
