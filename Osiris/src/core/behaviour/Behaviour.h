@@ -62,6 +62,9 @@ namespace Osiris
 		void LinkManagedGameObjects();
 		void LinkManagedGameObjects(std::shared_ptr<GameObject> gameObject);
 
+		void UpdateManagedGameObjects(Timestep ts);
+		void UpdateManagedGameObjects(Timestep ts, std::shared_ptr<GameObject> gameObject);
+
 		static void DebugPrintFunc(const std::string& s);
 
 	private:

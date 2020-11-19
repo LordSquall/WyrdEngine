@@ -35,6 +35,11 @@ namespace OsirisAPI
             GameObject_Move(_NativePointer, x, y);
         }
 
+        public void Rotate(float angle)
+        {
+            GameObject_Rotate(_NativePointer, angle);
+        }
+
         public void SetVelocity(float vX, float vY)
         {
             GameObject_SetVelocity(_NativePointer, vX, vY);
@@ -61,6 +66,9 @@ namespace OsirisAPI
 
         [DllImport("OsirisCAPI")]
         public static extern IntPtr GameObject_Move(IntPtr value, float x, float y);
+
+        [DllImport("OsirisCAPI")]
+        public static extern IntPtr GameObject_Rotate(IntPtr value, float angle);
 
         [DllImport("OsirisCAPI")]
         public static extern IntPtr GameObject_SetVelocity(IntPtr value, float vX, float vY);

@@ -8,11 +8,11 @@
 extern "C" {
 #endif
 
-LIBRARY_API void GameObject_Destroy(void* obj);
-
 LIBRARY_API const char* GameObject_Name_Get(void* obj);
 
 LIBRARY_API void GameObject_Move(void* obj, float x, float y);
+
+LIBRARY_API void GameObject_Rotate(void* obj, float angle);
 
 LIBRARY_API void GameObject_SetVelocity(void* obj, float vX, float vY);
 

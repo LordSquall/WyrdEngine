@@ -73,6 +73,7 @@ namespace Osiris
 
 	void Transform2DComponent::Recalculate()
 	{
+		/* one update the model matrix if the source data is not longer valid */
 		if (_IsMatrixValid == false)
 		{
 			glm::mat4 parentMatrix = (Owner->parent != nullptr && Owner->parent->transform2D != nullptr) ? Owner->parent->transform2D->matrix : glm::mat4(1.0);
@@ -81,7 +82,11 @@ namespace Osiris
 			rotation += _RotationDelta;
 			scale += _ScaleDelta;
 
-			matrix = parentMatrix * glm::translate(glm::identity<glm::mat4>(), glm::vec3(position.x, position.y, 0.0f));
+			matrix = parentMatrix
+				* glm::translate(glm::identity<glm::mat4>(), glm::vec3(position.x, position.y, 0.0f))
+				* glm::rotate(glm::identity<glm::mat4>(), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f))
+				* glm::scale(glm::identity<glm::mat4>(), glm::vec3(scale.x, scale.y, 1.0f));
+				
 
 			globalPosition = parentMatrix * matrix * glm::vec4(position.x, position.y, 0.0f, 1.0f);
 

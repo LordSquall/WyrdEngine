@@ -176,49 +176,13 @@ namespace Osiris
 
 			if (_CurrentScene != nullptr)
 			{
-				/* traverse each of the gameobjects within the scene*/
-				for (auto& sl : _CurrentScene->layers2D)
-				{
-					for (auto& go : sl->children)
-					{
-						for (auto& component : go->components)
-						{
-							if (component->GetType() == SceneComponentType::ScriptComponent)
-							{
-								ScriptComponent* scriptComponent = (ScriptComponent*) & *component;
-								
-								/* Check if we have an assigned object */
-								if (scriptComponent->GetCustomObject() != nullptr)
-								{
-									MonoObject* object = &*scriptComponent->GetCustomObject()->Object;
-									MonoMethod* method = &*scriptComponent->GetCustomObject()->GetMethod("OnUpdate");
-									mono_runtime_invoke(method, object, nullptr, nullptr);
-								}
-							}
-						}
-					}
-				}
+				UpdateManagedGameObjects(_Timestep);
 			}
 		}
 	}
 
 	Behaviour::CreateCustomClassResult Behaviour::AddScriptedClassFromFile(const std::string& name, const std::string& filename)
 	{
-		////TODO: Fix location of OsirisAPI dlls
-		//// Compile the class into a mono compatible DLL
-		//std::string command = "mcs " + filename + " -target:library -lib:" MONO_INSTALL_LOC  "lib/mono/4.5/Facades/," NATIVE_API_LIB_LOC "OsirisAPI/ -r:System.Runtime.InteropServices.dll,OsirisAPI.dll -debug";
-		//
-		//system(command.c_str());
-
-		///* Determine the output file name */
-		//std::string outputFileName = filename.substr(filename.find_last_of('\\') + 1);
-
-		///* Create a new Scripted Class */
-		//std::shared_ptr<ScriptedClass> newScript = std::make_shared<ScriptedClass>(_Domain, filename, outputFileName.substr(0, outputFileName.find_last_of('.')));
-
-		///* Store within the Behaviour Subsystem */
-		//_ScriptedCustomClasses.emplace(name, newScript);
-
 		return Behaviour::CreateCustomClassResult{ true, "", nullptr };
 	}
 
@@ -424,6 +388,43 @@ namespace Osiris
 						std::vector<void*> args = { &prop.value };
 						mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
 					}
+				}
+			}
+		}
+	}
+
+	void Behaviour::UpdateManagedGameObjects(Timestep ts)
+	{
+		/* Query each of the layer scene objects */
+		for (auto& sl : _CurrentScene->layers2D)
+		{
+			for (auto& go : sl->children)
+			{
+				UpdateManagedGameObjects(ts, go);
+			}
+		}
+	}
+
+	void Behaviour::UpdateManagedGameObjects(Timestep ts, std::shared_ptr<GameObject> gameObject)
+	{
+		for (auto& go : gameObject->children)
+		{
+			UpdateManagedGameObjects(ts, go);
+		}
+
+		/* traverse each of the gameobjects within the scene*/
+		for (auto& component : gameObject->components)
+		{
+			if (component->GetType() == SceneComponentType::ScriptComponent)
+			{
+				ScriptComponent* scriptComponent = (ScriptComponent*)&*component;
+
+				/* Check if we have an assigned object */
+				if (scriptComponent->GetCustomObject() != nullptr)
+				{
+					MonoObject* object = &*scriptComponent->GetCustomObject()->Object;
+					MonoMethod* method = &*scriptComponent->GetCustomObject()->GetMethod("OnUpdate");
+					mono_runtime_invoke(method, object, nullptr, nullptr);
 				}
 			}
 		}
