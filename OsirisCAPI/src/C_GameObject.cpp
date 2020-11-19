@@ -25,6 +25,12 @@ void GameObject_Rotate(void* obj, float angle)
 	gameObject->transform2D->Rotate(angle);
 }
 
+void GameObject_Scale(void* obj, float x, float y)
+{
+	Osiris::GameObject* gameObject = (Osiris::GameObject*)obj;
+	gameObject->transform2D->SetScale({ x, y });
+}
+
 void GameObject_SetVelocity(void* obj, float vX, float vY)
 {
 	Osiris::GameObject* gameObject = (Osiris::GameObject*)obj;

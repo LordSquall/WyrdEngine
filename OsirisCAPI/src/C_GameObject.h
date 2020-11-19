@@ -14,6 +14,8 @@ LIBRARY_API void GameObject_Move(void* obj, float x, float y);
 
 LIBRARY_API void GameObject_Rotate(void* obj, float angle);
 
+LIBRARY_API void GameObject_Scale(void* obj, float x, float y);
+
 LIBRARY_API void GameObject_SetVelocity(void* obj, float vX, float vY);
 
 #ifdef __cplusplus
