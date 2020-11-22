@@ -7,6 +7,7 @@
 /* local includes */
 #include "ScriptComponentView.h"
 #include "services/ServiceManager.h"
+#include "support/ImGuiUtils.h"
 
 /* external includes */
 #include <imgui.h>
@@ -46,6 +47,9 @@ namespace Osiris::Editor
 				case ScriptedClass::PropType::FLOAT:
 					DrawFloatUI(prop);
 					break;
+				case ScriptedClass::PropType::STRING:
+					DrawStringUI(prop);
+					break;
 				default:
 					ImGui::Text("%s - Unknown Type", prop.name.c_str());
 				}
@@ -57,19 +61,31 @@ namespace Osiris::Editor
 
 	void ScriptComponentView::DrawIntUI(ScriptedClass::PropertyDesc& prop)
 	{
-		int value = prop.value.i;
+		int value = prop.intVal;
 		if (ImGui::DragInt(prop.name.c_str(), &value))
 		{
-			prop.value.i = value;
+			prop.intVal = value;
 		}
 	}
 
 	void ScriptComponentView::DrawFloatUI(ScriptedClass::PropertyDesc& prop)
 	{
-		float value = prop.value.f;
+		float value = prop.floatVal;
 		if (ImGui::DragFloat(prop.name.c_str(), &value))
 		{
-			prop.value.f = value;
+			prop.floatVal = value;
 		}
+	}
+
+	void ScriptComponentView::DrawStringUI(ScriptedClass::PropertyDesc& prop)
+	{
+		ImGui::InputText(prop.name.c_str(), &prop.stringVal);
+
+		//static char propertyValue[32] = "Property";
+		////strcpy(propertyValue, prop.value.s);
+		//if (ImGui::InputText(prop.name.c_str(), propertyValue, IM_ARRAYSIZE(propertyValue)))
+		//{
+		//	prop.value.s = propertyValue;
+		//}
 	}
 }

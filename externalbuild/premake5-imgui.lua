@@ -7,6 +7,7 @@ project "imgui"
 	staticruntime "on"
     
 	srcdir = externallibsdir .. "/imgui/"
+	include_dir = externallibsdir .. "/imgui/"
 	
 	basedir("../")
 	
@@ -21,11 +22,18 @@ project "imgui"
 		srcdir .. "imstb_rectpack.h",
 		srcdir .. "imstb_textedit.h",
 		srcdir .. "imstb_truetype.h",
+		srcdir .. "misc/cpp/imgui_stdlib.h",
 		srcdir .. "imgui.cpp",
 		srcdir .. "imgui_demo.cpp",
 		srcdir .. "imgui_draw.cpp",
-		srcdir .. "imgui_widgets.cpp"
+		srcdir .. "imgui_widgets.cpp",
+		srcdir .. "misc/cpp/imgui_stdlib.cpp"
     }
+	
+	includedirs
+	{
+		include_dir
+	}
     
 	filter "system:windows"
 		systemversion "latest"

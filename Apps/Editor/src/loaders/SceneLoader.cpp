@@ -192,16 +192,22 @@ namespace Osiris::Editor
 						return obj.name == propName; 
 					});
 
-				switch (static_cast<ScriptedClass::PropType>(propObj.get<jsonxx::Number>("type")))
+				if (foundPro != component->Properties.end())
 				{
-				case ScriptedClass::PropType::INT:
-					foundPro->value.i = propObj.get<jsonxx::Number>("value");
-					break;
-				case ScriptedClass::PropType::FLOAT:
-					foundPro->value.f = propObj.get<jsonxx::Number>("value");
-					break;
-				default:
-					break;
+					switch (static_cast<ScriptedClass::PropType>(propObj.get<jsonxx::Number>("type")))
+					{
+					case ScriptedClass::PropType::INT:
+						foundPro->intVal = propObj.get<jsonxx::Number>("value");
+						break;
+					case ScriptedClass::PropType::FLOAT:
+						foundPro->floatVal = propObj.get<jsonxx::Number>("value");
+						break;
+					case ScriptedClass::PropType::STRING:
+						foundPro->stringVal = propObj.get<jsonxx::String>("value").c_str();
+						break;
+					default:
+						break;
+					}
 				}
 			}
 		}
@@ -234,10 +240,13 @@ namespace Osiris::Editor
 				switch (prop.type)
 				{
 				case ScriptedClass::PropType::INT:
-					propObj << "value" << prop.value.i;
+					propObj << "value" << prop.intVal;
 					break;
 				case ScriptedClass::PropType::FLOAT:
-					propObj << "value" << prop.value.f;
+					propObj << "value" << prop.floatVal;
+					break;
+				case ScriptedClass::PropType::STRING:
+					propObj << "value" << prop.stringVal;
 					break;
 				default:
 					break;
@@ -431,7 +440,10 @@ namespace Osiris::Editor
 
 			if (o.parse(ss.str()) == true)
 			{
-				/*  background color */
+				/* scene name */
+				scene.name = path;
+
+				/* background color */
 				if (o.has<jsonxx::Array>("bgcolor") == true)
 					Read_Color(o.get<jsonxx::Array>("bgcolor"), &scene.bgcolor);
 

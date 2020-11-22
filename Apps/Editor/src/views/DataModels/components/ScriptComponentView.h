@@ -27,6 +27,7 @@ namespace Osiris::Editor {
 	private:
 		void DrawIntUI(ScriptedClass::PropertyDesc& prop);
 		void DrawFloatUI(ScriptedClass::PropertyDesc& prop);
+		void DrawStringUI(ScriptedClass::PropertyDesc& prop);
 
 	private:
 		ScriptComponent* _BaseComponent;

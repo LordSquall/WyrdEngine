@@ -385,7 +385,19 @@ namespace Osiris
 					/* we now need to pass each of the property values to allow UI configured props */
 					for (auto prop : scriptComponent->Properties)
 					{
-						std::vector<void*> args = { &prop.value };
+						std::vector<void*> args;
+						switch (prop.type)
+						{
+						case ScriptedClass::PropType::INT:
+							args.push_back(&prop.intVal);
+							break;
+						case ScriptedClass::PropType::FLOAT:
+							args.push_back(&prop.floatVal);
+							break;
+						case ScriptedClass::PropType::STRING:
+							args.push_back(mono_string_new((MonoDomain*)_Domain, prop.stringVal.c_str()));
+							break;
+						}
 						mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
 					}
 				}

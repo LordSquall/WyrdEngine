@@ -37,6 +37,9 @@ namespace Osiris
 				/* map the mono type */
 				switch (static_cast<MonoTypeEnum>(type))
 				{
+					case MONO_TYPE_STRING:
+						propertyDesc.type = PropType::STRING;
+						break;
 					case MONO_TYPE_I4:
 						propertyDesc.type = PropType::INT;
 						break;

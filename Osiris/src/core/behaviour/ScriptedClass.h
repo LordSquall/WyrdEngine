@@ -16,6 +16,7 @@ namespace Osiris
 		{
 			INT = 1,
 			FLOAT = 2,
+			STRING = 3,
 			UNSUPPORTED = 0
 		};
 
@@ -24,17 +25,15 @@ namespace Osiris
 		*/
 		struct PropertyDesc
 		{
-			union PropValue
-			{
-				float f;
-				int i;
-			};
-
 			std::string name;
 			void* getter;
 			void* setter;
 			enum PropType type;
-			PropValue value;
+
+			// Values
+			float floatVal;
+			int intVal;
+			std::string stringVal;
 		};
 
 	public:
