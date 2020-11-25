@@ -37,7 +37,7 @@ namespace Osiris::Editor
 
 	void PhysicsComponentView::OnSceneViewerDraw(const glm::mat4& viewProjectMatrix)
 	{
-		//Osiris::Application::Get().GetRenderer().DrawCircle(_BaseComponent->GetAABB().position, 10.0f, { 0.4f, 0.2f, 0.2f, 1.0f }, viewProjectMatrix);
+		//Osiris::Application::Get().GetRenderer().DrawCircle(_BaseComponent->GetAABB().position, { 10.0f, 20.0f }, { 0.4f, 0.2f, 0.2f, 1.0f }, viewProjectMatrix);
 
 		/* Draw Markers */
 		//Osiris::Application::Get().GetRenderer().DrawRect({ { 0.0f, 0.0f }, { 10.0f, 10.0f} }, { 1.0f, 1.0f, 1.0f, 1.0f }, viewProjectMatrix);

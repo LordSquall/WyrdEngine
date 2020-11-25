@@ -185,7 +185,7 @@ namespace Osiris
 	}
 
 
-	void OpenGLRenderer::DrawCircle(const glm::vec2& position, const float radius, const glm::vec4& color, const glm::mat4& vpMatrix) const
+	void OpenGLRenderer::DrawCircle(const glm::vec2& position, const glm::vec2& radius, const glm::vec4& color, const glm::mat4& vpMatrix) const
 	{
 		std::vector<float> vertices;
 
@@ -193,8 +193,8 @@ namespace Osiris
 		for (int a = 0; a < 360; a += 360 / 16)
 		{
 			float heading = a * (pi / 180.0);
-			vertices.push_back(position.x + (cos(heading) * radius));
-			vertices.push_back(position.y + (sin(heading) * radius));
+			vertices.push_back(position.x + (cos(heading) * radius.x));
+			vertices.push_back(position.y + (sin(heading) * radius.y));
 			vertices.push_back(0.0f);
 		}
 

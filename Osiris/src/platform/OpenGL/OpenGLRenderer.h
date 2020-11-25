@@ -14,7 +14,7 @@ namespace Osiris
 		virtual void DrawElements(RendererDrawType type, uint32_t count) const override;
 		virtual	void DrawRect(const Rect& rect, const glm::vec4& color, const glm::mat4& vpMatrix) const override;
 		virtual	void DrawRay(const Ray& ray, const glm::vec4& color, float length, float thickness, const glm::mat4& vpMatrix) const override;
-		virtual	void DrawCircle(const glm::vec2& position, const float radius, const glm::vec4& color, const glm::mat4& vpMatrix) const override;
+		virtual	void DrawCircle(const glm::vec2& position, const glm::vec2& radius, const glm::vec4& color, const glm::mat4& vpMatrix) const override;
 
 	private:
 		int _debugShader;
