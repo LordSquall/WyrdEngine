@@ -50,6 +50,9 @@ namespace Osiris::Editor
 				case ScriptedClass::PropType::STRING:
 					DrawStringUI(prop);
 					break;
+				case ScriptedClass::PropType::OBJECT:
+					DrawObjectUI(prop);
+					break;
 				default:
 					ImGui::Text("%s - Unknown Type", prop.name.c_str());
 				}
@@ -80,12 +83,10 @@ namespace Osiris::Editor
 	void ScriptComponentView::DrawStringUI(ScriptedClass::PropertyDesc& prop)
 	{
 		ImGui::InputText(prop.name.c_str(), &prop.stringVal);
+	}
 
-		//static char propertyValue[32] = "Property";
-		////strcpy(propertyValue, prop.value.s);
-		//if (ImGui::InputText(prop.name.c_str(), propertyValue, IM_ARRAYSIZE(propertyValue)))
-		//{
-		//	prop.value.s = propertyValue;
-		//}
+	void ScriptComponentView::DrawObjectUI(ScriptedClass::PropertyDesc& prop)
+	{
+		ImGui::InputText(prop.name.c_str(), &prop.objectVal);
 	}
 }

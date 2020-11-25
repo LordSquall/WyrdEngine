@@ -17,6 +17,7 @@ namespace Osiris
 			INT = 1,
 			FLOAT = 2,
 			STRING = 3,
+			OBJECT = 4,
 			UNSUPPORTED = 0
 		};
 
@@ -34,6 +35,7 @@ namespace Osiris
 			float floatVal;
 			int intVal;
 			std::string stringVal;
+			std::string objectVal;
 		};
 
 	public:

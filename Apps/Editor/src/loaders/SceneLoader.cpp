@@ -205,6 +205,9 @@ namespace Osiris::Editor
 					case ScriptedClass::PropType::STRING:
 						foundPro->stringVal = propObj.get<jsonxx::String>("value").c_str();
 						break;
+					case ScriptedClass::PropType::OBJECT:
+						foundPro->objectVal = propObj.get<jsonxx::String>("value").c_str();
+						break;
 					default:
 						break;
 					}
@@ -247,6 +250,9 @@ namespace Osiris::Editor
 					break;
 				case ScriptedClass::PropType::STRING:
 					propObj << "value" << prop.stringVal;
+					break;
+				case ScriptedClass::PropType::OBJECT:
+					propObj << "value" << prop.objectVal;
 					break;
 				default:
 					break;
