@@ -183,4 +183,31 @@ namespace Osiris
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 	}
+
+
+	void OpenGLRenderer::DrawCircle(const glm::vec2& position, const float radius, const glm::vec4& color, const glm::mat4& vpMatrix) const
+	{
+		std::vector<float> vertices;
+
+		double pi = 3.1415926535897932384626433832795;
+		for (int a = 0; a < 360; a += 360 / 16)
+		{
+			float heading = a * (pi / 180.0);
+			vertices.push_back(position.x + (cos(heading) * radius));
+			vertices.push_back(position.y + (sin(heading) * radius));
+			vertices.push_back(0.0f);
+		}
+
+		glBindBuffer(GL_ARRAY_BUFFER, _debugVBO);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices.front(), GL_STATIC_DRAW);
+
+		glUseProgram(_debugShader);
+		glUniformMatrix4fv(_debugVPMatLoc, 1, GL_FALSE, glm::value_ptr(vpMatrix));
+		glUniformMatrix4fv(_debugModelMatLoc, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
+		glUniform4fv(_debugColorLoc, 1, glm::value_ptr(color));
+
+		glBindVertexArray(_debugVAO);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 16);
+		glBindVertexArray(0);
+	}
 }
