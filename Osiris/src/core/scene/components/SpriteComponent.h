@@ -1,11 +1,7 @@
 #pragma once
 
 /* local includes */
-#include "Osiris.h"
 #include "core/scene/components/IBaseComponent.h"
-#include "core/renderer/Texture.h"
-#include "core/renderer/Shader.h"
-#include "core/pipeline/Sprite.h"
 
 /* external includes */
 #include <glm/glm.hpp>
@@ -15,6 +11,9 @@ using namespace glm;
 namespace Osiris {
 
 	class GameObject;
+	class Shader;
+	class Texture;
+	class Sprite;
 
 	class OSR_LIBRARY_API SpriteComponent : public IBaseComponent
 	{
@@ -29,6 +28,7 @@ namespace Osiris {
 		vec4 Color;
 
 	public:
+		void Initialise();
 		void Recalculate();
 		void Render(Timestep ts, Renderer& renderer);
 

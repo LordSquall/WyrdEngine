@@ -28,6 +28,7 @@ namespace Osiris
 	public:
 		MonoClass* Class;
 		MonoObject* Object;
+		std::string TypeName;
 		
 	private:
 		std::string _Name;

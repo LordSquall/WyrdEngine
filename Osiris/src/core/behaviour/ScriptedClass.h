@@ -9,6 +9,8 @@
 
 namespace Osiris
 {
+	class IBaseComponent;
+
 	class OSR_LIBRARY_API ScriptedClass
 	{
 	public:
@@ -35,7 +37,9 @@ namespace Osiris
 			float floatVal;
 			int intVal;
 			std::string stringVal;
-			std::string objectVal;
+			int objectVal;
+			std::string objectNameVal;
+			std::string objectClassNameVal;
 		};
 
 	public:

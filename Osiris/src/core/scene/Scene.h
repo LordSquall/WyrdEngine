@@ -18,6 +18,8 @@ namespace Osiris {
 
 		void Update();
 
+		std::shared_ptr<GameObject> FindGameObject(const uint32_t uid);
+
 	public:
 		std::string name;
 		std::vector<std::shared_ptr<Layer2D>> layers2D;

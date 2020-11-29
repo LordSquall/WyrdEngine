@@ -11,6 +11,7 @@
 
 /* external includes */
 #include <imgui.h>
+#include <core/Log.h>
 
 namespace Osiris::Editor
 {
@@ -87,6 +88,45 @@ namespace Osiris::Editor
 
 	void ScriptComponentView::DrawObjectUI(ScriptedClass::PropertyDesc& prop)
 	{
-		ImGui::InputText(prop.name.c_str(), &prop.objectVal);
+		ImGui::LabelText(prop.name.c_str(), prop.objectNameVal.c_str());
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_GAMEOBJECT"))
+			{
+				uint32_t gameObjectID = *(const uint32_t*)payload->Data;
+				std::shared_ptr<GameObject> gameObject = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace)->GetLoadedScene()->FindGameObject(gameObjectID);
+				
+				std::shared_ptr<IBaseComponent> scriptComponent = nullptr;
+				std::string className = nullptr;
+				for (auto& c : gameObject->components)
+				{
+					if(c->GetType() == SceneComponentType::ScriptComponent)
+					{
+						std::shared_ptr<ScriptComponent> sc = std::dynamic_pointer_cast<ScriptComponent>(c);
+
+						if (sc->GetClass()->GetName() == prop.objectClassNameVal)
+						{
+							scriptComponent = sc;
+							className = sc->GetClass()->GetName();
+							OSR_TRACE("Script Component: Typename: {0}", sc->GetClass()->GetName());
+						}
+					}
+				}
+
+				if (scriptComponent)
+				{
+					prop.objectVal = gameObjectID;
+					prop.objectNameVal = gameObject->name;
+					prop.objectClassNameVal = className;
+					OSR_TRACE("GameObject found {0} {1}", gameObject->GetUID(), gameObject->name);
+				}
+				else
+				{
+					OSR_TRACE("Unable to find matching script component type");
+				}
+
+			}
+			ImGui::EndDragDropTarget();
+		}
 	}
 }

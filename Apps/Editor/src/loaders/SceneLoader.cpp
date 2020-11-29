@@ -206,7 +206,8 @@ namespace Osiris::Editor
 						foundPro->stringVal = propObj.get<jsonxx::String>("value").c_str();
 						break;
 					case ScriptedClass::PropType::OBJECT:
-						foundPro->objectVal = propObj.get<jsonxx::String>("value").c_str();
+						foundPro->objectVal = propObj.get<jsonxx::Number>("value");
+						foundPro->objectNameVal = propObj.get<jsonxx::String>("nameValue").c_str();
 						break;
 					default:
 						break;
@@ -253,6 +254,8 @@ namespace Osiris::Editor
 					break;
 				case ScriptedClass::PropType::OBJECT:
 					propObj << "value" << prop.objectVal;
+					propObj << "nameValue" << prop.objectNameVal;
+					propObj << "objectClassNameVal" << prop.objectClassNameVal;
 					break;
 				default:
 					break;
@@ -470,18 +473,21 @@ namespace Osiris::Editor
 					}
 				}
 
+				/* Once all the layers are loaded, we want to process each layer->gameobject to recalculate there intiailse values */
+				/* Additionally for script we need to link the object properties */
 				for(auto layers : scene.layers2D)
 				{
 					for(auto gameobject : layers->children)
 					{
-						gameobject->transform2D->Recalculate();
+						gameobject->transform2D->Initialise();
 
 						for(auto component : gameobject->components)
 						{
-							component->Recalculate();
+							component->Initialise();
 						}
 					}
 				}
+
 			}
 			else
 			{

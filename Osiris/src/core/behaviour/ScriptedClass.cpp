@@ -32,6 +32,7 @@ namespace Osiris
 			{
 				MonoMethodSignature* getterSignature = mono_method_get_signature((MonoMethod*)propertyDesc.getter, 0, 0);
 				MonoType* propertyType = mono_signature_get_return_type(getterSignature);
+				const char* name = mono_type_get_name(propertyType);
 				int type = mono_type_get_type(propertyType);
 				
 				/* map the mono type */
@@ -45,6 +46,10 @@ namespace Osiris
 						break;
 					case MONO_TYPE_R4:
 						propertyDesc.type = PropType::FLOAT;
+						break;
+					case MONO_TYPE_CLASS:
+						propertyDesc.type = PropType::OBJECT;
+						propertyDesc.objectClassNameVal = name;
 						break;
 					default:
 						propertyDesc.type = PropType::UNSUPPORTED;

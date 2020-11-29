@@ -26,6 +26,8 @@ namespace Osiris {
 
 		inline const SceneComponentType GetType() const { return _type; }
 
+
+		virtual void Initialise() {};
 		virtual void Recalculate() {};
 		virtual void Render(Timestep ts, Renderer& renderer) {};
 

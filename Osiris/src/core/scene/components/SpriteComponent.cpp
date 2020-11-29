@@ -2,7 +2,11 @@
 
 /* local includes */
 #include "osrpch.h"
+#include "Osiris.h"
 #include "SpriteComponent.h"
+#include "core/renderer/Texture.h"
+#include "core/renderer/Shader.h"
+#include "core/pipeline/Sprite.h"
 #include "core/scene/GameObject.h"
 #include "core/scene/components/Transform2DComponent.h"
 
@@ -28,6 +32,12 @@ namespace Osiris
 	SpriteComponent::~SpriteComponent()
 	{
 
+	}
+
+
+	void SpriteComponent::Initialise()
+	{
+		Recalculate();
 	}
 
 	void SpriteComponent::Recalculate()

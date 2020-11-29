@@ -33,5 +33,8 @@ namespace Osiris::Editor
 		std::shared_ptr<Layer2D> _SelectedLayer2D;
 
 		std::shared_ptr<Icon> _LayerRenameIcon;
+
+
+		std::shared_ptr<GameObject> _DraggingSelectedGameObject;
 	};
 }

@@ -132,6 +132,12 @@ namespace Osiris
 			LinkManagedGameObjects();
 		}
 
+		/* next stage is to pass over any script components and link properties */
+		if (_CurrentScene != nullptr)
+		{
+			LinkGameObjectProperties();
+		}
+
 		if (_CurrentScene != nullptr)
 		{
 			/* Query each of the layer scene objects */
@@ -381,7 +387,39 @@ namespace Osiris
 					newCustomObject->SetName(scriptComponent->GetClass()->GetName() + "_inst");
 
 					scriptComponent->SetCustomObject(newCustomObject);
+				}
+			}
+		}
+	}
 
+	void Behaviour::LinkGameObjectProperties()
+	{
+		/* Query each of the layer scene objects */
+		for (auto& sl : _CurrentScene->layers2D)
+		{
+			for (auto& go : sl->children)
+			{
+				LinkGameObjectProperties(go);
+			}
+		}
+	}
+
+	void Behaviour::LinkGameObjectProperties(std::shared_ptr<GameObject> gameObject)
+	{
+		for (auto& go : gameObject->children)
+		{
+			LinkGameObjectProperties(go);
+		}
+
+		for (auto component : gameObject->components)
+		{
+			if (component->GetType() == SceneComponentType::ScriptComponent)
+			{
+				ScriptComponent* scriptComponent = (ScriptComponent*)&*component;
+
+				/* Check if we have an assigned class */
+				if (scriptComponent->GetClass() != nullptr)
+				{
 					/* we now need to pass each of the property values to allow UI configured props */
 					for (auto prop : scriptComponent->Properties)
 					{
@@ -396,6 +434,12 @@ namespace Osiris
 							break;
 						case ScriptedClass::PropType::STRING:
 							args.push_back(mono_string_new((MonoDomain*)_Domain, prop.stringVal.c_str()));
+							break;
+						case ScriptedClass::PropType::OBJECT:
+							// find matching script component class type
+							std::shared_ptr<GameObject> go = _CurrentScene->FindGameObject(prop.objectVal);
+							std::shared_ptr<ScriptComponent> sc = go->FindScriptComponent(prop.objectClassNameVal);
+							args.push_back(sc->GetCustomObject()->Object);
 							break;
 						}
 						mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);

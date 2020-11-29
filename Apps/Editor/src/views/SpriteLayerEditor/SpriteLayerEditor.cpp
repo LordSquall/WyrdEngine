@@ -195,13 +195,33 @@ namespace Osiris::Editor
 		
 		if (ImGui::TreeNodeEx(gameObject->name.c_str(), TreeNodeEx_flags))
 		{
+			if (ImGui::BeginDragDropSource())
+			{
+				uint32_t uid = _DraggingSelectedGameObject->GetUID();
+				ImGui::SetDragDropPayload("_GAMEOBJECT", &uid, sizeof(uint32_t), 0);
+				ImGui::Text(_DraggingSelectedGameObject->name.c_str());
+				ImGui::EndDragDropSource();
+			}
+
 			/* clicking functions */
 			if (ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemClicked(ImGuiMouseButton_Right))
 			{
-				_SelectedGameObject = gameObject;
+				_DraggingSelectedGameObject = gameObject;
+			}
 
-				/* Fire a change of selection event */
-				_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
+			if (ImGui::IsItemHovered())
+			{
+				if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+				{
+					if (_DraggingSelectedGameObject)
+					{
+						_SelectedGameObject = _DraggingSelectedGameObject;
+						_DraggingSelectedGameObject = nullptr;
+
+						/* Fire a change of selection event */
+						_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
+					}
+				}
 			}
 
 			for (int i = 0; i < gameObject->children.size(); i++)

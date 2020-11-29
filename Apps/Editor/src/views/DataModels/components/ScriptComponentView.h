@@ -11,6 +11,8 @@
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
+#include "services/ServiceManager.h"
+
 using namespace Osiris;
 using namespace glm;
 
@@ -33,5 +35,6 @@ namespace Osiris::Editor {
 	private:
 		ScriptComponent* _BaseComponent;
 
+		std::shared_ptr<WorkspaceService> _WorkspaceService;
 	};
 }

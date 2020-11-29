@@ -30,6 +30,7 @@ namespace Osiris {
 		
 		void ClearTransformationDelta();
 
+		void Initialise();
 		void Recalculate();
 		
 		vec2 position;

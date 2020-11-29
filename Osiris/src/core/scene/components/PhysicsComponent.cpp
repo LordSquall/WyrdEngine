@@ -4,6 +4,7 @@
 #include "osrpch.h"
 #include "PhysicsComponent.h"
 #include "core/Log.h"
+#include "core/Application.h"
 #include "core/scene/GameObject.h"
 #include "core/scene/components/PhysicsComponent.h"
 #include "core/scene/components/Transform2DComponent.h"

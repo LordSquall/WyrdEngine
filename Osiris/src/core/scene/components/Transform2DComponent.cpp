@@ -14,6 +14,8 @@ namespace Osiris
 		scale = vec2(1.0f, 1.0f);
 
 		ClearTransformationDelta();
+
+		_IsMatrixValid = false;
 	}
 
 	Transform2DComponent::Transform2DComponent(const Transform2DComponent& obj) : IBaseComponent(obj.Owner, SceneComponentType::Transform2D), matrix(glm::identity<glm::mat4>())
@@ -23,7 +25,7 @@ namespace Osiris
 		scale = obj.scale;
 
 		ClearTransformationDelta();
-
+		
 		_IsMatrixValid = false;
 	}
 
@@ -69,6 +71,15 @@ namespace Osiris
 		_PositionDelta = { 0.0f, 0.0f };
 		_RotationDelta = 0.0f;
 		_ScaleDelta = { 0.0f, 0.0f };
+	}
+
+	void Transform2DComponent::Initialise()
+	{
+		_IsMatrixValid = false;
+
+		ClearTransformationDelta();
+
+		Recalculate();
 	}
 
 	void Transform2DComponent::Recalculate()

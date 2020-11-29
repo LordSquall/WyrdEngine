@@ -22,6 +22,9 @@ namespace Osiris
 		/* Store the class */
 		Class = (MonoClass*)scriptedClass->ManagedClass;
 
+		/* Store type name */
+		TypeName = scriptedClass->GetName();
+
 		/* Get a reference to the Behaviour subsystem */
 		Osiris::Behaviour& behaviour = Application::Get().GetBehaviour();
 
@@ -68,7 +71,7 @@ namespace Osiris
 		return nullptr;
 	}
 
-	MonoMethod* ScriptedCustomObject::GetMethod(std::string name) 
+	MonoMethod* ScriptedCustomObject::GetMethod(std::string name)
 	{
 		return _Methods[name];
 	}

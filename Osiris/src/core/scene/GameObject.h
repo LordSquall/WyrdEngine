@@ -12,6 +12,7 @@ namespace Osiris {
 	class Layer2D;
 	class Transform2DComponent;
 	class SpriteComponent;
+	class ScriptComponent;
 	class PhysicsComponent;
 
 	/* Editor GameObject Data Model Structure */
@@ -28,6 +29,8 @@ namespace Osiris {
 		void RemoveChild(int uid);
 		void DuplicateChild(int uid);
 		void SwapChild(int a, int b);
+
+		std::shared_ptr<ScriptComponent> FindScriptComponent(const std::string& name);
 
 		inline uint32_t GetUID() { return _uid; }
 

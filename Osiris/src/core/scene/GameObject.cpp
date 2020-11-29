@@ -59,4 +59,22 @@ namespace Osiris
 		children[a] = children[b];
 		children[b] = tmp;
 	}
+
+	std::shared_ptr<ScriptComponent> GameObject::FindScriptComponent(const std::string& name)
+	{
+		for (auto& component : components)
+		{
+			if (component->GetType() == SceneComponentType::ScriptComponent)
+			{
+				std::shared_ptr<ScriptComponent> sc = std::dynamic_pointer_cast<ScriptComponent>(component);
+
+				if (sc->GetClass()->GetName() == name)
+				{
+					return sc;
+				}
+			}
+		}
+
+		return nullptr;
+	}
 }
