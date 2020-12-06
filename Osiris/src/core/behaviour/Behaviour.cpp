@@ -277,7 +277,7 @@ namespace Osiris
 		command += " -target:library -lib:" MONO_INSTALL_LOC  "lib/mono/4.5/Facades/," NATIVE_API_LIB_LOC "OsirisAPI/ -r:System.Runtime.InteropServices.dll,OsirisAPI.dll -debug ";
 
 		// set the putput file
-		command += "-out:" + outputDir + projectName;
+		command += "-out:" + outputDir + "/" + projectName;
 
 		// run the command to compile
 		system(command.c_str());
@@ -287,7 +287,7 @@ namespace Osiris
 
 		/* Create Assembly */
 		MonoAssembly* monoAssembly;
-		std::string assemblyPath = (outputDir + projectName).c_str();
+		std::string assemblyPath = (outputDir + "/" + projectName).c_str();
 		monoAssembly = mono_domain_assembly_open((MonoDomain*)_Domain, assemblyPath.c_str());
 		if (!monoAssembly)
 		{
