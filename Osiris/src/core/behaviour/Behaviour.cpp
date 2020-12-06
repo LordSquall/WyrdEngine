@@ -423,26 +423,39 @@ namespace Osiris
 					/* we now need to pass each of the property values to allow UI configured props */
 					for (auto prop : scriptComponent->Properties)
 					{
+						std::shared_ptr<GameObject> go;
+						std::shared_ptr<ScriptComponent> sc;
 						std::vector<void*> args;
+
 						switch (prop.type)
 						{
 						case ScriptedClass::PropType::INT:
 							args.push_back(&prop.intVal);
+
+							mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
 							break;
 						case ScriptedClass::PropType::FLOAT:
 							args.push_back(&prop.floatVal);
+
+							mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
 							break;
 						case ScriptedClass::PropType::STRING:
 							args.push_back(mono_string_new((MonoDomain*)_Domain, prop.stringVal.c_str()));
+
+							mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
 							break;
-						case ScriptedClass::PropType::OBJECT:
+						case ScriptedClass::PropType::GAMEOBJECT:
 							// find matching script component class type
-							std::shared_ptr<GameObject> go = _CurrentScene->FindGameObject(prop.objectVal);
-							std::shared_ptr<ScriptComponent> sc = go->FindScriptComponent(prop.objectClassNameVal);
+							go = _CurrentScene->FindGameObject(prop.objectVal);
+							sc = go->FindScriptComponent(prop.objectClassNameVal);
 							args.push_back(sc->GetCustomObject()->Object);
+
+							mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
+							break;
+						default:
+							OSR_CORE_TRACE("Unknown Type. Skipping Property serialisation!");
 							break;
 						}
-						mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
 					}
 				}
 			}

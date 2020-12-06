@@ -18,6 +18,8 @@ LIBRARY_API void GameObject_Scale(void* obj, float x, float y);
 
 LIBRARY_API void GameObject_SetVelocity(void* obj, float vX, float vY);
 
+LIBRARY_API void GameObject_SetColor(void* obj, float red, float green, float blue, float alpha);
+
 #ifdef __cplusplus
 }
 #endif

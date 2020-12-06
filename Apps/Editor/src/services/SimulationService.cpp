@@ -85,7 +85,8 @@ namespace Osiris::Editor
 		{
 			scriptFiles.push_back(value->GetPath());
 		}
-		Application::Get().GetBehaviour().CompileAll(scriptFiles, "./", _WorkspaceService->GetCurrentProject()->name + ".dll");
+
+		Application::Get().GetBehaviour().CompileAll(scriptFiles, Utils::GetPath(_WorkspaceService->GetLoadedProjectPath()), _WorkspaceService->GetCurrentProject()->name + ".dll");
 	}
 
 	std::shared_ptr<Osiris::ScriptedClass> SimulationService::GetClass(const std::string& className)

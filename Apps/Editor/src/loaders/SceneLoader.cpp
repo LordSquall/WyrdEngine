@@ -205,7 +205,7 @@ namespace Osiris::Editor
 					case ScriptedClass::PropType::STRING:
 						foundPro->stringVal = propObj.get<jsonxx::String>("value").c_str();
 						break;
-					case ScriptedClass::PropType::OBJECT:
+					case ScriptedClass::PropType::GAMEOBJECT:
 						foundPro->objectVal = propObj.get<jsonxx::Number>("value");
 						foundPro->objectNameVal = propObj.get<jsonxx::String>("nameValue").c_str();
 						break;
@@ -252,7 +252,7 @@ namespace Osiris::Editor
 				case ScriptedClass::PropType::STRING:
 					propObj << "value" << prop.stringVal;
 					break;
-				case ScriptedClass::PropType::OBJECT:
+				case ScriptedClass::PropType::GAMEOBJECT:
 					propObj << "value" << prop.objectVal;
 					propObj << "nameValue" << prop.objectNameVal;
 					propObj << "objectClassNameVal" << prop.objectClassNameVal;

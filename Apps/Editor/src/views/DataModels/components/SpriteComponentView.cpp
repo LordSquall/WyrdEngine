@@ -50,10 +50,10 @@ namespace Osiris::Editor
 			ImGui::Image((ImTextureID)(INT_PTR)_BaseComponent->BaseTexture->GetHandle(), ImVec2(64.0f, 64.0f));
 			if (ImGui::BeginDragDropTarget())
 			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_DND_PAYLOAD"))
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("TEXTURE_ASSET_PAYLOAD"))
 				{
-					uint32_t payload_n = *(const uint32_t*)payload->Data;
-					_BaseComponent->BaseTexture = ServiceManager::Get<ResourceService>(ServiceManager::Resources)->GetTextureResourceByID(payload_n)->GetTexture();
+					std::shared_ptr<Osiris::Texture> texture = *(std::shared_ptr<Osiris::Texture>*)payload->Data;
+					_BaseComponent->BaseTexture = texture;
 				}
 				ImGui::EndDragDropTarget();
 			}

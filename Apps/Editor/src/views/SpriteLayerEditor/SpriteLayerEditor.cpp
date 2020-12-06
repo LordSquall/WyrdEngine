@@ -198,7 +198,7 @@ namespace Osiris::Editor
 			if (ImGui::BeginDragDropSource())
 			{
 				uint32_t uid = _DraggingSelectedGameObject->GetUID();
-				ImGui::SetDragDropPayload("_GAMEOBJECT", &uid, sizeof(uint32_t), 0);
+				ImGui::SetDragDropPayload("GAMEOBJECT", &uid, sizeof(uint32_t), 0);
 				ImGui::Text(_DraggingSelectedGameObject->name.c_str());
 				ImGui::EndDragDropSource();
 			}

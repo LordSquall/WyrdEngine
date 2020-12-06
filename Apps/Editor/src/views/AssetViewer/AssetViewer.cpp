@@ -150,7 +150,8 @@ namespace Osiris::Editor
 		}
 		if (ImGui::BeginDragDropSource())
 		{
-			ImGui::SetDragDropPayload("ASSET_DND_PAYLOAD", &id, sizeof(uint32_t));
+			std::shared_ptr<Osiris::Texture> texture = textureResource->GetTexture();
+			ImGui::SetDragDropPayload("TEXTURE_ASSET_PAYLOAD", &texture, sizeof(std::shared_ptr<Osiris::Texture>));
 			ImGui::Image((ImTextureID)(INT_PTR)textureResource->GetTexture()->GetHandle(), ImVec2(32, 32));
 			ImGui::EndDragDropSource();
 		}

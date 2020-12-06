@@ -3,6 +3,7 @@
 #include <core/scene/GameObject.h>
 #include <core/scene/components/Transform2DComponent.h>
 #include <core/scene/components/PhysicsComponent.h>
+#include <core/scene/components/SpriteComponent.h>
 #include <core/scene/Layer2D.h>
 
 #include <core/physics/Physics.h>
@@ -36,4 +37,11 @@ void GameObject_SetVelocity(void* obj, float vX, float vY)
 	Osiris::GameObject* gameObject = (Osiris::GameObject*)obj;
 	
 	gameObject->physics->SetVelocity({ vX, vY });
+}
+
+void GameObject_SetColor(void* obj, float red, float green, float blue, float alpha)
+{
+	Osiris::GameObject* gameObject = (Osiris::GameObject*)obj;
+
+	gameObject->sprite->Color = { red, green, blue, alpha };
 }

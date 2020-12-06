@@ -48,8 +48,23 @@ namespace Osiris
 						propertyDesc.type = PropType::FLOAT;
 						break;
 					case MONO_TYPE_CLASS:
-						propertyDesc.type = PropType::OBJECT;
-						propertyDesc.objectClassNameVal = name;
+
+						// Need to rethink this :/
+						if (strcmp(name, "OsirisAPI.Texture") == 0)
+						{
+							propertyDesc.type = PropType::TEXTURE;
+							propertyDesc.objectClassNameVal = name;
+						}
+						else if (strcmp(name, "OsirisAPI.Color") == 0)
+						{
+							propertyDesc.type = PropType::COLOR;
+							propertyDesc.objectClassNameVal = name;
+						}
+						else
+						{
+							propertyDesc.type = PropType::GAMEOBJECT;
+							propertyDesc.objectClassNameVal = name;
+						}
 						break;
 					default:
 						propertyDesc.type = PropType::UNSUPPORTED;

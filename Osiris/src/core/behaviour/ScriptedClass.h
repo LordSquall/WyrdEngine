@@ -19,7 +19,9 @@ namespace Osiris
 			INT = 1,
 			FLOAT = 2,
 			STRING = 3,
-			OBJECT = 4,
+			GAMEOBJECT = 4,
+			TEXTURE = 5,
+			COLOR = 6,
 			UNSUPPORTED = 0
 		};
 

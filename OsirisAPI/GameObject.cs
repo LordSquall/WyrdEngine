@@ -50,6 +50,11 @@ namespace OsirisAPI
             GameObject_SetVelocity(_NativePointer, vX, vY);
         }
 
+        public void SetColor(float red, float green, float blue, float alpha)
+        {
+            GameObject_SetColor(_NativePointer, red, green, blue, alpha);
+        }
+
         #endregion
 
         #region Object Overrides
@@ -81,6 +86,8 @@ namespace OsirisAPI
         [DllImport("OsirisCAPI")]
         public static extern IntPtr GameObject_SetVelocity(IntPtr value, float vX, float vY);
 
+        [DllImport("OsirisCAPI")]
+        public static extern IntPtr GameObject_SetColor(IntPtr value, float red, float green, float blue, float alpha);
 
         #endregion
     }
