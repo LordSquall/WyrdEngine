@@ -13,6 +13,7 @@
 
 /* external includes */
 #include <efsw/efsw.hpp>
+#include <jsonxx.h>
 
 namespace Osiris::Editor
 {
@@ -31,7 +32,6 @@ namespace Osiris::Editor
 				break;
 			case efsw::Actions::Delete:
 				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::DeleteResource, std::make_shared<Events::DeleteResourceArgs>(dir + "/" + filename));
-
 				break;
 			case efsw::Actions::Modified:				
 				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ReloadResource, std::make_shared<Events::ReloadResourceArgs>(dir + "/" + filename));
@@ -110,6 +110,18 @@ namespace Osiris::Editor
 
 			/* Set the default scene within the project model */
 			_LoadedProject->initialScene = Utils::GetAssetFolder() + "/" + sceneName + ".scene";
+
+			/* create VS workspace file model */
+			jsonxx::Object root;
+			jsonxx::Array folders;
+			jsonxx::Object assetsFolder;
+			assetsFolder << "path" << "assets";
+			folders << assetsFolder;
+
+			root << "folders" << folders;
+			std::ofstream out(Utils::GetPath(_LoadedProjectPath.c_str()) + "/vs.code-workspace");
+			out << root.json();
+			out.close();
 
 			/* Send a Project Loaded Event */
 			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ProjectLoaded,

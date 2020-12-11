@@ -54,6 +54,9 @@ namespace Osiris::Editor
 		static std::string ToString(int value);
 		static std::string ToString(float value);
 
+		/* String Helpers */
+		static std::string ReplaceAll(std::string str, const std::string& from, const std::string& to);
+
 	private:
 		static void SwapSlashes(std::string& path, const std::string& find, const std::string& replace);
 		static std::string Utils::canonical_path;

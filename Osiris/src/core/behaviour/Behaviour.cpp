@@ -280,7 +280,17 @@ namespace Osiris
 		command += "-out:" + outputDir + "/" + projectName;
 
 		// run the command to compile
-		system(command.c_str());
+		std::string file_name = "compile_output.txt";
+		std::system((command + " > " + file_name).c_str()); // redirect output to file
+
+		// open file for input, return string containing characters in the file
+		std::ifstream file(file_name);
+		std::string output = std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+
+		if (output.find("Compilation failed") != std::string::npos)
+		{
+			return;
+		}
 
 		// TODO
 		// At the moment we shall assume we have a successfully compiled dll

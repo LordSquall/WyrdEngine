@@ -87,6 +87,15 @@ namespace Osiris::Editor
 				{
 					if (ImGui::MenuItem("Script"))
 					{
+						std::ifstream t(Utils::GetEditorResFolder() +"scripts/TemplateScripts.cs");
+						std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+
+						// replace tags
+						str = Utils::ReplaceAll(str, "<CLASSNAME>", "NewClass");
+
+						std::ofstream out(_currentDir + "/NewClass.cs");
+						out << str;
+						out.close();
 					}
 
 					ImGui::EndMenu();
@@ -111,7 +120,7 @@ namespace Osiris::Editor
 		uint32_t colCnt = 4;
 		std::vector<std::string> files = Utils::GetFileList(_currentDir, false);
 
-		ImGui::Columns(colCnt, NULL, false);
+		ImGui::Columns(colCnt, NULL, false); 
 		for(auto& file : files)
 		{	
 			if (_resourcesService->CheckIgnored(file) == false)

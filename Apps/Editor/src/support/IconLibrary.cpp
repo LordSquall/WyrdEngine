@@ -30,10 +30,10 @@ namespace Osiris::Editor
 		// setup a default icon set with icon to handle missing icons
 		std::shared_ptr<IconSet> defaultIconSet = std::make_shared<IconSet>();
 		defaultIconSet->name = "defaultIconSet";
-		defaultIconSet->imagePath = Utils::GetEditorResFolder() + "\\res\\icons\\default.png";
+		defaultIconSet->imagePath = Utils::GetEditorResFolder() + "icons\\default.png";
 		defaultIconSet->height = defaultIconHeight;
 		defaultIconSet->width = defaultIconWidth;
-		defaultIconSet->Texture = std::make_shared<TextureRes>(Utils::GetEditorResFolder() + "\\res\\icons\\default.png");
+		defaultIconSet->Texture = std::make_shared<TextureRes>(Utils::GetEditorResFolder() + "icons\\default.png");
 
 		_DefaultIcon = std::make_shared<Icon>();
 		_DefaultIcon->height = defaultIconHeight;
