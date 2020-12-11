@@ -51,6 +51,7 @@ namespace Osiris::Editor
 		std::shared_ptr<SettingsService>	_settingsService;
 		std::shared_ptr<ResourceService>	_resourceService;
 		std::shared_ptr<SimulationService>	_simulationService;
+		std::shared_ptr<DialogService>		_dialogService;
 
 		std::shared_ptr<Icon> _playButtonIcon;
 		std::shared_ptr<Icon> _stopButtonIcon;

@@ -2,48 +2,63 @@
 
 #include "osrpch.h"
 
-#include "PreferencesViewer.h"
+#include "PreferencesDialog.h"
 
 #include "imgui.h"
 
 namespace Osiris::Editor
 {
-	PreferencesViewer::PreferencesViewer(EditorLayer* editorLayer) : EditorViewBase("Preferences Viewer", editorLayer)
+	PreferencesDialog::PreferencesDialog(EditorLayer* editorLayer) : EditorViewDialogBase("Preferences Viewer", editorLayer)
 	{
 		_SettingsService = ServiceManager::Get<SettingsService>(ServiceManager::Service::Settings);
 	}
 
-	PreferencesViewer::~PreferencesViewer() {}
+	PreferencesDialog::~PreferencesDialog() {}
 
-	void PreferencesViewer::OnEditorRender()
+	void PreferencesDialog::OnDialogRender()
 	{
 		float navigationPanelWidth = 100.0f;
-		static unsigned int menuID = 0;
+		float contentPanelHeight = ImGui::GetTextLineHeight() + 10.0f;
 
-		ImGui::BeginChildFrame(1, ImVec2(navigationPanelWidth, ImGui::GetContentRegionAvail().y));
+		static std::function<void()> subMenu = std::bind(&PreferencesDialog::OnEditorRender_General, this);
+
+		ImGui::BeginChildFrame(1, ImVec2(navigationPanelWidth, ImGui::GetContentRegionAvail().y - contentPanelHeight));
 		
-		if (ImGui::Button("RenderDoc", ImVec2(navigationPanelWidth, 0)) == true)
-		{
-			menuID = 0;
-		}
+		if (ImGui::Button("General", ImVec2(navigationPanelWidth, 0))) 
+			subMenu = std::bind(&PreferencesDialog::OnEditorRender_General, this);
+
+		if (ImGui::Button("RenderDoc", ImVec2(navigationPanelWidth, 0)))
+			subMenu = std::bind(&PreferencesDialog::OnEditorRender_RenderDoc, this);
 
 		ImGui::EndChildFrame();
 
 		ImGui::SameLine();
-		ImGui::BeginChildFrame(2, ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y));
-		
-		switch (menuID)
+		ImGui::BeginChildFrame(2, ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y - contentPanelHeight));
+		subMenu();
+		ImGui::EndChildFrame();
+
+		/* control buttons */
+		if (ImGui::Button("Cancel"))
 		{
-		case 0: OnEditorRender_RenderDoc(); break;
-		default:
-			break;
+			Close();
 		}
 
-		ImGui::EndChildFrame();
+		ImGui::SameLine();
+		if (ImGui::Button("OK"))
+		{
+			Close();
+		}
 	}
 
+	void PreferencesDialog::OnEditorRender_General()
+	{
+		if (ImGui::Button("TEST") == true)
+		{
 
-	void PreferencesViewer::OnEditorRender_RenderDoc()
+		}
+	}
+
+	void PreferencesDialog::OnEditorRender_RenderDoc()
 	{
 #ifdef OSR_RENDERDOC_ENABLED
 		static bool enableRenderDoc = Utils::ToBool(_SettingsService->GetSetting(std::string("Preferences-RenderDoc"), std::string("enabled"), std::string("0")));
@@ -52,11 +67,6 @@ namespace Osiris::Editor
 		ImGui::Checkbox("Enable Renderdoc", &enableRenderDoc);
 		ImGui::Checkbox("Enable Overlay", &enableOverlay);
 		ImGui::Text("Current Render Capture Key: F4");
-		if (ImGui::Button("Cancel") == true)
-		{
-			Close();
-		}
-		ImGui::SameLine();
 
 		if (ImGui::Button("Apply") == true)
 		{
@@ -64,7 +74,6 @@ namespace Osiris::Editor
 
 			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_shared<Events::SettingsUpdateEventArgs>());
 
-			Close();
 		}
 #else
 		ImGui::TextColored({ 1.0, 0.0, 0.0, 1.0 }, "Renderdoc has not been build against this version of the Osiris Editor.");

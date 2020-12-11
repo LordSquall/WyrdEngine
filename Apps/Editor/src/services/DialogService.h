@@ -4,13 +4,10 @@
 
 #include "services/IService.h"
 
+#include "views/EditorViewDialogBase.h"
+
 namespace Osiris::Editor
 {
-	enum Dialogs
-	{
-		CreateNewProject = 0
-	};
-
 	class DialogService : public IService
 	{
 	public:
@@ -22,9 +19,9 @@ namespace Osiris::Editor
 		virtual void OnDestroy() override;
 		virtual void OnGUI() override;
 
-		void OpenDialog(Dialogs dialog);
+		void OpenDialog(std::shared_ptr<EditorViewDialogBase> dialog);
 
-	//private:
-		bool _isDialogOpen;
+		static std::shared_ptr<EditorViewDialogBase> _activeDialog;
+		static bool(*_popupDialogCallback)(std::shared_ptr<EditorViewDialogBase>);
 	};
 }

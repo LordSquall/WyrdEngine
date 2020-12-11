@@ -9,72 +9,44 @@
 
 namespace Osiris::Editor
 {
+	std::shared_ptr<EditorViewDialogBase> DialogService::_activeDialog = nullptr;
+	bool(*DialogService::_popupDialogCallback)(std::shared_ptr<EditorViewDialogBase>) = [](std::shared_ptr<EditorViewDialogBase> dialog)->bool { return false; };
+
 	void DialogService::OnCreate() {}
 
 	void DialogService::OnDestroy() {}
 
 	void DialogService::OnGUI() 
 	{
-		if (_isDialogOpen == true)
+		if (_activeDialog != nullptr)
 		{
-			ImGui::OpenPopup("Create New Project...");
+			bool isOpen = _popupDialogCallback(_activeDialog);
 
-			if (ImGui::BeginPopupModal("Create New Project...", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-			{
-				static char name_buffer[255];
-				static char scenename_buffer[255] = "default";
-				static char folder_buffer[255];
-
-				ImGui::AlignTextToFramePadding();
-				ImGui::Text("Name:");
-				ImGui::SameLine();
-				ImGui::PushID(0);
-				ImGui::InputText("##hidelabel", name_buffer, 255);
-				ImGui::PopID();
-
-				ImGui::AlignTextToFramePadding();
-				ImGui::Text("Default Scene Name:");
-				ImGui::SameLine();
-				ImGui::PushID(1);
-				ImGui::InputText("##hidelabel", scenename_buffer, 255);
-				ImGui::PopID();
-
-				ImGui::AlignTextToFramePadding();
-				ImGui::Text("Folder:");
-				ImGui::SameLine();
-				ImGui::PushID(2);
-				ImGui::InputText("##hidelabel", folder_buffer, 255);
-				ImGui::PopID();
-				ImGui::SameLine();
-
-				if (ImGui::Button("..."))
-				{
-					Utils util;
-					strcpy(folder_buffer, util.OpenFolderDialog().c_str());
-					printf("Folder: %s\n", folder_buffer);
-				}
-
-				if (ImGui::Button("OK", ImVec2(120, 0))) 
-				{ 
-					ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::CreateNewProject, std::make_shared<Events::CreateNewProjectArgs>(std::string(name_buffer), std::string(scenename_buffer), std::string(folder_buffer)));
-					ImGui::CloseCurrentPopup();
-					_isDialogOpen = false;
-				}
-
-				ImGui::SetItemDefaultFocus();
-				ImGui::SameLine();
-				if (ImGui::Button("Cancel", ImVec2(120, 0))) 
-				{ 
-					ImGui::CloseCurrentPopup();
-					_isDialogOpen = false;
-				}
-				ImGui::EndPopup();
-			}
+			if (!isOpen)
+				_activeDialog = nullptr;
 		}
 	}
 
-	void DialogService::OpenDialog(Dialogs dialog)
+	void DialogService::OpenDialog(std::shared_ptr<EditorViewDialogBase> dialog)
 	{
-		_isDialogOpen = true;
+		_activeDialog = dialog;
+
+		_popupDialogCallback = [](std::shared_ptr<EditorViewDialogBase> dialog)->bool
+		{
+			if (dialog != nullptr)
+			{
+				const char* name = dialog->GetName().c_str();
+				if (!ImGui::IsPopupOpen(name))
+					ImGui::OpenPopup(name);
+
+				if (ImGui::BeginPopupModal(name))
+				{
+					dialog->OnDialogRender();
+					ImGui::EndPopup();
+				}
+
+				return ImGui::IsPopupOpen(name);
+			}
+		};
 	}
 }

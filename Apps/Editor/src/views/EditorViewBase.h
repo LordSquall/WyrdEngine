@@ -37,8 +37,8 @@ namespace Osiris::Editor
 		void OnPreEditorRender();
 		void OnPostEditorRender();
 
-		inline const std::string& GetName() const { return _Name; }
 		inline Osiris::Rect GetBoundary() const { return _Boundary; }
+		inline const std::string& GetName() const { return _Name; }
 
 		inline void Close() { _ShowFlag = false; }
 		inline bool* GetShowFlagRef() { return &_ShowFlag; }

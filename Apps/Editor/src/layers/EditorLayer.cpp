@@ -10,11 +10,12 @@
 #include "layers/EditorRenderer2DLayer.h"
 #include "views/SceneViewer/SceneViewer.h"
 #include "views/PropertiesViewer/PropertiesViewer.h"
-#include "views/PreferencesViewer/PreferencesViewer.h"
 #include "views/LayerViewer/LayerViewer.h"
 #include "views/SpriteLayerEditor/SpriteLayerEditor.h"
 #include "views/AssetViewer/AssetViewer.h"
 #include "views/OutputView/OutputView.h"
+#include "views/Dialogs/PreferencesDialog.h"
+#include "views/Dialogs/NewProjectDialog.h"
 #include "export/Exporter.h"
 #include "platform/OpenGL/imgui_opengl_renderer.h"
 #include "support/ImGuiUtils.h"
@@ -61,6 +62,7 @@ namespace Osiris::Editor
 		_settingsService = ServiceManager::Get<SettingsService>(ServiceManager::Service::Settings);
 		_resourceService = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources);
 		_simulationService = ServiceManager::Get<SimulationService>(ServiceManager::Service::Simulation);
+		_dialogService = ServiceManager::Get<DialogService>(ServiceManager::Service::Dialog);
 
 		/* cache icon resources */
 		_playButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "sim_play");
@@ -218,7 +220,7 @@ namespace Osiris::Editor
 		/* attempt to load the default project otherwise asked the user to create a new one */
 		if (_workspaceService->LoadProject(_settingsService->GetSetting("Project", "default", "")) == false)
 		{
-			ServiceManager::Get<DialogService>(ServiceManager::Service::Dialog)->OpenDialog(Dialogs::CreateNewProject);
+			_dialogService->OpenDialog(std::make_shared<NewProjectDialog>(this));
 		}
 
 		return true;
@@ -284,7 +286,7 @@ namespace Osiris::Editor
 			if (ImGui::BeginMenu("Create New Project...")) {
 				if (ImGui::MenuItem("New")) 
 				{
-					ServiceManager::Get<DialogService>(ServiceManager::Service::Dialog)->OpenDialog(Dialogs::CreateNewProject);
+					_dialogService->OpenDialog(std::make_shared<NewProjectDialog>(this));
 				}
 				if (ImGui::MenuItem("Open File", "Ctrl+O")) {
 					OSR_INFO(util.OpenFileDialog("*.scene"));
@@ -345,14 +347,6 @@ namespace Osiris::Editor
 			}
 			ImGui::EndMenu();
 		}
-
-		if (ImGui::BeginMenu("Scene", true))
-		{
-			if (ImGui::MenuItem("Settings"))
-			{
-			}
-			ImGui::EndMenu();
-		}
 		
 		if (ImGui::BeginMenu("Views", true))
 		{
@@ -361,6 +355,14 @@ namespace Osiris::Editor
 				ImGui::MenuItem((it->second)->GetName().c_str(), NULL, (it->second)->GetShowFlagRef());
 			}
 
+
+			ImGui::Separator();
+
+
+			if (ImGui::MenuItem("Preferences"))
+			{
+				_dialogService->OpenDialog(std::make_shared<PreferencesDialog>(this));
+			}
 			ImGui::EndMenu();
 		}
 
