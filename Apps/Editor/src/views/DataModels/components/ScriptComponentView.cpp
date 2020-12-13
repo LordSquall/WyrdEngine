@@ -97,7 +97,7 @@ namespace Osiris::Editor
 				std::shared_ptr<GameObject> gameObject = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace)->GetLoadedScene()->FindGameObject(gameObjectID);
 				
 				std::shared_ptr<IBaseComponent> scriptComponent = nullptr;
-				std::string className = nullptr;
+				std::string className;
 				for (auto& c : gameObject->components)
 				{
 					if(c->GetType() == SceneComponentType::ScriptComponent)
