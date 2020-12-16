@@ -4,6 +4,8 @@
 #include "events/ApplicationEvent.h"
 #include "layers/BehaviourLayer.h"
 #include "layers/PhysicsLayer.h"
+#include "core/renderer/Shader.h"
+#include "core/renderer/Texture.h"
 
 /* external includes */
 #include <GLFW/glfw3.h>
@@ -60,13 +62,13 @@ namespace Osiris {
 		_Behaviour = std::make_unique<Behaviour>();
 
 		/* add engine layers */
-		PushLayer(new Layers::BehaviourLayer());
+		PushLayer(new BehaviourLayer());
 
 		/* create physics subsystem */
 		_Physics = std::make_unique<Physics>();
 
 		/* add engine layers */
-		PushLayer(new Layers::PhysicsLayer());
+		PushLayer(new PhysicsLayer());
 
 		/* set a default back buffer color */
 		color.r = 0.1f;

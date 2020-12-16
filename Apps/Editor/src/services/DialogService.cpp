@@ -47,6 +47,7 @@ namespace Osiris::Editor
 
 				return ImGui::IsPopupOpen(name);
 			}
+			return false;
 		};
 	}
 }

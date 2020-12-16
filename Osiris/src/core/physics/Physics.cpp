@@ -10,6 +10,8 @@
 #include "core/behaviour/ScriptedGameObject.h"
 #include "core/behaviour/MonoUtils.h"
 
+#include <glm/glm.hpp>
+
 namespace Osiris
 {
 	struct CollisionHit

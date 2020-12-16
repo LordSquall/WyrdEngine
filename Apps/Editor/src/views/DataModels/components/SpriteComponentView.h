@@ -1,7 +1,6 @@
 #pragma once
 
 /* core osiris include */
-#include <Osiris.h>
 #include <core/scene/components/SpriteComponent.h>
 
 /* local includes */

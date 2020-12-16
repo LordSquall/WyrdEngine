@@ -2,6 +2,11 @@
 #include "osrpch.h"
 
 #include "SpriteBatch.h"
+#include "core/renderer/VertexArray.h"
+#include "core/renderer/Buffer.h"
+#include "core/renderer/Texture.h"
+#include "core/pipeline/SpriteVertex.h"
+#include "core/pipeline/Sprite.h"
 
 namespace Osiris
 {

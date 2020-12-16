@@ -1,10 +1,8 @@
 #pragma once
 
 /* local includes */
-#include "Osiris.h"
 #include "core/export.h"
-#include "core/renderer/VertexArray.h"
-#include "core/renderer/Buffer.h"
+
 #include "core/pipeline/SpriteVertex.h"
 
 using namespace Osiris;
@@ -12,6 +10,10 @@ using namespace Osiris;
 
 namespace Osiris {
 
+	class Texture;
+	class VertexArray;
+	class IndexBuffer;
+	class VertexBuffer;
 	class SpriteLayer;
 	class SpriteBatch;
 	struct SpriteBatchEntry;

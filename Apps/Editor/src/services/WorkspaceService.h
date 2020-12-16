@@ -1,11 +1,17 @@
 #pragma once
 
-#include "core/export.h"
+/* core osiris includes */
+#include <core/export.h>
+#include <core/scene/Scene.h>
+
+/* local includes */
 #include "IService.h"
 #include "datamodels/Project.h"
 
 namespace Osiris::Editor
 {
+	class Project;
+
 	class WorkspaceService : public IService
 	{
 	public:

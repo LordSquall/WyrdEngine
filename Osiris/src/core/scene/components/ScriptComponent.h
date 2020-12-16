@@ -1,7 +1,7 @@
 #pragma once
 
 /* local includes */
-#include "Osiris.h"
+#include "core/behaviour/PropertyDesc.h"
 #include "core/scene/components/IBaseComponent.h"
 
 /* external includes */
@@ -12,6 +12,8 @@ using namespace glm;
 namespace Osiris {
 
 	class GameObject;
+	class ScriptedClass;
+	class ScriptedCustomObject;
 
 	class OSR_LIBRARY_API ScriptComponent : public IBaseComponent
 	{
@@ -27,7 +29,7 @@ namespace Osiris {
 		inline const std::shared_ptr<ScriptedCustomObject> GetCustomObject() const { return _Object; }
 		
 	public:
-		std::vector<ScriptedClass::PropertyDesc> Properties;
+		std::vector<PropertyDesc> Properties;
 
 	private:
 		void CacheResources();

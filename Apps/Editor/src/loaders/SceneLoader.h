@@ -1,7 +1,6 @@
 #pragma once
 
 /* core osiris includes */
-#include <Osiris.h>
 #include <core/scene/Scene.h>
 
 using namespace Osiris;

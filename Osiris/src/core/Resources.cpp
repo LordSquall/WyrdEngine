@@ -1,6 +1,9 @@
 #include "osrpch.h"
 
 #include "Resources.h"
+#include "core/renderer/Shader.h"
+#include "core/renderer/Texture.h"
+#include "core/behaviour/ScriptedClass.h"
 
 namespace Osiris {
 

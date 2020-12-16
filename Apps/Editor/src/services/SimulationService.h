@@ -2,6 +2,7 @@
 
 /* core osiris includes */
 #include <core/export.h>
+#include <core/behaviour/Behaviour.h>
 
 /* local includes */
 #include "services/IService.h"

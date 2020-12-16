@@ -1,11 +1,14 @@
 #pragma once
 
 /* local includes */
-#include "Osiris.h"
+#include "core/export.h"
+
+#include <glm/glm.hpp>
 
 namespace Osiris {
 
 	class Layer2D;
+	class GameObject;
 
 	/* Editor Scene Data Model Structure */
 	class OSR_LIBRARY_API Scene

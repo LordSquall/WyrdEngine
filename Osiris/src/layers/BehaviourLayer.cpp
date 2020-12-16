@@ -3,8 +3,9 @@
 #include "osrpch.h"
 
 #include "BehaviourLayer.h"
+#include "core/Application.h"
 
-namespace Osiris::Layers
+namespace Osiris
 {
 	BehaviourLayer::BehaviourLayer() : Layer("Behaviour_Layer")
 	{

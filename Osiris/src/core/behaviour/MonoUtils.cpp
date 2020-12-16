@@ -6,8 +6,9 @@
 #include "core/Application.h"
 #include "core/scene/GameObject.h"
 #include "core/scene/components/ScriptComponent.h"
-#include "ScriptedClass.h"
-#include "ScriptedGameObject.h"
+#include "core/behaviour/ScriptedClass.h"
+#include "core/behaviour/ScriptedGameObject.h"
+#include "core/behaviour/ScriptedCustomObject.h"
 #include "MonoUtils.h"
 
 /* external includes */

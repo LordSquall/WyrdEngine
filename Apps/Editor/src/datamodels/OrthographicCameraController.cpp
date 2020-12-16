@@ -1,7 +1,11 @@
 #pragma once
 #include "osrpch.h"
 
-/* Local includes */
+/* core osiris includes */
+#include <core/Input.h>
+#include <core/KeyCodes.h>
+
+/* local includes */
 #include "OrthographicCameraController.h"
 
 namespace Osiris::Editor {

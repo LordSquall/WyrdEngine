@@ -55,6 +55,11 @@ namespace OsirisAPI
             GameObject_SetColor(_NativePointer, red, green, blue, alpha);
         }
 
+        public void SetSize(float x, float y)
+        {
+            GameObject_SetSize(_NativePointer, x, y);
+        }
+
         #endregion
 
         #region Object Overrides
@@ -88,6 +93,10 @@ namespace OsirisAPI
 
         [DllImport("OsirisCAPI")]
         public static extern IntPtr GameObject_SetColor(IntPtr value, float red, float green, float blue, float alpha);
+
+
+        [DllImport("OsirisCAPI")]
+        public static extern IntPtr GameObject_SetSize(IntPtr value, float x, float y);
 
         #endregion
     }

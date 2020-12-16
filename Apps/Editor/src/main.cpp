@@ -1,10 +1,9 @@
-/* engine headers */
-#include <Osiris.h>
+/* core osiris includes */
+#include <core/EntryPoint.h>
+#include <core/Application.h>
+#include <layers/Renderer2DLayer.h>
 
-#include "layers/Renderer2DLayer.h"
-#include "core/EntryPoint.h"
-
-/* local headers */
+/* local includes */
 #include "services/ServiceManager.h"
 #include "layers/RenderDocLayer.h"
 #include "layers/EditorLayer.h"

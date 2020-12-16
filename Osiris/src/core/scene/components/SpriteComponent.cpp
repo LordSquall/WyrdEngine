@@ -2,10 +2,13 @@
 
 /* local includes */
 #include "osrpch.h"
-#include "Osiris.h"
 #include "SpriteComponent.h"
+#include "core/Resources.h"
 #include "core/renderer/Texture.h"
 #include "core/renderer/Shader.h"
+#include "core/renderer/VertexArray.h"
+#include "core/renderer/Buffer.h"
+#include "core/pipeline/SpriteVertex.h"
 #include "core/pipeline/Sprite.h"
 #include "core/scene/GameObject.h"
 #include "core/scene/components/Transform2DComponent.h"
@@ -16,7 +19,7 @@ namespace Osiris
 		, Color({ 1.0f, 1.0f, 1.0f, 1.0f })
 	{
 		shader = Resources::Get().Shaders["Sprite"];
-		sprite = std::make_shared<Osiris::Sprite>("NewSprite", 0.0f, 0.0f, 64.0f, 64.0f);
+		sprite = std::make_shared<Osiris::Sprite>("NewSprite", 0, 0, 64, 64);
 		BaseTexture = Resources::Get().Textures["DefaultSprite"];
 		Color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	}

@@ -1,10 +1,17 @@
 #pragma once
-#include "osrpch.h"
-#include "core/Log.h"
 
+/* core osiris includes */
+#include <osrpch.h>
+#include <core/Log.h>
+#include <core/Application.h>
+#include <core/Input.h>
+#include <core/MouseCodes.h>
+#include <core/scene/Layer2D.h>
+
+/* local includes */
 #include "EditorRenderer2DLayer.h"
 
-#include "core/scene/Layer2D.h"
+/* external includes */
 #include <imgui.h>
 
 namespace Osiris::Editor

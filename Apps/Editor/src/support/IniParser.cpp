@@ -7,8 +7,6 @@
 /* ini file parser for configuration */
 #define INI_IMPLEMENTATION
 #include "../support/ini.h"
-#define INI_MALLOC( ctx, size ) ( malloc( size ) )
-#define INI_FREE( ctx, ptr ) ( free( ptr )
 
 IniParser::IniParser(std::string name)
 {
@@ -50,9 +48,9 @@ std::string IniParser::GetValue(std::string section, std::string name, std::stri
 	int nameIdx = 0;
 
 	if (section.empty() == false)
-		sectionIdx = ini_find_section(m_IniCtx, section.c_str(), section.length());
+		sectionIdx = ini_find_section(m_IniCtx, section.c_str(), (int)section.length());
 
-	nameIdx = ini_find_property(m_IniCtx, sectionIdx, name.c_str(), name.length());
+	nameIdx = ini_find_property(m_IniCtx, sectionIdx, name.c_str(), (int)name.length());
 
 	if (nameIdx == -1)
 	{
@@ -71,21 +69,21 @@ void IniParser::SetValue(std::string value, std::string section, std::string nam
 
 	if (section.empty() == false)
 	{
-		sectionIdx = ini_find_section(m_IniCtx, section.c_str(), section.length());
+		sectionIdx = ini_find_section(m_IniCtx, section.c_str(), (int)section.length());
 		if (sectionIdx == -1)
 		{
-			sectionIdx = ini_section_add(m_IniCtx, section.c_str(), section.length());
+			sectionIdx = ini_section_add(m_IniCtx, section.c_str(), (int)section.length());
 		}
 	}
 
-	nameIdx = ini_find_property(m_IniCtx, sectionIdx, name.c_str(), name.length());
+	nameIdx = ini_find_property(m_IniCtx, sectionIdx, name.c_str(), (int)name.length());
 	if (nameIdx == -1)
 	{
-		ini_property_add(m_IniCtx, sectionIdx, name.c_str(), name.length(), value.c_str(), value.length());
+		ini_property_add(m_IniCtx, sectionIdx, name.c_str(), (int)name.length(), value.c_str(), (int)value.length());
 	}
 	else
 	{
-		ini_property_value_set(m_IniCtx, sectionIdx, nameIdx, value.c_str(), value.length());
+		ini_property_value_set(m_IniCtx, sectionIdx, nameIdx, value.c_str(), (int)value.length());
 	}
 }
 

@@ -1,18 +1,22 @@
 #pragma once
 
-#include <Osiris.h>
+/* core osiris includes */
+#include <layers/Renderer2DLayer.h>
 
+/* local includes */
 #include "events/EditorEvents.h"
 #include "services/ServiceManager.h"
 #include "layers/Renderer2DLayer.h"
 #include "datamodels/OrthographicCameraController.h"
 #include "gizmos/TranslationGizmo.h"
 
+/* external includes */
+
 using namespace Osiris;
 
 namespace Osiris::Editor
 {
-	class EditorRenderer2DLayer : public Layers::Renderer2DLayer
+	class EditorRenderer2DLayer : public Renderer2DLayer
 	{
 	public:
 		EditorRenderer2DLayer(std::string name);

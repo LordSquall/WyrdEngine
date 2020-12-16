@@ -31,15 +31,15 @@ namespace Osiris::Editor
 		std::shared_ptr<IconSet> defaultIconSet = std::make_shared<IconSet>();
 		defaultIconSet->name = "defaultIconSet";
 		defaultIconSet->imagePath = Utils::GetEditorResFolder() + "icons\\default.png";
-		defaultIconSet->height = defaultIconHeight;
-		defaultIconSet->width = defaultIconWidth;
+		defaultIconSet->height = (int)defaultIconHeight;
+		defaultIconSet->width = (int)defaultIconWidth;
 		defaultIconSet->Texture = std::make_shared<TextureRes>(Utils::GetEditorResFolder() + "icons\\default.png");
 
 		_DefaultIcon = std::make_shared<Icon>();
-		_DefaultIcon->height = defaultIconHeight;
-		_DefaultIcon->width = defaultIconWidth;
+		_DefaultIcon->height = (int)defaultIconHeight;
+		_DefaultIcon->width = (int)defaultIconWidth;
 		_DefaultIcon->x = 0u;
-		_DefaultIcon->y = defaultIconHeight;
+		_DefaultIcon->y = (unsigned int)defaultIconHeight;
 		_DefaultIcon->name = "defaultIcon";
 
 		float widthNorm = (float)_DefaultIcon->width / (float)defaultIconSet->width;

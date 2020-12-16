@@ -1,20 +1,21 @@
 #pragma once
 
-// This layer should be able enabled if the rendererdoc symbol is 
+// This layer should be able enabled if the rendererdoc symbol is defined
 #ifdef OSR_RENDERDOC_ENABLED
 
-#include "osrpch.h"
-#include "core/Log.h"
+/* core osiris includes */
+#include <osrpch.h>
+#include <core/Log.h>
+#include <core/Application.h>
+#include <core/Layer.h>
+#include <core/KeyCodes.h>
+#include <events/Event.h>
+#include <events/KeyEvent.h>
+#include <events/MouseEvent.h>
+#include <events/ApplicationEvent.h>
+
+/* local includes */
 #include "RenderDocLayer.h"
-
-#include "core/Application.h"
-#include "core/Layer.h"
-
-#include "events/Event.h"
-#include "events/KeyEvent.h"
-#include "events/MouseEvent.h"
-#include "events/ApplicationEvent.h"
-
 
 namespace Osiris::Editor
 {

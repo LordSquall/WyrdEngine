@@ -1,7 +1,6 @@
 #pragma once
 
 /* core osiris includes */
-#include <Osiris.h>
 
 /* local includes */
 #include "datamodels/Project.h"

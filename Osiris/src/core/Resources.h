@@ -2,13 +2,13 @@
 
 /* local project */
 #include "osrpch.h"
-#include "core/Layer.h"
-#include "core/renderer/Shader.h"
-#include "core/renderer/Texture.h"
-#include "core/behaviour/ScriptedClass.h"
-#include "core/behaviour/ScriptedGameObject.h"
+#include "export.h"
 
 namespace Osiris {
+
+	class Shader;
+	class Texture;
+	class ScriptedClass;
 
 	/**
 	 * @brief Resource SubSystem

@@ -11,6 +11,9 @@
 #include "core/scene/components/Transform2DComponent.h"
 #include "core/scene/components/SpriteComponent.h"
 #include "core/scene/components/ScriptComponent.h"
+#include "core/behaviour/ScriptedClass.h"
+#include "core/behaviour/ScriptedGameObject.h"
+#include "core/behaviour/ScriptedCustomObject.h"
 
 /* external includes */
 #include <glm/glm.hpp>
@@ -439,22 +442,22 @@ namespace Osiris
 
 						switch (prop.type)
 						{
-						case ScriptedClass::PropType::INT:
+						case PropType::INT:
 							args.push_back(&prop.intVal);
 
 							mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
 							break;
-						case ScriptedClass::PropType::FLOAT:
+						case PropType::FLOAT:
 							args.push_back(&prop.floatVal);
 
 							mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
 							break;
-						case ScriptedClass::PropType::STRING:
+						case PropType::STRING:
 							args.push_back(mono_string_new((MonoDomain*)_Domain, prop.stringVal.c_str()));
 
 							mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
 							break;
-						case ScriptedClass::PropType::GAMEOBJECT:
+						case PropType::GAMEOBJECT:
 							// find matching script component class type
 							go = _CurrentScene->FindGameObject(prop.objectVal);
 							sc = go->FindScriptComponent(prop.objectClassNameVal);

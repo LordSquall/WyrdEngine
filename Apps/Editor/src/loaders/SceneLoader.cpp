@@ -13,6 +13,7 @@
 #include <core/scene/components/SpriteComponent.h>
 #include <core/scene/components/ScriptComponent.h>
 #include <core/scene/components/PhysicsComponent.h>
+#include <core/behaviour/PropertyDesc.h>
 
 /* local includes */
 #include "SceneLoader.h"
@@ -182,31 +183,31 @@ namespace Osiris::Editor
 			jsonxx::Array properties = json.get<jsonxx::Array>("properties", jsonxx::Array());
 			for (size_t i = 0; i < properties.size(); i++)
 			{
-				jsonxx::Object propObj = properties.get<jsonxx::Object>(i);
+				jsonxx::Object propObj = properties.get<jsonxx::Object>((int)i);
 				jsonxx::String propName = propObj.get<jsonxx::String>("name");
 
 				auto& foundPro = std::find_if(component->Properties.begin(),
 					component->Properties.end(),
-					[&propName](const ScriptedClass::PropertyDesc& obj)
+					[&propName](const PropertyDesc& obj)
 					{
 						return obj.name == propName; 
 					});
 
 				if (foundPro != component->Properties.end())
 				{
-					switch (static_cast<ScriptedClass::PropType>(propObj.get<jsonxx::Number>("type")))
+					switch (static_cast<PropType>(propObj.get<jsonxx::Number>("type")))
 					{
-					case ScriptedClass::PropType::INT:
-						foundPro->intVal = propObj.get<jsonxx::Number>("value");
+					case PropType::INT:
+						foundPro->intVal = (int)propObj.get<jsonxx::Number>("value");
 						break;
-					case ScriptedClass::PropType::FLOAT:
-						foundPro->floatVal = propObj.get<jsonxx::Number>("value");
+					case PropType::FLOAT:
+						foundPro->floatVal = (float)propObj.get<jsonxx::Number>("value");
 						break;
-					case ScriptedClass::PropType::STRING:
+					case PropType::STRING:
 						foundPro->stringVal = propObj.get<jsonxx::String>("value").c_str();
 						break;
-					case ScriptedClass::PropType::GAMEOBJECT:
-						foundPro->objectVal = propObj.get<jsonxx::Number>("value");
+					case PropType::GAMEOBJECT:
+						foundPro->objectVal = (int)propObj.get<jsonxx::Number>("value");
 						foundPro->objectNameVal = propObj.get<jsonxx::String>("nameValue").c_str();
 						break;
 					default:
@@ -240,19 +241,19 @@ namespace Osiris::Editor
 			{
 				jsonxx::Object propObj;
 				propObj << "name" << prop.name;
-				propObj << "type" << static_cast<std::underlying_type<ScriptedClass::PropType>::type>(prop.type);
+				propObj << "type" << static_cast<std::underlying_type<PropType>::type>(prop.type);
 				switch (prop.type)
 				{
-				case ScriptedClass::PropType::INT:
+				case PropType::INT:
 					propObj << "value" << prop.intVal;
 					break;
-				case ScriptedClass::PropType::FLOAT:
+				case PropType::FLOAT:
 					propObj << "value" << prop.floatVal;
 					break;
-				case ScriptedClass::PropType::STRING:
+				case PropType::STRING:
 					propObj << "value" << prop.stringVal;
 					break;
-				case ScriptedClass::PropType::GAMEOBJECT:
+				case PropType::GAMEOBJECT:
 					propObj << "value" << prop.objectVal;
 					propObj << "nameValue" << prop.objectNameVal;
 					propObj << "objectClassNameVal" << prop.objectClassNameVal;
@@ -319,7 +320,7 @@ namespace Osiris::Editor
 		{
 			for (size_t i = 0; i < json.get<jsonxx::Array>("components").size(); i++)
 			{
-				jsonxx::Object componentObj = json.get<jsonxx::Array>("components").get<jsonxx::Object>(i);
+				jsonxx::Object componentObj = json.get<jsonxx::Array>("components").get<jsonxx::Object>((int)i);
 				SceneComponentType typeId = (SceneComponentType)(uint32_t)componentObj.get<jsonxx::Number>("Type");
 
 				switch (typeId)
@@ -342,7 +343,7 @@ namespace Osiris::Editor
 		{
 			for (size_t i = 0; i < json.get<jsonxx::Array>("children").size(); i++)
 			{
-				jsonxx::Object childObj = json.get<jsonxx::Array>("children").get<jsonxx::Object>(i);
+				jsonxx::Object childObj = json.get<jsonxx::Array>("children").get<jsonxx::Object>((int)i);
 				gameObject->children.push_back(Read_GameObject(childObj, gameObject));
 			}
 		}
@@ -404,7 +405,7 @@ namespace Osiris::Editor
 		{
 			for (size_t i = 0; i < json.get<jsonxx::Array>("gameObjects").size(); i++)
 			{
-				std::shared_ptr<Osiris::GameObject> gameObject = Read_GameObject(json.get<jsonxx::Array>("gameObjects").get<jsonxx::Object>(i), nullptr);
+				std::shared_ptr<Osiris::GameObject> gameObject = Read_GameObject(json.get<jsonxx::Array>("gameObjects").get<jsonxx::Object>((int)i), nullptr);
 
 				// store the layer reference in the gameobject
 				gameObject->parent = layer2D;
@@ -462,14 +463,14 @@ namespace Osiris::Editor
 
 				/* camera Zoom */
 				if (o.has<jsonxx::Number>("cameraZoom") == true)
-					scene.cameraZoom = o.get<jsonxx::Number>("cameraZoom");
+					scene.cameraZoom = (float)o.get<jsonxx::Number>("cameraZoom");
 
 				/* layer 2D */
 				if (o.has<jsonxx::Array>("layers2D") == true)
 				{
 					for (size_t i = 0; i < o.get<jsonxx::Array>("layers2D").size(); i++)
 					{
-						scene.layers2D.push_back(Read_Layer2D(o.get<jsonxx::Array>("layers2D").get<jsonxx::Object>(i)));
+						scene.layers2D.push_back(Read_Layer2D(o.get<jsonxx::Array>("layers2D").get<jsonxx::Object>((int)i)));
 					}
 				}
 

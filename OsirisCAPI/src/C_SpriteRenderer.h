@@ -10,6 +10,8 @@ extern "C" {
 
 LIBRARY_API void SpriteRenderer_SetColor(void* obj, float red, float green, float blue, float alpha);
 
+LIBRARY_API void SpriteRenderer_SetSize(void* obj, float x, float y);
+
 #ifdef __cplusplus
 }
 #endif

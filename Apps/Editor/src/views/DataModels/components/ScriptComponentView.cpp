@@ -42,16 +42,16 @@ namespace Osiris::Editor
 			{
 				switch (prop.type)
 				{
-				case ScriptedClass::PropType::INT:
+				case PropType::INT:
 					DrawIntUI(prop);
 					break;
-				case ScriptedClass::PropType::FLOAT:
+				case PropType::FLOAT:
 					DrawFloatUI(prop);
 					break;
-				case ScriptedClass::PropType::STRING:
+				case PropType::STRING:
 					DrawStringUI(prop);
 					break;
-				case ScriptedClass::PropType::GAMEOBJECT:
+				case PropType::GAMEOBJECT:
 					DrawGameObjectUI(prop);
 					break;
 				default:
@@ -63,7 +63,7 @@ namespace Osiris::Editor
 		}
 	}
 
-	void ScriptComponentView::DrawIntUI(ScriptedClass::PropertyDesc& prop)
+	void ScriptComponentView::DrawIntUI(PropertyDesc& prop)
 	{
 		int value = prop.intVal;
 		if (ImGui::DragInt(prop.name.c_str(), &value))
@@ -72,7 +72,7 @@ namespace Osiris::Editor
 		}
 	}
 
-	void ScriptComponentView::DrawFloatUI(ScriptedClass::PropertyDesc& prop)
+	void ScriptComponentView::DrawFloatUI(PropertyDesc& prop)
 	{
 		float value = prop.floatVal;
 		if (ImGui::DragFloat(prop.name.c_str(), &value))
@@ -81,12 +81,12 @@ namespace Osiris::Editor
 		}
 	}
 
-	void ScriptComponentView::DrawStringUI(ScriptedClass::PropertyDesc& prop)
+	void ScriptComponentView::DrawStringUI(PropertyDesc& prop)
 	{
 		ImGui::InputText(prop.name.c_str(), &prop.stringVal);
 	}
 
-	void ScriptComponentView::DrawGameObjectUI(ScriptedClass::PropertyDesc& prop)
+	void ScriptComponentView::DrawGameObjectUI(PropertyDesc& prop)
 	{
 		ImGui::LabelText(prop.name.c_str(), prop.objectNameVal.c_str());
 		if (ImGui::BeginDragDropTarget())
@@ -130,7 +130,7 @@ namespace Osiris::Editor
 		}
 	}
 
-	void ScriptComponentView::DrawTextureResourceUI(ScriptedClass::PropertyDesc& prop)
+	void ScriptComponentView::DrawTextureResourceUI(PropertyDesc& prop)
 	{
 		ImGui::LabelText(prop.name.c_str(), prop.objectNameVal.c_str());
 		if (ImGui::BeginDragDropTarget())

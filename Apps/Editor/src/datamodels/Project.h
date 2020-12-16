@@ -1,9 +1,6 @@
 #pragma once
 
 /* Core includes */
-#include <Osiris.h>
-
-using namespace Osiris;
 
 namespace Osiris::Editor {
 

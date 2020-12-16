@@ -1,12 +1,15 @@
 #pragma once
 
-#include "osrpch.h"
-#include "core/Log.h"
+/* core osiris includes */
+#include <osrpch.h>
+#include <core/Log.h>
+#include <core/Resources.h>
+
+/* local includes */
 #include "ResourceService.h"
 #include "services/ServiceManager.h"
 #include "loaders/TextureLoader.h"
 #include "datamodels/resources/TextureRes.h"
-
 
 namespace Osiris::Editor
 {

@@ -1,13 +1,17 @@
 #pragma once
 
-#include <Osiris.h>
-
-#include "Sprite.h"
+#include "core/renderer/Renderer.h"
+#include "core/pipeline/Sprite.h"
 
 using namespace Osiris;
 
 
 namespace Osiris {
+
+	class Texture;
+	class VertexArray;
+	class VertexBuffer;
+	class IndexBuffer;
 
 	/* represents a single sprite vertex */
 	struct SpriteVertex2
@@ -36,13 +40,13 @@ namespace Osiris {
 
 		std::vector<SpriteVertex2> _vertices;
 		std::vector<unsigned int> _indicies;
-		std::unique_ptr<VertexArray> _VertexArray;
-		std::unique_ptr<VertexBuffer> _VertexBuffer;
-		std::unique_ptr<IndexBuffer> _IndexBuffer;
+		std::shared_ptr<VertexArray> _VertexArray;
+		std::shared_ptr<VertexBuffer> _VertexBuffer;
+		std::shared_ptr<IndexBuffer> _IndexBuffer;
 
 		std::map<uint32_t, SpriteBatchEntry> _SpriteMap;
 
-		std::unique_ptr<Texture> _Texture;
+		std::shared_ptr<Texture> _Texture;
 	};
 
 	/* represents a single sprite entry in a batch table */

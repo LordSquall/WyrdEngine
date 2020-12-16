@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Osiris.h>
-
 namespace Osiris {
 	/* represents a single sprite vertex */
 	struct SpriteVertex

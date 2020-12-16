@@ -1,7 +1,6 @@
 #pragma once
 
 /* local includes */
-#include "Osiris.h"
 #include "core/scene/components/IBaseComponent.h"
 
 /* external includes */
@@ -11,6 +10,8 @@ using namespace glm;
 
 namespace Osiris {
 	
+	class GameObject;
+
 	class OSR_LIBRARY_API Transform3DComponent : public IBaseComponent
 	{
 	public:

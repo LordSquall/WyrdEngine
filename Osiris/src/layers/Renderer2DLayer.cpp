@@ -1,9 +1,14 @@
 #pragma once
+
 #include "osrpch.h"
 
 #include "Renderer2DLayer.h"
+#include "core/Application.h"
+#include "core/renderer/Shader.h"
+#include "core/renderer/Texture.h"
+#include "core/pipeline/SpriteLayer.h"
 
-namespace Osiris::Layers
+namespace Osiris
 {
 	Renderer2DLayer::Renderer2DLayer(std::string name) : Layer(name)
 	{

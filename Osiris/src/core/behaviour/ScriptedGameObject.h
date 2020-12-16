@@ -10,6 +10,7 @@
 namespace Osiris
 {
 	class GameObject;
+	class ScriptedClass;
 
 	class OSR_LIBRARY_API ScriptedGameObject
 	{

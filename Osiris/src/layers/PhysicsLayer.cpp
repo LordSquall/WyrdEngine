@@ -2,9 +2,10 @@
 
 #include "osrpch.h"
 
-#include "PhysicsLayer.h"
+#include "layers/PhysicsLayer.h"
+#include "core/Application.h"
 
-namespace Osiris::Layers
+namespace Osiris
 {
 	PhysicsLayer::PhysicsLayer() : Layer("Physics_Layer")
 	{

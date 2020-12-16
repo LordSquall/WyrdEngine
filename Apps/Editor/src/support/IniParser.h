@@ -1,6 +1,6 @@
 #pragma once
 
-class ini_t;
+struct ini_t;
 
 class IniParser
 {

@@ -5,8 +5,6 @@
 #include "events/Event.h"
 #include "core/Timestep.h"
 
-#include <glm/glm.hpp>
-
 namespace Osiris
 {
 	class Scene;

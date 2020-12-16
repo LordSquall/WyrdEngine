@@ -2,8 +2,10 @@
 
 /* local includes */
 #include "osrpch.h"
-#include "ScriptComponent.h"
+#include "core/scene/components/ScriptComponent.h"
 #include "core/scene/GameObject.h"
+#include "core/behaviour/ScriptedClass.h"
+#include "core/behaviour/ScriptedCustomObject.h"
 
 namespace Osiris
 {

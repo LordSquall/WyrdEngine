@@ -6,6 +6,9 @@
 #include <core/Application.h>
 #include <core/Layer.h>
 #include <core/pipeline/SpriteLayer.h>
+#include <core/Input.h>
+#include <core/KeyCodes.h>
+#include <core/MouseCodes.h>
 #include <core/scene/Layer2D.h>
 #include <core/scene/components/Transform2DComponent.h>
 
@@ -103,7 +106,7 @@ namespace Osiris::Editor
 
 		_Framebuffer->Bind();
 	
-		renderer.Clear(0.1, 0.1, 0.1);
+		renderer.Clear(0.1f, 0.1f, 0.1f);
 
 		if (_Scene != nullptr)
 		{
@@ -171,7 +174,7 @@ namespace Osiris::Editor
 		/* calculate the viewport size */
 		_Viewport = { { 0.0f, 0.0f }, { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y - ImGui::GetCursorPos().y } };
 
-		ImGui::Image((ImTextureID)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport.size.x, _Viewport.size.y), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((ImTextureID)(UINT_PTR)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport.size.x, _Viewport.size.y), ImVec2(0, 1), ImVec2(1, 0));
 
 		if (showStats == true)
 		{
@@ -216,7 +219,7 @@ namespace Osiris::Editor
 
 	void SceneViewer::OnResize()
 	{
-		_Framebuffer->Resize(_Viewport.size.x, _Viewport.size.y);
+		_Framebuffer->Resize((uint32_t)_Viewport.size.x, (uint32_t)_Viewport.size.y);
 		_CameraController->UpdateProjection(_Viewport.size.x / _Viewport.size.y);
 	}
 

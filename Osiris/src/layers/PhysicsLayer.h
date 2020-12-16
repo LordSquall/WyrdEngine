@@ -1,16 +1,10 @@
 #pragma once
 
 /* local includes */
-#include "Osiris.h"
 #include "core/export.h"
-#include "core/renderer/Shader.h"
-#include "core/pipeline/SpriteLayer.h"
-#include "core/pipeline/SpriteBatch.h"
+#include "core/Layer.h"
 
-/* external includes */
-#include <glm/gtx/transform.hpp>
-
-namespace Osiris::Layers
+namespace Osiris
 {
 	class OSR_LIBRARY_API PhysicsLayer : public Layer
 	{

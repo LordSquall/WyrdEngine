@@ -8,6 +8,7 @@
 #include "core/scene/components/SpriteComponent.h"
 #include "core/scene/components/ScriptComponent.h"
 #include "core/scene/components/PhysicsComponent.h"
+#include "core/behaviour/ScriptedClass.h"
 
 
 namespace Osiris

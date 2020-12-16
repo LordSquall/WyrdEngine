@@ -192,7 +192,7 @@ namespace Osiris
 		double pi = 3.1415926535897932384626433832795;
 		for (int a = 0; a < 360; a += 360 / 16)
 		{
-			float heading = a * (pi / 180.0);
+			float heading = (float)((float)a * (pi / 180.0));
 			vertices.push_back(position.x + (cos(heading) * radius.x));
 			vertices.push_back(position.y + (sin(heading) * radius.y));
 			vertices.push_back(0.0f);

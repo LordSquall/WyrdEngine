@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Osiris.h>
-
 #include "core/renderer/Shader.h"
 #include "core/pipeline/SpriteBatch.h"
 

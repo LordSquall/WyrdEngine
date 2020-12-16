@@ -1,11 +1,13 @@
 #pragma once
 
-/* Core includes */
-#include <Osiris.h>
+/* core osiris includes */
+#include <core/Timestep.h>
+#include <events/MouseEvent.h>
+#include <events/KeyEvent.h>
+#include <events/ApplicationEvent.h>
+
+/* local includes */
 #include "core/pipeline/OrthographicCamera.h"
-#include "events/MouseEvent.h"
-#include "events/KeyEvent.h"
-#include "events/ApplicationEvent.h"
 
 namespace Osiris::Editor
 {

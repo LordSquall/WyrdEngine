@@ -4,15 +4,15 @@
 #include "osrpch.h"
 #include "core/export.h"
 #include "core/Timestep.h"
-#include "core/behaviour/ScriptedClass.h"
-#include "core/behaviour/ScriptedGameObject.h"
-#include "core/behaviour/ScriptedCustomObject.h"
 
 namespace Osiris
 {
 	class Scene;
 	class Script;
 	class GameObject;
+	class ScriptedClass;
+	class ScriptedGameObject;
+	class ScriptedCustomObject;
 
 	class OSR_LIBRARY_API Behaviour
 	{

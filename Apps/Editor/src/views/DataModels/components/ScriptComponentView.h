@@ -1,7 +1,7 @@
 #pragma once
 
 /* core osiris include */
-#include <Osiris.h>
+#include <core/behaviour/PropertyDesc.h>
 #include <core/scene/components/ScriptComponent.h>
 
 /* local includes */
@@ -27,11 +27,11 @@ namespace Osiris::Editor {
 		void OnPropertyEditorDraw() override;
 
 	private:
-		void DrawIntUI(ScriptedClass::PropertyDesc& prop);
-		void DrawFloatUI(ScriptedClass::PropertyDesc& prop);
-		void DrawStringUI(ScriptedClass::PropertyDesc& prop);
-		void DrawGameObjectUI(ScriptedClass::PropertyDesc& prop);
-		void DrawTextureResourceUI(ScriptedClass::PropertyDesc& prop);
+		void DrawIntUI(PropertyDesc& prop);
+		void DrawFloatUI(PropertyDesc& prop);
+		void DrawStringUI(PropertyDesc& prop);
+		void DrawGameObjectUI(PropertyDesc& prop);
+		void DrawTextureResourceUI(PropertyDesc& prop);
 
 	private:
 		ScriptComponent* _BaseComponent;

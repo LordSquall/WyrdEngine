@@ -1,7 +1,11 @@
 #pragma once
 #include "osrpch.h"
 
-#include "Sprite.h"
+#include "core/renderer/VertexArray.h"
+#include "core/renderer/Buffer.h"
+#include "core/renderer/Texture.h"
+#include "core/pipeline/SpriteVertex.h"
+#include "core/pipeline/Sprite.h"
 
 #include "SpriteBatch.h"
 

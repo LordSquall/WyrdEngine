@@ -1,6 +1,8 @@
 #pragma once
 
+/* local includes */
 #include "core/Log.h"
+#include "core/Application.h"
 
 /* Only on windows we want to generate this entry point */
 #ifdef OSR_PLATFORM_WINDOWS
