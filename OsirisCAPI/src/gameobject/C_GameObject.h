@@ -1,8 +1,7 @@
-#ifndef _C_GAMEOBJECT_H_
-#define _C_GAMEOBJECT_H_
+#pragma once
 
 /* local includes */
-#include "C_Export.h"
+#include "../C_Export.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,6 +21,4 @@ LIBRARY_API void GameObject_SetColor(void* obj, float red, float green, float bl
 
 #ifdef __cplusplus
 }
-#endif
-
 #endif

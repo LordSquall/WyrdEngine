@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace OsirisAPI
 {
-    public class GameObject
+    public class GameObject : UnmanagedObject
     {
         #region public properties
 
@@ -16,17 +17,6 @@ namespace OsirisAPI
         }
        
         #endregion
-
-        /// <summary>
-        /// Links the managed object to a unmanaged pointer
-        /// </summary>
-        /// <param name="pointer"></param>
-        public void LinkToManaged(IntPtr pointer)
-        {
-            _NativePointer = pointer;
-
-            Console.WriteLine("C#: Game Object linked to Native GameObject: " + Name);
-        }
 
         #region Public Functions
 
@@ -50,27 +40,43 @@ namespace OsirisAPI
             GameObject_SetVelocity(_NativePointer, vX, vY);
         }
 
-        public void SetColor(float red, float green, float blue, float alpha)
+        public T GetComponent<T>() where T : UnmanagedObject
         {
-            GameObject_SetColor(_NativePointer, red, green, blue, alpha);
+            if (_components.ContainsKey(typeof(T)))
+            {
+                T newComponentWrapper = (T)Activator.CreateInstance(typeof(T));
+                newComponentWrapper.NativePtr = _components[typeof(T)];
+                return newComponentWrapper;
+            }
+            T d = default(T);
+
+            return d;
         }
 
-        public void SetSize(float x, float y)
+        public void AddComponent<T>(IntPtr nativeAddress) where T : UnmanagedObject
         {
-            GameObject_SetSize(_NativePointer, x, y);
+            if (_components.ContainsKey(typeof(T)))
+            {
+                // error 
+                return;
+            }
+
+            _components.Add(typeof(T), nativeAddress);
+            return;
         }
 
         #endregion
+
+        #region Private Variables
+
+        private Dictionary<Type, IntPtr> _components = new Dictionary<Type, IntPtr>();
+
+        #endregion
+
 
         #region Object Overrides
 
         public override string ToString() => Marshal.PtrToStringAnsi(GameObject_Name_Get(_NativePointer));
-
-        #endregion
-
-        #region private variables 
-
-        private IntPtr _NativePointer;
 
         #endregion
 
@@ -90,13 +96,6 @@ namespace OsirisAPI
 
         [DllImport("OsirisCAPI")]
         public static extern IntPtr GameObject_SetVelocity(IntPtr value, float vX, float vY);
-
-        [DllImport("OsirisCAPI")]
-        public static extern IntPtr GameObject_SetColor(IntPtr value, float red, float green, float blue, float alpha);
-
-
-        [DllImport("OsirisCAPI")]
-        public static extern IntPtr GameObject_SetSize(IntPtr value, float x, float y);
 
         #endregion
     }
