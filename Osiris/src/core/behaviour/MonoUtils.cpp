@@ -20,7 +20,11 @@ namespace Osiris
 {
 	void* MonoUtils::ExecuteScriptMethod(ScriptComponent* scriptComponent, std::string& functionName, std::vector<void*> args)
 	{
-		mono_runtime_invoke(&*scriptComponent->GetCustomObject()->GetMethod(functionName), &*scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
+		MonoMethod* method = &*scriptComponent->GetCustomObject()->GetMethod(functionName);
+		if (method != nullptr)
+		{
+			mono_runtime_invoke(&*scriptComponent->GetCustomObject()->GetMethod(functionName), &*scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
+		}
 
 		return nullptr;
 	}
@@ -51,9 +55,26 @@ namespace Osiris
 	MonoMethod* MonoUtils::FindMethodInClass(std::shared_ptr<ScriptedClass> scriptedClass, const char* methodName, int argumentCount, bool terminateOnMissing)
 	{
 		MonoMethod* method = mono_class_get_method_from_name((MonoClass*)(scriptedClass->ManagedClass), methodName, argumentCount);
-		if (method == NULL)
+		if (method == nullptr)
 		{
-			OSR_ERROR("Unabled to find {0} method in {1} class!", methodName, scriptedClass->GetName());
+			// attempt to find matching method in parent
+			MonoClass* parentClass = mono_class_get_parent((MonoClass*)(scriptedClass->ManagedClass));
+			if (parentClass != nullptr)
+			{
+				MonoMethod* parentMethod = mono_class_get_method_from_name(parentClass, methodName, argumentCount);
+				if (parentMethod != nullptr)
+				{
+					return parentMethod;
+				}
+				else
+				{
+					OSR_ERROR("Unabled to find {0} method in {1} class!", methodName, scriptedClass->GetName());
+				}
+			}
+			else
+			{
+				OSR_ERROR("Unabled to find {0} method in {1} class!", methodName, scriptedClass->GetName());
+			}
 
 			if (terminateOnMissing == true)
 			{
