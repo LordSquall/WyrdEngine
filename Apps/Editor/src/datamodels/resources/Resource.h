@@ -9,19 +9,22 @@ namespace Osiris::Editor
 	class Resource
 	{
 	public:
-		Resource() : _resourceID(_nextResourceID)
+		Resource(const std::string& name) : _resourceID(_nextResourceID), _name(name)
 		{
 			_nextResourceID++;
 		}
 
-		~Resource() {}
+		virtual ~Resource() = default;
 		
 		// Getters and Setters
+		inline const std::string& GetName() { return _name; }
 		inline uint32_t GetResourceID() { return _resourceID; }
 
-	private:
+	protected:
+		std::string _name;
 		uint32_t _resourceID = 0u;
 
+	private:
 		static uint32_t _nextResourceID;
 	};
 }

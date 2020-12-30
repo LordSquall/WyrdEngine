@@ -12,4 +12,12 @@ namespace Osiris::Editor {
 		Error,
 		Debug
 	};
+
+	enum class LogType
+	{
+		All,
+		Core,
+		Code,
+		User
+	};
 }

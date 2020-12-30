@@ -33,7 +33,8 @@ namespace Osiris::Editor
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_DND_PAYLOAD"))
 				{
 					int32_t payload_n = *(const uint32_t*)payload->Data;
-					_BaseComponent->SetClass(ServiceManager::Get<ResourceService>(ServiceManager::Resources)->GetScriptByUID(payload_n)->Script);
+					//TODO
+					//_BaseComponent->SetClass(ServiceManager::Get<ResourceService>(ServiceManager::Resources)->GetScriptByUID(payload_n)->Script);
 				}
 				ImGui::EndDragDropTarget();
 			}

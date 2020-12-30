@@ -4,6 +4,7 @@
 #include "osrpch.h"
 #include "core/export.h"
 #include "core/Timestep.h"
+#include "core/behaviour/CompileResults.h"
 
 namespace Osiris
 {
@@ -42,7 +43,7 @@ namespace Osiris
 
 		void SetInputState(int key, int state);
 
-		void CompileAll(const std::vector<std::string>& files, const std::string& outputDir, const std::string& projectName);
+		void CompileAll(const std::vector<std::string>& files, const std::string& outputDir, const std::string& projectName, CompileResults& results);
 
 		CreateCustomClassResult AddScriptedClassFromFile(const std::string& name, const std::string& filename);
 

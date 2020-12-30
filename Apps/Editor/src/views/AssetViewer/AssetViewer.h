@@ -15,7 +15,8 @@ namespace Osiris::Editor
 		void OnEditorRender() override;
 
 	private:
-		void PopulateFolderNode(const std::string& dir);
+		std::pair<bool, const std::string> DirectoryTreeViewRecursive(const std::filesystem::path& path, uint32_t* count, int* selection_mask, int depth = 0);
+		void DrawDirectoryContextMenu(const std::string& dir);
 
 		void DrawAssetsItems();
 

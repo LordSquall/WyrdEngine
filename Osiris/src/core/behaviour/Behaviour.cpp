@@ -265,7 +265,7 @@ namespace Osiris
 		}
 	}
 
-	void Behaviour::CompileAll(const std::vector<std::string>& files, const std::string& outputDir, const std::string& projectName)
+	void Behaviour::CompileAll(const std::vector<std::string>& files, const std::string& outputDir, const std::string& projectName, CompileResults& results)
 	{
 		// mono compiler script command
 		std::string command = "mcs ";
@@ -276,6 +276,11 @@ namespace Osiris
 			command += file + " ";
 		}
 
+		std::string file_name = "error_output.txt";
+
+		// delete the error file 
+		std::remove(file_name.c_str());
+
 		// add library and osiris runtime 
 		command += " -target:library -lib:" MONO_INSTALL_LOC  "lib/mono/4.5/Facades/," NATIVE_API_LIB_LOC "OsirisAPI/ -r:System.Runtime.InteropServices.dll,OsirisAPI.dll -debug ";
 
@@ -283,20 +288,29 @@ namespace Osiris
 		command += "-out:" + outputDir + "/" + projectName;
 
 		// run the command to compile
-		std::string file_name = "compile_output.txt";
-		std::system((command + " > " + file_name).c_str()); // redirect output to file
+		std::system((command + " 2> " + file_name).c_str()); // redirect output to file
 
-		// open file for input, return string containing characters in the file
-		std::ifstream file(file_name);
-		std::string output = std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
-
-		if (output.find("Compilation failed") != std::string::npos)
+		// get the size of the file to determine if there were any errors or warnings
+		if (std::filesystem::file_size(file_name) > 0)
 		{
+			// read all the lines into a vector
+			std::ifstream file(file_name);
+			std::string str;
+			std::vector<std::string> messages;
+
+			while (std::getline(file, str))
+			{
+				// Line contains string of length > 0 then save it in vector
+				if (str.size() > 0)
+					messages.push_back(str);
+			}
+			
+			// Mark the compiles as unsuccessful
+			results.success = false;
+			results.errors = messages;
+
 			return;
 		}
-
-		// TODO
-		// At the moment we shall assume we have a successfully compiled dll
 
 		/* Create Assembly */
 		MonoAssembly* monoAssembly;

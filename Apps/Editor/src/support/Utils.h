@@ -16,10 +16,13 @@ namespace Osiris::Editor
 		static std::string GetAssetFolder();
 		static std::string GetBuildsFolder();
 		static std::string GetEditorResFolder();
+		static std::string GetCacheFolder();
 
 		/* Dialog Functions */
+		static std::optional<std::string> OpenFile(const std::vector<std::pair<std::string, std::string>> filters);
 		static std::string OpenFileDialog(const std::string& filter);
 		static std::string OpenFolderDialog();
+		static std::optional<std::string> SaveFile(const char* filter);
 		static std::string SaveFileDialog(const std::string& name, const std::string& filter);
 		static std::string SaveAsFileDialog(const std::string& filter);
 
@@ -33,6 +36,7 @@ namespace Osiris::Editor
 
 		/* File Functions */
 		static bool CreateRawFile(const std::string& filename, const std::string& content);
+		static bool CopySingleFile(const std::string& filename, const std::string& directory);
 
 		static const std::string Utils::BuildPath(std::initializer_list<std::reference_wrapper<std::string>> args);
 
@@ -42,7 +46,7 @@ namespace Osiris::Editor
 		static void CreateProjectFileStructure(const std::string& rootFolder);
 
 		/* System operations */
-		static void OpenFileWithSystem(const std::string& file);
+		static void OpenFileWithSystem(const std::string& file, const std::string& parameters = "");
 
 		/* String Convertors */
 		static bool ToBool(std::string& value);
@@ -62,6 +66,7 @@ namespace Osiris::Editor
 		static std::string Utils::canonical_path;
 		static std::string Utils::asset_path;
 		static std::string Utils::builds_path;
+		static std::string Utils::cache_path;
 	};
 
 

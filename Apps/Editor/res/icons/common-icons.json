@@ -4,61 +4,15 @@
 	"texture-width": 1024,
 	"texture-height": 1024,
   "icons": [
-    {
-      "name": "assets_scene",
-      "width": 128,
-      "height": 128,
-      "x": 0,
-      "y": 1024
-    },
-    {
-      "name": "assets_unknown",
-      "width": 128,
-      "height": 128,
-      "x": 128,
-      "y": 1024
-    },
-    {
-      "name": "assets_texture",
-      "width": 128,
-      "height": 128,
-      "x": 256,
-      "y": 1024
-    },
-    {
-      "name": "assets_script",
-      "width": 128,
-      "height": 128,
-      "x": 384,
-      "y": 1024
-    },
-    {
-      "name": "layer_rename",
-      "width": 64,
-      "height": 64,
-      "x": 0,
-      "y": 896
-    },
-    {
-      "name": "sim_play",
-      "width": 64,
-      "height": 64,
-      "x": 0,
-      "y": 832
-    },
-    {
-      "name": "sim_stop",
-      "width": 64,
-      "height": 64,
-      "x": 64,
-      "y": 832
-    },
-    {
-      "name": "op_remove",
-      "width": 64,
-      "height": 64,
-      "x": 0,
-      "y": 768
-    }
+    { "name": "assets_scene", "width": 128, "height": 128, "x": 0, "y": 1024 },
+    { "name": "assets_unknown", "width": 128, "height": 128, "x": 128, "y": 1024 },
+    { "name": "assets_texture", "width": 128,"height": 128, "x": 256, "y": 1024 },
+    { "name": "assets_script", "width": 128, "height": 128, "x": 384, "y": 1024 },
+    { "name": "layer_rename", "width": 64, "height": 64, "x": 0, "y": 896 },
+    { "name": "sim_play", "width": 64, "height": 64, "x": 0, "y": 832 },
+    { "name": "sim_stop", "width": 64, "height": 64, "x": 64, "y": 832 },
+    { "name": "op_remove", "width": 64, "height": 64, "x": 0, "y": 768 },
+    { "name": "code_warning", "width": 64, "height": 64, "x":64, "y": 768 },
+    { "name": "code_error", "width": 64, "height": 64, "x": 128, "y": 768 }
   ]
 }

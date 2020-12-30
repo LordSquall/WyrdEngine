@@ -13,6 +13,7 @@ OsirisAPI/OsirisAPI.csproj
 Apps/Editor/config.ini
 Apps/Editor/Editor.args.json
 Apps/Editor/imgui.ini
+Apps/Editor/error_output.txt
 externalbuild/bin/
 externalbuild/bin-int/
 lib/

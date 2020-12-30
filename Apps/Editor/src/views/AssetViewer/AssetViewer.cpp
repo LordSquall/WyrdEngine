@@ -1,16 +1,20 @@
 #pragma once
 
-#include "osrpch.h"
-#include "core/Log.h"
+/* core osiris includes */
+#include <osrpch.h>
+#include <core/Log.h>
+#include <core/Application.h>
+#include <core/Layer.h>
 
+/* local includes */
 #include "AssetViewer.h"
-
+#include "datamodels/resources/Resource.h"
+#include "datamodels/resources/TextureRes.h"
 #include "services/ServiceManager.h"
-#include "core/Application.h"
-#include "core/Layer.h"
-
 #include "support/ImGuiUtils.h"
-#include "imgui.h"
+
+/* external includes */
+#include <imgui.h>
 
 namespace Osiris::Editor
 {
@@ -38,16 +42,27 @@ namespace Osiris::Editor
 
 	void AssetViewer::OnEditorRender()
 	{
-		float navigationPanelWidth = 100.0f;
+		float navigationPanelWidth = 150.0f;
 		float itemGroupWidth = 64.0f;
-		static ResourceService::Type selectedType = ResourceService::NONE;
+		static ResourceFactory::Type selectedType = ResourceFactory::NONE;
 
 		if (_workspaceService->GetCurrentProject() != nullptr)
 		{
-		
+			
 			ImGui::BeginChildFrame(1, ImVec2(navigationPanelWidth, ImGui::GetContentRegionAvail().y));
 
-			PopulateFolderNode(Utils::GetAssetFolder());
+			uint32_t count = 1;
+			for (const auto& entry : std::filesystem::recursive_directory_iterator((Utils::GetAssetFolder())))
+				count++;
+
+			static int selection_mask = 0;
+
+			auto clickState = DirectoryTreeViewRecursive(Utils::GetAssetFolder(), &count, &selection_mask);
+
+			if (clickState.first)
+			{
+				_currentDir = clickState.second;
+			}
 
 			ImGui::EndChildFrame();
 
@@ -61,54 +76,119 @@ namespace Osiris::Editor
 		}
 	}
 
-	void AssetViewer::PopulateFolderNode(const std::string& dir)
+#define BIT(x) (1 << x)
+
+	std::pair<bool, const std::string> AssetViewer::DirectoryTreeViewRecursive(const std::filesystem::path& path, uint32_t* count, int* selection_mask, int depth)
 	{
-		std::vector<std::string> folders = Utils::GetFolderList(dir, false);
+		ImGuiTreeNodeFlags baseFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
 
-		for (auto folder : folders)
+		bool any_node_clicked = false;
+		std::string node_clicked;
+
+		if (depth == 0)
 		{
-			std::vector<std::string> subFolders = Utils::GetFolderList(dir + "/" + folder, false);
+			ImGuiTreeNodeFlags rootNodeFlags = baseFlags | ImGuiTreeNodeFlags_Leaf;
+			/*const bool is_selected = (*selection_mask & BIT(*count)) != 0;
+			if (is_selected)
+				rootNodeFlags |= ImGuiTreeNodeFlags_Selected;*/
 
-			if (ImGui::TreeNodeEx(folder.c_str(), subFolders.size() == 0 ? ImGuiTreeNodeFlags_Bullet : ImGuiTreeNodeFlags_None))
+			ImGui::TreeNodeEx("_root", rootNodeFlags, "Assets");
+
+			if (ImGui::IsItemClicked())
 			{
+				node_clicked = path.string();
+				any_node_clicked = true;
+			}
+
+			DrawDirectoryContextMenu(path.string());
+		}
+
+		for (const auto& entry : std::filesystem::directory_iterator(path))
+		{
+			ImGuiTreeNodeFlags nodeFlags = baseFlags;
+			const bool is_selected = (*selection_mask & BIT(*count)) != 0;
+			if (is_selected)
+				nodeFlags |= ImGuiTreeNodeFlags_Selected;
+
+			std::string name = entry.path().string();
+
+			auto lastSlash = name.find_last_of("/\\");
+			lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+			name = name.substr(lastSlash, name.size() - lastSlash);
+
+			bool entryIsFile = !std::filesystem::is_directory(entry.path());
+
+			bool node_open = false;
+			if (!entryIsFile)
+			{
+				node_open = ImGui::TreeNodeEx((void*)(intptr_t)(*count), nodeFlags, name.c_str());
+
 				if (ImGui::IsItemClicked())
 				{
-					_currentDir = dir + "/" + folder;
+					node_clicked = entry.path().string();
+					any_node_clicked = true;
 				}
-				
-				PopulateFolderNode(dir + "/" + folder);
 
-				ImGui::TreePop();
+				DrawDirectoryContextMenu(entry.path().string());
 			}
 
-			if (ImGui::BeginPopupContextItem())
+			(*count)--;
+
+			if (!entryIsFile)
 			{
-				if (ImGui::BeginMenu("Add"))
+				if (node_open)
 				{
-					if (ImGui::MenuItem("Script"))
+
+					auto clickState = DirectoryTreeViewRecursive(entry.path(), count, selection_mask, depth + 1);
+
+					if (!any_node_clicked)
 					{
-						std::ifstream t(Utils::GetEditorResFolder() +"scripts/TemplateScripts.cs");
-						std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
-
-						// replace tags
-						str = Utils::ReplaceAll(str, "<CLASSNAME>", "NewClass");
-
-						std::ofstream out(_currentDir + "/NewClass.cs");
-						out << str;
-						out.close();
+						any_node_clicked = clickState.first;
+						node_clicked = clickState.second;
 					}
 
-					ImGui::EndMenu();
+					ImGui::TreePop();
 				}
-
-				ImGui::MenuItem("Rename");
-				if (ImGui::MenuItem("Delete") == true)
-				{
-
-				}
-
-				ImGui::EndPopup();
 			}
+		}
+
+		if (depth == 0)
+		{
+			ImGui::TreePop();
+		}
+
+		return { any_node_clicked, node_clicked };
+	}
+
+	void AssetViewer::DrawDirectoryContextMenu(const std::string& dir)
+	{
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::BeginMenu("New Asset"))
+			{
+				ImGui::MenuItem("Scene", nullptr, nullptr, false);
+				ImGui::MenuItem("Texture", nullptr, nullptr, false);
+				ImGui::MenuItem("Shader", nullptr, nullptr, false);
+				ImGui::MenuItem("Script", nullptr, nullptr, false);
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::MenuItem("Import Asset"))
+			{
+				std::optional<std::string> file = Utils::OpenFile({ { "All Files (*)", "*.*" } });
+				if (file)
+				{
+					// copy the file into the project
+					Utils::CopySingleFile(file.value(), dir);
+				}
+			}
+
+			if (ImGui::MenuItem("New Folder")) 
+			{
+			
+			}
+
+			ImGui::EndPopup();
 		}
 	}
 
@@ -125,17 +205,19 @@ namespace Osiris::Editor
 		{	
 			if (_resourcesService->CheckIgnored(file) == false)
 			{
-				ResourceService::Type resType = _resourcesService->DetermineType(file);
+				ResourceFactory::Type resType = _resourcesService->DetermineType(file);
 
 				ImGui::PushID(resIdx);
 
 				switch (resType)
 				{
-				case ResourceService::Type::TEXTURE: DrawTextureItem(resIdx, _resourcesService->GetTextureResourceByName(Utils::GetFilename(file, false))); break;
-				case ResourceService::Type::SCENE: DrawSceneItem(resIdx, _resourcesService->GetSceneByName(Utils::GetFilename(file, false))); break;
-				case ResourceService::Type::SCRIPT: DrawScriptItem(resIdx, _resourcesService->GetScriptByName(Utils::GetFilename(file, false))); break;
-				case ResourceService::Type::SHADER:break;
-				case ResourceService::Type::NONE:
+				case ResourceFactory::TEXTURE: 
+					DrawTextureItem(resIdx, _resourcesService->GetResourceByName<TextureRes>(ResourceFactory::TEXTURE, Utils::GetFilename(file, false))); 
+					break;
+				/**case ResourceFactory::SCENE: DrawSceneItem(resIdx, _resourcesService->GetSceneByName(Utils::GetFilename(file, false))); break;
+				case ResourceFactory::SCRIPT: DrawScriptItem(resIdx, _resourcesService->GetScriptByName(Utils::GetFilename(file, false))); break;*/
+				case ResourceFactory::SHADER:break;
+				case ResourceFactory::NONE:
 				default:
 					DrawUnknownItem(resIdx, Utils::GetFilename(file, false)); break;
 					break;

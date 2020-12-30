@@ -135,7 +135,8 @@ namespace Osiris::Editor
 		component->sprite->SetSize((int)spriteSize.x, (int)spriteSize.y);
 		component->sprite->SetPosition((int)spritePosition.x, (int)spritePosition.y);
 
-		component->BaseTexture = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetTextureResourceByName(json.get<jsonxx::String>("baseTexture"))->GetTexture();
+		//TODO
+		//component->BaseTexture = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetTextureResourceByName(json.get<jsonxx::String>("baseTexture"))->GetTexture();
 
 		owner->sprite = component;
 
@@ -161,7 +162,8 @@ namespace Osiris::Editor
 		Write_Vec2(componentJson, "size", &spriteSize);
 		Write_Vec2(componentJson, "position", &spritePosition);
 
-		componentJson << "baseTexture" << ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetTextureResourceByNativeID(sprite->BaseTexture->GetUID())->GetName();
+		//TODO
+		//componentJson << "baseTexture" << ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetTextureResourceByNativeID(sprite->BaseTexture->GetUID())->GetName();
 		
 		return componentJson;
 	}
@@ -174,8 +176,9 @@ namespace Osiris::Editor
 		/* retrieve json parameters */
 		std::string script = json.get<jsonxx::String>("ScriptName", "");
 
+		//TODO
 		/* configure properties */
-		std::shared_ptr<ScriptRes> scriptResource = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetScriptByName(script);
+		/*std::shared_ptr<ScriptRes> scriptResource = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetScriptByName(script);
 		if (scriptResource != nullptr)
 		{
 			component->SetClass(scriptResource->Script);
@@ -215,7 +218,7 @@ namespace Osiris::Editor
 					}
 				}
 			}
-		}
+		}*/
 
 		return component;
 	}

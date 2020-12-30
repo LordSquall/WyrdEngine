@@ -6,12 +6,19 @@
 #include <shtypes.h>
 #include <shellapi.h>
 #include <corecrt_wstring.h>
+#include <commdlg.h>
+#include <GLFW/glfw3.h>
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
 
+#include <core/Application.h>
+#include <core/Log.h>
 
 namespace Osiris::Editor {
 
 	std::string Utils::canonical_path = std::filesystem::current_path().generic_string();
 	std::string Utils::asset_path = "/assets";
+	std::string Utils::cache_path = "/.cache";
 	std::string Utils::builds_path = "/builds";
 
 	Utils::Utils()
@@ -33,6 +40,11 @@ namespace Osiris::Editor {
 		return Utils::canonical_path + Utils::asset_path;
 	}
 
+	std::string Utils::GetCacheFolder()
+	{
+		return Utils::canonical_path + Utils::cache_path;
+	}
+
 	std::string Utils::GetBuildsFolder()
 	{
 		return Utils::canonical_path + Utils::builds_path;
@@ -41,6 +53,41 @@ namespace Osiris::Editor {
 	std::string Utils::GetEditorResFolder()
 	{
 		return std::filesystem::current_path().string() + "/res/";
+	}
+
+	std::optional<std::string> Utils::OpenFile(const std::vector<std::pair<std::string, std::string>> filters)
+	{
+		/* build the filter string */
+		std::stringstream filterString;
+
+		for (auto& filter : filters)
+		{
+			filterString << filter.first.c_str();
+			filterString << '\0';
+			filterString << filter.second.c_str();
+			filterString << '\0';
+		}
+
+		const std::string tmp = filterString.str();
+		const char* cstr = tmp.c_str();
+
+		OPENFILENAMEA ofn;
+		CHAR szFile[260] = { 0 };
+		CHAR currentDir[256] = { 0 };
+		ZeroMemory(&ofn, sizeof(OPENFILENAME));
+		ofn.lStructSize = sizeof(OPENFILENAME);
+		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)Application::Get().GetWindow().GetNativeWindowPointer());
+		ofn.lpstrFile = szFile;
+		ofn.nMaxFile = sizeof(szFile);
+		if (GetCurrentDirectoryA(256, currentDir))
+			ofn.lpstrInitialDir = currentDir;
+		ofn.lpstrFilter = cstr;
+		ofn.nFilterIndex = 1;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+		if (GetOpenFileNameA(&ofn) == TRUE)
+			return ofn.lpstrFile;
+		return std::nullopt;
 	}
 
 	std::string Utils::OpenFileDialog(const std::string& filter) {
@@ -138,6 +185,31 @@ namespace Osiris::Editor {
 			CoUninitialize();
 		}
 		return result;
+	}
+
+
+	std::optional<std::string> Utils::SaveFile(const char* filter)
+	{
+		OPENFILENAMEA ofn;
+		CHAR szFile[260] = { 0 };
+		CHAR currentDir[256] = { 0 };
+		ZeroMemory(&ofn, sizeof(OPENFILENAME));
+		ofn.lStructSize = sizeof(OPENFILENAME);
+		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)Application::Get().GetWindow().GetNativeWindowPointer());
+		ofn.lpstrFile = szFile;
+		ofn.nMaxFile = sizeof(szFile);
+		if (GetCurrentDirectoryA(256, currentDir))
+			ofn.lpstrInitialDir = currentDir;
+		ofn.lpstrFilter = filter;
+		ofn.nFilterIndex = 1;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
+
+		// Sets the default extension by extracting it from the filter
+		ofn.lpstrDefExt = strchr(filter, '\0') + 1;
+
+		if (GetSaveFileNameA(&ofn) == TRUE)
+			return ofn.lpstrFile;
+		return std::nullopt;
 	}
 
 	std::string Utils::SaveFileDialog(const std::string& name, const std::string& filter)
@@ -314,9 +386,16 @@ namespace Osiris::Editor {
 	}
 
 
+	bool Utils::CopySingleFile(const std::string& filename, const std::string& directory)
+	{
+		std::filesystem::copy(filename, directory);
+		return true;
+	}
+
 	void Utils::CreateProjectFileStructure(const std::string& rootFolder)
 	{
 		std::filesystem::create_directory(GetAssetFolder());
+		std::filesystem::create_directory(GetCacheFolder());
 	}
 
 
@@ -329,9 +408,9 @@ namespace Osiris::Editor {
 		return stream.str();
 	}
 
-	void Utils::OpenFileWithSystem(const std::string& path)
+	void Utils::OpenFileWithSystem(const std::string& path, const std::string& parameters)
 	{
-		ShellExecuteA(NULL, "open", path.c_str(), NULL, NULL, SW_SHOW);
+		ShellExecuteA(NULL, "open", path.c_str(), parameters.c_str(), NULL, SW_SHOW);
 	}
 
 	bool Utils::ToBool(std::string& value)

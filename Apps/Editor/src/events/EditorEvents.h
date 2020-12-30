@@ -25,7 +25,7 @@ namespace Osiris::Editor::Events
 		CreateNewProject, OpenProject, CloseProject, ProjectLoaded,
 		SceneClosed, SceneOpened,
 		OpenSceneViewerContextMenu,
-		AddLogEntry,
+		AddLogEntry, ClearLogEntry,
 		AddResource, DeleteResource, ReloadResource
 	};
 
@@ -266,16 +266,19 @@ namespace Osiris::Editor::Events
 	public:
 		AddLogEntryArgs(const AddLogEntryArgs& obj)
 		{
+			this->type = obj.type;
 			this->severity = obj.severity;
 			this->msg = obj.msg;
 		}
 
-		AddLogEntryArgs(Severity severity, const std::string& message)
+		AddLogEntryArgs(LogType type, Severity severity, const std::string& message)
 		{
+			this->type = type;
 			this->severity = severity;
 			this->msg = message;
 		}
 
+		LogType		type;
 		Severity	severity;
 		std::string msg;
 
@@ -286,6 +289,34 @@ namespace Osiris::Editor::Events
 	{
 	public:
 		AddLogEntryEvent() : Event(EventType::AddLogEntry) { }
+	};
+
+#pragma endregion
+
+#pragma region ClearLogEntry
+
+	class ClearLogEntryArgs : public EventArgs
+	{
+	public:
+		ClearLogEntryArgs(const ClearLogEntryArgs& obj)
+		{
+			this->type = obj.type;
+		}
+
+		ClearLogEntryArgs(LogType type)
+		{
+			this->type = type;
+		}
+
+		LogType		type;
+
+		EVENT_ARGS_CLONE(ClearLogEntryArgs)
+	};
+
+	class ClearLogEntryEvent : public Event
+	{
+	public:
+		ClearLogEntryEvent() : Event(EventType::ClearLogEntry) { }
 	};
 
 #pragma endregion

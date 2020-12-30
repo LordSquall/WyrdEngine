@@ -11,7 +11,7 @@
 
 namespace Osiris::Editor
 {
-	ScriptRes::ScriptRes(const std::string& path) : _path(path), _name(Utils::GetFilename(path))
+	ScriptRes::ScriptRes(const std::string& path) : Resource(Utils::GetFilename(path)), _path(path)
 	{
 		///* create a new scriped object template from the source code */
 		//Osiris::Behaviour::CreateCustomClassResult result = ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->AddCustomScriptClass(Utils::GetFilename(path), _path);

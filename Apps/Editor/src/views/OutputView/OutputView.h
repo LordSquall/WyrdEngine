@@ -11,8 +11,9 @@ namespace Osiris::Editor
 	{
 		struct LogItem
 		{
+			LogType type;
 			Severity severity;
-			const std::string message;
+			std::string message;
 		};
 
 	public:
@@ -22,11 +23,15 @@ namespace Osiris::Editor
 		void OnEditorRender() override;
 
 	private:
-		void DrawLogItem(const LogItem& msg);
+		void DrawCoreLogItem(int idx, const LogItem& item);
+		void DrawCodeLogItem(int idx, const LogItem& item);
+		void DrawUserLogItem(int idx, const LogItem& item);
 
 	private:
 		std::shared_ptr<EventService> _EventService;
 		std::shared_ptr<ResourceService> _ResourceService;
+
+		std::shared_ptr<Icon> _CodeIcon;
 
 		bool _ShowInfo = true;
 		bool _ShowWarnings = true;

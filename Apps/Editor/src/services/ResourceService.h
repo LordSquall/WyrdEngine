@@ -4,6 +4,7 @@
 
 #include "services/IService.h"
 #include "datamodels/resources/Resource.h"
+#include "datamodels/resources/ResourceFactory.h"
 #include "datamodels/resources/TextureRes.h"
 #include "datamodels/resources/SceneRes.h"
 #include "datamodels/resources/ScriptRes.h"
@@ -13,18 +14,6 @@ namespace Osiris::Editor
 {
 	class ResourceService : public IService
 	{
-	public:
-		enum Type
-		{
-			NONE = 0,
-			UNKNOWN = 1,
-			TEXTURE = 2,
-			SHADER = 3,
-			MODEL = 4,
-			SCENE = 5,
-			SCRIPT = 6
-		};
-
 	public:
 		ResourceService() {}
 		~ResourceService() {}
@@ -40,26 +29,40 @@ namespace Osiris::Editor
 		/* Icon Functions */
 		inline IconLibrary& GetIconLibrary() { return _iconLibrary; }
 
-		/* Texture Functions */
-		inline std::map<uint32_t, std::shared_ptr<TextureRes>>& GetTextures() { return _textureResources; }
-		std::shared_ptr<TextureRes> GetTextureResourceByName(const std::string& name);
-		std::shared_ptr<TextureRes> GetTextureResourceByID(const uint32_t resourceId);
-		std::shared_ptr<TextureRes> GetTextureResourceByNativeID(const uint32_t nativeId);
+		template<class T>
+		std::shared_ptr<T> GetResourceByID(ResourceFactory::Type type, const uint32_t resourceId)
+		{
+			auto it = _resourceMap[type].find(resourceId);
 
-		/* Scene Functions */
-		inline std::map<uint32_t, std::shared_ptr<SceneRes>>& GetScenes() { return _sceneResources; }
-		std::shared_ptr<SceneRes> GetSceneByName(const std::string& name);
-		std::shared_ptr<SceneRes> GetSceneByUID(const uint32_t uid);
+			if (it != _resourceMap[type].end())
+			{
+				return_resourceMap[type][resourceId];
+			}
+			return nullptr;
+		}
 
-		/* Script Functions */
-		inline std::map<uint32_t, std::shared_ptr<ScriptRes>>& GetScripts() { return _scriptResources; }
-		std::shared_ptr<ScriptRes> GetScriptByName(const std::string& name);
-		std::shared_ptr<ScriptRes> GetScriptByUID(const uint32_t uid);
+		template<class T>
+		std::shared_ptr<T> GetResourceByName(ResourceFactory::Type type, const std::string& name)
+		{
+			for (auto const [key, val] : _resourceMap[type])
+			{
+				if (val->GetName().compare(name) == 0)
+				{
+					return std::dynamic_pointer_cast<T>(val);
+				}
+			}
+			return nullptr;
+		}
+
+		std::map<uint32_t, std::shared_ptr<Resource>> GetResourcesOfType(ResourceFactory::Type type);
 
 		/* Helper Functions */
 		bool CheckIgnored(const std::string& path);
-		Type DetermineType(const std::string& path);
+		ResourceFactory::Type DetermineType(const std::string& path);
 		void BuildScripts();
+
+	private:
+		bool LoadAssetCache(const std::string& filePath);
 
 	private:
 		void OnProjectLoadedEvent(Events::EventArgs& args);
@@ -70,11 +73,9 @@ namespace Osiris::Editor
 	private:
 		IconLibrary _iconLibrary;
 
-		std::map<uint32_t, std::shared_ptr<TextureRes>> _textureResources;
-		std::map<uint32_t, std::shared_ptr<SceneRes>> _sceneResources;
-		std::map<uint32_t, std::shared_ptr<ScriptRes>> _scriptResources;
+		std::map<ResourceFactory::Type, std::map<uint32_t, std::shared_ptr<Resource>>> _resourceMap;
 
-		std::map<std::string, Type> _extensions;
+		std::map<std::string, ResourceFactory::Type> _extensions;
 
 		std::set<std::string> _ignoredExtensions;
 

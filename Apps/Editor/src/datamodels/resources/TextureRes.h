@@ -13,24 +13,19 @@ namespace Osiris::Editor
 	class TextureRes : public Resource
 	{
 	public:
-		TextureRes(std::shared_ptr<Osiris::Texture> texture, std::string name) : _texture(texture), _name(name)
+		TextureRes(std::shared_ptr<Osiris::Texture> texture, std::string name) : Resource(name), _texture(texture)
 		{
 
 		}
 
-		TextureRes(std::string& filepath) : _filePath(filepath), _loaded(false), _width(0u), _height(0u), _channels(0u), _data(0)
+		TextureRes(const std::string& filepath) : Resource(Utils::GetFilename(filepath)), _filePath(filepath), _loaded(false), _width(0u), _height(0u), _channels(0u), _data(0)
 		{
-			/* generate the name based on the file name */
-			_name = Utils::GetFilename(filepath);
-
 			Load();
 		}
 
 		~TextureRes() {}
 
 		// Getters and Setters
-		inline std::string& GetName() { return _name; }
-		inline void SetName(std::string& name) { _name = name; }
 		inline std::string& GetFilePath() { return _filePath; }
 		inline void SetFilePath(std::string& path) { _filePath = path; }
 		inline uint32_t GetWidth() { return _width; }

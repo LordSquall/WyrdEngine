@@ -81,13 +81,25 @@ namespace Osiris::Editor
 
 	void SimulationService::CompileAll()
 	{
+		/* clear all the code logs from the output */
+		_EventService->Publish(Events::EventType::ClearLogEntry, std::make_shared<Events::ClearLogEntryArgs>(LogType::Code));
+
 		std::vector<std::string> scriptFiles;
-		for (auto& [key, value] : _ResourceService->GetScripts())
+		/*for (auto& [key, value] : _ResourceService->GetScripts())
 		{
 			scriptFiles.push_back(value->GetPath());
-		}
+		}*/
 
-		Application::Get().GetBehaviour().CompileAll(scriptFiles, Utils::GetPath(_WorkspaceService->GetLoadedProjectPath()), _WorkspaceService->GetCurrentProject()->name + ".dll");
+		CompileResults results;
+		Application::Get().GetBehaviour().CompileAll(scriptFiles, Utils::GetPath(_WorkspaceService->GetLoadedProjectPath()), _WorkspaceService->GetCurrentProject()->name + ".dll", results);
+
+		if (!results.success)
+		{
+			for (auto& err : results.errors)
+			{
+				_EventService->Publish(Events::EventType::AddLogEntry, std::make_shared<Events::AddLogEntryArgs>(LogType::Code, Severity::Error, err));
+			}
+		}
 	}
 
 	std::shared_ptr<Osiris::ScriptedClass> SimulationService::GetClass(const std::string& className)

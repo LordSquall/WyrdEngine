@@ -7,8 +7,7 @@
 
 namespace Osiris::Editor
 {
-	SceneRes::SceneRes(const std::string& path) : _path(path)
+	SceneRes::SceneRes(const std::string& path) : Resource(Utils::GetFilename(path, false)), _path(path)
 	{
-		_name = Utils::GetFilename(path, false);
 	}
 }

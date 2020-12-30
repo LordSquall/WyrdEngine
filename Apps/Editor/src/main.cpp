@@ -25,6 +25,7 @@ public:
 		/* initialise editor services */
 		ServiceManager::StartServices();
 
+
 		_SettingsService = ServiceManager::Get<SettingsService>(ServiceManager::Settings);
 				
 		/* if we are building with renderdoc installed then we can add the layer in */
