@@ -12,16 +12,30 @@
 
 namespace Osiris::Editor
 {
+	/**
+	 * @brief Base class for all Editor Dialog Views
+	*/
 	class EditorViewDialogBase : EditorViewBase
 	{
 	public:
 		EditorViewDialogBase(const std::string& name, EditorLayer* editorLayer) : EditorViewBase(name, editorLayer) { _name = name; }
 		virtual ~EditorViewDialogBase() = default;
 
+		/**
+		 * @brief Called on Each Dialog Render function. 
+		 * Only called when the dialog is current open
+		*/
 		virtual void OnDialogRender() = 0;
 
+		/**
+		 * @brief Close the dialog
+		*/
 		void Close();
 
+		/**
+		 * @brief Get Name
+		 * @return 
+		*/
 		inline const std::string& GetName() { return _name; }
 
 	private:
