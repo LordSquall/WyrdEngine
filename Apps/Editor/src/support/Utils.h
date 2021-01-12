@@ -33,15 +33,19 @@ namespace Osiris::Editor
 		static std::string GetFileExtension(const std::string& path);
 		static std::string GetRelativeAssetPath(const std::string& path);
 		static void CreateFolder(const std::string& path);
+		static void DeleteFolder(const std::string& path);
+		static void RenameFolder(const std::string& path, const std::string& newPath);
+		static bool FolderExists(const std::string& filename);
 
 		/* File Functions */
 		static bool CreateRawFile(const std::string& filename, const std::string& content);
 		static bool CopySingleFile(const std::string& filename, const std::string& directory);
-
+		static void RenameFile(const std::string& filename, const std::string& newFilename);
+		static void RemoveFile(const std::string& filename);
 		static const std::string Utils::BuildPath(std::initializer_list<std::reference_wrapper<std::string>> args);
-
 		static std::vector<std::string> GetFolderList(const std::string& directory, bool asFullPaths);
 		static std::vector<std::string> Utils::GetFileList(const std::string& directory, bool asFullPaths = false, bool recursive = false);
+		static uint32_t CountSubDirectories(const std::string& directory);
 
 		static void CreateProjectFileStructure(const std::string& rootFolder);
 

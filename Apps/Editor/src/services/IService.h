@@ -13,6 +13,7 @@ namespace Osiris::Editor
 	public:
 		virtual void OnCreate() = 0;
 		virtual void OnDestroy() = 0;
+		virtual void OnUpdate() {};
 
 		virtual void OnGUI() {}
 	};

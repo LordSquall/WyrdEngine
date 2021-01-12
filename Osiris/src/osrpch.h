@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <functional>
 #include <regex> 
+#include <mutex>
 
 #include <string>
 #include <optional>
@@ -23,6 +24,7 @@
 #include <map>
 #include <unordered_map>
 #include <unordered_set>
+#include <stack>
 #include <iterator>
 
 #ifdef OSR_PLATFORM_WINDOWS	

@@ -38,6 +38,9 @@ namespace Osiris::Editor
 		*/
 		inline const std::string& GetName() { return _name; }
 
+	protected:
+		void* result;
+
 	private:
 		std::string _name;
 	};

@@ -14,7 +14,10 @@ namespace Osiris::Editor
 	public:
 		SceneRes(const std::string& path);
 
-		~SceneRes() {}
+		~SceneRes() = default;
+
+		/* Resource overrides */
+		bool Load() override;
 
 		/* Getters and setters */
 		inline const std::string& GetPath() { return _path; }

@@ -28,11 +28,10 @@ namespace Osiris::Editor
 
 	void EventService::Publish(Events::EventType type, std::shared_ptr<Events::EventArgs> args)
 	{
-
-			for (auto endpoint : _eventChannels[type])
-			{
-				endpoint(*args);
-			}
+		for (auto endpoint : _eventChannels[type])
+		{
+			endpoint(*args);
+		}
 	}
 
 	void EventService::OnUpdate()

@@ -16,10 +16,10 @@
 
 namespace Osiris::Editor {
 
-	std::string Utils::canonical_path = std::filesystem::current_path().generic_string();
-	std::string Utils::asset_path = "/assets";
-	std::string Utils::cache_path = "/.cache";
-	std::string Utils::builds_path = "/builds";
+	std::string Utils::canonical_path = std::filesystem::canonical(std::filesystem::current_path()).string();
+	std::string Utils::asset_path = "\\assets";
+	std::string Utils::cache_path = "\\.cache";
+	std::string Utils::builds_path = "\\builds";
 
 	Utils::Utils()
 	{
@@ -32,7 +32,7 @@ namespace Osiris::Editor {
 
 	void Utils::SetRootProjectFolder(const std::string& rootFolder)
 	{
-		canonical_path = rootFolder;
+		canonical_path = std::filesystem::canonical(rootFolder).string();
 	}
 
 	std::string Utils::GetAssetFolder()
@@ -125,7 +125,7 @@ namespace Osiris::Editor {
 							char str[MAX_PATH];
 							wcstombs(str, pszFilePath, MAX_PATH);
 							result = str;
-							SwapSlashes(result,"\\", "/");
+							SwapSlashes(result,"\\", "\\");
 							CoTaskMemFree(pszFilePath);
 						}
 						pItem->Release();
@@ -174,7 +174,7 @@ namespace Osiris::Editor {
 							char str[MAX_PATH];
 							wcstombs(str, pszFilePath, MAX_PATH);
 							result = str;
-							SwapSlashes(result, "\\", "/");
+							SwapSlashes(result, "\\", "\\");
 							CoTaskMemFree(pszFilePath);
 						}
 						pItem->Release();
@@ -263,7 +263,7 @@ namespace Osiris::Editor {
 									char str[MAX_PATH];
 									wcstombs(str, pszFilePath, MAX_PATH);
 									result = str;
-									SwapSlashes(result, "\\", "/");
+									SwapSlashes(result, "\\", "\\");
 									CoTaskMemFree(pszFilePath);
 								}
 								pItem->Release();
@@ -371,9 +371,33 @@ namespace Osiris::Editor {
 		return r;
 	}
 
+
+	uint32_t Utils::CountSubDirectories(const std::string& directory)
+	{
+		using std::filesystem::directory_iterator;
+		using fp = bool (*)(const std::filesystem::path&);
+		return std::count_if(directory_iterator(directory), directory_iterator{}, (fp)std::filesystem::is_directory);
+	}
+
 	void Utils::CreateFolder(const std::string& path)
 	{
 		std::filesystem::create_directory(path);
+	}
+
+	void Utils::DeleteFolder(const std::string& path)
+	{
+		std::filesystem::remove_all(path);
+	}
+
+	void Utils::RenameFolder(const std::string& path, const std::string& newPath)
+	{
+		std::filesystem::path p(path);
+		std::filesystem::rename(path, newPath);
+	}
+
+	bool Utils::FolderExists(const std::string& filename)
+	{
+		return std::filesystem::is_directory(std::filesystem::path(filename));
 	}
 
 	bool Utils::CreateRawFile(const std::string& filename, const std::string& content)
@@ -385,11 +409,20 @@ namespace Osiris::Editor {
 		return true;
 	}
 
-
 	bool Utils::CopySingleFile(const std::string& filename, const std::string& directory)
 	{
 		std::filesystem::copy(filename, directory);
 		return true;
+	}
+
+	void Utils::RenameFile(const std::string& filename, const std::string& newFilename)
+	{
+		std::filesystem::rename(filename, newFilename);
+	}
+
+	void Utils::RemoveFile(const std::string& filename)
+	{
+		std::filesystem::remove(filename);
 	}
 
 	void Utils::CreateProjectFileStructure(const std::string& rootFolder)

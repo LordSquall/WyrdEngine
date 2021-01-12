@@ -30,7 +30,7 @@ namespace Osiris::Editor
 			switch (t)
 			{
 			case TEXTURE:
-				return std::make_shared<TextureRes>(resourceFilePath);
+				return std::make_shared<TextureRes>(resourceFilePath, true);
 			case SCENE:
 				return std::make_shared<SceneRes>(resourceFilePath);
 			case UNKNOWN:

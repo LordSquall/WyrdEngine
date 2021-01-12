@@ -59,9 +59,11 @@ namespace ImGui
 			window->DrawList->AddRectFilled(image_bb.Min, image_bb.Max, GetColorU32(bg_col));
 
 		std::shared_ptr<Osiris::Texture> tex = texture->GetTexture();
-		ImTextureID tempid = (ImTextureID)(UINT_PTR)texture->GetTexture()->GetHandle();
-		window->DrawList->AddImage(tempid, image_bb.Min, image_bb.Max, ImVec2(icon->uv[0].x, icon->uv[0].y), ImVec2(icon->uv[2].x, icon->uv[2].y), enabledTint);
-
+		if (tex != nullptr)
+		{
+			ImTextureID tempid = (ImTextureID)(UINT_PTR)tex->GetHandle();
+			window->DrawList->AddImage(tempid, image_bb.Min, image_bb.Max, ImVec2(icon->uv[0].x, icon->uv[0].y), ImVec2(icon->uv[2].x, icon->uv[2].y), enabledTint);
+		}
 		return pressed;
 	}
 

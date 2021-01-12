@@ -50,4 +50,37 @@ namespace Osiris::Editor
 			return false;
 		};
 	}
+
+
+	void DialogService::OpenConfirmDialog(EditorLayer* editorLayer, const std::string& message, std::function<void(void*)> successCallback, std::function<void(void*)> failureCallback, void* dialogData)
+	{
+		if (!_confirmationDialog)
+			_confirmationDialog = std::make_shared<ConfirmationDialog>(editorLayer);
+
+		_confirmationDialog->SetMessage(message);
+		_confirmationDialog->SetSuccessCallback(successCallback);
+		_confirmationDialog->SetFailureCallback(failureCallback);
+		_confirmationDialog->SetDialogData(dialogData);
+
+		_activeDialog = _confirmationDialog;
+
+		_popupDialogCallback = [](std::shared_ptr<EditorViewDialogBase> dialog)->bool
+		{
+			if (dialog != nullptr)
+			{
+				const char* name = dialog->GetName().c_str();
+				if (!ImGui::IsPopupOpen(name))
+					ImGui::OpenPopup(name);
+
+				if (ImGui::BeginPopupModal(name, nullptr, ImGuiWindowFlags_NoResize))
+				{
+					dialog->OnDialogRender();
+					ImGui::EndPopup();
+				}
+
+				return ImGui::IsPopupOpen(name);
+			}
+			return false;
+		};
+	}
 }

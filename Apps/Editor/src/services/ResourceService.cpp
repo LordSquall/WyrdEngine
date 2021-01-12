@@ -38,6 +38,7 @@ namespace Osiris::Editor
 		for(auto& textures : Resources::Get().Textures)
 		{
 			std::shared_ptr<TextureRes> textureResource = std::make_shared<TextureRes>(textures.second, "default");
+			textureResource->Load();
 			//_textureResources.insert(std::pair<uint32_t, std::shared_ptr<TextureRes>>(textureResource->GetResourceID(), textureResource));
 
 			OSR_CORE_INFO("Asset Texture Added: [{0}] - {1}", textureResource->GetResourceID(), textureResource->GetName());
@@ -54,10 +55,19 @@ namespace Osiris::Editor
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::AddResource, EVENT_FUNC(ResourceService::OnAddResourceEvent));
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::DeleteResource, EVENT_FUNC(ResourceService::OnDeleteResourceEvent));
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::ReloadResource, EVENT_FUNC(ResourceService::OnReloadResourceEvent));
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::LoadAsset, EVENT_FUNC(ResourceService::OnLoadAssetEvent));
 	}
 
 	void ResourceService::OnDestroy() {}
 
+	void ResourceService::OnUpdate()
+	{
+		if (!_loadableResources.empty())
+		{
+			_loadableResources.top()->Load();
+			_loadableResources.pop();
+		}
+	}
 
 	void ResourceService::AddResource(std::string& resourcePath)
 	{
@@ -66,11 +76,18 @@ namespace Osiris::Editor
 			/* determine the type of resource from the path */
 			ResourceFactory::Type resourceType = DetermineType(resourcePath);
 
-			/* create a new resource object */
-			std::shared_ptr<Resource> resource = ResourceFactory::Create(resourceType, resourcePath);
+			/* if we can't resolve a type, then we can skip the resource */
+			if (resourceType != ResourceFactory::NONE)
+			{
+				/* create a new resource object */
+				std::shared_ptr<Resource> resource = ResourceFactory::Create(resourceType, resourcePath);
 
-			/* add to the resource map */
-			_resourceMap[resourceType].insert(std::pair<uint32_t, std::shared_ptr<Resource>>(resource->GetResourceID(), resource));
+				/* load all resources for now */
+				resource->Load();
+
+				/* add to the resource map */
+				_resourceMap[resourceType].insert(std::pair<uint32_t, std::shared_ptr<Resource>>(resource->GetResourceID(), resource));
+			}
 		}
 		else
 		{
@@ -190,5 +207,12 @@ namespace Osiris::Editor
 		Events::ReloadResourceArgs& a = (Events::ReloadResourceArgs&)args;
 
 		ReloadResource(a.filepath);
+	}
+
+	void ResourceService::OnLoadAssetEvent(Events::EventArgs& args)
+	{
+		Events::LoadAssetArgs& a = (Events::LoadAssetArgs&)args;
+		
+		_loadableResources.push(a.resource);
 	}
 }

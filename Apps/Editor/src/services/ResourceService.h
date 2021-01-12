@@ -21,6 +21,7 @@ namespace Osiris::Editor
 		// Inherited via IService
 		virtual void OnCreate() override;
 		virtual void OnDestroy() override;
+		virtual void OnUpdate() override;
 
 		void AddResource(std::string& resourcePath);
 		void ReloadResource(std::string& resourcePath);
@@ -56,6 +57,8 @@ namespace Osiris::Editor
 
 		std::map<uint32_t, std::shared_ptr<Resource>> GetResourcesOfType(ResourceFactory::Type type);
 
+		inline const std::shared_ptr<TextureRes> GetDefaultTexture() { return _defaultTexture; };
+
 		/* Helper Functions */
 		bool CheckIgnored(const std::string& path);
 		ResourceFactory::Type DetermineType(const std::string& path);
@@ -69,6 +72,7 @@ namespace Osiris::Editor
 		void OnAddResourceEvent(Events::EventArgs& args);
 		void OnDeleteResourceEvent(Events::EventArgs& args);
 		void OnReloadResourceEvent(Events::EventArgs& args);
+		void OnLoadAssetEvent(Events::EventArgs& args);
 
 	private:
 		IconLibrary _iconLibrary;
@@ -81,5 +85,8 @@ namespace Osiris::Editor
 
 		std::shared_ptr<TextureRes> _defaultTexture;
 		std::shared_ptr<SceneRes> _defaultScene;
+
+	private:
+		std::stack<Resource*> _loadableResources;
 	};
 }

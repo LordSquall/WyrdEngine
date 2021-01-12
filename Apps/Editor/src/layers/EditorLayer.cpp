@@ -230,9 +230,10 @@ namespace Osiris::Editor
 	{
 		ImGui::SaveIniSettingsToDisk("imgui.ini");
 	}
-
+	
 	void EditorLayer::OnUpdate(Timestep ts)
 	{
+		_resourceService->OnUpdate();
 		_eventService->OnUpdate();
 		_simulationService->Update(ts);
 	}

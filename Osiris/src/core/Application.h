@@ -113,7 +113,14 @@ namespace Osiris {
 		*/
 		void Terminate();
 
+		/**
+		 * @brief Get the main thread id
+		 * @return - Main thread ID
+		*/
+		const std::thread::id& GetMainThreadID() { return _MainThreadID; }
+
 		glm::vec3 color;
+
 	protected:
 		std::unique_ptr<Window>		_Window;
 		std::unique_ptr<Resources>	_Resources;
@@ -125,7 +132,9 @@ namespace Osiris {
 		bool		_Running = true;
 		LayerStack	_LayerStack;
 
+		std::thread::id _MainThreadID;
 	private:
+
 		static Application* s_Instance;
 	};
 

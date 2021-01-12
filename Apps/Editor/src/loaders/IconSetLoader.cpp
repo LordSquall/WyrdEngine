@@ -29,7 +29,8 @@ namespace Osiris::Editor
 				iconSet->imagePath = o.get<jsonxx::String>("texture-path");
 				iconSet->width = (int)o.get<jsonxx::Number>("texture-width");
 				iconSet->height = (int)o.get<jsonxx::Number>("texture-height");
-				iconSet->Texture = std::make_shared<TextureRes>(Utils::GetPath(path) + "/" + iconSet->imagePath);
+				iconSet->Texture = std::make_shared<TextureRes>(Utils::GetPath(path) + "\\" + iconSet->imagePath);
+				iconSet->Texture->Load();
 
 				jsonxx::Array icons = o.get<jsonxx::Array>("icons");
 				for (int i = 0; i < icons.size(); i++)

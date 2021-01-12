@@ -15,6 +15,8 @@ namespace Osiris::Editor
 		}
 
 		virtual ~Resource() = default;
+
+		virtual bool Load() = 0;
 		
 		// Getters and Setters
 		inline const std::string& GetName() { return _name; }

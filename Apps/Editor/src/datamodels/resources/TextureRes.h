@@ -13,17 +13,14 @@ namespace Osiris::Editor
 	class TextureRes : public Resource
 	{
 	public:
-		TextureRes(std::shared_ptr<Osiris::Texture> texture, std::string name) : Resource(name), _texture(texture)
-		{
+		TextureRes(std::shared_ptr<Osiris::Texture> texture, std::string name);
 
-		}
+		TextureRes(const std::string& filepath, bool delayLoad = false);
 
-		TextureRes(const std::string& filepath) : Resource(Utils::GetFilename(filepath)), _filePath(filepath), _loaded(false), _width(0u), _height(0u), _channels(0u), _data(0)
-		{
-			Load();
-		}
+		~TextureRes() = default;
 
-		~TextureRes() {}
+		// Resource overrides
+		bool Load() override;
 
 		// Getters and Setters
 		inline std::string& GetFilePath() { return _filePath; }
@@ -37,10 +34,8 @@ namespace Osiris::Editor
 		inline BYTE* GetData() { return _data; }
 		inline void SetData(BYTE* data) { _data = data; }
 		inline std::shared_ptr<Texture> GetTexture() { return _texture; }
-
-		void Load();
-		void Reload();
-		void Unload();
+		inline bool IsLoaded() { return _loaded; }
+		inline void SetLoaded(bool loaded) { _loaded = loaded; }
 
 	private:
 		bool _loaded;

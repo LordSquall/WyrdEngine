@@ -17,14 +17,15 @@ namespace Osiris::Editor
 	public:
 		ScriptRes(const std::string& path);
 
-		~ScriptRes() {}
+		~ScriptRes() = default;
+
+		/* Resource overrides */
+		bool Load() override;
 
 		/* Getters and setters */
 		inline const std::string& GetPath() { return _path; }
 		inline void SetPath(const std::string& path) { _path = path; }
 
-		void Reload();
-		
 	public:
 		std::shared_ptr<Osiris::ScriptedClass> Script;
 

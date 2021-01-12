@@ -13,6 +13,7 @@
 #include "support/Utils.h"
 #include "datamodels/Project.h"
 #include "datamodels/resources/Resource.h"
+#include "datamodels/resources/ResourceFactory.h"
 #include "datamodels/logging/LogMessage.h"
 
 #define EVENT_ARGS_CLONE(type)	public:  std::shared_ptr<EventArgs> Clone() { return std::make_shared<type>(*this); } 
@@ -26,7 +27,8 @@ namespace Osiris::Editor::Events
 		SceneClosed, SceneOpened,
 		OpenSceneViewerContextMenu,
 		AddLogEntry, ClearLogEntry,
-		AddResource, DeleteResource, ReloadResource
+		AddResource, DeleteResource, ReloadResource, RenameResource,
+		LoadAsset
 	};
 
 	class Event
@@ -326,9 +328,11 @@ namespace Osiris::Editor::Events
 	class AddResourceArgs : public EventArgs
 	{
 	public:
-		AddResourceArgs(const std::string filepath) : filepath(filepath){}
+		AddResourceArgs(const std::string dir, const std::string filepath, const bool isDir) : dir(dir), filepath(filepath), isDir(isDir) {}
 
+		std::string dir;
 		std::string filepath;
+		bool isDir;
 
 		EVENT_ARGS_CLONE(AddResourceArgs)
 	};
@@ -346,10 +350,11 @@ namespace Osiris::Editor::Events
 	class DeleteResourceArgs : public EventArgs
 	{
 	public:
-		DeleteResourceArgs(const std::string filepath) : filepath(filepath) {}
+		DeleteResourceArgs(const std::string dir, const std::string filepath, const bool isDir) : dir(dir), filepath(filepath), isDir(isDir) {}
 
+		std::string dir;
 		std::string filepath;
-
+		bool isDir;
 
 		EVENT_ARGS_CLONE(DeleteResourceArgs)
 	};
@@ -367,9 +372,11 @@ namespace Osiris::Editor::Events
 	class ReloadResourceArgs : public EventArgs
 	{
 	public:
-		ReloadResourceArgs(const std::string filepath) : filepath(filepath) {}
+		ReloadResourceArgs(const std::string dir, const std::string filepath, const bool isDir) : dir(dir), filepath(filepath), isDir(isDir) {}
 
+		std::string dir;
 		std::string filepath;
+		bool isDir;
 		
 		EVENT_ARGS_CLONE(ReloadResourceArgs)
 	};
@@ -378,6 +385,49 @@ namespace Osiris::Editor::Events
 	{
 	public:
 		ReloadResourceEvent() : Event(EventType::ReloadResource) { }
+	};
+
+#pragma endregion
+
+#pragma region RenameResource
+
+	class RenameResourceArgs : public EventArgs
+	{
+	public:
+		RenameResourceArgs(const std::string dir, const std::string filepath, const std::string previousName, const bool isDir) : dir(dir), filepath(filepath), previousName(previousName), isDir(isDir) {}
+
+		std::string dir;
+		std::string filepath;
+		std::string previousName;
+		bool isDir;
+
+		EVENT_ARGS_CLONE(RenameResourceArgs)
+	};
+
+	class RenameResourceEvent : public Event
+	{
+	public:
+		RenameResourceEvent() : Event(EventType::RenameResource) { }
+	};
+
+#pragma endregion
+
+#pragma region LoadAsset
+
+	class LoadAssetArgs : public EventArgs
+	{
+	public:
+		LoadAssetArgs(Resource* resource) : resource(resource) {}
+
+		Resource* resource;
+
+		EVENT_ARGS_CLONE(LoadAssetArgs)
+	};
+
+	class LoadAssetEvent : public Event
+	{
+	public:
+		LoadAssetEvent() : Event(EventType::LoadAsset) { }
 	};
 
 #pragma endregion

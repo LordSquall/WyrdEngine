@@ -25,18 +25,28 @@ namespace Osiris::Editor
 
 		void handleFileAction(efsw::WatchID watchID, const std::string& dir, const std::string& filename, efsw::Action action, std::string oldFilename = "") override
 		{
+			bool isDir = Utils::GetFileExtension(filename).empty();
+
+			/* if we are a directory, then we need to make sure the trailing slash is present */
+			std::string directory = dir;
+			if (directory.compare(directory.size() - 1, 1, "\\") != 0)
+			{
+				directory += "\\";
+			}
+
 			switch (action)
 			{
 			case efsw::Actions::Add:
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddResource, std::make_shared<Events::AddResourceArgs>(dir + "/" + filename));
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddResource, std::make_shared<Events::AddResourceArgs>(directory, directory + filename, isDir));
 				break;
 			case efsw::Actions::Delete:
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::DeleteResource, std::make_shared<Events::DeleteResourceArgs>(dir + "/" + filename));
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::DeleteResource, std::make_shared<Events::DeleteResourceArgs>(directory, directory + filename, isDir));
 				break;
 			case efsw::Actions::Modified:				
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ReloadResource, std::make_shared<Events::ReloadResourceArgs>(dir + "/" + filename));
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ReloadResource, std::make_shared<Events::ReloadResourceArgs>(directory, directory + filename, isDir));
 				break;
-			case efsw::Actions::Moved:				
+			case efsw::Actions::Moved:
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::RenameResource, std::make_shared<Events::RenameResourceArgs>(directory, directory + filename, oldFilename, isDir));
 
 				break;
 			default:
@@ -74,13 +84,13 @@ namespace Osiris::Editor
 	void Osiris::Editor::WorkspaceService::CreateNewProject(std::string location, std::string sceneName, std::string name)
 	{
 		/* Build project file name */
-		_LoadedProjectPath = location + "/" + name + "/" + name + ".oproj";
+		_LoadedProjectPath = location + "\\" + name + "\\" + name + ".oproj";
 
 		/* Create a new project shared pointer */
 		_LoadedProject = std::make_shared<Project>(name);
 
 		/* Create the folder for the project */
-		Utils::CreateFolder(location + "/" + name);
+		Utils::CreateFolder(location + "\\" + name);
 
 		/* Save the project object to disk */
 		ProjectLoader::Result result = ProjectLoader::Save(_LoadedProjectPath, *_LoadedProject);
@@ -103,13 +113,13 @@ namespace Osiris::Editor
 			CreateNewScene(sceneName);
 
 			/* Set the default scene path */
-			_LoadedScenePath = Utils::GetAssetFolder() + "/" + sceneName + ".scene";
+			_LoadedScenePath = Utils::GetAssetFolder() + "\\" + sceneName + ".scene";
 
 			/* Save the new scene into a known location */
 			SaveScene();
 
 			/* Set the default scene within the project model */
-			_LoadedProject->initialScene = Utils::GetAssetFolder() + "/" + sceneName + ".scene";
+			_LoadedProject->initialScene = Utils::GetAssetFolder() + "\\" + sceneName + ".scene";
 
 			/* create VS workspace file model */
 			jsonxx::Object root;
@@ -136,7 +146,6 @@ namespace Osiris::Editor
 		/* If a scene is loaded we want it to be set as the initial scene in the project model to ensure it gets loaded on restart */
 		if (_LoadedScene != nullptr) _LoadedProject->initialScene = _LoadedScenePath;
 		
-
 		result = ProjectLoader::Save(_LoadedProjectPath, *_LoadedProject);
 
 		if (result != ProjectLoader::Result::Success)

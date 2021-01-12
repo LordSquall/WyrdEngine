@@ -20,6 +20,9 @@ namespace Osiris {
 		/* save the local instance of the application */
 		s_Instance = this;
 
+		/* store the thread ID */
+		_MainThreadID = std::this_thread::get_id();
+
 		/* call the pre init function */
 		OnPreAppCreation(this);
 
