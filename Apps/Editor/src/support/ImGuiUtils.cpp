@@ -111,6 +111,36 @@ namespace ImGui
 		return pressed;
 	}
 
+
+	void ImGui::Image(std::shared_ptr<Osiris::Editor::Icon> icon, const ImVec2& size, const ImVec4& tint_col, const ImVec4& border_col)
+	{
+		std::shared_ptr<Osiris::Editor::TextureRes> texture = icon->iconSet->Texture;
+
+		ImGuiWindow* window = GetCurrentWindow();
+		if (window->SkipItems)
+			return;
+
+		ImRect bb(window->DC.CursorPos, window->DC.CursorPos + size);
+		if (border_col.w > 0.0f)
+			bb.Max += ImVec2(2, 2);
+		ItemSize(bb);
+		if (!ItemAdd(bb, 0))
+			return;
+
+		std::shared_ptr<Osiris::Texture> tex = texture->GetTexture();
+		ImTextureID tempid = (ImTextureID)(UINT_PTR)tex->GetHandle();
+
+		if (border_col.w > 0.0f)
+		{
+			window->DrawList->AddRect(bb.Min, bb.Max, GetColorU32(border_col), 0.0f);
+			window->DrawList->AddImage(tempid, bb.Min + ImVec2(1, 1), bb.Max - ImVec2(1, 1), ImVec2(icon->uv[0].x, icon->uv[0].y), ImVec2(icon->uv[2].x, icon->uv[2].y), GetColorU32(tint_col));
+		}
+		else
+		{
+			window->DrawList->AddImage(tempid, bb.Min, bb.Max, ImVec2(icon->uv[0].x, icon->uv[0].y), ImVec2(icon->uv[2].x, icon->uv[2].y), GetColorU32(tint_col));
+		}
+	}
+
 	/* Vector Outputs */
 	void ImGui::LabelVec2(const char* label, glm::vec2& vector, const std::string& xcompLabel, const std::string& ycompLabel)
 	{

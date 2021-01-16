@@ -21,27 +21,27 @@ namespace Osiris::Editor
 		_ignoredExtensions.insert(".mdb");
 
 		/* Register the raw file extensions. These will be directly importable to the editor and create a new resource cache file */
-		_extensions.insert(std::pair<std::string, ResourceFactory::Type>(".png", ResourceFactory::TEXTURE));
-		_extensions.insert(std::pair<std::string, ResourceFactory::Type>(".jpg", ResourceFactory::TEXTURE));
-		_extensions.insert(std::pair<std::string, ResourceFactory::Type>(".bmp", ResourceFactory::TEXTURE));
-		_extensions.insert(std::pair<std::string, ResourceFactory::Type>(".vs", ResourceFactory::SHADER));
-		_extensions.insert(std::pair<std::string, ResourceFactory::Type>(".fs", ResourceFactory::SHADER));
-		_extensions.insert(std::pair<std::string, ResourceFactory::Type>(".cs", ResourceFactory::SCRIPT));
+		_extensions.insert(std::pair<std::string, ResourceType>(".png", ResourceType::TEXTURE));
+		_extensions.insert(std::pair<std::string, ResourceType>(".jpg", ResourceType::TEXTURE));
+		_extensions.insert(std::pair<std::string, ResourceType>(".bmp", ResourceType::TEXTURE));
+		_extensions.insert(std::pair<std::string, ResourceType>(".vs", ResourceType::SHADER));
+		_extensions.insert(std::pair<std::string, ResourceType>(".fs", ResourceType::SHADER));
+		_extensions.insert(std::pair<std::string, ResourceType>(".cs", ResourceType::SCRIPT));
 
 		/* Register the cache file extensions for each of the imported resource types */
-		_extensions.insert(std::pair<std::string, ResourceFactory::Type>(".texture", ResourceFactory::TEXTURE));
-		_extensions.insert(std::pair<std::string, ResourceFactory::Type>(".shader", ResourceFactory::SHADER));
-		_extensions.insert(std::pair<std::string, ResourceFactory::Type>(".scene", ResourceFactory::SCENE));
-		_extensions.insert(std::pair<std::string, ResourceFactory::Type>(".script", ResourceFactory::SCRIPT));
+		_extensions.insert(std::pair<std::string, ResourceType>(".texture", ResourceType::TEXTURE));
+		_extensions.insert(std::pair<std::string, ResourceType>(".shader", ResourceType::SHADER));
+		_extensions.insert(std::pair<std::string, ResourceType>(".scene", ResourceType::SCENE));
+		_extensions.insert(std::pair<std::string, ResourceType>(".script", ResourceType::SCRIPT));
 
 		/* Add resources from the osiris core to make then accessible with in the editor */
 		for(auto& textures : Resources::Get().Textures)
 		{
-			std::shared_ptr<TextureRes> textureResource = std::make_shared<TextureRes>(textures.second, "default");
-			textureResource->Load();
+			//std::shared_ptr<TextureRes> textureResource = std::make_shared<TextureRes>(textures.second, "default");
+			//textureResource->Load();
 			//_textureResources.insert(std::pair<uint32_t, std::shared_ptr<TextureRes>>(textureResource->GetResourceID(), textureResource));
 
-			OSR_CORE_INFO("Asset Texture Added: [{0}] - {1}", textureResource->GetResourceID(), textureResource->GetName());
+			//OSR_CORE_INFO("Asset Texture Added: [{0}] - {1}", textureResource->GetResourceID(), textureResource->GetName());
 		}
 
 		/* Load defaults from the editor resources */
@@ -52,9 +52,9 @@ namespace Osiris::Editor
 
 		/* Subscribe to project events */
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::ProjectLoaded, EVENT_FUNC(ResourceService::OnProjectLoadedEvent));
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::AddResource, EVENT_FUNC(ResourceService::OnAddResourceEvent));
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::DeleteResource, EVENT_FUNC(ResourceService::OnDeleteResourceEvent));
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::ReloadResource, EVENT_FUNC(ResourceService::OnReloadResourceEvent));
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::AddFileEntry, EVENT_FUNC(ResourceService::OnAddFileEntryEvent));
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::DeleteFileEntry, EVENT_FUNC(ResourceService::OnDeleteFileEntryEvent));
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::RenameFileEntry, EVENT_FUNC(ResourceService::OnReloadFileEntryEvent));
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::LoadAsset, EVENT_FUNC(ResourceService::OnLoadAssetEvent));
 	}
 
@@ -69,24 +69,28 @@ namespace Osiris::Editor
 		}
 	}
 
-	void ResourceService::AddResource(std::string& resourcePath)
+	void ResourceService::AddResource(std::string& resourcePath, const UUID uuid)
 	{
 		if (CheckIgnored(resourcePath) == false)
 		{
 			/* determine the type of resource from the path */
-			ResourceFactory::Type resourceType = DetermineType(resourcePath);
+			ResourceType resourceType = DetermineType(resourcePath);
 
 			/* if we can't resolve a type, then we can skip the resource */
-			if (resourceType != ResourceFactory::NONE)
+			if (resourceType != ResourceType::NONE)
 			{
 				/* create a new resource object */
 				std::shared_ptr<Resource> resource = ResourceFactory::Create(resourceType, resourcePath);
+				resource->SetResourceID(uuid);
+
+				/* add to the resource map */
+				_resourceMap.insert(std::pair<UUID, std::shared_ptr<Resource>>(resource->GetResourceID(), resource));
 
 				/* load all resources for now */
 				resource->Load();
 
-				/* add to the resource map */
-				_resourceMap[resourceType].insert(std::pair<uint32_t, std::shared_ptr<Resource>>(resource->GetResourceID(), resource));
+				/* add the cachedFiles*/
+				CachedFiles[resourcePath] = uuid;
 			}
 		}
 		else
@@ -95,22 +99,36 @@ namespace Osiris::Editor
 		}
 	}
 
-	void ResourceService::ReloadResource(std::string& resourcePath)
+	void ResourceService::ReloadResource(UUID uuid)
 	{
 
 	}
 
-	void ResourceService::DeleteResource(std::string& resourcePath)
+	void ResourceService::DeleteResource(UUID uuid)
 	{
+		// unload if required TODO
 
+		_resourceMap.erase(uuid);
 	}
 
-	std::map<uint32_t, std::shared_ptr<Resource>> ResourceService::GetResourcesOfType(ResourceFactory::Type type)
+	std::map<UUID, std::shared_ptr<Resource>> ResourceService::GetResourcesByDir(const std::string& dir)
 	{
-		if (_resourceMap.count(type))
-			return _resourceMap[type];
+		std::map<UUID, std::shared_ptr<Resource>> result;
 
-		return std::map<uint32_t, std::shared_ptr<Resource>>();
+		std::filesystem::path compDir(dir);
+		OSR_TRACE("{0}", compDir.root_path().string());
+		OSR_TRACE("{0}", compDir.relative_path().string());
+		OSR_TRACE("{0}", compDir.parent_path().string());
+		for (auto&& res : _resourceMap)
+		{
+			std::filesystem::path p(res.second->GetPath());
+
+			if (p.parent_path() == compDir.parent_path())
+			{
+				result.insert(std::pair<UUID, std::shared_ptr<Resource>>(res.first, res.second));
+			}
+		}
+		return result;
 	}
 
 	void ResourceService::BuildScripts()
@@ -131,11 +149,11 @@ namespace Osiris::Editor
 		return (_ignoredExtensions.find(Utils::GetFileExtension(path)) != _ignoredExtensions.end());
 	}
 
-	ResourceFactory::Type ResourceService::DetermineType(const std::string& path)
+	ResourceType ResourceService::DetermineType(const std::string& path)
 	{
 		std::string& extension = Utils::GetFileExtension(path);
 
-		std::map<std::string, ResourceFactory::Type>::iterator it = _extensions.find(extension);
+		std::map<std::string, ResourceType>::iterator it = _extensions.find(extension);
 
 		if (it != _extensions.end())
 		{
@@ -143,7 +161,7 @@ namespace Osiris::Editor
 		}
 		else
 		{
-			return ResourceFactory::NONE;
+			return ResourceType::NONE;
 		}
 	}
 
@@ -168,17 +186,19 @@ namespace Osiris::Editor
 		/* load the asset cache */
 		LoadAssetCache(Utils::GetCacheFolder() + "/assets.cache");
 
-
-		/* Clear all resources */
-		//_textureResources.clear();
-		//_sceneResources.clear();
-		//_scriptResources.clear();
-
 		auto files = Utils::GetFileList(Utils::GetAssetFolder(), true, true);
 
 		for (auto t : files)
 		{
-			AddResource(t);
+			/* check if the file is already present from the cache load */
+			if (CachedFiles.find(t) == CachedFiles.end())
+			{
+				AddResource(t, UUIDUtils::Create());
+			}
+			else
+			{
+				Utils::HashFile(t);
+			}
 		}
 
 		/* Save the cache file */
@@ -188,25 +208,57 @@ namespace Osiris::Editor
 		BuildScripts();
 	}
 
-	void ResourceService::OnAddResourceEvent(Events::EventArgs& args)
+	void ResourceService::OnAddFileEntryEvent(Events::EventArgs& args)
 	{
-		Events::AddResourceArgs& a = (Events::AddResourceArgs&)args;
+		Events::AddFileEntryArgs& a = (Events::AddFileEntryArgs&)args;
 	
-		AddResource(a.filepath);
+		AddResource(a.filepath, UUIDUtils::Create());
+
+		/* Save the cache file */
+		AssetCacheLoader::Save(Utils::GetCacheFolder() + "/assets.cache");
 	}
 
-	void ResourceService::OnDeleteResourceEvent(Events::EventArgs& args)
+	void ResourceService::OnDeleteFileEntryEvent(Events::EventArgs& args)
 	{
-		Events::DeleteResourceArgs& a = (Events::DeleteResourceArgs&)args;
+		Events::DeleteFileEntryArgs& a = (Events::DeleteFileEntryArgs&)args;
 
-		DeleteResource(a.filepath);
+		if (CachedFiles.find(a.filepath) != CachedFiles.end())
+		{
+			DeleteResource(CachedFiles[a.filepath]);
+		}
+
+		/* Save the cache file */
+		AssetCacheLoader::Save(Utils::GetCacheFolder() + "/assets.cache");
 	}
 
-	void ResourceService::OnReloadResourceEvent(Events::EventArgs& args)
+	void ResourceService::OnReloadFileEntryEvent(Events::EventArgs& args)
 	{
-		Events::ReloadResourceArgs& a = (Events::ReloadResourceArgs&)args;
+		Events::RenameFileEntryArgs& a = (Events::RenameFileEntryArgs&)args;
 
-		ReloadResource(a.filepath);
+		/* if we have a directory change we should update the cached files for all the effected assets */
+		if (a.isDir)
+		{
+			for (auto&& res : _resourceMap)
+			{
+				std::string oldPath = a.dir + a.previousName;
+
+				if (res.second->GetPath().rfind(oldPath, 0) == 0)
+				{
+					/* remove from the cached file list */
+					CachedFiles.erase(res.second->GetPath());
+
+					/* update the path */
+					std::string newPath = a.filepath + res.second->GetPath().substr(oldPath.length());
+					res.second->SetPath(newPath);
+
+					/* remove from the cached file list */
+					CachedFiles[newPath] = res.second->GetResourceID();
+				}
+			}
+		}
+		
+		/* Save the cache file */
+		AssetCacheLoader::Save(Utils::GetCacheFolder() + "/assets.cache");
 	}
 
 	void ResourceService::OnLoadAssetEvent(Events::EventArgs& args)

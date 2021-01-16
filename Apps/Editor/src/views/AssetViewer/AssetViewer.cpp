@@ -59,16 +59,14 @@ namespace Osiris::Editor
 		/* register from events */
 		_EventService->Subscribe(Events::EventType::ProjectLoaded, [this](Events::EventArgs& args)
 			{
-				_refreshing = true;
 				Refresh();
-				_refreshing = false;
 
 				SetCurrentSelectedDirectory(FindDirectoryEntry(&directoryTree, 1));
 			});
 
-		_EventService->Subscribe(Events::EventType::AddResource, [this](Events::EventArgs& args)
+		_EventService->Subscribe(Events::EventType::AddFileEntry, [this](Events::EventArgs& args)
 			{
-				Events::AddResourceArgs& evtArgs = static_cast<Events::AddResourceArgs&>(args);
+				Events::AddFileEntryArgs& evtArgs = static_cast<Events::AddFileEntryArgs&>(args);
 				
 				/* find the directory entry */
 				AssetViewer::DirectoryEntry_s* foundDir = FindDirectoryEntry(&directoryTree, evtArgs.dir);
@@ -78,7 +76,7 @@ namespace Osiris::Editor
 
 				/* refresh the directory structure */
 				_refreshing = true;
-				RefreshSubDir(std::string(foundDir->dir), *foundDir);
+				RefreshSubDir(std::string(foundDir->parent->dir), *foundDir->parent);
 				_refreshing = false;
 
 				/* re-apply the directory entry to ensure the user selection is maintained */
@@ -86,37 +84,46 @@ namespace Osiris::Editor
 
 			});
 
-		_EventService->Subscribe(Events::EventType::DeleteResource, [this](Events::EventArgs& args)
+		_EventService->Subscribe(Events::EventType::DeleteFileEntry, [this](Events::EventArgs& args)
 			{
-				Events::DeleteResourceArgs& evtArgs = static_cast<Events::DeleteResourceArgs&>(args);
+				Events::DeleteFileEntryArgs& evtArgs = static_cast<Events::DeleteFileEntryArgs&>(args);
 
 				AssetViewer::DirectoryEntry_s* foundDir = FindDirectoryEntry(&directoryTree, evtArgs.dir);
 
 				if (evtArgs.isDir)
 				{
 					/* if we are deleting the current selected directory, we should move to the parent first */
-					if (foundDir == _currentSelectedDir)
-					{
-						SetCurrentSelectedDirectory(foundDir->parent);
-					}
+					SetCurrentSelectedDirectory(foundDir);
 				}
 
+				/* save the currently selected dir */
+				std::string originalSelected = _currentSelectedDir->dir;
+
 				_refreshing = true;
-				RefreshSubDir(std::string(foundDir->dir), *foundDir);
+				RefreshSubDir(std::string(foundDir->parent->dir), *foundDir->parent);
 				_refreshing = false;
+
+				/* re-apply the directory entry to ensure the user selection is maintained */
+				_currentSelectedDir = FindDirectoryEntry(&directoryTree, originalSelected);
 			});
 
-		_EventService->Subscribe(Events::EventType::RenameResource, [this](Events::EventArgs& args)
+		_EventService->Subscribe(Events::EventType::RenameFileEntry, [this](Events::EventArgs& args)
 			{
-				Events::RenameResourceArgs& evtArgs = static_cast<Events::RenameResourceArgs&>(args);
+				Events::RenameFileEntryArgs& evtArgs = static_cast<Events::RenameFileEntryArgs&>(args);
 
 				if (evtArgs.isDir)
 				{
 					AssetViewer::DirectoryEntry_s* foundDir = FindDirectoryEntry(&directoryTree, evtArgs.dir);
 
+					/* save the currently selected dir */
+					std::string originalSelected = _currentSelectedDir->dir;
+
 					_refreshing = true;
 					RefreshSubDir(std::string(foundDir->dir), *foundDir);
 					_refreshing = false;
+
+					/* re-apply the directory entry to ensure the user selection is maintained */
+					_currentSelectedDir = FindDirectoryEntry(&directoryTree, originalSelected);
 
 					OSR_TRACE("Folder Renamed!");
 				}
@@ -127,7 +134,7 @@ namespace Osiris::Editor
 	{
 		float navigationPanelWidth = 150.0f;
 		float itemGroupWidth = 64.0f;
-		static ResourceFactory::Type selectedType = ResourceFactory::NONE;
+		static ResourceType selectedType = ResourceType::NONE;
 
 
 		if (_workspaceService->GetCurrentProject() != nullptr)
@@ -153,7 +160,7 @@ namespace Osiris::Editor
 		}
 
 		/* Debugger Window */
-		ImGui::Begin((_Name + "_Debug").c_str());
+		/*ImGui::Begin((_Name + "_Debug").c_str());
 		ImGui::DragInt("Layout - ItemGroupWidth", &layoutSettings.itemGroupWidth, 1.0f, 16, 256);
 		ImGui::DragInt("Layout - itemGroupPaddingX", &layoutSettings.itemGroupPaddingX, 1.0f, 0, 32);
 		ImGui::DragInt("Layout - itemLabelShortCharLimit", &layoutSettings.itemLabelShortCharLimit, 1.0f, 0, 32);
@@ -163,7 +170,29 @@ namespace Osiris::Editor
 		ImGui::Text("Layout - ItemColumnWidth %d", layoutSettings.itemColumnWidth);
 		ImGui::Text("Var - currentSelectedResource %d", _currentSelectedResource != nullptr ? _currentSelectedResource->GetResourceID() : 0);
 		ImGui::Text("Layout - ItemColumnWidth %d", layoutSettings.itemColumnWidth);
-		ImGui::End();
+		ImGui::End();*/
+	}
+
+	void AssetViewer::Refresh()
+	{
+		/* clear previous data */
+		directoryTree.subdirs.clear();
+
+		/* set the root information */
+		directoryTree.id = dirId;
+		directoryTree.name = "Assets";
+		directoryTree.dir = Utils::GetAssetFolder() + "\\";
+		directoryTree.parent = nullptr;
+
+		/* get all assets in base asset directory */
+		std::map<UUID, std::shared_ptr<Resource>> dirResources = _resourcesService->GetResourcesByDir(Utils::GetAssetFolder() + "\\");
+		directoryTree.files.insert(dirResources.begin(), dirResources.end());
+
+		/* increment the dirID to prevent a id clash with the asset folder */
+		dirId++;
+
+		/* recursively add the sub dirs */
+		RefreshSubDir(Utils::GetAssetFolder(), directoryTree);
 	}
 
 
@@ -185,36 +214,18 @@ namespace Osiris::Editor
 
 					RefreshSubDir(entry.path().string(), newEntry);
 
+					/* get all assets in base asset directory */
+					std::map<UUID, std::shared_ptr<Resource>> dirResources = _resourcesService->GetResourcesByDir(entry.path().string() + "\\");
+					newEntry.files.insert(dirResources.begin(), dirResources.end());
+
 					newEntry.id = dirId++;
 					newEntry.name = name;
 					newEntry.dir = entry.path().string() + "\\";
 					newEntry.parent = &dirEntry;
 					dirEntry.subdirs[newEntry.id] = newEntry;
 				}
-				else
-				{
-					dirEntry.files.push_back(name);
-				}
 			}
 		}
-	}
-
-	void AssetViewer::Refresh()
-	{
-		/* clear previous data */
-		directoryTree.subdirs.clear();
-
-		/* set the root information */
-		directoryTree.id = dirId;
-		directoryTree.name = "Assets";
-		directoryTree.dir = Utils::GetAssetFolder() + "\\";
-		directoryTree.parent = nullptr;
-
-		/* increment the dirID to prevent a id clash with the asset folder */
-		dirId++;
-
-		/* recursively add the sub dirs */
-		RefreshSubDir(Utils::GetAssetFolder(), directoryTree);
 	}
 
 	void AssetViewer::SetCurrentSelectedDirectory(AssetViewer::DirectoryEntry_s* directory)
@@ -390,34 +401,31 @@ namespace Osiris::Editor
 		if (dir != nullptr)
 		{
 			ImGui::Columns(layoutSettings.itemColumnCnt, NULL, false);
-			for (auto& file : dir->files)
+			for (auto& res : dir->files)
 			{
-				if (_resourcesService->CheckIgnored(file) == false)
+				ResourceType resType = static_cast<ResourceType>(res.second->GetType());
+
+				ImGui::PushID(resIdx);
+				ImGui::BeginGroup();
+
+				switch (resType)
 				{
-					ResourceFactory::Type resType = _resourcesService->DetermineType(file);
-
-					ImGui::PushID(resIdx);
-					ImGui::BeginGroup();
-
-					switch (resType)
-					{
-					case ResourceFactory::TEXTURE:
-						DrawTextureItem(resIdx, _resourcesService->GetResourceByName<TextureRes>(ResourceFactory::TEXTURE, Utils::GetFilename(file, false)));
-						break;
-					case ResourceFactory::SCENE:
-					case ResourceFactory::SCRIPT:
-					case ResourceFactory::SHADER:break;
-					case ResourceFactory::NONE:
-					default:
-						DrawUnknownItem(resIdx, Utils::GetFilename(file, false)); break;
-						break;
-					}
-
-					ImGui::EndGroup();
-					ImGui::PopID();
-					ImGui::NextColumn();
-					resIdx++;
+				case ResourceType::TEXTURE:
+					DrawTextureItem(resIdx, dynamic_pointer_cast<TextureRes>(res.second));
+					break;
+				case ResourceType::SCENE:
+					DrawSceneItem(resIdx, dynamic_pointer_cast<SceneRes>(res.second));
+				case ResourceType::SCRIPT:
+				case ResourceType::SHADER:break;
+				case ResourceType::NONE:
+				default:
+					break;
 				}
+
+				ImGui::EndGroup();
+				ImGui::PopID();
+				ImGui::NextColumn();
+				resIdx++;
 			}
 		}
 		ImGui::PopStyleVar();
@@ -447,7 +455,7 @@ namespace Osiris::Editor
 			{ 
 				_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to delete?", 
 					[&](void* data) {
-						Utils::RemoveFile(std::dynamic_pointer_cast<TextureRes> (_currentSelectedResource)->GetFilePath());
+						Utils::RemoveFile(std::dynamic_pointer_cast<TextureRes> (_currentSelectedResource)->GetPath());
 					});
 			};
 
@@ -457,8 +465,8 @@ namespace Osiris::Editor
 		/* Drag and Drop */
 		if (ImGui::BeginDragDropSource())
 		{
-			std::shared_ptr<Osiris::Texture> texture = textureResource->GetTexture();
-			ImGui::SetDragDropPayload("TEXTURE_ASSET_PAYLOAD", &texture, sizeof(std::shared_ptr<Osiris::Texture>));
+			//std::shared_ptr<Osiris::Texture> texture = textureResource->GetTexture();
+			ImGui::SetDragDropPayload("TEXTURE_ASSET_PAYLOAD", &textureResource, sizeof(std::shared_ptr<TextureRes>));
 			ImGui::Image((ImTextureID)(INT_PTR)textureResource->GetTexture()->GetHandle(), ImVec2(32, 32));
 			ImGui::EndDragDropSource();
 		}
@@ -468,7 +476,8 @@ namespace Osiris::Editor
 		{
 			ImGui::BeginTooltip();
 			ImGui::Text(textureResource->GetName().c_str());
-			ImGui::Text("Filename: %s", textureResource->GetFilePath().c_str());
+			ImGui::Text("Filename: %s", textureResource->GetPath().c_str());
+			ImGui::Text("UUID: %s", textureResource->GetResourceID().str().c_str());
 			ImGui::EndTooltip();
 		}
 
@@ -491,18 +500,76 @@ namespace Osiris::Editor
 
 	void AssetViewer::DrawSceneItem(uint32_t resIdx, std::shared_ptr<SceneRes> sceneResource)
 	{
-		ImGui::BeginGroup();
-		if (ImGui::IconButton(_SceneIcon, 1, true, ImVec2(64, 64)))
+		/* calculate the total height of the item */
+		ImVec2 labelSize = ImGui::CalcTextSize(sceneResource->GetName().c_str());
+		ImVec2 groupSize = ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemColumnWidth + labelSize.y);
+
+		if (ImGui::Selectable("##title", _currentSelectedResource != nullptr ? _currentSelectedResource->GetResourceID() == sceneResource->GetResourceID() : false, ImGuiSelectableFlags_SelectOnClick, groupSize))
 		{
-			ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace)->LoadScene(sceneResource->GetPath());
+			_currentSelectedResource = sceneResource;
+			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+			{
+				_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to load scene?",
+					[&](void* data) {
+						_workspaceService->LoadScene(dynamic_pointer_cast<SceneRes>(_currentSelectedResource)->GetPath());
+					});
+			}
 		}
-		ImGui::Text(sceneResource->GetName().c_str());
-		ImGui::EndGroup();
+
+		if (ImGui::BeginPopupContextItem())
+		{
+			_currentSelectedResource = sceneResource;
+
+			if (ImGui::MenuItem("Copy")) { OSR_TRACE("Texture Copied"); };
+			if (ImGui::MenuItem("Cut")) { OSR_TRACE("Texture Cut"); };
+			if (ImGui::MenuItem("Paste")) { OSR_TRACE("Texture Paste"); };
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Delete")) 
+			{ 
+				_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to delete?", 
+					[&](void* data) {
+						Utils::RemoveFile(std::dynamic_pointer_cast<TextureRes> (_currentSelectedResource)->GetPath());
+					});
+			};
+			
+			ImGui::Separator();
+			if (ImGui::MenuItem("Open in external editor"))
+			{
+				Utils::OpenFileWithSystem(sceneResource->GetPath());
+			}
+
+			ImGui::EndPopup();
+		}
+
+		/* Tool Tip */
+		if (ImGui::IsItemHovered())
+		{
+			ImGui::BeginTooltip();
+			ImGui::Text(sceneResource->GetName().c_str());
+			ImGui::EndTooltip();
+		}
+
+		/* reset the cursor */
+		ImGui::SameLine();
+		ImGui::SetCursorPosX((ImGui::GetCursorPosX() - groupSize.x) + layoutSettings.itemGroupPaddingX);
+
+		ImGui::Image(_SceneIcon, ImVec2(layoutSettings.itemGroupWidth, layoutSettings.itemGroupWidth));
+		ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 2, ImGui::GetCursorPosY() - labelSize.y));
+
+		if (labelSize.x > (layoutSettings.itemColumnWidth - 4))
+		{
+			ImGui::Text("%.*s...", layoutSettings.itemLabelShortCharLimit, sceneResource->GetName().c_str());
+		}
+		else
+		{
+			ImGui::Text(sceneResource->GetName().c_str());
+		}
 	}
 
 	void AssetViewer::DrawScriptItem(uint32_t resIdx, std::shared_ptr<ScriptRes> scriptResource)
 	{
-		uint32_t id = scriptResource->GetResourceID();
+		UUID id = scriptResource->GetResourceID();
 
 		ImGui::BeginGroup();
 		ImGui::IconButton(_ScriptIcon, 1, true, ImVec2(64, 64));

@@ -61,6 +61,8 @@ includedir["jsonxx"] = externallibsdir .. "/jsonxx"
 includedir["imgui"] = externallibsdir .. "/imgui"
 includedir["efsw"] = externallibsdir .. "/efsw/include/"
 includedir["spdlog"] = externallibsdir .. "/spdlog/include/"
+includedir["uuid"] = externallibsdir .. "/crossguid/include/"
+includedir["hash"] = externallibsdir .. "/Hash/include/"
 
 -- if mono was found, the add the in application to the include directories
 if monofound then
@@ -80,6 +82,8 @@ include "externalbuild/premake5-soil.lua"
 include "externalbuild/premake5-imgui.lua"
 include "externalbuild/premake5-efsw.lua"
 include "externalbuild/premake5-spdlog.lua"
+include "externalbuild/premake5-uuid.lua"
+include "externalbuild/premake5-hash.lua"
 
 group ""
 	project "Osiris"
@@ -115,7 +119,8 @@ group ""
 			"%{includedir.glm}",
 			"%{includedir.tinyobjloader}",
 			"%{includedir.mono}",
-			"%{includedir.spdlog}"
+			"%{includedir.spdlog}",
+			"%{includedir.uuid}"
 		}
 		
 		libdirs
@@ -129,6 +134,7 @@ group ""
 			"GLAD",
 			"SOIL",
 			"jsonxx",
+			"uuid",
 			"mono-2.0-sgen",
 			"opengl32.dll"
 		}
@@ -284,6 +290,8 @@ project "OsirisAPI"
 					"%{includedir.mono}",
 					"%{includedir.efsw}",
 					"%{includedir.spdlog}",
+					"%{includedir.uuid}",
+					"%{includedir.hash}",
 					iif(renderdocfound, includedir["renderdoc"], "")
 				}
 				

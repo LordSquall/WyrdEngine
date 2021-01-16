@@ -11,7 +11,7 @@
 
 namespace Osiris::Editor
 {
-	ScriptRes::ScriptRes(const std::string& path) : Resource(Utils::GetFilename(path)), _path(path)
+	ScriptRes::ScriptRes(const std::string& path) : Resource(Utils::GetFilename(path), path)
 	{
 
 	}

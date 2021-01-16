@@ -25,7 +25,8 @@ namespace Osiris::Editor
 		ImGui::SameLine();
 		if (ImGui::Button("Cancel", ImVec2(120, 0)))
 		{
-			_failureCallback(_dialogData);
+			if(_failureCallback)
+				_failureCallback(_dialogData);
 			Close();
 		}
 	}

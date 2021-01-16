@@ -23,63 +23,55 @@ namespace Osiris::Editor
 		virtual void OnDestroy() override;
 		virtual void OnUpdate() override;
 
-		void AddResource(std::string& resourcePath);
-		void ReloadResource(std::string& resourcePath);
-		void DeleteResource(std::string& resourcePath);
+		void AddResource(std::string& resourcePath, const UUID uuid);
+		void ReloadResource(UUID uuid);
+		void DeleteResource(UUID uuid);
 
 		/* Icon Functions */
 		inline IconLibrary& GetIconLibrary() { return _iconLibrary; }
 
 		template<class T>
-		std::shared_ptr<T> GetResourceByID(ResourceFactory::Type type, const uint32_t resourceId)
+		std::shared_ptr<T> GetResourceByID(const UUID resourceId)
 		{
-			auto it = _resourceMap[type].find(resourceId);
+			auto it = _resourceMap.find(resourceId);
 
-			if (it != _resourceMap[type].end())
+			if (it != _resourceMap.end())
 			{
-				return_resourceMap[type][resourceId];
+				return std::dynamic_pointer_cast<T>(_resourceMap[resourceId]);
 			}
 			return nullptr;
 		}
 
-		template<class T>
-		std::shared_ptr<T> GetResourceByName(ResourceFactory::Type type, const std::string& name)
-		{
-			for (auto const [key, val] : _resourceMap[type])
-			{
-				if (val->GetName().compare(name) == 0)
-				{
-					return std::dynamic_pointer_cast<T>(val);
-				}
-			}
-			return nullptr;
-		}
-
-		std::map<uint32_t, std::shared_ptr<Resource>> GetResourcesOfType(ResourceFactory::Type type);
+		inline const std::map<UUID, std::shared_ptr<Resource>> GetResources() { return _resourceMap; };
 
 		inline const std::shared_ptr<TextureRes> GetDefaultTexture() { return _defaultTexture; };
 
+		std::map<UUID, std::shared_ptr<Resource>> GetResourcesByDir(const std::string& dir);
+
 		/* Helper Functions */
 		bool CheckIgnored(const std::string& path);
-		ResourceFactory::Type DetermineType(const std::string& path);
+		ResourceType DetermineType(const std::string& path);
 		void BuildScripts();
+
+	public:
+		std::map<std::string, UUID> CachedFiles;
 
 	private:
 		bool LoadAssetCache(const std::string& filePath);
 
 	private:
 		void OnProjectLoadedEvent(Events::EventArgs& args);
-		void OnAddResourceEvent(Events::EventArgs& args);
-		void OnDeleteResourceEvent(Events::EventArgs& args);
-		void OnReloadResourceEvent(Events::EventArgs& args);
+		void OnAddFileEntryEvent(Events::EventArgs& args);
+		void OnDeleteFileEntryEvent(Events::EventArgs& args);
+		void OnReloadFileEntryEvent(Events::EventArgs& args);
 		void OnLoadAssetEvent(Events::EventArgs& args);
 
 	private:
 		IconLibrary _iconLibrary;
 
-		std::map<ResourceFactory::Type, std::map<uint32_t, std::shared_ptr<Resource>>> _resourceMap;
+		std::map<UUID, std::shared_ptr<Resource>> _resourceMap;
 
-		std::map<std::string, ResourceFactory::Type> _extensions;
+		std::map<std::string, ResourceType> _extensions;
 
 		std::set<std::string> _ignoredExtensions;
 

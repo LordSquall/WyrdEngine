@@ -1,11 +1,13 @@
 #pragma once
 
-#include "osrpch.h"
-
+/* core osiris includes */
+#include <osrpch.h>
 #include "core/export.h"
-#include "Resource.h"
 
+/* local includes */
+#include "Resource.h"
 #include "support/Utils.h"
+#include "datamodels/resources/ResourceTypes.h"
 
 namespace Osiris::Editor
 {
@@ -18,15 +20,6 @@ namespace Osiris::Editor
 
 		/* Resource overrides */
 		bool Load() override;
-
-		/* Getters and setters */
-		inline const std::string& GetPath() { return _path; }
-		inline void SetPath(const std::string& path) { _path = path; }
-
-		inline const std::string& GetName() { return _name; }
-
-	private:
-		std::string _path;
-		std::string _name;
+		int GetType() override { return ResourceType::SCENE; }
 	};
 }

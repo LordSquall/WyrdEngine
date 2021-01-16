@@ -8,6 +8,7 @@
 /* local project includes */
 #include "Resource.h"
 #include "support/Utils.h"
+#include "datamodels/resources/ResourceTypes.h"
 
 
 namespace Osiris::Editor
@@ -21,15 +22,9 @@ namespace Osiris::Editor
 
 		/* Resource overrides */
 		bool Load() override;
-
-		/* Getters and setters */
-		inline const std::string& GetPath() { return _path; }
-		inline void SetPath(const std::string& path) { _path = path; }
+		int GetType() override { return ResourceType::SCRIPT; }
 
 	public:
 		std::shared_ptr<Osiris::ScriptedClass> Script;
-
-	private:
-		std::string _path;
 	};
 }

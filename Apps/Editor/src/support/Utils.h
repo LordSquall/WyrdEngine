@@ -52,6 +52,9 @@ namespace Osiris::Editor
 		/* System operations */
 		static void OpenFileWithSystem(const std::string& file, const std::string& parameters = "");
 
+		/* Hashing */
+		static std::string HashFile(const std::string& file);
+
 		/* String Convertors */
 		static bool ToBool(std::string& value);
 		static unsigned int ToUInt(std::string& value);

@@ -5,6 +5,9 @@
 #include "core/Timestep.h"
 #include "core/renderer/Renderer.h"
 
+/* external includes */
+#include <crossguid/guid.hpp>
+
 namespace Osiris {
 
 	class GameObject;
@@ -26,6 +29,8 @@ namespace Osiris {
 
 		inline const SceneComponentType GetType() const { return _type; }
 
+		inline xg::Guid GetUUID() const { return _uuid; }
+		inline void SetUUID(xg::Guid uuid) { _uuid = uuid; }
 
 		virtual void Initialise() {};
 		virtual void Recalculate() {};
@@ -38,6 +43,8 @@ namespace Osiris {
 
 	private:
 		SceneComponentType _type;
+
+		xg::Guid _uuid;
 
 	};
 }

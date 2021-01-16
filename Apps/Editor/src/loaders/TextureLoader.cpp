@@ -30,7 +30,6 @@ namespace Osiris::Editor
 		}
 
 		/* set texture details */
-		texture.SetFilePath(path);
 		texture.SetWidth(width);
 		texture.SetHeight(height);
 		texture.SetChannels(channels);

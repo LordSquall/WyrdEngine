@@ -14,12 +14,7 @@
 
 namespace Osiris::Editor
 {
-	TextureRes::TextureRes(std::shared_ptr<Osiris::Texture> texture, std::string name) : Resource(name), _texture(texture), _loaded(false), _width(0u), _height(0u), _channels(0u), _data(0)
-	{
-
-	}
-
-	TextureRes::TextureRes(const std::string& filepath, bool delayLoad) : Resource(Utils::GetFilename(filepath)), _filePath(filepath), _loaded(false), _width(0u), _height(0u), _channels(0u), _data(0)
+	TextureRes::TextureRes(const std::string& filepath) : Resource(Utils::GetFilename(filepath), filepath), _loaded(false), _width(0u), _height(0u), _channels(0u), _data(0)
 	{
 
 	}
@@ -38,10 +33,10 @@ namespace Osiris::Editor
 		else
 		{
 			/* load the data from file */
-			TextureLoader::Load(_filePath, *this);
+			TextureLoader::Load(_path, *this);
 
 			/* create the core renderer resource and load */
-			_texture = Osiris::Texture::Create(_data, _width, _height, _channels, Utils::GetFilename(_filePath, true) + "_Texture");
+			_texture = Osiris::Texture::Create(_data, _width, _height, _channels, Utils::GetFilename(_path, true) + "_Texture");
 		}
 
 		_loaded = true;

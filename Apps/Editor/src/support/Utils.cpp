@@ -446,6 +446,13 @@ namespace Osiris::Editor {
 		ShellExecuteA(NULL, "open", path.c_str(), parameters.c_str(), NULL, SW_SHOW);
 	}
 
+	/* Hashing */
+	std::string Utils::HashFile(const std::string& file)
+	{
+		return std::string("");
+	}
+
+
 	bool Utils::ToBool(std::string& value)
 	{
 		return value == "0" ? false : true;

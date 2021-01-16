@@ -37,16 +37,16 @@ namespace Osiris::Editor
 			switch (action)
 			{
 			case efsw::Actions::Add:
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddResource, std::make_shared<Events::AddResourceArgs>(directory, directory + filename, isDir));
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddFileEntry, std::make_shared<Events::AddFileEntryArgs>(directory, directory + filename, isDir));
 				break;
 			case efsw::Actions::Delete:
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::DeleteResource, std::make_shared<Events::DeleteResourceArgs>(directory, directory + filename, isDir));
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::DeleteFileEntry, std::make_shared<Events::DeleteFileEntryArgs>(directory, directory + filename, isDir));
 				break;
 			case efsw::Actions::Modified:				
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ReloadResource, std::make_shared<Events::ReloadResourceArgs>(directory, directory + filename, isDir));
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ModifiedFileEntry, std::make_shared<Events::ModifiedFileEntryArgs>(directory, directory + filename, isDir));
 				break;
 			case efsw::Actions::Moved:
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::RenameResource, std::make_shared<Events::RenameResourceArgs>(directory, directory + filename, oldFilename, isDir));
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::RenameFileEntry, std::make_shared<Events::RenameFileEntryArgs>(directory, directory + filename, oldFilename, isDir));
 
 				break;
 			default:

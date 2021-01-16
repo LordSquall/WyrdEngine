@@ -27,6 +27,7 @@ namespace Osiris::Editor::Events
 		SceneClosed, SceneOpened,
 		OpenSceneViewerContextMenu,
 		AddLogEntry, ClearLogEntry,
+		AddFileEntry, DeleteFileEntry, ModifiedFileEntry, RenameFileEntry,
 		AddResource, DeleteResource, ReloadResource, RenameResource,
 		LoadAsset
 	};
@@ -323,16 +324,104 @@ namespace Osiris::Editor::Events
 
 #pragma endregion
 
+#pragma region AddFileEntry
+
+	class AddFileEntryArgs : public EventArgs
+	{
+	public:
+		AddFileEntryArgs(const std::string dir, const std::string filepath, const bool isDir) : dir(dir), filepath(filepath), isDir(isDir) {}
+
+		std::string dir;
+		std::string filepath;
+		bool isDir;
+
+		EVENT_ARGS_CLONE(AddFileEntryArgs)
+	};
+
+	class AddFileEntryEvent : public Event
+	{
+	public:
+		AddFileEntryEvent() : Event(EventType::AddFileEntry) { }
+	};
+
+#pragma endregion
+
+#pragma region DeleteFileEntry
+
+	class DeleteFileEntryArgs : public EventArgs
+	{
+	public:
+		DeleteFileEntryArgs(const std::string dir, const std::string filepath, const bool isDir) : dir(dir), filepath(filepath), isDir(isDir) {}
+
+		std::string dir;
+		std::string filepath;
+		bool isDir;
+
+		EVENT_ARGS_CLONE(DeleteFileEntryArgs)
+	};
+
+	class DeleteFileEntryEvent : public Event
+	{
+	public:
+		DeleteFileEntryEvent() : Event(EventType::DeleteFileEntry) { }
+	};
+
+#pragma endregion
+
+#pragma region ModifiedFileEntry
+
+	class ModifiedFileEntryArgs : public EventArgs
+	{
+	public:
+		ModifiedFileEntryArgs(const std::string dir, const std::string filepath, const bool isDir) : dir(dir), filepath(filepath), isDir(isDir) {}
+
+		std::string dir;
+		std::string filepath;
+		bool isDir;
+
+		EVENT_ARGS_CLONE(ModifiedFileEntryArgs)
+	};
+
+	class ModifiedFileEntryEvent : public Event
+	{
+	public:
+		ModifiedFileEntryEvent() : Event(EventType::ModifiedFileEntry) { }
+	};
+
+#pragma endregion
+
+
+#pragma region RenameFileEntry
+
+	class RenameFileEntryArgs : public EventArgs
+	{
+	public:
+		RenameFileEntryArgs(const std::string dir, const std::string filepath, const std::string previousName, const bool isDir) : dir(dir), filepath(filepath), previousName(previousName), isDir(isDir) {}
+
+		std::string dir;
+		std::string filepath;
+		std::string previousName;
+		bool isDir;
+
+		EVENT_ARGS_CLONE(RenameFileEntryArgs)
+	};
+
+	class RenameFileEntryEvent : public Event
+	{
+	public:
+		RenameFileEntryEvent() : Event(EventType::RenameFileEntry) { }
+	};
+
+#pragma endregion
+
 #pragma region AddResource
 
 	class AddResourceArgs : public EventArgs
 	{
 	public:
-		AddResourceArgs(const std::string dir, const std::string filepath, const bool isDir) : dir(dir), filepath(filepath), isDir(isDir) {}
+		AddResourceArgs(const std::string filepath) : filepath(filepath) {}
 
-		std::string dir;
 		std::string filepath;
-		bool isDir;
 
 		EVENT_ARGS_CLONE(AddResourceArgs)
 	};
@@ -350,11 +439,9 @@ namespace Osiris::Editor::Events
 	class DeleteResourceArgs : public EventArgs
 	{
 	public:
-		DeleteResourceArgs(const std::string dir, const std::string filepath, const bool isDir) : dir(dir), filepath(filepath), isDir(isDir) {}
+		DeleteResourceArgs(UUID uuid) : uuid(uuid) {}
 
-		std::string dir;
-		std::string filepath;
-		bool isDir;
+		UUID uuid;
 
 		EVENT_ARGS_CLONE(DeleteResourceArgs)
 	};
@@ -372,11 +459,9 @@ namespace Osiris::Editor::Events
 	class ReloadResourceArgs : public EventArgs
 	{
 	public:
-		ReloadResourceArgs(const std::string dir, const std::string filepath, const bool isDir) : dir(dir), filepath(filepath), isDir(isDir) {}
+		ReloadResourceArgs(UUID uuid) : uuid(uuid) {}
 
-		std::string dir;
-		std::string filepath;
-		bool isDir;
+		UUID uuid;
 		
 		EVENT_ARGS_CLONE(ReloadResourceArgs)
 	};
@@ -394,12 +479,10 @@ namespace Osiris::Editor::Events
 	class RenameResourceArgs : public EventArgs
 	{
 	public:
-		RenameResourceArgs(const std::string dir, const std::string filepath, const std::string previousName, const bool isDir) : dir(dir), filepath(filepath), previousName(previousName), isDir(isDir) {}
+		RenameResourceArgs(const std::string& newName, UUID uuid) : newName(newName), uuid(uuid) {}
 
-		std::string dir;
-		std::string filepath;
-		std::string previousName;
-		bool isDir;
+		std::string newName;
+		UUID uuid;
 
 		EVENT_ARGS_CLONE(RenameResourceArgs)
 	};

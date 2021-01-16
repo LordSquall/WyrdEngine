@@ -28,6 +28,8 @@ using namespace glm;
 
 namespace Osiris::Editor
 {
+	static std::shared_ptr<ResourceService> _resourceService;
+
 	static void Read_Color(jsonxx::Array& json, glm::vec4* color)
 	{
 		color->r = (float)json.get<jsonxx::Number>(0);
@@ -136,7 +138,8 @@ namespace Osiris::Editor
 		component->sprite->SetPosition((int)spritePosition.x, (int)spritePosition.y);
 
 		//TODO
-		//component->BaseTexture = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetTextureResourceByName(json.get<jsonxx::String>("baseTexture"))->GetTexture();
+		std::shared_ptr<TextureRes> textureRes = _resourceService->GetResourceByID<TextureRes>(UUID(json.get<jsonxx::String>("baseTexture")));
+		component->BaseTexture = textureRes->GetTexture();
 
 		owner->sprite = component;
 
@@ -162,8 +165,7 @@ namespace Osiris::Editor
 		Write_Vec2(componentJson, "size", &spriteSize);
 		Write_Vec2(componentJson, "position", &spritePosition);
 
-		//TODO
-		//componentJson << "baseTexture" << ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetTextureResourceByNativeID(sprite->BaseTexture->GetUID())->GetName();
+		componentJson << "baseTexture" << sprite->GetUUID().str();
 		
 		return componentJson;
 	}
@@ -444,6 +446,8 @@ namespace Osiris::Editor
 	{
 		SceneLoader::Result result = Success;
 		jsonxx::Object o;
+
+		_resourceService = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources);
 
 		std::ifstream f(path);
 

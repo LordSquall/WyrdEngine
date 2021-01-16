@@ -14,18 +14,15 @@
 
 namespace Osiris::Editor
 {
-	static void SaveScenes(jsonxx::Object& o, std::map<uint32_t, std::shared_ptr<Resource>> resources);
-	static void SaveTextures(jsonxx::Object& o, std::map<uint32_t, std::shared_ptr<Resource>> resources);
-
-	static void LoadScenes(jsonxx::Object& o);
-	static void LoadTextures(jsonxx::Object& o);
-
 	std::shared_ptr<ResourceService> _ResourceService = nullptr;
 
 	AssetCacheLoader::Result AssetCacheLoader::Load(std::string path)
 	{
 		AssetCacheLoader::Result result = Success;
 		jsonxx::Object o;
+
+		/* cache the resource service */
+		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
 
 		std::ifstream f(path);
 
@@ -35,8 +32,30 @@ namespace Osiris::Editor
 
 			if (o.parse(ss.str()) == true)
 			{
-				LoadScenes(o);
-				LoadTextures(o);
+				jsonxx::Array resourcesArray = o.get<jsonxx::Array>("assets");
+
+				for (int i = 0; i < resourcesArray.size(); i++)
+				{
+					jsonxx::Object cacheEntry = resourcesArray.get<jsonxx::Object>(i);
+
+					jsonxx::String filePath = Utils::GetAssetFolder() + "\\" + cacheEntry.get<jsonxx::String>("filepath");
+					jsonxx::String name = cacheEntry.get<jsonxx::String>("name");
+					jsonxx::String uuid = cacheEntry.get<jsonxx::String>("uuid");
+					jsonxx::String hash = cacheEntry.get<jsonxx::String>("hash");
+
+					/* check the underlying file is present */
+					if (Utils::FileExists(filePath))
+					{
+						/* load and add as a new resource */
+						_ResourceService->AddResource(filePath, UUID(uuid));
+					}
+					else
+					{
+						OSR_TRACE("Missing File from cache: {0}", filePath);
+					}
+
+					_ResourceService->CachedFiles[filePath] = UUID(uuid);
+				}
 			}
 			else
 			{
@@ -59,68 +78,27 @@ namespace Osiris::Editor
 		/* cache the resource service */
 		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
 
-		SaveScenes(o, _ResourceService->GetResourcesOfType(ResourceFactory::SCENE));
-		SaveTextures(o, _ResourceService->GetResourcesOfType(ResourceFactory::TEXTURE));
-		
+		jsonxx::Array resourceArray;
+		for (auto& resource : _ResourceService->GetResources())
+		{
+			auto res = resource.second;
+
+			jsonxx::Object sceneObj;
+
+			sceneObj << "name" << res->GetName();
+			sceneObj << "filepath" << res->GetPath().substr((Utils::GetAssetFolder() + "\\").length());
+			sceneObj << "uuid" << res->GetResourceID().str();
+			sceneObj << "hash" << Utils::HashFile(res->GetPath());
+
+			resourceArray << sceneObj;
+		}
+
+		o << "assets" << resourceArray;
+
 		std::ofstream out(path);
 		out << o.json();
 		out.close();
 
 		return result;
-	}
-
-	void SaveScenes(jsonxx::Object& o, std::map<uint32_t, std::shared_ptr<Resource>> resources)
-	{
-		jsonxx::Array scenesArray;
-		for (auto& scene : _ResourceService->GetResourcesOfType(ResourceFactory::SCENE))
-		{
-			SceneRes* sceneRes = static_cast<SceneRes*>(&*scene.second);
-			jsonxx::Object sceneObj;
-
-			sceneObj << "name" << sceneRes->GetName();
-
-			scenesArray << sceneObj;
-		}
-
-		o << "scenes" << scenesArray;
-	}
-
-	void SaveTextures(jsonxx::Object& o, std::map<uint32_t, std::shared_ptr<Resource>> resources)
-	{
-		/* Textures */
-		jsonxx::Array texturesArray;
-		for (auto& texture : _ResourceService->GetResourcesOfType(ResourceFactory::TEXTURE))
-		{
-			TextureRes* textureRes = static_cast<TextureRes*>(&*texture.second);
-			jsonxx::Object textureObj;
-
-			textureObj << "name" << textureRes->GetName();
-			textureObj << "filepath" << textureRes->GetFilePath();
-
-			texturesArray << textureObj;
-		}
-
-		o << "textures" << texturesArray;
-	}
-
-	void LoadScenes(jsonxx::Object& o)
-	{
-		jsonxx::Array scenesArray = o.get<jsonxx::Array>("scenes");
-		
-	}
-
-	void LoadTextures(jsonxx::Object& o)
-	{
-		jsonxx::Array texturesArray = o.get<jsonxx::Array>("textures");
-
-		for (int i = 0; i < texturesArray.size(); i++)
-		{
-			jsonxx::Object textureCacheEntry = texturesArray.get<jsonxx::Object>(i);
-
-			jsonxx::String filePath;
-
-			if (textureCacheEntry.has<jsonxx::String>("filepath"))
-				filePath = textureCacheEntry.get<jsonxx::String>("filepath");
-		}
 	}
 }

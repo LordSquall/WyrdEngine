@@ -5,5 +5,5 @@
 
 namespace Osiris::Editor
 {
-	uint32_t Resource::_nextResourceID = 1u;
+
 }

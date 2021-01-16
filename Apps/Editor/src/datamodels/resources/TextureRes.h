@@ -1,30 +1,29 @@
 #pragma once
 
-#include "osrpch.h"
+/* core osiris includes */
+#include <osrpch.h>
+#include <core/renderer/Texture.h>
 
+/* local includes */
 #include "core/export.h"
 #include "Resource.h"
-
 #include "support/Utils.h"
-#include "core/renderer/Texture.h"
+#include "datamodels/resources/ResourceTypes.h"
 
 namespace Osiris::Editor
 {
 	class TextureRes : public Resource
 	{
 	public:
-		TextureRes(std::shared_ptr<Osiris::Texture> texture, std::string name);
-
-		TextureRes(const std::string& filepath, bool delayLoad = false);
+		TextureRes(const std::string& filepath);
 
 		~TextureRes() = default;
 
 		// Resource overrides
 		bool Load() override;
+		int GetType() override { return ResourceType::TEXTURE; }
 
 		// Getters and Setters
-		inline std::string& GetFilePath() { return _filePath; }
-		inline void SetFilePath(std::string& path) { _filePath = path; }
 		inline uint32_t GetWidth() { return _width; }
 		inline void SetWidth(uint32_t width) { _width = width; }
 		inline uint32_t GetHeight() { return _height; }
@@ -40,7 +39,6 @@ namespace Osiris::Editor
 	private:
 		bool _loaded;
 		std::string _name;
-		std::string _filePath;
 		uint32_t _width;
 		uint32_t _height;
 		uint32_t _channels;
