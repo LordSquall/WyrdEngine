@@ -137,9 +137,10 @@ namespace Osiris::Editor
 		component->sprite->SetSize((int)spriteSize.x, (int)spriteSize.y);
 		component->sprite->SetPosition((int)spritePosition.x, (int)spritePosition.y);
 
-		//TODO
-		std::shared_ptr<TextureRes> textureRes = _resourceService->GetResourceByID<TextureRes>(UUID(json.get<jsonxx::String>("baseTexture")));
+		UUID uuid = UUID(json.get<jsonxx::String>("baseTexture"));
+		std::shared_ptr<TextureRes> textureRes = _resourceService->GetResourceByID<TextureRes>(uuid);
 		component->BaseTexture = textureRes->GetTexture();
+		component->SetUUID(uuid);
 
 		owner->sprite = component;
 
