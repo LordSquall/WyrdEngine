@@ -43,6 +43,10 @@ namespace Osiris
 			{
 				if (gameObject->GetUID() == uid)
 					return gameObject;
+
+				auto found = gameObject->FindChild(uid);
+				if (found != nullptr)
+					return found;
 			}
 		}
 

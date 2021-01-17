@@ -7,14 +7,16 @@ namespace OsirisAPI
     {
         public GameObject GameObject { get; set; }
 
-        public void OnStart() { }
+        public virtual void OnStart() { }
 
-        public void OnUpdate() { }
+        public virtual void OnUpdate() { }
 
-        public void OnTriggerCollision(GameObject other) { }
+        public virtual void OnTriggerCollision(GameObject other) { }
 
-        public bool OnKeyDown(KeyCode key) { return false; }
-        public bool OnKeyPressed(KeyCode key) { return false; }
-        public bool OnKeyUp(KeyCode key) { return false; }
+        public virtual bool OnKeyDown(KeyCode key) { return false; }
+
+        public virtual bool OnKeyPressed(KeyCode key) { return false; }
+
+        public virtual bool OnKeyUp(KeyCode key) { return false; }
     }
 }

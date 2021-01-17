@@ -131,15 +131,22 @@ namespace Osiris::Editor
 		return result;
 	}
 
+
+
 	void ResourceService::BuildScripts()
 	{
 		ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->CompileAll();
 
 		// Resolve all the script resources to the scripted classes
-		/*for (auto& [key, value] : _scriptResources)
+
+		for (auto& [key, value] : _resourceMap)
 		{
-			value->Script = ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->GetClass(value->GetName());
-		}*/
+			auto downcastedPtr = std::dynamic_pointer_cast<ScriptRes>(value);
+			if (downcastedPtr)
+			{
+				downcastedPtr->Script = ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->GetClass(value->GetName());
+			}
+		}
 	}
 
 	bool ResourceService::CheckIgnored(const std::string& path)

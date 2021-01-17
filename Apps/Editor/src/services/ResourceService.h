@@ -44,6 +44,8 @@ namespace Osiris::Editor
 
 		inline const std::map<UUID, std::shared_ptr<Resource>> GetResources() { return _resourceMap; };
 
+		std::shared_ptr<ScriptRes> GetScriptResourceByName(const std::string& name);
+
 		inline const std::shared_ptr<TextureRes> GetDefaultTexture() { return _defaultTexture; };
 
 		std::map<UUID, std::shared_ptr<Resource>> GetResourcesByDir(const std::string& dir);

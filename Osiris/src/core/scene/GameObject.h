@@ -30,6 +30,7 @@ namespace Osiris {
 		void DuplicateChild(int uid);
 		void SwapChild(int a, int b);
 
+		std::shared_ptr<GameObject> FindChild(const uint32_t uid);
 		std::shared_ptr<ScriptComponent> FindScriptComponent(const std::string& name);
 
 		inline uint32_t GetUID() { return _uid; }

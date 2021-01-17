@@ -85,10 +85,14 @@ namespace Osiris::Editor
 		_EventService->Publish(Events::EventType::ClearLogEntry, std::make_shared<Events::ClearLogEntryArgs>(LogType::Code));
 
 		std::vector<std::string> scriptFiles;
-		/*for (auto& [key, value] : _ResourceService->GetScripts())
+		for (auto& [key, value] : _ResourceService->GetResources())
 		{
-			scriptFiles.push_back(value->GetPath());
-		}*/
+			auto downcastedPtr = std::dynamic_pointer_cast<ScriptRes>(value);
+			if (downcastedPtr)
+			{
+				scriptFiles.push_back(value->GetPath());
+			}
+		}
 
 		CompileResults results;
 		Application::Get().GetBehaviour().CompileAll(scriptFiles, Utils::GetPath(_WorkspaceService->GetLoadedProjectPath()), _WorkspaceService->GetCurrentProject()->name + ".dll", results);

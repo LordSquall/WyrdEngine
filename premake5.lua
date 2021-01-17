@@ -184,10 +184,12 @@ project "OsirisCAPI"
 		includedirs
 		{
 			"Osiris/src",
-			"%{includedir.glm}"
+			"%{includedir.glm}",
+			"%{includedir.uuid}"
 		}
 		
         links { 
+			"uuid",
 			"Osiris"
 		}
 

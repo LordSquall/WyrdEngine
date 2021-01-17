@@ -415,7 +415,10 @@ namespace Osiris::Editor
 					break;
 				case ResourceType::SCENE:
 					DrawSceneItem(resIdx, dynamic_pointer_cast<SceneRes>(res.second));
+					break;
 				case ResourceType::SCRIPT:
+					DrawScriptItem(resIdx, dynamic_pointer_cast<ScriptRes>(res.second));
+					break;
 				case ResourceType::SHADER:break;
 				case ResourceType::NONE:
 				default:
@@ -569,36 +572,76 @@ namespace Osiris::Editor
 
 	void AssetViewer::DrawScriptItem(uint32_t resIdx, std::shared_ptr<ScriptRes> scriptResource)
 	{
-		UUID id = scriptResource->GetResourceID();
+		/* calculate the total height of the item */
+		ImVec2 labelSize = ImGui::CalcTextSize(scriptResource->GetName().c_str());
+		ImVec2 groupSize = ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemColumnWidth + labelSize.y);
 
-		ImGui::BeginGroup();
-		ImGui::IconButton(_ScriptIcon, 1, true, ImVec2(64, 64));
-		if (ImGui::BeginDragDropSource())
+		if (ImGui::Selectable("##title", _currentSelectedResource != nullptr ? _currentSelectedResource->GetResourceID() == scriptResource->GetResourceID() : false, ImGuiSelectableFlags_SelectOnClick, groupSize))
 		{
-			ImGui::SetDragDropPayload("ASSET_DND_PAYLOAD", &id, sizeof(uint32_t));
-			ImGui::Icon(_ScriptIcon, ImVec2(32, 32));
-			ImGui::EndDragDropSource();
+			_currentSelectedResource = scriptResource;
+			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+			{
+
+			}
 		}
 
-		if (ImGui::BeginPopupContextItem("AssetTest"))
+		if (ImGui::BeginPopupContextItem())
 		{
-			if (ImGui::MenuItem("Open") == true)
+			_currentSelectedResource = scriptResource;
+
+			if (ImGui::MenuItem("Copy")) { OSR_TRACE("Texture Copied"); };
+			if (ImGui::MenuItem("Cut")) { OSR_TRACE("Texture Cut"); };
+			if (ImGui::MenuItem("Paste")) { OSR_TRACE("Texture Paste"); };
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Delete"))
+			{
+				_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to delete?",
+					[&](void* data) {
+						Utils::RemoveFile(std::dynamic_pointer_cast<TextureRes> (_currentSelectedResource)->GetPath());
+					});
+			};
+
+			ImGui::Separator();
+			if (ImGui::MenuItem("Open in external editor"))
 			{
 				Utils::OpenFileWithSystem(scriptResource->GetPath());
-			}
-
-			ImGui::MenuItem("Rename");
-			ImGui::MenuItem("Edit");
-			ImGui::Separator();
-			if(ImGui::MenuItem("Delete") == true)
-			{
 			}
 
 			ImGui::EndPopup();
 		}
 
-		ImGui::Text(scriptResource->GetName().c_str());
-		ImGui::EndGroup();
+		/* Tool Tip */
+		if (ImGui::IsItemHovered())
+		{
+			ImGui::BeginTooltip();
+			ImGui::Text(scriptResource->GetName().c_str());
+			ImGui::EndTooltip();
+		}
+
+		/* Drag and Drop */
+		if (ImGui::BeginDragDropSource())
+		{
+			ImGui::SetDragDropPayload("SCRIPT_ASSET_PAYLOAD", &scriptResource, sizeof(std::shared_ptr<ScriptRes>));
+			ImGui::Image(_ScriptIcon, ImVec2(32, 32));
+			ImGui::EndDragDropSource();
+		}
+
+		/* reset the cursor */
+		ImGui::SameLine();
+		ImGui::SetCursorPosX((ImGui::GetCursorPosX() - groupSize.x) + layoutSettings.itemGroupPaddingX);
+
+		ImGui::Image(_ScriptIcon, ImVec2(layoutSettings.itemGroupWidth, layoutSettings.itemGroupWidth));
+		ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 2, ImGui::GetCursorPosY() - labelSize.y));
+
+		if (labelSize.x > (layoutSettings.itemColumnWidth - 4))
+		{
+			ImGui::Text("%.*s...", layoutSettings.itemLabelShortCharLimit, scriptResource->GetName().c_str());
+		}
+		else
+		{
+			ImGui::Text(scriptResource->GetName().c_str());
+		}
 	}
 
 	void AssetViewer::DrawUnknownItem(uint32_t resIdx, std::string& unknownResourceName)

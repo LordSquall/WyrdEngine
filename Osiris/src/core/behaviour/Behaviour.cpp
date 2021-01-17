@@ -107,7 +107,7 @@ namespace Osiris
 		_GameObjectManagerClass = std::make_shared<ScriptedClass>("GameObjectManager", monoClass, _Domain);
 
 		/* Build up mapping between Osiris Key States and managed key state functions */
-		_FunctionKeyStateMap[0] = "OnKeyPress";
+		_FunctionKeyStateMap[0] = "OnKeyPressed";
 		_FunctionKeyStateMap[1] = "OnKeyDown";
 		_FunctionKeyStateMap[2] = "OnKeyUp";
 	}

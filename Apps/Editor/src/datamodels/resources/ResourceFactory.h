@@ -8,6 +8,7 @@
 #include "datamodels/resources/Resource.h"
 #include "datamodels/resources/TextureRes.h"
 #include "datamodels/resources/SceneRes.h"
+#include "datamodels/resources/ScriptRes.h"
 
 namespace Osiris::Editor
 {
@@ -22,6 +23,8 @@ namespace Osiris::Editor
 				return std::make_shared<TextureRes>(resourceFilePath);
 			case SCENE:
 				return std::make_shared<SceneRes>(resourceFilePath);
+			case SCRIPT:
+				return std::make_shared<ScriptRes>(resourceFilePath);
 			case UNKNOWN:
 			case NONE:
 			default:

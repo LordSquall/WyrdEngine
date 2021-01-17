@@ -28,10 +28,10 @@ namespace Osiris::Editor
 		{
 			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Events,		std::make_shared<EventService>()));
 			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Resources,	std::make_shared<ResourceService>()));
+			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Simulation, std::make_shared<SimulationService>()));
 			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Workspace,	std::make_shared<WorkspaceService>()));
 			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Dialog,		std::make_shared<DialogService>()));
 			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Settings,	std::make_shared<SettingsService>()));
-			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Simulation, std::make_shared<SimulationService>()));
 
 			/* Order matters!!! */
 			_Services[Service::Events]->OnCreate();

@@ -78,4 +78,22 @@ namespace Osiris
 
 		return nullptr;
 	}
+
+
+	std::shared_ptr<GameObject> GameObject::FindChild(const uint32_t uid)
+	{
+		for (auto& child : children)
+		{
+			if (child->GetUID() == uid)
+			{
+				return child;
+			}
+
+			auto found = child->FindChild(uid);
+			if (found != nullptr)
+				return found;
+		}
+
+		return nullptr;
+	}
 }
