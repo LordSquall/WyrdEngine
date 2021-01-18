@@ -98,49 +98,52 @@ namespace Osiris::Editor
 
 	void SceneViewer::OnRender(Timestep ts, Renderer& renderer)
 	{
-		_CameraController->OnUpdate(ts);
-
-		_Shader->Bind();
-
-		_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
-
-		_Framebuffer->Bind();
-	
-		renderer.Clear(0.1f, 0.1f, 0.1f);
-
-		if (_Scene != nullptr)
+		if (_Framebuffer->GetConfig().height > 0 && _Framebuffer->GetConfig().width > 0)
 		{
-			/* Render Each sprite layer */
-			for (auto sl : _Scene->layers2D)
-			{
-				for (auto go : sl->children)
-				{
-					RenderGameObject(go, ts, renderer);
-				}
-			}
+			_CameraController->OnUpdate(ts);
 
-			for (auto sl : _Scene->layers2D)
+			_Shader->Bind();
+
+			_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
+
+			_Framebuffer->Bind();
+
+			renderer.Clear(0.1f, 0.1f, 0.1f);
+
+			if (_Scene != nullptr)
 			{
-				for (auto go : sl->children)
+				/* Render Each sprite layer */
+				for (auto sl : _Scene->layers2D)
 				{
-					for (auto component : go->components)
+					for (auto go : sl->children)
 					{
-						if (component->debugOverlayFunction)
+						RenderGameObject(go, ts, renderer);
+					}
+				}
+
+				for (auto sl : _Scene->layers2D)
+				{
+					for (auto go : sl->children)
+					{
+						for (auto component : go->components)
 						{
-							component->debugOverlayFunction(_CameraController->GetCamera().GetViewProjectionMatrix());
+							if (component->debugOverlayFunction)
+							{
+								component->debugOverlayFunction(_CameraController->GetCamera().GetViewProjectionMatrix());
+							}
 						}
 					}
 				}
+
+				if (_SelectedGameObject != NULL)
+				{
+					_TranslationGizmo->SetGameObject(_SelectedGameObject);
+					_TranslationGizmo->Render(ts, renderer);
+				}
 			}
 
-			if (_SelectedGameObject != NULL)
-			{
-				_TranslationGizmo->SetGameObject(_SelectedGameObject);
-				_TranslationGizmo->Render(ts, renderer);
-			}
+			_Framebuffer->Unbind();
 		}
-
-		_Framebuffer->Unbind();
 	}
 
 	void SceneViewer::OnEvent(Event& event)

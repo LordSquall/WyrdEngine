@@ -149,7 +149,7 @@ namespace Osiris
 		GLenum err = glGetError();
 
 		if (err != GL_NO_ERROR)
-			OSR_CORE_ERROR(err);
+			OpenGLError::Resolve(err);
 	}
 
 	void OpenGLShader::SetModelMatrix(const glm::mat4& mat)

@@ -82,7 +82,7 @@ namespace Osiris
 		GLenum err = glGetError();
 
 		if (err != GL_NO_ERROR)
-			OSR_CORE_ERROR(err);
+			OpenGLError::Resolve(err);
 	}
 
 	OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferConfig& config)

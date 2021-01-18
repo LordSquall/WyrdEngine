@@ -430,6 +430,7 @@ namespace Osiris::Editor
 				ImGui::NextColumn();
 				resIdx++;
 			}
+			ImGui::Columns(1);
 		}
 		ImGui::PopStyleVar();
 	}
