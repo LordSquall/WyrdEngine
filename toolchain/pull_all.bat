@@ -22,5 +22,14 @@ cd ..
 cd mono
 git pull
 cd ..
+cd stduuid
+git pull
+cd ..
+cd Hash
+git pull
+cd ..
+cd GSL
+git pull
+cd ..
 
 setx OSIRIS_EXTERN_REPOS %CD%
