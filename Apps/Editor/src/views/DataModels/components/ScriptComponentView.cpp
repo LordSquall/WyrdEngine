@@ -17,51 +17,47 @@ namespace Osiris::Editor
 {
 	void ScriptComponentView::OnPropertyEditorDraw()
 	{
-		if (ImGui::TreeNodeEx("Script", ImGuiTreeNodeFlags_DefaultOpen))
+		if (_BaseComponent->GetClass() != nullptr)
 		{
-			if (_BaseComponent->GetClass() != nullptr)
-			{
-				ImGui::Text(_BaseComponent->GetClass()->GetName().c_str());
-			}
-			else
-			{
-				ImGui::Text("<<unbound>>");
-			}
-
-			if (ImGui::BeginDragDropTarget())
-			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ASSET_PAYLOAD"))
-				{
-					std::shared_ptr<ScriptRes> scriptRes = *(std::shared_ptr<ScriptRes>*)payload->Data;
-					_BaseComponent->SetClass(scriptRes->Script);
-					_BaseComponent->SetUUID(scriptRes->GetResourceID());
-				}
-				ImGui::EndDragDropTarget();
-			}
-
-			for (auto& prop : _BaseComponent->Properties)
-			{
-				switch (prop.type)
-				{
-				case PropType::INT:
-					DrawIntUI(prop);
-					break;
-				case PropType::FLOAT:
-					DrawFloatUI(prop);
-					break;
-				case PropType::STRING:
-					DrawStringUI(prop);
-					break;
-				case PropType::GAMEOBJECT:
-					DrawGameObjectUI(prop);
-					break;
-				default:
-					ImGui::Text("%s - Unknown Type", prop.name.c_str());
-				}
-			}
-
-			ImGui::TreePop();
+			ImGui::Text(_BaseComponent->GetClass()->GetName().c_str());
 		}
+		else
+		{
+			ImGui::Text("<<unbound>>");
+		}
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ASSET_PAYLOAD"))
+			{
+				std::shared_ptr<ScriptRes> scriptRes = *(std::shared_ptr<ScriptRes>*)payload->Data;
+				_BaseComponent->SetClass(scriptRes->Script);
+				_BaseComponent->SetUUID(scriptRes->GetResourceID());
+			}
+			ImGui::EndDragDropTarget();
+		}
+
+		for (auto& prop : _BaseComponent->Properties)
+		{
+			switch (prop.type)
+			{
+			case PropType::INT:
+				DrawIntUI(prop);
+				break;
+			case PropType::FLOAT:
+				DrawFloatUI(prop);
+				break;
+			case PropType::STRING:
+				DrawStringUI(prop);
+				break;
+			case PropType::GAMEOBJECT:
+				DrawGameObjectUI(prop);
+				break;
+			default:
+				ImGui::Text("%s - Unknown Type", prop.name.c_str());
+			}
+		}
+
 	}
 
 	void ScriptComponentView::DrawIntUI(PropertyDesc& prop)

@@ -10,6 +10,7 @@
 #include "PropertyViewFactory.h"
 #include "views/DataModels/components/Transform2DView.h"
 #include "services/ServiceManager.h"
+#include "support/ImGuiUtils.h"
 
 /* external includes */
 #include <imgui.h>
@@ -21,8 +22,10 @@ namespace Osiris::Editor
 
 	PropertiesViewer::PropertiesViewer(EditorLayer* editorLayer) : EditorViewBase("Properties", editorLayer), _Mode(None)
 	{
-		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(PropertiesViewer::OnSelectedGameObjectChanged));
-		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Events::EventType::SelectedAssetChanged, EVENT_FUNC(PropertiesViewer::OnSelectedAssetChanged));
+		_EventService = ServiceManager::Get<EventService>(ServiceManager::Service::Events);
+
+		_EventService->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(PropertiesViewer::OnSelectedGameObjectChanged));
+		_EventService->Subscribe(Events::EventType::SelectedAssetChanged, EVENT_FUNC(PropertiesViewer::OnSelectedAssetChanged));
 	}
 
 	PropertiesViewer::~PropertiesViewer() {}
@@ -58,6 +61,18 @@ namespace Osiris::Editor
 
 		_SelectedGameObject = evtArgs.gameObject;
 
+		RefreshComponentViews();
+	}
+
+	void PropertiesViewer::OnSelectedAssetChanged(Events::EventArgs& args)
+	{
+		Events::SelectedAssetChangedArgs& evtArgs = static_cast<Events::SelectedAssetChangedArgs&>(args);
+		_SelectedAsset = evtArgs.resource;
+		_Mode = AssetUI;
+	}
+
+	void PropertiesViewer::RefreshComponentViews()
+	{
 		/* clear the property views */
 		_PropertiesViews.clear();
 
@@ -78,13 +93,6 @@ namespace Osiris::Editor
 		}
 	}
 
-	void PropertiesViewer::OnSelectedAssetChanged(Events::EventArgs& args)
-	{
-		Events::SelectedAssetChangedArgs& evtArgs = static_cast<Events::SelectedAssetChangedArgs&>(args);
-		_SelectedAsset = evtArgs.resource;
-		_Mode = AssetUI;
-	}
-
 	void PropertiesViewer::DrawGameObjectUI()
 	{
 		if (_SelectedGameObject != NULL)
@@ -100,10 +108,37 @@ namespace Osiris::Editor
 
 			ImGui::Separator();
 
-
+			
+			int componentIdx = 0;
+			int removableIdx = -1;
 			for (auto& view : _PropertiesViews)
 			{
-				view->OnPropertyEditorDraw();
+				ImGui::AlignTextToFramePadding();
+				if (ImGui::TreeNodeEx(view->GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap))
+				{
+					if (view->GetEnabledControls())
+					{
+						ImGui::SameLine(ImGui::GetWindowWidth() - 30);
+						if (ImGui::Button("x"))
+						{
+							removableIdx = componentIdx - 1;
+						}
+					}
+
+					view->OnPropertyEditorDraw();
+
+					ImGui::TreePop();
+				}
+				componentIdx++;
+			}
+
+			if (removableIdx != -1)
+			{
+				_SelectedGameObject->components.erase(_SelectedGameObject->components.begin() + removableIdx);
+
+				RefreshComponentViews();
+
+				removableIdx = -1;
 			}
 		}
 	}

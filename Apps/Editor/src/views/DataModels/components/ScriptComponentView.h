@@ -26,6 +26,8 @@ namespace Osiris::Editor {
 
 		void OnPropertyEditorDraw() override;
 
+		const std::string GetName() override { return "Script"; }
+
 	private:
 		void DrawIntUI(PropertyDesc& prop);
 		void DrawFloatUI(PropertyDesc& prop);

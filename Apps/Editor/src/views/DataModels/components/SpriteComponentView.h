@@ -22,6 +22,8 @@ namespace Osiris::Editor {
 
 		void OnPropertyEditorDraw() override;
 
+		const std::string GetName() override { return "Sprite"; }
+
 	private:
 		Osiris::SpriteComponent* _BaseComponent;
 	};

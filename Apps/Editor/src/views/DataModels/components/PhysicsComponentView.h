@@ -24,6 +24,8 @@ namespace Osiris::Editor {
 		void OnPropertyEditorDraw() override;
 		void OnSceneViewerDraw(const glm::mat4& viewProjectMatrix) override;
 
+		const std::string GetName() override { return "Physics"; }
+
 	private:
 		PhysicsComponent* _BaseComponent;
 	};

@@ -23,6 +23,8 @@ namespace Osiris::Editor {
 	
 		void OnPropertyEditorDraw() override;
 
+		const std::string GetName() override { return "Transform (2D)"; }
+
 	private:
 		Transform2DComponent* _BaseComponent;
 	};

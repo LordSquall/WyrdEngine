@@ -10,6 +10,8 @@
 
 namespace Osiris::Editor
 {
+	class EventService;
+
 	class PropertiesViewer : public EditorViewBase
 	{
 	public:
@@ -29,9 +31,12 @@ namespace Osiris::Editor
 		void OnSelectedGameObjectChanged(Events::EventArgs& args);
 		void OnSelectedAssetChanged(Events::EventArgs& args);
 		
+		void RefreshComponentViews();
+		
 		void DrawGameObjectUI();
 		void DrawAssetUI();
 
+		std::shared_ptr<EventService> _EventService;
 		std::list<std::shared_ptr<IPropertiesView>> _PropertiesViews;
 		static std::shared_ptr<Osiris::GameObject> _SelectedGameObject;
 		static std::shared_ptr<Resource> _SelectedAsset;
