@@ -20,7 +20,7 @@ namespace Osiris::Editor
 		_CameraController = cameraController;
 
 		/* retrive textures and icons */
-		_Icon = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetIconLibrary().GetIcon(std::string("gizmos"), std::string("gizmo_translate2D"));
+		_Icon = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetIconLibrary().GetIcon(std::string("common"), std::string("gizmo_translate"));
 
 		/* Create and bind a default VAO */
 		_VertexArray.reset(VertexArray::Create());
@@ -48,8 +48,14 @@ namespace Osiris::Editor
 		_VertexArray->SetAttribute(0, 0, 2);
 		_VertexArray->SetAttribute(1, 2, 2);
 
+		/* bind the shader */
+		_Shader->Bind();
+
 		/* set the vp matrix to a standard otho matrix */
 		_Shader->SetVPMatrix(glm::ortho(0.0f, _CameraController->GetCamera().GetRight(), 0.0f, _CameraController->GetCamera().GetTop()));
+
+		/* set the blend color */
+		_Shader->SetUniformVec3("blendColor", glm::vec3{ 1.0f, 1.0f, 1.0f });
 
 		return;
 	}

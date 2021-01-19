@@ -116,9 +116,6 @@ namespace Osiris::Editor
 		std::map<UUID, std::shared_ptr<Resource>> result;
 
 		std::filesystem::path compDir(dir);
-		OSR_TRACE("{0}", compDir.root_path().string());
-		OSR_TRACE("{0}", compDir.relative_path().string());
-		OSR_TRACE("{0}", compDir.parent_path().string());
 		for (auto&& res : _resourceMap)
 		{
 			std::filesystem::path p(res.second->GetPath());

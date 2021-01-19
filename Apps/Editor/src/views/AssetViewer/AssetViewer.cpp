@@ -195,7 +195,6 @@ namespace Osiris::Editor
 		RefreshSubDir(Utils::GetAssetFolder(), directoryTree);
 	}
 
-
 	void AssetViewer::RefreshSubDir(const std::string& folder, AssetViewer::DirectoryEntry_s& dirEntry)
 	{
 		/* clear previous data */

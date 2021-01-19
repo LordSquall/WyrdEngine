@@ -75,7 +75,7 @@ namespace Osiris
 			}
 			else
 			{
-				OSR_TRACE("Unable to parse C# property '{0}'. Missing Get/Set function!", propertyDesc.name);
+				OSR_WARN("Unable to parse C# property '{0}'. Missing Get/Set function!", propertyDesc.name);
 			}
 		}
 	}

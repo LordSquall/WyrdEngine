@@ -36,10 +36,6 @@ namespace Osiris::Editor
 		/* initialise camera */
 		_CameraController = std::make_shared<OrthographicCameraController>(1.0f, 1.0f);
 
-
-		/* setup the iconset */
-		ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetIconLibrary().AddIconsFromFile(std::string("res/icons/gizmo-icons.json"));
-
 		/* setup the gizmo shader */
 		std::ifstream vertexStream("res/shaders/gizmo.vert");
 		std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
