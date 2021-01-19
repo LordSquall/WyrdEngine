@@ -216,6 +216,8 @@ namespace Osiris::Editor
 						foundPro->objectVal = (int)propObj.get<jsonxx::Number>("value");
 						foundPro->objectNameVal = propObj.get<jsonxx::String>("nameValue").c_str();
 						break;
+					case PropType::COLOR:
+						Read_Color(propObj.get<jsonxx::Array>("value"), &foundPro->colorVal);
 					default:
 						break;
 					}
@@ -241,11 +243,14 @@ namespace Osiris::Editor
 		{
 			componentJson << "ScriptUUID" << script->GetUUID().str();
 		
+
 			/* write components */
 			jsonxx::Array properties;
 			for (auto& prop : script->Properties)
 			{
 				jsonxx::Object propObj;
+				jsonxx::Array colorArray;
+				
 				propObj << "name" << prop.name;
 				propObj << "type" << static_cast<std::underlying_type<PropType>::type>(prop.type);
 				switch (prop.type)
@@ -263,6 +268,13 @@ namespace Osiris::Editor
 					propObj << "value" << prop.objectVal;
 					propObj << "nameValue" << prop.objectNameVal;
 					propObj << "objectClassNameVal" << prop.objectClassNameVal;
+					break;
+				case PropType::COLOR:
+					colorArray.append(prop.colorVal.r);
+					colorArray.append(prop.colorVal.g);
+					colorArray.append(prop.colorVal.b);
+					colorArray.append(prop.colorVal.a);
+					propObj << "value" << colorArray;
 					break;
 				default:
 					break;

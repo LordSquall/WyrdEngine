@@ -1,6 +1,10 @@
 #pragma once
 
+/* local includes */
 #include "osrpch.h"
+
+/* external includes */
+#include <glm/glm.hpp>
 
 enum struct PropType
 {
@@ -30,4 +34,5 @@ struct PropertyDesc
 	int objectVal;
 	std::string objectNameVal;
 	std::string objectClassNameVal;
+	glm::vec4 colorVal;
 };

@@ -5,9 +5,9 @@ namespace OsirisAPI
 {
     public class SpriteRenderer : UnmanagedObject
     {
-        public void SetColor(float red, float green, float blue, float alpha)
+        public void SetColor(Color color)
         {
-            SpriteRenderer_SetColor(_NativePointer, red, green, blue, alpha);
+            SpriteRenderer_SetColor(_NativePointer, color.R, color.G, color.B, color.A);
         }
 
         public void SetSize(float x, float y)

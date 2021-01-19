@@ -479,6 +479,38 @@ namespace Osiris
 
 							mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
 							break;
+						case PropType::COLOR:
+						{
+							MonoClass* colorClass = (MonoClass*)_ScriptedClasses["Color"]->ManagedClass;
+							MonoObject* colorObject = mono_object_new((MonoDomain*)_Domain, colorClass);
+
+							MonoProperty* rProperty = mono_class_get_property_from_name(colorClass, "R");
+							MonoProperty* gProperty = mono_class_get_property_from_name(colorClass, "G");
+							MonoProperty* bProperty = mono_class_get_property_from_name(colorClass, "B");
+							MonoProperty* aProperty = mono_class_get_property_from_name(colorClass, "A");
+
+							MonoMethod* rPropSetter = mono_property_get_set_method(rProperty);
+							MonoMethod* gPropSetter = mono_property_get_set_method(gProperty);
+							MonoMethod* bPropSetter = mono_property_get_set_method(bProperty);
+							MonoMethod* aPropSetter = mono_property_get_set_method(aProperty);
+
+							args.push_back(&prop.colorVal.r);
+							args.push_back(&prop.colorVal.g);
+							args.push_back(&prop.colorVal.b);
+							args.push_back(&prop.colorVal.a);
+
+							mono_runtime_invoke(rPropSetter, colorObject, &args[0], nullptr);
+							mono_runtime_invoke(gPropSetter, colorObject, &args[1], nullptr);
+							mono_runtime_invoke(bPropSetter, colorObject, &args[2], nullptr);
+							mono_runtime_invoke(aPropSetter, colorObject, &args[3], nullptr);
+
+							args.clear();
+
+							args.push_back(colorObject);
+
+							mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
+						}
+						break;
 						default:
 							OSR_CORE_TRACE("Unknown Type. Skipping Property serialisation!");
 							break;

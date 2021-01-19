@@ -34,6 +34,7 @@ namespace Osiris::Editor {
 		void DrawStringUI(PropertyDesc& prop);
 		void DrawGameObjectUI(PropertyDesc& prop);
 		void DrawTextureResourceUI(PropertyDesc& prop);
+		void DrawColorUI(PropertyDesc& prop);
 
 	private:
 		ScriptComponent* _BaseComponent;

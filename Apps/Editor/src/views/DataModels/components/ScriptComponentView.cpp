@@ -53,6 +53,9 @@ namespace Osiris::Editor
 			case PropType::GAMEOBJECT:
 				DrawGameObjectUI(prop);
 				break;
+			case PropType::COLOR:
+				DrawColorUI(prop);
+				break;
 			default:
 				ImGui::Text("%s - Unknown Type", prop.name.c_str());
 			}
@@ -168,6 +171,19 @@ namespace Osiris::Editor
 
 			}
 			ImGui::EndDragDropTarget();
+		}
+	}
+
+	void ScriptComponentView::DrawColorUI(PropertyDesc& prop)
+	{
+		float channels[4] = { prop.colorVal.r, prop.colorVal.g, prop.colorVal.b, prop.colorVal.a };
+
+		if (ImGui::ColorEdit4(prop.name.c_str(), &channels[0], ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview))
+		{
+			prop.colorVal.r = channels[0];
+			prop.colorVal.g = channels[1];
+			prop.colorVal.b = channels[2];
+			prop.colorVal.a = channels[3];
 		}
 	}
 }
