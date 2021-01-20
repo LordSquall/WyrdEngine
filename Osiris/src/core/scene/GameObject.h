@@ -3,6 +3,7 @@
 /* Local includes */
 #include "core/export.h"
 #include "core/scene/components/IBaseComponent.h"
+#include "core/UID.h"
 
 /* external includes */
 #include <glm/glm.hpp>
@@ -26,14 +27,12 @@ namespace Osiris {
 		~GameObject();
 
 		void AddChild(std::shared_ptr<GameObject> gameObject);
-		void RemoveChild(int uid);
-		void DuplicateChild(int uid);
+		void RemoveChild(UID uid);
+		void DuplicateChild(UID uid);
 		void SwapChild(int a, int b);
 
-		std::shared_ptr<GameObject> FindChild(const uint32_t uid);
+		std::shared_ptr<GameObject> FindChild(const UID uid);
 		std::shared_ptr<ScriptComponent> FindScriptComponent(const std::string& name);
-
-		inline uint32_t GetUID() { return _uid; }
 
 	public:
 		std::string name;
@@ -50,10 +49,8 @@ namespace Osiris {
 		std::vector<std::shared_ptr<GameObject>> children;
 
 		glm::vec4 inputArea;
-	private:
-		uint32_t _uid = 0u;
-		static uint32_t _nextUid;
 
+		UID uid;
 	};
 
 }

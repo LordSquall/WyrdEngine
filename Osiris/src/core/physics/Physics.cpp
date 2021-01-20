@@ -56,7 +56,7 @@ namespace Osiris
 				for (auto &physicsB : _physicsObjects)
 				{
 					/* we don't want to evaluate self colisions */
-					if (physicsA->Owner->GetUID() != physicsB->Owner->GetUID())
+					if (physicsA->Owner->uid != physicsB->Owner->uid)
 					{
 						/* first of all, if the AABB is overlapping then we need to update the collision states */
 						if (physicsA->GetAABB().ContainsRect(physicsB->GetAABB()))

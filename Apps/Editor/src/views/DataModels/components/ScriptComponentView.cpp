@@ -93,7 +93,7 @@ namespace Osiris::Editor
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GAMEOBJECT"))
 			{
-				uint32_t gameObjectID = *(const uint32_t*)payload->Data;
+				UID gameObjectID = *(const UID*)payload->Data;
 				std::shared_ptr<GameObject> gameObject = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace)->GetLoadedScene()->FindGameObject(gameObjectID);
 				
 				std::shared_ptr<IBaseComponent> scriptComponent = nullptr;
@@ -118,7 +118,7 @@ namespace Osiris::Editor
 					prop.objectVal = gameObjectID;
 					prop.objectNameVal = gameObject->name;
 					prop.objectClassNameVal = className;
-					OSR_TRACE("GameObject found {0} {1}", gameObject->GetUID(), gameObject->name);
+					OSR_TRACE("GameObject found {0} {1}", gameObject->uid.str(), gameObject->name);
 				}
 				else
 				{
@@ -137,7 +137,7 @@ namespace Osiris::Editor
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GAMEOBJECT"))
 			{
-				uint32_t gameObjectID = *(const uint32_t*)payload->Data;
+				UID gameObjectID = *(const UID*)payload->Data;
 				std::shared_ptr<GameObject> gameObject = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace)->GetLoadedScene()->FindGameObject(gameObjectID);
 
 				std::shared_ptr<IBaseComponent> scriptComponent = nullptr;
@@ -162,7 +162,7 @@ namespace Osiris::Editor
 					prop.objectVal = gameObjectID;
 					prop.objectNameVal = gameObject->name;
 					prop.objectClassNameVal = className;
-					OSR_TRACE("GameObject found {0} {1}", gameObject->GetUID(), gameObject->name);
+					OSR_TRACE("GameObject found {0} {1}", gameObject->uid.str(), gameObject->name);
 				}
 				else
 				{

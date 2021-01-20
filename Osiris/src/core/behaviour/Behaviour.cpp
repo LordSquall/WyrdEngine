@@ -240,12 +240,12 @@ namespace Osiris
 		return _ScriptedCustomClasses[name]; 
 	}
 
-	std::shared_ptr<ScriptedGameObject> Behaviour::GetGameObject(uint32_t uid) 
+	std::shared_ptr<ScriptedGameObject> Behaviour::GetGameObject(UID uid)
 	{ 
 		return _ScriptedGameObjects[uid]; 
 	}
 
-	std::shared_ptr<ScriptedCustomObject> Behaviour::GetCustomObject(uint32_t uid) 
+	std::shared_ptr<ScriptedCustomObject> Behaviour::GetCustomObject(UID uid)
 	{ 
 		return _ScriptedCustomObjects[uid]; 
 	}
@@ -258,7 +258,7 @@ namespace Osiris
 			{
 				ScriptComponent* scriptComponent = (ScriptComponent*)&*component;
 
-				args.insert(args.begin(), _ScriptedGameObjects[triggerObject->GetUID()]->Object);
+				args.insert(args.begin(), _ScriptedGameObjects[triggerObject->uid]->Object);
 
 				MonoUtils::ExecuteScriptMethod((ScriptComponent*)&*component, funcName, args);
 			}
@@ -371,7 +371,7 @@ namespace Osiris
 			BuildManagedGameObjects(go, gameObjectClass);
 		}
 
-		_ScriptedGameObjects[gameObject->GetUID()] = std::make_shared<ScriptedGameObject>(_Domain, gameObjectClass, gameObject);
+		_ScriptedGameObjects[gameObject->uid] = std::make_shared<ScriptedGameObject>(_Domain, gameObjectClass, gameObject);
 	}
 
 	void Behaviour::LinkManagedGameObjects()
@@ -406,10 +406,10 @@ namespace Osiris
 					std::shared_ptr<ScriptedCustomObject> newCustomObject = std::make_shared<ScriptedCustomObject>(_Domain, scriptComponent->GetClass());
 
 					/* Store within the Behaviour Subsystem */
-					_ScriptedCustomObjects.emplace(gameObject->GetUID(), newCustomObject);
+					_ScriptedCustomObjects.emplace(gameObject->uid, newCustomObject);
 
 					/* Set the native game object pointer */
-					newCustomObject->SetGameObject(_ScriptedGameObjects[gameObject->GetUID()]);
+					newCustomObject->SetGameObject(_ScriptedGameObjects[gameObject->uid]);
 
 					newCustomObject->SetName(scriptComponent->GetClass()->GetName() + "_inst");
 

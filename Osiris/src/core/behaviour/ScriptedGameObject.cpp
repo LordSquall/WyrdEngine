@@ -31,7 +31,7 @@ namespace Osiris
 		_Methods["LinkToManaged"] = MonoUtils::FindMethodInClass(behaviour.GetClass("GameObjectManager"), "LinkToManaged", 2, true);
 
 		/* build property arguments */
-		int uid = gameObject->GetUID();
+		UID uid = gameObject->uid;
 		void* createMethodArgs[1];
 		createMethodArgs[0] = &uid;
 

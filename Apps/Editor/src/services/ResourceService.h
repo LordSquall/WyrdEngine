@@ -23,15 +23,15 @@ namespace Osiris::Editor
 		virtual void OnDestroy() override;
 		virtual void OnUpdate() override;
 
-		void AddResource(std::string& resourcePath, const UUID uuid);
-		void ReloadResource(UUID uuid);
-		void DeleteResource(UUID uuid);
+		void AddResource(std::string& resourcePath, const UID uid);
+		void ReloadResource(UID uid);
+		void DeleteResource(UID uid);
 
 		/* Icon Functions */
 		inline IconLibrary& GetIconLibrary() { return _iconLibrary; }
 
 		template<class T>
-		std::shared_ptr<T> GetResourceByID(const UUID resourceId)
+		std::shared_ptr<T> GetResourceByID(const UID resourceId)
 		{
 			auto it = _resourceMap.find(resourceId);
 
@@ -42,13 +42,13 @@ namespace Osiris::Editor
 			return nullptr;
 		}
 
-		inline const std::map<UUID, std::shared_ptr<Resource>> GetResources() { return _resourceMap; };
+		inline const std::map<UID, std::shared_ptr<Resource>> GetResources() { return _resourceMap; };
 
 		std::shared_ptr<ScriptRes> GetScriptResourceByName(const std::string& name);
 
 		inline const std::shared_ptr<TextureRes> GetDefaultTexture() { return _defaultTexture; };
 
-		std::map<UUID, std::shared_ptr<Resource>> GetResourcesByDir(const std::string& dir);
+		std::map<UID, std::shared_ptr<Resource>> GetResourcesByDir(const std::string& dir);
 
 		/* Helper Functions */
 		bool CheckIgnored(const std::string& path);
@@ -56,7 +56,7 @@ namespace Osiris::Editor
 		void BuildScripts();
 
 	public:
-		std::map<std::string, UUID> CachedFiles;
+		std::map<std::string, UID> CachedFiles;
 
 	private:
 		bool LoadAssetCache(const std::string& filePath);
@@ -71,7 +71,7 @@ namespace Osiris::Editor
 	private:
 		IconLibrary _iconLibrary;
 
-		std::map<UUID, std::shared_ptr<Resource>> _resourceMap;
+		std::map<UID, std::shared_ptr<Resource>> _resourceMap;
 
 		std::map<std::string, ResourceType> _extensions;
 

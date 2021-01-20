@@ -47,14 +47,14 @@ namespace Osiris::Editor
 					if (Utils::FileExists(filePath))
 					{
 						/* load and add as a new resource */
-						_ResourceService->AddResource(filePath, UUID(uuid));
+						_ResourceService->AddResource(filePath, UID(uuid));
 					}
 					else
 					{
 						OSR_TRACE("Missing File from cache: {0}", filePath);
 					}
 
-					_ResourceService->CachedFiles[filePath] = UUID(uuid);
+					_ResourceService->CachedFiles[filePath] = UID(uuid);
 				}
 			}
 			else

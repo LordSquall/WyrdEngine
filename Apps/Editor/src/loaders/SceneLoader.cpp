@@ -137,7 +137,7 @@ namespace Osiris::Editor
 		component->sprite->SetSize((int)spriteSize.x, (int)spriteSize.y);
 		component->sprite->SetPosition((int)spritePosition.x, (int)spritePosition.y);
 
-		UUID uuid = UUID(json.get<jsonxx::String>("baseTexture"));
+		UID uuid = UID(json.get<jsonxx::String>("baseTexture"));
 		std::shared_ptr<TextureRes> textureRes = _resourceService->GetResourceByID<TextureRes>(uuid);
 		component->BaseTexture = textureRes->GetTexture();
 		component->SetUUID(uuid);
@@ -177,7 +177,7 @@ namespace Osiris::Editor
 		std::shared_ptr<Osiris::ScriptComponent> component = std::make_shared<Osiris::ScriptComponent>(owner);
 
 		/* retrieve json parameters */
-		UUID scriptUUID = UUID(json.get<jsonxx::String>("ScriptUUID", ""));
+		UID scriptUUID = UID(json.get<jsonxx::String>("ScriptUUID", ""));
 
 		/* configure properties */
 		std::shared_ptr<ScriptRes> scriptResource = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetResourceByID<ScriptRes>(scriptUUID);
@@ -213,7 +213,7 @@ namespace Osiris::Editor
 						foundPro->stringVal = propObj.get<jsonxx::String>("value").c_str();
 						break;
 					case PropType::GAMEOBJECT:
-						foundPro->objectVal = (int)propObj.get<jsonxx::Number>("value");
+						foundPro->objectVal = UID(propObj.get<jsonxx::String>("value"));
 						foundPro->objectNameVal = propObj.get<jsonxx::String>("nameValue").c_str();
 						break;
 					case PropType::COLOR:
@@ -265,7 +265,7 @@ namespace Osiris::Editor
 					propObj << "value" << prop.stringVal;
 					break;
 				case PropType::GAMEOBJECT:
-					propObj << "value" << prop.objectVal;
+					propObj << "value" << prop.objectVal.str();
 					propObj << "nameValue" << prop.objectNameVal;
 					propObj << "objectClassNameVal" << prop.objectClassNameVal;
 					break;
@@ -327,6 +327,12 @@ namespace Osiris::Editor
 		/* set parent */
 		gameObject->parent = parent;
 
+		/* retrieve the game object uid */
+		if (json.has<jsonxx::String>("uid"))
+			gameObject->uid = UID(json.get<jsonxx::String>("uid"));
+		else
+			gameObject->uid = UIDUtils::Create();
+
 		/* configure properties */
 		gameObject->name = json.get<jsonxx::String>("name", "untitled");
 
@@ -375,6 +381,7 @@ namespace Osiris::Editor
 		jsonxx::Object gameObjectJson;
 
 		/* base properties */
+		gameObjectJson << "uid" << gameObject->uid.str();
 		gameObjectJson << "name" << gameObject->name;
 
 		/* write requried components */

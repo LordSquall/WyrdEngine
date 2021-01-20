@@ -157,9 +157,9 @@ namespace Osiris::Editor
 				if (ImGui::MenuItem("Delete") == true)
 				{
 					if(_SelectedGameObject->parent == nullptr)
-						_SelectedLayer2D->RemoveChild(_SelectedGameObject->GetUID());
+						_SelectedLayer2D->RemoveChild(_SelectedGameObject->uid);
 					else
-						_SelectedGameObject->parent->RemoveChild(_SelectedGameObject->GetUID());
+						_SelectedGameObject->parent->RemoveChild(_SelectedGameObject->uid);
 				}
 				ImGui::EndPopup();
 			}
@@ -185,7 +185,7 @@ namespace Osiris::Editor
 
 	void SpriteLayerEditor::RenderGameObjectTreeNode(std::shared_ptr<GameObject> gameObject)
 	{
-		ImGui::PushID(gameObject->GetUID());
+		ImGui::PushID(gameObject->uid.str().c_str());
 
 		/* Build treenode flags */
 		ImGuiTreeNodeFlags TreeNodeEx_flags = ImGuiTreeNodeFlags_None;
@@ -197,8 +197,8 @@ namespace Osiris::Editor
 		{
 			if (ImGui::BeginDragDropSource())
 			{
-				uint32_t uid = _DraggingSelectedGameObject->GetUID();
-				ImGui::SetDragDropPayload("GAMEOBJECT", &uid, sizeof(uint32_t), 0);
+				UID uid = _DraggingSelectedGameObject->uid;
+				ImGui::SetDragDropPayload("GAMEOBJECT", &uid, sizeof(UID), 0);
 				ImGui::Text(_DraggingSelectedGameObject->name.c_str());
 				ImGui::EndDragDropSource();
 			}

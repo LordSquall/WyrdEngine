@@ -13,25 +13,21 @@
 
 namespace Osiris
 {
-	uint32_t GameObject::_nextUid = 1u;
-
-	GameObject::GameObject() : name("Untitled"), _uid(_nextUid)
+	GameObject::GameObject() : name("Untitled")
 	{
-		_nextUid++;
 	}
 
-	GameObject::GameObject(std::string name) : name(name), _uid(_nextUid)
+	GameObject::GameObject(std::string name) : name(name)
 	{
-		_nextUid++;
 	}
 
-	GameObject::GameObject(const GameObject& obj) : _uid(_nextUid)
+	GameObject::GameObject(const GameObject& obj)
 	{
 		name = obj.name;
 		components = obj.components;
 		inputArea = obj.inputArea;
 
-		_nextUid++;
+		uid = obj.uid;
 	}
 
 	GameObject::~GameObject() { }
@@ -41,15 +37,15 @@ namespace Osiris
 		children.push_back(gameObject);
 	}
 
-	void GameObject::RemoveChild(int uid)
+	void GameObject::RemoveChild(UID uid)
 	{
 		children.erase(std::remove_if(children.begin(), children.end(),
 			[&](const std::shared_ptr<GameObject>& child)
-			{ return child->GetUID() == uid; }),
+			{ return child->uid == uid; }),
 			children.end());
 	}
 
-	void GameObject::DuplicateChild(int uid)
+	void GameObject::DuplicateChild(UID uid)
 	{
 		// TODO
 	}
@@ -80,11 +76,11 @@ namespace Osiris
 	}
 
 
-	std::shared_ptr<GameObject> GameObject::FindChild(const uint32_t uid)
+	std::shared_ptr<GameObject> GameObject::FindChild(const UID uid)
 	{
 		for (auto& child : children)
 		{
-			if (child->GetUID() == uid)
+			if (child->uid == uid)
 			{
 				return child;
 			}

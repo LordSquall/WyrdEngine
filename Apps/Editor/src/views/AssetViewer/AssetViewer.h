@@ -22,7 +22,7 @@ namespace Osiris::Editor
 			std::string name;
 			std::string dir;
 			std::map<uint32_t, DirectoryEntry_s> subdirs;
-			std::map<UUID, std::shared_ptr<Resource>> files;
+			std::map<UID, std::shared_ptr<Resource>> files;
 			DirectoryEntry_s* parent;
 		};
 

@@ -69,7 +69,7 @@ namespace Osiris::Editor
 		}
 	}
 
-	void ResourceService::AddResource(std::string& resourcePath, const UUID uuid)
+	void ResourceService::AddResource(std::string& resourcePath, const UID uid)
 	{
 		if (CheckIgnored(resourcePath) == false)
 		{
@@ -81,16 +81,16 @@ namespace Osiris::Editor
 			{
 				/* create a new resource object */
 				std::shared_ptr<Resource> resource = ResourceFactory::Create(resourceType, resourcePath);
-				resource->SetResourceID(uuid);
+				resource->SetResourceID(uid);
 
 				/* add to the resource map */
-				_resourceMap.insert(std::pair<UUID, std::shared_ptr<Resource>>(resource->GetResourceID(), resource));
+				_resourceMap.insert(std::pair<UID, std::shared_ptr<Resource>>(resource->GetResourceID(), resource));
 
 				/* load all resources for now */
 				resource->Load();
 
-				/* add the cachedFiles*/
-				CachedFiles[resourcePath] = uuid;
+				/* add the cachedFiles */
+				CachedFiles[resourcePath] = uid;
 			}
 		}
 		else
@@ -99,21 +99,21 @@ namespace Osiris::Editor
 		}
 	}
 
-	void ResourceService::ReloadResource(UUID uuid)
+	void ResourceService::ReloadResource(UID uid)
 	{
 
 	}
 
-	void ResourceService::DeleteResource(UUID uuid)
+	void ResourceService::DeleteResource(UID uid)
 	{
 		// unload if required TODO
 
-		_resourceMap.erase(uuid);
+		_resourceMap.erase(uid);
 	}
 
-	std::map<UUID, std::shared_ptr<Resource>> ResourceService::GetResourcesByDir(const std::string& dir)
+	std::map<UID, std::shared_ptr<Resource>> ResourceService::GetResourcesByDir(const std::string& dir)
 	{
-		std::map<UUID, std::shared_ptr<Resource>> result;
+		std::map<UID, std::shared_ptr<Resource>> result;
 
 		std::filesystem::path compDir(dir);
 		for (auto&& res : _resourceMap)
@@ -122,7 +122,7 @@ namespace Osiris::Editor
 
 			if (p.parent_path() == compDir.parent_path())
 			{
-				result.insert(std::pair<UUID, std::shared_ptr<Resource>>(res.first, res.second));
+				result.insert(std::pair<UID, std::shared_ptr<Resource>>(res.first, res.second));
 			}
 		}
 		return result;
@@ -197,7 +197,7 @@ namespace Osiris::Editor
 			/* check if the file is already present from the cache load */
 			if (CachedFiles.find(t) == CachedFiles.end())
 			{
-				AddResource(t, UUIDUtils::Create());
+				AddResource(t, UIDUtils::Create());
 			}
 			else
 			{
@@ -216,7 +216,7 @@ namespace Osiris::Editor
 	{
 		Events::AddFileEntryArgs& a = (Events::AddFileEntryArgs&)args;
 	
-		AddResource(a.filepath, UUIDUtils::Create());
+		AddResource(a.filepath, UIDUtils::Create());
 
 		/* Save the cache file */
 		AssetCacheLoader::Save(Utils::GetCacheFolder() + "/assets.cache");

@@ -439,9 +439,9 @@ namespace Osiris::Editor::Events
 	class DeleteResourceArgs : public EventArgs
 	{
 	public:
-		DeleteResourceArgs(UUID uuid) : uuid(uuid) {}
+		DeleteResourceArgs(UID uuid) : uid(uid) {}
 
-		UUID uuid;
+		UID uid;
 
 		EVENT_ARGS_CLONE(DeleteResourceArgs)
 	};
@@ -459,9 +459,9 @@ namespace Osiris::Editor::Events
 	class ReloadResourceArgs : public EventArgs
 	{
 	public:
-		ReloadResourceArgs(UUID uuid) : uuid(uuid) {}
+		ReloadResourceArgs(UID uuid) : uid(uid) {}
 
-		UUID uuid;
+		UID uid;
 		
 		EVENT_ARGS_CLONE(ReloadResourceArgs)
 	};
@@ -479,10 +479,10 @@ namespace Osiris::Editor::Events
 	class RenameResourceArgs : public EventArgs
 	{
 	public:
-		RenameResourceArgs(const std::string& newName, UUID uuid) : newName(newName), uuid(uuid) {}
+		RenameResourceArgs(const std::string& newName, UID uid) : newName(newName), uid(uid) {}
 
 		std::string newName;
-		UUID uuid;
+		UID uid;
 
 		EVENT_ARGS_CLONE(RenameResourceArgs)
 	};

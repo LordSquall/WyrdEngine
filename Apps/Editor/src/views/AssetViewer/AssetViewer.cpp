@@ -185,7 +185,7 @@ namespace Osiris::Editor
 		directoryTree.parent = nullptr;
 
 		/* get all assets in base asset directory */
-		std::map<UUID, std::shared_ptr<Resource>> dirResources = _resourcesService->GetResourcesByDir(Utils::GetAssetFolder() + "\\");
+		std::map<UID, std::shared_ptr<Resource>> dirResources = _resourcesService->GetResourcesByDir(Utils::GetAssetFolder() + "\\");
 		directoryTree.files.insert(dirResources.begin(), dirResources.end());
 
 		/* increment the dirID to prevent a id clash with the asset folder */
@@ -214,7 +214,7 @@ namespace Osiris::Editor
 					RefreshSubDir(entry.path().string(), newEntry);
 
 					/* get all assets in base asset directory */
-					std::map<UUID, std::shared_ptr<Resource>> dirResources = _resourcesService->GetResourcesByDir(entry.path().string() + "\\");
+					std::map<UID, std::shared_ptr<Resource>> dirResources = _resourcesService->GetResourcesByDir(entry.path().string() + "\\");
 					newEntry.files.insert(dirResources.begin(), dirResources.end());
 
 					newEntry.id = dirId++;
@@ -480,7 +480,7 @@ namespace Osiris::Editor
 			ImGui::BeginTooltip();
 			ImGui::Text(textureResource->GetName().c_str());
 			ImGui::Text("Filename: %s", textureResource->GetPath().c_str());
-			ImGui::Text("UUID: %s", textureResource->GetResourceID().str().c_str());
+			ImGui::Text("UID: %s", textureResource->GetResourceID().str().c_str());
 			ImGui::EndTooltip();
 		}
 

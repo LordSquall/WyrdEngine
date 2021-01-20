@@ -5,6 +5,7 @@
 #include "core/export.h"
 #include "core/Timestep.h"
 #include "core/behaviour/CompileResults.h"
+#include "core/UID.h"
 
 namespace Osiris
 {
@@ -51,8 +52,8 @@ namespace Osiris
 
 		std::shared_ptr<ScriptedClass> GetClass(std::string name);
 		std::shared_ptr<ScriptedClass> GetCustomClass(std::string name);
-		std::shared_ptr<ScriptedGameObject> GetGameObject(uint32_t uid);
-		std::shared_ptr<ScriptedCustomObject> GetCustomObject(uint32_t uid);
+		std::shared_ptr<ScriptedGameObject> GetGameObject(UID uid);
+		std::shared_ptr<ScriptedCustomObject> GetCustomObject(UID uid);
 
 		void BroadcastTriggerCall(std::shared_ptr<GameObject> gameObject, std::string& funcName, std::shared_ptr<GameObject> triggerObject, std::vector<void*> args);
 
@@ -77,8 +78,8 @@ namespace Osiris
 		std::map<std::string, std::shared_ptr<ScriptedClass>>		_ScriptedClasses;
 		std::map<std::string, std::shared_ptr<ScriptedClass>>		_ScriptedCustomClasses;
 
-		std::map<uint32_t, std::shared_ptr<ScriptedGameObject>>		_ScriptedGameObjects;
-		std::map<uint32_t, std::shared_ptr<ScriptedCustomObject>>	_ScriptedCustomObjects;
+		std::map<UID, std::shared_ptr<ScriptedGameObject>>		_ScriptedGameObjects;
+		std::map<UID, std::shared_ptr<ScriptedCustomObject>>	_ScriptedCustomObjects;
 
 		std::map<int, std::string> _FunctionKeyStateMap;
 

@@ -34,14 +34,14 @@ namespace Osiris
 	}
 
 
-	std::shared_ptr<GameObject> Scene::FindGameObject(const uint32_t uid)
+	std::shared_ptr<GameObject> Scene::FindGameObject(const UID uid)
 	{
 		/* update each layer */
 		for (auto& layer : layers2D)
 		{
 			for (auto& gameObject : layer->children)
 			{
-				if (gameObject->GetUID() == uid)
+				if (gameObject->uid == uid)
 					return gameObject;
 
 				auto found = gameObject->FindChild(uid);

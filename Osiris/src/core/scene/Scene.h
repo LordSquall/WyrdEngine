@@ -2,6 +2,7 @@
 
 /* local includes */
 #include "core/export.h"
+#include "core/UID.h"
 
 #include <glm/glm.hpp>
 
@@ -21,7 +22,7 @@ namespace Osiris {
 
 		void Update();
 
-		std::shared_ptr<GameObject> FindGameObject(const uint32_t uid);
+		std::shared_ptr<GameObject> FindGameObject(const UID uid);
 
 	public:
 		std::string name;

@@ -207,7 +207,7 @@ namespace Osiris::Editor
 			{
 				if (ImGui::MenuItem("Delete"))
 				{
-					_SelectedGameObject->parent->RemoveChild(_SelectedGameObject->GetUID());
+					_SelectedGameObject->parent->RemoveChild(_SelectedGameObject->uid);
 					_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(nullptr));
 				}
 				ImGui::EndPopup();
@@ -330,7 +330,7 @@ namespace Osiris::Editor
 		case OSR_KEY_DELETE:
 			if (_SelectedGameObject != nullptr)
 			{
-				_SelectedGameObject->parent->RemoveChild(_SelectedGameObject->GetUID());
+				_SelectedGameObject->parent->RemoveChild(_SelectedGameObject->uid);
 				_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(nullptr));
 			}
 			break;
