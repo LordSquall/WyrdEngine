@@ -473,11 +473,31 @@ namespace Osiris
 							break;
 						case PropType::GAMEOBJECT:
 							// find matching script component class type
-							go = _CurrentScene->FindGameObject(prop.objectVal);
-							sc = go->FindScriptComponent(prop.objectClassNameVal);
-							args.push_back(sc->GetCustomObject()->Object);
+							if (prop.objectClassNameVal == "OsirisAPI.GameObject")
+							{
+								go = _CurrentScene->FindGameObject(prop.objectVal);
+								if (go != nullptr)
+								{
+									if (_ScriptedGameObjects.find(go->uid) != _ScriptedGameObjects.end())
+									{
+										args.push_back(_ScriptedGameObjects[go->uid]->Object);
+									}
+									else
+									{
+										args.push_back(nullptr);
+									}
 
-							mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
+									mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
+								}
+							}
+							else
+							{
+								go = _CurrentScene->FindGameObject(prop.objectVal);
+								sc = go->FindScriptComponent(prop.objectClassNameVal);
+								args.push_back(sc->GetCustomObject()->Object);
+
+								mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
+							}
 							break;
 						case PropType::COLOR:
 						{

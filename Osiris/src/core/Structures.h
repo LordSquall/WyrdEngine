@@ -1,0 +1,18 @@
+#pragma once
+
+#include "core/export.h"
+#include "events/Event.h"
+
+#include "core/renderer/Renderer.h"
+#include "core/Timestep.h"
+
+namespace Osiris {
+
+	struct Color
+	{
+		float r;
+		float g;
+		float b;
+		float a;
+	};
+}

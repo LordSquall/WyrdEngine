@@ -38,10 +38,3 @@ void GameObject_SetVelocity(void* obj, float vX, float vY)
 	
 	gameObject->physics->SetVelocity({ vX, vY });
 }
-
-void GameObject_SetColor(void* obj, float red, float green, float blue, float alpha)
-{
-	Osiris::GameObject* gameObject = (Osiris::GameObject*)obj;
-
-	gameObject->sprite->Color = { red, green, blue, alpha };
-}

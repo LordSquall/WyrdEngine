@@ -598,7 +598,7 @@ namespace Osiris::Editor
 			{
 				_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to delete?",
 					[&](void* data) {
-						Utils::RemoveFile(std::dynamic_pointer_cast<TextureRes> (_currentSelectedResource)->GetPath());
+						Utils::RemoveFile(std::dynamic_pointer_cast<ScriptRes> (_currentSelectedResource)->GetPath());
 					});
 			};
 

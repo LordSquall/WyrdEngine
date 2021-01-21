@@ -16,12 +16,12 @@
 namespace Osiris
 {
 	SpriteComponent::SpriteComponent(std::shared_ptr<GameObject> owner) : IBaseComponent(owner, SceneComponentType::SpriteRenderer)
-		, Color({ 1.0f, 1.0f, 1.0f, 1.0f })
+		, color({ 1.0f, 1.0f, 1.0f, 1.0f })
 	{
 		shader = Resources::Get().Shaders["Sprite"];
 		sprite = std::make_shared<Osiris::Sprite>("NewSprite", 0, 0, 64, 64);
 		BaseTexture = Resources::Get().Textures["DefaultSprite"];
-		Color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	}
 
 	SpriteComponent::SpriteComponent(const SpriteComponent& obj) : IBaseComponent(obj.Owner, SceneComponentType::SpriteRenderer)
@@ -29,7 +29,7 @@ namespace Osiris
 		shader = obj.shader;
 		BaseTexture = obj.BaseTexture;
 		sprite = obj.sprite;
-		Color = obj.Color;
+		color = obj.color;
 	}
 
 	SpriteComponent::~SpriteComponent()
@@ -56,7 +56,7 @@ namespace Osiris
 		BaseTexture->Bind();
 
 		shader->SetModelMatrix(Owner->transform2D->matrix);
-		shader->SetUniformVec4("blendColor", Color);
+		shader->SetUniformVec4("blendColor", glm::vec4(color.r, color.g, color.b, color.a));
 
 		renderer.DrawElements(RendererDrawType::Triangles, 6);
 	}

@@ -8,7 +8,13 @@ void SpriteRenderer_SetColor(void* obj, float red, float green, float blue, floa
 {
 	Osiris::SpriteComponent* spriteComponent = (Osiris::SpriteComponent*)obj;
 
-	spriteComponent->Color = { red, green, blue, alpha };
+	spriteComponent->color = { red, green, blue, alpha };
+}
+
+void SpriteRenderer_GetColor(void* obj, Osiris::Color** color)
+{
+	Osiris::SpriteComponent* spriteComponent = (Osiris::SpriteComponent*)obj;
+	*color = &spriteComponent->color;
 }
 
 void SpriteRenderer_SetSize(void* obj, float x, float y)

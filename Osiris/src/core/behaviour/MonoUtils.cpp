@@ -23,7 +23,13 @@ namespace Osiris
 		MonoMethod* method = &*scriptComponent->GetCustomObject()->GetMethod(functionName);
 		if (method != nullptr)
 		{
-			mono_runtime_invoke(&*scriptComponent->GetCustomObject()->GetMethod(functionName), &*scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
+			MonoObject* exception = nullptr;
+			mono_runtime_invoke(&*scriptComponent->GetCustomObject()->GetMethod(functionName), &*scriptComponent->GetCustomObject()->Object, &args[0], &exception);
+
+			if (exception)
+			{
+				mono_print_unhandled_exception(exception);
+			}
 		}
 
 		return nullptr;

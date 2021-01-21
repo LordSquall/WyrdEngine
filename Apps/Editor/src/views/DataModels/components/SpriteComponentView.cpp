@@ -24,9 +24,9 @@ namespace Osiris::Editor
 		position[1] = _BaseComponent->sprite->GetY();
 		size[0] = _BaseComponent->sprite->GetWidth();
 		size[1] = _BaseComponent->sprite->GetHeight();
-		color[0] = _BaseComponent->Color.r;
-		color[1] = _BaseComponent->Color.g;
-		color[2] = _BaseComponent->Color.b;
+		color[0] = _BaseComponent->color.r;
+		color[1] = _BaseComponent->color.g;
+		color[2] = _BaseComponent->color.b;
 
 		if (ImGui::InputInt2("Pos ", position, 1) == true)
 		{
@@ -60,9 +60,9 @@ namespace Osiris::Editor
 
 		if (ImGui::ColorEdit3("Color", color) == true)
 		{
-			_BaseComponent->Color.r = color[0];
-			_BaseComponent->Color.g = color[1];
-			_BaseComponent->Color.b = color[2];
+			_BaseComponent->color.r = color[0];
+			_BaseComponent->color.g = color[1];
+			_BaseComponent->color.b = color[2];
 		}
 	}
 }

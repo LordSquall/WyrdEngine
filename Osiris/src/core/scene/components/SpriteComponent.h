@@ -2,6 +2,7 @@
 
 /* local includes */
 #include "core/scene/components/IBaseComponent.h"
+#include "core/Structures.h"
 
 /* external includes */
 #include <glm/glm.hpp>
@@ -25,7 +26,7 @@ namespace Osiris {
 		std::shared_ptr<Shader> shader;
 		std::shared_ptr<Texture> BaseTexture;
 		std::shared_ptr<Sprite> sprite;
-		vec4 Color;
+		Color color;
 
 	public:
 		void Initialise();

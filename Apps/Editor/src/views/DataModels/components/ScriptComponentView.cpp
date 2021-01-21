@@ -98,31 +98,42 @@ namespace Osiris::Editor
 				
 				std::shared_ptr<IBaseComponent> scriptComponent = nullptr;
 				std::string className;
-				for (auto& c : gameObject->components)
-				{
-					if(c->GetType() == SceneComponentType::ScriptComponent)
-					{
-						std::shared_ptr<ScriptComponent> sc = std::dynamic_pointer_cast<ScriptComponent>(c);
 
-						if (sc->GetClass()->GetName() == prop.objectClassNameVal)
-						{
-							scriptComponent = sc;
-							className = sc->GetClass()->GetName();
-							OSR_TRACE("Script Component: Typename: {0}", sc->GetClass()->GetName());
-						}
-					}
-				}
-
-				if (scriptComponent)
+				if (prop.objectClassNameVal == "OsirisAPI.GameObject")
 				{
 					prop.objectVal = gameObjectID;
 					prop.objectNameVal = gameObject->name;
-					prop.objectClassNameVal = className;
+					prop.objectClassNameVal = "GameObject";
 					OSR_TRACE("GameObject found {0} {1}", gameObject->uid.str(), gameObject->name);
 				}
 				else
 				{
-					OSR_TRACE("Unable to find matching script component type");
+					for (auto& c : gameObject->components)
+					{
+						if (c->GetType() == SceneComponentType::ScriptComponent)
+						{
+							std::shared_ptr<ScriptComponent> sc = std::dynamic_pointer_cast<ScriptComponent>(c);
+
+							if (sc->GetClass()->GetName() == prop.objectClassNameVal)
+							{
+								scriptComponent = sc;
+								className = sc->GetClass()->GetName();
+								OSR_TRACE("Script Component: Typename: {0}", sc->GetClass()->GetName());
+							}
+						}
+					}
+
+					if (scriptComponent)
+					{
+						prop.objectVal = gameObjectID;
+						prop.objectNameVal = gameObject->name;
+						prop.objectClassNameVal = className;
+						OSR_TRACE("GameObject found {0} {1}", gameObject->uid.str(), gameObject->name);
+					}
+					else
+					{
+						OSR_TRACE("Unable to find matching script component type");
+					}
 				}
 
 			}
