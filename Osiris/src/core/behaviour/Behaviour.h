@@ -43,6 +43,7 @@ namespace Osiris
 		void Update(Timestep ts);
 
 		void SetInputState(int key, int state);
+		void SetInputState(std::shared_ptr<GameObject> gameObject, int key, int state);
 
 		void CompileAll(const std::vector<std::string>& files, const std::string& outputDir, const std::string& projectName, CompileResults& results);
 
@@ -57,6 +58,8 @@ namespace Osiris
 
 		void BroadcastTriggerCall(std::shared_ptr<GameObject> gameObject, std::string& funcName, std::shared_ptr<GameObject> triggerObject, std::vector<void*> args);
 
+		void AddScriptedGameObject(std::shared_ptr<GameObject> gameObject);
+
 	private:
 		void BuildManagedGameObjects();
 		void BuildManagedGameObjects(std::shared_ptr<GameObject> gameObject, std::shared_ptr<ScriptedClass> gameObjectClass);
@@ -69,6 +72,7 @@ namespace Osiris
 
 		void UpdateManagedGameObjects(Timestep ts);
 		void UpdateManagedGameObjects(Timestep ts, std::shared_ptr<GameObject> gameObject);
+
 
 		static void DebugPrintFunc(const std::string& s);
 

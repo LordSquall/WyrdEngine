@@ -17,6 +17,8 @@ LIBRARY_API void GameObject_Scale(void* obj, float x, float y);
 
 LIBRARY_API void GameObject_SetVelocity(void* obj, float vX, float vY);
 
+LIBRARY_API void GameObject_AddChild(void* obj, void* child);
+
 #ifdef __cplusplus
 }
 #endif

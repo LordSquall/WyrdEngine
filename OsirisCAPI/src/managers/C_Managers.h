@@ -11,6 +11,8 @@ LIBRARY_API int GameObject_Get_Component_Count(void* obj);
 
 LIBRARY_API void GameObject_Get_Component(void* obj, int idx, int* type, void** componentPtr);
 
+LIBRARY_API int GameObject_Create(void* behaviourPtr);
+
 #ifdef __cplusplus
 }
 #endif

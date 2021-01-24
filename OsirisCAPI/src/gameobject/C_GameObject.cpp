@@ -38,3 +38,12 @@ void GameObject_SetVelocity(void* obj, float vX, float vY)
 	
 	gameObject->physics->SetVelocity({ vX, vY });
 }
+
+
+void GameObject_AddChild(void* obj, void* child)
+{
+	Osiris::GameObject* gameObject = (Osiris::GameObject*)obj;
+	Osiris::GameObject* childGameObject = (Osiris::GameObject*)child;
+
+	gameObject->AddChild(std::shared_ptr<GameObject>(childGameObject));
+}

@@ -20,6 +20,16 @@ namespace OsirisAPI
 
         #region Public Functions
 
+        public GameObject()
+        {
+            Console.WriteLine("Gameobject Created!!");
+        }
+
+        public GameObject(int uid)
+        {
+            Console.WriteLine("Gameobject Created with {0}!!", uid);
+        }
+
         public void Move(float x, float y)
         {
             GameObject_Move(_NativePointer, x, y);
@@ -65,6 +75,11 @@ namespace OsirisAPI
             return;
         }
 
+        public void AddChild(GameObject gameObject)
+        {
+            GameObject_AddChild(_NativePointer, gameObject.NativePtr);
+        }
+
         #endregion
 
         #region Private Variables
@@ -96,6 +111,10 @@ namespace OsirisAPI
 
         [DllImport("OsirisCAPI")]
         public static extern IntPtr GameObject_SetVelocity(IntPtr value, float vX, float vY);
+
+
+        [DllImport("OsirisCAPI")]
+        public static extern IntPtr GameObject_AddChild(IntPtr value, IntPtr child);
 
         #endregion
     }

@@ -3,6 +3,7 @@
 /* core osiris includes */
 #include "osrpch.h"
 #include "core/Log.h"
+#include "core/Application.h"
 #include "core/behaviour/Behaviour.h"
 #include "core/behaviour/MonoUtils.h"
 #include "core/scene/Scene.h"
@@ -206,27 +207,37 @@ namespace Osiris
 				{
 					for (auto& go : sl->children)
 					{
-						for (auto& component : go->components)
-						{
-							if (component->GetType() == SceneComponentType::ScriptComponent)
-							{
-								/* convert to script component type */
-								ScriptComponent* scriptComponent = (ScriptComponent*) & *component;
-
-								/* Check if we have an assigned object */
-								if (scriptComponent->GetCustomObject() != nullptr)
-								{
-									/* build arg list for the key event functions */
-									std::vector<void*> args = std::vector<void*>({ &key });
-
-									/* call custom script object key event function */
-									MonoUtils::ExecuteScriptMethod(scriptComponent, _FunctionKeyStateMap[state], args);
-								}
-							}
-						}
+						SetInputState(go, key, state);
 					}
 				}
 			}
+		}
+	}
+
+	void Behaviour::SetInputState(std::shared_ptr<GameObject> object, int key, int state)
+	{
+		for (auto& component : object->components)
+		{
+			if (component->GetType() == SceneComponentType::ScriptComponent)
+			{
+				/* convert to script component type */
+				ScriptComponent* scriptComponent = (ScriptComponent*)&*component;
+
+				/* Check if we have an assigned object */
+				if (scriptComponent->GetCustomObject() != nullptr)
+				{
+					/* build arg list for the key event functions */
+					std::vector<void*> args = std::vector<void*>({ &key });
+
+					/* call custom script object key event function */
+					MonoUtils::ExecuteScriptMethod(scriptComponent, _FunctionKeyStateMap[state], args);
+				}
+			}
+		}
+
+		for (auto& go : object->children)
+		{
+			SetInputState(go, key, state);
 		}
 	}
 
@@ -576,6 +587,11 @@ namespace Osiris
 				}
 			}
 		}
+	}
+
+	void Behaviour::AddScriptedGameObject(std::shared_ptr<GameObject> gameObject)
+	{
+		_ScriptedGameObjects[gameObject->uid] = std::make_shared<ScriptedGameObject>(_Domain, _ScriptedClasses["GameObject"], gameObject);
 	}
 
 	void Behaviour::DebugPrintFunc(const std::string& s)

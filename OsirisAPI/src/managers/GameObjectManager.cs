@@ -18,7 +18,7 @@ namespace OsirisAPI
 
         public static GameObject CreateGameObject(ref int uid)
         {
-            GameObject newGameObject = new GameObject();
+            GameObject newGameObject = new GameObject(uid);
 
             _GameObjects.Add(uid, newGameObject);
 
@@ -40,7 +40,7 @@ namespace OsirisAPI
             if (gameObject != null)
             {
                 gameObject.NativePtr = pointer;
-                Console.WriteLine("C#: Game Object linked to Native GameObject: " + gameObject.Name);
+                Console.WriteLine("C#: Game Object linked to Native GameObject: " + gameObject.Name + " UID: " + uid);
 
                 int componentCount = GameObject_Get_Component_Count(gameObject.NativePtr);
                 for (int i = 0; i < componentCount; ++i)
@@ -74,6 +74,10 @@ namespace OsirisAPI
 
         [DllImport("OsirisCAPI")]
         public static extern void GameObject_Get_Component(IntPtr value, int idx, out int type, out IntPtr componentPtr);
+
+
+        [DllImport("OsirisCAPI")]
+        public static extern int GameObject_Create(IntPtr behaviourPtr);
 
         #endregion
     }

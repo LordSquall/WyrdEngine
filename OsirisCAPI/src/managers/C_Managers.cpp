@@ -1,7 +1,9 @@
 #include "C_Managers.h" 
 
+#include <core/Application.h>
 #include <core/scene/GameObject.h>
 #include <core/scene/components/IBaseComponent.h>
+#include <core/UID.h>
 
 int GameObject_Get_Component_Count(void* obj)
 {
@@ -15,4 +17,9 @@ void GameObject_Get_Component(void* obj, int idx, int* type, void** componentPtr
 
 	*componentPtr = &*gameObject->components[idx];
 	*type = (int)gameObject->components[idx]->GetType();
+}
+
+void Osiris::OnPreAppCreation(Osiris::Application* app)
+{
+
 }
