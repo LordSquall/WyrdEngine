@@ -56,6 +56,9 @@ namespace Osiris::Editor
 			case PropType::COLOR:
 				DrawColorUI(prop);
 				break;
+			case PropType::TEXTURE:
+				DrawTextureResourceUI(prop);
+				break;
 			default:
 				ImGui::Text("%s - Unknown Type", prop.name.c_str());
 			}
@@ -101,7 +104,7 @@ namespace Osiris::Editor
 
 				if (prop.objectClassNameVal == "OsirisAPI.GameObject")
 				{
-					prop.objectVal = gameObjectID;
+					prop.objectUID = gameObjectID;
 					prop.objectNameVal = gameObject->name;
 					prop.objectClassNameVal = "GameObject";
 					OSR_TRACE("GameObject found {0} {1}", gameObject->uid.str(), gameObject->name);
@@ -125,7 +128,7 @@ namespace Osiris::Editor
 
 					if (scriptComponent)
 					{
-						prop.objectVal = gameObjectID;
+						prop.objectUID = gameObjectID;
 						prop.objectNameVal = gameObject->name;
 						prop.objectClassNameVal = className;
 						OSR_TRACE("GameObject found {0} {1}", gameObject->uid.str(), gameObject->name);
@@ -146,40 +149,14 @@ namespace Osiris::Editor
 		ImGui::LabelText(prop.name.c_str(), prop.objectNameVal.c_str());
 		if (ImGui::BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GAMEOBJECT"))
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("TEXTURE_ASSET_PAYLOAD"))
 			{
-				UID gameObjectID = *(const UID*)payload->Data;
-				std::shared_ptr<GameObject> gameObject = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace)->GetLoadedScene()->FindGameObject(gameObjectID);
+				std::shared_ptr<TextureRes> texture = *(std::shared_ptr<TextureRes>*)payload->Data;
 
-				std::shared_ptr<IBaseComponent> scriptComponent = nullptr;
-				std::string className = nullptr;
-				for (auto& c : gameObject->components)
-				{
-					if (c->GetType() == SceneComponentType::ScriptComponent)
-					{
-						std::shared_ptr<ScriptComponent> sc = std::dynamic_pointer_cast<ScriptComponent>(c);
-
-						if (sc->GetClass()->GetName() == prop.objectClassNameVal)
-						{
-							scriptComponent = sc;
-							className = sc->GetClass()->GetName();
-							OSR_TRACE("Script Component: Typename: {0}", sc->GetClass()->GetName());
-						}
-					}
-				}
-
-				if (scriptComponent)
-				{
-					prop.objectVal = gameObjectID;
-					prop.objectNameVal = gameObject->name;
-					prop.objectClassNameVal = className;
-					OSR_TRACE("GameObject found {0} {1}", gameObject->uid.str(), gameObject->name);
-				}
-				else
-				{
-					OSR_TRACE("Unable to find matching script component type");
-				}
-
+				prop.objectUID = texture->GetResourceID();
+				prop.objectNameVal = texture->GetName();
+				prop.objectClassNameVal = "Texture";
+				OSR_TRACE("Texture found {0}", texture->GetResourceID().str());
 			}
 			ImGui::EndDragDropTarget();
 		}

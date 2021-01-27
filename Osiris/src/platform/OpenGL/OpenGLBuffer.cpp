@@ -10,6 +10,11 @@ namespace Osiris
 	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size, const std::string& description)
 	{
 		glCreateBuffers(1, &_rendererID);
+		{
+			GLenum err = glGetError();
+			if (err != GL_NO_ERROR)
+				OpenGLError::Resolve(err);
+		}
 		glBindBuffer(GL_ARRAY_BUFFER, _rendererID);
 		//glObjectLabel(GL_BUFFER, _rendererID, -1, description.c_str());
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);

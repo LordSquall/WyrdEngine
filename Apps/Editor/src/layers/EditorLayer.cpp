@@ -218,7 +218,7 @@ namespace Osiris::Editor
 		ImGui_ImplOpenGL3_Init("#version 410");
 
 		/* attempt to load the default project otherwise asked the user to create a new one */
-		if (_workspaceService->LoadProject(_settingsService->GetSetting("Project", "default", "")) == false)
+		if (_workspaceService->LoadProject(_settingsService->GetSetting(CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT, "")) == false)
 		{
 			_dialogService->OpenDialog(std::make_shared<NewProjectDialog>(this));
 		}

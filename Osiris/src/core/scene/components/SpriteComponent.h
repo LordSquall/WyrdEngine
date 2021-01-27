@@ -21,11 +21,12 @@ namespace Osiris {
 	public:
 		SpriteComponent(std::shared_ptr<GameObject> owner);
 		SpriteComponent(const SpriteComponent& obj);
-		~SpriteComponent();
+		~SpriteComponent() = default;
 
 		std::shared_ptr<Shader> shader;
-		std::shared_ptr<Texture> BaseTexture;
-		std::shared_ptr<Sprite> sprite;
+		std::shared_ptr<Texture> texture;
+		glm::vec2 position;
+		glm::vec2 size;
 		Color color;
 
 	public:

@@ -101,7 +101,7 @@ namespace Osiris::Editor
 			IsProjectLoaded(true);
 
 			/* Update the settings to ensure this project is loaded by default next time */
-			ServiceManager::Get<SettingsService>(ServiceManager::Settings)->SetSetting(_LoadedProjectPath, "Project", "default");
+			ServiceManager::Get<SettingsService>(ServiceManager::Settings)->SetSetting(_LoadedProjectPath, CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT);
 				
 			/* Set the utilities to the base root folder */
 			Utils::SetRootProjectFolder(Utils::GetPath(_LoadedProjectPath.c_str()));
@@ -187,7 +187,7 @@ namespace Osiris::Editor
 			IsProjectLoaded(true);
 
 			/* Update the settings to ensure this project is loaded by default next time */
-			ServiceManager::Get<SettingsService>(ServiceManager::Settings)->SetSetting(_LoadedProjectPath, "Project", "default");
+			ServiceManager::Get<SettingsService>(ServiceManager::Settings)->SetSetting(_LoadedProjectPath, CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT);
 
 			/* Set the utilities to the base root folder */
 			Utils::SetRootProjectFolder(Utils::GetPath(projectfile.c_str()));

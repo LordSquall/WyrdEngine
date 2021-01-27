@@ -7,7 +7,7 @@ namespace Osiris
 	class OpenGLTexture : public Texture
 	{
 	public:
-		OpenGLTexture(uint32_t uid, unsigned char* data, int width, int height, int channels, const std::string& description);
+		OpenGLTexture(unsigned char* data, int width, int height, int channels, const std::string& description);
 		~OpenGLTexture();
 		virtual void Bind() const override;
 		virtual void Unbind() const override;

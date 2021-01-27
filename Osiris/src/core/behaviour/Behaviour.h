@@ -11,10 +11,13 @@ namespace Osiris
 {
 	class Scene;
 	class Script;
+	class Resource;
 	class GameObject;
 	class ScriptedClass;
 	class ScriptedGameObject;
 	class ScriptedCustomObject;
+	class ScriptedResource;
+	class TaskDispatcher;
 
 	class OSR_LIBRARY_API Behaviour
 	{
@@ -60,6 +63,9 @@ namespace Osiris
 
 		void AddScriptedGameObject(std::shared_ptr<GameObject> gameObject);
 
+		template<class T, typename... Args>
+		std::shared_ptr<T> CreateObject(Args&&... x) { return std::make_shared<T>(std::forward<Args>(x)...); }
+
 	private:
 		void BuildManagedGameObjects();
 		void BuildManagedGameObjects(std::shared_ptr<GameObject> gameObject, std::shared_ptr<ScriptedClass> gameObjectClass);
@@ -73,11 +79,12 @@ namespace Osiris
 		void UpdateManagedGameObjects(Timestep ts);
 		void UpdateManagedGameObjects(Timestep ts, std::shared_ptr<GameObject> gameObject);
 
-
 		static void DebugPrintFunc(const std::string& s);
 
 	private:
 		std::shared_ptr<ScriptedClass>		_GameObjectManagerClass;
+
+		std::map<UID, std::shared_ptr<ScriptedResource>>	_ScriptedResourceObject;
 
 		std::map<std::string, std::shared_ptr<ScriptedClass>>		_ScriptedClasses;
 		std::map<std::string, std::shared_ptr<ScriptedClass>>		_ScriptedCustomClasses;

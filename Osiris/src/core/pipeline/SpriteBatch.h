@@ -1,10 +1,8 @@
 #pragma once
 
 #include "core/renderer/Renderer.h"
-#include "core/pipeline/Sprite.h"
 
 using namespace Osiris;
-
 
 namespace Osiris {
 
@@ -12,6 +10,8 @@ namespace Osiris {
 	class VertexArray;
 	class VertexBuffer;
 	class IndexBuffer;
+	class Shader;
+	class SpriteComponent;
 
 	/* represents a single sprite vertex */
 	struct SpriteVertex2
@@ -30,38 +30,32 @@ namespace Osiris {
 		SpriteBatch();
 		~SpriteBatch() {}
 
-		void Render(Renderer& renderer);
+		void Render(Renderer& renderer, const glm::mat4& viewProjectionMat);
 
-		void AddSprite(std::shared_ptr<Sprite> sprite);
+		void AddSprite(std::shared_ptr<SpriteComponent> sprite);
 
-		void SetTexture(Texture* texture);
+		void SetShader(std::shared_ptr<Shader> shader);
 
 	private:
 
 		std::vector<SpriteVertex2> _vertices;
-		std::vector<unsigned int> _indicies;
 		std::shared_ptr<VertexArray> _VertexArray;
 		std::shared_ptr<VertexBuffer> _VertexBuffer;
-		std::shared_ptr<IndexBuffer> _IndexBuffer;
+		std::shared_ptr<Shader> _Shader;
 
-		std::map<uint32_t, SpriteBatchEntry> _SpriteMap;
-
-		std::shared_ptr<Texture> _Texture;
+		std::vector<SpriteBatchEntry> _SpriteMap;
 	};
 
 	/* represents a single sprite entry in a batch table */
 	struct SpriteBatchEntry
 	{
-		/* sprite source data model */
-		std::shared_ptr<Sprite> sprite;
+		/* sprite component source data model */
+		std::shared_ptr<SpriteComponent> sprite;
 
 		/* position within the parent batch data */
 		uint32_t offset;
 
 		/* current parent batch */
 		SpriteBatch* batch;
-
-		/* Update the batch data based on the source data model */
-		void Update();
 	};
 }

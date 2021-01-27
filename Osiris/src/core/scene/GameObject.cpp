@@ -26,6 +26,7 @@ namespace Osiris
 		name = obj.name;
 		components = obj.components;
 		inputArea = obj.inputArea;
+		layer = obj.layer;
 
 		uid = obj.uid;
 	}
@@ -35,6 +36,8 @@ namespace Osiris
 	void GameObject::AddChild(std::shared_ptr<GameObject> gameObject)
 	{
 		children.push_back(gameObject);
+
+		gameObject->layer = layer;
 	}
 
 	void GameObject::RemoveChild(UID uid)

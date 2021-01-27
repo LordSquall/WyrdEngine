@@ -1,12 +1,11 @@
 #pragma once
 
 /* core osiris includes */
-#include <layers/Renderer2DLayer.h>
+#include <Core/Layer.h>
 
 /* local includes */
 #include "events/EditorEvents.h"
 #include "services/ServiceManager.h"
-#include "layers/Renderer2DLayer.h"
 #include "datamodels/OrthographicCameraController.h"
 #include "gizmos/TranslationGizmo.h"
 
@@ -16,7 +15,7 @@ using namespace Osiris;
 
 namespace Osiris::Editor
 {
-	class EditorRenderer2DLayer : public Renderer2DLayer
+	class EditorRenderer2DLayer : public Layer
 	{
 	public:
 		EditorRenderer2DLayer(std::string name);

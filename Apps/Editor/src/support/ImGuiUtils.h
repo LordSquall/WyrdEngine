@@ -22,4 +22,7 @@ namespace ImGui
 
 	/* Vector Outputs */
 	void LabelVec2(const char* label, glm::vec2& vector, const std::string& xcompLabel = "x", const std::string& ycompLabel = "y");
+
+	/* Callbacks */
+	int InputTextCallback(ImGuiInputTextCallbackData* data);
 }

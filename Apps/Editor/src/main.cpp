@@ -1,7 +1,6 @@
 /* core osiris includes */
 #include <core/EntryPoint.h>
 #include <core/Application.h>
-#include <layers/Renderer2DLayer.h>
 
 /* local includes */
 #include "services/ServiceManager.h"
@@ -18,7 +17,7 @@ void* renderdocContext;
 class ClientApplication : public Osiris::Application
 {
 public:
-	ClientApplication(const AppProps& props) : Application(props)
+	ClientApplication(const Osiris::AppProps& props) : Application(props)
 	{
 		std::string defaultProject;
 
@@ -38,10 +37,10 @@ public:
 
 	~ClientApplication()
 	{
-		_SettingsService->SetSetting(std::to_string(_Window->GetWidth()), "Window", "width");
-		_SettingsService->SetSetting(std::to_string(_Window->GetHeight()), "Window", "height");
-		_SettingsService->SetSetting(std::to_string(_Window->GetX()), "Window", "x");
-		_SettingsService->SetSetting(std::to_string(_Window->GetY()), "Window", "y");
+		_SettingsService->SetSetting(std::to_string(_Window->GetWidth()), CONFIG_WINDOW, CONFIG_WINDOW__WIDTH);
+		_SettingsService->SetSetting(std::to_string(_Window->GetHeight()), CONFIG_WINDOW, CONFIG_WINDOW__HEIGHT);
+		_SettingsService->SetSetting(std::to_string(_Window->GetX()), CONFIG_WINDOW, CONFIG_WINDOW__X);
+		_SettingsService->SetSetting(std::to_string(_Window->GetY()), CONFIG_WINDOW, CONFIG_WINDOW__Y);
 
 
 		/* initialise editor services */

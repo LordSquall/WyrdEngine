@@ -3,11 +3,16 @@ using System.Runtime.InteropServices;
 
 namespace OsirisAPI
 {
-    public class PhysicsComponent : UnmanagedObject
+    public class PhysicsComponent : GameObjectComponent
     {
         public void SetIsTrigger(bool isTrigger)
         {
             PhysicsComponent_SetIsTrigger(_NativePointer, isTrigger);
+        }
+
+        public override IntPtr CreateUnmanagedPtr(IntPtr gameObjectPtr)
+        {
+            return IntPtr.Zero;
         }
 
         [DllImport("OsirisCAPI")]

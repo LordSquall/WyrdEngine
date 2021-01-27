@@ -34,16 +34,6 @@ namespace Osiris::Editor
 		_extensions.insert(std::pair<std::string, ResourceType>(".scene", ResourceType::SCENE));
 		_extensions.insert(std::pair<std::string, ResourceType>(".script", ResourceType::SCRIPT));
 
-		/* Add resources from the osiris core to make then accessible with in the editor */
-		for(auto& textures : Resources::Get().Textures)
-		{
-			//std::shared_ptr<TextureRes> textureResource = std::make_shared<TextureRes>(textures.second, "default");
-			//textureResource->Load();
-			//_textureResources.insert(std::pair<uint32_t, std::shared_ptr<TextureRes>>(textureResource->GetResourceID(), textureResource));
-
-			//OSR_CORE_INFO("Asset Texture Added: [{0}] - {1}", textureResource->GetResourceID(), textureResource->GetName());
-		}
-
 		/* Load defaults from the editor resources */
 		_defaultTexture = std::make_shared<TextureRes>(Utils::GetEditorResFolder() + "textures\\default.png");
 

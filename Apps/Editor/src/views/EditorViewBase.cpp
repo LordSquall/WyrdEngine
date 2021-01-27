@@ -6,7 +6,6 @@
 
 #include "core/Application.h"
 #include "core/Layer.h"
-#include "core/pipeline/SpriteLayer.h"
 
 #include <imgui.h>
 

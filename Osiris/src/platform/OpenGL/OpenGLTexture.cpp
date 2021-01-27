@@ -6,10 +6,8 @@
 namespace Osiris
 {
 
-	OpenGLTexture::OpenGLTexture(uint32_t uid, unsigned char* data, int width, int height, int channels, const std::string& description)
+	OpenGLTexture::OpenGLTexture(unsigned char* data, int width, int height, int channels, const std::string& description)
 	{
-		_uid = uid;
-
 		glGenTextures(1, &_rendererID);
 		glBindTexture(GL_TEXTURE_2D, _rendererID);
 		//glObjectLabel(GL_TEXTURE, _rendererID, -1, description.c_str());

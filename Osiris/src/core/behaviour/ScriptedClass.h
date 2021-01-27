@@ -31,5 +31,6 @@ namespace Osiris
 		std::string _Name;
 
 		std::vector<PropertyDesc> _Properties;
+		std::map<std::string, FunctionDesc> _Functions;
 	};
 }

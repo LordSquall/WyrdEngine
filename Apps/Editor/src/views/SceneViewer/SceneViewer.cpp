@@ -5,7 +5,6 @@
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/Layer.h>
-#include <core/pipeline/SpriteLayer.h>
 #include <core/Input.h>
 #include <core/KeyCodes.h>
 #include <core/MouseCodes.h>
@@ -62,17 +61,6 @@ namespace Osiris::Editor
 		/* setup window config */
 		config.windowPaddingX = 0.0f;
 		config.windowPaddingY = 0.0f;
-
-		/* Load any resources which are required to renderer (e.g. shaders) */
-		std::ifstream vertexStreamGizmo("../../Osiris/res/shaders/sprite.vs");
-		std::string vertexSrcGizmo((std::istreambuf_iterator<char>(vertexStreamGizmo)), std::istreambuf_iterator<char>());
-
-		std::ifstream fragmentStreamGizmo("../../Osiris/res/shaders/sprite.fs");
-		std::string fragmentSrcGizmo((std::istreambuf_iterator<char>(fragmentStreamGizmo)), std::istreambuf_iterator<char>());
-
-		_Shader.reset(Shader::Create());
-		_Shader->Build(vertexSrcGizmo, fragmentSrcGizmo);
-		_Shader->Bind();
 	}
 
 	SceneViewer::~SceneViewer() {}
@@ -98,26 +86,19 @@ namespace Osiris::Editor
 		{
 			_CameraController->OnUpdate(ts);
 
-			_Shader->Bind();
-
-			_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
-
 			_Framebuffer->Bind();
 
 			renderer.Clear(0.1f, 0.1f, 0.1f);
 
 			if (_Scene != nullptr)
 			{
-				/* Render Each sprite layer */
+				/* Render each of the sprite layers */
 				for (auto sl : _Scene->layers2D)
 				{
-					for (auto go : sl->children)
-					{
-						RenderGameObject(go, ts, renderer);
-					}
+					sl->Render(renderer, _CameraController->GetCamera().GetViewProjectionMatrix());
 				}
 
-				for (auto sl : _Scene->layers2D)
+				/*for (auto sl : _Scene->layers2D)
 				{
 					for (auto go : sl->children)
 					{
@@ -135,7 +116,7 @@ namespace Osiris::Editor
 				{
 					_TranslationGizmo->SetGameObject(_SelectedGameObject);
 					_TranslationGizmo->Render(ts, renderer);
-				}
+				}*/
 			}
 
 			_Framebuffer->Unbind();

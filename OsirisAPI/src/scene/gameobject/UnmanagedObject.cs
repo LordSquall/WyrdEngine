@@ -11,7 +11,9 @@ namespace OsirisAPI
         public IntPtr NativePtr
         {
             get { return _NativePointer; }
-            set { _NativePointer = value; }
+            set { 
+                _NativePointer = value;
+            }
         }
 
         #region private variables 

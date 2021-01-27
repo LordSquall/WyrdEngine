@@ -15,7 +15,7 @@ namespace Osiris
 
 	enum class RendererDrawType
 	{
-		Triangles = 0, TriangleStrip = 1
+		Triangles = 0, TriangleStrip = 1, TriangleFan = 3
 	};
 
 	struct RendererInfo
@@ -32,6 +32,7 @@ namespace Osiris
 
 		virtual void Clear(float r, float g, float b) const = 0;
 		virtual void DrawElements(RendererDrawType type, uint32_t count) const = 0;
+		virtual void DrawArray(RendererDrawType type, uint32_t offset, uint32_t count) const = 0;
 
 		virtual	void DrawRect(const Rect& rect, const glm::vec4& color, const glm::mat4& vpMatrix) const = 0;
 		virtual	void DrawRay(const Ray& ray, const glm::vec4& color, float length, float thickness, const glm::mat4& vpMatrix) const = 0;

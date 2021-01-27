@@ -3,6 +3,7 @@
 /* local includes */
 #include "osrpch.h"
 #include "core/UID.h"
+#include "core/Structures.h"
 
 /* external includes */
 #include <glm/glm.hpp>
@@ -34,9 +35,19 @@ namespace Osiris
 		float floatVal;
 		int intVal;
 		std::string stringVal;
-		UID objectVal;
+		UID objectUID;
 		std::string objectNameVal;
 		std::string objectClassNameVal;
-		glm::vec4 colorVal;
+		void* objectVal;
+		Color colorVal;
+	};
+
+	/**
+	 * @brief Description of a runtime function of the script
+	*/
+	struct FunctionDesc
+	{
+		std::string name;
+		void* func;
 	};
 };

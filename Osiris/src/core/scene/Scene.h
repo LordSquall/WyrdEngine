@@ -3,6 +3,7 @@
 /* local includes */
 #include "core/export.h"
 #include "core/UID.h"
+#include "core/Structures.h"
 
 #include <glm/glm.hpp>
 
@@ -27,7 +28,7 @@ namespace Osiris {
 	public:
 		std::string name;
 		std::vector<std::shared_ptr<Layer2D>> layers2D;
-		glm::vec4 bgcolor;
+		Color bgcolor;
 
 		glm::vec3 cameraPosition = { 0.0f, 0.0f, 0.0f };
 		float cameraZoom = 0.0f;

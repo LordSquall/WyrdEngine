@@ -2,6 +2,7 @@
 
 /* local includes */
 #include "core/export.h"
+#include "core/UID.h"
 
 /* external includes */
 #include <string>
@@ -22,14 +23,12 @@ namespace Osiris
 
 		virtual void Delete() = 0;
 
-		inline uint32_t GetUID() { return _uid; }
+		inline const UID GetUID() { return _uid; }
+		inline void SetUID(UID uid) { _uid = uid; }
 
 		static std::shared_ptr<Texture> Create(unsigned char* data, int width, int height, int channels, const std::string& description);
 
 	protected:
-		uint32_t _uid = 0u;
-
-	private:
-		static uint32_t _nextUid;
+		UID _uid;
 	};
 }

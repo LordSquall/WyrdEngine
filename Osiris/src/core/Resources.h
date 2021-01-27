@@ -1,8 +1,14 @@
 #pragma once
 
-/* local project */
+/* local includes */
 #include "osrpch.h"
 #include "export.h"
+#include "core/UID.h"
+
+/* external includes */
+
+/* default resource UID */
+#define RESOURCE_DEFAULT_TEXTURE	"f7ad951c-50a4-43b2-8b5f-88c484691f11"
 
 namespace Osiris {
 
@@ -38,12 +44,8 @@ namespace Osiris {
 		/**
 		 * @brief Texture resource map
 		*/
-		std::map<std::string, std::shared_ptr<Texture>> Textures;
+		std::map<UID, std::shared_ptr<Texture>> Textures;
 
-		/**
-		 * @brief Scripted Class resource map
-		*/
-		std::map<std::string, std::shared_ptr<ScriptedClass>> Scripts;
 	public:
 		static Resources* _Instance;
 	};

@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace OsirisAPI
 {
-    public class Transform2D : UnmanagedObject
+    public class Transform2D : GameObjectComponent
     {
         public void SetPosition(float x, float y)
         {
@@ -18,6 +18,11 @@ namespace OsirisAPI
         public void SetScale(float sx, float sy)
         {
             Transform2D_SetScale(_NativePointer, sx, sy);
+        }
+
+        public override IntPtr CreateUnmanagedPtr(IntPtr gameObjectPtr)
+        {
+            return IntPtr.Zero;
         }
 
         [DllImport("OsirisCAPI")]

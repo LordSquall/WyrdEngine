@@ -19,6 +19,8 @@ namespace Osiris
 		glm::vec4 spritePos = Owner->transform2D->matrix * glm::vec4(Owner->inputArea.x, Owner->inputArea.y, 0.0f, 1.0f);
 
 		_AABB = { { spritePos.x, spritePos.y }, { Owner->inputArea.z, Owner->inputArea.w } };
+
+		Initialised = true;
 	}
 
 	PhysicsComponent::PhysicsComponent(const PhysicsComponent& obj) : IBaseComponent(obj.Owner, SceneComponentType::PhysicsComponent),
@@ -28,6 +30,8 @@ namespace Osiris
 		glm::vec4 spritePos = Owner->transform2D->matrix * glm::vec4(Owner->inputArea.x, Owner->inputArea.y, 0.0f, 1.0f);
 
 		_AABB = { { spritePos.x, spritePos.y }, { Owner->inputArea.z, Owner->inputArea.w } };
+
+		Initialised = true;
 	}
 
 	PhysicsComponent::~PhysicsComponent()

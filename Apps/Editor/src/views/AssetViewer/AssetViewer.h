@@ -2,7 +2,6 @@
 /* core osiris includes */
 #include <core/export.h>
 #include <events/KeyEvent.h>
-#include <layers/Renderer2DLayer.h>
 
 /* local includes */
 #include "views/EditorViewBase.h"

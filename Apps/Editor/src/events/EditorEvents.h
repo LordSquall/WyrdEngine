@@ -5,7 +5,6 @@
 #include <core/Layer.h>
 #include <core/scene/Scene.h>
 #include <core/scene/GameObject.h>
-#include <core/pipeline/Sprite.h>
 
 /* local includes */
 #include "views/EditorViewBase.h"

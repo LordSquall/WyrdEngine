@@ -196,6 +196,18 @@ namespace Osiris
 			OpenGLError::Resolve(err);
 	}
 
+
+	void OpenGLShader::SetUniformColor(const std::string& name, const Color& color)
+	{
+		GLuint location = glGetUniformLocation(m_RendererHandle, name.c_str());
+		glUniform4fv(location, 1, (GLfloat*)&color);
+
+		GLenum err = glGetError();
+
+		if (err != GL_NO_ERROR)
+			OpenGLError::Resolve(err);
+	}
+
 	void OpenGLShader::SetMatrix(const std::string& name, const glm::mat4& mat)
 	{
 		GLuint location = glGetUniformLocation(m_RendererHandle, name.c_str());

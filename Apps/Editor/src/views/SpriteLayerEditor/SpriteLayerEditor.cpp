@@ -63,6 +63,7 @@ namespace Osiris::Editor
 			if (ImGui::Button("+") == true)
 			{
 				std::shared_ptr<Layer2D> newLayer2D = std::make_shared<Layer2D>();
+				newLayer2D->Initialise();
 				newLayer2D->name = std::string("New Layer " + std::to_string(layers->size() + 1));
 
 				layers->push_back(newLayer2D);
@@ -136,17 +137,28 @@ namespace Osiris::Editor
 				{
 					if (ImGui::MenuItem("Sprite") == true)
 					{
-						_SelectedGameObject->components.push_back(std::make_shared<SpriteComponent>(_SelectedGameObject));
+						std::shared_ptr<SpriteComponent> newComponent = std::make_shared<SpriteComponent>(_SelectedGameObject);
+						newComponent->Initialise();
+						_SelectedGameObject->components.push_back(newComponent);
+
+						_SelectedLayer2D->RegisterSprite(newComponent);
+
 						_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
 					}
 					if (ImGui::MenuItem("Script") == true)
 					{
-						_SelectedGameObject->components.push_back(std::make_shared<ScriptComponent>(_SelectedGameObject));
+						std::shared_ptr<ScriptComponent> newComponent = std::make_shared<ScriptComponent>(_SelectedGameObject);
+						newComponent->Initialise();
+						_SelectedGameObject->components.push_back(newComponent);
+
 						_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
 					}
 					if (ImGui::MenuItem("Physics") == true)
 					{
-						_SelectedGameObject->components.push_back(std::make_shared<PhysicsComponent>(_SelectedGameObject));
+						std::shared_ptr<PhysicsComponent> newComponent = std::make_shared<PhysicsComponent>(_SelectedGameObject);
+						newComponent->Initialise();
+						_SelectedGameObject->components.push_back(newComponent);
+
 						_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
 					}
 

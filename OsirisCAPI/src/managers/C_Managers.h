@@ -3,15 +3,16 @@
 /* local includes */
 #include "../C_Export.h"
 
+/* core osiris includes */
+#include <core/behaviour/Behaviour.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-LIBRARY_API int GameObject_Get_Component_Count(void* obj);
+extern Osiris::Behaviour* _behaviour;
 
-LIBRARY_API void GameObject_Get_Component(void* obj, int idx, int* type, void** componentPtr);
-
-LIBRARY_API int GameObject_Create(void* behaviourPtr);
+LIBRARY_API void Manager_SetBehaviour(void* behaviour);
 
 #ifdef __cplusplus
 }

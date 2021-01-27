@@ -37,6 +37,12 @@ namespace Osiris::Editor
 
 			/* create the core renderer resource and load */
 			_texture = Osiris::Texture::Create(_data, _width, _height, _channels, Utils::GetFilename(_path, true) + "_Texture");
+
+			/* in the editor project, we want to the core assets uid to match the resource to allow easy decoupled linkage */
+			_texture->SetUID(_resourceID);
+
+			/* register the texture with the core resource manager */
+			Application::Get().GetResources().Textures[_resourceID] = _texture;
 		}
 
 		_loaded = true;

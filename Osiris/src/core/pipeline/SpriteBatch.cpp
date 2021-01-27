@@ -1,31 +1,19 @@
 #pragma once
-#include "osrpch.h"
 
+/* local includes */
+#include "osrpch.h"
 #include "SpriteBatch.h"
 #include "core/renderer/VertexArray.h"
 #include "core/renderer/Buffer.h"
 #include "core/renderer/Texture.h"
+#include "core/renderer/Shader.h"
 #include "core/pipeline/SpriteVertex.h"
-#include "core/pipeline/Sprite.h"
+#include "core/scene/GameObject.h"
+#include "core/scene/components/Transform2DComponent.h"
+#include "core/scene/components/SpriteComponent.h"
 
 namespace Osiris
 {
-
-	void SpriteBatchEntry::Update()
-	{
-		batch->_vertices[offset + 0].x = (float)sprite->GetX();
-		batch->_vertices[offset + 0].y = (float)sprite->GetY();
-		batch->_vertices[offset + 1].x = (float)sprite->GetX();
-		batch->_vertices[offset + 1].y = (float)sprite->GetY() + (float)sprite->GetHeight();
-		batch->_vertices[offset + 2].x = (float)sprite->GetX() + (float)sprite->GetWidth();
-		batch->_vertices[offset + 2].y = (float)sprite->GetY() + (float)sprite->GetHeight();
-		batch->_vertices[offset + 3].x = (float)sprite->GetX() + (float)sprite->GetWidth();
-		batch->_vertices[offset + 3].y = (float)sprite->GetY();
-
-		batch->_VertexArray->Bind();
-		batch->_VertexBuffer->Update((float*)&batch->_vertices.at(0), sizeof(SpriteVertex) * (uint32_t)batch->_vertices.size(), offset);
-	}
-
 	SpriteBatch::SpriteBatch()
 	{
 		SpriteVertex verts = { 0.0f, 0.0f, 0.0f, 0.0f};
@@ -35,59 +23,50 @@ namespace Osiris
 		_VertexArray.reset(VertexArray::Create());
 		_VertexArray->SetAttribute(0, 0, 2);
 		_VertexArray->SetAttribute(1, 2, 2);
-
-		uint32_t index = 0;
-
-		_IndexBuffer.reset(IndexBuffer::Create(&index, sizeof(index) / sizeof(uint32_t)));
 	}
 
-	void SpriteBatch::AddSprite(std::shared_ptr<Sprite> sprite)
+	void SpriteBatch::AddSprite(std::shared_ptr<SpriteComponent> sprite)
 	{
-		unsigned int x = (((unsigned int)_indicies.size() / 6) * 4);
-
 		/* add vertices */
-		_vertices.push_back({ (float)sprite->GetX(), (float)sprite->GetY(), 0.0f, 0.0f });
-		_vertices.push_back({ (float)sprite->GetX(), (float)sprite->GetY() + (float)sprite->GetHeight(), 0.0f, -1.0f });
-		_vertices.push_back({ (float)sprite->GetX() + (float)sprite->GetWidth(), (float)sprite->GetY() + (float)sprite->GetHeight(), 1.0f, -1.0f });
-		_vertices.push_back({ (float)sprite->GetX() + (float)sprite->GetWidth(), (float)sprite->GetY(), 1.0f, 0.0f });
-
-		/* add indices */
-		_indicies.push_back(x + 0);
-		_indicies.push_back(x + 1);
-		_indicies.push_back(x + 2);
-		_indicies.push_back(x + 2);
-		_indicies.push_back(x + 3);
-		_indicies.push_back(x + 0);
+		_vertices.push_back({ (float)sprite->position.x, (float)sprite->position.y, 0.0f, 0.0f });
+		_vertices.push_back({ (float)sprite->position.x, (float)sprite->position.y + (float)sprite->size.y, 0.0f, -1.0f });
+		_vertices.push_back({ (float)sprite->position.x + (float)sprite->size.x, (float)sprite->position.y + (float)sprite->size.y, 1.0f, -1.0f });
+		_vertices.push_back({ (float)sprite->position.x + (float)sprite->size.x, (float)sprite->position.y, 1.0f, 0.0f });
 
 		/* bind the batch vertex array */
 		_VertexArray->Bind();
 
 		/* update both the vertex and index buffers */
 		_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(SpriteVertex) * (uint32_t)_vertices.size(), 0);
-		_IndexBuffer->Update(&_indicies.at(0), (uint32_t)_indicies.size());
 
 		/* create and add a new batch entry */
-		SpriteBatchEntry batchEntry = { sprite, (uint32_t)(_SpriteMap.size() * 4), this };
-		_SpriteMap.insert(std::pair<uint32_t, SpriteBatchEntry>(sprite->GetID(), batchEntry));
-
-		/* get the sprite the entry reference */
-		//sprite->SetBatchEntry(&_SpriteMap[sprite->GetID()]);
+		_SpriteMap.push_back({ sprite, (uint32_t)(_SpriteMap.size() * 4), this });
 	}
 
-	void SpriteBatch::SetTexture(Texture* texture)
+	void SpriteBatch::SetShader(std::shared_ptr<Shader> shader)
 	{
-		_Texture.reset(texture);
+		_Shader = shader;
 	}
 
-	void SpriteBatch::Render(Renderer& renderer)
+	void SpriteBatch::Render(Renderer& renderer, const glm::mat4& viewProjectionMat)
 	{
+		_Shader->Bind();
+
+		_Shader->SetVPMatrix(viewProjectionMat);
+
+		_Shader->SetModelMatrix(glm::mat4(1.0f));
+
 		_VertexArray->Bind();
-		_IndexBuffer->Bind();
 		_VertexBuffer->Bind();
 
-		if(_Texture != nullptr)
-			_Texture->Bind();
+		for (auto&& sprite : _SpriteMap)
+		{
+			sprite.sprite->texture->Bind();
 
-		renderer.DrawElements(RendererDrawType::Triangles, _IndexBuffer->GetCount());
+			_Shader->SetModelMatrix(sprite.sprite->Owner->transform2D->matrix);
+			_Shader->SetUniformColor("blendColor", sprite.sprite->color);
+
+			renderer.DrawArray(RendererDrawType::TriangleFan, sprite.offset, 4);
+		}
 	}
 }

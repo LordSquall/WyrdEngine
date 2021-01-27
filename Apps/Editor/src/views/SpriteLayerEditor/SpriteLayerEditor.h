@@ -1,5 +1,4 @@
 #include "core/export.h"
-#include "layers/Renderer2DLayer.h"
 
 #include "services/ServiceManager.h"
 #include "views/EditorViewBase.h"

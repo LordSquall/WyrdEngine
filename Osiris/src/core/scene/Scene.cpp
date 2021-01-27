@@ -11,16 +11,18 @@ namespace Osiris
 {
 	Scene::Scene() : name("Untitled Scene") 
 	{
-		bgcolor[0] = 0.2f;
-		bgcolor[1] = 0.2f;
-		bgcolor[2] = 0.2f;
+		bgcolor.r = 0.2f;
+		bgcolor.g = 0.2f;
+		bgcolor.b = 0.2f;
+		bgcolor.a = 1.0f;
 	}
 
 	Scene::Scene(std::string name) : name(name) 
 	{
-		bgcolor[0] = 0.2f;
-		bgcolor[1] = 0.2f;
-		bgcolor[2] = 0.2f;
+		bgcolor.r = 0.2f;
+		bgcolor.g = 0.2f;
+		bgcolor.b = 0.2f;
+		bgcolor.a = 1.0f;
 	}
 
 

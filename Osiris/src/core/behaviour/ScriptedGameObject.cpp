@@ -35,7 +35,7 @@ namespace Osiris
 		void* createMethodArgs[1];
 		createMethodArgs[0] = &uid;
 
-		Object = mono_runtime_invoke(MonoUtils::FindMethodInClass(behaviour.GetClass("GameObjectManager"), "CreateGameObject", 1, true), NULL, createMethodArgs, NULL);
+		Object = mono_runtime_invoke(MonoUtils::FindMethodInClass(behaviour.GetClass("GameObjectManager"), "RegisterGameObject", 1, true), NULL, createMethodArgs, NULL);
 
 		/* build property arguments */
 		Osiris::GameObject* go = &*gameObject;
@@ -43,7 +43,13 @@ namespace Osiris
 		linkMethodArgs[0] = &uid;
 		linkMethodArgs[1] = &go;
 
-		mono_runtime_invoke(_Methods["LinkToManaged"], &*Object, linkMethodArgs, NULL);
+		MonoObject* exception = nullptr;
+		mono_runtime_invoke(_Methods["LinkToManaged"], &*Object, linkMethodArgs, &exception);
+		
+		if (exception != nullptr)
+		{
+			mono_print_unhandled_exception(exception);
+		}
 	}
 
 	ScriptedGameObject::~ScriptedGameObject()

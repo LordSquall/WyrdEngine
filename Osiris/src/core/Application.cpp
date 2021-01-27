@@ -1,6 +1,7 @@
 /* local includes */
 #include "osrpch.h"
 #include "Application.h"
+#include "core/Log.h"
 #include "events/ApplicationEvent.h"
 #include "layers/BehaviourLayer.h"
 #include "layers/PhysicsLayer.h"
@@ -58,7 +59,7 @@ namespace Osiris {
 			data = SOIL_load_image("../../Osiris/res/textures/box_01.png", &width, &height, &channels, 4);
 
 			std::shared_ptr<Texture> texture = std::shared_ptr<Texture>(Texture::Create(data, width, height, channels, "Default Sprite Texture"));
-			_Resources->Textures.insert(std::pair<std::string, std::shared_ptr<Texture>>("DefaultSprite", texture));
+			_Resources->Textures.insert(std::pair<std::string, std::shared_ptr<Texture>>(UID(RESOURCE_DEFAULT_TEXTURE), texture));
 		}
 		
 		/* create behaviour subsystem */

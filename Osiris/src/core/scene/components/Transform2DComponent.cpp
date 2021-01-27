@@ -13,6 +13,8 @@ namespace Osiris
 		rotation = 0.0f;
 		scale = vec2(1.0f, 1.0f);
 
+		Initialised = true;
+
 		ClearTransformationDelta();
 
 		_IsMatrixValid = false;
@@ -23,6 +25,8 @@ namespace Osiris
 		position = obj.position;
 		rotation = obj.rotation;
 		scale = obj.scale;
+
+		Initialised = true;
 
 		ClearTransformationDelta();
 		

@@ -4,7 +4,6 @@
 #include <osrpch.h>
 #include <core/Log.h>
 #include <core/Application.h>
-#include <layers/Renderer2DLayer.h>
 #include <core/scene/Scene.h>
 #include <core/scene/Layer2D.h>
 #include <core/scene/GameObject.h>
@@ -13,6 +12,7 @@
 #include <core/scene/components/SpriteComponent.h>
 #include <core/scene/components/ScriptComponent.h>
 #include <core/scene/components/PhysicsComponent.h>
+#include <core/renderer/Texture.h>
 #include <core/behaviour/PropertyDesc.h>
 
 /* local includes */
@@ -30,7 +30,7 @@ namespace Osiris::Editor
 {
 	static std::shared_ptr<ResourceService> _resourceService;
 
-	static void Read_Color(jsonxx::Array& json, glm::vec4* color)
+	static void Read_Color(jsonxx::Array& json, Color* color)
 	{
 		color->r = (float)json.get<jsonxx::Number>(0);
 		color->g = (float)json.get<jsonxx::Number>(1);
@@ -38,7 +38,7 @@ namespace Osiris::Editor
 		color->a = (float)json.get<jsonxx::Number>(3);
 	}
 
-	static void Write_Color(jsonxx::Object& object, std::string name, const glm::vec4* color)
+	static void Write_Color(jsonxx::Object& object, std::string name, const Color* color)
 	{
 		jsonxx::Array colorArray;
 		colorArray << color->r;
@@ -124,25 +124,32 @@ namespace Osiris::Editor
 
 	static std::shared_ptr<SpriteComponent> Read_SpriteComponent(jsonxx::Object& json, std::shared_ptr<GameObject> owner)
 	{
-		glm::vec2 spriteSize, spritePosition;
-
 		/* create a component */
 		std::shared_ptr<Osiris::SpriteComponent> component = std::make_shared<Osiris::SpriteComponent>(owner);
+		component->Initialise();
 
 		/* configure properties */
-		Read_Color(json.get<jsonxx::Array>("color"), &component->Color);
-		Read_Vec2(json.get<jsonxx::Array>("size"), &spriteSize);
-		Read_Vec2(json.get<jsonxx::Array>("position"), &spritePosition);
-
-		component->sprite->SetSize((int)spriteSize.x, (int)spriteSize.y);
-		component->sprite->SetPosition((int)spritePosition.x, (int)spritePosition.y);
+		Read_Color(json.get<jsonxx::Array>("color"), &component->color);
+		Read_Vec2(json.get<jsonxx::Array>("size"), &component->size);
+		Read_Vec2(json.get<jsonxx::Array>("position"), &component->position);
 
 		UID uuid = UID(json.get<jsonxx::String>("baseTexture"));
 		std::shared_ptr<TextureRes> textureRes = _resourceService->GetResourceByID<TextureRes>(uuid);
-		component->BaseTexture = textureRes->GetTexture();
+
+		if (textureRes != nullptr)
+		{
+			component->texture = textureRes->GetTexture();
+		}
+		else
+		{
+			//component->texture = Application::Get().GetResources().Textures["default"];
+		}
+
 		component->SetUUID(uuid);
 
 		owner->sprite = component;
+
+		owner->layer->RegisterSprite(component);
 
 		return component;
 	}
@@ -155,18 +162,14 @@ namespace Osiris::Editor
 		/* create new component json object */
 		jsonxx::Object componentJson;
 
-		//TODO - this is only require as sprite is a nested object, not sure if this is required
-		glm::vec2 spriteSize = { sprite->sprite->GetWidth(), sprite->sprite->GetHeight() };
-		glm::vec2 spritePosition = { sprite->sprite->GetX(), sprite->sprite->GetY() };
-
 		/* base properties */
 		componentJson << "Type" << (uint32_t)spriteComponent->GetType();
 
-		Write_Color(componentJson, "color", &sprite->Color);
-		Write_Vec2(componentJson, "size", &spriteSize);
-		Write_Vec2(componentJson, "position", &spritePosition);
+		Write_Color(componentJson, "color", &sprite->color);
+		Write_Vec2(componentJson, "size", &sprite->size);
+		Write_Vec2(componentJson, "position", &sprite->position);
 
-		componentJson << "baseTexture" << sprite->GetUUID().str();
+		componentJson << "baseTexture" << sprite->texture->GetUID().str();
 		
 		return componentJson;
 	}
@@ -213,11 +216,16 @@ namespace Osiris::Editor
 						foundPro->stringVal = propObj.get<jsonxx::String>("value").c_str();
 						break;
 					case PropType::GAMEOBJECT:
-						foundPro->objectVal = UID(propObj.get<jsonxx::String>("value"));
+						foundPro->objectUID = UID(propObj.get<jsonxx::String>("value"));
 						foundPro->objectNameVal = propObj.get<jsonxx::String>("nameValue").c_str();
 						break;
 					case PropType::COLOR:
 						Read_Color(propObj.get<jsonxx::Array>("value"), &foundPro->colorVal);
+						break;
+					case PropType::TEXTURE:
+						foundPro->objectUID = UID(propObj.get<jsonxx::String>("value"));
+						foundPro->objectNameVal = propObj.get<jsonxx::String>("nameValue").c_str();
+						break;
 					default:
 						break;
 					}
@@ -265,7 +273,7 @@ namespace Osiris::Editor
 					propObj << "value" << prop.stringVal;
 					break;
 				case PropType::GAMEOBJECT:
-					propObj << "value" << prop.objectVal.str();
+					propObj << "value" << prop.objectUID.str();
 					propObj << "nameValue" << prop.objectNameVal;
 					propObj << "objectClassNameVal" << prop.objectClassNameVal;
 					break;
@@ -275,6 +283,11 @@ namespace Osiris::Editor
 					colorArray.append(prop.colorVal.b);
 					colorArray.append(prop.colorVal.a);
 					propObj << "value" << colorArray;
+					break;
+				case PropType::TEXTURE:
+					propObj << "value" << prop.objectUID.str();
+					propObj << "nameValue" << prop.objectNameVal;
+					propObj << "objectClassNameVal" << prop.objectClassNameVal;
 					break;
 				default:
 					break;
@@ -319,13 +332,14 @@ namespace Osiris::Editor
 		return componentJson;
 	}
 
-	static std::shared_ptr<GameObject> Read_GameObject(jsonxx::Object& json, std::shared_ptr<GameObject> parent)
+	static std::shared_ptr<GameObject> Read_GameObject(jsonxx::Object& json, std::shared_ptr<Osiris::Layer2D> layer2D, std::shared_ptr<GameObject> parent)
 	{
 		/* create a new game object */
 		std::shared_ptr<Osiris::GameObject> gameObject = std::make_shared<Osiris::GameObject>();
 
-		/* set parent */
+		/* set parent and layer */
 		gameObject->parent = parent;
+		gameObject->layer = layer2D;
 
 		/* retrieve the game object uid */
 		if (json.has<jsonxx::String>("uid"))
@@ -368,7 +382,7 @@ namespace Osiris::Editor
 			for (size_t i = 0; i < json.get<jsonxx::Array>("children").size(); i++)
 			{
 				jsonxx::Object childObj = json.get<jsonxx::Array>("children").get<jsonxx::Object>((int)i);
-				gameObject->children.push_back(Read_GameObject(childObj, gameObject));
+				gameObject->children.push_back(Read_GameObject(childObj, layer2D, gameObject));
 			}
 		}
 
@@ -422,6 +436,11 @@ namespace Osiris::Editor
 		/* create a new layer2D object */
 		std::shared_ptr<Osiris::Layer2D> layer2D = std::make_shared<Osiris::Layer2D>();
 
+		/* initialise layer */
+		layer2D->Initialise();
+
+		layer2D->layer = layer2D;
+
 		/* configure properties */
 		layer2D->name = json.get<jsonxx::String>("name", "untitled");
 
@@ -430,10 +449,11 @@ namespace Osiris::Editor
 		{
 			for (size_t i = 0; i < json.get<jsonxx::Array>("gameObjects").size(); i++)
 			{
-				std::shared_ptr<Osiris::GameObject> gameObject = Read_GameObject(json.get<jsonxx::Array>("gameObjects").get<jsonxx::Object>((int)i), nullptr);
+				std::shared_ptr<Osiris::GameObject> gameObject = Read_GameObject(json.get<jsonxx::Array>("gameObjects").get<jsonxx::Object>((int)i), layer2D, nullptr);
 
 				// store the layer reference in the gameobject
 				gameObject->parent = layer2D;
+				gameObject->layer = layer2D;
 
 				layer2D->AddChild(gameObject);
 			}
@@ -509,10 +529,10 @@ namespace Osiris::Editor
 					{
 						gameobject->transform2D->Initialise();
 
-						for(auto component : gameobject->components)
-						{
-							component->Initialise();
-						}
+						//for(auto component : gameobject->components)
+						//{
+						//	component->Initialise();
+						//}
 					}
 				}
 

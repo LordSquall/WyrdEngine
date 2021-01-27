@@ -24,7 +24,7 @@ namespace Osiris {
 	class OSR_LIBRARY_API IBaseComponent
 	{
 	public:
-		IBaseComponent(std::shared_ptr<GameObject> gameObject, SceneComponentType type) : Owner(gameObject), _type(type) {}
+		IBaseComponent(std::shared_ptr<GameObject> gameObject, SceneComponentType type) : Owner(gameObject), _type(type), Initialised(false) {}
 		virtual ~IBaseComponent() {};
 
 		inline const SceneComponentType GetType() const { return _type; }
@@ -39,6 +39,7 @@ namespace Osiris {
 	public:
 		std::shared_ptr<GameObject> Owner;
 
+		bool Initialised;
 		std::function<void(const glm::mat4&)> debugOverlayFunction;
 
 	private:

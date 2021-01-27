@@ -12,6 +12,7 @@
 #include "core/scene/components/Transform2DComponent.h"
 #include "core/scene/components/SpriteComponent.h"
 #include "core/scene/components/ScriptComponent.h"
+#include "core/renderer/Texture.h"
 #include "core/behaviour/ScriptedClass.h"
 #include "core/behaviour/ScriptedGameObject.h"
 #include "core/behaviour/ScriptedCustomObject.h"
@@ -123,8 +124,17 @@ namespace Osiris
 		_CurrentScene = scene;
 		_IsRunning = true;
 
+		/* pass in the subsystem pointers to the managed domain */
+		MonoClass* monoClass;
+		monoClass = mono_class_from_name((MonoImage*)_CoreImage, "OsirisAPI", "SubsystemManager");
 
-		/* first stage it to create a instance of each gameobject within mono */
+		MonoProperty* prop = mono_class_get_property_from_name(monoClass, "Behaviour");
+
+		/* build arg list for the key event functions */
+		std::vector<void*> args = std::vector<void*>({ &Application::Get().GetBehaviour() });
+		mono_property_set_value(prop, nullptr, &args[0], nullptr);
+
+		/* first stage is to create a instance of each gameobject within mono */
 		if (_CurrentScene != nullptr)
 		{
 			BuildManagedGameObjects();
@@ -486,7 +496,7 @@ namespace Osiris
 							// find matching script component class type
 							if (prop.objectClassNameVal == "OsirisAPI.GameObject")
 							{
-								go = _CurrentScene->FindGameObject(prop.objectVal);
+								go = _CurrentScene->FindGameObject(prop.objectUID);
 								if (go != nullptr)
 								{
 									if (_ScriptedGameObjects.find(go->uid) != _ScriptedGameObjects.end())
@@ -503,7 +513,7 @@ namespace Osiris
 							}
 							else
 							{
-								go = _CurrentScene->FindGameObject(prop.objectVal);
+								go = _CurrentScene->FindGameObject(prop.objectUID);
 								sc = go->FindScriptComponent(prop.objectClassNameVal);
 								args.push_back(sc->GetCustomObject()->Object);
 
@@ -542,6 +552,28 @@ namespace Osiris
 							mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
 						}
 						break;
+						case PropType::TEXTURE:
+						{
+							MonoClass* textureClass = (MonoClass*)_ScriptedClasses["Texture"]->ManagedClass;
+							MonoObject* textureObject = mono_object_new((MonoDomain*)_Domain, textureClass);
+							MonoProperty* property = mono_class_get_property_from_name(textureClass, "NativePtr");
+							MonoMethod* propSetter = mono_property_get_set_method(property);
+
+							std::shared_ptr<Texture> texture = Application::Get().GetResources().Textures[prop.objectUID];
+
+							prop.objectVal = &*texture;
+
+							args.push_back(&prop.objectVal);
+
+							mono_runtime_invoke(propSetter, textureObject, &args[0], nullptr);
+
+							args.clear();
+
+							args.push_back(textureObject);
+
+							mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
+						}
+						break;
 						default:
 							OSR_CORE_TRACE("Unknown Type. Skipping Property serialisation!");
 							break;
@@ -574,6 +606,11 @@ namespace Osiris
 		/* traverse each of the gameobjects within the scene*/
 		for (auto& component : gameObject->components)
 		{
+			if (component->Initialised == false)
+			{
+				component->Initialise();
+			}
+
 			if (component->GetType() == SceneComponentType::ScriptComponent)
 			{
 				ScriptComponent* scriptComponent = (ScriptComponent*)&*component;

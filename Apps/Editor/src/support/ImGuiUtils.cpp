@@ -148,4 +148,18 @@ namespace ImGui
 		ImGui::LabelText("##label", "%s \t%s:%.4f\t%s:%.4f", label, xcompLabel.c_str(), vector.x, ycompLabel.c_str(), vector.y);
 		ImGui::PopItemWidth();
 	}
+
+	/* Callbacks */
+	int ImGui::InputTextCallback(ImGuiInputTextCallbackData* data)
+	{
+		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize)
+		{
+			// Resize string callback
+			std::string* str = (std::string*)data->UserData;
+			IM_ASSERT(data->Buf == str->c_str());
+			str->resize(data->BufTextLen);
+			data->Buf = (char*)str->c_str();
+		}
+		return data->BufTextLen;
+	}
 }

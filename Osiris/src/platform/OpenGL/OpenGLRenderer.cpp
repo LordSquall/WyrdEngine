@@ -133,9 +133,33 @@ namespace Osiris
 		case RendererDrawType::TriangleStrip:
 			primitiveType = GL_TRIANGLE_STRIP;
 			break;
+		case RendererDrawType::TriangleFan:
+			primitiveType = GL_TRIANGLE_FAN;
+			break;
 		}
 
 		glDrawElements(primitiveType, count, GL_UNSIGNED_INT, nullptr);
+	}
+
+	void OpenGLRenderer::DrawArray(RendererDrawType type, uint32_t offset, uint32_t count) const
+	{
+		GLuint primitiveType = 0;
+
+		/* map renderer primitive to opengl primitive */
+		switch (type)
+		{
+		case RendererDrawType::Triangles:
+			primitiveType = GL_TRIANGLES;
+			break;
+		case RendererDrawType::TriangleStrip:
+			primitiveType = GL_TRIANGLE_STRIP;
+			break;
+		case RendererDrawType::TriangleFan:
+			primitiveType = GL_TRIANGLE_FAN;
+			break;
+		}
+
+		glDrawArrays(primitiveType, offset, count);
 	}
 
 	void OpenGLRenderer::DrawRect(const Rect& rect, const glm::vec4& color, const glm::mat4& vpMatrix) const

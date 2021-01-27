@@ -16,7 +16,7 @@ namespace OsirisAPI
             _GameObjects.Clear();
         }
 
-        public static GameObject CreateGameObject(ref int uid)
+        public static GameObject RegisterGameObject(ref int uid)
         {
             GameObject newGameObject = new GameObject(uid);
 
@@ -34,28 +34,27 @@ namespace OsirisAPI
         /// Links the managed object to a unmanaged pointer
         /// </summary>
         /// <param name="pointer"></param>
-        public void LinkToManaged(int uid, IntPtr pointer)
+        public static void LinkToManaged(int uid, IntPtr pointer)
         {
             GameObject gameObject = FindGameObject(uid);
             if (gameObject != null)
             {
                 gameObject.NativePtr = pointer;
-                Console.WriteLine("C#: Game Object linked to Native GameObject: " + gameObject.Name + " UID: " + uid);
 
-                int componentCount = GameObject_Get_Component_Count(gameObject.NativePtr);
+                int componentCount = GameObject.GameObject_Get_Component_Count(gameObject.NativePtr);
                 for (int i = 0; i < componentCount; ++i)
                 {
                     IntPtr componentPtr;
                     int type;
-                    GameObject_Get_Component(gameObject.NativePtr, i, out type, out componentPtr);
+                    GameObject.GameObject_Get_Component(gameObject.NativePtr, i, out type, out componentPtr);
 
-                    switch(type)
+                    switch (type)
                     {
-                        case 1: gameObject.AddComponent<Transform2D>(componentPtr); break;          // Transform2D
-                        case 2: gameObject.AddComponent<Transform3D>(componentPtr); break;          // Transform3D
-                        case 3: gameObject.AddComponent<SpriteRenderer>(componentPtr); break;       // SpriteRenderer
-                        case 4: gameObject.AddComponent<ScriptComponent>(componentPtr); break;      // ScriptComponent
-                        case 5: gameObject.AddComponent<PhysicsComponent>(componentPtr); break;     // PhysicsComponent
+                        case 1: gameObject.RegisterComponent<Transform2D>(componentPtr); break;          // Transform2D
+                        case 2: gameObject.RegisterComponent<Transform3D>(componentPtr); break;          // Transform3D
+                        case 3: gameObject.RegisterComponent<SpriteComponent>(componentPtr); break;      // SpriteRenderer
+                        case 4: gameObject.RegisterComponent<ScriptComponent>(componentPtr); break;      // ScriptComponent
+                        case 5: gameObject.RegisterComponent<PhysicsComponent>(componentPtr); break;     // PhysicsComponent
                     }
                 }
                
@@ -69,15 +68,6 @@ namespace OsirisAPI
 
         #region P/Invoke functions
 
-        [DllImport("OsirisCAPI")]
-        public static extern int GameObject_Get_Component_Count(IntPtr value);
-
-        [DllImport("OsirisCAPI")]
-        public static extern void GameObject_Get_Component(IntPtr value, int idx, out int type, out IntPtr componentPtr);
-
-
-        [DllImport("OsirisCAPI")]
-        public static extern int GameObject_Create(IntPtr behaviourPtr);
 
         #endregion
     }

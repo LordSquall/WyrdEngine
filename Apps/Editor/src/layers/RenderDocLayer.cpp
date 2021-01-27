@@ -79,13 +79,18 @@ namespace Osiris::Editor
 					}
 					else
 					{
-						char* filenameBuffer = (char*)malloc(sizeof(char) * Utils::ToUInt(_SettingsService->GetSetting("Preferences-RenderDoc", "filepath_max", "256")));
+						char* filenameBuffer = (char*)malloc(sizeof(char) * Utils::ToUInt(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__MAXFILEPATH, "256")));
 						uint32_t pathLength = 0;
 						uint64_t timestamp = 0;
 
 						_RDOCAPI->GetCapture(0, &filenameBuffer[0], &pathLength, &timestamp);
 
 						OSR_INFO("Renderdoc Capture Ended. Capture Successful: {0}", filenameBuffer);
+
+						if (Utils::ToBool(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__AUTOOPEN, "1")))
+						{
+							Utils::OpenFileWithSystem(std::string(filenameBuffer));
+						}
 
 						free(filenameBuffer);
 
@@ -111,7 +116,7 @@ namespace Osiris::Editor
 	{
 		if (_RDOCAPI != NULL)
 		{
-			if (Utils::ToBool(_SettingsService->GetSetting("Preferences-RenderDoc", "display_overlay", "0")) == false)
+			if (Utils::ToBool(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__DISPLAYOVERLAY, "0")) == false)
 			{
 				_RDOCAPI->MaskOverlayBits(0, 0);
 			}
@@ -134,9 +139,9 @@ namespace Osiris::Editor
 		{
 			if (_RDOCAPI != NULL)
 			{
-				if (Utils::ToBool(_SettingsService->GetSetting("Preferences-RenderDoc", "enabled", "0")))
+				if (Utils::ToBool(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__ENABLED, "0")))
 				{
-					_RDOCAPI->SetCaptureFilePathTemplate(_SettingsService->GetSetting("Preferences-RenderDoc", "capture_dir", "my_captures/example").c_str());
+					_RDOCAPI->SetCaptureFilePathTemplate(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__CAPTUREDIR, "my_captures/example").c_str());
 					_RDOCAPI->StartFrameCapture(NULL, NULL);
 
 					int ret = _RDOCAPI->IsFrameCapturing();

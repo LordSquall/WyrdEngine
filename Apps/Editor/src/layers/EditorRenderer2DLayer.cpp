@@ -16,7 +16,7 @@
 
 namespace Osiris::Editor
 {
-	EditorRenderer2DLayer::EditorRenderer2DLayer(std::string name) : Renderer2DLayer(name)
+	EditorRenderer2DLayer::EditorRenderer2DLayer(std::string name) : Layer(name)
 	{
 		/* Initialise the camera controller */
 		_CameraController = std::make_shared<OrthographicCameraController>(Application::Get().GetWindow().GetAspectRatio(), 1.0f);
@@ -55,30 +55,30 @@ namespace Osiris::Editor
 	{
 		_CameraController->OnUpdate(ts);
 
-		_Shader->Bind();
+		//_Shader->Bind();
 
-		_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
+		//_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
 
-		if (_Scene != nullptr)
-		{
-			/* Render Each sprite layer */
-			for (auto sl : _Scene->layers2D)
-			{
-				for (auto go : sl->children)
-				{
-					for (auto component : go->components)
-					{
-						component->Render(ts, renderer);
-					}
-				}
-			}
-		}
+		//if (_Scene != nullptr)
+		//{
+		//	/* Render Each sprite layer */
+		//	for (auto sl : _Scene->layers2D)
+		//	{
+		//		for (auto go : sl->children)
+		//		{
+		//			for (auto component : go->components)
+		//			{
+		//				component->Render(ts, renderer);
+		//			}
+		//		}
+		//	}
+		//}
 
-		if (_SelectedGameObject != NULL)
-		{
-			_TranslationGizmo->SetGameObject(_SelectedGameObject);
-			_TranslationGizmo->Render(ts, renderer);
-		}
+		//if (_SelectedGameObject != NULL)
+		//{
+		//	_TranslationGizmo->SetGameObject(_SelectedGameObject);
+		//	_TranslationGizmo->Render(ts, renderer);
+		//}
 
 	}
 
