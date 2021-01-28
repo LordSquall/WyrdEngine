@@ -68,7 +68,6 @@ namespace Osiris
 		virtual ~Window() {};
 
 		virtual void OnUpdate() = 0;
-
 		virtual void OnRender() = 0;
 		virtual void OnPreRender() = 0;
 		virtual void OnPostRender() = 0;

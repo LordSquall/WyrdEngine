@@ -110,10 +110,4 @@ namespace Osiris::Editor
 	{
 		return Application::Get().GetBehaviour().GetCustomClass(className);
 	}
-
-	Osiris::Behaviour::CreateCustomClassResult SimulationService::AddCustomScriptClass(const std::string& name, const std::string& filename)
-	{
-		/* use the behaviour subsystem to add a custom class */
-		return Application::Get().GetBehaviour().AddScriptedClassFromFile(name, filename);
-	}
 }

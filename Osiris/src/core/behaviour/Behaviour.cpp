@@ -36,7 +36,7 @@ namespace Osiris
 {
 	Timestep _Timestep;
 
-	Behaviour::Behaviour() : _IsRunning(false)
+	Behaviour::Behaviour() : _IsRunning(false), _Domain(nullptr), _CoreAssembly(nullptr), _ClientAssembly(nullptr), _CoreImage(nullptr), _ClientImage(nullptr)
 	{
 		std::string apiLibraryLocation = NATIVE_API_LIB_LOC "OsirisAPI/OsirisAPI.dll";
 		std::string monoLibraryDirectory = MONO_INSTALL_LOC "lib";
@@ -102,11 +102,6 @@ namespace Osiris
 		{
 			OSR_CORE_TRACE("\t{0}", scriptedClass.second->GetName());
 		}
-
-		/* Retrieve the Script side management classes */
-		MonoClass* monoClass;
-		monoClass = mono_class_from_name((MonoImage*)_CoreImage, "OsirisAPI", "GameObjectManager");
-		_GameObjectManagerClass = std::make_shared<ScriptedClass>("GameObjectManager", monoClass, _Domain);
 
 		/* Build up mapping between Osiris Key States and managed key state functions */
 		_FunctionKeyStateMap[0] = "OnKeyPressed";
@@ -199,11 +194,6 @@ namespace Osiris
 				UpdateManagedGameObjects(_Timestep);
 			}
 		}
-	}
-
-	Behaviour::CreateCustomClassResult Behaviour::AddScriptedClassFromFile(const std::string& name, const std::string& filename)
-	{
-		return Behaviour::CreateCustomClassResult{ true, "", nullptr };
 	}
 
 	void Behaviour::SetInputState(int key, int state)
@@ -624,11 +614,6 @@ namespace Osiris
 				}
 			}
 		}
-	}
-
-	void Behaviour::AddScriptedGameObject(std::shared_ptr<GameObject> gameObject)
-	{
-		_ScriptedGameObjects[gameObject->uid] = std::make_shared<ScriptedGameObject>(_Domain, _ScriptedClasses["GameObject"], gameObject);
 	}
 
 	void Behaviour::DebugPrintFunc(const std::string& s)

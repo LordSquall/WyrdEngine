@@ -9,6 +9,7 @@
 
 namespace Osiris
 {
+	/* Forward Declarations */
 	class Scene;
 	class Script;
 	class Resource;
@@ -19,54 +20,101 @@ namespace Osiris
 	class ScriptedResource;
 	class TaskDispatcher;
 
+	/**
+	 * @brief Behaviour class
+	 *
+	 * This it the primary Behaviour Subsystem class.
+	 * Provides management and control over the scripting behaviour engine
+	*/
 	class OSR_LIBRARY_API Behaviour
 	{
 	public:
-		struct CreateCustomClassResult
-		{
-			bool success;
-			std::string message;
-			std::shared_ptr<ScriptedClass> customClass;
-		};
-
-		struct CreateCustomObjectResult
-		{
-			bool success;
-			std::string message;
-			std::shared_ptr<ScriptedCustomObject> customObject;
-		};
-
-	public:
+		/**
+		 * @brief Constructor
+		*/
 		Behaviour();
+
+		/**
+		 * @brief Destructor
+		*/
 		virtual ~Behaviour();
 
 	public:
+		/**
+		 * @brief Start the behaviour model of a Scene
+		 * @param scene 
+		*/
 		void Start(std::shared_ptr<Scene> scene);
+
+		/**
+		 * @brief Stops the current behaviour model
+		*/
 		void Stop();
+
+		/**
+		 * @brief Update the current behaviour model
+		 * @param ts 
+		*/
 		void Update(Timestep ts);
 
+		/**
+		 * @brief Set the current input key state of the simluation
+		 * @param key 
+		 * @param state 
+		*/
 		void SetInputState(int key, int state);
-		void SetInputState(std::shared_ptr<GameObject> gameObject, int key, int state);
 
+		/**
+		 * @brief Compiles all the supplied script files into a runnable behavioural model
+		 * @param files 
+		 * @param outputDir 
+		 * @param projectName 
+		 * @param results 
+		*/
 		void CompileAll(const std::vector<std::string>& files, const std::string& outputDir, const std::string& projectName, CompileResults& results);
 
-		CreateCustomClassResult AddScriptedClassFromFile(const std::string& name, const std::string& filename);
-
-		inline std::shared_ptr<ScriptedClass> GetGameObjectManager() const { return _GameObjectManagerClass; }
-
+		/**
+		 * @brief Retreive a Core behaviour class model by name.
+		 * @param name 
+		 * @return 
+		*/
 		std::shared_ptr<ScriptedClass> GetClass(std::string name);
+
+		/**
+		 * @brief Retrieve a User behaviour class model by name.
+		 * @param name 
+		 * @return 
+		*/
 		std::shared_ptr<ScriptedClass> GetCustomClass(std::string name);
+
+		/**
+		 * @brief Retrieve a GameObject reference from the behaviour model by UID
+		 * @param uid 
+		 * @return 
+		*/
 		std::shared_ptr<ScriptedGameObject> GetGameObject(UID uid);
+
+		/**
+		 * @brief Retreive an custom object instance from the behaviour model by UID
+		 * @param uid 
+		 * @return 
+		*/
 		std::shared_ptr<ScriptedCustomObject> GetCustomObject(UID uid);
 
+
+		/**
+		 * @brief Boardcast a function call to all scripts on a GameObject 
+		 * @param gameObject 
+		 * @param funcName 
+		 * @param triggerObject 
+		 * @param args 
+		*/
+		//TODO: Rename to generic function name
 		void BroadcastTriggerCall(std::shared_ptr<GameObject> gameObject, std::string& funcName, std::shared_ptr<GameObject> triggerObject, std::vector<void*> args);
 
-		void AddScriptedGameObject(std::shared_ptr<GameObject> gameObject);
-
-		template<class T, typename... Args>
-		std::shared_ptr<T> CreateObject(Args&&... x) { return std::make_shared<T>(std::forward<Args>(x)...); }
-
 	private:
+		void SetInputState(std::shared_ptr<GameObject> gameObject, int key, int state);
+
 		void BuildManagedGameObjects();
 		void BuildManagedGameObjects(std::shared_ptr<GameObject> gameObject, std::shared_ptr<ScriptedClass> gameObjectClass);
 
@@ -82,8 +130,6 @@ namespace Osiris
 		static void DebugPrintFunc(const std::string& s);
 
 	private:
-		std::shared_ptr<ScriptedClass>		_GameObjectManagerClass;
-
 		std::map<UID, std::shared_ptr<ScriptedResource>>	_ScriptedResourceObject;
 
 		std::map<std::string, std::shared_ptr<ScriptedClass>>		_ScriptedClasses;

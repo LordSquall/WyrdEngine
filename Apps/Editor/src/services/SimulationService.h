@@ -38,8 +38,6 @@ namespace Osiris::Editor
 
 		std::shared_ptr<Osiris::ScriptedClass> GetClass(const std::string& className);
 
-		Osiris::Behaviour::CreateCustomClassResult AddCustomScriptClass(const std::string& name, const std::string& filename);
-
 	private:
 		bool _IsRunning;
 
