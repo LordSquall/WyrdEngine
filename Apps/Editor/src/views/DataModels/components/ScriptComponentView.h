@@ -1,17 +1,17 @@
 #pragma once
 
 /* core osiris include */
-#include <core/behaviour/PropertyDesc.h>
 #include <core/scene/components/ScriptComponent.h>
 
 /* local includes */
 #include "views/PropertiesViewer/IPropertyView.h"
+#include "views/DataModels/components/ScriptProperties/ScriptPropertyViewFactory.h"
+#include "services/ServiceManager.h"
 
 /* external includes */
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-#include "services/ServiceManager.h"
 
 using namespace Osiris;
 using namespace glm;
@@ -21,7 +21,7 @@ namespace Osiris::Editor {
 	class ScriptComponentView : public IPropertiesView
 	{
 	public:
-		ScriptComponentView(ScriptComponent* baseComponent) : _BaseComponent(baseComponent) {}
+		ScriptComponentView(ScriptComponent* baseComponent);
 		ScriptComponentView(const ScriptComponentView& obj) {}
 
 		void OnPropertyEditorDraw() override;
@@ -29,16 +29,10 @@ namespace Osiris::Editor {
 		const std::string GetName() override { return "Script"; }
 
 	private:
-		void DrawIntUI(PropertyDesc& prop);
-		void DrawFloatUI(PropertyDesc& prop);
-		void DrawStringUI(PropertyDesc& prop);
-		void DrawGameObjectUI(PropertyDesc& prop);
-		void DrawTextureResourceUI(PropertyDesc& prop);
-		void DrawColorUI(PropertyDesc& prop);
-
-	private:
 		ScriptComponent* _BaseComponent;
 
 		std::shared_ptr<WorkspaceService> _WorkspaceService;
+
+		std::vector<std::unique_ptr<ScriptPropertyView>> _PropertyViews;
 	};
 }

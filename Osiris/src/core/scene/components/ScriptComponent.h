@@ -1,7 +1,7 @@
 #pragma once
 
 /* local includes */
-#include "core/behaviour/PropertyDesc.h"
+#include "core/behaviour/ScriptPropertyDesc.h"
 #include "core/scene/components/IBaseComponent.h"
 
 /* external includes */
@@ -14,6 +14,7 @@ namespace Osiris {
 	class GameObject;
 	class ScriptedClass;
 	class ScriptedCustomObject;
+	class ScriptProperty;
 
 	class OSR_LIBRARY_API ScriptComponent : public IBaseComponent
 	{
@@ -29,7 +30,7 @@ namespace Osiris {
 		inline const std::shared_ptr<ScriptedCustomObject> GetCustomObject() const { return _Object; }
 		
 	public:
-		std::vector<PropertyDesc> Properties;
+		std::unique_ptr<std::vector<std::shared_ptr<ScriptProperty>>> Properties;
 
 	private:
 		void CacheResources();

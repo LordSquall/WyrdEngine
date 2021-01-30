@@ -149,7 +149,7 @@ group ""
 				"GLFW_INCLUDE_NONE",
 				"GLM_ENABLE_EXPERIMENTAL"
 			}
-
+			
 		filter "configurations:Debug"
 			defines "ORS_DEBUG"
 			runtime "Debug"
@@ -322,6 +322,8 @@ project "OsirisAPI"
 						iif(renderdocfound, "OSR_RENDERDOC_ENABLED", "")
 
 					}
+					
+					linkoptions { "/WHOLEARCHIVE:Osiris" }
 					
 					if renderdocfound then
 						debugenvs { renderdocFolder }

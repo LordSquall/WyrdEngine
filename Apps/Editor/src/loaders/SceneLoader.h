@@ -6,7 +6,7 @@
 using namespace Osiris;
 
 namespace Osiris::Editor {
-
+	
 	class SceneLoader
 	{
 	public:

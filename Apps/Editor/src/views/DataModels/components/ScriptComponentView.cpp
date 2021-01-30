@@ -8,6 +8,7 @@
 #include "ScriptComponentView.h"
 #include "services/ServiceManager.h"
 #include "support/ImGuiUtils.h"
+#include "views/DataModels/components/ScriptProperties/UnknownPropertyView.h"
 
 /* external includes */
 #include <imgui.h>
@@ -15,6 +16,25 @@
 
 namespace Osiris::Editor
 {
+	ScriptComponentView::ScriptComponentView(ScriptComponent* baseComponent) : _BaseComponent(baseComponent)
+	{
+		if (_BaseComponent->Properties != nullptr)
+		{
+			for (auto& prop : *_BaseComponent->Properties)
+			{
+				std::unique_ptr<ScriptPropertyView> view = std::move(ScriptPropertyViewFactory::Create(prop));
+				if (view != nullptr)
+				{
+					_PropertyViews.push_back(std::move(view));
+				}
+				else
+				{
+					_PropertyViews.push_back(std::make_unique<UnknownPropertyView>(prop));
+				}
+			}
+		}
+	}
+
 	void ScriptComponentView::OnPropertyEditorDraw()
 	{
 		if (_BaseComponent->GetClass() != nullptr)
@@ -37,58 +57,18 @@ namespace Osiris::Editor
 			ImGui::EndDragDropTarget();
 		}
 
-		for (auto& prop : _BaseComponent->Properties)
+		for (auto& prop : _PropertyViews)
 		{
-			switch (prop.type)
-			{
-			case PropType::INT:
-				DrawIntUI(prop);
-				break;
-			case PropType::FLOAT:
-				DrawFloatUI(prop);
-				break;
-			case PropType::STRING:
-				DrawStringUI(prop);
-				break;
-			case PropType::GAMEOBJECT:
-				DrawGameObjectUI(prop);
-				break;
-			case PropType::COLOR:
-				DrawColorUI(prop);
-				break;
-			case PropType::TEXTURE:
-				DrawTextureResourceUI(prop);
-				break;
-			default:
-				ImGui::Text("%s - Unknown Type", prop.name.c_str());
-			}
+			ImGui::PushID(&prop);
+			prop->DrawUI();
+			ImGui::PopID();
 		}
 
 	}
 
-	void ScriptComponentView::DrawIntUI(PropertyDesc& prop)
-	{
-		int value = prop.intVal;
-		if (ImGui::DragInt(prop.name.c_str(), &value))
-		{
-			prop.intVal = value;
-		}
-	}
+	
 
-	void ScriptComponentView::DrawFloatUI(PropertyDesc& prop)
-	{
-		float value = prop.floatVal;
-		if (ImGui::DragFloat(prop.name.c_str(), &value))
-		{
-			prop.floatVal = value;
-		}
-	}
-
-	void ScriptComponentView::DrawStringUI(PropertyDesc& prop)
-	{
-		ImGui::InputText(prop.name.c_str(), &prop.stringVal);
-	}
-
+	/*
 	void ScriptComponentView::DrawGameObjectUI(PropertyDesc& prop)
 	{
 		ImGui::LabelText(prop.name.c_str(), prop.objectNameVal.c_str());
@@ -173,5 +153,5 @@ namespace Osiris::Editor
 			prop.colorVal.b = channels[2];
 			prop.colorVal.a = channels[3];
 		}
-	}
+	}*/
 }

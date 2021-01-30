@@ -10,9 +10,13 @@ namespace OsirisAPI
     [StructLayout(LayoutKind.Sequential)]
     public class Color
     {
-        public float R;
-        public float G;
-        public float B;
-        public float A;
+        public float R { get; set; }
+        public float G { get; set; }
+        public float B { get; set; }
+        public float A { get; set; }
+        public override string ToString()
+        {
+            return String.Format("Color: {0}, {1}, {2}, {3}", R, G, B, A);
+        }
     }
 }

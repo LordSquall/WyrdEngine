@@ -209,8 +209,7 @@ namespace Osiris::Editor
 		{
 			if (ImGui::BeginDragDropSource())
 			{
-				UID uid = _DraggingSelectedGameObject->uid;
-				ImGui::SetDragDropPayload("GAMEOBJECT", &uid, sizeof(UID), 0);
+				ImGui::SetDragDropPayload("DND_GAMEOBJECT", &gameObject, sizeof(std::shared_ptr<GameObject>), 0);
 				ImGui::Text(_DraggingSelectedGameObject->name.c_str());
 				ImGui::EndDragDropSource();
 			}
@@ -218,11 +217,16 @@ namespace Osiris::Editor
 			/* clicking functions */
 			if (ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemClicked(ImGuiMouseButton_Right))
 			{
+				OSR_TRACE("UID: {0}", gameObject->uid.str());
 				_DraggingSelectedGameObject = gameObject;
 			}
 
 			if (ImGui::IsItemHovered())
 			{
+				ImGui::BeginTooltip();
+				ImGui::Text(gameObject->uid.str().c_str());
+				ImGui::EndTooltip();
+
 				if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
 				{
 					if (_DraggingSelectedGameObject)

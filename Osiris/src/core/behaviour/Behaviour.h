@@ -74,6 +74,12 @@ namespace Osiris
 		void CompileAll(const std::vector<std::string>& files, const std::string& outputDir, const std::string& projectName, CompileResults& results);
 
 		/**
+		 * @brief Get the domain context pointer
+		 * @return 
+		*/
+		void* GetDomain();
+
+		/**
 		 * @brief Retreive a Core behaviour class model by name.
 		 * @param name 
 		 * @return 

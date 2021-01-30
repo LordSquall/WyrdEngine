@@ -13,7 +13,6 @@
 #include <core/scene/components/ScriptComponent.h>
 #include <core/scene/components/PhysicsComponent.h>
 #include <core/renderer/Texture.h>
-#include <core/behaviour/PropertyDesc.h>
 
 /* local includes */
 #include "SceneLoader.h"
@@ -29,6 +28,7 @@ using namespace glm;
 namespace Osiris::Editor
 {
 	static std::shared_ptr<ResourceService> _resourceService;
+	static std::vector<std::shared_ptr<ScriptProperty>> _resolveProperties;
 
 	static void Read_Color(jsonxx::Array& json, Color* color)
 	{
@@ -193,9 +193,42 @@ namespace Osiris::Editor
 			for (size_t i = 0; i < properties.size(); i++)
 			{
 				jsonxx::Object propObj = properties.get<jsonxx::Object>((int)i);
-				jsonxx::String propName = propObj.get<jsonxx::String>("name");
+				jsonxx::String propName = propObj.get<jsonxx::String>("name", "");
 
-				auto& foundPro = std::find_if(component->Properties.begin(),
+				if (propName != "")
+				{
+					auto& foundPro = std::find_if((*component->Properties).begin(),
+						(*component->Properties).end(),
+						[&propName](const std::shared_ptr<ScriptProperty>& obj)
+						{
+							return obj->GetName() == propName;
+						});
+
+					if (foundPro != (*component->Properties).end())
+					{
+						(*foundPro)->FromJson(propObj);
+
+						_resolveProperties.push_back(*foundPro);
+					}
+				}
+			}
+
+
+			/*for (auto& prop : *component->Properties)
+			{
+				
+			}
+
+			jsonxx::Array properties = json.get<jsonxx::Array>("properties", jsonxx::Array());
+			for (size_t i = 0; i < properties.size(); i++)
+			{
+				jsonxx::Object propObj;*/
+
+
+				/*jsonxx::Object propObj = properties.get<jsonxx::Object>((int)i);
+				jsonxx::String propName = propObj.get<jsonxx::String>("name");*/
+
+				/*auto& foundPro = std::find_if(component->Properties.begin(),
 					component->Properties.end(),
 					[&propName](const PropertyDesc& obj)
 					{
@@ -229,8 +262,8 @@ namespace Osiris::Editor
 					default:
 						break;
 					}
-				}
-			}
+				}*/
+			//}
 		}
 
 		return component;
@@ -254,12 +287,12 @@ namespace Osiris::Editor
 
 			/* write components */
 			jsonxx::Array properties;
-			for (auto& prop : script->Properties)
+			for (auto& prop : *script->Properties)
 			{
-				jsonxx::Object propObj;
-				jsonxx::Array colorArray;
+				jsonxx::Object propObj = prop->ToJson();
+				propObj << "name" << prop->GetName();
 				
-				propObj << "name" << prop.name;
+				/*propObj << "name" << prop.name;
 				propObj << "type" << static_cast<std::underlying_type<PropType>::type>(prop.type);
 				switch (prop.type)
 				{
@@ -291,7 +324,7 @@ namespace Osiris::Editor
 					break;
 				default:
 					break;
-				}
+				}*/
 
 				properties << propObj;
 			}
@@ -521,19 +554,9 @@ namespace Osiris::Editor
 					}
 				}
 
-				/* Once all the layers are loaded, we want to process each layer->gameobject to recalculate there intiailse values */
-				/* Additionally for script we need to link the object properties */
-				for(auto layers : scene.layers2D)
+				for (auto& resolveProperty : _resolveProperties)
 				{
-					for(auto gameobject : layers->children)
-					{
-						gameobject->transform2D->Initialise();
-
-						//for(auto component : gameobject->components)
-						//{
-						//	component->Initialise();
-						//}
-					}
+					resolveProperty->Resolve(scene);
 				}
 
 			}

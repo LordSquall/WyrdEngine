@@ -16,6 +16,8 @@ namespace Osiris
 
 		static void* ExecuteScriptMethod(ScriptComponent* scriptComponent, std::string& functionName, std::vector<void*> args);
 
+		static MonoObject* CreateNewObject(const std::string& className);
+
 		static MonoObject* CreateNewObject(MonoDomain* domain, std::shared_ptr<ScriptedClass> monoClass);
 
 		static std::pair<MonoMethod*, MonoMethod*> FindPropertyInClass(std::shared_ptr<ScriptedClass> scriptedClass, const char* propertyName);
