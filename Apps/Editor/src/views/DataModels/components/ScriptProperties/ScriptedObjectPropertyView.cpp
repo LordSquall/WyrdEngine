@@ -34,8 +34,13 @@ namespace Osiris::Editor
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_GAMEOBJECT"))
 			{
 				std::shared_ptr<GameObject>* gameObject = (std::shared_ptr<GameObject>*)payload->Data;
+				
+				auto scriptComponent = (*gameObject)->FindScriptComponent(_Property->GetTypeName());
 
-				_Property->SetValue(gameObject->get());
+				if (scriptComponent != nullptr)
+				{
+					_Property->SetValue(gameObject->get());
+				}
 			}
 			ImGui::EndDragDropTarget();
 		}
