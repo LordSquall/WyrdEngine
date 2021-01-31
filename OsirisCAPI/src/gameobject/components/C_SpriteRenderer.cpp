@@ -56,10 +56,7 @@ void SpriteRenderer_SetPosition(void* obj, float x, float y)
 void SpriteRenderer_SetTexture(void* obj, void* texture)
 {
 	Osiris::SpriteComponent* spriteComponent = (Osiris::SpriteComponent*)obj;
-	Osiris::Texture* texturePtr = (Osiris::Texture*)texture;
+	std::shared_ptr<Osiris::Texture> texturePtr = *(std::shared_ptr<Osiris::Texture>*)texture;
 
-
-	Osiris::OpenGLTexture* oglTexture = (Osiris::OpenGLTexture * )texturePtr;
-
-	spriteComponent->texture = std::move(std::shared_ptr<Osiris::Texture>(texturePtr));
+	spriteComponent->texture = texturePtr;
 }

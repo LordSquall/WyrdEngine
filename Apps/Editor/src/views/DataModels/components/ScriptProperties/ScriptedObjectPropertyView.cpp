@@ -20,15 +20,6 @@ namespace Osiris::Editor
 
 		ImGui::Text(gameObject != nullptr ? gameObject->name.c_str() : "<< Not Set >>");
 
-		/*if (ImGui::IsItemHovered())
-		{
-			ImGui::BeginTooltip();
-			ImGui::Text("UID: %s", gameObject->uid.str().c_str());
-			ImGui::EndTooltip();
-		}*/
-		//				auto scriptComponent = (*gameObject)->FindScriptComponent(_Property->GetTypeName());
-
-
 		if (ImGui::BeginDragDropTarget())
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_GAMEOBJECT"))
