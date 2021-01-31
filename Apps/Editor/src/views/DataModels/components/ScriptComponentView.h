@@ -22,9 +22,10 @@ namespace Osiris::Editor {
 	{
 	public:
 		ScriptComponentView(ScriptComponent* baseComponent);
-		ScriptComponentView(const ScriptComponentView& obj) {}
 
 		void OnPropertyEditorDraw() override;
+
+		void RebuildPropertyViews();
 
 		const std::string GetName() override { return "Script"; }
 

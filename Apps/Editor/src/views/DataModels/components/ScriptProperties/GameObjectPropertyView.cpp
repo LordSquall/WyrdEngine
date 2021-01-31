@@ -20,11 +20,14 @@ namespace Osiris::Editor
 
 		ImGui::Text(gameObject != nullptr ? gameObject->name.c_str() : "<< Not Set >>");
 
-		if (ImGui::IsItemHovered())
+		if (gameObject != nullptr)
 		{
-			ImGui::BeginTooltip();
-			ImGui::Text("UID: %s", gameObject->uid.str().c_str());
-			ImGui::EndTooltip();
+			if (ImGui::IsItemHovered())
+			{
+				ImGui::BeginTooltip();
+				ImGui::Text("UID: %s", gameObject->uid.str().c_str());
+				ImGui::EndTooltip();
+			}
 		}
 
 		if (ImGui::BeginDragDropTarget())
