@@ -11,21 +11,23 @@ std::shared_ptr<ScriptProperty> clsname::CreateClone() {\
 	clone->SetName(_Name);\
 	clone->SetSetter(_Setter);\
 	clone->SetGetter(_Getter);\
+	clone->SetNameSpace(_NameSpace);\
+	clone->SetTypeName(_TypeName);\
 	return clone;\
 }\
 bool clsname::s_Registered = ScriptPropertyFactory::Register(\
-clsname::GetFactoryName(),\
+clsname::GetManagedType(),\
 clsname::CreateProperty)
 
 #define SCRIPT_PROPERTY_FACTORY_SETUP(clsname, valuetype, defaultValue, factoryname) \
 public:\
 clsname() : _Value(defaultValue) {}\
 virtual std::shared_ptr<ScriptProperty> CreateClone();\
-inline virtual const std::string GetTypeName() { return  ##factoryname; };\
+inline virtual const std::string GetFactoryName() { return  ##factoryname; };\
 static std::unique_ptr<ScriptProperty> CreateProperty() {\
 	return std::make_unique<clsname>();\
 }\
-static std::string GetFactoryName() { return  ##factoryname; };\
+static std::string GetManagedType() { return  ##factoryname; };\
 private:\
 	valuetype _Value;\
 	static bool s_Registered

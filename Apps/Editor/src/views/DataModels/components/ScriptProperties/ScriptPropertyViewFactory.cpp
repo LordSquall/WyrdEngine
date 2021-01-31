@@ -30,7 +30,8 @@ namespace Osiris::Editor
         ScriptPropertyViewFactory::Create(const std::shared_ptr<ScriptProperty>& prop)
     {
         auto views = GetPropertyViews();
-        if (auto it = views->find(prop->GetTypeName()); it != views->end())
+        auto factoryName = prop->GetFactoryName();
+        if (auto it = views->find(prop->GetFactoryName()); it != views->end())
         {
             return it->second(prop);
         }

@@ -34,13 +34,28 @@ namespace Osiris
 			{
 				MonoMethodSignature* getterSignature = mono_method_get_signature((MonoMethod*)getter, 0, 0);
 				MonoType* propertyType = mono_signature_get_return_type(getterSignature);
-				const char* typeName = mono_type_get_name(propertyType);
+				std::string qualifiedType = mono_type_get_name(propertyType);
 
-				int type = mono_type_get_type(propertyType);
+				std::string fullTypeNS = "";
+				std::string fullTypeName = "";
 
-				std::unique_ptr<ScriptProperty> scriptProp = ScriptPropertyFactory::Create(typeName);
+				/* there is a case were the type comes from 'OsirisGame' namespace */
+				std::size_t found = std::string(qualifiedType).find('.');
+				if (found != std::string::npos)
+				{
+					fullTypeNS = qualifiedType.substr(0, found);
+					fullTypeName = qualifiedType.substr(found + 1);
+				}
+				
+				if (fullTypeNS == "OsirisGame") {
+					qualifiedType = "OsirisGame.ScriptedObject";
+				}
+
+				std::unique_ptr<ScriptProperty> scriptProp = ScriptPropertyFactory::Create(qualifiedType);
 				if (scriptProp != nullptr)
 				{
+					scriptProp->SetNameSpace(fullTypeNS);
+					scriptProp->SetTypeName(fullTypeName);
 					scriptProp->SetName(name);
 					scriptProp->SetSetter(setter);
 					scriptProp->SetGetter(getter);
@@ -49,72 +64,13 @@ namespace Osiris
 				}
 				else
 				{
-					OSR_WARN("Unable to parse C# property '{0}'. Missing Factory Implementation!", typeName);
+					OSR_WARN("Unable to parse C# property '{0}'. Missing Factory Implementation!", qualifiedType);
 				}
 			}
 			else
 			{
 				OSR_WARN("Unable to parse C# property '{0}'. Missing Get/Set function!", name);
 			}
-
-			///* TESTING */
-			//std::unique_ptr<ScriptProperty> prop_test = ScriptPropertyFactory::Create("IntProperty");
-
-
-			//PropertyDesc propertyDesc = {};
-			//propertyDesc.name = mono_property_get_name(prop);
-			//propertyDesc.getter = mono_property_get_get_method(prop);
-			//propertyDesc.setter = mono_property_get_set_method(prop);
-
-			//if (propertyDesc.getter != nullptr && propertyDesc.setter != nullptr)
-			//{
-			//	MonoMethodSignature* getterSignature = mono_method_get_signature((MonoMethod*)propertyDesc.getter, 0, 0);
-			//	MonoType* propertyType = mono_signature_get_return_type(getterSignature);
-			//	const char* name = mono_type_get_name(propertyType);
-			//	int type = mono_type_get_type(propertyType);
-			//	
-			//	/* map the mono type */
-			//	switch (static_cast<MonoTypeEnum>(type))
-			//	{
-			//		case MONO_TYPE_STRING:
-			//			propertyDesc.type = PropType::STRING;
-			//			break;
-			//		case MONO_TYPE_I4:
-			//			propertyDesc.type = PropType::INT;
-			//			break;
-			//		case MONO_TYPE_R4:
-			//			propertyDesc.type = PropType::FLOAT;
-			//			break;
-			//		case MONO_TYPE_CLASS:
-
-			//			// Need to rethink this :/
-			//			if (strcmp(name, "OsirisAPI.Texture") == 0)
-			//			{
-			//				propertyDesc.type = PropType::TEXTURE;
-			//				propertyDesc.objectClassNameVal = name;
-			//			}
-			//			else if (strcmp(name, "OsirisAPI.Color") == 0)
-			//			{
-			//				propertyDesc.type = PropType::COLOR;
-			//				propertyDesc.objectClassNameVal = name;
-			//			}
-			//			else
-			//			{
-			//				propertyDesc.type = PropType::GAMEOBJECT;
-			//				propertyDesc.objectClassNameVal = name;
-			//			}
-			//			break;
-			//		default:
-			//			propertyDesc.type = PropType::UNSUPPORTED;
-			//			break;
-			//	}
-
-			//	_Properties.push_back(propertyDesc);
-			//}
-			//else
-			//{
-			//	OSR_WARN("Unable to parse C# property '{0}'. Missing Get/Set function!", propertyDesc.name);
-			//}
 		}
 	}
 

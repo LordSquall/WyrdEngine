@@ -353,7 +353,7 @@ namespace Osiris
 			std::filesystem::path filename = file;
 			std::string className = filename.stem().string();
 			MonoClass* monoClass;
-			monoClass = mono_class_from_name(monoImage, "", className.c_str());
+			monoClass = mono_class_from_name(monoImage, "OsirisGame", className.c_str());
 
 			if (!monoClass)
 			{
