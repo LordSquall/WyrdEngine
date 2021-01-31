@@ -253,6 +253,7 @@ namespace Osiris::Editor
 	std::shared_ptr<GameObject> SpriteLayerEditor::CreateEmptyGameObject()
 	{
 		std::shared_ptr<GameObject> go = std::make_shared<GameObject>("Game Object");
+		go->uid = UIDUtils::Create();
 
 		/* add transform 2D */
 		go->transform2D = std::make_shared<Transform2DComponent>(go);
