@@ -19,15 +19,49 @@ namespace Osiris
 	{
 		ManagedClass = managedClass;
 
-		MonoProperty* prop;
-		void* iter = NULL;
+		MonoProperty* unmanagedProp;
+		MonoMethod* unmangedMethod;
+		void* propertyIter = NULL;
+		void* methodIter = NULL;
+
+		OSR_TRACE("Mapping Scripted Class: {0}", className);
+
+		/* locate each of the functions with the class */
+		while ((unmangedMethod = mono_class_get_methods((MonoClass*)ManagedClass, &methodIter))) {
+			std::string methodName = mono_method_get_name(unmangedMethod);
+			
+			/* exclude some common functions and property functions */
+			bool valueMethod = true;
+			std::size_t found = 0;
+			found = methodName.find("set_");
+			if (found != std::string::npos) valueMethod = false;
+
+			found = methodName.find("get_");
+			if (found != std::string::npos) valueMethod = false;
+
+			found = methodName.find(".ctor");
+			if (found != std::string::npos) valueMethod = false;
+
+			found = methodName.find(".cctor");
+			if (found != std::string::npos) valueMethod = false;
+
+			found = methodName.find("ToString");
+			if (found != std::string::npos) valueMethod = false;
+
+			if (valueMethod)
+			{
+				OSR_TRACE("- Method: {0}", methodName);
+				std::shared_ptr<ScriptedMethod> method = std::make_shared<ScriptedMethod>(unmangedMethod);
+				Methods[methodName] = method;
+			}
+		}
 
 		/* at this point we want to process each of the properties in object */
-		while ((prop = mono_class_get_properties((MonoClass*)ManagedClass, &iter))) {
+		while ((unmanagedProp = mono_class_get_properties((MonoClass*)ManagedClass, &propertyIter))) {
 
-			const char* name = mono_property_get_name(prop);
-			MonoMethod* getter = mono_property_get_get_method(prop);
-			MonoMethod* setter = mono_property_get_set_method(prop);
+			const char* name = mono_property_get_name(unmanagedProp);
+			MonoMethod* getter = mono_property_get_get_method(unmanagedProp);
+			MonoMethod* setter = mono_property_get_set_method(unmanagedProp);
 
 			/* we are only concerned with properties with both a setter and getter */
 			if (setter != nullptr && getter != nullptr)
@@ -60,7 +94,7 @@ namespace Osiris
 					scriptProp->SetSetter(setter);
 					scriptProp->SetGetter(getter);
 
-					_Properties.push_back(std::move(scriptProp));
+					Properties[name] = std::move(scriptProp);
 				}
 				else
 				{
@@ -74,19 +108,13 @@ namespace Osiris
 		}
 	}
 
-	ScriptedClass::~ScriptedClass()
+	std::unique_ptr<PropertyList_t> ScriptedClass::GetPropertiesCopy() const
 	{
+		std::unique_ptr<PropertyList_t> newPropertyList = std::make_unique<std::map<std::string, std::shared_ptr<ScriptProperty>>>();
 
-	}
-
-
-	std::unique_ptr<std::vector<std::shared_ptr<ScriptProperty>>> ScriptedClass::GetPropertiesCopy() const
-	{
-		std::unique_ptr<std::vector<std::shared_ptr<ScriptProperty>>> newPropertyList = std::make_unique<std::vector<std::shared_ptr<ScriptProperty>>>();
-
-		for (auto& prop : _Properties)
+		for (auto& prop : Properties)
 		{
-			newPropertyList->push_back(prop->CreateClone());
+			(*newPropertyList)[prop.first] = prop.second->CreateClone();
 		}
 
 		return std::move(newPropertyList);

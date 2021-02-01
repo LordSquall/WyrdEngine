@@ -16,7 +16,6 @@ namespace OsirisAPI
             _Textures.Clear();
         }
 
-
         /// <summary>
         /// Links the managed object to a unmanaged pointer
         /// </summary>

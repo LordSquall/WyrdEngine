@@ -16,6 +16,8 @@ namespace Osiris {
 	class ScriptedCustomObject;
 	class ScriptProperty;
 
+	typedef std::map<std::string, std::shared_ptr<ScriptProperty>> PropertyList_t;
+
 	class OSR_LIBRARY_API ScriptComponent : public IBaseComponent
 	{
 	public:
@@ -30,7 +32,7 @@ namespace Osiris {
 		inline const std::shared_ptr<ScriptedCustomObject> GetCustomObject() const { return _Object; }
 		
 	public:
-		std::unique_ptr<std::vector<std::shared_ptr<ScriptProperty>>> Properties;
+		std::unique_ptr<PropertyList_t> Properties;
 
 	private:
 		void CacheResources();

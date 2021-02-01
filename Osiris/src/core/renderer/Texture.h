@@ -23,7 +23,7 @@ namespace Osiris
 
 		virtual void Delete() = 0;
 
-		inline const UID GetUID() { return _uid; }
+		inline UID GetUID() { return _uid; }
 		inline void SetUID(UID uid) { _uid = uid; }
 
 		static std::shared_ptr<Texture> Create(unsigned char* data, int width, int height, int channels, const std::string& description);

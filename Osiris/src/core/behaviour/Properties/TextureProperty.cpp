@@ -28,6 +28,8 @@ namespace Osiris
 
 		args.push_back(&_Value);
 
+		OSR_TRACE("Texture Set: {0}", _Value->GetUID().str());
+
 		mono_runtime_invoke(propSetter, textureObject, &args[0], nullptr);
 
 		args.clear();
@@ -61,7 +63,7 @@ namespace Osiris
 
 	void TextureProperty::Resolve(Scene& scene)
 	{
-		_Value = Application::Get().GetResources().Textures[_ValueUID];
+		_Value = Application::Get().GetResources().Textures[_ValueUID].get();
 	}
 
 	SCRIPT_PROPERTY_FACTORY_REGISTER(TextureProperty);

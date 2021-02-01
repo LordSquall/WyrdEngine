@@ -28,7 +28,7 @@ using namespace glm;
 namespace Osiris::Editor
 {
 	static std::shared_ptr<ResourceService> _resourceService;
-	static std::vector<std::shared_ptr<ScriptProperty>> _resolveProperties;
+	static PropertyList_t _resolveProperties;
 
 	static void Read_Color(jsonxx::Array& json, Color* color)
 	{
@@ -197,73 +197,17 @@ namespace Osiris::Editor
 
 				if (propName != "")
 				{
-					auto& foundPro = std::find_if((*component->Properties).begin(),
-						(*component->Properties).end(),
-						[&propName](const std::shared_ptr<ScriptProperty>& obj)
-						{
-							return obj->GetName() == propName;
-						});
-
-					if (foundPro != (*component->Properties).end())
+					if ((*component->Properties).find(propName) != (*component->Properties).end())
 					{
-						(*foundPro)->FromJson(propObj);
+						auto foundPro = (*component->Properties)[propName];
+		
+						(*foundPro).FromJson(propObj);
 
-						_resolveProperties.push_back(*foundPro);
+						_resolveProperties[propName] = foundPro;
+	
 					}
 				}
 			}
-
-
-			/*for (auto& prop : *component->Properties)
-			{
-				
-			}
-
-			jsonxx::Array properties = json.get<jsonxx::Array>("properties", jsonxx::Array());
-			for (size_t i = 0; i < properties.size(); i++)
-			{
-				jsonxx::Object propObj;*/
-
-
-				/*jsonxx::Object propObj = properties.get<jsonxx::Object>((int)i);
-				jsonxx::String propName = propObj.get<jsonxx::String>("name");*/
-
-				/*auto& foundPro = std::find_if(component->Properties.begin(),
-					component->Properties.end(),
-					[&propName](const PropertyDesc& obj)
-					{
-						return obj.name == propName; 
-					});
-
-				if (foundPro != component->Properties.end())
-				{
-					switch (static_cast<PropType>(propObj.get<jsonxx::Number>("type")))
-					{
-					case PropType::INT:
-						foundPro->intVal = (int)propObj.get<jsonxx::Number>("value");
-						break;
-					case PropType::FLOAT:
-						foundPro->floatVal = (float)propObj.get<jsonxx::Number>("value");
-						break;
-					case PropType::STRING:
-						foundPro->stringVal = propObj.get<jsonxx::String>("value").c_str();
-						break;
-					case PropType::GAMEOBJECT:
-						foundPro->objectUID = UID(propObj.get<jsonxx::String>("value"));
-						foundPro->objectNameVal = propObj.get<jsonxx::String>("nameValue").c_str();
-						break;
-					case PropType::COLOR:
-						Read_Color(propObj.get<jsonxx::Array>("value"), &foundPro->colorVal);
-						break;
-					case PropType::TEXTURE:
-						foundPro->objectUID = UID(propObj.get<jsonxx::String>("value"));
-						foundPro->objectNameVal = propObj.get<jsonxx::String>("nameValue").c_str();
-						break;
-					default:
-						break;
-					}
-				}*/
-			//}
 		}
 
 		return component;
@@ -289,43 +233,9 @@ namespace Osiris::Editor
 			jsonxx::Array properties;
 			for (auto& prop : *script->Properties)
 			{
-				jsonxx::Object propObj = prop->ToJson();
-				propObj << "name" << prop->GetName();
-				
-				/*propObj << "name" << prop.name;
-				propObj << "type" << static_cast<std::underlying_type<PropType>::type>(prop.type);
-				switch (prop.type)
-				{
-				case PropType::INT:
-					propObj << "value" << prop.intVal;
-					break;
-				case PropType::FLOAT:
-					propObj << "value" << prop.floatVal;
-					break;
-				case PropType::STRING:
-					propObj << "value" << prop.stringVal;
-					break;
-				case PropType::GAMEOBJECT:
-					propObj << "value" << prop.objectUID.str();
-					propObj << "nameValue" << prop.objectNameVal;
-					propObj << "objectClassNameVal" << prop.objectClassNameVal;
-					break;
-				case PropType::COLOR:
-					colorArray.append(prop.colorVal.r);
-					colorArray.append(prop.colorVal.g);
-					colorArray.append(prop.colorVal.b);
-					colorArray.append(prop.colorVal.a);
-					propObj << "value" << colorArray;
-					break;
-				case PropType::TEXTURE:
-					propObj << "value" << prop.objectUID.str();
-					propObj << "nameValue" << prop.objectNameVal;
-					propObj << "objectClassNameVal" << prop.objectClassNameVal;
-					break;
-				default:
-					break;
-				}*/
-
+				jsonxx::Object propObj = prop.second->ToJson();
+				propObj << "name" << prop.second->GetName();
+			
 				properties << propObj;
 			}
 			componentJson << "properties" << properties;
@@ -556,7 +466,7 @@ namespace Osiris::Editor
 
 				for (auto& resolveProperty : _resolveProperties)
 				{
-					resolveProperty->Resolve(scene);
+					resolveProperty.second->Resolve(scene);
 				}
 
 			}

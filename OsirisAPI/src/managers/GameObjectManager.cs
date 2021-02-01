@@ -18,7 +18,7 @@ namespace OsirisAPI
 
         public static GameObject RegisterGameObject(ref int uid)
         {
-            GameObject newGameObject = new GameObject(uid);
+            GameObject newGameObject = new GameObject();
 
             _GameObjects.Add(uid, newGameObject);
 

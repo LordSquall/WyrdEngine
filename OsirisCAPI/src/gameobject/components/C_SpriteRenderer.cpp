@@ -8,7 +8,7 @@
 
 /* local includes */
 #include "C_SpriteRenderer.h" 
-
+#include "../../managers/C_Managers.h"
 
 void* SpriteRenderer_Create(void* obj)
 {
@@ -56,7 +56,16 @@ void SpriteRenderer_SetPosition(void* obj, float x, float y)
 void SpriteRenderer_SetTexture(void* obj, void* texture)
 {
 	Osiris::SpriteComponent* spriteComponent = (Osiris::SpriteComponent*)obj;
-	std::shared_ptr<Osiris::Texture> texturePtr = *(std::shared_ptr<Osiris::Texture>*)texture;
+	Osiris::Texture* texturePtr = (Osiris::Texture*)texture;
 
-	spriteComponent->texture = texturePtr;
+	printf("TEXTURE DEBUG LOGS\n");
+	for (auto& texture : _resources->Textures)
+	{
+		printf("%s\n", texture.second->GetUID().str().c_str());
+	}
+
+	printf("TEXTURE DEBUG RESULT\n");
+	printf("%s\n", texturePtr->GetUID().str().c_str());
+	
+	spriteComponent->texture = _resources->Textures[texturePtr->GetUID()];
 }

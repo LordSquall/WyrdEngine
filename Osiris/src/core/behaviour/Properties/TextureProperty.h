@@ -16,8 +16,8 @@ namespace Osiris
 		virtual jsonxx::Object ToJson() override;
 		virtual bool FromJson(jsonxx::Object& object) override;
 
-		inline std::shared_ptr<Texture> GetValue() { return _Value; }
-		inline void SetValue(std::shared_ptr<Texture> value) { _Value = value; };
+		inline Texture* GetValue() { return _Value; }
+		inline void SetValue(Texture* value) { _Value = value; };
 
 		virtual void Resolve(Scene& scene) override;
 
@@ -28,6 +28,6 @@ namespace Osiris
 		UID _ValueUID;
 
 	private:
-		SCRIPT_PROPERTY_FACTORY_SETUP(TextureProperty, std::shared_ptr<Texture>, 0, "OsirisAPI.Texture");
+		SCRIPT_PROPERTY_FACTORY_SETUP(TextureProperty, Texture*, 0, "OsirisAPI.Texture");
 	};
 }

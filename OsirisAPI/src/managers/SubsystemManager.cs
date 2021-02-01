@@ -18,9 +18,20 @@ namespace OsirisAPI
             }
         }
 
+        public static IntPtr Resources
+        {
+            get { return _NativeResources; }
+            set
+            {
+                _NativeResources = value;
+                Manager_SetResources(_NativeResources);
+            }
+        }
+
         #region private variables 
 
         protected static IntPtr _NativeBehaviour;
+        protected static IntPtr _NativeResources;
 
         #endregion
 
@@ -29,6 +40,9 @@ namespace OsirisAPI
 
         [DllImport("OsirisCAPI")]
         public static extern void Manager_SetBehaviour(IntPtr value);
+
+        [DllImport("OsirisCAPI")]
+        public static extern void Manager_SetResources(IntPtr value);
 
         #endregion
     }

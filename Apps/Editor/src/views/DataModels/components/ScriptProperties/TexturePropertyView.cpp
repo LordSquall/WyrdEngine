@@ -16,7 +16,7 @@ namespace Osiris::Editor
 {
 	void TexturePropertyView::DrawUI()
 	{
-		std::shared_ptr<Texture> texture = _Property->GetValue();
+		Texture* texture = _Property->GetValue();
 
 		ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2(64.0f, 64.0f));
 		if (ImGui::BeginDragDropTarget())
@@ -25,7 +25,8 @@ namespace Osiris::Editor
 			{
 				std::shared_ptr<Texture> texture = *(std::shared_ptr<Texture>*)payload->Data;
 
-				_Property->SetValue(texture);
+				_Property->SetValue(texture.get());
+				_Property->SetValueUID(&texture->GetUID());
 			}
 			ImGui::EndDragDropTarget();
 		}

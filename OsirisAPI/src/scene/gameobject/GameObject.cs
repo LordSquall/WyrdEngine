@@ -20,10 +20,6 @@ namespace OsirisAPI
 
         #region Public Functions
 
-        public GameObject(int uid)
-        {
-        }
-
         public void Move(float x, float y)
         {
             GameObject_Move(_NativePointer, x, y);

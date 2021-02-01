@@ -60,14 +60,14 @@ namespace Osiris::Editor
 		{
 			for (auto& prop : *_BaseComponent->Properties)
 			{
-				std::unique_ptr<ScriptPropertyView> view = std::move(ScriptPropertyViewFactory::Create(prop));
+				std::unique_ptr<ScriptPropertyView> view = std::move(ScriptPropertyViewFactory::Create(prop.second));
 				if (view != nullptr)
 				{
 					_PropertyViews.push_back(std::move(view));
 				}
 				else
 				{
-					_PropertyViews.push_back(std::make_unique<UnknownPropertyView>(prop));
+					_PropertyViews.push_back(std::make_unique<UnknownPropertyView>(prop.second));
 				}
 			}
 		}

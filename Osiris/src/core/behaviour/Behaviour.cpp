@@ -119,15 +119,22 @@ namespace Osiris
 		_CurrentScene = scene;
 		_IsRunning = true;
 
+		/* store a pointer to the systems */
+		_BehaviourSubsystem = Application::Get().GetBehaviourPtr();
+		_ResourcesSubsystem = Application::Get().GetResourcesPtr();
+
 		/* pass in the subsystem pointers to the managed domain */
 		MonoClass* monoClass;
 		monoClass = mono_class_from_name((MonoImage*)_CoreImage, "OsirisAPI", "SubsystemManager");
 
-		MonoProperty* prop = mono_class_get_property_from_name(monoClass, "Behaviour");
+		MonoProperty* behaviourProp = mono_class_get_property_from_name(monoClass, "Behaviour");
+		MonoProperty* resourcesProp = mono_class_get_property_from_name(monoClass, "Resources");
 
-		/* build arg list for the key event functions */
-		std::vector<void*> args = std::vector<void*>({ &Application::Get().GetBehaviour() });
-		mono_property_set_value(prop, nullptr, &args[0], nullptr);
+		std::vector<void*> behaviourArgs = std::vector<void*>({ &_BehaviourSubsystem });
+		mono_property_set_value(behaviourProp, nullptr, &behaviourArgs[0], nullptr);
+
+		std::vector<void*> resourceArgs = std::vector<void*>({ &_ResourcesSubsystem });
+		mono_property_set_value(resourcesProp, nullptr, &resourceArgs[0], nullptr);
 
 		/* first stage is to create a instance of each gameobject within mono */
 		if (_CurrentScene != nullptr)
@@ -466,72 +473,7 @@ namespace Osiris
 					/* we now need to pass each of the property values to allow UI configured props */
 					for (auto& prop : *scriptComponent->Properties)
 					{
-						//std::shared_ptr<GameObject> go;
-						//std::shared_ptr<ScriptComponent> sc;
-						//std::vector<void*> args;
-
-						prop->Set(scriptComponent->GetCustomObject()->Object);
-
-						
-						//case PropType::STRING:
-						//	args.push_back(mono_string_new((MonoDomain*)_Domain, prop.stringVal.c_str()));
-
-						//	mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
-						//	break;
-						//case PropType::GAMEOBJECT:
-						//	// find matching script component class type
-						//	if (prop.objectClassNameVal == "OsirisAPI.GameObject")
-						//	{
-						//		go = _CurrentScene->FindGameObject(prop.objectUID);
-						//		if (go != nullptr)
-						//		{
-						//			if (_ScriptedGameObjects.find(go->uid) != _ScriptedGameObjects.end())
-						//			{
-						//				args.push_back(_ScriptedGameObjects[go->uid]->Object);
-						//			}
-						//			else
-						//			{
-						//				args.push_back(nullptr);
-						//			}
-
-						//			mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
-						//		}
-						//	}
-						//	else
-						//	{
-						//		go = _CurrentScene->FindGameObject(prop.objectUID);
-						//		sc = go->FindScriptComponent(prop.objectClassNameVal);
-						//		args.push_back(sc->GetCustomObject()->Object);
-
-						//		mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
-						//	}
-						//	break;
-						//case PropType::TEXTURE:
-						//{
-						//	MonoClass* textureClass = (MonoClass*)_ScriptedClasses["Texture"]->ManagedClass;
-						//	MonoObject* textureObject = mono_object_new((MonoDomain*)_Domain, textureClass);
-						//	MonoProperty* property = mono_class_get_property_from_name(textureClass, "NativePtr");
-						//	MonoMethod* propSetter = mono_property_get_set_method(property);
-
-						//	std::shared_ptr<Texture> texture = Application::Get().GetResources().Textures[prop.objectUID];
-
-						//	prop.objectVal = &*texture;
-
-						//	args.push_back(&prop.objectVal);
-
-						//	mono_runtime_invoke(propSetter, textureObject, &args[0], nullptr);
-
-						//	args.clear();
-
-						//	args.push_back(textureObject);
-
-						//	mono_runtime_invoke((MonoMethod*)prop.setter, scriptComponent->GetCustomObject()->Object, &args[0], nullptr);
-						//}
-						//break;
-						//default:
-						//	OSR_CORE_TRACE("Unknown Type. Skipping Property serialisation!");
-						//	break;
-						//}
+						prop.second->Set(scriptComponent->GetCustomObject()->Object);
 					}
 				}
 			}

@@ -10,6 +10,7 @@
 namespace Osiris
 {
 	/* Forward Declarations */
+	class Resources;
 	class Scene;
 	class Script;
 	class Resource;
@@ -148,6 +149,9 @@ namespace Osiris
 
 		std::shared_ptr<Scene>	_CurrentScene;
 		bool					_IsRunning;
+
+		Behaviour*		_BehaviourSubsystem;
+		Resources*		_ResourcesSubsystem;
 
 		void*			_Domain;
 		void*			_CoreAssembly;

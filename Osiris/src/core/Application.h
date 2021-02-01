@@ -20,7 +20,7 @@ namespace Osiris {
 	/**
 	 * @brief Base application class
 	 * 
-	 * This it the base application class for all Osiris Applications.
+	 * This is the base application class for all Osiris Applications.
 	 * Provides access to each of the core subsystems and main loop functions
 	*/
 	class OSR_LIBRARY_API Application
@@ -85,10 +85,22 @@ namespace Osiris {
 		inline Resources& GetResources() { return *_Resources; }
 
 		/**
+		 * @brief Get Raw Resources pointer
+		 * @return - resources subsystem pointer
+		*/
+		inline Resources* GetResourcesPtr() { return _Resources.get(); }
+
+		/**
 		 * @brief Get Behaviour Subsystem
 		 * @return - behaviour subsystem object
 		*/
 		inline Behaviour& GetBehaviour() { return *_Behaviour; }
+
+		/**
+		 * @brief Get Raw Behaviour pointer
+		 * @return - behaviour subsystem pointer
+		*/
+		inline Behaviour* GetBehaviourPtr() { return _Behaviour.get(); }
 
 		/**
 		 * @brief Get Physics Subsystem

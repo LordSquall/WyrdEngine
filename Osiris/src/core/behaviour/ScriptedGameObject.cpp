@@ -27,15 +27,12 @@ namespace Osiris
 		/* Get a reference to the Behaviour subsystem */
 		Osiris::Behaviour& behaviour = Application::Get().GetBehaviour();
 
-		/* Build a list of C# methods */
-		_Methods["LinkToManaged"] = MonoUtils::FindMethodInClass(behaviour.GetClass("GameObjectManager"), "LinkToManaged", 2, true);
-
 		/* build property arguments */
 		UID uid = gameObject->uid;
 		void* createMethodArgs[1];
 		createMethodArgs[0] = &uid;
 
-		Object = mono_runtime_invoke(MonoUtils::FindMethodInClass(behaviour.GetClass("GameObjectManager"), "RegisterGameObject", 1, true), NULL, createMethodArgs, NULL);
+		Object = mono_runtime_invoke(behaviour.GetClass("GameObjectManager")->Methods["RegisterGameObject"]->GetManagedMethod(), NULL, createMethodArgs, NULL);
 
 		/* build property arguments */
 		Osiris::GameObject* go = &*gameObject;
@@ -44,7 +41,7 @@ namespace Osiris
 		linkMethodArgs[1] = &go;
 
 		MonoObject* exception = nullptr;
-		mono_runtime_invoke(_Methods["LinkToManaged"], &*Object, linkMethodArgs, &exception);
+		mono_runtime_invoke(behaviour.GetClass("GameObjectManager")->Methods["LinkToManaged"]->GetManagedMethod(), &*Object, linkMethodArgs, &exception);
 		
 		if (exception != nullptr)
 		{
