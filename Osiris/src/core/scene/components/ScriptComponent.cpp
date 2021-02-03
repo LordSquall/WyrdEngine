@@ -27,7 +27,7 @@ namespace Osiris
 	{
 		_Class = scriptedClass;
 
-		Properties.swap(_Class->GetPropertiesCopy());
+		Properties = _Class->GetPropertiesCopy();
 	}
 
 	void ScriptComponent::SetCustomObject(std::shared_ptr<ScriptedCustomObject> scriptedObject)

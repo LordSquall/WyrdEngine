@@ -17,11 +17,17 @@ namespace Osiris
 {
 	void GameObjectProperty::Set(void* object)
 	{
-		std::vector<void*> args;
+		
+		void* addComponentArgs[1] = { Application::Get().GetBehaviour().GetGameObject(_Value->uid)->Object };
 
-		args.push_back(Application::Get().GetBehaviour().GetGameObject(_Value->uid)->Object);
+		MonoObject* exception;
 
-		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
+		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &addComponentArgs[0], &exception);
+
+		if (exception != nullptr)
+		{
+			mono_print_unhandled_exception(exception);
+		}
 	}
 
 	jsonxx::Object GameObjectProperty::ToJson()

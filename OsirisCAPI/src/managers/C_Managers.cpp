@@ -2,13 +2,14 @@
 
 #include <core/Application.h>
 #include <core/scene/GameObject.h>
-#include <core/scene/components/IBaseComponent.h>
-#include <core/scene/components/Transform2DComponent.h>
+#include <core/behaviour/ScriptedCustomObject.h>
 #include <core/UID.h>
 
 Osiris::Behaviour* _behaviour = NULL;
 
 Osiris::Resources* _resources = NULL;
+
+class MonoDomain;
 
 void Manager_SetBehaviour(void* behaviour)
 {

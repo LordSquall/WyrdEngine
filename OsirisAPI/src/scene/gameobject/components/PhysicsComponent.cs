@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace OsirisAPI
 {
+    [StructLayout(LayoutKind.Sequential)]
     public class PhysicsComponent : GameObjectComponent
     {
         public void SetIsTrigger(bool isTrigger)

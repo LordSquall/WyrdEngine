@@ -91,7 +91,7 @@ group ""
 		kind "StaticLib"
 		language "C++"
 		cppdialect "C++17"
-		staticruntime "on"
+		staticruntime "off"
 
 		targetdir ("lib/" .. outputdir .. "/%{prj.name}")
 		objdir ("obj/" .. outputdir .. "/%{prj.name}")
@@ -170,7 +170,7 @@ project "OsirisCAPI"
 		kind "SharedLib"
 		language "C++"
 		cppdialect "C++17"
-		staticruntime "on"
+		staticruntime "off"
 
 		targetdir ("lib/" .. outputdir .. "/%{prj.name}")
 		objdir ("obj/" .. outputdir .. "/%{prj.name}")
@@ -185,7 +185,9 @@ project "OsirisCAPI"
 		{
 			"Osiris/src",
 			"%{includedir.glm}",
-			"%{includedir.uuid}"
+			"%{includedir.uuid}",
+			"%{includedir.mono}",
+			"%{includedir.jsonxx}"
 		}
 		
         links { 
@@ -264,7 +266,7 @@ project "OsirisAPI"
 				kind "ConsoleApp"
 				language "C++"
 				cppdialect "C++17"
-				staticruntime "on"
+				staticruntime "off"
 
 				targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 				objdir ("obj/" .. outputdir .. "/%{prj.name}")

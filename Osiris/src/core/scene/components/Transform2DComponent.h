@@ -17,6 +17,8 @@ namespace Osiris {
 		Transform2DComponent(std::shared_ptr<GameObject> gameObject);
 		Transform2DComponent(const Transform2DComponent& obj);
 
+		inline virtual const std::string GetManagedType() { return "Transform2DComponent"; }
+
 		void SetPosition(const vec2& pos);
 		void SetRotation(const float rot);
 		void SetScale(const vec2& scl);

@@ -9,13 +9,14 @@
 
 namespace Osiris
 {
+	class Behaviour;
 	class GameObject;
 	class ScriptedClass;
 
 	class OSR_LIBRARY_API ScriptedGameObject
 	{
 	public:
-		ScriptedGameObject(void* domain, std::shared_ptr<ScriptedClass>, std::shared_ptr<GameObject> gameObject);
+		ScriptedGameObject(Behaviour* behaviour, std::shared_ptr<ScriptedClass>, std::shared_ptr<GameObject> gameObject);
 		virtual ~ScriptedGameObject();
 
 		inline const std::string& GetName() const { return _Name; }

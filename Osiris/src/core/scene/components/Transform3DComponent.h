@@ -19,6 +19,8 @@ namespace Osiris {
 		Transform3DComponent(const Transform3DComponent& obj);
 		~Transform3DComponent();
 
+		inline virtual const std::string GetManagedType() { return "Transform3DComponent"; }
+
 		vec3 position;
 		vec3 rotation;
 		vec3 scale;

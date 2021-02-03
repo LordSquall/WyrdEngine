@@ -29,12 +29,15 @@ namespace Osiris {
 
 		inline const SceneComponentType GetType() const { return _type; }
 
+
 		inline xg::Guid GetUUID() const { return _uuid; }
 		inline void SetUUID(xg::Guid uuid) { _uuid = uuid; }
 
 		virtual void Initialise() {};
 		virtual void Recalculate() {};
 		virtual void Render(Timestep ts, Renderer& renderer) {};
+
+		virtual const std::string GetManagedType() = 0;
 
 	public:
 		std::shared_ptr<GameObject> Owner;

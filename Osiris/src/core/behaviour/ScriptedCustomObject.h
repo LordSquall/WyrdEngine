@@ -5,7 +5,7 @@
 #include "core/export.h"
 
 /* external includes */
-#include <mono/jit/jit.h>
+#include <mono/metadata/object-forward.h>
 
 namespace Osiris
 {

@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace OsirisAPI
 {
+    [StructLayout(LayoutKind.Sequential)]
     public class Transform2D : GameObjectComponent
     {
         public void SetPosition(float x, float y)

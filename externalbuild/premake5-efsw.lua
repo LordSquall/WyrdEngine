@@ -4,7 +4,7 @@ project "efsw"
     kind "StaticLib"
     language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
+	staticruntime "off"
     
 	src_dir = externallibsdir .. "/efsw/src/"
 	include_dir = externallibsdir .. "/efsw/include/"

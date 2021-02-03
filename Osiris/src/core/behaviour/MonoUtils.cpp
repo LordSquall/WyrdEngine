@@ -35,14 +35,6 @@ namespace Osiris
 		return nullptr;
 	}
 
-
-	MonoObject* MonoUtils::CreateNewObject(const std::string& className)
-	{
-		MonoDomain* domain = (MonoDomain*)Application::Get().GetBehaviour().GetDomain();
-
-		return MonoUtils::CreateNewObject(domain, Application::Get().GetBehaviour().GetClass(className));
-	}
-
 	MonoObject* MonoUtils::CreateNewObject(MonoDomain* domain, std::shared_ptr<ScriptedClass> monoClass)
 	{
 		MonoObject* object = mono_object_new((MonoDomain*)domain, (MonoClass*)(monoClass->ManagedClass));

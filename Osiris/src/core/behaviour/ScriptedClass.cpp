@@ -94,6 +94,7 @@ namespace Osiris
 					scriptProp->SetSetter(setter);
 					scriptProp->SetGetter(getter);
 
+					OSR_TRACE("- Property: {0}", name);
 					Properties[name] = std::move(scriptProp);
 				}
 				else
@@ -108,15 +109,15 @@ namespace Osiris
 		}
 	}
 
-	std::unique_ptr<PropertyList_t> ScriptedClass::GetPropertiesCopy() const
+	std::shared_ptr<PropertyList_t> ScriptedClass::GetPropertiesCopy() const
 	{
-		std::unique_ptr<PropertyList_t> newPropertyList = std::make_unique<std::map<std::string, std::shared_ptr<ScriptProperty>>>();
+		std::shared_ptr<PropertyList_t> newPropertyList = std::make_shared<std::map<std::string, std::shared_ptr<ScriptProperty>>>();
 
 		for (auto& prop : Properties)
 		{
 			(*newPropertyList)[prop.first] = prop.second->CreateClone();
 		}
 
-		return std::move(newPropertyList);
+		return newPropertyList;
 	}
 }

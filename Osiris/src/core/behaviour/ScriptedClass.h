@@ -46,7 +46,7 @@ namespace Osiris
 		*/
 		inline void SetName(const std::string& name) { _Name = name; }
 
-		std::unique_ptr<PropertyList_t> GetPropertiesCopy() const;
+		std::shared_ptr<PropertyList_t> GetPropertiesCopy() const;
 
 	public:
 		PropertyList_t	Properties;

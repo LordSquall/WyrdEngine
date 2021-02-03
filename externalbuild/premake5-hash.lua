@@ -4,7 +4,7 @@ project "hash"
     kind "StaticLib"
     language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
+	staticruntime "off"
     
 	include_dir = externallibsdir .. "/Hash/src/"
 	

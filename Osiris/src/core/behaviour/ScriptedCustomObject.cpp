@@ -26,9 +26,6 @@ namespace Osiris
 		/* Store type name */
 		TypeName = scriptedClass->GetName();
 
-		/* Get a reference to the Behaviour subsystem */
-		Osiris::Behaviour& behaviour = Application::Get().GetBehaviour();
-
 		/* Map methods */
 		_Properties["GameObject"]		= MonoUtils::FindPropertyInClass(scriptedClass, "GameObject");
 		_Methods["OnStart"]				= MonoUtils::FindMethodInClass(scriptedClass, "OnStart", 0, false);

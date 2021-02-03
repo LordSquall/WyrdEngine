@@ -16,7 +16,7 @@
 
 namespace Osiris
 {
-	ScriptedGameObject::ScriptedGameObject(void* domain, std::shared_ptr<ScriptedClass> scriptedClass, std::shared_ptr<GameObject> gameObject)
+	ScriptedGameObject::ScriptedGameObject(Behaviour* behaviour, std::shared_ptr<ScriptedClass> scriptedClass, std::shared_ptr<GameObject> gameObject)
 	{
 		/* Store the gameobject */
 		_GameObject = gameObject;
@@ -24,28 +24,19 @@ namespace Osiris
 		/* Store the class */
 		Class = (MonoClass*)scriptedClass->ManagedClass;
 
-		/* Get a reference to the Behaviour subsystem */
-		Osiris::Behaviour& behaviour = Application::Get().GetBehaviour();
+		/* Create a new managed object */
+		Object = MonoUtils::CreateNewObject((MonoDomain*)behaviour->GetDomain(), scriptedClass);
 
-		/* build property arguments */
-		UID uid = gameObject->uid;
-		void* createMethodArgs[1];
-		createMethodArgs[0] = &uid;
+		/* Set the Native GameObject pointer */
+		void* setNativePtrArgs[1] = { &*_GameObject };
+		mono_runtime_invoke((MonoMethod*)behaviour->GetClass("UnmanagedObject")->Properties["NativePtr"]->GetSetter(), Object, setNativePtrArgs, nullptr);
 
-		Object = mono_runtime_invoke(behaviour.GetClass("GameObjectManager")->Methods["RegisterGameObject"]->GetManagedMethod(), NULL, createMethodArgs, NULL);
-
-		/* build property arguments */
-		Osiris::GameObject* go = &*gameObject;
-		void* linkMethodArgs[2];
-		linkMethodArgs[0] = &uid;
-		linkMethodArgs[1] = &go;
-
-		MonoObject* exception = nullptr;
-		mono_runtime_invoke(behaviour.GetClass("GameObjectManager")->Methods["LinkToManaged"]->GetManagedMethod(), &*Object, linkMethodArgs, &exception);
-		
-		if (exception != nullptr)
+		for (auto& component : gameObject->components)
 		{
-			mono_print_unhandled_exception(exception);
+			std::shared_ptr<ScriptedClass> componentClass = behaviour->GetClass(component->GetManagedType());
+			MonoObject* componentManagedObject = MonoUtils::CreateNewObject((MonoDomain*)behaviour->GetDomain(), componentClass);
+			void* addComponentArgs[1] = { componentManagedObject };
+			mono_runtime_invoke(behaviour->GetClass("GameObject")->Methods["AddComponent"]->GetManagedMethod(), Object, &addComponentArgs[0], nullptr);
 		}
 	}
 

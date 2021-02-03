@@ -1,5 +1,8 @@
 #pragma once
 
+/* core osiris includes */
+#include "core/Structures.h"
+
 /* local includes */
 #include "../../C_Export.h"
 
@@ -7,7 +10,11 @@
 extern "C" {
 #endif
 
+LIBRARY_API void* ScriptComponent_Create(void* obj);
+
 LIBRARY_API void ScriptComponent_Enabled(void* obj, bool enable);
+
+LIBRARY_API void ScriptComponent_CreateInstance(void* gameObject, void* component, const char* className);
 
 #ifdef __cplusplus
 }

@@ -23,6 +23,8 @@ namespace Osiris {
 		SpriteComponent(const SpriteComponent& obj);
 		~SpriteComponent() = default;
 
+		inline virtual const std::string GetManagedType() { return "SpriteComponent"; }
+
 		std::shared_ptr<Shader> shader;
 		std::shared_ptr<Texture> texture;
 		glm::vec2 position;

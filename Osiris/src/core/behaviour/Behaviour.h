@@ -108,6 +108,19 @@ namespace Osiris
 		*/
 		std::shared_ptr<ScriptedCustomObject> GetCustomObject(UID uid);
 
+		/**
+		 * @brief Add a Scripted Game Object to the bahaviour subsystem
+		 * @param uid
+		 * @param gameObject
+		*/
+		void AddScriptedGameObject(UID uid, std::shared_ptr<GameObject> gameObject);
+
+		/**
+		 * @brief Add a Scripted Custom Object to the bahaviour subsystem
+		 * @param uid 
+		 * @param customObject 
+		*/
+		void AddScriptedCustomObject(UID uid, std::shared_ptr<ScriptedCustomObject> customObject);
 
 		/**
 		 * @brief Boardcast a function call to all scripts on a GameObject 

@@ -2,7 +2,7 @@ project "glad"
     kind "StaticLib"
     language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
+	staticruntime "off"
     
 	src_dir = "../Osiris/vendor/glad/"
 	include_dir = "../Osiris/vendor/glad/include/"

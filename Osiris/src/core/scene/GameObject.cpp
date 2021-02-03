@@ -33,11 +33,14 @@ namespace Osiris
 
 	GameObject::~GameObject() { }
 
-	void GameObject::AddChild(std::shared_ptr<GameObject> gameObject)
+	std::shared_ptr<GameObject>* GameObject::AddChild(std::shared_ptr<GameObject> gameObject)
 	{
 		children.push_back(gameObject);
 
 		gameObject->layer = layer;
+
+
+		return &children.back();
 	}
 
 	void GameObject::RemoveChild(UID uid)

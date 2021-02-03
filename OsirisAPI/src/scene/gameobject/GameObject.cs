@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace OsirisAPI
 {
+    [StructLayout(LayoutKind.Sequential)]
     public class GameObject : UnmanagedObject
     {
         #region public properties
@@ -17,6 +18,11 @@ namespace OsirisAPI
         }
        
         #endregion
+
+        public GameObject()
+        {
+            GameObjectManager.RegisterGameObject(this);
+        }
 
         #region Public Functions
 
@@ -50,7 +56,20 @@ namespace OsirisAPI
             return null;
         }
 
-        public T AddComponent<T>() where T : GameObjectComponent, new()
+        public void AddComponent(GameObjectComponent component)
+        {
+            if (!_components.ContainsKey(component.GetType()))
+            {
+                _components[component.GetType()] = component;
+                Console.WriteLine("Added component!");
+            }
+            else
+            {
+                Console.WriteLine("Failed to add component!");
+            }
+        }
+        
+        public T CreateComponent<T>(string typeName = null) where T : GameObjectComponent, new()
         {
             if (_components.ContainsKey(typeof(T)))
             {
@@ -62,6 +81,11 @@ namespace OsirisAPI
             component.CreateUnmanagedPtr(_NativePointer);
             _components[typeof(T)] = component;
 
+            if (typeName != null)
+            {
+
+            }
+
             return component;
         }
 
@@ -70,17 +94,14 @@ namespace OsirisAPI
             GameObject_AddChild(_NativePointer, gameObject.NativePtr);
         }
 
-        public GameObject Create(GameObject parent = null)
+        public GameObject Create(string name, GameObject parent = null)
         {
-            IntPtr unmanagedGameObject = GameObject_Create(parent == null ? _NativePointer : parent.NativePtr);
+            IntPtr unmanagedGameObject = GameObject_Create(parent == null ? _NativePointer : parent.NativePtr, name);
 
-            int uid = GameObject_UID_Get(unmanagedGameObject);
+            GameObject newGameObject = new GameObject();
+            newGameObject.NativePtr = unmanagedGameObject;
 
-            GameObject managedGameObject = GameObjectManager.RegisterGameObject(ref uid);
-
-            GameObjectManager.LinkToManaged(uid, unmanagedGameObject);
-
-            return managedGameObject;
+            return newGameObject;
         }
 
         public T RegisterComponent<T>(IntPtr nativeAddress) where T : GameObjectComponent, new()
@@ -142,7 +163,7 @@ namespace OsirisAPI
         public static extern void GameObject_Get_Component(IntPtr value, int idx, out int type, out IntPtr componentPtr);
 
         [DllImport("OsirisCAPI")]
-        public static extern IntPtr GameObject_Create(IntPtr value);
+        public static extern IntPtr GameObject_Create(IntPtr parentGameObject, [MarshalAs(UnmanagedType.LPStr)] String name);
 
         #endregion
     }

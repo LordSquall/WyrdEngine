@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace OsirisAPI
 {
+    [StructLayout(LayoutKind.Sequential)]
     public class SpriteComponent : GameObjectComponent
     {
         private Texture _Texture;

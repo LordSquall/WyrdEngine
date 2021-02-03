@@ -7,24 +7,46 @@ using System.Threading.Tasks;
 
 namespace OsirisAPI
 {
-    class GameObjectManager
+    public class GameObjectManager
     {
-        private static Dictionary<int, GameObject> _GameObjects = new Dictionary<int, GameObject>();
+        /// <summary>
+        /// Map off all the gameobjects within the domain
+        /// </summary>
+        private static List<GameObject> _GameObjects = new List<GameObject>();
 
+        /// <summary>
+        /// Reset the Manager between executions
+        /// </summary>
         public static void Reset()
         {
             _GameObjects.Clear();
         }
+        
+        public static void RegisterGameObject(GameObject gameObject)
+        {
+            _GameObjects.Add(gameObject);
+            Console.WriteLine("GameObject Registered!!!");
+        }
 
-        public static GameObject RegisterGameObject(ref int uid)
+        /// <summary>
+        /// Create and store a new gameobject agasint a given uid
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <returns></returns>
+        public static GameObject CreateGameObject(ref int uid)
         {
             GameObject newGameObject = new GameObject();
 
-            _GameObjects.Add(uid, newGameObject);
+            //_GameObjects.Add(uid, newGameObject);
 
             return newGameObject;
         }
 
+        /// <summary>
+        /// Find a Registered GameObject by uid
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <returns></returns>
         public static GameObject FindGameObject(int uid)
         {
             return _GameObjects[uid];
@@ -66,8 +88,27 @@ namespace OsirisAPI
 
         }
 
+        /// <summary>
+        /// Create a new instance of a ScripedObject
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T CreateScriptInstance<T>(GameObject gameObject) where T : ScriptedObject, new()
+        {
+            T t = new T();
+            IntPtr obj = Manager_CreateScriptedObject(gameObject.NativePtr, typeof(T).Name);
+
+            //Marshal.PtrToStructure(obj, t);
+
+           // Console.WriteLine(t.GameObject.Name);
+
+            return t;
+        }
+
         #region P/Invoke functions
 
+        [DllImport("OsirisCAPI")]
+        public static extern IntPtr Manager_CreateScriptedObject(IntPtr gameObject, [MarshalAs(UnmanagedType.LPStr)] String className);
 
         #endregion
     }

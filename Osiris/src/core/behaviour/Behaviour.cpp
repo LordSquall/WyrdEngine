@@ -273,6 +273,17 @@ namespace Osiris
 		return _ScriptedCustomObjects[uid]; 
 	}
 
+
+	void Behaviour::AddScriptedGameObject(UID uid, std::shared_ptr<GameObject> gameObject)
+	{
+		_ScriptedGameObjects[uid] = std::make_shared<ScriptedGameObject>(this, _ScriptedClasses["GameObject"], gameObject);
+	}
+
+	void Behaviour::AddScriptedCustomObject(UID uid, std::shared_ptr<ScriptedCustomObject> customObject)
+	{
+		_ScriptedCustomObjects[uid] = customObject;
+	}
+
 	void Behaviour::BroadcastTriggerCall(std::shared_ptr<GameObject> gameObject, std::string& funcName, std::shared_ptr<GameObject> triggerObject, std::vector<void*> args)
 	{
 		for(auto &component : gameObject->components)
@@ -394,7 +405,7 @@ namespace Osiris
 			BuildManagedGameObjects(go, gameObjectClass);
 		}
 
-		_ScriptedGameObjects[gameObject->uid] = std::make_shared<ScriptedGameObject>(_Domain, gameObjectClass, gameObject);
+		_ScriptedGameObjects[gameObject->uid] = std::make_shared<ScriptedGameObject>(this, gameObjectClass, gameObject);
 	}
 
 	void Behaviour::LinkManagedGameObjects()

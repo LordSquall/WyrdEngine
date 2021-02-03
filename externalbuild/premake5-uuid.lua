@@ -4,7 +4,7 @@ project "uuid"
     kind "StaticLib"
     language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
+	staticruntime "off"
     
 	srcdir = externallibsdir .. "/crossguid/src/"
 	include_dir = externallibsdir .. "/crossguid/include/"

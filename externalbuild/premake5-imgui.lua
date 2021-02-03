@@ -4,7 +4,7 @@ project "imgui"
     kind "StaticLib"
     language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
+	staticruntime "off"
     
 	srcdir = externallibsdir .. "/imgui/"
 	include_dir = externallibsdir .. "/imgui/"

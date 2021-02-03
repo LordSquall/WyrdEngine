@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
 namespace OsirisAPI
 {
+
+    [StructLayout(LayoutKind.Sequential)]
     abstract public class ScriptedObject
     {
         public GameObject GameObject { get; set; }

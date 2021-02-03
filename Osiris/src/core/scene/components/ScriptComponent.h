@@ -24,6 +24,8 @@ namespace Osiris {
 		ScriptComponent(std::shared_ptr<GameObject> owner);
 		ScriptComponent(const ScriptComponent& obj);
 		~ScriptComponent();
+
+		inline virtual const std::string GetManagedType() { return "ScriptComponent"; }
 		
 		void SetClass(std::shared_ptr<ScriptedClass> scriptedClass);
 		void SetCustomObject(std::shared_ptr<ScriptedCustomObject> scriptedObject);
@@ -32,7 +34,7 @@ namespace Osiris {
 		inline const std::shared_ptr<ScriptedCustomObject> GetCustomObject() const { return _Object; }
 		
 	public:
-		std::unique_ptr<PropertyList_t> Properties;
+		std::shared_ptr<PropertyList_t> Properties;
 
 	private:
 		void CacheResources();

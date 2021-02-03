@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-LIBRARY_API void* GameObject_Create(void* obj);
+LIBRARY_API void* GameObject_Create(void* parentGameObject, const char* name);
 
 LIBRARY_API const char* GameObject_Name_Get(void* obj);
 

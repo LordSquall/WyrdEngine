@@ -19,13 +19,13 @@ namespace Osiris
 	{
 		std::vector<void*> args;
 
-		MonoClass* colorClass = (MonoClass*)Application::Get().GetBehaviour().GetClass("Color")->ManagedClass;
-		MonoObject* colorObject = MonoUtils::CreateNewObject("Color");
+		std::shared_ptr<ScriptedClass> colorClass = Application::Get().GetBehaviour().GetClass("Color");
+		MonoObject* colorObject = MonoUtils::CreateNewObject((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), colorClass);
 
-		MonoProperty* rProperty = mono_class_get_property_from_name(colorClass, "R");
-		MonoProperty* gProperty = mono_class_get_property_from_name(colorClass, "G");
-		MonoProperty* bProperty = mono_class_get_property_from_name(colorClass, "B");
-		MonoProperty* aProperty = mono_class_get_property_from_name(colorClass, "A");
+		MonoProperty* rProperty = mono_class_get_property_from_name((MonoClass*)colorClass->ManagedClass, "R");
+		MonoProperty* gProperty = mono_class_get_property_from_name((MonoClass*)colorClass->ManagedClass, "G");
+		MonoProperty* bProperty = mono_class_get_property_from_name((MonoClass*)colorClass->ManagedClass, "B");
+		MonoProperty* aProperty = mono_class_get_property_from_name((MonoClass*)colorClass->ManagedClass, "A");
 
 		MonoMethod* rPropSetter = mono_property_get_set_method(rProperty);
 		MonoMethod* gPropSetter = mono_property_get_set_method(gProperty);
