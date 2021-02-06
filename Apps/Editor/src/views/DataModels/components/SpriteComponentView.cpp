@@ -3,6 +3,8 @@
 /* core osiris includes */
 #include <osrpch.h>
 #include <core/scene/GameObject.h>
+#include <core/Application.h>
+#include <core/Resources.h>
 
 /* local includes */
 #include "SpriteComponentView.h"
@@ -47,10 +49,15 @@ namespace Osiris::Editor
 		ImGui::Text("Texture");
 		ImGui::PushID("texture");
 		ImGui::SameLine();
-		ImGui::Image((ImTextureID)(INT_PTR)_BaseComponent->texture->GetHandle(), ImVec2(64.0f, 64.0f));
+
+		auto texture = _BaseComponent->texture;
+
+		if (texture == nullptr) texture = Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)];
+
+		ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2(64.0f, 64.0f));
 		if (ImGui::BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("TEXTURE_ASSET_PAYLOAD"))
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_TEXTURE"))
 			{
 				std::shared_ptr<Texture> texture = *(std::shared_ptr<Texture>*)payload->Data;
 				_BaseComponent->texture = texture;

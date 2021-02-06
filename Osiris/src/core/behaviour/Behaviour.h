@@ -138,6 +138,8 @@ namespace Osiris
 		void BuildManagedGameObjects();
 		void BuildManagedGameObjects(std::shared_ptr<GameObject> gameObject, std::shared_ptr<ScriptedClass> gameObjectClass);
 
+		void BuildManagedGameObjectHierarchy();
+
 		void LinkManagedGameObjects();
 		void LinkManagedGameObjects(std::shared_ptr<GameObject> gameObject);
 

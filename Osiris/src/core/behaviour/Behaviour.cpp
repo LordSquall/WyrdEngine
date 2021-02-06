@@ -140,22 +140,16 @@ namespace Osiris
 		if (_CurrentScene != nullptr)
 		{
 			BuildManagedGameObjects();
-		}
 
-		/* next stage is to pass over any script components and create custom objects for each one */
-		if (_CurrentScene != nullptr)
-		{
+			/* next stage to build hierarchy in between GameObjects */
+			BuildManagedGameObjectHierarchy();
+
+			/* next stage is to pass over any script components and create custom objects for each one */
 			LinkManagedGameObjects();
-		}
 
-		/* next stage is to pass over any script components and link properties */
-		if (_CurrentScene != nullptr)
-		{
+			/* next stage is to pass over any script components and link properties */
 			LinkGameObjectProperties();
-		}
 
-		if (_CurrentScene != nullptr)
-		{
 			/* Query each of the layer scene objects */
 			for (auto& sl : _CurrentScene->layers2D)
 			{
@@ -406,6 +400,27 @@ namespace Osiris
 		}
 
 		_ScriptedGameObjects[gameObject->uid] = std::make_shared<ScriptedGameObject>(this, gameObjectClass, gameObject);
+	}
+
+	void Behaviour::BuildManagedGameObjectHierarchy()
+	{
+		std::shared_ptr<ScriptedClass> gameObjectClass = _ScriptedClasses["GameObject"];
+
+		for (auto& sgo : _ScriptedGameObjects)
+		{
+			auto parentGameObject = sgo.second->GetGameObject()->parent;
+
+			auto scriptParentGameObject = _ScriptedGameObjects[parentGameObject->uid];
+
+			if (scriptParentGameObject != nullptr)
+			{
+				std::vector<void*> args;
+				args.push_back(sgo.second->Object);
+
+				mono_runtime_invoke(gameObjectClass->Methods["_AddGameObject"]->GetManagedMethod(), (MonoObject*)scriptParentGameObject->Object, &args[0], nullptr);
+			}
+
+		}
 	}
 
 	void Behaviour::LinkManagedGameObjects()

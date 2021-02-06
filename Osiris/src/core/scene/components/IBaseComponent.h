@@ -39,6 +39,8 @@ namespace Osiris {
 
 		virtual const std::string GetManagedType() = 0;
 
+		void* ManagedObject;
+
 	public:
 		std::shared_ptr<GameObject> Owner;
 

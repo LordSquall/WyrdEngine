@@ -13,7 +13,8 @@ namespace OsirisAPI
 
         public override IntPtr CreateUnmanagedPtr(IntPtr gameObjectPtr)
         {
-            _NativePointer = ScriptComponent_Create(gameObjectPtr);
+            GCHandle handle = GCHandle.Alloc(this);
+            _NativePointer = ScriptComponent_Create(gameObjectPtr, GCHandle.ToIntPtr(handle));
             return _NativePointer;
         }
 
@@ -28,7 +29,7 @@ namespace OsirisAPI
         #region P/Invoke functions
 
         [DllImport("OsirisCAPI")]
-        public static extern IntPtr ScriptComponent_Create(IntPtr value);
+        public static extern IntPtr ScriptComponent_Create(IntPtr value, IntPtr componentManagedObject);
 
 
         [DllImport("OsirisCAPI")]

@@ -92,6 +92,8 @@ namespace OsirisAPI
         public void AddChild(GameObject gameObject)
         {
             GameObject_AddChild(_NativePointer, gameObject.NativePtr);
+
+            _children.Add(gameObject);
         }
 
         public GameObject Create(string name, GameObject parent = null)
@@ -118,11 +120,29 @@ namespace OsirisAPI
             return component;
         }
 
+
+        public GameObject FindChild(string name)
+        {
+            return _children.Find(x => x.Name.Equals(name));
+        }
+
         #endregion
 
         #region Private Variables
 
         private Dictionary<Type, GameObjectComponent> _components = new Dictionary<Type, GameObjectComponent>();
+
+        private List<GameObject> _children = new List<GameObject>();
+
+
+        #endregion
+
+        #region private Methods
+
+        private void _AddGameObject(GameObject gameObject)
+        {
+            _children.Add(gameObject);
+        }
 
         #endregion
 

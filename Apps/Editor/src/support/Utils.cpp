@@ -292,13 +292,15 @@ namespace Osiris::Editor {
 
 	std::string Utils::GetPath(const std::string& filename)
 	{
-		std::string directory;
+		std::filesystem::path path(filename);
+		return path.parent_path().string();
+		/*std::string directory;
 		const size_t last_slash_idx = filename.rfind('/');
 		if (std::string::npos != last_slash_idx)
 		{
 			directory = filename.substr(0, last_slash_idx);
 		}
-		return directory;
+		return directory;*/
 	}
 
 	std::string Utils::GetFilename(const std::string& path, bool addExtension)

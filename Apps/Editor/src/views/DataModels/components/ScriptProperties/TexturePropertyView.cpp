@@ -18,6 +18,10 @@ namespace Osiris::Editor
 	{
 		Texture* texture = _Property->GetValue();
 
+		if (texture == nullptr)
+		{
+			texture = &*(Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)]);
+		}
 		ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2(64.0f, 64.0f));
 		if (ImGui::BeginDragDropTarget())
 		{

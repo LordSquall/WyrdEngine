@@ -14,12 +14,13 @@
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
 
-void* ScriptComponent_Create(void* obj)
+void* ScriptComponent_Create(void* obj, void* componentManagedObject)
 {
 	std::shared_ptr<Osiris::GameObject>* gameObject = (std::shared_ptr<Osiris::GameObject>*)obj;
 
 	std::shared_ptr<Osiris::ScriptComponent> scriptComponent = std::make_shared<Osiris::ScriptComponent>(std::shared_ptr<Osiris::GameObject>((*gameObject)));
 	scriptComponent->Initialise();
+	scriptComponent->ManagedObject = mono_gchandle_get_target((uint32)componentManagedObject);
 
 	(*gameObject)->components.push_back(scriptComponent);
 
@@ -62,6 +63,17 @@ void ScriptComponent_CreateInstance(void* obj, void* component, const char* clas
 
 		(*scriptComponent)->SetClass(scriptedClass);
 		(*scriptComponent)->SetCustomObject(newCustomObject);
+
+		void* args[1];
+		args[0] = newCustomObject->Object;
+
+		MonoObject* exception = nullptr;
+		MonoObject* newObject = mono_runtime_invoke((MonoMethod*)_behaviour->GetClass("ScriptComponent")->Properties["Instance"]->GetSetter(), (*scriptComponent)->ManagedObject, args, &exception);
+
+		if (exception != nullptr)
+		{
+			mono_print_unhandled_exception(exception);
+		}
 
 
 		/// Checkout invoke object return :) 

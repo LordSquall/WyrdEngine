@@ -30,6 +30,6 @@ namespace Osiris
 		UID _ValueUID;
 
 	private:
-		SCRIPT_PROPERTY_FACTORY_SETUP(ScriptedObjectProperty, GameObject*, 0, "OsirisGame.ScriptedObject");
+		SCRIPT_PROPERTY_FACTORY_SETUP(ScriptedObjectProperty, GameObject*, 0, "OsirisAPI.ScriptedObject");
 	};
 }

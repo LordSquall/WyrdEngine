@@ -3,6 +3,7 @@
 /* local includes */
 #include "osrpch.h"
 #include "SpriteComponent.h"
+#include "core/Application.h"
 #include "core/Resources.h"
 #include "core/renderer/Texture.h"
 #include "core/renderer/Shader.h"
@@ -31,7 +32,10 @@ namespace Osiris
 
 	void SpriteComponent::Initialise()
 	{
+		
 		Initialised = true;
+
+
 		Recalculate();
 	}
 

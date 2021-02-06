@@ -35,6 +35,7 @@ namespace Osiris
 		{
 			std::shared_ptr<ScriptedClass> componentClass = behaviour->GetClass(component->GetManagedType());
 			MonoObject* componentManagedObject = MonoUtils::CreateNewObject((MonoDomain*)behaviour->GetDomain(), componentClass);
+			component->ManagedObject = componentManagedObject;
 			void* addComponentArgs[1] = { componentManagedObject };
 			mono_runtime_invoke(behaviour->GetClass("GameObject")->Methods["AddComponent"]->GetManagedMethod(), Object, &addComponentArgs[0], nullptr);
 		}

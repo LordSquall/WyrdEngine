@@ -10,7 +10,7 @@
 extern "C" {
 #endif
 
-LIBRARY_API void* ScriptComponent_Create(void* obj);
+LIBRARY_API void* ScriptComponent_Create(void* obj, void* componentManagedObject);
 
 LIBRARY_API void ScriptComponent_Enabled(void* obj, bool enable);
 

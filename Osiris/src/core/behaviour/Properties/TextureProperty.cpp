@@ -17,27 +17,29 @@ namespace Osiris
 {
 	void TextureProperty::Set(void* object)
 	{
-		std::vector<void*> args;
+		if (_Value != nullptr)
+		{
+			std::vector<void*> args;
 
-		std::shared_ptr<ScriptedClass> textureClass = Application::Get().GetBehaviour().GetClass("Texture");
-		MonoObject* textureObject = MonoUtils::CreateNewObject((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), textureClass);
+			std::shared_ptr<ScriptedClass> textureClass = Application::Get().GetBehaviour().GetClass("Texture");
+			MonoObject* textureObject = MonoUtils::CreateNewObject((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), textureClass);
 
-		MonoProperty* property = mono_class_get_property_from_name((MonoClass*)textureClass->ManagedClass, "NativePtr");
+			MonoProperty* property = mono_class_get_property_from_name((MonoClass*)textureClass->ManagedClass, "NativePtr");
 
-		MonoMethod* propSetter = mono_property_get_set_method(property);
+			MonoMethod* propSetter = mono_property_get_set_method(property);
 
-		args.push_back(&_Value);
+			args.push_back(&_Value);
 
-		OSR_TRACE("Texture Set: {0}", _Value->GetUID().str());
+			OSR_TRACE("Texture Set: {0}", _Value->GetUID().str());
 
-		mono_runtime_invoke(propSetter, textureObject, &args[0], nullptr);
+			mono_runtime_invoke(propSetter, textureObject, &args[0], nullptr);
 
-		args.clear();
+			args.clear();
 
-		args.push_back(textureObject);
+			args.push_back(textureObject);
 
-		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
-		
+			mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
+		}
 	}
 
 	jsonxx::Object TextureProperty::ToJson()
