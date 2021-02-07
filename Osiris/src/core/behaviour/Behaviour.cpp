@@ -177,6 +177,10 @@ namespace Osiris
 
 	void Behaviour::Stop()
 	{
+		/* clear managed objects */
+		_ScriptedGameObjects.clear();
+		_ScriptedCustomObjects.clear();
+
 		mono_runtime_invoke(MonoUtils::FindMethodInClass(GetClass("GameObjectManager"), "Reset", 0, true), NULL, NULL, NULL);
 
 		_IsRunning = false;
