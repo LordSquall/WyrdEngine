@@ -66,6 +66,7 @@ namespace Osiris::Editor
 		void OnAddFileEntryEvent(Events::EventArgs& args);
 		void OnDeleteFileEntryEvent(Events::EventArgs& args);
 		void OnReloadFileEntryEvent(Events::EventArgs& args);
+		void OnModifiedFileEntryEvent(Events::EventArgs& args);
 		void OnLoadAssetEvent(Events::EventArgs& args);
 
 	private:

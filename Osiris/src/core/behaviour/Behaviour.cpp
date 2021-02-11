@@ -299,6 +299,8 @@ namespace Osiris
 
 	void Behaviour::CompileAll(const std::vector<std::string>& files, const std::string& outputDir, const std::string& projectName, CompileResults& results)
 	{
+		OSR_TRACE("COMPILING BEHAVIOUR MODEL!!!");
+
 		// mono compiler script command
 		std::string command = "mcs ";
 

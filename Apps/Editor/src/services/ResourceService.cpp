@@ -45,6 +45,7 @@ namespace Osiris::Editor
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::AddFileEntry, EVENT_FUNC(ResourceService::OnAddFileEntryEvent));
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::DeleteFileEntry, EVENT_FUNC(ResourceService::OnDeleteFileEntryEvent));
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::RenameFileEntry, EVENT_FUNC(ResourceService::OnReloadFileEntryEvent));
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::ModifiedFileEntry, EVENT_FUNC(ResourceService::OnModifiedFileEntryEvent));
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::LoadAsset, EVENT_FUNC(ResourceService::OnLoadAssetEvent));
 	}
 
@@ -253,6 +254,20 @@ namespace Osiris::Editor
 		
 		/* Save the cache file */
 		AssetCacheLoader::Save(Utils::GetCacheFolder() + "/assets.cache");
+	}
+
+
+	void ResourceService::OnModifiedFileEntryEvent(Events::EventArgs& args)
+	{
+		Events::ModifiedFileEntryArgs& a = (Events::ModifiedFileEntryArgs&)args;
+
+		/* if we have a change to any script, we need to re-compile the behaviour model */			
+		ResourceType resourceType = DetermineType(a.filepath);
+		if (resourceType == ResourceType::SCRIPT)
+		{
+			BuildScripts();
+		}
+
 	}
 
 	void ResourceService::OnLoadAssetEvent(Events::EventArgs& args)
