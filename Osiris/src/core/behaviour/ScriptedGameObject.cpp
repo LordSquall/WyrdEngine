@@ -19,21 +19,22 @@ namespace Osiris
 	ScriptedGameObject::ScriptedGameObject(Behaviour* behaviour, std::shared_ptr<ScriptedClass> scriptedClass, std::shared_ptr<GameObject> gameObject)
 	{
 		/* Store the gameobject */
-		_GameObject = gameObject;
+ 		_GameObject = gameObject;
 
 		/* Store the class */
-		Class = (MonoClass*)scriptedClass->ManagedClass;
+		Class = (MonoClass*)*scriptedClass->ManagedClass;
 
 		/* Create a new managed object */
 		Object = MonoUtils::CreateNewObject((MonoDomain*)behaviour->GetDomain(), scriptedClass);
 
 		/* Set the Native GameObject pointer */
 		void* setNativePtrArgs[1] = { &*_GameObject };
-		mono_runtime_invoke((MonoMethod*)behaviour->GetClass("UnmanagedObject")->Properties["NativePtr"]->GetSetter(), Object, setNativePtrArgs, nullptr);
+ 		mono_runtime_invoke((MonoMethod*)behaviour->GetClass("UnmanagedObject")->Properties["NativePtr"]->GetSetter(), Object, setNativePtrArgs, nullptr);
 
 		MonoObject* name = mono_runtime_invoke((MonoMethod*)behaviour->GetClass("GameObject")->Properties["Name"]->GetGetter(), Object, nullptr, nullptr);
 		MonoString* nameStr = (MonoString*)name;
-		OSR_CORE_TRACE("Object Name: {0}", mono_string_to_utf8(nameStr));
+		char* nameCStr = mono_string_to_utf8(nameStr);
+		//OSR_CORE_TRACE("Object Name: {0}", nameCStr);
 
 		for (auto& component : gameObject->components)
 		{

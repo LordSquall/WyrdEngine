@@ -58,7 +58,7 @@ void ScriptComponent_CreateInstance(void* obj, void* component, const char* clas
 		/* Set an script name */
 		newCustomObject->SetName(std::string(className) + "_inst");
 
-		MonoProperty* instanceProperty = mono_class_get_property_from_name((MonoClass*)_behaviour->GetClass("ScriptComponent")->ManagedClass, "Instance");
+		MonoProperty* instanceProperty = mono_class_get_property_from_name((MonoClass*)*_behaviour->GetClass("ScriptComponent")->ManagedClass, "Instance");
 		MonoMethod* instancePropertySetter = mono_property_get_set_method(instanceProperty);
 
 		(*scriptComponent)->SetClass(scriptedClass);
