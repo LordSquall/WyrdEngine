@@ -265,7 +265,7 @@ namespace Osiris::Editor
 		ResourceType resourceType = DetermineType(a.filepath);
 		if (resourceType == ResourceType::SCRIPT)
 		{
-			BuildScripts();
+			//BuildScripts();
 		}
 
 	}

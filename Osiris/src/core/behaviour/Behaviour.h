@@ -170,7 +170,9 @@ namespace Osiris
 		Behaviour*		_BehaviourSubsystem;
 		Resources*		_ResourcesSubsystem;
 
-		void*			_Domain;
+		void*			_RootDomain;
+		void*			_ClientDomain;
+
 		void*			_CoreAssembly;
 		void*			_ClientAssembly;
 		void*			_CoreImage;

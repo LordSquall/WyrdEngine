@@ -36,7 +36,7 @@ namespace Osiris
 {
 	Timestep _Timestep;
 
-	Behaviour::Behaviour() : _IsRunning(false), _Domain(nullptr), _CoreAssembly(nullptr), _ClientAssembly(nullptr), _CoreImage(nullptr), _ClientImage(nullptr)
+	Behaviour::Behaviour() : _IsRunning(false), _RootDomain(nullptr), _ClientDomain(nullptr), _CoreAssembly(nullptr), _ClientAssembly(nullptr), _CoreImage(nullptr), _ClientImage(nullptr)
 	{
 		std::string monoLibraryDirectory = MONO_INSTALL_LOC "lib";
 		std::string monoExtensionDirectory = MONO_INSTALL_LOC "etc";
@@ -45,8 +45,8 @@ namespace Osiris
 			monoExtensionDirectory.c_str());
 
 		/* intiailise the domain */
-		_Domain = mono_jit_init("MonoScriptTry");
-		if (!_Domain)
+		_RootDomain = mono_jit_init("Osiris_Root_Domain");
+		if (!_RootDomain)
 		{
 			std::cout << "mono_jit_init failed" << std::endl;
 			system("pause");
@@ -60,7 +60,7 @@ namespace Osiris
 
 	Behaviour::~Behaviour()
 	{
-		mono_jit_cleanup((MonoDomain*)_Domain);
+		mono_jit_cleanup((MonoDomain*)_RootDomain);
 	}
 
 	void Behaviour::Start(std::shared_ptr<Scene> scene)
@@ -198,7 +198,7 @@ namespace Osiris
 
 	void* Behaviour::GetDomain()
 	{
-		return _Domain;
+		return _ClientDomain;
 	}
 
 	std::shared_ptr<ScriptedClass> Behaviour::GetClass(std::string name) 
@@ -296,13 +296,17 @@ namespace Osiris
 			return;
 		}
 
+		/* Create a new app domain */
+		_ClientDomain = mono_domain_create_appdomain("Osiris_Client_Domain", nullptr);
+
+		/* Switch to the client domain */
+		mono_domain_set((MonoDomain*)_ClientDomain, true);
 
 		std::string apiLibraryLocation = NATIVE_API_LIB_LOC "OsirisAPI/OsirisAPI.dll";
 		std::string assemblyPath = (outputDir + "\\" + projectName).c_str();
 
-
-		LoadAssembly(_Domain, &_CoreImage, &_CoreAssembly, "OsirisAPI", apiLibraryLocation);
-		LoadAssembly(_Domain, &_ClientImage, &_ClientAssembly, "OsirisGame", assemblyPath);
+		LoadAssembly(_ClientDomain, &_CoreImage, &_CoreAssembly, "OsirisAPI", apiLibraryLocation);
+		LoadAssembly(_ClientDomain, &_ClientImage, &_ClientAssembly, "OsirisGame", assemblyPath);
 
 
 		/* Search for all valid classes in the DLL and add build the scripted classes */
@@ -323,7 +327,7 @@ namespace Osiris
 				monoClass = mono_class_from_name((MonoImage*)_CoreImage, "OsirisAPI", name);
 
 				/* Create a new Scripted Class */
-				std::shared_ptr<ScriptedClass> newScriptedClass = std::make_shared<ScriptedClass>(name, monoClass, _Domain);
+				std::shared_ptr<ScriptedClass> newScriptedClass = std::make_shared<ScriptedClass>(name, monoClass, _ClientDomain);
 
 				/* Store within the Behaviour Subsystem */
 				_ScriptedClasses.emplace(name, newScriptedClass);
@@ -345,7 +349,7 @@ namespace Osiris
 				system("pause");
 			}
 
-			std::shared_ptr<ScriptedClass> newScript = std::make_shared<ScriptedClass>(className, monoClass, _Domain);
+			std::shared_ptr<ScriptedClass> newScript = std::make_shared<ScriptedClass>(className, monoClass, _ClientDomain);
 
 			_ScriptedCustomClasses.emplace(className, newScript);
 		}
@@ -424,7 +428,7 @@ namespace Osiris
 				if (scriptComponent->GetClass() != nullptr)
 				{
 					/* Create the Scripted custom object */
-					std::shared_ptr<ScriptedCustomObject> newCustomObject = std::make_shared<ScriptedCustomObject>(_Domain, scriptComponent->GetClass());
+					std::shared_ptr<ScriptedCustomObject> newCustomObject = std::make_shared<ScriptedCustomObject>(_ClientDomain, scriptComponent->GetClass());
 
 					/* Store within the Behaviour Subsystem */
 					_ScriptedCustomObjects.emplace(gameObject->uid, newCustomObject);
