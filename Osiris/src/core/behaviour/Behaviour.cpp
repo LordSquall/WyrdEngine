@@ -38,7 +38,6 @@ namespace Osiris
 
 	Behaviour::Behaviour() : _IsRunning(false), _Domain(nullptr), _CoreAssembly(nullptr), _ClientAssembly(nullptr), _CoreImage(nullptr), _ClientImage(nullptr)
 	{
-		std::string apiLibraryLocation = NATIVE_API_LIB_LOC "OsirisAPI/OsirisAPI.dll";
 		std::string monoLibraryDirectory = MONO_INSTALL_LOC "lib";
 		std::string monoExtensionDirectory = MONO_INSTALL_LOC "etc";
 
@@ -51,56 +50,6 @@ namespace Osiris
 		{
 			std::cout << "mono_jit_init failed" << std::endl;
 			system("pause");
-		}
-		
-		/* need to add the OsirisAPI dll to the assembly to allow runtime access */
-		std::string assemblyPath = (apiLibraryLocation);
-		_CoreAssembly = mono_domain_assembly_open((MonoDomain*)_Domain, assemblyPath.c_str());
-		if (!_CoreAssembly)
-		{
-			OSR_CORE_ERROR("mono_domain_assembly_open failed for {0}", assemblyPath);
-			system("pause");
-		}
-
-		/* Create image */
-		_CoreImage = mono_assembly_get_image((MonoAssembly*)_CoreAssembly);
-		if (!_CoreImage)
-		{
-			OSR_CORE_ERROR("mono_assembly_get_image failed for {0}", assemblyPath);
-			system("pause");
-		}
-
-
-		/* Search for all valid classes in the DLL and add build the scripted classes */
-		const MonoTableInfo* table_info = mono_image_get_table_info((MonoImage*)_CoreImage, MONO_TABLE_TYPEDEF);
-		for (int i = 0; i < mono_table_info_get_rows(table_info); i++)
-		{
-			uint32_t cols[MONO_TYPEDEF_SIZE];
-			mono_metadata_decode_row(table_info, i, cols, MONO_TYPEDEF_SIZE);
-			const char* name = mono_metadata_string_heap((MonoImage*)_CoreImage, cols[MONO_TYPEDEF_NAME]);
-			const char* nameSpace = mono_metadata_string_heap((MonoImage*)_CoreImage, cols[MONO_TYPEDEF_NAMESPACE]);
-			
-			/** There will mostly be a large number of classes exported due to dependancies,
-				However we only care about the OsirisAPI.* namespace 	
-			*/
-			if (strcmp(nameSpace, "OsirisAPI") == 0)
-			{
-				MonoClass* monoClass;
-				monoClass = mono_class_from_name((MonoImage*)_CoreImage, "OsirisAPI", name);
-
-				/* Create a new Scripted Class */
-				std::shared_ptr<ScriptedClass> newScriptedClass = std::make_shared<ScriptedClass>(name, monoClass, _Domain);
-
-				/* Store within the Behaviour Subsystem */
-				_ScriptedClasses.emplace(name, newScriptedClass);
-			}
-		}
-
-		/* Output all the classes found in the OsirisAPI dll */
-		OSR_CORE_TRACE("Classes found in OsirisAPI.dll:");
-		for(auto scriptedClass : _ScriptedClasses)
-		{
-			OSR_CORE_TRACE("\t{0}", scriptedClass.second->GetName());
 		}
 
 		/* Build up mapping between Osiris Key States and managed key state functions */
@@ -132,6 +81,7 @@ namespace Osiris
 
 		std::vector<void*> behaviourArgs = std::vector<void*>({ &_BehaviourSubsystem });
 		mono_property_set_value(behaviourProp, nullptr, &behaviourArgs[0], nullptr);
+
 
 		std::vector<void*> resourceArgs = std::vector<void*>({ &_ResourcesSubsystem });
 		mono_property_set_value(resourcesProp, nullptr, &resourceArgs[0], nullptr);
@@ -346,22 +296,38 @@ namespace Osiris
 			return;
 		}
 
-		/* Create Assembly */
-		MonoAssembly* monoAssembly;
-		std::string assemblyPath = (outputDir + "\\" + projectName).c_str();
-		monoAssembly = mono_domain_assembly_open((MonoDomain*)_Domain, assemblyPath.c_str());
-		if (!monoAssembly)
-		{
-			OSR_CORE_ERROR("mono_domain_assembly_open failed for {0}", assemblyPath);
-			system("pause");
-		}
 
-		/* Create image */
-		MonoImage* monoImage = mono_assembly_get_image(monoAssembly);
-		if (!monoImage)
+		std::string apiLibraryLocation = NATIVE_API_LIB_LOC "OsirisAPI/OsirisAPI.dll";
+		std::string assemblyPath = (outputDir + "\\" + projectName).c_str();
+
+
+		LoadAssembly(_Domain, &_CoreImage, &_CoreAssembly, "OsirisAPI", apiLibraryLocation);
+		LoadAssembly(_Domain, &_ClientImage, &_ClientAssembly, "OsirisGame", assemblyPath);
+
+
+		/* Search for all valid classes in the DLL and add build the scripted classes */
+		const MonoTableInfo* table_info = mono_image_get_table_info((MonoImage*)_CoreImage, MONO_TABLE_TYPEDEF);
+		for (int i = 0; i < mono_table_info_get_rows(table_info); i++)
 		{
-			OSR_CORE_ERROR("mono_assembly_get_image failed for {0}", assemblyPath);
-			system("pause");
+			uint32_t cols[MONO_TYPEDEF_SIZE];
+			mono_metadata_decode_row(table_info, i, cols, MONO_TYPEDEF_SIZE);
+			const char* name = mono_metadata_string_heap((MonoImage*)_CoreImage, cols[MONO_TYPEDEF_NAME]);
+			const char* nameSpace = mono_metadata_string_heap((MonoImage*)_CoreImage, cols[MONO_TYPEDEF_NAMESPACE]);
+
+			/** There will mostly be a large number of classes exported due to dependancies,
+				However we only care about the OsirisAPI.* namespace
+			*/
+			if (strcmp(nameSpace, "OsirisAPI") == 0)
+			{
+				MonoClass* monoClass;
+				monoClass = mono_class_from_name((MonoImage*)_CoreImage, "OsirisAPI", name);
+
+				/* Create a new Scripted Class */
+				std::shared_ptr<ScriptedClass> newScriptedClass = std::make_shared<ScriptedClass>(name, monoClass, _Domain);
+
+				/* Store within the Behaviour Subsystem */
+				_ScriptedClasses.emplace(name, newScriptedClass);
+			}
 		}
 
 		/* Create each of the new scripted classes */
@@ -371,7 +337,7 @@ namespace Osiris
 			std::filesystem::path filename = file;
 			std::string className = filename.stem().string();
 			MonoClass* monoClass;
-			monoClass = mono_class_from_name(monoImage, "OsirisGame", className.c_str());
+			monoClass = mono_class_from_name((MonoImage*)_ClientImage, "OsirisGame", className.c_str());
 
 			if (!monoClass)
 			{
@@ -549,6 +515,55 @@ namespace Osiris
 					MonoObject* object = &*scriptComponent->GetCustomObject()->Object;
 					MonoMethod* method = &*scriptComponent->GetCustomObject()->GetMethod("OnUpdate");
 					mono_runtime_invoke(method, object, nullptr, nullptr);
+				}
+			}
+		}
+	}
+
+
+	void Behaviour::LoadAssembly(void* domain, void** image, void** assembly, const std::string& ns, const std::string& filepath)
+	{
+		OSR_CORE_TRACE("Loading assembly {0} into {1}", filepath, mono_domain_get_friendly_name((MonoDomain*)domain));
+
+		//open file
+		std::ifstream input(filepath.c_str(), std::ios::binary);
+		std::vector<char> buffer((std::istreambuf_iterator<char>(input)), (std::istreambuf_iterator<char>()));
+		input.close(); 
+		
+		/* need to add the OsirisAPI dll to the assembly to allow runtime access */
+		MonoImageOpenStatus status = MONO_IMAGE_ERROR_ERRNO;
+		
+		
+		(*image) = mono_image_open_from_data(&buffer[0], buffer.size(), 1, &status); 
+		if (status != MONO_IMAGE_OK || (*image) == NULL)
+		{
+			return;
+		}
+		
+		(*assembly) = mono_assembly_load_from((MonoImage*)(*image), filepath.c_str(), &status);
+		if (status != MONO_IMAGE_OK || (*assembly) == NULL) {
+			return; 
+		} 
+		
+		/* Search for all valid classes in the DLL and add build the scripted classes */
+		const MonoTableInfo* table_info = mono_image_get_table_info((MonoImage*)(*image), MONO_TABLE_TYPEDEF);
+		for (int i = 0; i < mono_table_info_get_rows(table_info); i++)
+		{
+			uint32_t cols[MONO_TYPEDEF_SIZE];
+			mono_metadata_decode_row(table_info, i, cols, MONO_TYPEDEF_SIZE);
+			const char* name = mono_metadata_string_heap((MonoImage*)(*image), cols[MONO_TYPEDEF_NAME]);
+			const char* nameSpace = mono_metadata_string_heap((MonoImage*)(*image), cols[MONO_TYPEDEF_NAMESPACE]);
+			
+			/** There will mostly be a large number of classes exported due to dependancies, 
+			However we only care about the OsirisAPI.* namespace*/
+			if (strcmp(nameSpace, ns.c_str()) == 0)
+			{
+				MonoClass* monoClass;
+				monoClass = mono_class_from_name((MonoImage*)(*image), ns.c_str(), name);
+
+				if (monoClass != nullptr)
+				{
+					OSR_CORE_TRACE("\tClasses Found: {0}::{1}", ns, name);
 				}
 			}
 		}

@@ -563,6 +563,13 @@ namespace Osiris::Editor
 		io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
 		io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
 
+
+		/* global key events */
+		if (e.GetKeyCode() == GLFW_KEY_F9)
+		{
+			_simulationService->CompileAll();
+		}
+
 		for (auto& it = _views.begin(); it != _views.end(); it++)
 		{
 			/* store the view as the event owner */

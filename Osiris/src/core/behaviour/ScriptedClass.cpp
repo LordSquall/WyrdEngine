@@ -64,7 +64,7 @@ namespace Osiris
 			MonoMethod* setter = mono_property_get_set_method(unmanagedProp);
 
 			/* we are only concerned with properties with both a setter and getter */
-			if (setter != nullptr && getter != nullptr)
+			if (getter != nullptr)
 			{
 				MonoMethodSignature* getterSignature = mono_method_get_signature((MonoMethod*)getter, 0, 0);
 				MonoType* propertyType = mono_signature_get_return_type(getterSignature);

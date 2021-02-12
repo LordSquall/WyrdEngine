@@ -151,6 +151,8 @@ namespace Osiris
 
 		static void DebugPrintFunc(const std::string& s);
 
+		void LoadAssembly(void* domain, void** image, void** assembly, const std::string& ns, const std::string& filepath);
+
 	private:
 		std::map<UID, std::shared_ptr<ScriptedResource>>	_ScriptedResourceObject;
 

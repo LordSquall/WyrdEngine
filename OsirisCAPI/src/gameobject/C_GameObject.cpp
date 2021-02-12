@@ -13,6 +13,7 @@
 const char* GameObject_Name_Get(void* obj)
 {
 	std::shared_ptr<GameObject>* gameObject = (std::shared_ptr<GameObject>*)obj;
+
 	return (*gameObject)->name.c_str();
 }
 

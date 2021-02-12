@@ -31,6 +31,10 @@ namespace Osiris
 		void* setNativePtrArgs[1] = { &*_GameObject };
 		mono_runtime_invoke((MonoMethod*)behaviour->GetClass("UnmanagedObject")->Properties["NativePtr"]->GetSetter(), Object, setNativePtrArgs, nullptr);
 
+		MonoObject* name = mono_runtime_invoke((MonoMethod*)behaviour->GetClass("GameObject")->Properties["Name"]->GetGetter(), Object, nullptr, nullptr);
+		MonoString* nameStr = (MonoString*)name;
+		OSR_CORE_TRACE("Object Name: {0}", mono_string_to_utf8(nameStr));
+
 		for (auto& component : gameObject->components)
 		{
 			std::shared_ptr<ScriptedClass> componentClass = behaviour->GetClass(component->GetManagedType());
