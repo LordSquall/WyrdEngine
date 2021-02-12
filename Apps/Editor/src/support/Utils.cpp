@@ -19,6 +19,7 @@ namespace Osiris::Editor {
 	std::string Utils::canonical_path = std::filesystem::canonical(std::filesystem::current_path()).string();
 	std::string Utils::asset_path = "\\assets";
 	std::string Utils::cache_path = "\\.cache";
+	std::string Utils::temp_path = "\\.temp";
 	std::string Utils::builds_path = "\\builds";
 
 	Utils::Utils()
@@ -43,6 +44,11 @@ namespace Osiris::Editor {
 	std::string Utils::GetCacheFolder()
 	{
 		return Utils::canonical_path + Utils::cache_path;
+	}
+
+	std::string Utils::GetTempFolder()
+	{
+		return Utils::canonical_path + Utils::temp_path;
 	}
 
 	std::string Utils::GetBuildsFolder()
@@ -294,13 +300,6 @@ namespace Osiris::Editor {
 	{
 		std::filesystem::path path(filename);
 		return path.parent_path().string();
-		/*std::string directory;
-		const size_t last_slash_idx = filename.rfind('/');
-		if (std::string::npos != last_slash_idx)
-		{
-			directory = filename.substr(0, last_slash_idx);
-		}
-		return directory;*/
 	}
 
 	std::string Utils::GetFilename(const std::string& path, bool addExtension)

@@ -70,11 +70,17 @@ namespace Osiris
 		/**
 		 * @brief Compiles all the supplied script files into a runnable behavioural model
 		 * @param files 
-		 * @param outputDir 
-		 * @param projectName 
+		 * @param outputFile
 		 * @param results 
 		*/
-		void CompileAll(const std::vector<std::string>& files, const std::string& outputDir, const std::string& projectName, CompileResults& results);
+		void CompileAll(const std::vector<std::string>& files, const std::string& outputFile, CompileResults& results);
+
+		/**
+		 * @brief Load a new behavioural model
+		 * @param files
+		 * @param inputFile
+		*/
+		void LoadBehaviourModel(const std::vector<std::string>& files, const std::string& inputFile);
 
 		/**
 		 * @brief Get the domain context pointer

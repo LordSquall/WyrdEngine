@@ -247,7 +247,7 @@ namespace Osiris
 		}
 	}
 
-	void Behaviour::CompileAll(const std::vector<std::string>& files, const std::string& outputDir, const std::string& projectName, CompileResults& results)
+	void Behaviour::CompileAll(const std::vector<std::string>& files, const std::string& outputFile, CompileResults& results)
 	{
 		OSR_TRACE("COMPILING BEHAVIOUR MODEL!!!");
 
@@ -269,7 +269,7 @@ namespace Osiris
 		command += " -target:library -lib:" MONO_INSTALL_LOC  "lib/mono/4.5/Facades/," NATIVE_API_LIB_LOC "OsirisAPI/ -r:System.Runtime.InteropServices.dll,OsirisAPI.dll -debug ";
 
 		// set the putput file
-		command += "-out:" + outputDir + "\\" + projectName;
+		command += "-out:" + outputFile;
 
 		// run the command to compile
 		std::system((command + " 2> " + file_name).c_str()); // redirect output to file
@@ -295,7 +295,10 @@ namespace Osiris
 
 			return;
 		}
+	}
 
+	void Behaviour::LoadBehaviourModel(const std::vector<std::string>& files, const std::string& inputFile)
+	{
 		/* Unload the client domain */
 		if (_ClientDomain != nullptr)
 		{
@@ -310,7 +313,7 @@ namespace Osiris
 		mono_domain_set((MonoDomain*)_ClientDomain, true);
 
 		std::string apiLibraryLocation = NATIVE_API_LIB_LOC "OsirisAPI/OsirisAPI.dll";
-		std::string assemblyPath = (outputDir + "\\" + projectName).c_str();
+		std::string assemblyPath = inputFile.c_str();
 
 		LoadAssembly(_ClientDomain, &_CoreImage, &_CoreAssembly, "OsirisAPI", apiLibraryLocation);
 		LoadAssembly(_ClientDomain, &_ClientImage, &_ClientAssembly, "OsirisGame", assemblyPath);

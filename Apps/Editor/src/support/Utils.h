@@ -17,6 +17,7 @@ namespace Osiris::Editor
 		static std::string GetBuildsFolder();
 		static std::string GetEditorResFolder();
 		static std::string GetCacheFolder();
+		static std::string GetTempFolder();
 
 		/* Dialog Functions */
 		static std::optional<std::string> OpenFile(const std::vector<std::pair<std::string, std::string>> filters);
@@ -74,6 +75,7 @@ namespace Osiris::Editor
 		static std::string Utils::asset_path;
 		static std::string Utils::builds_path;
 		static std::string Utils::cache_path;
+		static std::string Utils::temp_path;
 	};
 
 

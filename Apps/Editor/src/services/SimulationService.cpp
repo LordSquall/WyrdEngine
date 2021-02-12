@@ -111,20 +111,35 @@ namespace Osiris::Editor
 				scriptFiles.push_back(value->GetPath());
 			}
 		}
+		
+		/**
+		* First stage is to compile all the file into a loadable library.
+		* Note: we want to compile this into the temp directory, incase the compilation fails
+		*/
+		const std::string tempModelFileName = Utils::GetTempFolder() + "\\" + _WorkspaceService->GetCurrentProject()->name + ".dll";
+		const std::string finalModelFileName = Utils::GetPath(_WorkspaceService->GetLoadedProjectPath()) + "\\" + _WorkspaceService->GetCurrentProject()->name + ".dll";
 
 		CompileResults results;
-		Application::Get().GetBehaviour().CompileAll(scriptFiles, Utils::GetPath(_WorkspaceService->GetLoadedProjectPath()), _WorkspaceService->GetCurrentProject()->name + ".dll", results);
+		Application::Get().GetBehaviour().CompileAll(scriptFiles, tempModelFileName, results);
 
+		/* if we not successful we want to format some messages and send them to the editor */
 		if (!results.success)
 		{
 			for (auto& err : results.errors)
 			{
 				_EventService->Publish(Events::EventType::AddLogEntry, std::make_shared<Events::AddLogEntryArgs>(LogType::Code, Severity::Error, err));
 			}
-
 			return;
 		}
 
+		/* Second stage is to copy of the successfully compiled model to the execution directory */
+		Utils::RemoveFile(finalModelFileName);
+		Utils::CopySingleFile(tempModelFileName, Utils::GetPath(_WorkspaceService->GetLoadedProjectPath()) + "\\");
+
+		/* Third stage is to load the model into the scripting environment */
+		Application::Get().GetBehaviour().LoadBehaviourModel(scriptFiles, Utils::GetPath(_WorkspaceService->GetLoadedProjectPath()) + "\\" + _WorkspaceService->GetCurrentProject()->name + ".dll");
+
+		/* Final state, if we have an open scene we need to reassign the scripts, as the class pointers will most likely have changed */
 		if (_WorkspaceService->GetLoadedScene() != nullptr)
 		{
 			_WorkspaceService->GetLoadedScene()->AssignScripts(Application::Get().GetBehaviourPtr());
