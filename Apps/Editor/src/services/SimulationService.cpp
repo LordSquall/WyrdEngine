@@ -25,11 +25,23 @@ namespace Osiris::Editor
 		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
 
+		/* Subscribe to project events */
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::BuildBehaviourModel, EVENT_FUNC(SimulationService::OnBuildBehaviourModelEvent));
+
 		_IsRunning = false;
 	}
 
 	void SimulationService::OnDestroy()
 	{
+	}
+
+	void SimulationService::OnUpdate()
+	{
+		if (_pendingRebuild)
+		{
+			_ResourceService->BuildScripts();
+			_pendingRebuild = false;
+		}
 	}
 
 	void SimulationService::Start()
@@ -68,6 +80,12 @@ namespace Osiris::Editor
 
 			_WorkspaceService->GetLoadedScene()->Update();
 		}
+	}
+
+
+	void SimulationService::OnBuildBehaviourModelEvent(Events::EventArgs& args)
+	{
+		_pendingRebuild = true;
 	}
 
 	void SimulationService::SetInputState(int keyCode, int state)
@@ -117,4 +135,6 @@ namespace Osiris::Editor
 	{
 		return Application::Get().GetBehaviour().GetCustomClass(className);
 	}
+
+
 }

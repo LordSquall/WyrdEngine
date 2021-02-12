@@ -17,18 +17,21 @@ namespace Osiris::Editor
 	class SimulationService : public IService
 	{
 	public:
-		SimulationService() : _IsRunning(false) {}
+		SimulationService() : _IsRunning(false), _pendingRebuild(false) {}
 		~SimulationService() {}
 
-	private:
+	public:
 		// Inherited via IService
 		virtual void OnCreate() override;
 		virtual void OnDestroy() override;
+		virtual void OnUpdate() override;
 
 	public:
 		void Start();
 		void Stop();
 		void Update(Timestep ts);
+
+		void OnBuildBehaviourModelEvent(Events::EventArgs& args);
 
 		inline bool IsRunning() const { return _IsRunning; }
 
@@ -40,6 +43,7 @@ namespace Osiris::Editor
 
 	private:
 		bool _IsRunning;
+		bool _pendingRebuild;
 
 		std::shared_ptr<Scene>				_CurrentScene;
 		std::shared_ptr<EventService>		_EventService;

@@ -28,7 +28,7 @@ namespace Osiris::Editor::Events
 		AddLogEntry, ClearLogEntry,
 		AddFileEntry, DeleteFileEntry, ModifiedFileEntry, RenameFileEntry,
 		AddResource, DeleteResource, ReloadResource, RenameResource,
-		LoadAsset
+		LoadAsset, BuildBehaviourModel
 	};
 
 	class Event
@@ -510,6 +510,24 @@ namespace Osiris::Editor::Events
 	{
 	public:
 		LoadAssetEvent() : Event(EventType::LoadAsset) { }
+	};
+
+#pragma endregion
+
+#pragma region BuildBehaviourModel
+
+	class BuildBehaviourModelArgs : public EventArgs
+	{
+	public:
+		BuildBehaviourModelArgs() {}
+
+		EVENT_ARGS_CLONE(BuildBehaviourModelArgs)
+	};
+
+	class BuildBehaviourModelEvent : public Event
+	{
+	public:
+		BuildBehaviourModelEvent() : Event(EventType::BuildBehaviourModel) { }
 	};
 
 #pragma endregion

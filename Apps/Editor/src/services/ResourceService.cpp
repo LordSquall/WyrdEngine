@@ -3,6 +3,7 @@
 /* core osiris includes */
 #include <osrpch.h>
 #include <core/Log.h>
+#include <core/Application.h>
 #include <core/Resources.h>
 
 /* local includes */
@@ -123,16 +124,24 @@ namespace Osiris::Editor
 
 	void ResourceService::BuildScripts()
 	{
-		ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->CompileAll();
-
-		// Resolve all the script resources to the scripted classes
-
-		for (auto& [key, value] : _resourceMap)
+		/* ensure we compile on the main thread */
+		if (Application::Get().GetMainThreadID() != std::this_thread::get_id())
 		{
-			auto downcastedPtr = std::dynamic_pointer_cast<ScriptRes>(value);
-			if (downcastedPtr)
+			/* swap an event to trigger the load on the main thread */
+			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::BuildBehaviourModel, std::make_shared<Events::BuildBehaviourModelArgs>());
+		}
+		else
+		{
+			ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->CompileAll();
+
+			// Resolve all the script resources to the scripted classes
+			for (auto& [key, value] : _resourceMap)
 			{
-				downcastedPtr->Script = ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->GetClass(value->GetName());
+				auto downcastedPtr = std::dynamic_pointer_cast<ScriptRes>(value);
+				if (downcastedPtr)
+				{
+					downcastedPtr->Script = ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->GetClass(value->GetName());
+				}
 			}
 		}
 	}
@@ -265,7 +274,7 @@ namespace Osiris::Editor
 		ResourceType resourceType = DetermineType(a.filepath);
 		if (resourceType == ResourceType::SCRIPT)
 		{
-			//BuildScripts();
+			BuildScripts();
 		}
 
 	}

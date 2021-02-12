@@ -235,6 +235,7 @@ namespace Osiris::Editor
 	{
 		_resourceService->OnUpdate();
 		_eventService->OnUpdate();
+		_simulationService->OnUpdate();
 		_simulationService->Update(ts);
 	}
 
