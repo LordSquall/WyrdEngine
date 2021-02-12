@@ -24,7 +24,7 @@ namespace Osiris
 			std::shared_ptr<ScriptedClass> textureClass = Application::Get().GetBehaviour().GetClass("Texture");
 			MonoObject* textureObject = MonoUtils::CreateNewObject((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), textureClass);
 
-			MonoProperty* property = mono_class_get_property_from_name((MonoClass*)textureClass->ManagedClass, "NativePtr");
+			MonoProperty* property = mono_class_get_property_from_name((MonoClass*)*textureClass->ManagedClass, "NativePtr");
 
 			MonoMethod* propSetter = mono_property_get_set_method(property);
 

@@ -7,6 +7,8 @@
 #include "core/behaviour/CompileResults.h"
 #include "core/UID.h"
 
+#include <mono/metadata/object-forward.h>
+
 namespace Osiris
 {
 	/* Forward Declarations */
@@ -163,6 +165,9 @@ namespace Osiris
 		std::map<UID, std::shared_ptr<ScriptedCustomObject>>	_ScriptedCustomObjects;
 
 		std::map<int, std::string> _FunctionKeyStateMap;
+
+
+		std::map<std::string, MonoClass*>		_ManagedClasses;
 
 		std::shared_ptr<Scene>	_CurrentScene;
 		bool					_IsRunning;

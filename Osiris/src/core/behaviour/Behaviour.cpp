@@ -296,6 +296,13 @@ namespace Osiris
 			return;
 		}
 
+		/* Unload the client domain */
+		if (_ClientDomain != nullptr)
+		{
+			mono_domain_set((MonoDomain*)_RootDomain, true);
+			mono_domain_unload((MonoDomain*)_ClientDomain);
+		}
+
 		/* Create a new app domain */
 		_ClientDomain = mono_domain_create_appdomain("Osiris_Client_Domain", nullptr);
 
@@ -323,14 +330,14 @@ namespace Osiris
 			*/
 			if (strcmp(nameSpace, "OsirisAPI") == 0)
 			{
-				MonoClass* monoClass;
-				monoClass = mono_class_from_name((MonoImage*)_CoreImage, "OsirisAPI", name);
+				/* Add class to the managed class map */
+				_ManagedClasses[name] = mono_class_from_name((MonoImage*)_CoreImage, "OsirisAPI", name);
 
 				/* Create a new Scripted Class */
-				std::shared_ptr<ScriptedClass> newScriptedClass = std::make_shared<ScriptedClass>(name, monoClass, _ClientDomain);
+				std::shared_ptr<ScriptedClass> newScriptedClass = std::make_shared<ScriptedClass>(name, &_ManagedClasses[name], _ClientDomain);
 
 				/* Store within the Behaviour Subsystem */
-				_ScriptedClasses.emplace(name, newScriptedClass);
+				_ScriptedClasses[name] = newScriptedClass;
 			}
 		}
 
@@ -340,18 +347,13 @@ namespace Osiris
 			// Get the file name
 			std::filesystem::path filename = file;
 			std::string className = filename.stem().string();
-			MonoClass* monoClass;
-			monoClass = mono_class_from_name((MonoImage*)_ClientImage, "OsirisGame", className.c_str());
 
-			if (!monoClass)
-			{
-				OSR_CORE_ERROR("mono_class_from_name failed for {0}", className);
-				system("pause");
-			}
+			/* Add class to the managed class map */
+			_ManagedClasses[className] = mono_class_from_name((MonoImage*)_ClientImage, "OsirisGame", className.c_str());
 
-			std::shared_ptr<ScriptedClass> newScript = std::make_shared<ScriptedClass>(className, monoClass, _ClientDomain);
+			std::shared_ptr<ScriptedClass> newScript = std::make_shared<ScriptedClass>(className, &_ManagedClasses[className], _ClientDomain);
 
-			_ScriptedCustomClasses.emplace(className, newScript);
+			_ScriptedCustomClasses[className] = newScript;
 		}
 	}
 

@@ -7,6 +7,7 @@
 
 /* external includes */
 #include <glm/glm.hpp>
+#include <mono/metadata/object-forward.h>
 
 namespace Osiris
 {

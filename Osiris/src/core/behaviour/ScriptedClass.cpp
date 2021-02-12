@@ -15,7 +15,7 @@
 
 namespace Osiris
 {
-	ScriptedClass::ScriptedClass(const std::string& className, void* managedClass, void* domain) : _Name(className), Domain(domain)
+	ScriptedClass::ScriptedClass(const std::string& className, MonoClass** managedClass, void* domain) : _Name(className)
 	{
 		ManagedClass = managedClass;
 
@@ -27,7 +27,7 @@ namespace Osiris
 		OSR_TRACE("Mapping Scripted Class: {0}", className);
 
 		/* locate each of the functions with the class */
-		while ((unmangedMethod = mono_class_get_methods((MonoClass*)ManagedClass, &methodIter))) {
+		while ((unmangedMethod = mono_class_get_methods((MonoClass*)*ManagedClass, &methodIter))) {
 			std::string methodName = mono_method_get_name(unmangedMethod);
 			
 			/* exclude some common functions and property functions */
@@ -57,7 +57,7 @@ namespace Osiris
 		}
 
 		/* at this point we want to process each of the properties in object */
-		while ((unmanagedProp = mono_class_get_properties((MonoClass*)ManagedClass, &propertyIter))) {
+		while ((unmanagedProp = mono_class_get_properties((MonoClass*)*ManagedClass, &propertyIter))) {
 
 			const char* name = mono_property_get_name(unmanagedProp);
 			MonoMethod* getter = mono_property_get_get_method(unmanagedProp);

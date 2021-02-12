@@ -31,7 +31,7 @@ namespace Osiris
 		 * @param managedClass	- Managed class pointer
 		 * @param domain		- Managed Scripting Domain
 		*/
-		ScriptedClass(const std::string& className, void* managedClass, void* domain);
+		ScriptedClass(const std::string& className, MonoClass** managedClass, void* domain);
 		virtual ~ScriptedClass() = default;
 
 		/**
@@ -51,8 +51,7 @@ namespace Osiris
 	public:
 		PropertyList_t	Properties;
 		MethodList_t	Methods;
-		void* Domain;
-		void* ManagedClass;
+		MonoClass**		ManagedClass;
 
 	private:
 		std::string		_Name;

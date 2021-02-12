@@ -10,6 +10,7 @@
 
 namespace Osiris {
 
+	class Behaviour;
 	class Layer2D;
 	class Transform2DComponent;
 	class SpriteComponent;
@@ -34,6 +35,7 @@ namespace Osiris {
 		std::shared_ptr<GameObject> FindChild(const UID uid);
 		std::shared_ptr<ScriptComponent> FindScriptComponent(const std::string& name);
 
+		void AssignScripts(Behaviour* behaviour);
 	public:
 		std::string name;
 

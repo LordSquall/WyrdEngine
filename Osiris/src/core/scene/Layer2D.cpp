@@ -44,4 +44,13 @@ namespace Osiris
 
 		return true;
 	}
+
+
+	void Layer2D::AssignScripts(Behaviour* behaviour)
+	{
+		for (auto& go : children)
+		{
+			go->AssignScripts(behaviour);
+		}
+	}
 }

@@ -21,7 +21,7 @@ namespace Osiris
 	ScriptedCustomObject::ScriptedCustomObject(void* domain, std::shared_ptr<ScriptedClass> scriptedClass)
 	{
 		/* Store the class */
-		Class = (MonoClass*)scriptedClass->ManagedClass;
+		Class = scriptedClass->ManagedClass;
 
 		/* Store type name */
 		TypeName = scriptedClass->GetName();
@@ -49,7 +49,7 @@ namespace Osiris
 		MonoObject* exception = nullptr;
 
 		/* retrieve the property and getter method */
-		MonoProperty* gameObjectProp = mono_class_get_property_from_name(&*Class, "GameObject");
+		MonoProperty* gameObjectProp = mono_class_get_property_from_name(*Class, "GameObject");
 		MonoMethod* gameObjectPropSetter = mono_property_get_set_method(gameObjectProp);
 
 		/* build property arguments */

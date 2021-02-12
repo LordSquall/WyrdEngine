@@ -27,7 +27,7 @@ namespace Osiris
 		MonoMethod* GetMethod(const std::string name);
 
 	public:
-		MonoClass* Class;
+		MonoClass** Class;
 		MonoObject* Object;
 		std::string TypeName;
 		

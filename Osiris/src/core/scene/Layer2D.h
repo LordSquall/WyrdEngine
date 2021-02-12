@@ -30,6 +30,8 @@ namespace Osiris {
 
 		inline const SpriteBatch& GetSpriteBatch() const { return *_SpriteBatch; }
 
+		void AssignScripts(Behaviour* behaviour);
+
 	private:
 		std::shared_ptr<SpriteBatch> _SpriteBatch;
 	};

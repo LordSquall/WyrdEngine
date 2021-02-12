@@ -8,6 +8,7 @@
 #include "core/scene/components/SpriteComponent.h"
 #include "core/scene/components/ScriptComponent.h"
 #include "core/scene/components/PhysicsComponent.h"
+#include "core/behaviour/Behaviour.h"
 #include "core/behaviour/ScriptedClass.h"
 
 
@@ -97,5 +98,26 @@ namespace Osiris
 		}
 
 		return nullptr;
+	}
+
+
+	void GameObject::AssignScripts(Behaviour* behaviour)
+	{
+		for (auto& component : components)
+		{
+			if (component->GetType() == SceneComponentType::ScriptComponent)
+			{
+				std::shared_ptr<ScriptComponent> sc = std::dynamic_pointer_cast<ScriptComponent>(component);
+
+				std::string oldName = sc->GetClass()->GetName();
+
+				sc->SetClass(behaviour->GetCustomClass(oldName));
+			}
+		}
+
+		for (auto& go : children)
+		{
+			go->AssignScripts(behaviour);
+		}
 	}
 }

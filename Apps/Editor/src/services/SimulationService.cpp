@@ -103,6 +103,13 @@ namespace Osiris::Editor
 			{
 				_EventService->Publish(Events::EventType::AddLogEntry, std::make_shared<Events::AddLogEntryArgs>(LogType::Code, Severity::Error, err));
 			}
+
+			return;
+		}
+
+		if (_WorkspaceService->GetLoadedScene() != nullptr)
+		{
+			_WorkspaceService->GetLoadedScene()->AssignScripts(Application::Get().GetBehaviourPtr());
 		}
 	}
 

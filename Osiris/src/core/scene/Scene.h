@@ -11,6 +11,7 @@ namespace Osiris {
 
 	class Layer2D;
 	class GameObject;
+	class Behaviour;
 
 	/* Editor Scene Data Model Structure */
 	class OSR_LIBRARY_API Scene
@@ -24,6 +25,8 @@ namespace Osiris {
 		void Update();
 
 		std::shared_ptr<GameObject> FindGameObject(const UID uid);
+
+		void AssignScripts(Behaviour* behaviour);
 
 	public:
 		std::string name;

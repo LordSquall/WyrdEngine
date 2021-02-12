@@ -54,4 +54,13 @@ namespace Osiris
 
 		return nullptr;
 	}
+
+
+	void Scene::AssignScripts(Behaviour* behaviour)
+	{
+		for (auto& layer : layers2D)
+		{
+			layer->AssignScripts(behaviour);
+		}
+	}
 }

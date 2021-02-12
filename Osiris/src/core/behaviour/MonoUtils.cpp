@@ -37,7 +37,7 @@ namespace Osiris
 
 	MonoObject* MonoUtils::CreateNewObject(MonoDomain* domain, std::shared_ptr<ScriptedClass> monoClass)
 	{
-		MonoObject* object = mono_object_new((MonoDomain*)domain, (MonoClass*)(monoClass->ManagedClass));
+		MonoObject* object = mono_object_new((MonoDomain*)domain, (MonoClass*)*monoClass->ManagedClass);
 		if (object == NULL)
 		{
 			OSR_CORE_ERROR("mono_object_new for {0}", monoClass->GetName());
@@ -52,18 +52,18 @@ namespace Osiris
 	
 	std::pair<MonoMethod*, MonoMethod*> MonoUtils::FindPropertyInClass(std::shared_ptr<ScriptedClass> scriptedClass, const char* propertyName)
 	{
-		MonoProperty* gameObjectProp = mono_class_get_property_from_name((MonoClass*)scriptedClass->ManagedClass, propertyName);
+		MonoProperty* gameObjectProp = mono_class_get_property_from_name((MonoClass*)*scriptedClass->ManagedClass, propertyName);
 
 		return { mono_property_get_get_method(gameObjectProp), mono_property_get_set_method(gameObjectProp) };
 	}
 
 	MonoMethod* MonoUtils::FindMethodInClass(std::shared_ptr<ScriptedClass> scriptedClass, const char* methodName, int argumentCount, bool terminateOnMissing)
 	{
-		MonoMethod* method = mono_class_get_method_from_name((MonoClass*)(scriptedClass->ManagedClass), methodName, argumentCount);
+		MonoMethod* method = mono_class_get_method_from_name((MonoClass*)*scriptedClass->ManagedClass, methodName, argumentCount);
 		if (method == nullptr)
 		{
 			// attempt to find matching method in parent
-			MonoClass* parentClass = mono_class_get_parent((MonoClass*)(scriptedClass->ManagedClass));
+			MonoClass* parentClass = mono_class_get_parent((MonoClass*)*scriptedClass->ManagedClass);
 			if (parentClass != nullptr)
 			{
 				MonoMethod* parentMethod = mono_class_get_method_from_name(parentClass, methodName, argumentCount);
