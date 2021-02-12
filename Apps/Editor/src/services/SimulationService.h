@@ -17,7 +17,7 @@ namespace Osiris::Editor
 	class SimulationService : public IService
 	{
 	public:
-		SimulationService() : _IsRunning(false), _pendingRebuild(false) {}
+		SimulationService() : _IsRunning(false), _pendingRebuild(false){}
 		~SimulationService() {}
 
 	public:
@@ -35,8 +35,10 @@ namespace Osiris::Editor
 
 		inline bool IsRunning() const { return _IsRunning; }
 
+		inline void SetSceneViewer(std::shared_ptr<EditorViewBase> sceneViewer) { _SceneViewer = sceneViewer; }
 		void SetInputState(int keyCode, int state);
-
+		void SetMousePosition(float x, float y);
+			
 		void CompileAll();
 
 		std::shared_ptr<Osiris::ScriptedClass> GetClass(const std::string& className);
@@ -45,6 +47,9 @@ namespace Osiris::Editor
 		bool _IsRunning;
 		bool _pendingRebuild;
 
+		float _MousePos[2];
+
+		std::shared_ptr<EditorViewBase>		_SceneViewer;
 		std::shared_ptr<Scene>				_CurrentScene;
 		std::shared_ptr<EventService>		_EventService;
 		std::shared_ptr<ResourceService>	_ResourceService;

@@ -41,6 +41,13 @@ void GameObject_Scale(void* obj, float x, float y)
 	(*gameObject)->transform2D->SetScale({ x, y });
 }
 
+
+void GameObject_SetAngle(void* obj, float angle)
+{
+	std::shared_ptr<GameObject>* gameObject = (std::shared_ptr<GameObject>*)obj;
+	(*gameObject)->transform2D->SetRotation(angle);
+}
+
 void GameObject_SetVelocity(void* obj, float vX, float vY)
 {
 	std::shared_ptr<GameObject>* gameObject = (std::shared_ptr<GameObject>*)obj;

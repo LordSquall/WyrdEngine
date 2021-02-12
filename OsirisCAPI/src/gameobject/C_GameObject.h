@@ -19,6 +19,8 @@ LIBRARY_API void GameObject_Rotate(void* obj, float angle);
 
 LIBRARY_API void GameObject_Scale(void* obj, float x, float y);
 
+LIBRARY_API void GameObject_SetAngle(void* obj, float angle);
+
 LIBRARY_API void GameObject_SetVelocity(void* obj, float vX, float vY);
 
 LIBRARY_API void GameObject_AddChild(void* obj, void* child);

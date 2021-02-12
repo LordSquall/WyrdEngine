@@ -11,6 +11,7 @@
 /* local includes */
 #include "SimulationService.h"
 #include "services/ServiceManager.h"
+#include "views/SceneViewer/SceneViewer.h"
 
 /* external includes */
 #include <glm/glm.hpp>
@@ -26,7 +27,7 @@ namespace Osiris::Editor
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
 
 		/* Subscribe to project events */
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::BuildBehaviourModel, EVENT_FUNC(SimulationService::OnBuildBehaviourModelEvent));
+		_EventService->Subscribe(Events::EventType::BuildBehaviourModel, EVENT_FUNC(SimulationService::OnBuildBehaviourModelEvent));
 
 		_IsRunning = false;
 	}
@@ -75,6 +76,15 @@ namespace Osiris::Editor
 		/* we only action anything in the function if we are in running mode */
 		if (_IsRunning == true)
 		{
+			Rect viewport = std::dynamic_pointer_cast<SceneViewer>(_SceneViewer)->GetViewport();
+			Rect boundary = std::dynamic_pointer_cast<SceneViewer>(_SceneViewer)->GetBoundary();
+
+			glm::vec2 normalisedMouseCoords;
+			normalisedMouseCoords.x = (2.0f * (_MousePos[0] - boundary.position.x) / (viewport.size.x)) - 1.0f;
+			normalisedMouseCoords.y = -((2.0f * (_MousePos[1] - boundary.position.y) / (viewport.size.y)) - 1.0f);
+
+			Application::Get().GetBehaviour().SetMouseState(normalisedMouseCoords.x, normalisedMouseCoords.y);
+
 			Application::Get().GetBehaviour().Update(ts);
 			Application::Get().GetPhysics().Update(ts);
 
@@ -94,6 +104,12 @@ namespace Osiris::Editor
 		{
 			Application::Get().GetBehaviour().SetInputState(keyCode, state);
 		}
+	}
+
+	void SimulationService::SetMousePosition(float x, float y) 
+	{ 
+		_MousePos[0] = x;
+		_MousePos[1] = y;
 	}
 
 

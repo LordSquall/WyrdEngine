@@ -8,8 +8,10 @@ namespace OsirisAPI
 {
     public class Vector2
     {
-        public float X;
-        public float Y;
+        public float X { get; set; } = 0.0f;
+        public float Y { get; set; } = 0.0f;
+
+        public Vector2() { }
 
         public Vector2(float x, float y)
         {
@@ -55,6 +57,11 @@ namespace OsirisAPI
         public float Length()
         {
             return (float)Math.Sqrt(X * X + Y * Y);
+        }
+
+        public override string ToString()
+        {
+            return "[" + X + ", " + Y + "]";
         }
     }
 }

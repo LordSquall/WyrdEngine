@@ -17,5 +17,15 @@ namespace OsirisAPI
         {
             return ((float)Math.PI / 180.0f) * angle;
         }
+
+        public static double ConvertToDegrees(double angle)
+        {
+            return angle * (180.0 / Math.PI);
+        }
+
+        public static float ConvertToDegrees(float angle)
+        {
+            return angle * (180.0f / (float)Math.PI);
+        }
     }
 }

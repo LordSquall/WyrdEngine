@@ -68,6 +68,13 @@ namespace Osiris
 		void SetInputState(int key, int state);
 
 		/**
+		 * @brief Set the current input mouse state of the simluation
+		 * @param xPos
+		 * @param yPos
+		*/
+		void SetMouseState(float xPos, float yPos);
+
+		/**
 		 * @brief Compiles all the supplied script files into a runnable behavioural model
 		 * @param files 
 		 * @param outputFile
@@ -172,6 +179,7 @@ namespace Osiris
 
 		std::map<int, std::string> _FunctionKeyStateMap;
 
+		void* _InputMousePos;
 
 		std::map<std::string, MonoClass*>		_ManagedClasses;
 

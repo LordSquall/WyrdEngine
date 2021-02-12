@@ -7,6 +7,7 @@
 #include "events/MouseEvent.h"
 #include "events/ApplicationEvent.h"
 #include "services/ServiceManager.h"
+#include "services/SimulationService.h"
 #include "layers/EditorRenderer2DLayer.h"
 #include "views/SceneViewer/SceneViewer.h"
 #include "views/PropertiesViewer/PropertiesViewer.h"
@@ -63,6 +64,9 @@ namespace Osiris::Editor
 		_resourceService = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources);
 		_simulationService = ServiceManager::Get<SimulationService>(ServiceManager::Service::Simulation);
 		_dialogService = ServiceManager::Get<DialogService>(ServiceManager::Service::Dialog);
+
+		/* pass the scene viewer view to the simluation service */
+		_simulationService->SetSceneViewer(_views["Scene Viewer"]);
 
 		/* cache icon resources */
 		_playButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "sim_play");
@@ -512,6 +516,8 @@ namespace Osiris::Editor
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.MousePos = ImVec2(e.GetX(), e.GetY());
+		
+		_simulationService->SetMousePosition(e.GetX(), e.GetY());
 
 		if(_mouseEventOwner != nullptr)
 			_mouseEventOwner->OnEvent(e);

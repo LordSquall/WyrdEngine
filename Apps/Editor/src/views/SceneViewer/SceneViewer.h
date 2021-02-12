@@ -25,6 +25,8 @@ namespace Osiris::Editor
 
 		void OnResize() override;
 
+		inline const Osiris::Rect& GetViewport() { return _Viewport; }
+
 	private:
 		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
 		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);

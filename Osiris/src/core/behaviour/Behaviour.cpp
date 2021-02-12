@@ -196,6 +196,16 @@ namespace Osiris
 		}
 	}
 
+	void Behaviour::SetMouseState(float xPos, float yPos)
+	{
+		std::vector<void*> args;
+		args.push_back(&xPos);
+		args.push_back(&yPos);
+
+		mono_runtime_invoke((MonoMethod*)_ScriptedClasses["Vector2"]->Properties["X"]->GetSetter(), (MonoObject*)_InputMousePos, &args[0], nullptr);
+		mono_runtime_invoke((MonoMethod*)_ScriptedClasses["Vector2"]->Properties["Y"]->GetSetter(), (MonoObject*)_InputMousePos, &args[1], nullptr);
+	}
+
 	void* Behaviour::GetDomain()
 	{
 		return _ClientDomain;
@@ -358,6 +368,9 @@ namespace Osiris
 
 			_ScriptedCustomClasses[className] = newScript;
 		}
+
+		/* Retrieve fixed objects */
+		_InputMousePos = mono_runtime_invoke((MonoMethod*)_ScriptedClasses["Input"]->Properties["MousePos"]->GetGetter(), nullptr, nullptr, nullptr);
 	}
 
 	void Behaviour::BuildManagedGameObjects()
