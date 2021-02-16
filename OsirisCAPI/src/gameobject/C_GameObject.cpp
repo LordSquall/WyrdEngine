@@ -90,6 +90,7 @@ void* GameObject_Create(void* parentGameObject, const char* name)
 	_behaviour->AddScriptedGameObject(go->uid, go);
 
 	std::shared_ptr<GameObject>* goAdded = (*parent)->AddChild(go);
+	(*goAdded)->parent = (*parent);
 
 	return goAdded;
 }

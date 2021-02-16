@@ -25,7 +25,6 @@ namespace OsirisAPI
         public static void RegisterGameObject(GameObject gameObject)
         {
             _GameObjects.Add(gameObject);
-            Console.WriteLine("GameObject Registered!!!");
         }
 
         /// <summary>
@@ -36,8 +35,6 @@ namespace OsirisAPI
         public static GameObject CreateGameObject(ref int uid)
         {
             GameObject newGameObject = new GameObject();
-
-            //_GameObjects.Add(uid, newGameObject);
 
             return newGameObject;
         }

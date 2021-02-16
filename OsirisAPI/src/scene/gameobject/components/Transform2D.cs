@@ -6,19 +6,36 @@ namespace OsirisAPI
     [StructLayout(LayoutKind.Sequential)]
     public class Transform2D : GameObjectComponent
     {
-        public void SetPosition(float x, float y)
+        private Vector2 _Position = new Vector2();
+        private float _Rotation = 0.0f;
+        private Vector2 _Scale = new Vector2();
+
+
+        public Vector2 Position
         {
-            Transform2D_SetPosition(_NativePointer, x, y);
+            get { return _Position; }
+            set { 
+                _Position = value;
+                Transform2D_SetPosition(_NativePointer, _Position.X, _Position.Y);
+            }
         }
 
-        public void SetRotation(float angle)
+        public float Rotation
         {
-            Transform2D_SetRotation(_NativePointer, angle);
+            get { return _Rotation; }
+            set {
+                _Rotation = value;
+                Transform2D_SetRotation(_NativePointer, _Rotation);
+            }
         }
 
-        public void SetScale(float sx, float sy)
+        public Vector2 Scale
         {
-            Transform2D_SetScale(_NativePointer, sx, sy);
+            get { return _Scale; }
+            set { 
+                _Scale = value;
+                Transform2D_SetScale(_NativePointer, _Scale.X, _Scale.Y);
+            }
         }
 
         public override IntPtr CreateUnmanagedPtr(IntPtr gameObjectPtr)

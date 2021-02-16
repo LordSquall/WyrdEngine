@@ -5,6 +5,7 @@
 #include "core/Log.h"
 #include "core/Application.h"
 #include "core/scene/GameObject.h"
+#include "core/scene/components/Transform2DComponent.h"
 #include "ScriptedClass.h"
 #include "ScriptedGameObject.h"
 #include "MonoUtils.h"
@@ -27,22 +28,47 @@ namespace Osiris
 		/* Create a new managed object */
 		Object = MonoUtils::CreateNewObject((MonoDomain*)behaviour->GetDomain(), scriptedClass);
 
+		MonoObject* exception = nullptr;
+
 		/* Set the Native GameObject pointer */
 		void* setNativePtrArgs[1] = { &*_GameObject };
- 		mono_runtime_invoke((MonoMethod*)behaviour->GetClass("UnmanagedObject")->Properties["NativePtr"]->GetSetter(), Object, setNativePtrArgs, nullptr);
+ 		mono_runtime_invoke((MonoMethod*)behaviour->GetClass("UnmanagedObject")->Properties["NativePtr"]->GetSetter(), Object, &setNativePtrArgs[0], &exception);
+		if (exception != nullptr) mono_print_unhandled_exception(exception);
 
-		MonoObject* name = mono_runtime_invoke((MonoMethod*)behaviour->GetClass("GameObject")->Properties["Name"]->GetGetter(), Object, nullptr, nullptr);
-		MonoString* nameStr = (MonoString*)name;
-		char* nameCStr = mono_string_to_utf8(nameStr);
-		//OSR_CORE_TRACE("Object Name: {0}", nameCStr);
+		/* Add the transform2D component */
+		gameObject->transform2D->ManagedObject = MonoUtils::CreateNewObject((MonoDomain*)behaviour->GetDomain(), behaviour->GetClass("Transform2D"));
 
-		for (auto& component : gameObject->components)
+		void* setTranform2DComponentNativePtrArgs[1] = { &_GameObject->transform2D };
+		mono_runtime_invoke((MonoMethod*)behaviour->GetClass("UnmanagedObject")->Properties["NativePtr"]->GetSetter(), (MonoObject*)gameObject->transform2D->ManagedObject, &setTranform2DComponentNativePtrArgs[0], &exception);
+		if (exception != nullptr) mono_print_unhandled_exception(exception);
+
+		void* addTransform2DComponentArgs[1] = { (MonoObject*)gameObject->transform2D->ManagedObject };
+		mono_runtime_invoke(behaviour->GetClass("GameObject")->Methods["AddComponent"]->GetManagedMethod(), Object, &addTransform2DComponentArgs[0], &exception);
+		if (exception != nullptr) mono_print_unhandled_exception(exception);
+		
+		//OSR_CORE_TRACE("Object Map [{0}]", mono_string_to_utf8((MonoString*)mono_runtime_invoke((MonoMethod*)behaviour->GetClass("GameObject")->Properties["Name"]->GetGetter(), Object, nullptr, &exception)));
+		//if (exception != nullptr) mono_print_unhandled_exception(exception);
+
+		//OSR_CORE_TRACE("\tTransform2D: {0}", (void*)mono_runtime_invoke((MonoMethod*)behaviour->GetClass("UnmanagedObject")->Properties["NativePtr"]->GetGetter(), (MonoObject*)gameObject->transform2D->ManagedObject, nullptr, &exception));
+		//if (exception != nullptr) mono_print_unhandled_exception(exception);
+
+		for (auto& component : _GameObject->components)
 		{
 			std::shared_ptr<ScriptedClass> componentClass = behaviour->GetClass(component->GetManagedType());
 			MonoObject* componentManagedObject = MonoUtils::CreateNewObject((MonoDomain*)behaviour->GetDomain(), componentClass);
+			
 			component->ManagedObject = componentManagedObject;
+
+			void* setComponentNativePtrArgs[1] = { &*component };
+			mono_runtime_invoke((MonoMethod*)behaviour->GetClass("UnmanagedObject")->Properties["NativePtr"]->GetSetter(), componentManagedObject, &setComponentNativePtrArgs[0], &exception);
+			if (exception != nullptr) mono_print_unhandled_exception(exception);
+
 			void* addComponentArgs[1] = { componentManagedObject };
-			mono_runtime_invoke(behaviour->GetClass("GameObject")->Methods["AddComponent"]->GetManagedMethod(), Object, &addComponentArgs[0], nullptr);
+			mono_runtime_invoke(behaviour->GetClass("GameObject")->Methods["AddComponent"]->GetManagedMethod(), Object, &addComponentArgs[0], &exception);
+			if (exception != nullptr) mono_print_unhandled_exception(exception);
+
+			//OSR_CORE_TRACE("\t{0}: {1}", component->GetManagedType(), (void*)mono_runtime_invoke((MonoMethod*)behaviour->GetClass("UnmanagedObject")->Properties["NativePtr"]->GetGetter(), Object, nullptr, &exception));
+			//if (exception != nullptr) mono_print_unhandled_exception(exception);
 		}
 	}
 

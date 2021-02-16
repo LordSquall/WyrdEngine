@@ -15,7 +15,7 @@ namespace OsirisAPI
             get { return _NativePointer; }
             set { 
                 _NativePointer = value;
-                Console.WriteLine("Settings Native Pointer: {0:X}", value.ToInt64());
+               // Console.WriteLine("[{0}] : Settings Native Pointer: {1:X}", GetType().Name, value.ToInt64());
             }
         }
 

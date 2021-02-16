@@ -19,7 +19,6 @@ namespace OsirisAPI
             set
             {
                 _Texture = value;
-                //Console.WriteLine("SpriteComponent: 0x{0:X}", _Texture.NativePtr.ToInt64());
                 SpriteRenderer_SetTexture(_NativePointer, _Texture.NativePtr);
             }
         }

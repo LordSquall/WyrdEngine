@@ -16,6 +16,14 @@ namespace OsirisAPI
                 return Marshal.PtrToStringAnsi(GameObject_Name_Get(_NativePointer));
             }
         }
+
+        public Transform2D Transform
+        {
+            get
+            {
+                return GetComponent<Transform2D>();
+            }
+        }
        
         #endregion
 
@@ -66,11 +74,7 @@ namespace OsirisAPI
             if (!_components.ContainsKey(component.GetType()))
             {
                 _components[component.GetType()] = component;
-                Console.WriteLine("Added component!");
-            }
-            else
-            {
-                Console.WriteLine("Failed to add component!");
+                //Console.WriteLine("Component Added : {0} @ {1}", component.GetType().Name, component.NativePtr.ToInt64());
             }
         }
         

@@ -585,7 +585,7 @@ namespace Osiris
 
 				if (monoClass != nullptr)
 				{
-					OSR_CORE_TRACE("\tClasses Found: {0}::{1}", ns, name);
+					//OSR_CORE_TRACE("\tClasses Found: {0}::{1}", ns, name);
 				}
 			}
 		}
