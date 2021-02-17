@@ -47,6 +47,7 @@ namespace Osiris::Editor
 		static std::vector<std::string> GetFolderList(const std::string& directory, bool asFullPaths);
 		static std::vector<std::string> Utils::GetFileList(const std::string& directory, bool asFullPaths = false, bool recursive = false);
 		static uint32_t CountSubDirectories(const std::string& directory);
+		static std::string ReadFileToString(const std::string& filename);
 
 		static void CreateProjectFileStructure(const std::string& rootFolder);
 

@@ -11,6 +11,7 @@
 #include "AssetViewer.h"
 #include "datamodels/resources/Resource.h"
 #include "datamodels/resources/TextureRes.h"
+#include "views/Dialogs/NewScriptDialog.h"
 #include "services/ServiceManager.h"
 #include "support/ImGuiUtils.h"
 
@@ -37,10 +38,10 @@ namespace Osiris::Editor
 	} layoutSettings;
 
 	static uint32_t dirId = 1;
-	AssetViewer::DirectoryEntry_s directoryTree;
+	std::shared_ptr<AssetViewer::DirectoryEntry_s> directoryTree;
 
-	AssetViewer::DirectoryEntry_s* FindDirectoryEntry(AssetViewer::DirectoryEntry_s* root, uint32_t id);
-	AssetViewer::DirectoryEntry_s* FindDirectoryEntry(AssetViewer::DirectoryEntry_s* root, const std::string& dir);
+	std::shared_ptr<AssetViewer::DirectoryEntry_s> FindDirectoryEntry(std::shared_ptr<AssetViewer::DirectoryEntry_s> root, uint32_t id);
+	std::shared_ptr<AssetViewer::DirectoryEntry_s> FindDirectoryEntry(std::shared_ptr<AssetViewer::DirectoryEntry_s> root, const std::string& dir);
 
 	AssetViewer::AssetViewer(EditorLayer* editorLayer) : EditorViewBase("Asset Viewer", editorLayer), _currentContextNodeIdx(0), _currentSelectedDir(nullptr), _refreshing(false)
 	{
@@ -61,7 +62,7 @@ namespace Osiris::Editor
 			{
 				Refresh();
 
-				SetCurrentSelectedDirectory(FindDirectoryEntry(&directoryTree, 1));
+				SetCurrentSelectedDirectory(FindDirectoryEntry(directoryTree, 1));
 			});
 
 		_EventService->Subscribe(Events::EventType::AddFileEntry, [this](Events::EventArgs& args)
@@ -69,18 +70,18 @@ namespace Osiris::Editor
 				Events::AddFileEntryArgs& evtArgs = static_cast<Events::AddFileEntryArgs&>(args);
 				
 				/* find the directory entry */
-				AssetViewer::DirectoryEntry_s* foundDir = FindDirectoryEntry(&directoryTree, evtArgs.dir);
+				auto foundDir = FindDirectoryEntry(directoryTree, evtArgs.dir);
 
 				/* save the currently selected dir */
 				std::string originalSelected = _currentSelectedDir->dir;
 
 				/* refresh the directory structure */
-				_refreshing = true;
-				RefreshSubDir(std::string(foundDir->parent->dir), *foundDir->parent);
-				_refreshing = false;
+				foundDir->files.clear();
+				std::map<UID, std::shared_ptr<Resource>> dirResources = _resourcesService->GetResourcesByDir(foundDir->dir);
+				foundDir->files.insert(dirResources.begin(), dirResources.end());
 
 				/* re-apply the directory entry to ensure the user selection is maintained */
-				_currentSelectedDir = FindDirectoryEntry(&directoryTree, originalSelected);
+				_currentSelectedDir = FindDirectoryEntry(directoryTree, originalSelected);
 
 			});
 
@@ -88,7 +89,7 @@ namespace Osiris::Editor
 			{
 				Events::DeleteFileEntryArgs& evtArgs = static_cast<Events::DeleteFileEntryArgs&>(args);
 
-				AssetViewer::DirectoryEntry_s* foundDir = FindDirectoryEntry(&directoryTree, evtArgs.dir);
+				auto foundDir = FindDirectoryEntry(directoryTree, evtArgs.dir);
 
 				if (evtArgs.isDir)
 				{
@@ -100,11 +101,11 @@ namespace Osiris::Editor
 				std::string originalSelected = _currentSelectedDir->dir;
 
 				_refreshing = true;
-				RefreshSubDir(std::string(foundDir->parent->dir), *foundDir->parent);
+				RefreshSubDir(std::string(foundDir->parent->dir), foundDir->parent);
 				_refreshing = false;
 
 				/* re-apply the directory entry to ensure the user selection is maintained */
-				_currentSelectedDir = FindDirectoryEntry(&directoryTree, originalSelected);
+				_currentSelectedDir = FindDirectoryEntry(directoryTree, originalSelected);
 			});
 
 		_EventService->Subscribe(Events::EventType::RenameFileEntry, [this](Events::EventArgs& args)
@@ -113,17 +114,17 @@ namespace Osiris::Editor
 
 				if (evtArgs.isDir)
 				{
-					AssetViewer::DirectoryEntry_s* foundDir = FindDirectoryEntry(&directoryTree, evtArgs.dir);
+					auto foundDir = FindDirectoryEntry(directoryTree, evtArgs.dir);
 
 					/* save the currently selected dir */
 					std::string originalSelected = _currentSelectedDir->dir;
 
 					_refreshing = true;
-					RefreshSubDir(std::string(foundDir->dir), *foundDir);
+					RefreshSubDir(std::string(foundDir->dir), foundDir);
 					_refreshing = false;
 
 					/* re-apply the directory entry to ensure the user selection is maintained */
-					_currentSelectedDir = FindDirectoryEntry(&directoryTree, originalSelected);
+					_currentSelectedDir = FindDirectoryEntry(directoryTree, originalSelected);
 
 					OSR_TRACE("Folder Renamed!");
 				}
@@ -175,112 +176,112 @@ namespace Osiris::Editor
 
 	void AssetViewer::Refresh()
 	{
-		/* clear previous data */
-		directoryTree.subdirs.clear();
+		directoryTree = std::make_shared<AssetViewer::DirectoryEntry_s>();
 
 		/* set the root information */
-		directoryTree.id = dirId;
-		directoryTree.name = "Assets";
-		directoryTree.dir = Utils::GetAssetFolder() + "\\";
-		directoryTree.parent = nullptr;
+		directoryTree->id = dirId;
+		directoryTree->name = "Assets";
+		directoryTree->dir = Utils::GetAssetFolder();
+		directoryTree->parent = nullptr;
 
 		/* get all assets in base asset directory */
 		std::map<UID, std::shared_ptr<Resource>> dirResources = _resourcesService->GetResourcesByDir(Utils::GetAssetFolder() + "\\");
-		directoryTree.files.insert(dirResources.begin(), dirResources.end());
+		directoryTree->files.insert(dirResources.begin(), dirResources.end());
 
 		/* increment the dirID to prevent a id clash with the asset folder */
 		dirId++;
 
-		/* recursively add the sub dirs */
-		RefreshSubDir(Utils::GetAssetFolder(), directoryTree);
-	}
-
-	void AssetViewer::RefreshSubDir(const std::string& folder, AssetViewer::DirectoryEntry_s& dirEntry)
-	{
-		/* clear previous data */
-		dirEntry.subdirs.clear();
-		dirEntry.files.clear();
-
-		if (Utils::FolderExists(folder))
+		for (const auto& e : std::filesystem::directory_iterator(directoryTree->dir))
 		{
-			for (const auto& entry : std::filesystem::directory_iterator(folder))
+			if (Utils::FolderExists(e.path().string()))
 			{
-				std::string name = Utils::GetFilename(entry.path().string(), true);
-
-				if (Utils::FolderExists(entry.path().string()))
-				{
-					AssetViewer::DirectoryEntry_s newEntry;
-
-					RefreshSubDir(entry.path().string(), newEntry);
-
-					/* get all assets in base asset directory */
-					std::map<UID, std::shared_ptr<Resource>> dirResources = _resourcesService->GetResourcesByDir(entry.path().string() + "\\");
-					newEntry.files.insert(dirResources.begin(), dirResources.end());
-
-					newEntry.id = dirId++;
-					newEntry.name = name;
-					newEntry.dir = entry.path().string() + "\\";
-					newEntry.parent = &dirEntry;
-					dirEntry.subdirs[newEntry.id] = newEntry;
-				}
+				/* recursively add the sub dirs */
+				directoryTree->subdirs.push_back(RefreshSubDir(e.path().string(), directoryTree));
 			}
 		}
 	}
 
-	void AssetViewer::SetCurrentSelectedDirectory(AssetViewer::DirectoryEntry_s* directory)
+	std::shared_ptr<AssetViewer::DirectoryEntry_s> AssetViewer::RefreshSubDir(const std::string& folder, std::shared_ptr<AssetViewer::DirectoryEntry_s> parent)
+	{
+		std::shared_ptr<AssetViewer::DirectoryEntry_s> entry = std::make_shared<AssetViewer::DirectoryEntry_s>();
+		entry->id = dirId;
+		entry->name = Utils::GetFilename(folder, true);
+		entry->dir = folder;
+		entry->parent = parent;
+
+		/* get all assets in base asset directory */
+		std::map<UID, std::shared_ptr<Resource>> dirResources = _resourcesService->GetResourcesByDir(folder);
+		entry->files.insert(dirResources.begin(), dirResources.end());
+
+		dirId++;
+
+		/* retrieve all the folders */
+		for (const auto& e : std::filesystem::directory_iterator(folder))
+		{
+			/* check if it's a directory, if so recurse */
+			if (Utils::FolderExists(e.path().string()))
+			{
+				entry->subdirs.push_back(RefreshSubDir(e.path().string(), entry));
+			}
+		}
+
+		return entry;
+	}
+
+	void AssetViewer::SetCurrentSelectedDirectory(std::shared_ptr<AssetViewer::DirectoryEntry_s> directory)
 	{
 		_currentSelectedDir = directory;
 	}
 
-	AssetViewer::DirectoryEntry_s* AssetViewer::GetCurrentSelectedDirectory()
+	std::shared_ptr<AssetViewer::DirectoryEntry_s> AssetViewer::GetCurrentSelectedDirectory()
 	{
 		return _currentSelectedDir;
 	}
 
-	bool AssetViewer::DirectoryTreeViewRecursive(AssetViewer::DirectoryEntry_s& dirEntry)
+	bool AssetViewer::DirectoryTreeViewRecursive(std::shared_ptr<AssetViewer::DirectoryEntry_s> dirEntry)
 	{
 		bool itemClicked = false;
 		ImGuiTreeNodeFlags baseFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
 
 		/* set the selected flag if the index if current selected */
-		if (_currentSelectedDir != nullptr && dirEntry.id == _currentSelectedDir->id)
+		if (_currentSelectedDir != nullptr && dirEntry->id == _currentSelectedDir->id)
 		{
 			baseFlags |= ImGuiTreeNodeFlags_Selected;
 		}
 
 		bool isOpen = false;
-		if (editSettings.enabled == true && editSettings.newDirectoryMode == false && editSettings.id == dirEntry.id)
+		if (editSettings.enabled == true && editSettings.newDirectoryMode == false && editSettings.id == dirEntry->id)
 		{
 			if (DrawEditNode())
 			{
-				std::filesystem::path p(dirEntry.dir);
-				Utils::RenameFolder(dirEntry.dir, p.parent_path().parent_path().string() + "\\" + editSettings.text);
+				std::filesystem::path p(dirEntry->dir);
+				Utils::RenameFolder(dirEntry->dir, p.parent_path().parent_path().string() + "\\" + editSettings.text);
 			}
 		}
 		else
 		{
-			isOpen = ImGui::TreeNodeEx((void*)(intptr_t)(dirEntry.id), baseFlags, dirEntry.name.c_str());
+			isOpen = ImGui::TreeNodeEx((void*)(intptr_t)(dirEntry->id), baseFlags, dirEntry->name.c_str());
 		}
 
-		DrawDirectoryContextMenu(dirEntry.id);
+		DrawDirectoryContextMenu(dirEntry->id);
 
-		if (editSettings.enabled == true &&  editSettings.newDirectoryMode == true && editSettings.id == dirEntry.id)
+		if (editSettings.enabled == true &&  editSettings.newDirectoryMode == true && editSettings.id == dirEntry->id)
 		{
 			if (DrawEditNode())
 			{
-				Utils::CreateFolder(dirEntry.dir + "\\" + editSettings.text);
+				Utils::CreateFolder(dirEntry->dir + "\\" + editSettings.text);
 			}
 		}
 
 		if (isOpen)
 		{
-			for (auto& children : dirEntry.subdirs)
+			for (auto& child : dirEntry->subdirs)
 			{
-				itemClicked = DirectoryTreeViewRecursive(children.second);
+				itemClicked = DirectoryTreeViewRecursive(child);
 
 				if (ImGui::IsItemClicked() && !itemClicked)
 				{
-					SetCurrentSelectedDirectory(&children.second);
+					SetCurrentSelectedDirectory(child);
 					itemClicked = true;
 				}
 			}
@@ -291,7 +292,7 @@ namespace Osiris::Editor
 		{
 			if (ImGui::IsItemClicked())
 			{
-				SetCurrentSelectedDirectory(&dirEntry);
+				SetCurrentSelectedDirectory(dirEntry);
 			}
 		}
 
@@ -328,11 +329,23 @@ namespace Osiris::Editor
 				if (file)
 				{
 					/* find the directory entry from the id */
-					DirectoryEntry_s* dir = FindDirectoryEntry(&directoryTree, nodeId);
+					auto dir = FindDirectoryEntry(directoryTree, nodeId);
 
 					/* copy the file into the project */
 					Utils::CopySingleFile(file.value(), dir->dir);
 				}
+			}
+
+			if (ImGui::BeginMenu("New Asset"))
+			{
+				if (ImGui::MenuItem("Script"))
+				{
+					/* find the directory entry from the id */
+					auto dir = FindDirectoryEntry(directoryTree, nodeId);
+
+					_dialogService->OpenDialog(std::make_shared<NewScriptDialog>(_EditorLayer, dir->dir));
+				}
+				ImGui::EndMenu();
 			}
 
 			ImGui::Separator();
@@ -352,7 +365,7 @@ namespace Osiris::Editor
 					[&](void* data) {
 
 						/* find the directory entry from the id */
-						DirectoryEntry_s* dir = FindDirectoryEntry(&directoryTree, _currentContextNodeIdx);
+						auto dir = FindDirectoryEntry(directoryTree, _currentContextNodeIdx);
 
 						/* delete the folder */
 						Utils::DeleteFolder(dir->dir);
@@ -367,7 +380,7 @@ namespace Osiris::Editor
 			if (ImGui::MenuItem("Open in Explorer"))
 			{
 				/* find the directory entry from the id */
-				DirectoryEntry_s* dir = FindDirectoryEntry(&directoryTree, nodeId);
+				auto dir = FindDirectoryEntry(directoryTree, nodeId);
 
 				ShellExecuteA(NULL, "open", dir->dir.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 			}
@@ -394,7 +407,7 @@ namespace Osiris::Editor
 	{
 		uint32_t resIdx = 0;
 
-		DirectoryEntry_s* dir = GetCurrentSelectedDirectory();
+		std::shared_ptr<AssetViewer::DirectoryEntry_s> dir = GetCurrentSelectedDirectory();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 		if (dir != nullptr)
@@ -655,14 +668,14 @@ namespace Osiris::Editor
 		ImGui::EndGroup();
 	}
 
-	AssetViewer::DirectoryEntry_s* FindDirectoryEntry(AssetViewer::DirectoryEntry_s* root, uint32_t id)
+	std::shared_ptr<AssetViewer::DirectoryEntry_s> FindDirectoryEntry(std::shared_ptr<AssetViewer::DirectoryEntry_s> root, uint32_t id)
 	{
 		if (root->id == id)
 			return root;
 
 		for (auto& entry : root->subdirs)
 		{
-			AssetViewer::DirectoryEntry_s* foundItem = FindDirectoryEntry(&entry.second, id);
+			auto foundItem = FindDirectoryEntry(entry, id);
 			if (foundItem != nullptr)
 			{
 				return foundItem;
@@ -672,14 +685,14 @@ namespace Osiris::Editor
 		return nullptr;
 	}
 
-	AssetViewer::DirectoryEntry_s* FindDirectoryEntry(AssetViewer::DirectoryEntry_s* root, const std::string& dir)
+	std::shared_ptr<AssetViewer::DirectoryEntry_s> FindDirectoryEntry(std::shared_ptr<AssetViewer::DirectoryEntry_s> root, const std::string& dir)
 	{
 		if (root->dir == dir)
 			return root;
 
 		for (auto& entry : root->subdirs)
 		{
-			AssetViewer::DirectoryEntry_s* foundItem = FindDirectoryEntry(&entry.second, dir);
+			auto foundItem = FindDirectoryEntry(entry, dir);
 			if (foundItem != nullptr)
 			{
 				return foundItem;

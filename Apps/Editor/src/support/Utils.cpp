@@ -380,6 +380,15 @@ namespace Osiris::Editor {
 		return std::count_if(directory_iterator(directory), directory_iterator{}, (fp)std::filesystem::is_directory);
 	}
 
+	std::string Utils::ReadFileToString(const std::string& filename)
+	{
+		std::ifstream t(filename);
+		std::string str((std::istreambuf_iterator<char>(t)),
+			std::istreambuf_iterator<char>());
+
+		return str;
+	}
+
 	void Utils::CreateFolder(const std::string& path)
 	{
 		std::filesystem::create_directory(path);

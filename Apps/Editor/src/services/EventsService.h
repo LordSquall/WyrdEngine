@@ -18,7 +18,7 @@ namespace Osiris::Editor
 
 
 		void Subscribe(Events::EventType type, std::function<void(Events::EventArgs&)> callback);
-		void Publish(Events::EventType type, std::shared_ptr<Events::EventArgs> args);
+		void Publish(Events::EventType type, std::shared_ptr<Events::EventArgs> args, bool enforceMainThread = false);
 
 		void OnUpdate();
 

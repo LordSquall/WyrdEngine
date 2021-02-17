@@ -20,9 +20,9 @@ namespace Osiris::Editor
 			bool open;
 			std::string name;
 			std::string dir;
-			std::map<uint32_t, DirectoryEntry_s> subdirs;
+			std::vector<std::shared_ptr<DirectoryEntry_s>> subdirs;
 			std::map<UID, std::shared_ptr<Resource>> files;
-			DirectoryEntry_s* parent;
+			std::shared_ptr<DirectoryEntry_s> parent;
 		};
 
 	public:
@@ -33,15 +33,15 @@ namespace Osiris::Editor
 		void OnEvent(Event& event) override;
 
 		void Refresh();	
-		void RefreshSubDir(const std::string& folder, struct DirectoryEntry_s& dirEntry);
+		std::shared_ptr<AssetViewer::DirectoryEntry_s> RefreshSubDir(const std::string& folder, std::shared_ptr<AssetViewer::DirectoryEntry_s> parent);
 
-		void SetCurrentSelectedDirectory(DirectoryEntry_s* directory);
-		DirectoryEntry_s* GetCurrentSelectedDirectory();
+		void SetCurrentSelectedDirectory(std::shared_ptr<AssetViewer::DirectoryEntry_s> directory);
+		std::shared_ptr<AssetViewer::DirectoryEntry_s> GetCurrentSelectedDirectory();
 
 	private:
 		bool OnKeyPressedEvent(KeyPressedEvent& e);
 
-		bool DirectoryTreeViewRecursive(AssetViewer::DirectoryEntry_s& dirEntry);
+		bool DirectoryTreeViewRecursive(std::shared_ptr<AssetViewer::DirectoryEntry_s> dirEntry);
 		void DrawDirectoryContextMenu(uint32_t nodePtr);
 		bool DrawEditNode();
 
@@ -53,7 +53,7 @@ namespace Osiris::Editor
 		void DrawUnknownItem(uint32_t resIdx, std::string& unknownResourceName);
 
 		/* Directory State */
-		DirectoryEntry_s* _currentSelectedDir;
+		std::shared_ptr<AssetViewer::DirectoryEntry_s> _currentSelectedDir;
 		uint32_t _currentContextNodeIdx;
 		bool _refreshing;
 		

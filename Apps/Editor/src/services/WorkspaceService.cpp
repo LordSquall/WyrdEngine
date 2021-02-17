@@ -27,26 +27,19 @@ namespace Osiris::Editor
 		{
 			bool isDir = Utils::GetFileExtension(filename).empty();
 
-			/* if we are a directory, then we need to make sure the trailing slash is present */
-			std::string directory = dir;
-			if (directory.compare(directory.size() - 1, 1, "\\") != 0)
-			{
-				directory += "\\";
-			}
-
 			switch (action)
 			{
 			case efsw::Actions::Add:
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddFileEntry, std::make_shared<Events::AddFileEntryArgs>(directory, directory + filename, isDir));
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddFileEntry, std::make_shared<Events::AddFileEntryArgs>(dir, dir + "\\" + filename, isDir), true);
 				break;
 			case efsw::Actions::Delete:
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::DeleteFileEntry, std::make_shared<Events::DeleteFileEntryArgs>(directory, directory + filename, isDir));
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::DeleteFileEntry, std::make_shared<Events::DeleteFileEntryArgs>(dir, dir + "\\" + filename, isDir), true);
 				break;
 			case efsw::Actions::Modified:				
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ModifiedFileEntry, std::make_shared<Events::ModifiedFileEntryArgs>(directory, directory + filename, isDir));
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ModifiedFileEntry, std::make_shared<Events::ModifiedFileEntryArgs>(dir, dir + "\\" + filename, isDir), true);
 				break;
 			case efsw::Actions::Moved:
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::RenameFileEntry, std::make_shared<Events::RenameFileEntryArgs>(directory, directory + filename, oldFilename, isDir));
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::RenameFileEntry, std::make_shared<Events::RenameFileEntryArgs>(dir, dir + "\\" + filename, oldFilename, isDir), true);
 
 				break;
 			default:

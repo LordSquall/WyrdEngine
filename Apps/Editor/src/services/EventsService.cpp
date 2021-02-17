@@ -1,8 +1,15 @@
 #pragma once
 
-#include "osrpch.h"
-#include "core/Log.h"
+/* core osiris includes */
+#include <osrpch.h>
+#include <core/Log.h>
+#include <core/Application.h>
+
+/* local includes */
 #include "EventsService.h"
+
+
+/* external includes */
 
 namespace Osiris::Editor
 {
@@ -26,23 +33,34 @@ namespace Osiris::Editor
 		}
 	}
 
-	void EventService::Publish(Events::EventType type, std::shared_ptr<Events::EventArgs> args)
+	void EventService::Publish(Events::EventType type, std::shared_ptr<Events::EventArgs> args, bool enforceMainThread)
 	{
-		for (auto endpoint : _eventChannels[type])
+		/* we should make sure all events are processed on the main thread */
+		if (std::this_thread::get_id() == Application::Get().GetMainThreadID() && enforceMainThread == true)
 		{
-			endpoint(*args);
+			_BackgroundEvents.push_back({ type, args });
+		}
+		else
+		{
+			for (auto endpoint : _eventChannels[type])
+			{
+				endpoint(*args);
+			}
 		}
 	}
 
 	void EventService::OnUpdate()
 	{
-
-		for (auto& evt : _BackgroundEvents)
+		if (!_BackgroundEvents.empty())
 		{
-			for (auto& endpoint : _eventChannels[evt.first])
+			for (auto& evt : _BackgroundEvents)
 			{
-				endpoint(*evt.second);
+				for (auto& endpoint : _eventChannels[evt.first])
+				{
+					endpoint(*evt.second);
+				}
 			}
+			_BackgroundEvents.clear();
 		}
 	}
 

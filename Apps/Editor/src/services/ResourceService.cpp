@@ -112,7 +112,7 @@ namespace Osiris::Editor
 		{
 			std::filesystem::path p(res.second->GetPath());
 
-			if (p.parent_path() == compDir.parent_path())
+			if (p.parent_path().string() == compDir.string())
 			{
 				result.insert(std::pair<UID, std::shared_ptr<Resource>>(res.first, res.second));
 			}
