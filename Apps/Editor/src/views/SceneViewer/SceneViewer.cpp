@@ -14,6 +14,7 @@
 /* local include */
 #include "SceneViewer.h"
 #include "gizmos/TranslationGizmo.h"
+#include "gizmos/GridGizmo.h"
 #include "support/ImGuiUtils.h"
 
 /* external includes */
@@ -26,6 +27,7 @@ namespace Osiris::Editor
 		/* retrieve services */
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
 		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
+		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
 		_SimulationService = ServiceManager::Get<SimulationService>(ServiceManager::Simulation);
 
 		/* setup event bindings */
@@ -36,13 +38,16 @@ namespace Osiris::Editor
 		_CameraController = std::make_shared<OrthographicCameraController>(1.0f, 1.0f);
 
 		/* setup the gizmo shader */
-		std::ifstream vertexStream("res/shaders/gizmo.vert");
+		std::ifstream vertexStream("res/shaders/gizmoGrid.vert");
 		std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
 
-		std::ifstream fragmentStream("res/shaders/gizmo.frag");
+		std::ifstream fragmentStream("res/shaders/gizmoGrid.frag");
 		std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
 
 		_GizmoShader.reset(Shader::Create());
+
+		/* Add shader to core */
+		Application::Get().GetResources().Shaders["GridGizmo"] = _GizmoShader;
 
 		if (_GizmoShader->Build(vertexSrc, fragmentSrc) == false)
 		{
@@ -53,7 +58,7 @@ namespace Osiris::Editor
 		_GizmoShader->Unbind();
 
 		/* initialise each of the gizmos */
-		_TranslationGizmo.reset(new TranslationGizmo(_GizmoShader, _CameraController));
+		_GridGizmo = std::make_unique<GridGizmo>(_CameraController);
 
 		/* create a new framebuffer */
 		_Framebuffer.reset(Osiris::FrameBuffer::Create(FrameBufferConfig()));
@@ -89,6 +94,8 @@ namespace Osiris::Editor
 			_Framebuffer->Bind();
 
 			renderer.Clear(0.1f, 0.1f, 0.1f);
+
+			_GridGizmo->Render(ts, renderer);
 
 			if (_Scene != nullptr)
 			{
@@ -275,7 +282,7 @@ namespace Osiris::Editor
 			/* on left click with selected game object we want to feed the mouse events to the currently selected gizmo */
 			if (Input::IsMouseButtonPressed(OSR_MOUSE_BUTTON_LEFT) && _SelectedGameObject != NULL)
 			{
-				_TranslationGizmo->OnDrag(-unitDelta);
+				//_TranslationGizmo->OnDrag(-unitDelta);
 			}
 		}
 
@@ -286,6 +293,8 @@ namespace Osiris::Editor
 
 	bool SceneViewer::OnKeyPressedEvent(KeyPressedEvent& e)
 	{
+		_CameraController->OnEvent(e);
+
 		if (e.GetRepeatCount() == 1)
 		{
 			_SimulationService->SetInputState(e.GetKeyCode(), 0);
@@ -300,6 +309,8 @@ namespace Osiris::Editor
 
 	bool SceneViewer::OnKeyReleasedEvent(KeyReleasedEvent& e)
 	{
+		_CameraController->OnEvent(e);
+
 		if (_SimulationService->IsRunning())
 		{
 			_SimulationService->SetInputState(e.GetKeyCode(), 2);

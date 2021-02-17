@@ -10,6 +10,7 @@
 namespace Osiris::Editor
 {
 	class TranslationGizmo;
+	class GridGizmo;
 
 	class SceneViewer : public EditorViewBase
 	{
@@ -47,6 +48,7 @@ namespace Osiris::Editor
 	private:
 		std::shared_ptr<WorkspaceService>		_WorkspaceService;
 		std::shared_ptr<EventService>			_EventService;
+		std::shared_ptr<ResourceService>		_ResourceService;
 		std::shared_ptr<SimulationService>		_SimulationService;
 		std::unique_ptr<Osiris::FrameBuffer>	_Framebuffer;
 
@@ -54,7 +56,8 @@ namespace Osiris::Editor
 		std::shared_ptr<OrthographicCameraController>	_CameraController;
 		std::shared_ptr<Shader>							_Shader;
 
-		std::shared_ptr<TranslationGizmo>				_TranslationGizmo;
+
+		std::unique_ptr<GridGizmo>						_GridGizmo;
 		std::shared_ptr<Shader>							_GizmoShader;
 		std::shared_ptr<GameObject>						_SelectedGameObject;
 

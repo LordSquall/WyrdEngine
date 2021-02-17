@@ -82,7 +82,6 @@ namespace Osiris::Editor
 
 				/* re-apply the directory entry to ensure the user selection is maintained */
 				_currentSelectedDir = FindDirectoryEntry(directoryTree, originalSelected);
-
 			});
 
 		_EventService->Subscribe(Events::EventType::DeleteFileEntry, [this](Events::EventArgs& args)
