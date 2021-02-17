@@ -38,7 +38,7 @@ void GameObject_Rotate(void* obj, float angle)
 void GameObject_Scale(void* obj, float x, float y)
 {
 	std::shared_ptr<GameObject>* gameObject = (std::shared_ptr<GameObject>*)obj;
-	(*gameObject)->transform2D->SetScale({ x, y });
+	(*gameObject)->transform2D->Scale({ x, y });
 }
 
 

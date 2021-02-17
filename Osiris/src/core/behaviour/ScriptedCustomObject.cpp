@@ -29,7 +29,7 @@ namespace Osiris
 		/* Map methods */
 		_Properties["GameObject"]		= MonoUtils::FindPropertyInClass(scriptedClass, "GameObject");
 		_Methods["OnStart"]				= MonoUtils::FindMethodInClass(scriptedClass, "OnStart", 0, false);
-		_Methods["OnUpdate"]			= MonoUtils::FindMethodInClass(scriptedClass, "OnUpdate", 0, false);
+		_Methods["OnUpdate"]			= MonoUtils::FindMethodInClass(scriptedClass, "OnUpdate", 1, false);
 		_Methods["OnTriggerCollision"]	= MonoUtils::FindMethodInClass(scriptedClass, "OnTriggerCollision", 1, false);
 		_Methods["OnKeyDown"]			= MonoUtils::FindMethodInClass(scriptedClass, "OnKeyDown", 1, false);
 		_Methods["OnKeyPressed"]		= MonoUtils::FindMethodInClass(scriptedClass, "OnKeyPressed", 1, false);

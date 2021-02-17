@@ -12,7 +12,7 @@ namespace OsirisAPI
 
         public virtual void OnStart() { }
 
-        public virtual void OnUpdate() { }
+        public virtual void OnUpdate(float elapsedTime) { }
 
         public virtual void OnTriggerCollision(GameObject other) { }
 

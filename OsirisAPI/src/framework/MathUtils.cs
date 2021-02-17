@@ -27,5 +27,22 @@ namespace OsirisAPI
         {
             return angle * (180.0f / (float)Math.PI);
         }
+
+        public static float Lerp(float a, float b, float t)
+        {
+            return a * (1 - t) + b * t;
+        }
+
+        public static float Clamp(float a, float min, float max)
+        {
+            if (a < min) a = min;
+            else if (a > max) a = max;
+            return a;
+        }
+
+        public static float PingPong(float a, float max)
+        {
+            return max - Math.Abs(Clamp(a - (float)Math.Floor((double)(a / max)) * max, 0.0f, max) - max);
+        }
     }
 }

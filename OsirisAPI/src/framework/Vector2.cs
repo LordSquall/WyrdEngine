@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace OsirisAPI
 {
+    [StructLayout(LayoutKind.Sequential)]
     public class Vector2
     {
         public float X { get; set; } = 0.0f;
@@ -57,6 +59,13 @@ namespace OsirisAPI
         public float Length()
         {
             return (float)Math.Sqrt(X * X + Y * Y);
+        }
+
+        public static Vector2 Lerp(Vector2 a, Vector2 b, float t)
+        {
+            float retX = MathUtils.Lerp(a.X, b.X, t);
+            float retY = MathUtils.Lerp(a.Y, b.Y, t);
+            return new Vector2(retX, retY);
         }
 
         public override string ToString()

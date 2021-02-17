@@ -514,6 +514,8 @@ namespace Osiris
 
 	void Behaviour::UpdateManagedGameObjects(Timestep ts, std::shared_ptr<GameObject> gameObject)
 	{
+		std::vector<void*> updateArgs = std::vector<void*>({ &ts });
+
 		for (auto& go : gameObject->children)
 		{
 			UpdateManagedGameObjects(ts, go);
@@ -536,7 +538,7 @@ namespace Osiris
 				{
 					MonoObject* object = &*scriptComponent->GetCustomObject()->Object;
 					MonoMethod* method = &*scriptComponent->GetCustomObject()->GetMethod("OnUpdate");
-					mono_runtime_invoke(method, object, nullptr, nullptr);
+					mono_runtime_invoke(method, object, &updateArgs[0], nullptr);
 				}
 			}
 		}
