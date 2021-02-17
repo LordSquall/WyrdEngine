@@ -19,6 +19,7 @@ bool clsname::s_Registered = ScriptPropertyFactory::Register(\
 clsname::GetManagedType(),\
 clsname::CreateProperty)
 
+
 #define SCRIPT_PROPERTY_FACTORY_SETUP(clsname, valuetype, defaultValue, factoryname) \
 public:\
 clsname() : _Value(defaultValue) {}\
@@ -28,9 +29,12 @@ static std::unique_ptr<ScriptProperty> CreateProperty() {\
 	return std::make_unique<clsname>();\
 }\
 static std::string GetManagedType() { return  ##factoryname; };\
+public:\
+inline virtual void CopyValue(std::shared_ptr<ScriptProperty> prop) { _Value = std::dynamic_pointer_cast<clsname>(prop)->_Value; };\
 private:\
 	valuetype _Value;\
 	static bool s_Registered
+
 
 namespace Osiris
 {

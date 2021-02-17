@@ -16,6 +16,7 @@ namespace Osiris
 		
 		virtual jsonxx::Object ToJson() override;
 		virtual bool FromJson(jsonxx::Object& object) override;
+
 		inline bool* GetValue() { return &_Value; }
 
 	private:

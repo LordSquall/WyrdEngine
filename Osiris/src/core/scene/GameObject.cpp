@@ -110,8 +110,20 @@ namespace Osiris
 				std::shared_ptr<ScriptComponent> sc = std::dynamic_pointer_cast<ScriptComponent>(component);
 
 				std::string oldName = sc->GetClass()->GetName();
+				std::shared_ptr<PropertyList_t> oldProperties = sc->Properties;
 
 				sc->SetClass(behaviour->GetCustomClass(oldName));
+				
+				for (auto& prop : *oldProperties)
+				{
+					auto oldProp = oldProperties->find(prop.first);
+					auto newProp = sc->Properties->find(prop.first);
+
+					if (oldProp != oldProperties->end() && newProp != sc->Properties->end())
+					{
+						newProp->second->CopyValue(oldProp->second);
+					}
+				}
 			}
 		}
 

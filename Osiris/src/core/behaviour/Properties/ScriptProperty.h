@@ -41,6 +41,12 @@ namespace Osiris
 		virtual bool FromJson(jsonxx::Object& object) = 0;
 
 		/**
+		 * @brief Copy internal value between properties
+		 * @param prop
+		*/
+		virtual void CopyValue(std::shared_ptr<ScriptProperty> prop) = 0;
+
+		/**
 		 * @brief Resolve the property agasint a completely loaded scene model
 		 * @return 
 		*/
