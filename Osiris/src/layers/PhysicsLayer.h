@@ -10,6 +10,7 @@ namespace Osiris
 	{
 	public:
 		PhysicsLayer();
+		virtual ~PhysicsLayer() {};
 
 		bool OnAttach() override;
 		void OnDetach() override;

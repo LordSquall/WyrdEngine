@@ -10,6 +10,7 @@ namespace Osiris
 	{
 	public:
 		BehaviourLayer();
+		virtual ~BehaviourLayer() {};
 
 		bool OnAttach() override;
 		void OnDetach() override;

@@ -1,6 +1,15 @@
 #pragma once
-#include "core/export.h"
-#include "osrpch.h"
+
+/* core osiris includes */
+#include <osrpch.h>
+#include <core/export.h>
+#include <core/Structures.h>
+
+/* local includes */
+
+
+/* external includes */
+
 
 namespace Osiris::Editor
 {
@@ -61,14 +70,18 @@ namespace Osiris::Editor
 		static bool ToBool(std::string& value);
 		static unsigned int ToUInt(std::string& value);
 		static int ToInt(std::string& value);
+		static float ToFloat(std::string& value);
+		static Color ToColor(std::string& value);
 
 		/* String Convertors */
 		static std::string ToString(unsigned int value);
 		static std::string ToString(int value);
 		static std::string ToString(float value);
+		static std::string ToString(Color& value);
 
 		/* String Helpers */
 		static std::string ReplaceAll(std::string str, const std::string& from, const std::string& to);
+		static std::vector<std::string> SplitString(std::string& str);
 
 	private:
 		static void SwapSlashes(std::string& path, const std::string& find, const std::string& replace);

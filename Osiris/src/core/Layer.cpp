@@ -8,8 +8,4 @@ namespace Osiris {
 	{
 
 	}
-
-	Layer::~Layer()
-	{
-	}
 }

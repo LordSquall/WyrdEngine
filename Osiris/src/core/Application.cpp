@@ -82,7 +82,7 @@ namespace Osiris {
 
 	Application::~Application()
 	{
-
+		OSR_TRACE("Application::Close()");
 	}
 
 	bool Application::PushLayer(Layer* layer)

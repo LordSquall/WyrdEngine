@@ -20,7 +20,7 @@ namespace Osiris {
 		 * @param name 
 		*/
 		Layer(const std::string& name = "Layer");
-		virtual ~Layer();
+		virtual ~Layer() = default;
 
 		/**
 		 * @brief Callback function called when the layer is attached to the application

@@ -1,7 +1,14 @@
 #pragma once
 
-#include "osrpch.h"
+/* core osiris includes */
+#include <osrpch.h>
+#include <core/Application.h>
+#include <core/Log.h>
+
+/* local includes */
 #include "Utils.h"
+
+/* external includes */
 #include <shobjidl.h>
 #include <shtypes.h>
 #include <shellapi.h>
@@ -11,8 +18,6 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
-#include <core/Application.h>
-#include <core/Log.h>
 
 namespace Osiris::Editor {
 
@@ -478,6 +483,17 @@ namespace Osiris::Editor {
 		return std::stol(value, NULL, 10);
 	}
 
+	float Utils::ToFloat(std::string& value)
+	{
+		return std::stof(value);
+	}
+
+	Color Utils::ToColor(std::string& value)
+	{
+		auto tokens = Utils::SplitString(value);
+		return { Utils::ToFloat(tokens[0]), Utils::ToFloat(tokens[1]), Utils::ToFloat(tokens[2]), Utils::ToFloat(tokens[3]) };
+	}
+
 	std::string Utils::ToString(unsigned int value)
 	{
 		return std::to_string(value);
@@ -492,6 +508,11 @@ namespace Osiris::Editor {
 	{
 		return std::to_string(value);
 	}
+	
+	std::string Utils::ToString(Color& color)
+	{
+		return Utils::ToString(color.r) + ',' + Utils::ToString(color.g) + ',' + Utils::ToString(color.b) + ',' + Utils::ToString(color.a);
+	}
 
 	std::string Utils::ReplaceAll(std::string str, const std::string& from, const std::string& to) {
 		size_t start_pos = 0;
@@ -500,6 +521,21 @@ namespace Osiris::Editor {
 			start_pos += to.length();
 		}
 		return str;
+	}
+
+
+	std::vector<std::string> Utils::SplitString(std::string& str)
+	{
+		std::vector<std::string> result;
+		std::stringstream ss(str);
+
+		while (ss.good())
+		{
+			std::string substr;
+			std::getline(ss, substr, ',');
+			result.push_back(substr);
+		}
+		return result;
 	}
 
 	void Utils::SwapSlashes(std::string& path, const std::string& find,

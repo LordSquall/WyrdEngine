@@ -28,6 +28,9 @@ namespace Osiris::Editor
 		if (ImGui::Button("General", ImVec2(navigationPanelWidth, 0))) 
 			subMenu = std::bind(&PreferencesDialog::OnEditorRender_General, this);
 
+		if (ImGui::Button("Scene Viewer", ImVec2(navigationPanelWidth, 0)))
+			subMenu = std::bind(&PreferencesDialog::OnEditorRender_SceneViewer, this);
+
 		if (ImGui::Button("RenderDoc", ImVec2(navigationPanelWidth, 0)))
 			subMenu = std::bind(&PreferencesDialog::OnEditorRender_RenderDoc, this);
 
@@ -47,6 +50,7 @@ namespace Osiris::Editor
 		ImGui::SameLine();
 		if (ImGui::Button("OK"))
 		{
+			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_shared<Events::SettingsUpdateEventArgs>());
 			Close();
 		}
 	}
@@ -89,5 +93,39 @@ namespace Osiris::Editor
 		ImGui::TextColored({ 1.0, 0.0, 0.0, 1.0 }, "Please install RenderDoc 64-Bit and rebuild.");
 #endif
 
+	}
+
+	void PreferencesDialog::OnEditorRender_SceneViewer()
+	{
+		static bool enableGridWidget = Utils::ToBool(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__ENABLED, std::string("0")));
+		static int spacing[] = {
+			Utils::ToInt(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__XSPACING, std::string("128"))),
+			Utils::ToInt(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__YSPACING, std::string("128")))
+		};
+		static int rows = Utils::ToInt(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__ROWS, std::string("12")));
+		static int cols = Utils::ToInt(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLS, std::string("12")));
+		static Color color = Utils::ToColor(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLOR, std::string("0.2,0.2,0.2,1.0")));
+
+		if (ImGui::CollapsingHeader("Grid Widget", ImGuiTreeNodeFlags_None))
+		{
+			ImGui::Checkbox("Enabled", &enableGridWidget);
+			ImGui::InputInt2("Spacing", &spacing[0]);
+			ImGui::InputInt("Row Count", &rows);
+			ImGui::InputInt("Column Count", &cols);
+			ImGui::ColorEdit4("Color", (float*)&color);
+		}
+
+		if (ImGui::Button("Apply") == true)
+		{
+			_SettingsService->SetSetting(std::to_string(enableGridWidget), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__ENABLED);
+			_SettingsService->SetSetting(std::to_string(spacing[0]), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__XSPACING);
+			_SettingsService->SetSetting(std::to_string(spacing[1]), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__YSPACING);
+			_SettingsService->SetSetting(std::to_string(rows), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__ROWS);
+			_SettingsService->SetSetting(std::to_string(cols), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLS);
+			_SettingsService->SetSetting(Utils::ToString(color), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLOR);
+
+			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_shared<Events::SettingsUpdateEventArgs>());
+
+		}
 	}
 }

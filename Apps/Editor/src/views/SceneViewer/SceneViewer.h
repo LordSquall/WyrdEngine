@@ -49,6 +49,8 @@ namespace Osiris::Editor
 		std::shared_ptr<WorkspaceService>		_WorkspaceService;
 		std::shared_ptr<EventService>			_EventService;
 		std::shared_ptr<ResourceService>		_ResourceService;
+		std::shared_ptr<SettingsService>		_SettingsService;
+		std::shared_ptr<DialogService>			_DialogService;
 		std::shared_ptr<SimulationService>		_SimulationService;
 		std::unique_ptr<Osiris::FrameBuffer>	_Framebuffer;
 

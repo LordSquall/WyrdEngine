@@ -20,6 +20,14 @@
 #define CONFIG_WINDOW__X					"x"
 #define CONFIG_WINDOW__Y					"y"
 
+#define CONFIG_SCENEVIEWER					"Preferences-SceneViewer"
+#define CONFIG_SCENEVIEWER__ENABLED			"enabled"
+#define CONFIG_SCENEVIEWER__XSPACING		"x_spacing"
+#define CONFIG_SCENEVIEWER__YSPACING		"y_spacing"
+#define CONFIG_SCENEVIEWER__COLS			"columns"
+#define CONFIG_SCENEVIEWER__ROWS			"rows"
+#define CONFIG_SCENEVIEWER__COLOR			"color"
+
 #define CONFIG_RENDERDOC					"Preferences-RenderDoc"
 #define CONFIG_RENDERDOC__ENABLED			"enabled"
 #define CONFIG_RENDERDOC__DISPLAYOVERLAY	"display_overlay"

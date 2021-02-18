@@ -17,6 +17,7 @@ namespace Osiris::Editor
 
 		void OnEditorRender_General();
 		void OnEditorRender_RenderDoc();
+		void OnEditorRender_SceneViewer();
 
 	private:
 		std::shared_ptr<SettingsService> _SettingsService;

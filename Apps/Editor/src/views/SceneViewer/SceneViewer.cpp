@@ -28,6 +28,8 @@ namespace Osiris::Editor
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
 		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
 		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
+		_DialogService = ServiceManager::Get<DialogService>(ServiceManager::Dialog);
+		_SettingsService = ServiceManager::Get<SettingsService>(ServiceManager::Settings);
 		_SimulationService = ServiceManager::Get<SimulationService>(ServiceManager::Simulation);
 
 		/* setup event bindings */
@@ -54,7 +56,7 @@ namespace Osiris::Editor
 			OSR_ERROR("Unable to build shader.");
 		}
 		_GizmoShader->Bind();
-		_GizmoShader->SetUniformVec3("blendColor", glm::vec3{ 0.8f, 0.2f, 0.2f });
+		_GizmoShader->SetUniformVec4("blendColor", glm::vec4{ 0.8f, 0.2f, 0.2f, 1.0f });
 		_GizmoShader->Unbind();
 
 		/* initialise each of the gizmos */
@@ -68,7 +70,10 @@ namespace Osiris::Editor
 		config.windowPaddingY = 0.0f;
 	}
 
-	SceneViewer::~SceneViewer() {}
+	SceneViewer::~SceneViewer() 
+	{
+		OSR_TRACE("SceneViewer::~");
+	}
 
 	void SceneViewer::OnUpdate(Timestep ts)
 	{
@@ -95,7 +100,8 @@ namespace Osiris::Editor
 
 			renderer.Clear(0.1f, 0.1f, 0.1f);
 
-			_GridGizmo->Render(ts, renderer);
+			if (_GridGizmo->IsEnabled())
+				_GridGizmo->Render(ts, renderer);
 
 			if (_Scene != nullptr)
 			{
@@ -150,10 +156,30 @@ namespace Osiris::Editor
 
 	void SceneViewer::OnEditorRender()
 	{
-		static bool showStats = false;
+		static bool showGizmoSettings = false;
 
-		/* build the top toolbar */
-		ImGui::Checkbox("show stats", &showStats);
+		ImGui::SameLine();
+
+		if (ImGui::Button("Gizmos"))
+		{
+			showGizmoSettings = true;
+		}
+
+		if (showGizmoSettings == true)
+		{
+			ImGui::SetNextWindowPos({ _Boundary.position.x + ImGui::GetCursorPosX(), _Boundary.position.y + ImGui::GetCursorPosY() });
+			ImGui::Begin("gizmo_controls", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+			if (ImGui::CollapsingHeader("Grid", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				static bool enableGrid = _GridGizmo->IsEnabled();
+				static Color gridColor = _GridGizmo->GetColor();
+				if (ImGui::Checkbox("Enable Grid", &enableGrid)) _GridGizmo->ToggleEnabled();
+				if (ImGui::ColorEdit4("Color", (float*)&gridColor)) _GridGizmo->SetColor(gridColor);
+			}
+
+
+			ImGui::End();
+		}
 
 		/* calculate the mouse offset for events */
 		_mouseOffset = { ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y };
@@ -163,31 +189,6 @@ namespace Osiris::Editor
 
 		ImGui::Image((ImTextureID)(UINT_PTR)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport.size.x, _Viewport.size.y), ImVec2(0, 1), ImVec2(1, 0));
 
-		if (showStats == true)
-		{
-			ImGui::SetCursorPosY(42.0f);
-			ImGui::Text("Camera:");
-			ImGui::Text("\tAspect Ratio [%f]", _CameraController->GetAspectRatio());
-			ImGui::Text("\tZoom Level	[%f]", _CameraController->GetZoomLevel());
-			ImGui::Text("\tPosition		[%f, %f, %f]", _CameraController->GetPosition().x, _CameraController->GetPosition().y, _CameraController->GetPosition().z);
-
-			ImGui::Text("Window:");
-			ImGui::Text("\tAspect Ratio [%f]", _Boundary.size.x / _Boundary.size.y);
-
-			ImGui::Text("Viewport:");
-			ImGui::Text("X [%f]", _Viewport.size.x);
-			ImGui::Text("Y [%f]", _Viewport.size.y);
-			ImGui::Text("W [%f]", _Viewport.position.x);
-			ImGui::Text("H [%f]", _Viewport.position.y);
-
-			ImGui::Text("FrameBuffer:");
-			ImGui::Text("Width [%d]", _Framebuffer->GetConfig().width);
-			ImGui::Text("Height [%d]", _Framebuffer->GetConfig().height);
-
-			ImGui::Text("Cursor:");
-			ImGui::Text("Viewport Offset Coords:   [%d, %d]", (int32_t)_mouseOffset.x, (int32_t)_mouseOffset.y);
-			ImGui::Text("Evt Start Coords: [%d, %d]", (int32_t)_LastMousePos.x, (int32_t)_LastMousePos.y);
-		}
 
 		if (_SelectedGameObject != nullptr)
 		{
