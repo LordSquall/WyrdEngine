@@ -127,7 +127,7 @@ namespace Osiris::Editor
 		_Shader->Bind();
 
 		/* set the vp matrix to a standard otho matrix */
-		_Shader->SetVPMatrix(glm::ortho(0.0f, _CameraController->GetCamera().GetRight(), 0.0f, _CameraController->GetCamera().GetTop()));
+		_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
 	}
 
 

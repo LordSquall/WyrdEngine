@@ -19,7 +19,7 @@ namespace Osiris::Editor
 	EditorRenderer2DLayer::EditorRenderer2DLayer(std::string name) : Layer(name)
 	{
 		/* Initialise the camera controller */
-		_CameraController = std::make_shared<OrthographicCameraController>(Application::Get().GetWindow().GetAspectRatio(), 1.0f);
+		_CameraController = std::make_shared<OrthographicCameraController>();
 
 		/* Cache services */
 		_EventService = ServiceManager::Get<EventService>(ServiceManager::Service::Events);
@@ -98,8 +98,8 @@ namespace Osiris::Editor
 		/* Set camera settings */
 		if (_Scene != nullptr)
 		{
-			_Scene->cameraZoom = _CameraController->GetZoomLevel();
-			_Scene->cameraPosition = _CameraController->GetPosition();
+			//_Scene->cameraZoom = _CameraController->GetZoomLevel();
+			//_Scene->cameraPosition = _CameraController->GetPosition();
 		}
 	}
 
@@ -180,25 +180,25 @@ namespace Osiris::Editor
 	bool EditorRenderer2DLayer::OnMouseMovedEvent(MouseMovedEvent& e)
 	{
 		/* calculate the mouse positions and deltas */
-		glm::vec2 mouseCoords = { e.GetX(), Application::Get().GetWindow().GetHeight() - e.GetY() };
-		glm::vec2 mouseDelta = _LastMousePos - mouseCoords;
-		glm::vec2 unitDelta = { mouseDelta.x * (1.0f / (Application::Get().GetWindow().GetWidth() * 0.5f)),  mouseDelta.y * (1.0f / ((Application::Get().GetWindow().GetHeight() * 0.5f) * _CameraController->GetAspectRatio())) };
+		//glm::vec2 mouseCoords = { e.GetX(), Application::Get().GetWindow().GetHeight() - e.GetY() };
+		//glm::vec2 mouseDelta = _LastMousePos - mouseCoords;
+		//glm::vec2 unitDelta = { mouseDelta.x * (1.0f / (Application::Get().GetWindow().GetWidth() * 0.5f)),  mouseDelta.y * (1.0f / ((Application::Get().GetWindow().GetHeight() * 0.5f) * _CameraController->GetAspectRatio())) };
 
-		unitDelta = unitDelta * (_CameraController->GetAspectRatio() * _CameraController->GetZoomLevel());
+		////unitDelta = unitDelta * (_CameraController->GetAspectRatio() * _CameraController->GetZoomLevel());
 
-		/* on middle mouse click we want to drag the camera around */
-		if (Input::IsMouseButtonPressed(OSR_MOUSE_BUTTON_MIDDLE) == true)
-		{
-			_CameraController->Translate(unitDelta);
-		}
+		///* on middle mouse click we want to drag the camera around */
+		//if (Input::IsMouseButtonPressed(OSR_MOUSE_BUTTON_MIDDLE) == true)
+		//{
+		//	_CameraController->Translate(unitDelta);
+		//}
 
-		/* on left click with selected game object we want to feed the mouse events to the currently selected gizmo */
-		if (Input::IsMouseButtonPressed(OSR_MOUSE_BUTTON_LEFT) && _SelectedGameObject != NULL)
-		{
-			_TranslationGizmo->OnDrag(-unitDelta);
-		}
+		///* on left click with selected game object we want to feed the mouse events to the currently selected gizmo */
+		//if (Input::IsMouseButtonPressed(OSR_MOUSE_BUTTON_LEFT) && _SelectedGameObject != NULL)
+		//{
+		//	_TranslationGizmo->OnDrag(-unitDelta);
+		//}
 
-		_LastMousePos = mouseCoords;
+		//_LastMousePos = mouseCoords;
 		
 		return true;
 	}
@@ -210,8 +210,8 @@ namespace Osiris::Editor
 		_Scene = evtArgs.scene;
 
 		/* Set camera settings */
-		_CameraController->SetZoomLevel(_Scene->cameraZoom);
-		_CameraController->SetPosition(_Scene->cameraPosition);
+		//_CameraController->SetZoomLevel(_Scene->cameraZoom);
+		//_CameraController->SetPosition(_Scene->cameraPosition);
 	}
 
 	void EditorRenderer2DLayer::OnSelectedGameObjectChanged(Events::EventArgs& args)

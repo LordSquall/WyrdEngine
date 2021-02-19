@@ -37,7 +37,7 @@ namespace Osiris::Editor
 		_EventService->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(SceneViewer::OnSelectedGameObjectChanged));
 
 		/* initialise camera */
-		_CameraController = std::make_shared<OrthographicCameraController>(1.0f, 1.0f);
+		_CameraController = std::make_shared<OrthographicCameraController>();
 
 		/* setup the gizmo shader */
 		std::ifstream vertexStream("res/shaders/gizmoGrid.vert");
@@ -110,26 +110,6 @@ namespace Osiris::Editor
 				{
 					sl->Render(renderer, _CameraController->GetCamera().GetViewProjectionMatrix());
 				}
-
-				/*for (auto sl : _Scene->layers2D)
-				{
-					for (auto go : sl->children)
-					{
-						for (auto component : go->components)
-						{
-							if (component->debugOverlayFunction)
-							{
-								component->debugOverlayFunction(_CameraController->GetCamera().GetViewProjectionMatrix());
-							}
-						}
-					}
-				}
-
-				if (_SelectedGameObject != NULL)
-				{
-					_TranslationGizmo->SetGameObject(_SelectedGameObject);
-					_TranslationGizmo->Render(ts, renderer);
-				}*/
 			}
 
 			_Framebuffer->Unbind();
@@ -149,14 +129,18 @@ namespace Osiris::Editor
 		/* Set camera settings */
 		if (_Scene != nullptr)
 		{
-			_Scene->cameraZoom = _CameraController->GetZoomLevel();
+			_Scene->cameraZoom = _CameraController->GetSize();
 			_Scene->cameraPosition = _CameraController->GetPosition();
 		}
 	}
 
 	void SceneViewer::OnEditorRender()
 	{
+		static bool showStats = false;
 		static bool showGizmoSettings = false;
+
+		/* build the top toolbar */
+		ImGui::Checkbox("show stats", &showStats);
 
 		ImGui::SameLine();
 
@@ -178,16 +162,39 @@ namespace Osiris::Editor
 			}
 
 
-			ImGui::End();
+			/* build the top toolbar */
+			ImGui::Checkbox("show stats", &showStats);				ImGui::End();
 		}
 
 		/* calculate the mouse offset for events */
 		_mouseOffset = { ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y };
 
+		/* calculate the viewport boundary */
+		_ViewportBoundary = { {_Boundary.position.x - (_Boundary.size.x - _Viewport.size.x), _Boundary.position.y + (_Boundary.size.y - _Viewport.size.y) }, { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y - ImGui::GetCursorPos().y } };
+
 		/* calculate the viewport size */
 		_Viewport = { { 0.0f, 0.0f }, { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y - ImGui::GetCursorPos().y } };
 
 		ImGui::Image((ImTextureID)(UINT_PTR)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport.size.x, _Viewport.size.y), ImVec2(0, 1), ImVec2(1, 0));
+
+		if (showStats == true)
+		{
+			ImGui::SetCursorPosY(42.0f);
+			ImGui::Text("Camera:");
+			ImGui::Text("\tPosition		[%f, %f, %f]", _CameraController->GetPosition().x, _CameraController->GetPosition().y, _CameraController->GetPosition().z);
+
+			ImGui::Text("Window:");
+			ImGui::Text("\tAspect Ratio [%f]", _ViewportBoundary.size.x / _ViewportBoundary.size.y);
+
+			ImGui::Text("FrameBuffer:");
+			ImGui::Text("Width [%d]", _Framebuffer->GetConfig().width);
+			ImGui::Text("Height [%d]", _Framebuffer->GetConfig().height);
+
+			ImGui::Text("Cursor:");
+			ImGui::Text("Screen Position: [%d, %d]", (int32_t)_mouseOffset.x, (int32_t)_mouseOffset.y);
+			ImGui::Text("Viewport Offset Coords:   [%d, %d]", (int32_t)_mouseOffset.x, (int32_t)_mouseOffset.y);
+			ImGui::Text("Evt Start Coords: [%d, %d]", (int32_t)_LastMousePos.x, (int32_t)_LastMousePos.y);
+		}
 
 
 		if (_SelectedGameObject != nullptr)
@@ -202,49 +209,76 @@ namespace Osiris::Editor
 				ImGui::EndPopup();
 			}
 		}
-			
+
+		ImGui::GetWindowDrawList()->AddRect(
+			ImVec2(_Boundary.position.x, _Boundary.position.y), 
+			ImVec2(_Boundary.position.x + _Boundary.size.x, _Boundary.position.y + _Boundary.size.y),
+			ImGui::ColorConvertFloat4ToU32(ImVec4(1, .15, .15, 1)), 0, 15, 5);
+
+		ImGui::GetWindowDrawList()->AddRect(
+			ImVec2(_ViewportBoundary.position.x, _ViewportBoundary.position.y),
+			ImVec2(_ViewportBoundary.position.x + _ViewportBoundary.size.x, _ViewportBoundary.position.y + _ViewportBoundary.size.y),
+			ImGui::ColorConvertFloat4ToU32(ImVec4(.15, 1, .15, 1)), 0, 15, 5);
+
+		ImGui::GetWindowDrawList()->AddLine(
+			ImVec2(_ViewportBoundary.position.x + (_ViewportBoundary.size.x / 2.0f), _ViewportBoundary.position.y),
+			ImVec2(_ViewportBoundary.position.x + (_ViewportBoundary.size.x / 2.0f), _ViewportBoundary.position.y + _ViewportBoundary.size.y),
+			ImGui::ColorConvertFloat4ToU32(ImVec4(.15, .15, 1, 1)), 1);
+
+		ImGui::GetWindowDrawList()->AddLine(
+			ImVec2(_ViewportBoundary.position.x, _ViewportBoundary.position.y + (_ViewportBoundary.size.y / 2.0f)),
+			ImVec2(_ViewportBoundary.position.x + _ViewportBoundary.size.x, _ViewportBoundary.position.y + (_ViewportBoundary.size.y / 2.0f)),
+			ImGui::ColorConvertFloat4ToU32(ImVec4(.15, .15, 1, 1)), 1);
 	}
 
 	void SceneViewer::OnResize()
 	{
 		_Framebuffer->Resize((uint32_t)_Viewport.size.x, (uint32_t)_Viewport.size.y);
-		_CameraController->UpdateProjection(_Viewport.size.x / _Viewport.size.y);
+		_CameraController->SetViewportSize(_Viewport.size.x, _Viewport.size.y);
+	}
+
+
+	glm::vec2 SceneViewer::GetWorldSpaceFromPoint(const glm::vec2& point)
+	{
+		glm::vec2 viewportMouseCoords = point - _ViewportBoundary.position;
+
+		return _CameraController->GetCamera().GetWorldSpaceFromPoint(viewportMouseCoords, _ViewportBoundary);
 	}
 
 	bool SceneViewer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
 	{
-		bool itemFound = false;
-		glm::vec2 normalisedMouseCoords;
-		glm::vec2 mouseCoords = glm::vec2(e.GetPositionX(), e.GetPositionY()) - _mouseOffset;
+		//bool itemFound = false;
+		//glm::vec2 normalisedMouseCoords;
+		//glm::vec2 mouseCoords = glm::vec2(e.GetPositionX(), e.GetPositionY()) - _mouseOffset;
 
 
-		if (_Viewport.ContainsPoint(mouseCoords) == true)
-		{
-			normalisedMouseCoords.x = (2.0f * (mouseCoords.x) / (_Viewport.size.x)) - 1.0f;
-			normalisedMouseCoords.y = -((2.0f * (mouseCoords.y) / (_Viewport.size.y)) - 1.0f);
+		//if (_Viewport.ContainsPoint(mouseCoords) == true)
+		//{
+		//	normalisedMouseCoords.x = (2.0f * (mouseCoords.x) / (_Viewport.size.x)) - 1.0f;
+		//	normalisedMouseCoords.y = -((2.0f * (mouseCoords.y) / (_Viewport.size.y)) - 1.0f);
 
-			if (_Scene != nullptr)
-			{
-				/* this point we need to run a check on the scene tree to find which child has been clicked */
-				std::shared_ptr<GameObject> selectedGameObject = FindGameObjectInScene(normalisedMouseCoords);
+		//	if (_Scene != nullptr)
+		//	{
+		//		/* this point we need to run a check on the scene tree to find which child has been clicked */
+		//		std::shared_ptr<GameObject> selectedGameObject = FindGameObjectInScene(normalisedMouseCoords);
 
-				switch (e.GetMouseButton())
-				{
-				case OSR_MOUSE_BUTTON_LEFT:
-					_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(selectedGameObject));
-					_OpenContextMenu = false;
-					break;
-				case OSR_MOUSE_BUTTON_RIGHT:
-					_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(selectedGameObject));
-					_MenuPos.x = (float)e.GetPositionX();
-					_MenuPos.y = (float)e.GetPositionY();
-					_OpenContextMenu = true;
-					break;
-				}
-			}
-		}
+		//		switch (e.GetMouseButton())
+		//		{
+		//		case OSR_MOUSE_BUTTON_LEFT:
+		//			_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(selectedGameObject));
+		//			_OpenContextMenu = false;
+		//			break;
+		//		case OSR_MOUSE_BUTTON_RIGHT:
+		//			_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(selectedGameObject));
+		//			_MenuPos.x = (float)e.GetPositionX();
+		//			_MenuPos.y = (float)e.GetPositionY();
+		//			_OpenContextMenu = true;
+		//			break;
+		//		}
+		//	}
+		//}
 
-		_LastMousePos = { mouseCoords.x, mouseCoords.y };
+		//_LastMousePos = { mouseCoords.x, mouseCoords.y };
 
 		return true;
 	}
@@ -263,31 +297,20 @@ namespace Osiris::Editor
 
 	bool SceneViewer::OnMouseMovedEvent(MouseMovedEvent& e)
 	{ 
-		/* calculate the mouse positions and deltas */
-		glm::vec2 mouseCoords = glm::vec2(e.GetX(), e.GetY()) - _mouseOffset;
+		glm::vec2 viewportMouseCoords = glm::vec2(e.GetX(), e.GetY()) - _mouseOffset;
 
-		if (_Viewport.ContainsPoint(mouseCoords) == true)
+		if (_ViewportBoundary.ContainsPoint(glm::vec2(e.GetX(), e.GetY())))
 		{
+			glm::vec2 worldSpaceCoords = _CameraController->GetCamera().GetEyeSpaceFromPoint(viewportMouseCoords, _ViewportBoundary);
 
-			glm::vec2 mouseDelta = _LastMousePos - mouseCoords;
-			glm::vec2 unitDelta = { mouseDelta.x * (1.0f / (_Boundary.size.x * 0.5f)),  -(mouseDelta.y * (1.0f / ((_Boundary.size.y * 0.5f) * _CameraController->GetAspectRatio()))) };
+			glm::vec2 worldSpaceDelta = _LastMouseWorldPos - worldSpaceCoords;
 
-			unitDelta = unitDelta * (_CameraController->GetAspectRatio() * _CameraController->GetZoomLevel());
-
-			/* on middle mouse click we want to drag the camera around */
 			if (Input::IsMouseButtonPressed(OSR_MOUSE_BUTTON_MIDDLE) == true)
 			{
-				_CameraController->Translate(unitDelta);
+				_CameraController->Translate({ worldSpaceDelta.x, worldSpaceDelta.y });
 			}
-
-			/* on left click with selected game object we want to feed the mouse events to the currently selected gizmo */
-			if (Input::IsMouseButtonPressed(OSR_MOUSE_BUTTON_LEFT) && _SelectedGameObject != NULL)
-			{
-				//_TranslationGizmo->OnDrag(-unitDelta);
-			}
+			_LastMouseWorldPos = worldSpaceCoords;
 		}
-
-		_LastMousePos = mouseCoords;
 
 		return true;
 	}
@@ -415,7 +438,7 @@ namespace Osiris::Editor
 		_Scene = evtArgs.scene;
 
 		/* Set camera settings */
-		_CameraController->SetZoomLevel(_Scene->cameraZoom);
+		_CameraController->SetSize(_Scene->cameraZoom);
 		_CameraController->SetPosition(_Scene->cameraPosition);
 	}
 

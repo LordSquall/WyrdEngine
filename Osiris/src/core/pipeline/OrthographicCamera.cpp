@@ -8,40 +8,68 @@
 namespace Osiris
 {
 	OrthographicCamera::OrthographicCamera()
-		: _ProjectionMatrix(1.0f), _ViewMatrix(1.0f), _ViewProjectionMatrix(1.0f), _Left(0.0f), _Right(0.0f), _Bottom(0.0f), _Top(0.0f)
+		: _ProjectionMatrix(1.0f), _ViewMatrix(1.0f), _ViewProjectionMatrix(1.0f), _Size(64.0), _NearPlane(-1.0f), _FarPlane(1.0f), _AspectRatio(1.0f)
 	{
 	}
 
 	OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top)
-		: _ProjectionMatrix(glm::ortho(left, right, bottom, top, -1.0f, 1.0f)), _ViewMatrix(1.0f), _Left(left), _Right(right), _Bottom(bottom), _Top(top)
+		: _ProjectionMatrix(glm::ortho(left, right, bottom, top, -1.0f, 1.0f)), _ViewMatrix(1.0f), _Size(1.0), _NearPlane(-1.0f), _FarPlane(1.0f), _AspectRatio(1.0f)
 	{
 		_ViewProjectionMatrix = _ProjectionMatrix * _ViewMatrix;
 	}
 
-	void OrthographicCamera::SetProjection(float left, float right, float bottom, float top)
+	void OrthographicCamera::SetProjection(float size, float nearPlane, float farPlane)
 	{
-		_Left = left;
-		_Right = right;
-		_Bottom = bottom;
-		_Top = top;
+		_Size = size;
+		_NearPlane = nearPlane;
+		_FarPlane = farPlane;
 
 		RecalulateProjection();
 	}
 
 	void OrthographicCamera::RecalulateProjection()
 	{
-		_ProjectionMatrix = glm::ortho(_Left, _Right, _Bottom, _Top, -1.0f, 1.0f);
+		float l = -_Size * _AspectRatio * 0.5f;
+		float r = _Size * _AspectRatio * 0.5f;
+		float b = -_Size * 0.5f;
+		float t = _Size * 0.5f;
+
+		_ProjectionMatrix = glm::ortho(l, r, b, t, _NearPlane, _FarPlane);
 	}
 
 	void OrthographicCamera::RecalulateView()
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), _Position);
-
-		_ViewMatrix = glm::inverse(transform);
+		_ViewMatrix = glm::translate(glm::mat4(1.0f), -_Position);
 	}
 
 	void OrthographicCamera::RecalulateViewProjection()
 	{
 		_ViewProjectionMatrix = _ProjectionMatrix * _ViewMatrix;
 	}
+
+	glm::vec2 OrthographicCamera::GetNDCFromPoint(const glm::vec2& point, const Osiris::Rect& boundary)
+	{
+		return { -(1.0 - (point.x * (1.0f / (boundary.size.x * 0.5f)))), 1.0f - (point.y * (1.0f / (boundary.size.y * 0.5f))) };
+	}
+
+	glm::vec2 OrthographicCamera::GetWorldSpaceFromPoint(const glm::vec2& point, const Osiris::Rect& boundary)
+	{
+		glm::vec2 ndcMouseCoords = GetNDCFromPoint(point, boundary);
+
+		glm::vec4 eyeCoords = glm::inverse(_ProjectionMatrix) * glm::vec4(ndcMouseCoords, -1.0f, 1.0f);
+
+		glm::vec4 worldCoords = glm::inverse(_ViewMatrix) * eyeCoords;
+
+		return glm::vec2(worldCoords.x, worldCoords.y);
+	}
+
+	glm::vec2 OrthographicCamera::GetEyeSpaceFromPoint(const glm::vec2& point, const Osiris::Rect& boundary)
+	{
+		glm::vec2 ndcMouseCoords = GetNDCFromPoint(point, boundary);
+
+		glm::vec4 eyeCoords = glm::inverse(_ProjectionMatrix) * glm::vec4(ndcMouseCoords, -1.0f, 1.0f);
+
+		return glm::vec2(eyeCoords.x, eyeCoords.y);
+	}
+	
 }

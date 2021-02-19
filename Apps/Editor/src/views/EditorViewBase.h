@@ -88,6 +88,12 @@ namespace Osiris::Editor
 		inline Osiris::Rect GetBoundary() const { return _Boundary; }
 
 		/**
+		 * @brief Tranform a point to view space
+		 * @return
+		*/
+		glm::vec2 TransformToViewSpace(glm::vec2 point);
+
+		/**
 		 * @brief Get the Name
 		 * @return 
 		*/

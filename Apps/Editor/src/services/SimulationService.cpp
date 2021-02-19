@@ -76,14 +76,10 @@ namespace Osiris::Editor
 		/* we only action anything in the function if we are in running mode */
 		if (_IsRunning == true)
 		{
-			Rect viewport = std::dynamic_pointer_cast<SceneViewer>(_SceneViewer)->GetViewport();
-			Rect boundary = std::dynamic_pointer_cast<SceneViewer>(_SceneViewer)->GetBoundary();
+			auto sceneViewer = std::dynamic_pointer_cast<SceneViewer>(_SceneViewer);
 
-			glm::vec2 normalisedMouseCoords;
-			normalisedMouseCoords.x = (2.0f * (_MousePos[0] - boundary.position.x) / (viewport.size.x)) - 1.0f;
-			normalisedMouseCoords.y = -((2.0f * (_MousePos[1] - boundary.position.y) / (viewport.size.y)) - 1.0f);
-
-			Application::Get().GetBehaviour().SetMouseState(normalisedMouseCoords.x, normalisedMouseCoords.y);
+			glm::vec2 worldSpaceCoords = sceneViewer->GetWorldSpaceFromPoint(glm::vec2(_MousePos[0], _MousePos[1]));
+			Application::Get().GetBehaviour().SetMouseState(worldSpaceCoords.x, worldSpaceCoords.y);
 
 			Application::Get().GetBehaviour().Update(ts);
 			Application::Get().GetPhysics().Update(ts);

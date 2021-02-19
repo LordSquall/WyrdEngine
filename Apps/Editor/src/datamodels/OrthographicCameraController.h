@@ -16,7 +16,7 @@ namespace Osiris::Editor
 	{
 	public:
 		/* Constructors */
-		OrthographicCameraController(float aspectRatio, float zoom);
+		OrthographicCameraController();
 
 	public:
 		void OnUpdate(Timestep ts);
@@ -26,16 +26,13 @@ namespace Osiris::Editor
 		inline OrthographicCamera& GetCamera() { return _Camera; }
 		inline const OrthographicCamera& GetCamera() const { return _Camera; }
 		
-		inline void UpdateProjection(float aspectRatio);
+		inline void SetViewportSize(float width, float height) { _Camera.SetViewportSize(width, height); }
 
 		inline glm::vec3 GetPosition() const { return _Camera.GetPosition(); }
 		inline void SetPosition(glm::vec3 position) { _Camera.SetPosition(position); }
-		
-		inline float GetZoomLevel() const { return _ZoomLevel; }
-		inline void SetZoomLevel(float level) { _ZoomLevel = level; _Camera.SetProjection(-_AspectRatio * _ZoomLevel, _AspectRatio * _ZoomLevel, -_ZoomLevel, _ZoomLevel);}
 
-		inline float GetAspectRatio() const { return _AspectRatio; }
-		inline void SetAspectRatio(const float aspectRatio) { _AspectRatio = aspectRatio; }
+		inline float GetSize() const { return _Camera.GetSize(); }
+		inline void SetSize(float size) { _Camera.SetSize(size); }
 
 		void Translate(glm::vec2 delta);
 		
@@ -46,8 +43,6 @@ namespace Osiris::Editor
 		bool OnKeyReleased(KeyReleasedEvent& e);
 
 	private:
-		float _AspectRatio;
-		float _ZoomLevel;
 		OrthographicCamera _Camera;
 
 		Timestep _timestep;

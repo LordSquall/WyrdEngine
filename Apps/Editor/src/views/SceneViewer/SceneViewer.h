@@ -27,6 +27,9 @@ namespace Osiris::Editor
 		void OnResize() override;
 
 		inline const Osiris::Rect& GetViewport() { return _Viewport; }
+		inline const std::shared_ptr<OrthographicCameraController> GetCamera() const { return _CameraController; }
+
+		glm::vec2 GetWorldSpaceFromPoint(const glm::vec2& point);
 
 	private:
 		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
@@ -64,12 +67,14 @@ namespace Osiris::Editor
 		std::shared_ptr<GameObject>						_SelectedGameObject;
 
 		glm::vec2 _LastMousePos;
+		glm::vec2 _LastMouseWorldPos;
 		glm::vec2 _MenuPos;
 		bool _OpenContextMenu;
 
 		bool _mouseEventStarted;
 
 		glm::vec2 _mouseOffset;
+		Osiris::Rect _ViewportBoundary;
 		Osiris::Rect _Viewport;
 	};
 }

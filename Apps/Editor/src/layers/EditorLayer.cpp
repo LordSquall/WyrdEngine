@@ -519,8 +519,13 @@ namespace Osiris::Editor
 		
 		_simulationService->SetMousePosition(e.GetX(), e.GetY());
 
-		if(_mouseEventOwner != nullptr)
-			_mouseEventOwner->OnEvent(e);
+		for (auto& it = _views.begin(); it != _views.end(); it++)
+		{
+			if ((it->second)->GetBoundary().ContainsPoint({ e.GetX(), e.GetY() }) == true)
+			{
+				(it->second)->OnEvent(e);
+			}
+		}
 
 		return false;
 	}

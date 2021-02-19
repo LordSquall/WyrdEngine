@@ -10,27 +10,15 @@
 
 namespace Osiris::Editor {
 
-	OrthographicCameraController::OrthographicCameraController(float aspectRatio, float zoomLevel) : _AspectRatio(aspectRatio)
+	OrthographicCameraController::OrthographicCameraController()
 	{
-		_ZoomLevel = zoomLevel;
-		_AspectRatio = aspectRatio;
 
-		UpdateProjection(aspectRatio);
-	}
-
-	void OrthographicCameraController::UpdateProjection(float aspectRatio) {
-
-		_AspectRatio = aspectRatio;
-
-		_Camera.SetProjection(-_AspectRatio * _ZoomLevel, _AspectRatio * _ZoomLevel, -_ZoomLevel, _ZoomLevel);
 	}
 
 	void OrthographicCameraController::OnUpdate(Timestep ts)
 	{
 		glm::vec3 position = _Camera.GetPosition();
-		position.x += (_CameraPositionVelocity.x * ts);
-		position.y += (_CameraPositionVelocity.y * ts);
-
+		
 		_Camera.SetPosition(position);
 
 		_Camera.RecalulateViewProjection();
@@ -53,20 +41,15 @@ namespace Osiris::Editor {
 
 	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
 	{
-		_ZoomLevel -= e.GetYOffset() * _CameraZoomSpeed;
-		_ZoomLevel = std::max(_ZoomLevel, _CameraZoomSpeed);
+		_Camera.SetSize(_Camera.GetSize() + (e.GetYOffset() * _CameraZoomSpeed));
 
-		_Camera.SetProjection(-_AspectRatio * _ZoomLevel, _AspectRatio * _ZoomLevel, -_ZoomLevel, _ZoomLevel);
-
-		_InitialCameraTranslationSpeed = _ZoomLevel;
-		
 		return false;
 	}
 
 	bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& e)
 	{
-		_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
-		_Camera.SetProjection(-_AspectRatio * _ZoomLevel, _AspectRatio * _ZoomLevel, -_ZoomLevel, _ZoomLevel);
+		//_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
+		//_Camera.SetProjection(-_AspectRatio * _ZoomLevel, _AspectRatio * _ZoomLevel, -_ZoomLevel, _ZoomLevel);
 
 		return false;
 	}
