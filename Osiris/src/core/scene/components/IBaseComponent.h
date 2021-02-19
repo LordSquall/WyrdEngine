@@ -34,8 +34,10 @@ namespace Osiris {
 		inline void SetUUID(xg::Guid uuid) { _uuid = uuid; }
 
 		virtual void Initialise() {};
+		virtual void Setup() {};
 		virtual void Recalculate() {};
 		virtual void Render(Timestep ts, Renderer& renderer) {};
+		virtual void Remove() {};
 
 		virtual const std::string GetManagedType() = 0;
 

@@ -10,6 +10,8 @@
 #include "core/renderer/VertexArray.h"
 #include "core/renderer/Buffer.h"
 #include "core/pipeline/SpriteVertex.h"
+#include "core/pipeline/SpriteBatch.h"
+#include "core/scene/Layer2D.h"
 #include "core/scene/GameObject.h"
 #include "core/scene/components/Transform2DComponent.h"
 
@@ -47,5 +49,10 @@ namespace Osiris
 	void SpriteComponent::Render(Timestep ts, Renderer& renderer)
 	{
 
+	}
+
+	void SpriteComponent::Remove()
+	{
+		spriteLayer->GetSpriteBatch().RemoveSprite(this);
 	}
 }

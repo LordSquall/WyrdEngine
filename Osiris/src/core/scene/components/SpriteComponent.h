@@ -15,6 +15,7 @@ namespace Osiris {
 	class Shader;
 	class Texture;
 	class Sprite;
+	class Layer2D;
 
 	class OSR_LIBRARY_API SpriteComponent : public IBaseComponent
 	{
@@ -27,6 +28,7 @@ namespace Osiris {
 
 		std::shared_ptr<Shader> shader;
 		std::shared_ptr<Texture> texture;
+		std::shared_ptr<Layer2D> spriteLayer;
 		glm::vec2 position;
 		glm::vec2 size;
 		Color color;
@@ -35,6 +37,7 @@ namespace Osiris {
 		void Initialise();
 		void Recalculate();
 		void Render(Timestep ts, Renderer& renderer);
+		void Remove();
 
 		std::string toString() const { return "Hello"; }
 	};

@@ -140,9 +140,11 @@ namespace Osiris::Editor
 						std::shared_ptr<SpriteComponent> newComponent = std::make_shared<SpriteComponent>(_SelectedGameObject);
 						newComponent->Initialise();
 						newComponent->texture = Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)];
-						_SelectedGameObject->components.push_back(newComponent);
-
+						newComponent->spriteLayer = _SelectedLayer2D;
+						
 						_SelectedLayer2D->RegisterSprite(newComponent);
+						
+						_SelectedGameObject->AddComponent(newComponent);
 
 						_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
 					}
@@ -150,7 +152,7 @@ namespace Osiris::Editor
 					{
 						std::shared_ptr<ScriptComponent> newComponent = std::make_shared<ScriptComponent>(_SelectedGameObject);
 						newComponent->Initialise();
-						_SelectedGameObject->components.push_back(newComponent);
+						_SelectedGameObject->AddComponent(newComponent);
 
 						_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
 					}
@@ -158,7 +160,7 @@ namespace Osiris::Editor
 					{
 						std::shared_ptr<PhysicsComponent> newComponent = std::make_shared<PhysicsComponent>(_SelectedGameObject);
 						newComponent->Initialise();
-						_SelectedGameObject->components.push_back(newComponent);
+						_SelectedGameObject->AddComponent(newComponent);
 
 						_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
 					}
@@ -169,10 +171,13 @@ namespace Osiris::Editor
 				ImGui::Separator();
 				if (ImGui::MenuItem("Delete") == true)
 				{
-					if(_SelectedGameObject->parent == nullptr)
-						_SelectedLayer2D->RemoveChild(_SelectedGameObject->uid);
-					else
-						_SelectedGameObject->parent->RemoveChild(_SelectedGameObject->uid);
+					if (_SelectedGameObject != nullptr)
+					{
+						if (_SelectedGameObject->parent == nullptr)
+							_SelectedLayer2D->RemoveChild(_SelectedGameObject->uid);
+						else
+							_SelectedGameObject->parent->RemoveChild(_SelectedGameObject->uid);
+					}
 				}
 				ImGui::EndPopup();
 			}

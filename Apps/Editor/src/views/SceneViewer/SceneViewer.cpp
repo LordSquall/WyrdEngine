@@ -209,26 +209,6 @@ namespace Osiris::Editor
 				ImGui::EndPopup();
 			}
 		}
-
-		ImGui::GetWindowDrawList()->AddRect(
-			ImVec2(_Boundary.position.x, _Boundary.position.y), 
-			ImVec2(_Boundary.position.x + _Boundary.size.x, _Boundary.position.y + _Boundary.size.y),
-			ImGui::ColorConvertFloat4ToU32(ImVec4(1, .15, .15, 1)), 0, 15, 5);
-
-		ImGui::GetWindowDrawList()->AddRect(
-			ImVec2(_ViewportBoundary.position.x, _ViewportBoundary.position.y),
-			ImVec2(_ViewportBoundary.position.x + _ViewportBoundary.size.x, _ViewportBoundary.position.y + _ViewportBoundary.size.y),
-			ImGui::ColorConvertFloat4ToU32(ImVec4(.15, 1, .15, 1)), 0, 15, 5);
-
-		ImGui::GetWindowDrawList()->AddLine(
-			ImVec2(_ViewportBoundary.position.x + (_ViewportBoundary.size.x / 2.0f), _ViewportBoundary.position.y),
-			ImVec2(_ViewportBoundary.position.x + (_ViewportBoundary.size.x / 2.0f), _ViewportBoundary.position.y + _ViewportBoundary.size.y),
-			ImGui::ColorConvertFloat4ToU32(ImVec4(.15, .15, 1, 1)), 1);
-
-		ImGui::GetWindowDrawList()->AddLine(
-			ImVec2(_ViewportBoundary.position.x, _ViewportBoundary.position.y + (_ViewportBoundary.size.y / 2.0f)),
-			ImVec2(_ViewportBoundary.position.x + _ViewportBoundary.size.x, _ViewportBoundary.position.y + (_ViewportBoundary.size.y / 2.0f)),
-			ImGui::ColorConvertFloat4ToU32(ImVec4(.15, .15, 1, 1)), 1);
 	}
 
 	void SceneViewer::OnResize()

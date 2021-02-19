@@ -28,7 +28,7 @@ namespace Osiris {
 
 		bool RegisterSprite(std::shared_ptr<SpriteComponent> spriteComponent);
 
-		inline const SpriteBatch& GetSpriteBatch() const { return *_SpriteBatch; }
+		inline SpriteBatch& GetSpriteBatch() const { return *_SpriteBatch; }
 
 		void AssignScripts(Behaviour* behaviour);
 

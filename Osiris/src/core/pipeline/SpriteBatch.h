@@ -34,6 +34,8 @@ namespace Osiris {
 
 		void AddSprite(std::shared_ptr<SpriteComponent> sprite);
 
+		void RemoveSprite(SpriteComponent* sprite);
+
 		void SetShader(std::shared_ptr<Shader> shader);
 
 	private:

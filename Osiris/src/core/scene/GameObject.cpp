@@ -46,10 +46,40 @@ namespace Osiris
 
 	void GameObject::RemoveChild(UID uid)
 	{
-		children.erase(std::remove_if(children.begin(), children.end(),
-			[&](const std::shared_ptr<GameObject>& child)
-			{ return child->uid == uid; }),
-			children.end());
+		/* retrieve the gameobject with matching id */
+		auto gameObject = std::find_if(children.begin(), children.end(), [&uid](const std::shared_ptr<GameObject>& c) { return c->uid == uid; });
+
+		if (gameObject != children.end())
+		{
+			/* remove all the children if any */
+			for (auto& child : (*gameObject)->children)
+			{
+				child->RemoveChildren();
+			}
+
+			/* process each component to remove any additional links */
+			for (auto& component : (*gameObject)->components)
+			{
+				component->Remove();
+			}
+
+			children.erase(gameObject);
+		}
+	}
+
+	void GameObject::RemoveChildren()
+	{
+		/* remove all the children if any */
+		for (auto& child : children)
+		{
+			child->RemoveChildren();
+		}
+
+		/* process each component to remove any additional links */
+		for (auto& component : components)
+		{
+			component->Remove();
+		}
 	}
 
 	void GameObject::DuplicateChild(UID uid)
@@ -62,6 +92,13 @@ namespace Osiris
 		std::shared_ptr<GameObject> tmp = children[a];
 		children[a] = children[b];
 		children[b] = tmp;
+	}
+
+	void GameObject::AddComponent(std::shared_ptr<IBaseComponent> component)
+	{
+		component->Setup();
+
+		components.push_back(component);
 	}
 
 	std::shared_ptr<ScriptComponent> GameObject::FindScriptComponent(const std::string& name)

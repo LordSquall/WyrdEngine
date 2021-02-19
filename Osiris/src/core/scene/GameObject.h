@@ -29,8 +29,11 @@ namespace Osiris {
 
 		std::shared_ptr<GameObject>* AddChild(std::shared_ptr<GameObject> gameObject);
 		void RemoveChild(UID uid);
+		void RemoveChildren();
 		void DuplicateChild(UID uid);
 		void SwapChild(int a, int b);
+
+		void AddComponent(std::shared_ptr<IBaseComponent> component);
 
 		std::shared_ptr<GameObject> FindChild(const UID uid);
 		std::shared_ptr<ScriptComponent> FindScriptComponent(const std::string& name);

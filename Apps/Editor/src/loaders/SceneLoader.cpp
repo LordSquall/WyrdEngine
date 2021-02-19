@@ -148,6 +148,7 @@ namespace Osiris::Editor
 		component->SetUUID(uuid);
 
 		owner->sprite = component;
+		component->spriteLayer = owner->layer;
 
 		owner->layer->RegisterSprite(component);
 
@@ -307,13 +308,13 @@ namespace Osiris::Editor
 				switch (typeId)
 				{
 					case SceneComponentType::SpriteRenderer:
-						gameObject->components.push_back(Read_SpriteComponent(componentObj, gameObject));
+						gameObject->AddComponent(Read_SpriteComponent(componentObj, gameObject));
 						break;
 					case SceneComponentType::ScriptComponent:
-						gameObject->components.push_back(Read_ScriptComponent(componentObj, gameObject));
+						gameObject->AddComponent(Read_ScriptComponent(componentObj, gameObject));
 						break;
 					case SceneComponentType::PhysicsComponent:
-						gameObject->components.push_back(Read_PhysicsComponent(componentObj, gameObject));
+						gameObject->AddComponent(Read_PhysicsComponent(componentObj, gameObject));
 						break;
 				}
 			}

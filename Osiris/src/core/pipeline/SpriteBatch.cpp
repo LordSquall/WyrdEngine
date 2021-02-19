@@ -43,6 +43,17 @@ namespace Osiris
 		_SpriteMap.push_back({ sprite, (uint32_t)(_SpriteMap.size() * 4), this });
 	}
 
+	void SpriteBatch::RemoveSprite(SpriteComponent* sprite)
+	{
+		/* retrieve the batch entry */
+		auto spriteBatchEntry = std::find_if(_SpriteMap.begin(), _SpriteMap.end(), [&sprite](const SpriteBatchEntry& s) { return sprite == s.sprite.get(); });
+
+		if (spriteBatchEntry != _SpriteMap.end())
+		{
+			_SpriteMap.erase(spriteBatchEntry);
+		}
+	}
+
 	void SpriteBatch::SetShader(std::shared_ptr<Shader> shader)
 	{
 		_Shader = shader;
