@@ -141,15 +141,19 @@ namespace Osiris::Editor
 			{
 				_EventService->Publish(Events::EventType::AddLogEntry, std::make_shared<Events::AddLogEntryArgs>(LogType::Code, Severity::Error, err));
 			}
-			return;
+		}
+		else
+		{ 
+			/* Second stage is to copy of the successfully compiled model to the execution director, only if the compilation was successful */
+			Utils::RemoveFile(finalModelFileName);
+			Utils::CopySingleFile(tempModelFileName, Utils::GetPath(_WorkspaceService->GetLoadedProjectPath()) + "\\");
 		}
 
-		/* Second stage is to copy of the successfully compiled model to the execution directory */
-		Utils::RemoveFile(finalModelFileName);
-		Utils::CopySingleFile(tempModelFileName, Utils::GetPath(_WorkspaceService->GetLoadedProjectPath()) + "\\");
-
-		/* Third stage is to load the model into the scripting environment */
-		Application::Get().GetBehaviour().LoadBehaviourModel(scriptFiles, Utils::GetPath(_WorkspaceService->GetLoadedProjectPath()) + "\\" + _WorkspaceService->GetCurrentProject()->name + ".dll");
+		/* Third stage is to load the model into the scripting environment if we have valid model */
+		if (Utils::FileExists(finalModelFileName) == true)
+		{
+			Application::Get().GetBehaviour().LoadBehaviourModel(scriptFiles, finalModelFileName);
+		}
 
 		/* Final state, if we have an open scene we need to reassign the scripts, as the class pointers will most likely have changed */
 		if (_WorkspaceService->GetLoadedScene() != nullptr)
