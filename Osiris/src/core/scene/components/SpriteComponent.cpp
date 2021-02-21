@@ -18,7 +18,7 @@
 namespace Osiris
 {
 	SpriteComponent::SpriteComponent(std::shared_ptr<GameObject> owner) : IBaseComponent(owner, SceneComponentType::SpriteRenderer)
-		, position(glm::vec2(0.0f, 0.0f)), size(glm::vec2(64.0f, 64.0f)), color({ 1.0f, 1.0f, 1.0f, 1.0f })
+		, position(glm::vec2(0.0f, 0.0f)), size(glm::vec2(64.0f, 64.0f)), color({ 1.0f, 1.0f, 1.0f, 1.0f }), BatchIndex(0)
 	{
 
 	}
@@ -41,9 +41,31 @@ namespace Osiris
 		Recalculate();
 	}
 
+	void SpriteComponent::SetSize(float width, float height)
+	{
+		size.x = width;
+		size.y = height;
+
+		Owner->inputArea = { position.x, position.y, size.x, size.y };
+
+
+		spriteLayer->GetSpriteBatch().UpdateSprite(*this);
+	}
+
+	void SpriteComponent::SetPosition(float x, float y)
+	{
+		position.x = x;
+		position.y = y;
+
+		Owner->inputArea = { position.x, position.y, size.x, size.y };
+
+		spriteLayer->GetSpriteBatch().UpdateSprite(*this);
+	}
+
+
 	void SpriteComponent::Recalculate()
 	{
-		Owner->inputArea = { 0.0, 0.0, size.x, size.y};
+
 	}
 
 	void SpriteComponent::Render(Timestep ts, Renderer& renderer)

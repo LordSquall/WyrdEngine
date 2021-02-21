@@ -25,7 +25,7 @@ namespace Osiris
 		_VertexArray->SetAttribute(1, 2, 2);
 	}
 
-	void SpriteBatch::AddSprite(std::shared_ptr<SpriteComponent> sprite)
+	int32_t SpriteBatch::AddSprite(std::shared_ptr<SpriteComponent> sprite)
 	{
 		/* add vertices */
 		_vertices.push_back({ (float)sprite->position.x, (float)sprite->position.y, 0.0f, 0.0f });
@@ -41,6 +41,26 @@ namespace Osiris
 
 		/* create and add a new batch entry */
 		_SpriteMap.push_back({ sprite, (uint32_t)(_SpriteMap.size() * 4), this });
+
+		return _SpriteMap.size() - 1;
+	}
+
+	void SpriteBatch::UpdateSprite(SpriteComponent& sprite)
+	{
+		/* retrieve the sprite batch entry */
+		SpriteBatchEntry& entry = _SpriteMap.at(sprite.BatchIndex);
+
+		/* update vertices */
+		_vertices.at(entry.offset + 0) = { (float)sprite.position.x, (float)sprite.position.y, 0.0f, 0.0f };
+		_vertices.at(entry.offset + 1) = { (float)sprite.position.x, (float)sprite.position.y + (float)sprite.size.y, 0.0f, -1.0f };
+		_vertices.at(entry.offset + 2) = { (float)sprite.position.x + (float)sprite.size.x, (float)sprite.position.y + (float)sprite.size.y, 1.0f, -1.0f };
+		_vertices.at(entry.offset + 3) = { (float)sprite.position.x + (float)sprite.size.x, (float)sprite.position.y, 1.0f, 0.0f };
+
+		/* bind the batch vertex array */
+		_VertexArray->Bind();
+
+		/* update both the vertex and index buffers */
+		_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(SpriteVertex) * (uint32_t)_vertices.size(), 0);
 	}
 
 	void SpriteBatch::RemoveSprite(SpriteComponent* sprite)

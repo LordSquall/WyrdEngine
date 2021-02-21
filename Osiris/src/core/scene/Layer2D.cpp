@@ -5,6 +5,7 @@
 #include "core/renderer/Renderer.h"
 #include "core/renderer/Shader.h"
 #include "core/pipeline/SpriteBatch.h"
+#include "core/scene/components/SpriteComponent.h"
 #include "core/Resources.h"
 
 /* Local includes */
@@ -40,7 +41,7 @@ namespace Osiris
 
 	bool Layer2D::RegisterSprite(std::shared_ptr<SpriteComponent> spriteComponent)
 	{
-		_SpriteBatch->AddSprite(spriteComponent);
+		spriteComponent->BatchIndex = _SpriteBatch->AddSprite(spriteComponent);
 
 		return true;
 	}

@@ -32,7 +32,9 @@ namespace Osiris {
 
 		void Render(Renderer& renderer, const glm::mat4& viewProjectionMat);
 
-		void AddSprite(std::shared_ptr<SpriteComponent> sprite);
+		int32_t AddSprite(std::shared_ptr<SpriteComponent> sprite);
+
+		void UpdateSprite(SpriteComponent& sprite);
 
 		void RemoveSprite(SpriteComponent* sprite);
 

@@ -26,12 +26,16 @@ namespace Osiris {
 
 		inline virtual const std::string GetManagedType() { return "SpriteComponent"; }
 
+		void SetSize(float width, float height);
+		void SetPosition(float x, float y);
+
 		std::shared_ptr<Shader> shader;
 		std::shared_ptr<Texture> texture;
 		std::shared_ptr<Layer2D> spriteLayer;
 		glm::vec2 position;
 		glm::vec2 size;
 		Color color;
+		int32_t BatchIndex;
 
 	public:
 		void Initialise();

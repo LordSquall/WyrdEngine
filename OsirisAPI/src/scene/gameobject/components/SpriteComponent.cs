@@ -6,7 +6,9 @@ namespace OsirisAPI
     [StructLayout(LayoutKind.Sequential)]
     public class SpriteComponent : GameObjectComponent
     {
-        private Texture _Texture;
+        private Texture _Texture = new Texture();
+        private Vector2 _Size = new Vector2();
+        private Vector2 _Position = new Vector2();
 
         public Color Color { get; set; }
 
@@ -20,6 +22,34 @@ namespace OsirisAPI
             {
                 _Texture = value;
                 SpriteRenderer_SetTexture(_NativePointer, _Texture.NativePtr);
+            }
+        }
+
+        public Vector2 Size
+        {
+            get
+            {
+                SpriteRenderer_GetSize(_NativePointer, _Size);
+                return _Size;
+            }
+            set
+            {
+                _Size = value;
+                SpriteRenderer_SetSize(_NativePointer, _Size.X, _Size.Y);
+            }
+        }
+
+        public Vector2 Position
+        {
+            get
+            {
+                SpriteRenderer_GetPosition(_NativePointer, _Position);
+                return _Position;
+            }
+            set
+            {
+                _Position = value;
+                SpriteRenderer_SetPosition(_NativePointer, _Position.X, _Position.Y);
             }
         }
 
@@ -64,8 +94,13 @@ namespace OsirisAPI
         public static extern IntPtr SpriteRenderer_SetSize(IntPtr value, float x, float y);
 
         [DllImport("OsirisCAPI")]
+        public static extern IntPtr SpriteRenderer_GetSize(IntPtr value, Vector2 size);
+
+        [DllImport("OsirisCAPI")]
         public static extern IntPtr SpriteRenderer_SetPosition(IntPtr value, float x, float y);
 
+        [DllImport("OsirisCAPI")]
+        public static extern IntPtr SpriteRenderer_GetPosition(IntPtr value, Vector2 position);
 
         [DllImport("OsirisCAPI")]
         public static extern IntPtr SpriteRenderer_SetTexture(IntPtr value, IntPtr texture);

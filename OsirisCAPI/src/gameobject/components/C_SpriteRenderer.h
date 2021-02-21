@@ -19,7 +19,11 @@ LIBRARY_API void SpriteRenderer_GetColor(void* obj, Osiris::Color** color);
 
 LIBRARY_API void SpriteRenderer_SetSize(void* obj, float x, float y);
 
+LIBRARY_API void SpriteRenderer_GetSize(void* obj, Osiris::Vector2* size);
+
 LIBRARY_API void SpriteRenderer_SetPosition(void* obj, float x, float y);
+
+LIBRARY_API void SpriteRenderer_GetPosition(void* obj, Osiris::Vector2* position);
 
 LIBRARY_API void SpriteRenderer_SetTexture(void* obj, void* texture);
 

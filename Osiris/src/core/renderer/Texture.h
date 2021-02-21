@@ -23,6 +23,9 @@ namespace Osiris
 
 		virtual void Delete() = 0;
 
+		inline int GetWidth() const { return _width; }
+		inline int GetHeight() const { return _height; }
+
 		inline UID GetUID() { return _uid; }
 		inline void SetUID(UID uid) { _uid = uid; }
 
@@ -30,5 +33,7 @@ namespace Osiris
 
 	protected:
 		UID _uid;
+		int _height;
+		int _width;
 	};
 }

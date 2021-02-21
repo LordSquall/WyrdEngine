@@ -32,18 +32,12 @@ namespace Osiris::Editor
 
 		if (ImGui::InputFloat2("Pos ", position, 1) == true)
 		{
-			_BaseComponent->position.x = position[0];
-			_BaseComponent->position.y = position[1];
-			_BaseComponent->Owner->inputArea.x = (float)position[0];
-			_BaseComponent->Owner->inputArea.y = (float)position[1];
+			_BaseComponent->SetPosition(position[0], position[1]);
 		}
 
 		if (ImGui::InputFloat2("Size", size, 1))
 		{
-			_BaseComponent->size.x = size[0];
-			_BaseComponent->size.y = size[1];
-			_BaseComponent->Owner->inputArea.z = (float)size[0];
-			_BaseComponent->Owner->inputArea.w = (float)size[1];
+			_BaseComponent->SetSize(size[0], size[1]);
 		}
 
 		ImGui::Text("Texture");

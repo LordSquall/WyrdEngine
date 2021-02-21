@@ -42,16 +42,30 @@ void SpriteRenderer_SetSize(void* obj, float x, float y)
 {
 	Osiris::SpriteComponent* spriteComponent = (Osiris::SpriteComponent*)obj;
 
-	spriteComponent->size.x = x;
-	spriteComponent->size.y = y;
+	spriteComponent->SetSize(x, y);
+}
+
+void SpriteRenderer_GetSize(void* obj, Osiris::Vector2* size)
+{
+	Osiris::SpriteComponent* spriteComponent = (Osiris::SpriteComponent*)obj;
+
+	size->x = spriteComponent->size.x;
+	size->y = spriteComponent->size.y;
 }
 
 void SpriteRenderer_SetPosition(void* obj, float x, float y)
 {
 	Osiris::SpriteComponent* spriteComponent = (Osiris::SpriteComponent*)obj;
 
-	spriteComponent->position.x = x;
-	spriteComponent->position.y = y;
+	spriteComponent->SetPosition(x, y);
+}
+
+void SpriteRenderer_GetPosition(void* obj, Osiris::Vector2* position)
+{
+	Osiris::SpriteComponent* spriteComponent = (Osiris::SpriteComponent*)obj;
+
+	position->x = spriteComponent->position.x;
+	position->y = spriteComponent->position.y;
 }
 
 void SpriteRenderer_SetTexture(void* obj, void* texture)
@@ -60,4 +74,7 @@ void SpriteRenderer_SetTexture(void* obj, void* texture)
 	Osiris::Texture* texturePtr = (Osiris::Texture*)texture;
 
 	spriteComponent->texture = _resources->Textures[texturePtr->GetUID()];
+
+	if (spriteComponent->texture != nullptr)
+		SpriteRenderer_SetSize(obj, spriteComponent->texture->GetWidth(), spriteComponent->texture->GetHeight());
 }
