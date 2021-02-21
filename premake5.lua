@@ -310,6 +310,12 @@ project "OsirisAPI"
 					"efsw",
 					"opengl32.dll"
 				}
+				
+				dependson 
+				{ 
+					"OsirisAPI", 
+					"OsirisCAPI" 
+				}
 
 				filter "system:windows"
 					systemversion "latest"
