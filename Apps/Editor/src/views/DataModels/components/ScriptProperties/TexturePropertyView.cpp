@@ -22,7 +22,7 @@ namespace Osiris::Editor
 		{
 			texture = &*(Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)]);
 		}
-		ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2(64.0f, 64.0f));
+		ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
 		if (ImGui::BeginDragDropTarget())
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_TEXTURE"))
