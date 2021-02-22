@@ -139,7 +139,8 @@ namespace Osiris::Editor
 					{
 						std::shared_ptr<SpriteComponent> newComponent = std::make_shared<SpriteComponent>(_SelectedGameObject);
 						newComponent->Initialise();
-						newComponent->texture = Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)];
+						newComponent->SetTexture(Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)]);
+						(Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)]);
 						newComponent->spriteLayer = _SelectedLayer2D;
 						
 						_SelectedLayer2D->RegisterSprite(newComponent);

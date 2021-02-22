@@ -59,6 +59,7 @@ namespace Osiris {
 			data = SOIL_load_image("../../Osiris/res/textures/box_01.png", &width, &height, &channels, 4);
 
 			std::shared_ptr<Texture> texture = std::shared_ptr<Texture>(Texture::Create(data, width, height, channels, "Default Sprite Texture"));
+			texture->SetUID(UID(RESOURCE_DEFAULT_TEXTURE));
 			_Resources->Textures.insert(std::pair<std::string, std::shared_ptr<Texture>>(UID(RESOURCE_DEFAULT_TEXTURE), texture));
 		}
 		

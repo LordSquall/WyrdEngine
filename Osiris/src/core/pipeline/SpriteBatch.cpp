@@ -92,7 +92,7 @@ namespace Osiris
 
 		for (auto&& sprite : _SpriteMap)
 		{
-			sprite.sprite->texture->Bind();
+			sprite.sprite->GetTexture()->Bind();
 
 			_Shader->SetModelMatrix(sprite.sprite->Owner->transform2D->matrix);
 			_Shader->SetUniformColor("blendColor", sprite.sprite->color);

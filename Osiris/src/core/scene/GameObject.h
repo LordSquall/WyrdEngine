@@ -23,7 +23,7 @@ namespace Osiris {
 	public:
 		/* Constructors */
 		GameObject();
-		GameObject(std::string name);
+		GameObject(std::string name, bool generateUID = false);
 		GameObject(const GameObject& obj);
 		~GameObject();
 

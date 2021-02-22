@@ -82,7 +82,7 @@ void* GameObject_Create(void* parentGameObject, const char* name)
 {
 	std::shared_ptr<Osiris::GameObject>* parent = (std::shared_ptr<Osiris::GameObject>*)parentGameObject;
 
-	std::shared_ptr<Osiris::GameObject> go = std::make_shared<Osiris::GameObject>(name);
+	std::shared_ptr<Osiris::GameObject> go = std::make_shared<Osiris::GameObject>(name, true);
 
 	/* add transform 2D */
 	go->transform2D = std::make_shared<Osiris::Transform2DComponent>(go);

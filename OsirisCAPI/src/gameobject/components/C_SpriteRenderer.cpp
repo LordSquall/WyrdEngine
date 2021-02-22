@@ -73,8 +73,8 @@ void SpriteRenderer_SetTexture(void* obj, void* texture)
 	Osiris::SpriteComponent* spriteComponent = (Osiris::SpriteComponent*)obj;
 	Osiris::Texture* texturePtr = (Osiris::Texture*)texture;
 
-	spriteComponent->texture = _resources->Textures[texturePtr->GetUID()];
+	spriteComponent->SetTexture(_resources->Textures[texturePtr->GetUID()]);
 
-	if (spriteComponent->texture != nullptr)
-		SpriteRenderer_SetSize(obj, spriteComponent->texture->GetWidth(), spriteComponent->texture->GetHeight());
+	if (spriteComponent->GetTexture() != nullptr)
+		SpriteRenderer_SetSize(obj, spriteComponent->GetTexture()->GetWidth(), spriteComponent->GetTexture()->GetHeight());
 }

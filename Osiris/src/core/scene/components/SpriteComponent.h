@@ -29,8 +29,10 @@ namespace Osiris {
 		void SetSize(float width, float height);
 		void SetPosition(float x, float y);
 
+		void SetTexture(std::shared_ptr<Texture> texture);
+		const std::shared_ptr<Texture> GetTexture();
+
 		std::shared_ptr<Shader> shader;
-		std::shared_ptr<Texture> texture;
 		std::shared_ptr<Layer2D> spriteLayer;
 		glm::vec2 position;
 		glm::vec2 size;
@@ -44,5 +46,8 @@ namespace Osiris {
 		void Remove();
 
 		std::string toString() const { return "Hello"; }
+
+	private:
+		std::shared_ptr<Texture> _Texture;
 	};
 }

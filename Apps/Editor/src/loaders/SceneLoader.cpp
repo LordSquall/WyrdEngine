@@ -133,19 +133,19 @@ namespace Osiris::Editor
 		Read_Vec2(json.get<jsonxx::Array>("size"), &component->size);
 		Read_Vec2(json.get<jsonxx::Array>("position"), &component->position);
 
-		UID uuid = UID(json.get<jsonxx::String>("baseTexture"));
-		std::shared_ptr<TextureRes> textureRes = _resourceService->GetResourceByID<TextureRes>(uuid);
+		UID uid = UID(json.get<jsonxx::String>("baseTexture"));
+		std::shared_ptr<TextureRes> textureRes = _resourceService->GetResourceByID<TextureRes>(uid);
 
 		if (textureRes != nullptr)
 		{
-			component->texture = textureRes->GetTexture();
+			component->SetTexture(textureRes->GetTexture());
 		}
 		else
 		{
-			//component->texture = Application::Get().GetResources().Textures["default"];
+			component->SetTexture(Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)]);
 		}
 
-		component->SetUUID(uuid);
+		component->SetUID(uid);
 
 		owner->sprite = component;
 		component->spriteLayer = owner->layer;
@@ -170,7 +170,7 @@ namespace Osiris::Editor
 		Write_Vec2(componentJson, "size", &sprite->size);
 		Write_Vec2(componentJson, "position", &sprite->position);
 
-		componentJson << "baseTexture" << sprite->texture->GetUID().str();
+		componentJson << "baseTexture" << sprite->GetTexture()->GetUID().str();
 		
 		return componentJson;
 	}
@@ -181,14 +181,14 @@ namespace Osiris::Editor
 		std::shared_ptr<Osiris::ScriptComponent> component = std::make_shared<Osiris::ScriptComponent>(owner);
 
 		/* retrieve json parameters */
-		UID scriptUUID = UID(json.get<jsonxx::String>("ScriptUUID", ""));
+		UID scriptUID = UID(json.get<jsonxx::String>("ScriptUUID", ""));
 
 		/* configure properties */
-		std::shared_ptr<ScriptRes> scriptResource = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetResourceByID<ScriptRes>(scriptUUID);
+		std::shared_ptr<ScriptRes> scriptResource = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetResourceByID<ScriptRes>(scriptUID);
 		if (scriptResource != nullptr)
 		{
 			component->SetClass(scriptResource->Script);
-			component->SetUUID(scriptUUID);
+			component->SetUID(scriptUID);
 
 			jsonxx::Array properties = json.get<jsonxx::Array>("properties", jsonxx::Array());
 			for (size_t i = 0; i < properties.size(); i++)
@@ -227,7 +227,7 @@ namespace Osiris::Editor
 
 		if (script->GetClass() != nullptr)
 		{
-			componentJson << "ScriptUUID" << script->GetUUID().str();
+			componentJson << "ScriptUUID" << script->GetUID().str();
 		
 
 			/* write components */

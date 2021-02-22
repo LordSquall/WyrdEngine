@@ -26,7 +26,7 @@ namespace Osiris
 	SpriteComponent::SpriteComponent(const SpriteComponent& obj) : IBaseComponent(obj.Owner, SceneComponentType::SpriteRenderer)
 	{
 		shader = obj.shader;
-		texture = obj.texture;
+		//texture = obj.texture;
 		position = obj.position;
 		size = obj.size;
 		color = obj.color;
@@ -50,6 +50,18 @@ namespace Osiris
 
 
 		spriteLayer->GetSpriteBatch().UpdateSprite(*this);
+	}
+
+	void SpriteComponent::SetTexture(std::shared_ptr<Texture> texture)
+	{
+		_Texture = texture;
+
+		SetUID(texture->GetUID());
+	}
+
+	const std::shared_ptr<Texture> SpriteComponent::GetTexture()
+	{
+		return _Texture;
 	}
 
 	void SpriteComponent::SetPosition(float x, float y)

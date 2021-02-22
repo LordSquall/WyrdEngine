@@ -29,9 +29,8 @@ namespace Osiris {
 
 		inline const SceneComponentType GetType() const { return _type; }
 
-
-		inline xg::Guid GetUUID() const { return _uuid; }
-		inline void SetUUID(xg::Guid uuid) { _uuid = uuid; }
+		inline xg::Guid GetUID() const { return _uid; }
+		inline void SetUID(xg::Guid uid) { _uid = uid; }
 
 		virtual void Initialise() {};
 		virtual void Setup() {};
@@ -52,7 +51,7 @@ namespace Osiris {
 	private:
 		SceneComponentType _type;
 
-		xg::Guid _uuid;
+		xg::Guid _uid;
 
 	};
 }

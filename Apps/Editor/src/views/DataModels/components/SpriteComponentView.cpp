@@ -44,7 +44,7 @@ namespace Osiris::Editor
 		ImGui::PushID("texture");
 		ImGui::SameLine();
 
-		auto texture = _BaseComponent->texture;
+		auto texture = _BaseComponent->GetTexture();
 
 		if (texture == nullptr) texture = Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)];
 
@@ -54,8 +54,7 @@ namespace Osiris::Editor
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_TEXTURE"))
 			{
 				std::shared_ptr<Texture> texture = *(std::shared_ptr<Texture>*)payload->Data;
-				_BaseComponent->texture = texture;
-				_BaseComponent->SetUUID(texture->GetUID());
+				_BaseComponent->SetTexture(texture);
 			}
 			ImGui::EndDragDropTarget();
 		}

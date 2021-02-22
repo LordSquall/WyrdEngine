@@ -38,7 +38,7 @@ namespace Osiris::Editor
 			{
 				std::shared_ptr<ScriptRes> scriptRes = *(std::shared_ptr<ScriptRes>*)payload->Data;
 				_BaseComponent->SetClass(scriptRes->Script);
-				_BaseComponent->SetUUID(scriptRes->GetResourceID());
+				_BaseComponent->SetUID(scriptRes->GetResourceID());
 				RebuildPropertyViews();
 			}
 			ImGui::EndDragDropTarget();

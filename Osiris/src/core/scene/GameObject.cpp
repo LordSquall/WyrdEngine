@@ -18,8 +18,10 @@ namespace Osiris
 	{
 	}
 
-	GameObject::GameObject(std::string name) : name(name)
+	GameObject::GameObject(std::string name, bool generateUID) : name(name)
 	{
+		if (generateUID == true)
+			uid = UIDUtils::Create();
 	}
 
 	GameObject::GameObject(const GameObject& obj)
