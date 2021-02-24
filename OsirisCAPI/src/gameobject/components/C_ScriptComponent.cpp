@@ -15,13 +15,19 @@
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
 
-void* ScriptComponent_Create(void* obj, void* componentManagedObject)
+void* ScriptComponent_Create(void* obj)
 {
+	/* cast the target gameobject */
 	std::shared_ptr<Osiris::GameObject>* gameObject = (std::shared_ptr<Osiris::GameObject>*)obj;
 
+	/* create a new script component */
 	std::shared_ptr<Osiris::ScriptComponent> scriptComponent = std::make_shared<Osiris::ScriptComponent>(std::shared_ptr<Osiris::GameObject>((*gameObject)));
 	scriptComponent->Initialise();
-	scriptComponent->ManagedObject = mono_gchandle_get_target((uint32)componentManagedObject);
+
+	/* retrieve the matching managed object */
+	MonoObject* exception = nullptr;
+	scriptComponent->ManagedObject = mono_runtime_invoke((MonoMethod*)_behaviour->GetClass("ObjectStore")->Properties["LastCreatedObject"]->GetGetter(), nullptr, nullptr, &exception);
+	if (exception != nullptr) mono_print_unhandled_exception(exception);
 
 	(*gameObject)->components.push_back(scriptComponent);
 
@@ -45,25 +51,22 @@ void ScriptComponent_CreateInstance(void* obj, void* component, const char* clas
 	/* Retrieve the scripted class */
 	std::shared_ptr<Osiris::ScriptedClass> scriptedClass = _behaviour->GetCustomClass(className);
 
-	printf("GameObject Create Instance Name: %s\n", (*gameObject)->name.c_str());
-	printf("GameObject Create Instance UID : %s\n", (*gameObject)->uid.str().c_str());
 
 	if (scriptedClass != nullptr)
 	{
 		/* Create the Scripted custom object */
-		std::shared_ptr<Osiris::ScriptedCustomObject> newCustomObject = std::make_shared<Osiris::ScriptedCustomObject>((MonoDomain*)_behaviour->GetDomain(), scriptedClass);
+		_behaviour->AddScriptedCustomObject((*gameObject)->uid, std::make_shared<Osiris::ScriptedCustomObject>((MonoDomain*)_behaviour->GetDomain(), scriptedClass));
 
-		/* Store within the Behaviour Subsystem */
-		_behaviour->AddScriptedCustomObject((*gameObject)->uid, newCustomObject);
+		/* Create the Scripted custom object */
+		auto newCustomObject = _behaviour->GetCustomObject((*gameObject)->uid);
 
+		/* Set the scripted game object on the new object */
 		newCustomObject->SetGameObject(_behaviour->GetGameObject((*gameObject)->uid));
 
 		/* Set an script name */
 		newCustomObject->SetName(std::string(className) + "_inst");
 
-		MonoProperty* instanceProperty = mono_class_get_property_from_name((MonoClass*)*_behaviour->GetClass("ScriptComponent")->ManagedClass, "Instance");
-		MonoMethod* instancePropertySetter = mono_property_get_set_method(instanceProperty);
-
+		/* Set the class and custom object of the script component*/
 		(*scriptComponent)->SetClass(scriptedClass);
 		(*scriptComponent)->SetCustomObject(newCustomObject);
 
@@ -74,10 +77,9 @@ void ScriptComponent_CreateInstance(void* obj, void* component, const char* clas
 		MonoObject* newObject = mono_runtime_invoke((MonoMethod*)_behaviour->GetClass("ScriptComponent")->Properties["Instance"]->GetSetter(), (*scriptComponent)->ManagedObject, args, &exception);
 		if (exception != nullptr) mono_print_unhandled_exception(exception);
 
-		mono_runtime_invoke((MonoMethod*)scriptedClass->Methods["OnStart"]->GetManagedMethod(), (*scriptComponent)->ManagedObject, nullptr, &exception);
+		/* fire the OnStart function */
+		mono_runtime_invoke((MonoMethod*)scriptedClass->Methods["OnStart"]->GetManagedMethod(), newCustomObject->Object, nullptr, &exception);
 		if (exception != nullptr) mono_print_unhandled_exception(exception);
-
-		/// Checkout invoke object return :) 
 	}
 	else
 	{

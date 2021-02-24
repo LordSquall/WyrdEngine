@@ -86,7 +86,12 @@ namespace OsirisAPI
                 return default(T);
             }
 
+            // create a new component object 
             T component = new T();
+
+            // add to the object store to ensure it's not targeted by the GC
+            ObjectStore.Store(component);
+
             component.CreateUnmanagedPtr(_NativePointer);
             _components[typeof(T)] = component;
 
