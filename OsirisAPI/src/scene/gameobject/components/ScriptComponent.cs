@@ -20,9 +20,9 @@ namespace OsirisAPI
 
         public T CreateInstance<T>(GameObject gameObject) where T : ScriptedObject
         {
-            Console.WriteLine("FOOBAR: {0}", gameObject.Name);
             ScriptComponent_CreateInstance(gameObject.NativePtr, NativePtr, typeof(T).Name);
 
+            //Console.WriteLine("Instance: {0}", Instance.GameObject.ToString());
             return (T)Instance;
         }
 

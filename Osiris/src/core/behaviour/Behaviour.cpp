@@ -56,6 +56,10 @@ namespace Osiris
 		_FunctionKeyStateMap[0] = "OnKeyPressed";
 		_FunctionKeyStateMap[1] = "OnKeyDown";
 		_FunctionKeyStateMap[2] = "OnKeyUp";
+
+		/* Default Input state */
+		_Input.MouseButtons[0] = false;
+		_Input.MouseButtons[1] = false;
 	}
 
 	Behaviour::~Behaviour()
@@ -141,6 +145,8 @@ namespace Osiris
 		/* we only action anything in the function if we are in running mode */
 		if (_IsRunning == true)
 		{
+			UpdateInputState();
+
 			/* Update the 'timestep' object. This is bound to the lua state */
 			_Timestep = ts;
 
@@ -198,12 +204,31 @@ namespace Osiris
 
 	void Behaviour::SetMouseState(float xPos, float yPos)
 	{
-		std::vector<void*> args;
-		args.push_back(&xPos);
-		args.push_back(&yPos);
+		_Input.MouseInput = { xPos, yPos };
+	}
 
-		mono_runtime_invoke((MonoMethod*)_ScriptedClasses["Vector2"]->Properties["X"]->GetSetter(), (MonoObject*)_InputMousePos, &args[0], nullptr);
-		mono_runtime_invoke((MonoMethod*)_ScriptedClasses["Vector2"]->Properties["Y"]->GetSetter(), (MonoObject*)_InputMousePos, &args[1], nullptr);
+	void Behaviour::SetMouseButtonState(int i, bool state)
+	{
+		_Input.MouseButtons[i] = state;
+	}
+	
+	void Behaviour::UpdateInputState()
+	{
+		std::vector<void*> args;
+		args.push_back(&_Input.MouseInput.x);
+		args.push_back(&_Input.MouseInput.y);
+		args.push_back(&_Input.MouseButtons[0]);
+		args.push_back(&_Input.MouseButtons[1]);
+
+		MonoObject* exception = nullptr;
+		mono_runtime_invoke((MonoMethod*)_ScriptedClasses["Vector2"]->Properties["X"]->GetSetter(), (MonoObject*)_InputMousePos, &args[0], &exception);
+		if (exception != nullptr) mono_print_unhandled_exception(exception);
+
+		mono_runtime_invoke((MonoMethod*)_ScriptedClasses["Vector2"]->Properties["Y"]->GetSetter(), (MonoObject*)_InputMousePos, &args[1], &exception);
+		if (exception != nullptr) mono_print_unhandled_exception(exception);
+
+		mono_array_set((MonoArray*)_InputMouseButtonState, bool, 0, _Input.MouseButtons[0]);
+		mono_array_set((MonoArray*)_InputMouseButtonState, bool, 1, _Input.MouseButtons[1]);
 	}
 
 	void* Behaviour::GetDomain()
@@ -371,6 +396,7 @@ namespace Osiris
 
 		/* Retrieve fixed objects */
 		_InputMousePos = mono_runtime_invoke((MonoMethod*)_ScriptedClasses["Input"]->Properties["MousePos"]->GetGetter(), nullptr, nullptr, nullptr);
+		_InputMouseButtonState = mono_runtime_invoke((MonoMethod*)_ScriptedClasses["Input"]->Properties["MouseButtons"]->GetGetter(), nullptr, nullptr, nullptr);
 	}
 
 	void Behaviour::BuildManagedGameObjects()

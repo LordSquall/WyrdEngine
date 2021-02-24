@@ -38,6 +38,7 @@ namespace Osiris::Editor
 		inline void SetSceneViewer(std::shared_ptr<EditorViewBase> sceneViewer) { _SceneViewer = sceneViewer; }
 		void SetInputState(int keyCode, int state);
 		void SetMousePosition(float x, float y);
+		void SetMouseButtonState(int i, bool state);
 			
 		void CompileAll();
 

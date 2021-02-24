@@ -6,6 +6,7 @@
 #include <core/scene/components/ScriptComponent.h>
 #include <core/behaviour/ScriptedCustomObject.h>
 #include <core/behaviour/ScriptedClass.h>
+#include <core/behaviour/ScriptedGameObject.h>
 #include <core/UID.h>
 
 /* external includes */
@@ -44,6 +45,9 @@ void ScriptComponent_CreateInstance(void* obj, void* component, const char* clas
 	/* Retrieve the scripted class */
 	std::shared_ptr<Osiris::ScriptedClass> scriptedClass = _behaviour->GetCustomClass(className);
 
+	printf("GameObject Create Instance Name: %s\n", (*gameObject)->name.c_str());
+	printf("GameObject Create Instance UID : %s\n", (*gameObject)->uid.str().c_str());
+
 	if (scriptedClass != nullptr)
 	{
 		/* Create the Scripted custom object */
@@ -52,7 +56,6 @@ void ScriptComponent_CreateInstance(void* obj, void* component, const char* clas
 		/* Store within the Behaviour Subsystem */
 		_behaviour->AddScriptedCustomObject((*gameObject)->uid, newCustomObject);
 
-		/* Set the native game object pointer */
 		newCustomObject->SetGameObject(_behaviour->GetGameObject((*gameObject)->uid));
 
 		/* Set an script name */
@@ -69,12 +72,10 @@ void ScriptComponent_CreateInstance(void* obj, void* component, const char* clas
 
 		MonoObject* exception = nullptr;
 		MonoObject* newObject = mono_runtime_invoke((MonoMethod*)_behaviour->GetClass("ScriptComponent")->Properties["Instance"]->GetSetter(), (*scriptComponent)->ManagedObject, args, &exception);
+		if (exception != nullptr) mono_print_unhandled_exception(exception);
 
-		if (exception != nullptr)
-		{
-			mono_print_unhandled_exception(exception);
-		}
-
+		mono_runtime_invoke((MonoMethod*)scriptedClass->Methods["OnStart"]->GetManagedMethod(), (*scriptComponent)->ManagedObject, nullptr, &exception);
+		if (exception != nullptr) mono_print_unhandled_exception(exception);
 
 		/// Checkout invoke object return :) 
 	}

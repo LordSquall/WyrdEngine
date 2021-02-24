@@ -6,6 +6,7 @@
 #include "core/Timestep.h"
 #include "core/behaviour/CompileResults.h"
 #include "core/UID.h"
+#include "core/behaviour/BehaviourInput.h"
 
 #include <mono/metadata/object-forward.h>
 
@@ -73,6 +74,13 @@ namespace Osiris
 		 * @param yPos
 		*/
 		void SetMouseState(float xPos, float yPos);
+
+		/**
+		 * @brief Set the current input mouse button state of the simluation
+		 * @param i
+		 * @param state
+		*/
+		void SetMouseButtonState(int i, bool state);
 
 		/**
 		 * @brief Compiles all the supplied script files into a runnable behavioural model
@@ -164,6 +172,8 @@ namespace Osiris
 		void UpdateManagedGameObjects(Timestep ts);
 		void UpdateManagedGameObjects(Timestep ts, std::shared_ptr<GameObject> gameObject);
 
+		void UpdateInputState();
+
 		static void DebugPrintFunc(const std::string& s);
 
 		void LoadAssembly(void* domain, void** image, void** assembly, const std::string& ns, const std::string& filepath);
@@ -180,6 +190,7 @@ namespace Osiris
 		std::map<int, std::string> _FunctionKeyStateMap;
 
 		void* _InputMousePos;
+		void* _InputMouseButtonState;
 
 		std::map<std::string, MonoClass*>		_ManagedClasses;
 
@@ -188,6 +199,8 @@ namespace Osiris
 
 		Behaviour*		_BehaviourSubsystem;
 		Resources*		_ResourcesSubsystem;
+		
+		BehaviourInput	_Input;
 
 		void*			_RootDomain;
 		void*			_ClientDomain;

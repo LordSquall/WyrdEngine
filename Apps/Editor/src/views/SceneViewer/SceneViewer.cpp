@@ -227,6 +227,7 @@ namespace Osiris::Editor
 
 	bool SceneViewer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
 	{
+		_SimulationService->SetMouseButtonState(e.GetMouseButton(), true);
 		//bool itemFound = false;
 		//glm::vec2 normalisedMouseCoords;
 		//glm::vec2 mouseCoords = glm::vec2(e.GetPositionX(), e.GetPositionY()) - _mouseOffset;
@@ -265,6 +266,8 @@ namespace Osiris::Editor
 
 	bool SceneViewer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e)
 	{
+
+		_SimulationService->SetMouseButtonState(e.GetMouseButton(), false);
 		return true;
 	}
 

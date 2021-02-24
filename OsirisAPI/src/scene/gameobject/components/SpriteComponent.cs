@@ -9,8 +9,7 @@ namespace OsirisAPI
         private Texture _Texture = new Texture();
         private Vector2 _Size = new Vector2();
         private Vector2 _Position = new Vector2();
-
-        public Color Color { get; set; }
+        private Color _Color = new Color();
 
         public Texture Texture
         {
@@ -50,6 +49,20 @@ namespace OsirisAPI
             {
                 _Position = value;
                 SpriteRenderer_SetPosition(_NativePointer, _Position.X, _Position.Y);
+            }
+        }
+
+        public Color Color
+        {
+            get
+            {
+                SpriteRenderer_GetColor(_NativePointer, ref _Color);
+                return _Color;
+            }
+            set
+            {
+                _Color = value;
+                SpriteRenderer_SetColor(_NativePointer, _Color.R, _Color.G, _Color.B, _Color.A);
             }
         }
 
@@ -101,6 +114,12 @@ namespace OsirisAPI
 
         [DllImport("OsirisCAPI")]
         public static extern IntPtr SpriteRenderer_GetPosition(IntPtr value, Vector2 position);
+
+        [DllImport("OsirisCAPI")]
+        public static extern IntPtr SpriteRenderer_SetPosition(IntPtr value, Color color);
+
+        [DllImport("OsirisCAPI")]
+        public static extern IntPtr SpriteRenderer_GetPosition(IntPtr value, Color color);
 
         [DllImport("OsirisCAPI")]
         public static extern IntPtr SpriteRenderer_SetTexture(IntPtr value, IntPtr texture);

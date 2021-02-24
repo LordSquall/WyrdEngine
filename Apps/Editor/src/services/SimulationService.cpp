@@ -103,9 +103,20 @@ namespace Osiris::Editor
 	}
 
 	void SimulationService::SetMousePosition(float x, float y) 
-	{ 
-		_MousePos[0] = x;
-		_MousePos[1] = y;
+	{
+		if (_IsRunning == true)
+		{
+			_MousePos[0] = x;
+			_MousePos[1] = y;
+		}
+	}
+
+	void SimulationService::SetMouseButtonState(int keyCode, bool state)
+	{
+		if (_IsRunning == true)
+		{
+			Application::Get().GetBehaviour().SetMouseButtonState(keyCode, state);
+		}
 	}
 
 
