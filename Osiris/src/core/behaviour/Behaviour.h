@@ -135,8 +135,9 @@ namespace Osiris
 		 * @brief Add a Scripted Game Object to the bahaviour subsystem
 		 * @param uid
 		 * @param gameObject
+		 * @param managedObject
 		*/
-		void AddScriptedGameObject(UID uid, std::shared_ptr<GameObject> gameObject);
+		void AddScriptedGameObject(UID uid, std::shared_ptr<GameObject> gameObject, void* managedObject = nullptr);
 
 		/**
 		 * @brief Add a Scripted Custom Object to the bahaviour subsystem
@@ -168,6 +169,9 @@ namespace Osiris
 
 		void LinkGameObjectProperties();
 		void LinkGameObjectProperties(std::shared_ptr<GameObject> gameObject);
+
+		void StartManagedGameObjects();
+		void StartManagedGameObjects(std::shared_ptr<GameObject> gameObject);
 
 		void UpdateManagedGameObjects(Timestep ts);
 		void UpdateManagedGameObjects(Timestep ts, std::shared_ptr<GameObject> gameObject);

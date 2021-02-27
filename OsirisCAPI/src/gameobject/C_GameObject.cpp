@@ -5,10 +5,14 @@
 #include <core/scene/components/Transform2DComponent.h>
 #include <core/scene/components/PhysicsComponent.h>
 #include <core/scene/components/SpriteComponent.h>
+#include <core/scene/components/ScriptComponent.h>
 #include <core/scene/Layer2D.h>
 #include <core/behaviour/Behaviour.h>
+#include <core/behaviour/ScriptedClass.h>
 
 #include <core/physics/Physics.h>
+
+#include <mono/jit/jit.h>
 
 const char* GameObject_Name_Get(void* obj)
 {
@@ -78,16 +82,24 @@ void GameObject_Get_Component(void* obj, int idx, int* type, void** componentPtr
 	*type = (int)(*gameObject)->components[idx]->GetType();
 }
 
-void* GameObject_Create(void* parentGameObject, const char* name)
+void* GameObject_Create(void* parentGameObject, const char* name, bool retrieveManagedObject)
 {
 	std::shared_ptr<Osiris::GameObject>* parent = (std::shared_ptr<Osiris::GameObject>*)parentGameObject;
 
 	std::shared_ptr<Osiris::GameObject> go = std::make_shared<Osiris::GameObject>(name, true);
 
+	MonoObject* managedGameObject = nullptr;
+	if (retrieveManagedObject == true)
+	{
+		MonoObject* exception = nullptr;
+		managedGameObject = mono_runtime_invoke((MonoMethod*)_behaviour->GetClass("ObjectStore")->Properties["LastCreatedObject"]->GetGetter(), nullptr, nullptr, &exception);
+		if (exception != nullptr) mono_print_unhandled_exception(exception);
+	}
+
 	/* add transform 2D */
 	go->transform2D = std::make_shared<Osiris::Transform2DComponent>(go);
 
-	_behaviour->AddScriptedGameObject(go->uid, go);
+	_behaviour->AddScriptedGameObject(go->uid, go, managedGameObject);
 
 	std::shared_ptr<GameObject>* goAdded = (*parent)->AddChild(go);
 	(*goAdded)->parent = (*parent);

@@ -16,7 +16,7 @@ namespace Osiris
 	class OSR_LIBRARY_API ScriptedGameObject
 	{
 	public:
-		ScriptedGameObject(Behaviour* behaviour, std::shared_ptr<ScriptedClass>, std::shared_ptr<GameObject> gameObject);
+		ScriptedGameObject(Behaviour* behaviour, std::shared_ptr<ScriptedClass>, std::shared_ptr<GameObject> gameObject, void* managedObject = nullptr);
 		virtual ~ScriptedGameObject();
 
 		inline const std::string& GetName() const { return _Name; }

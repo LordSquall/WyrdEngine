@@ -17,11 +17,9 @@ namespace OsirisAPI
             return _NativePointer;
         }
 
-        public T CreateInstance<T>(GameObject gameObject) where T : ScriptedObject
+        public T CreateInstance<T>() where T : ScriptedObject
         {
-            ScriptComponent_CreateInstance(gameObject.NativePtr, NativePtr, typeof(T).Name);
-
-            Console.WriteLine("Instance: {0}", Instance.GameObject.ToString());
+            ScriptComponent_CreateInstance(Owner.NativePtr, NativePtr, typeof(T).Name);
             return (T)Instance;
         }
 

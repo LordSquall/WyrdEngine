@@ -21,7 +21,7 @@ namespace Osiris
 		inline const std::string& GetName() const { return _Name; }
 		inline void SetName(const std::string& name) { _Name = name; }
 
-		void SetGameObject(const std::shared_ptr<ScriptedGameObject> scriptedGameObject);
+		void SetGameObject(const ScriptedGameObject& scriptedGameObject);
 		std::shared_ptr<ScriptedGameObject> const GetGameObject();
 
 		MonoMethod* GetMethod(const std::string name);

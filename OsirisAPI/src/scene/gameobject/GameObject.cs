@@ -17,6 +17,8 @@ namespace OsirisAPI
             }
         }
 
+        public GameObject Parent { get; set; }
+
         public Transform2D Transform
         {
             get
@@ -73,8 +75,8 @@ namespace OsirisAPI
         {
             if (!_components.ContainsKey(component.GetType()))
             {
+                component.Owner = this;
                 _components[component.GetType()] = component;
-                //Console.WriteLine("Component Added : {0} @ {1}", component.GetType().Name, component.NativePtr.ToInt64());
             }
         }
         
@@ -88,6 +90,9 @@ namespace OsirisAPI
 
             // create a new component object 
             T component = new T();
+
+            // set the component owner
+            component.Owner = this;
 
             // add to the object store to ensure it's not targeted by the GC
             ObjectStore.Store(component);
@@ -107,15 +112,18 @@ namespace OsirisAPI
         {
             GameObject_AddChild(_NativePointer, gameObject.NativePtr);
 
+            gameObject.Parent = this;
             _children.Add(gameObject);
         }
 
         public GameObject Create(string name, GameObject parent = null)
         {
-            IntPtr unmanagedGameObject = GameObject_Create(parent == null ? _NativePointer : parent.NativePtr, name);
-
             GameObject newGameObject = new GameObject();
-            newGameObject.NativePtr = unmanagedGameObject;
+            ObjectStore.Store(newGameObject);
+
+            GameObject_Create(parent == null ? _NativePointer : parent.NativePtr, name, true);
+
+            newGameObject.Parent = parent == null ? this : parent;
 
             return newGameObject;
         }
@@ -128,7 +136,7 @@ namespace OsirisAPI
                 return default(T);
             }
 
-            T component = new T() { NativePtr = nativeAddress };
+            T component = new T() { NativePtr = nativeAddress, Owner = this };
             _components[typeof(T)] = component;
 
             return component;
@@ -155,6 +163,8 @@ namespace OsirisAPI
 
         private void _AddGameObject(GameObject gameObject)
         {
+            // set the parent of the gameobject
+            gameObject.Parent = this;
             _children.Add(gameObject);
         }
 
@@ -200,7 +210,7 @@ namespace OsirisAPI
         public static extern void GameObject_Get_Component(IntPtr value, int idx, out int type, out IntPtr componentPtr);
 
         [DllImport("OsirisCAPI")]
-        public static extern IntPtr GameObject_Create(IntPtr parentGameObject, [MarshalAs(UnmanagedType.LPStr)] String name);
+        public static extern IntPtr GameObject_Create(IntPtr parentGameObject, [MarshalAs(UnmanagedType.LPStr)] String name, bool retrieveManagedObject);
 
         #endregion
     }

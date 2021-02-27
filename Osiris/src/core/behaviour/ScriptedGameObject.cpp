@@ -17,7 +17,7 @@
 
 namespace Osiris
 {
-	ScriptedGameObject::ScriptedGameObject(Behaviour* behaviour, std::shared_ptr<ScriptedClass> scriptedClass, std::shared_ptr<GameObject> gameObject)
+	ScriptedGameObject::ScriptedGameObject(Behaviour* behaviour, std::shared_ptr<ScriptedClass> scriptedClass, std::shared_ptr<GameObject> gameObject, void* managedObject)
 	{
 		/* Store the gameobject */
  		_GameObject = gameObject;
@@ -26,7 +26,10 @@ namespace Osiris
 		Class = (MonoClass*)*scriptedClass->ManagedClass;
 
 		/* Create a new managed object */
-		Object = MonoUtils::CreateNewObject((MonoDomain*)behaviour->GetDomain(), scriptedClass);
+		if (managedObject == nullptr)
+			Object = MonoUtils::CreateNewObject((MonoDomain*)behaviour->GetDomain(), scriptedClass);
+		else
+			Object = (MonoObject*)managedObject;
 
 		MonoObject* exception = nullptr;
 
@@ -45,12 +48,6 @@ namespace Osiris
 		void* addTransform2DComponentArgs[1] = { (MonoObject*)gameObject->transform2D->ManagedObject };
 		mono_runtime_invoke(behaviour->GetClass("GameObject")->Methods["AddComponent"]->GetManagedMethod(), Object, &addTransform2DComponentArgs[0], &exception);
 		if (exception != nullptr) mono_print_unhandled_exception(exception);
-		
-		//OSR_CORE_TRACE("Object Map [{0}]", mono_string_to_utf8((MonoString*)mono_runtime_invoke((MonoMethod*)behaviour->GetClass("GameObject")->Properties["Name"]->GetGetter(), Object, nullptr, &exception)));
-		//if (exception != nullptr) mono_print_unhandled_exception(exception);
-
-		//OSR_CORE_TRACE("\tTransform2D: {0}", (void*)mono_runtime_invoke((MonoMethod*)behaviour->GetClass("UnmanagedObject")->Properties["NativePtr"]->GetGetter(), (MonoObject*)gameObject->transform2D->ManagedObject, nullptr, &exception));
-		//if (exception != nullptr) mono_print_unhandled_exception(exception);
 
 		for (auto& component : _GameObject->components)
 		{
@@ -66,9 +63,6 @@ namespace Osiris
 			void* addComponentArgs[1] = { componentManagedObject };
 			mono_runtime_invoke(behaviour->GetClass("GameObject")->Methods["AddComponent"]->GetManagedMethod(), Object, &addComponentArgs[0], &exception);
 			if (exception != nullptr) mono_print_unhandled_exception(exception);
-
-			//OSR_CORE_TRACE("\t{0}: {1}", component->GetManagedType(), (void*)mono_runtime_invoke((MonoMethod*)behaviour->GetClass("UnmanagedObject")->Properties["NativePtr"]->GetGetter(), Object, nullptr, &exception));
-			//if (exception != nullptr) mono_print_unhandled_exception(exception);
 		}
 	}
 

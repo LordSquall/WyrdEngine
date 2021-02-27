@@ -30,9 +30,8 @@ namespace OsirisAPI
         /// <summary>
         /// Create and store a new gameobject agasint a given uid
         /// </summary>
-        /// <param name="uid"></param>
         /// <returns></returns>
-        public static GameObject CreateGameObject(ref int uid)
+        public static GameObject CreateGameObject()
         {
             GameObject newGameObject = new GameObject();
 

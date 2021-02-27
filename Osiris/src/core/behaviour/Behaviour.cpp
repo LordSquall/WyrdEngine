@@ -104,28 +104,8 @@ namespace Osiris
 			/* next stage is to pass over any script components and link properties */
 			LinkGameObjectProperties();
 
-			/* Query each of the layer scene objects */
-			for (auto& sl : _CurrentScene->layers2D)
-			{
-				for (auto& go : sl->children)
-				{					
-					for (auto component : go->components)
-					{
-						if (component->GetType() == SceneComponentType::ScriptComponent)
-						{
-							ScriptComponent* scriptComponent = (ScriptComponent*)&*component;
-
-							/* Check if we have an assigned object */
-							if (scriptComponent->GetCustomObject() != nullptr)
-							{
-								MonoObject* object = (scriptComponent->GetCustomObject())->Object;
-								MonoMethod* method = scriptComponent->GetCustomObject()->GetMethod("OnStart");
-								mono_runtime_invoke(method, object, nullptr, nullptr);
-							}
-						}
-					}
-				}
-			}
+			/* final stage, run the On start lifecycle functions */
+			StartManagedGameObjects();
 		}
 	}
 
@@ -256,10 +236,9 @@ namespace Osiris
 		return _ScriptedCustomObjects[uid]; 
 	}
 
-
-	void Behaviour::AddScriptedGameObject(UID uid, std::shared_ptr<GameObject> gameObject)
+	void Behaviour::AddScriptedGameObject(UID uid, std::shared_ptr<GameObject> gameObject, void* managedObject)
 	{
-		_ScriptedGameObjects[uid] = std::make_shared<ScriptedGameObject>(this, _ScriptedClasses["GameObject"], gameObject);
+		_ScriptedGameObjects[uid] = std::make_shared<ScriptedGameObject>(this, _ScriptedClasses["GameObject"], gameObject, managedObject);
 	}
 
 	void Behaviour::AddScriptedCustomObject(UID uid, std::shared_ptr<ScriptedCustomObject> customObject)
@@ -284,8 +263,6 @@ namespace Osiris
 
 	void Behaviour::CompileAll(const std::vector<std::string>& files, const std::string& outputFile, CompileResults& results)
 	{
-		OSR_TRACE("COMPILING BEHAVIOUR MODEL!!!");
-
 		// mono compiler script command
 		std::string command = "mcs ";
 
@@ -386,6 +363,9 @@ namespace Osiris
 			std::filesystem::path filename = file;
 			std::string className = filename.stem().string();
 
+			/* retrieve the managed class */
+			MonoClass* managedClass = mono_class_from_name((MonoImage*)_ClientImage, "OsirisGame", className.c_str());
+
 			/* Add class to the managed class map */
 			_ManagedClasses[className] = mono_class_from_name((MonoImage*)_ClientImage, "OsirisGame", className.c_str());
 
@@ -478,7 +458,7 @@ namespace Osiris
 					_ScriptedCustomObjects.emplace(gameObject->uid, newCustomObject);
 
 					/* Set the native game object pointer */
-					newCustomObject->SetGameObject(_ScriptedGameObjects[gameObject->uid]);
+					newCustomObject->SetGameObject(*_ScriptedGameObjects[gameObject->uid]);
 
 					newCustomObject->SetName(scriptComponent->GetClass()->GetName() + "_inst");
 
@@ -521,6 +501,41 @@ namespace Osiris
 					{
 						prop.second->Set(scriptComponent->GetCustomObject()->Object);
 					}
+				}
+			}
+		}
+	}
+
+	void Behaviour::StartManagedGameObjects()
+	{
+		for (auto& sl : _CurrentScene->layers2D)
+		{
+			for (auto& go : sl->children)
+			{
+				StartManagedGameObjects(go);
+			}
+		}
+	}
+
+	void Behaviour::StartManagedGameObjects(std::shared_ptr<GameObject> gameObject)
+	{
+		for (auto& go : gameObject->children)
+		{
+			StartManagedGameObjects(go);
+		}
+
+		for (auto component : gameObject->components)
+		{
+			if (component->GetType() == SceneComponentType::ScriptComponent)
+			{
+				ScriptComponent* scriptComponent = (ScriptComponent*)&*component;
+
+				/* Check if we have an assigned object */
+				if (scriptComponent->GetCustomObject() != nullptr)
+				{
+					MonoObject* object = (scriptComponent->GetCustomObject())->Object;
+					MonoMethod* method = scriptComponent->GetCustomObject()->GetMethod("OnStart");
+					mono_runtime_invoke(method, object, nullptr, nullptr);
 				}
 			}
 		}

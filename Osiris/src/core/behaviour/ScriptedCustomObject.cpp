@@ -44,19 +44,15 @@ namespace Osiris
 
 	}
 
-	void ScriptedCustomObject::SetGameObject(const std::shared_ptr<ScriptedGameObject> scriptedGameObject)
+	void ScriptedCustomObject::SetGameObject(const ScriptedGameObject& scriptedGameObject)
 	{
 		MonoObject* exception = nullptr;
 
-		/* retrieve the property and getter method */
-		MonoProperty* gameObjectProp = mono_class_get_property_from_name(*Class, "GameObject");
-		MonoMethod* gameObjectPropSetter = mono_property_get_set_method(gameObjectProp);
-
 		/* build property arguments */
 		void* args[1];
-		args[0] = scriptedGameObject->Object;
+		args[0] = scriptedGameObject.Object;
 
-		MonoObject* newObject = mono_runtime_invoke(_Properties["GameObject"].second, &*Object, args, &exception);
+		MonoObject* newObject = mono_runtime_invoke(_Properties["GameObject"].second, Object, args, &exception);
 
 		if (exception != nullptr)
 		{

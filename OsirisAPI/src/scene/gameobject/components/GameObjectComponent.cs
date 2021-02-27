@@ -10,6 +10,8 @@ namespace OsirisAPI
     [StructLayout(LayoutKind.Sequential)]
     public abstract class GameObjectComponent : UnmanagedObject
     {
+        public GameObject Owner { get; set; }
+
         public abstract IntPtr CreateUnmanagedPtr(IntPtr gameObjectPtr);
     }
 }

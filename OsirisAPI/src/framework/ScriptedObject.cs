@@ -8,7 +8,15 @@ namespace OsirisAPI
     [StructLayout(LayoutKind.Sequential)]
     abstract public class ScriptedObject
     {
-        public GameObject GameObject { get; set; }
+        private GameObject _GameObject;
+
+        public GameObject GameObject { 
+            get { return _GameObject; }
+            set
+            {
+                _GameObject = value;
+            }
+        }
 
         public virtual void OnStart() { }
 

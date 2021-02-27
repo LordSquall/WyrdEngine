@@ -51,17 +51,19 @@ void ScriptComponent_CreateInstance(void* obj, void* component, const char* clas
 	/* Retrieve the scripted class */
 	std::shared_ptr<Osiris::ScriptedClass> scriptedClass = _behaviour->GetCustomClass(className);
 
-
 	if (scriptedClass != nullptr)
 	{
-		/* Create the Scripted custom object */
-		_behaviour->AddScriptedCustomObject((*gameObject)->uid, std::make_shared<Osiris::ScriptedCustomObject>((MonoDomain*)_behaviour->GetDomain(), scriptedClass));
+		/* Create a new uuid for the custom object */
+		Osiris::UID uid = Osiris::UIDUtils::Create();
 
 		/* Create the Scripted custom object */
-		auto newCustomObject = _behaviour->GetCustomObject((*gameObject)->uid);
+		_behaviour->AddScriptedCustomObject(uid, std::make_shared<Osiris::ScriptedCustomObject>((MonoDomain*)_behaviour->GetDomain(), scriptedClass));
+
+		/* Create the Scripted custom object */
+		auto newCustomObject = _behaviour->GetCustomObject(uid);
 
 		/* Set the scripted game object on the new object */
-		newCustomObject->SetGameObject(_behaviour->GetGameObject((*gameObject)->uid));
+		newCustomObject->SetGameObject(*(_behaviour->GetGameObject((*gameObject)->uid)));
 
 		/* Set an script name */
 		newCustomObject->SetName(std::string(className) + "_inst");
