@@ -86,7 +86,7 @@ namespace Osiris::Editor
 			{
 				std::shared_ptr<IPropertiesView> newView = PropertyViewFactory::Create(component, &*_SelectedGameObject);
 				_PropertiesViews.push_back(newView);
-				//component->debugOverlayFunction = std::bind(&IPropertiesView::OnSceneViewerDraw, newView, std::placeholders::_1);
+				component->debugOverlayFunction = std::bind(&IPropertiesView::OnSceneViewerDraw, newView, std::placeholders::_1);
 			}
 
 			_Mode = GameObjectUI;

@@ -2,6 +2,7 @@
 #include "osrpch.h"
 #include "core/Log.h"
 #include "Physics.h"
+#include "core/Application.h"
 #include "core/scene/Scene.h"
 #include "core/scene/Layer2D.h"
 #include "core/scene/GameObject.h"
@@ -58,75 +59,79 @@ namespace Osiris
 					/* we don't want to evaluate self colisions */
 					if (physicsA->Owner->uid != physicsB->Owner->uid)
 					{
-						/* first of all, if the AABB is overlapping then we need to update the collision states */
 						if (physicsA->GetAABB().ContainsRect(physicsB->GetAABB()))
 						{
-							physicsA->AddCollisionState(physicsB);
+							Application::Get().GetBehaviour().BroadcastTriggerCall(physicsA->Owner, std::string("OnTriggerCollision"), physicsB->Owner, { });
 						}
-						else
-						{
-							if (physicsA->GetVelocity().x != 0 || physicsA->GetVelocity().y != 0)
-							{
-								// Expand target rectangle by source dimensions
-								Rect expanded_target;
-								expanded_target.position = physicsB->GetAABB().position - physicsA->GetAABB().size / 2.0f;
-								expanded_target.size = physicsB->GetAABB().size + physicsA->GetAABB().size;
+						///* first of all, if the AABB is overlapping then we need to update the collision states */
+						//if (physicsA->GetAABB().ContainsRect(physicsB->GetAABB()))
+						//{
+						//	physicsA->AddCollisionState(physicsB);
+						//}
+						//else
+						//{
+						//	if (physicsA->GetVelocity().x != 0 || physicsA->GetVelocity().y != 0)
+						//	{
+						//		// Expand target rectangle by source dimensions
+						//		Rect expanded_target;
+						//		expanded_target.position = physicsB->GetAABB().position - physicsA->GetAABB().size / 2.0f;
+						//		expanded_target.size = physicsB->GetAABB().size + physicsA->GetAABB().size;
 
-								// Create Ray
-								Ray ray = {
-									{ physicsA->GetAABB().position + physicsA->GetAABB().size / 2.0f },
-									{ glm::normalize(physicsA->GetVelocity()) }
-								};
+						//		// Create Ray
+						//		Ray ray = {
+						//			{ physicsA->GetAABB().position + physicsA->GetAABB().size / 2.0f },
+						//			{ glm::normalize(physicsA->GetVelocity()) }
+						//		};
 
-								Ray::Hit hit;
-								bool shouldResolve = !physicsA->IsTrigger() && !physicsB->IsTrigger();
+						//		Ray::Hit hit;
+						//		bool shouldResolve = !physicsA->IsTrigger() && !physicsB->IsTrigger();
 
-								if (expanded_target.ContainsRay(ray, hit) == true)
-								{
-									if ((hit.distance >= 0.0f && hit.distance < 1.0f))
-									{
-										/**
-										* At this point the collision has been detected between the gameobjects,
-										* however depending on the physics properties we either need to
-										* trigger or resolve
-										*/
-										physicsA->AddCollisionState(physicsB);
+						//		if (expanded_target.ContainsRay(ray, hit) == true)
+						//		{
+						//			if ((hit.distance >= 0.0f && hit.distance < 1.0f))
+						//			{
+						//				/**
+						//				* At this point the collision has been detected between the gameobjects,
+						//				* however depending on the physics properties we either need to
+						//				* trigger or resolve
+						//				*/
+						//				physicsA->AddCollisionState(physicsB);
 
-										if (shouldResolve)
-										{
-											resolvableCollisions.push_back({ physicsA, physicsB, &hit });
-										}
-									}
-									else
-									{
-										if (shouldResolve)
-										{
-											if (physicsA->CurrentCollisionState(physicsB) != 0)
-											{
-												physicsA->RemoveCollisionState(physicsB);
-											}
-										}
-									}
-								}
-								else
-								{
-									if (shouldResolve)
-									{
-										if (physicsA->CurrentCollisionState(physicsB) != 0)
-										{
-											physicsA->RemoveCollisionState(physicsB);
-										}
-									}
-								}
-							}
-							else
-							{
-								if (physicsA->CurrentCollisionState(physicsB) != 0)
-								{
-									physicsA->RemoveCollisionState(physicsB);
-								}
-							}
-						}
+						//				if (shouldResolve)
+						//				{
+						//					resolvableCollisions.push_back({ physicsA, physicsB, &hit });
+						//				}
+						//			}
+						//			else
+						//			{
+						//				if (shouldResolve)
+						//				{
+						//					if (physicsA->CurrentCollisionState(physicsB) != 0)
+						//					{
+						//						physicsA->RemoveCollisionState(physicsB);
+						//					}
+						//				}
+						//			}
+						//		}
+						//		else
+						//		{
+						//			if (shouldResolve)
+						//			{
+						//				if (physicsA->CurrentCollisionState(physicsB) != 0)
+						//				{
+						//					physicsA->RemoveCollisionState(physicsB);
+						//				}
+						//			}
+						//		}
+						//	}
+						//	else
+						//	{
+						//		if (physicsA->CurrentCollisionState(physicsB) != 0)
+						//		{
+						//			physicsA->RemoveCollisionState(physicsB);
+						//		}
+						//	}
+						//}
 					}
 				}
 
@@ -164,6 +169,16 @@ namespace Osiris
 		_IsRunning = false;
 	}
 
+	void Physics::AddObject(PhysicsComponent* object)
+	{
+		_physicsObjects.push_back(object);
+	}
+
+
+	void Physics::RemoveObject(PhysicsComponent* object)
+	{
+		std::remove(_physicsObjects.begin(), _physicsObjects.end(), object);
+	}
 
 	void Physics::SearchGameObject(std::shared_ptr<GameObject> gameObject)
 	{

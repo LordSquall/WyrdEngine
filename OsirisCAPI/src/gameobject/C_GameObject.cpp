@@ -106,3 +106,16 @@ void* GameObject_Create(void* parentGameObject, const char* name, bool retrieveM
 
 	return goAdded;
 }
+
+void GameObject_Destroy(void* gameObject)
+{
+	std::shared_ptr<Osiris::GameObject>* go = (std::shared_ptr<Osiris::GameObject>*)gameObject;
+
+	/* remove from scene */
+	(*go)->parent->RemoveChild((*go)->uid);
+
+	/* remove from physics system if applicable */
+	if ((*go)->physics != nullptr)
+		_physics->RemoveObject((*go)->physics.get());
+
+}

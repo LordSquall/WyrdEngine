@@ -106,9 +106,17 @@ namespace Osiris::Editor
 			if (_Scene != nullptr)
 			{
 				/* Render each of the sprite layers */
-				for (auto sl : _Scene->layers2D)
+				for (auto& sl : _Scene->layers2D)
 				{
 					sl->Render(renderer, _CameraController->GetCamera().GetViewProjectionMatrix());
+				}
+
+				if (_SelectedGameObject)
+				{
+					for (auto& component : _SelectedGameObject->components)
+					{
+						component->debugOverlayFunction(_CameraController->GetCamera().GetViewProjectionMatrix());
+					}
 				}
 			}
 

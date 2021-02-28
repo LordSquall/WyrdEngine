@@ -18,6 +18,16 @@ namespace OsirisAPI
             }
         }
 
+        public static IntPtr Physics
+        {
+            get { return _NativePhysics; }
+            set
+            {
+                _NativePhysics = value;
+                Manager_SetPhysics(_NativePhysics);
+            }
+        }
+
         public static IntPtr Resources
         {
             get { return _NativeResources; }
@@ -31,6 +41,7 @@ namespace OsirisAPI
         #region private variables 
 
         protected static IntPtr _NativeBehaviour;
+        protected static IntPtr _NativePhysics;
         protected static IntPtr _NativeResources;
 
         #endregion
@@ -40,6 +51,9 @@ namespace OsirisAPI
 
         [DllImport("OsirisCAPI")]
         public static extern void Manager_SetBehaviour(IntPtr value);
+
+        [DllImport("OsirisCAPI")]
+        public static extern void Manager_SetPhysics(IntPtr value);
 
         [DllImport("OsirisCAPI")]
         public static extern void Manager_SetResources(IntPtr value);

@@ -500,7 +500,7 @@ namespace Osiris::Editor
 		ImGui::SameLine();
 		ImGui::SetCursorPosX((ImGui::GetCursorPosX() - groupSize.x) + layoutSettings.itemGroupPaddingX);
 
-		ImGui::Image((ImTextureID)(INT_PTR)textureResource->GetTexture()->GetHandle(), ImVec2(textureResource->GetWidth(), textureResource->GetHeight()));// ImVec2(layoutSettings.itemGroupWidth, layoutSettings.itemGroupWidth));
+		ImGui::Image((ImTextureID)(INT_PTR)textureResource->GetTexture()->GetHandle(), ImVec2(std::clamp(textureResource->GetWidth(), (uint32_t)1, (uint32_t)layoutSettings.itemGroupWidth), std::clamp(textureResource->GetHeight(), (uint32_t)1, (uint32_t)layoutSettings.itemGroupWidth)));
 		ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 2, ImGui::GetCursorPosY() - labelSize.y));
 
 		if (labelSize.x > (layoutSettings.itemColumnWidth - 4))

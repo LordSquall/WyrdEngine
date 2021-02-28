@@ -42,6 +42,7 @@ namespace Osiris {
 		vec2 globalPosition;
 
 		glm::mat4 matrix;
+		glm::mat4 worldMatrix;
 
 		std::string toString() const { return "Hello"; }
 

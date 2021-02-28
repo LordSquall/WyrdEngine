@@ -109,6 +109,12 @@ namespace Osiris {
 		inline Physics& GetPhysics() { return *_Physics; }
 
 		/**
+		 * @brief Get Raw Physics pointer
+		 * @return - physics subsystem pointer
+		*/
+		inline Physics* GetPhysicsPtr() { return _Physics.get(); }
+
+		/**
 		 * @brief Get LayerStack Subsystem
 		 * @return - layerstack subsystem object
 		*/

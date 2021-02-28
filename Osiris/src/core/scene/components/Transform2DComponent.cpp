@@ -7,7 +7,7 @@
 
 namespace Osiris
 {
-	Transform2DComponent::Transform2DComponent(std::shared_ptr<GameObject> gameObject) : IBaseComponent(gameObject, SceneComponentType::Transform2D), matrix(glm::identity<glm::mat4>()), _IsMatrixValid(false)
+	Transform2DComponent::Transform2DComponent(std::shared_ptr<GameObject> gameObject) : IBaseComponent(gameObject, SceneComponentType::Transform2D), matrix(glm::identity<glm::mat4>()), worldMatrix(glm::identity<glm::mat4>()), _IsMatrixValid(false)
 	{
 		position = vec2(0.0f, 0.0f);
 		rotation = 0.0f;
@@ -103,7 +103,7 @@ namespace Osiris
 				* glm::scale(glm::identity<glm::mat4>(), glm::vec3(scale.x, scale.y, 1.0f));
 				
 
-			globalPosition = parentMatrix * matrix * glm::vec4(position.x, position.y, 0.0f, 1.0f);
+			globalPosition = matrix * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 			_IsMatrixValid = true;
 

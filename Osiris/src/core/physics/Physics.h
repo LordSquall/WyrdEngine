@@ -24,6 +24,9 @@ namespace Osiris
 		void Reset();
 		void Stop();
 
+		void AddObject(PhysicsComponent* object);
+		void RemoveObject(PhysicsComponent* object);
+
 	private:
 		void SearchGameObject(std::shared_ptr<GameObject> gameObject);
 

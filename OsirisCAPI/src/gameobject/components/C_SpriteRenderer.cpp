@@ -19,7 +19,7 @@ void* SpriteRenderer_Create(void* obj)
 	spriteComponent->spriteLayer = (*gameObject)->layer;
 
 	(*gameObject)->components.push_back(spriteComponent);
-
+	(*gameObject)->sprite = spriteComponent;
 	(*gameObject)->layer->RegisterSprite(spriteComponent);
 
 	return &*spriteComponent;

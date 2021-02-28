@@ -17,6 +17,7 @@ namespace Osiris
 	class Scene;
 	class Script;
 	class Resource;
+	class Physics;
 	class GameObject;
 	class ScriptedClass;
 	class ScriptedGameObject;
@@ -202,6 +203,7 @@ namespace Osiris
 		bool					_IsRunning;
 
 		Behaviour*		_BehaviourSubsystem;
+		Physics*		_PhysicsSubsystem;
 		Resources*		_ResourcesSubsystem;
 		
 		BehaviourInput	_Input;

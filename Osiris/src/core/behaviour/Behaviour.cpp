@@ -74,6 +74,7 @@ namespace Osiris
 
 		/* store a pointer to the systems */
 		_BehaviourSubsystem = Application::Get().GetBehaviourPtr();
+		_PhysicsSubsystem = Application::Get().GetPhysicsPtr();
 		_ResourcesSubsystem = Application::Get().GetResourcesPtr();
 
 		/* pass in the subsystem pointers to the managed domain */
@@ -81,11 +82,14 @@ namespace Osiris
 		monoClass = mono_class_from_name((MonoImage*)_CoreImage, "OsirisAPI", "SubsystemManager");
 
 		MonoProperty* behaviourProp = mono_class_get_property_from_name(monoClass, "Behaviour");
+		MonoProperty* physicsProp = mono_class_get_property_from_name(monoClass, "Physics");
 		MonoProperty* resourcesProp = mono_class_get_property_from_name(monoClass, "Resources");
 
 		std::vector<void*> behaviourArgs = std::vector<void*>({ &_BehaviourSubsystem });
 		mono_property_set_value(behaviourProp, nullptr, &behaviourArgs[0], nullptr);
 
+		std::vector<void*> physicsArgs = std::vector<void*>({ &_PhysicsSubsystem });
+		mono_property_set_value(physicsProp, nullptr, &physicsArgs[0], nullptr);
 
 		std::vector<void*> resourceArgs = std::vector<void*>({ &_ResourcesSubsystem });
 		mono_property_set_value(resourcesProp, nullptr, &resourceArgs[0], nullptr);

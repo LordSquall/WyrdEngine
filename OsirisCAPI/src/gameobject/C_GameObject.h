@@ -9,6 +9,8 @@ extern "C" {
 
 LIBRARY_API void* GameObject_Create(void* parentGameObject, const char* name, bool retrieveManagedObject);
 
+LIBRARY_API void GameObject_Destroy(void* gameObject);
+
 LIBRARY_API const char* GameObject_Name_Get(void* obj);
 
 LIBRARY_API int GameObject_UID_Get(void* obj);

@@ -128,6 +128,14 @@ namespace OsirisAPI
             return newGameObject;
         }
 
+        public void Destroy()
+        {
+            // Remove from the object store
+            ObjectStore.Remove(this);
+
+            GameObject_Destroy(_NativePointer);
+        }
+
         public T RegisterComponent<T>(IntPtr nativeAddress) where T : GameObjectComponent, new()
         {
             if (_components.ContainsKey(typeof(T)))
@@ -211,6 +219,9 @@ namespace OsirisAPI
 
         [DllImport("OsirisCAPI")]
         public static extern IntPtr GameObject_Create(IntPtr parentGameObject, [MarshalAs(UnmanagedType.LPStr)] String name, bool retrieveManagedObject);
+
+        [DllImport("OsirisCAPI")]
+        public static extern void GameObject_Destroy(IntPtr gameObject);
 
         #endregion
     }

@@ -20,6 +20,8 @@ namespace Osiris {
 		PhysicsComponent(const PhysicsComponent& obj);
 		~PhysicsComponent();
 
+		void Recalculate() override;
+
 		inline virtual const std::string GetManagedType() { return "PhysicsComponent"; }
 
 		inline void SetUseSpriteBoundary(const bool useSpriteBoundary) { _UseSpriteBoundary = useSpriteBoundary; }
