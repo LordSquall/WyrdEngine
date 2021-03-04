@@ -25,6 +25,7 @@ project "imgui"
 		srcdir .. "misc/cpp/imgui_stdlib.h",
 		srcdir .. "imgui.cpp",
 		srcdir .. "imgui_demo.cpp",
+		srcdir .. "imgui_tables.cpp",
 		srcdir .. "imgui_draw.cpp",
 		srcdir .. "imgui_widgets.cpp",
 		srcdir .. "misc/cpp/imgui_stdlib.cpp"

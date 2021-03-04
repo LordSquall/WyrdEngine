@@ -30,12 +30,12 @@ namespace Osiris::Editor
 		color[1] = _BaseComponent->color.g;
 		color[2] = _BaseComponent->color.b;
 
-		if (ImGui::InputFloat2("Pos ", position, 1) == true)
+		if (ImGui::InputFloat2("Pos ", position) == true)
 		{
 			_BaseComponent->SetPosition(position[0], position[1]);
 		}
 
-		if (ImGui::InputFloat2("Size", size, 1))
+		if (ImGui::InputFloat2("Size", size))
 		{
 			_BaseComponent->SetSize(size[0], size[1]);
 		}
