@@ -55,6 +55,7 @@ namespace Osiris::Editor
 			{
 				std::shared_ptr<Texture> texture = *(std::shared_ptr<Texture>*)payload->Data;
 				_BaseComponent->SetTexture(texture);
+				_BaseComponent->SetSize(texture->GetWidth(), texture->GetHeight());
 			}
 			ImGui::EndDragDropTarget();
 		}

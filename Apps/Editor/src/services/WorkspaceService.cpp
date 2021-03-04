@@ -139,26 +139,30 @@ namespace Osiris::Editor
 		/* If a scene is loaded we want it to be set as the initial scene in the project model to ensure it gets loaded on restart */
 		if (_LoadedScene != nullptr) _LoadedProject->initialScene = _LoadedScenePath;
 		
-		result = ProjectLoader::Save(_LoadedProjectPath, *_LoadedProject);
-
-		if (result != ProjectLoader::Result::Success)
+		if (_LoadedProject != nullptr)
 		{
-			switch (result)
+			result = ProjectLoader::Save(_LoadedProjectPath, *_LoadedProject);
+
+			if (result != ProjectLoader::Result::Success)
 			{
-			case SceneLoader::Result::DirectoryNotFound:
-				break;
-			case SceneLoader::Result::FileAlreadyExists:
-				break;
-			case SceneLoader::Result::InsufficientSpace:
-				break;
-			}
+				switch (result)
+				{
+				case SceneLoader::Result::DirectoryNotFound:
+					break;
+				case SceneLoader::Result::FileAlreadyExists:
+					break;
+				case SceneLoader::Result::InsufficientSpace:
+					break;
+				}
 
-			return false;
+				return false;
+			}
+			else
+			{
+				return true;
+			}
 		}
-		else
-		{
-			return true;
-		}
+		return false;
 	}
 
 	bool Osiris::Editor::WorkspaceService::LoadProject(std::string projectfile)
