@@ -71,5 +71,4 @@ namespace Osiris
 
 		return glm::vec2(eyeCoords.x, eyeCoords.y);
 	}
-	
 }

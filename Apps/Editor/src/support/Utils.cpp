@@ -444,6 +444,7 @@ namespace Osiris::Editor {
 	{
 		std::filesystem::create_directory(GetAssetFolder());
 		std::filesystem::create_directory(GetCacheFolder());
+		std::filesystem::create_directory(GetTempFolder());
 	}
 
 

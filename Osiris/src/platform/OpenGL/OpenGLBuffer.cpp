@@ -7,7 +7,7 @@
 namespace Osiris
 {
 
-	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size, const std::string& description)
+	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, size_t size, const std::string& description)
 	{
 		glCreateBuffers(1, &_rendererID);
 		{
@@ -41,7 +41,7 @@ namespace Osiris
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	void OpenGLVertexBuffer::Update(float* vertices, uint32_t size, uint32_t offset) const
+	void OpenGLVertexBuffer::Update(float* vertices, size_t size, uint32_t offset) const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, _rendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);

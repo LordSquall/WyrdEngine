@@ -49,7 +49,7 @@ namespace Osiris::Editor
 		_GizmoShader.reset(Shader::Create());
 
 		/* Add shader to core */
-		Application::Get().GetResources().Shaders["GridGizmo"] = _GizmoShader;
+		Application::Get().GetResources().Shaders["Gizmo"] = _GizmoShader;
 
 		if (_GizmoShader->Build(vertexSrc, fragmentSrc) == false)
 		{
@@ -61,6 +61,7 @@ namespace Osiris::Editor
 
 		/* initialise each of the gizmos */
 		_GridGizmo = std::make_unique<GridGizmo>(_CameraController);
+		_TranslationGizmo = std::make_unique<TranslationGizmo>(this);
 
 		/* create a new framebuffer */
 		_Framebuffer.reset(Osiris::FrameBuffer::Create(FrameBufferConfig()));
@@ -117,6 +118,8 @@ namespace Osiris::Editor
 					{
 						component->debugOverlayFunction(_CameraController->GetCamera().GetViewProjectionMatrix());
 					}
+
+					_TranslationGizmo->Render(ts, renderer);
 				}
 			}
 
@@ -134,6 +137,9 @@ namespace Osiris::Editor
 		dispatcher.Dispatch<KeyPressedEvent>(OSR_BIND_EVENT_FN(SceneViewer::OnKeyPressedEvent));
 		dispatcher.Dispatch<KeyReleasedEvent>(OSR_BIND_EVENT_FN(SceneViewer::OnKeyReleasedEvent));
 
+
+		_TranslationGizmo->OnEvent(event);
+
 		/* Set camera settings */
 		if (_Scene != nullptr)
 		{
@@ -149,30 +155,6 @@ namespace Osiris::Editor
 
 		/* build the top toolbar */
 		ImGui::Checkbox("show stats", &showStats);
-
-		ImGui::SameLine();
-
-		if (ImGui::Button("Gizmos"))
-		{
-			showGizmoSettings = true;
-		}
-
-		if (showGizmoSettings == true)
-		{
-			ImGui::SetNextWindowPos({ _Boundary.position.x + ImGui::GetCursorPosX(), _Boundary.position.y + ImGui::GetCursorPosY() });
-			ImGui::Begin("gizmo_controls", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-			if (ImGui::CollapsingHeader("Grid", ImGuiTreeNodeFlags_DefaultOpen))
-			{
-				static bool enableGrid = _GridGizmo->IsEnabled();
-				static Color gridColor = _GridGizmo->GetColor();
-				if (ImGui::Checkbox("Enable Grid", &enableGrid)) _GridGizmo->ToggleEnabled();
-				if (ImGui::ColorEdit4("Color", (float*)&gridColor)) _GridGizmo->SetColor(gridColor);
-			}
-
-
-			/* build the top toolbar */
-			ImGui::Checkbox("show stats", &showStats);				ImGui::End();
-		}
 
 		/* calculate the mouse offset for events */
 		_mouseOffset = { ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y };
@@ -221,16 +203,43 @@ namespace Osiris::Editor
 
 	void SceneViewer::OnResize()
 	{
+		/* resize the underlying framebuffer */
 		_Framebuffer->Resize((uint32_t)_Viewport.size.x, (uint32_t)_Viewport.size.y);
+
+		/* Set the camera viewport */
 		_CameraController->SetViewportSize(_Viewport.size.x, _Viewport.size.y);
 	}
 
+	glm::vec2 SceneViewer::Convert2DToWorldSpace(const glm::vec2& point)
+	{
+		vec2 ndcSpace = GetScreenSpaceFromWorldPoint(point);
+
+		vec4 clipSpace = { ndcSpace.x, ndcSpace.y, -1.0, 1.0f };
+
+		vec4 eyeSpace = glm::inverse(_CameraController->GetCamera().GetProjectionMatrix()) * clipSpace;
+
+		vec4 worldSpace = glm::inverse(_CameraController->GetCamera().GetViewMatrix()) * eyeSpace;
+
+		return { worldSpace.x, worldSpace.y };
+	}
+
+	glm::vec2 SceneViewer::GetViewportSpaceFromPoint(const glm::vec2& point)
+	{
+		return point - _ViewportBoundary.position;
+	}
 
 	glm::vec2 SceneViewer::GetWorldSpaceFromPoint(const glm::vec2& point)
 	{
 		glm::vec2 viewportMouseCoords = point - _ViewportBoundary.position;
 
 		return _CameraController->GetCamera().GetWorldSpaceFromPoint(viewportMouseCoords, _ViewportBoundary);
+	}
+
+	glm::vec2 SceneViewer::GetScreenSpaceFromWorldPoint(const glm::vec2& point)
+	{
+		glm::vec2 viewportMouseCoords = point - _ViewportBoundary.position;
+
+		return _CameraController->GetCamera().GetNDCFromPoint(viewportMouseCoords, _ViewportBoundary);
 	}
 
 	bool SceneViewer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
@@ -292,15 +301,16 @@ namespace Osiris::Editor
 
 		if (_ViewportBoundary.ContainsPoint(glm::vec2(e.GetX(), e.GetY())))
 		{
-			glm::vec2 worldSpaceCoords = _CameraController->GetCamera().GetEyeSpaceFromPoint(viewportMouseCoords, _ViewportBoundary);
+			/* track the world position of the mouse */
+			_MouseWorldPos = _CameraController->GetCamera().GetEyeSpaceFromPoint(viewportMouseCoords, _ViewportBoundary);
 
-			glm::vec2 worldSpaceDelta = _LastMouseWorldPos - worldSpaceCoords;
+			glm::vec2 worldSpaceDelta = _PrevMouseWorldPos - _MouseWorldPos;
 
 			if (Input::IsMouseButtonPressed(OSR_MOUSE_BUTTON_MIDDLE) == true)
 			{
 				_CameraController->Translate({ worldSpaceDelta.x, worldSpaceDelta.y });
 			}
-			_LastMouseWorldPos = worldSpaceCoords;
+			_PrevMouseWorldPos = _MouseWorldPos;
 		}
 
 		return true;

@@ -102,7 +102,6 @@ namespace Osiris
 				* glm::rotate(glm::identity<glm::mat4>(), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f))
 				* glm::scale(glm::identity<glm::mat4>(), glm::vec3(scale.x, scale.y, 1.0f));
 				
-
 			globalPosition = matrix * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 			_IsMatrixValid = true;

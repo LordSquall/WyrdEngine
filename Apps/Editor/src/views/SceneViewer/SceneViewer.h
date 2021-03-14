@@ -29,7 +29,12 @@ namespace Osiris::Editor
 		inline const Osiris::Rect& GetViewport() { return _Viewport; }
 		inline const std::shared_ptr<OrthographicCameraController> GetCamera() const { return _CameraController; }
 
-		glm::vec2 GetWorldSpaceFromPoint(const glm::vec2& point);
+		inline const glm::vec2 GetMouseWorldPos() const { return _MouseWorldPos; }
+
+		glm::vec2 Convert2DToWorldSpace(const glm::vec2& point);
+		glm::vec2 GetViewportSpaceFromPoint(const glm::vec2& point);
+		glm::vec2 GetWorldSpaceFromPoint(const glm::vec2& point); 
+		glm::vec2 GetScreenSpaceFromWorldPoint(const glm::vec2& point);
 
 	private:
 		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
@@ -63,12 +68,16 @@ namespace Osiris::Editor
 
 
 		std::unique_ptr<GridGizmo>						_GridGizmo;
+		std::unique_ptr<TranslationGizmo>				_TranslationGizmo;
 		std::shared_ptr<Shader>							_GizmoShader;
 		std::shared_ptr<GameObject>						_SelectedGameObject;
 
 		glm::vec2 _LastMousePos;
-		glm::vec2 _LastMouseWorldPos;
 		glm::vec2 _MenuPos;
+
+		glm::vec2 _MouseWorldPos;
+		glm::vec2 _PrevMouseWorldPos;
+		
 		bool _OpenContextMenu;
 
 		bool _mouseEventStarted;

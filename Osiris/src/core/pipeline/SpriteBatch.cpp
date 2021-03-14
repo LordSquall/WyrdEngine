@@ -21,8 +21,8 @@ namespace Osiris
 		_VertexBuffer.reset(VertexBuffer::Create((float*)&verts, sizeof(SpriteVertex), "spritebatch"));
 
 		_VertexArray.reset(VertexArray::Create());
-		_VertexArray->SetAttribute(0, 0, 2);
-		_VertexArray->SetAttribute(1, 2, 2);
+		_VertexArray->SetAttribute(0, 0, 2, sizeof(SpriteVertex));
+		_VertexArray->SetAttribute(1, 2, 2, sizeof(SpriteVertex));
 	}
 
 	int32_t SpriteBatch::AddSprite(std::shared_ptr<SpriteComponent> sprite)

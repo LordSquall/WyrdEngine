@@ -18,37 +18,37 @@ namespace Osiris::Editor
 {
 	EditorRenderer2DLayer::EditorRenderer2DLayer(std::string name) : Layer(name)
 	{
-		/* Initialise the camera controller */
-		_CameraController = std::make_shared<OrthographicCameraController>();
+		///* Initialise the camera controller */
+		//_CameraController = std::make_shared<OrthographicCameraController>();
 
-		/* Cache services */
-		_EventService = ServiceManager::Get<EventService>(ServiceManager::Service::Events);
+		///* Cache services */
+		//_EventService = ServiceManager::Get<EventService>(ServiceManager::Service::Events);
 
-		/* register events */
-		_EventService->Subscribe(Events::EventType::SceneOpened, EVENT_FUNC(EditorRenderer2DLayer::OnSceneOpened));
-		_EventService->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(EditorRenderer2DLayer::OnSelectedGameObjectChanged));
+		///* register events */
+		//_EventService->Subscribe(Events::EventType::SceneOpened, EVENT_FUNC(EditorRenderer2DLayer::OnSceneOpened));
+		//_EventService->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(EditorRenderer2DLayer::OnSelectedGameObjectChanged));
 
-		/* setup the iconset */
-		ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetIconLibrary().AddIconsFromFile(std::string("res/icons/gizmo-icons.json"));
+		///* setup the iconset */
+		//ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources)->GetIconLibrary().AddIconsFromFile(std::string("res/icons/gizmo-icons.json"));
 
-		/* setup the gizmo shader */
-		std::ifstream vertexStream("res/shaders/gizmo.vert");
-		std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
+		///* setup the gizmo shader */
+		//std::ifstream vertexStream("res/shaders/gizmo.vert");
+		//std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
 
-		std::ifstream fragmentStream("res/shaders/gizmo.frag");
-		std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
+		//std::ifstream fragmentStream("res/shaders/gizmo.frag");
+		//std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
 
-		_GizmoShader.reset(Shader::Create());
+		//_GizmoShader.reset(Shader::Create());
 
-		if (_GizmoShader->Build(vertexSrc, fragmentSrc) == false)
-		{
-			OSR_ERROR("Unable to build shader.");
-		}
-		_GizmoShader->Bind();
-		_GizmoShader->SetUniformVec3("blendColor", glm::vec3{ 0.8f, 0.2f, 0.2f });
+		//if (_GizmoShader->Build(vertexSrc, fragmentSrc) == false)
+		//{
+		//	OSR_ERROR("Unable to build shader.");
+		//}
+		//_GizmoShader->Bind();
+		//_GizmoShader->SetUniformVec3("blendColor", glm::vec3{ 0.8f, 0.2f, 0.2f });
 
-		/* initialise each of the gizmos */
-		_TranslationGizmo.reset(new TranslationGizmo(_GizmoShader, _CameraController));
+		///* initialise each of the gizmos */
+		//_TranslationGizmo.reset(new TranslationGizmo(_CameraController));
 	}
 
 	void EditorRenderer2DLayer::OnRender(Timestep ts, Renderer& renderer)

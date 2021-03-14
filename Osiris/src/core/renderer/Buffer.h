@@ -16,9 +16,9 @@ namespace Osiris
 
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
-		virtual void Update(float* vertices, uint32_t size, uint32_t offset) const = 0;
+		virtual void Update(float* vertices, size_t size, uint32_t offset) const = 0;
 
-		static VertexBuffer* Create(float* vertices, uint32_t size, const std::string& description);
+		static VertexBuffer* Create(float* vertices, size_t size, const std::string& description);
 	};
 
 	class OSR_LIBRARY_API IndexBuffer

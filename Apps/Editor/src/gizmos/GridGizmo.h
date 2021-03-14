@@ -11,6 +11,7 @@
 
 
 /* local includes */
+#include "gizmos/GizmoVertex.h"
 #include "services/ServiceManager.h"
 #include "datamodels/OrthographicCameraController.h"
 #include "support/IconLibrary.h"
@@ -18,11 +19,6 @@
 
 namespace Osiris::Editor
 {
-	struct GridVertex
-	{
-		float x, y, u, v;
-	};
-
 	class GridGizmo
 	{
 	public:
@@ -54,7 +50,7 @@ namespace Osiris::Editor
 		std::shared_ptr<VertexBuffer>	_VertexBuffer; 
 		std::shared_ptr<IndexBuffer>	_IndexBuffer;
 
-		std::vector<GridVertex> _Vertices;
+		std::vector<GizmoVertex> _Vertices;
 		std::vector<uint32_t> _Indices;
 
 		bool _Enabled;

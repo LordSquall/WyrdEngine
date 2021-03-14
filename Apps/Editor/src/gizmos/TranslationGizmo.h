@@ -1,3 +1,5 @@
+#pragma once
+
 /* core osiris includes */
 #include <core/export.h>
 #include <core/Timestep.h>
@@ -7,34 +9,65 @@
 #include <core/renderer/VertexArray.h>
 #include <core/scene/GameObject.h>
 
-
 /* local includes */
+#include "gizmos/Gizmo.h"
+#include "services/ServiceManager.h"
 #include "datamodels/OrthographicCameraController.h"
-#include "support/IconLibrary.h"
+#include "events/EditorEvents.h"
 
 namespace Osiris::Editor
 {
-	class TranslationGizmo
+	class SceneViewer;
+
+	class TranslationGizmo : Gizmo
 	{
+		enum class InputState
+		{
+			NONE,
+			OVER,
+			ACTIVE
+		};
+
+		enum class AxisState
+		{
+			NONE,
+			X,
+			Y,
+			XY
+		};
+
+		enum class MovementState
+		{
+			LOCAL,
+			GLOBAL
+		};
+
 	public:
-		TranslationGizmo(std::shared_ptr<Shader> shader, std::shared_ptr<OrthographicCameraController> cameraController);
+		TranslationGizmo(SceneViewer* sceneViewer);
 		~TranslationGizmo();
 
-		void SetGameObject(std::shared_ptr<GameObject> gameObject);
+		void Render(Timestep ts, Renderer& renderer) override;
 
-		void OnDrag(glm::vec2 delta);
+		void OnEvent(Event& event);
+		bool OnMouseMovedEvent(MouseMovedEvent& e);
+		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
+		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
 
-		void Render(Timestep ts, Renderer& renderer);
+		void OnSelectedGameObjectChanged(Events::EventArgs& args);
 
 	private:
-		std::shared_ptr<OrthographicCameraController> _CameraController;
+		void SetInputState(InputState state);
+		void SetAxisState(AxisState state);
+		void SetMovementState(MovementState state);
+		void UpdateVertexGroupColor(const std::string& groupName, const Color& color);
+
+	private:
+		std::shared_ptr<EventService>		_EventService;
 		std::shared_ptr<GameObject>		_GameObject;
 
-		std::shared_ptr<Shader>			_Shader;
-		std::shared_ptr<VertexArray>	_VertexArray;
-		std::shared_ptr<VertexBuffer>	_VertexBuffer; 
-		std::shared_ptr<IndexBuffer>	_IndexBuffer;
-
-		std::shared_ptr<Icon> _Icon;
+		InputState _InputState;
+		AxisState _AxisState;
+		MovementState _MovementState;
+		glm::vec2 _LastMouseWorldPos;
 	};
 }

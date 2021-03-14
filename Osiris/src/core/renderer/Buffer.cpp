@@ -8,7 +8,7 @@
 namespace Osiris
 {
 
-	VertexBuffer* VertexBuffer::Create(float* vertices, uint32_t size, const std::string& description)
+	VertexBuffer* VertexBuffer::Create(float* vertices, size_t size, const std::string& description)
 	{
 		switch (Renderer::GetAPI())
 		{

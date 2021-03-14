@@ -31,6 +31,8 @@ namespace Osiris
 		inline float GetSize() const { return _Size; }
 		inline void SetSize(float size) { _Size = size; RecalulateProjection(); }
 
+		inline float GetAspectRatio() const { return _AspectRatio; }
+
 		inline const glm::mat4& GetProjectionMatrix() const { return _ProjectionMatrix; }
 		inline const glm::mat4& GetViewMatrix() const { return _ViewMatrix; }
 		inline const glm::mat4& GetViewProjectionMatrix() const { return _ViewProjectionMatrix; }

@@ -163,6 +163,17 @@ namespace Osiris
 			OpenGLError::Resolve(err);
 	}
 
+	void OpenGLShader::SetUniformFloat(const std::string& name, float val)
+	{
+		GLuint location = glGetUniformLocation(m_RendererHandle, name.c_str());
+		glUniform1f(location, val);
+
+		GLenum err = glGetError();
+
+		if (err != GL_NO_ERROR)
+			OpenGLError::Resolve(err);
+	}
+
 	void OpenGLShader::SetUniformVec2(const std::string& name, glm::vec2& vec2)
 	{
 		GLuint location = glGetUniformLocation(m_RendererHandle, name.c_str());

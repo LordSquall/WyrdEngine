@@ -12,9 +12,9 @@ namespace Osiris::Editor
 	class AssetViewer : public EditorViewBase
 	{
 	public:
-		typedef struct DirectoryEntry_s;
+		struct DirectoryEntry_s;
 
-		typedef struct DirectoryEntry_s
+		struct DirectoryEntry_s
 		{
 			uint32_t id;
 			bool open;

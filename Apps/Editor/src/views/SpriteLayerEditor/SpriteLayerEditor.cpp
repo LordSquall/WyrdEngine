@@ -224,7 +224,6 @@ namespace Osiris::Editor
 			/* clicking functions */
 			if (ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemClicked(ImGuiMouseButton_Right))
 			{
-				OSR_TRACE("UID: {0}", gameObject->uid.str());
 				_DraggingSelectedGameObject = gameObject;
 			}
 

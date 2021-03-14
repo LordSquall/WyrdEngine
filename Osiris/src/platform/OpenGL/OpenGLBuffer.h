@@ -7,11 +7,11 @@ namespace Osiris
 	class OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
-		OpenGLVertexBuffer(float* vertices, uint32_t size, const std::string& description);
+		OpenGLVertexBuffer(float* vertices, size_t size, const std::string& description);
 		~OpenGLVertexBuffer();
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
-		virtual void Update(float* vertices, uint32_t size, uint32_t offset) const override;
+		virtual void Update(float* vertices, size_t size, uint32_t offset) const override;
 
 	private:
 		uint32_t _rendererID;

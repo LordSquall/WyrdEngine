@@ -35,7 +35,7 @@ namespace Osiris::Editor
 		_EventService->Subscribe(Events::EventType::SettingsUpdated, EVENT_FUNC(GridGizmo::OnSettingsChanged));
 
 		/* Retrieve the shader */
-		_Shader = Application::Get().GetResources().Shaders["GridGizmo"];
+		_Shader = Application::Get().GetResources().Shaders["Gizmo"];
 
 		/* Create and bind a default VAO */
 		_VertexArray.reset(VertexArray::Create());
@@ -54,16 +54,19 @@ namespace Osiris::Editor
 
 	void GridGizmo::Render(Timestep ts, Renderer& renderer)
 	{
+		_VertexArray->Bind();
 		_Shader->Bind();
 		_VertexBuffer->Bind();
 		_IndexBuffer->Bind(); 
-		_VertexArray->Bind();
 				
 		_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
 		_Shader->SetMatrix("model", glm::mat4(1.0f));
 
 		/* set the blend color */
 		_Shader->SetUniformVec4("blendColor", glm::vec4{ _Color.r, _Color.g, _Color.b, _Color.a });
+
+		/* set the scale matrix for the gizmo */
+		_Shader->SetMatrix("scale", glm::scale(glm::vec3(1.0f, 1.0f, 1.0f)));
 
 		renderer.DrawElements(RendererDrawType::Triangles, _IndexBuffer->GetCount());
 
@@ -86,10 +89,10 @@ namespace Osiris::Editor
 
 		for (int i = 0; i <= columnCnt; i++)
 		{
-			_Vertices.push_back({ (xSpacing * i) + -2.0f, -1.0f,	 0.0f, 0.0f });
-			_Vertices.push_back({ (xSpacing * i) + -2.0f, width, 0.0f, 0.0f });
-			_Vertices.push_back({ (xSpacing * i) + 2.0f,  width, 0.0f, 0.0f });
-			_Vertices.push_back({ (xSpacing * i) + 2.0f,  -1.0f,	 0.0f, 0.0f });
+			_Vertices.push_back({ (xSpacing * i) + -2.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f });
+			_Vertices.push_back({ (xSpacing * i) + -2.0f, width, 1.0f, 1.0f, 1.0f, 1.0f });
+			_Vertices.push_back({ (xSpacing * i) + 2.0f,  width, 1.0f, 1.0f, 1.0f, 1.0f });
+			_Vertices.push_back({ (xSpacing * i) + 2.0f,  -1.0f, 1.0f, 1.0f, 1.0f, 1.0f });
 
 			_Indices.push_back((i * 4) + 0);
 			_Indices.push_back((i * 4) + 1);
@@ -103,10 +106,10 @@ namespace Osiris::Editor
 
 		for (int i = 0; i <= rowCnt; i++)
 		{
-			_Vertices.push_back({ -2.0f, (ySpacing * i) + -1.0f,	0.0f, 0.0f });
-			_Vertices.push_back({ -2.0f, (ySpacing * i) + 1.0f,	0.0f, 0.0f });
-			_Vertices.push_back({ height,  (ySpacing * i) + 1.0f,	0.0f, 0.0f });
-			_Vertices.push_back({ height,  (ySpacing * i) + -1.0f,	0.0f, 0.0f });
+			_Vertices.push_back({ -2.0f, (ySpacing * i) + -1.0f,	1.0f, 1.0f, 1.0f, 1.0f });
+			_Vertices.push_back({ -2.0f, (ySpacing * i) + 1.0f,		1.0f, 1.0f, 1.0f, 1.0f });
+			_Vertices.push_back({ height,  (ySpacing * i) + 1.0f,	1.0f, 1.0f, 1.0f, 1.0f });
+			_Vertices.push_back({ height,  (ySpacing * i) + -1.0f,	1.0f, 1.0f, 1.0f, 1.0f });
 
 			_Indices.push_back(offset + (i * 4) + 0);
 			_Indices.push_back(offset + (i * 4) + 1);
@@ -117,11 +120,12 @@ namespace Osiris::Editor
 		}
 
 		/* Create a new Vertex and Index buffer on the GPU */
-		_VertexBuffer.reset(VertexBuffer::Create((float*)&_Vertices[0], _Vertices.size() * sizeof(GridVertex), "Test VBO"));
+		_VertexBuffer.reset(VertexBuffer::Create((float*)&_Vertices[0], _Vertices.size() * sizeof(GizmoVertex), "Test VBO"));
 		_IndexBuffer.reset(IndexBuffer::Create(&_Indices[0], _Indices.size()));
 
 		/* Setup the Vertex array attribute data */
-		_VertexArray->SetAttribute(0, 0, 2);
+		_VertexArray->SetAttribute(0, 0, 2, sizeof(GizmoVertex));
+		_VertexArray->SetAttribute(1, 2, 4, sizeof(GizmoVertex));
 
 		/* bind the shader */
 		_Shader->Bind();
