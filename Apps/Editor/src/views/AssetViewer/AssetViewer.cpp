@@ -149,7 +149,7 @@ namespace Osiris::Editor
 
 			/* capture the width of the child area to determine the column count */
 			layoutSettings.itemColumnWidth = layoutSettings.itemGroupWidth + (layoutSettings.itemGroupPaddingX * 2);
-			layoutSettings.itemColumnCnt = ImGui::GetContentRegionAvail().x / layoutSettings.itemColumnWidth;
+			layoutSettings.itemColumnCnt = (int)(ImGui::GetContentRegionAvail().x / layoutSettings.itemColumnWidth);
 
 			ImGui::BeginChildFrame(2, ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y));
 
@@ -569,7 +569,7 @@ namespace Osiris::Editor
 		ImGui::SameLine();
 		ImGui::SetCursorPosX((ImGui::GetCursorPosX() - groupSize.x) + layoutSettings.itemGroupPaddingX);
 
-		ImGui::Image(_SceneIcon, ImVec2(layoutSettings.itemGroupWidth, layoutSettings.itemGroupWidth));
+		ImGui::Image(*_SceneIcon, ImVec2(layoutSettings.itemGroupWidth, layoutSettings.itemGroupWidth));
 		ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 2, ImGui::GetCursorPosY() - labelSize.y));
 
 		if (labelSize.x > (layoutSettings.itemColumnWidth - 4))
@@ -635,7 +635,7 @@ namespace Osiris::Editor
 		if (ImGui::BeginDragDropSource())
 		{
 			ImGui::SetDragDropPayload("SCRIPT_ASSET_PAYLOAD", &scriptResource, sizeof(std::shared_ptr<ScriptRes>));
-			ImGui::Image(_ScriptIcon, ImVec2(32, 32));
+			ImGui::Image(*_ScriptIcon, ImVec2(32, 32));
 			ImGui::EndDragDropSource();
 		}
 
@@ -643,7 +643,7 @@ namespace Osiris::Editor
 		ImGui::SameLine();
 		ImGui::SetCursorPosX((ImGui::GetCursorPosX() - groupSize.x) + layoutSettings.itemGroupPaddingX);
 
-		ImGui::Image(_ScriptIcon, ImVec2(layoutSettings.itemGroupWidth, layoutSettings.itemGroupWidth));
+		ImGui::Image(*_ScriptIcon, ImVec2(layoutSettings.itemGroupWidth, layoutSettings.itemGroupWidth));
 		ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 2, ImGui::GetCursorPosY() - labelSize.y));
 
 		if (labelSize.x > (layoutSettings.itemColumnWidth - 4))

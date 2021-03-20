@@ -25,7 +25,7 @@ namespace Osiris::Editor {
 	std::string Utils::asset_path = "\\assets";
 	std::string Utils::cache_path = "\\.cache";
 	std::string Utils::temp_path = "\\.temp";
-	std::string Utils::builds_path = "\\builds";
+	std::string Utils::builds_path = "\\.builds";
 
 	Utils::Utils()
 	{
@@ -445,6 +445,7 @@ namespace Osiris::Editor {
 		std::filesystem::create_directory(GetAssetFolder());
 		std::filesystem::create_directory(GetCacheFolder());
 		std::filesystem::create_directory(GetTempFolder());
+		std::filesystem::create_directory(GetBuildsFolder());
 	}
 
 

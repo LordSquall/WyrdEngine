@@ -28,7 +28,7 @@ namespace Osiris {
 
 	public:
 		SpriteBatch();
-		~SpriteBatch() {}
+		~SpriteBatch() = default;
 
 		void Render(Renderer& renderer, const glm::mat4& viewProjectionMat);
 

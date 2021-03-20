@@ -50,7 +50,7 @@ namespace Osiris::Editor
 		ImGui::SameLine();
 		if (ImGui::Button("OK"))
 		{
-			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_shared<Events::SettingsUpdateEventArgs>());
+			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
 			Close();
 		}
 	}
@@ -85,7 +85,7 @@ namespace Osiris::Editor
 			_SettingsService->SetSetting(std::to_string(autoOpenOnCapture), CONFIG_RENDERDOC, CONFIG_RENDERDOC__AUTOOPEN);
 			_SettingsService->SetSetting(captureDir, CONFIG_RENDERDOC, CONFIG_RENDERDOC__CAPTUREDIR);
 
-			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_shared<Events::SettingsUpdateEventArgs>());
+			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
 
 		}
 #else
@@ -124,7 +124,7 @@ namespace Osiris::Editor
 			_SettingsService->SetSetting(std::to_string(cols), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLS);
 			_SettingsService->SetSetting(Utils::ToString(color), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLOR);
 
-			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_shared<Events::SettingsUpdateEventArgs>());
+			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
 
 		}
 	}

@@ -12,17 +12,18 @@
 
 void* SpriteRenderer_Create(void* obj)
 {
-	std::shared_ptr<GameObject>* gameObject = (std::shared_ptr<GameObject>*)obj;
+	//std::shared_ptr<GameObject>* gameObject = (std::shared_ptr<GameObject>*)obj;
 
-	std::shared_ptr<Osiris::SpriteComponent> spriteComponent = std::make_shared<Osiris::SpriteComponent>(std::shared_ptr<Osiris::GameObject>((*gameObject)));
-	spriteComponent->Initialise();
-	spriteComponent->spriteLayer = (*gameObject)->layer;
+	//std::shared_ptr<Osiris::SpriteComponent> spriteComponent = std::make_shared<Osiris::SpriteComponent>(std::shared_ptr<Osiris::GameObject>((*gameObject)));
+	//spriteComponent->Initialise();
+	//spriteComponent->spriteLayer = (*gameObject)->layer;
 
-	(*gameObject)->components.push_back(spriteComponent);
-	(*gameObject)->sprite = spriteComponent;
-	(*gameObject)->layer->RegisterSprite(spriteComponent);
+	//(*gameObject)->components.push_back(spriteComponent);
+	//(*gameObject)->sprite = spriteComponent;
+	//(*gameObject)->layer->RegisterSprite(spriteComponent);
 
-	return &*spriteComponent;
+	//return &*spriteComponent;
+	return nullptr;
 }
 
 void SpriteRenderer_SetColor(void* obj, float red, float green, float blue, float alpha)

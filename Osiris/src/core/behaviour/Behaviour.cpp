@@ -148,7 +148,7 @@ namespace Osiris
 			if (_CurrentScene != nullptr)
 			{
 				/* traverse each of the gameobjects within the scene*/
-				for (auto& sl : _CurrentScene->layers2D)
+				for (auto& sl : _CurrentScene->GetLayers())
 				{
 					for (auto& go : sl->children)
 					{
@@ -387,7 +387,7 @@ namespace Osiris
 	{
 		std::shared_ptr<ScriptedClass> gameObjectClass = _ScriptedClasses["GameObject"];
 
-		for (auto& sl : _CurrentScene->layers2D)
+		for (auto& sl : _CurrentScene->GetLayers())
 		{
 			for (auto& go : sl->children)
 			{
@@ -430,7 +430,7 @@ namespace Osiris
 	void Behaviour::LinkManagedGameObjects()
 	{
 		/* Query each of the layer scene objects */
-		for (auto& sl : _CurrentScene->layers2D)
+		for (auto& sl : _CurrentScene->GetLayers())
 		{
 			for (auto& go : sl->children)
 			{
@@ -446,7 +446,7 @@ namespace Osiris
 			LinkManagedGameObjects(go);
 		}
 
-		for (auto component : gameObject->components)
+		for (auto& component : gameObject->components)
 		{
 			if (component->GetType() == SceneComponentType::ScriptComponent)
 			{
@@ -475,7 +475,7 @@ namespace Osiris
 	void Behaviour::LinkGameObjectProperties()
 	{
 		/* Query each of the layer scene objects */
-		for (auto& sl : _CurrentScene->layers2D)
+		for (auto& sl : _CurrentScene->GetLayers())
 		{
 			for (auto& go : sl->children)
 			{
@@ -491,7 +491,7 @@ namespace Osiris
 			LinkGameObjectProperties(go);
 		}
 
-		for (auto component : gameObject->components)
+		for (auto& component : gameObject->components)
 		{
 			if (component->GetType() == SceneComponentType::ScriptComponent)
 			{
@@ -512,7 +512,7 @@ namespace Osiris
 
 	void Behaviour::StartManagedGameObjects()
 	{
-		for (auto& sl : _CurrentScene->layers2D)
+		for (auto& sl : _CurrentScene->GetLayers())
 		{
 			for (auto& go : sl->children)
 			{
@@ -528,7 +528,7 @@ namespace Osiris
 			StartManagedGameObjects(go);
 		}
 
-		for (auto component : gameObject->components)
+		for (auto& component : gameObject->components)
 		{
 			if (component->GetType() == SceneComponentType::ScriptComponent)
 			{
@@ -548,7 +548,7 @@ namespace Osiris
 	void Behaviour::UpdateManagedGameObjects(Timestep ts)
 	{
 		/* Query each of the layer scene objects */
-		for (auto& sl : _CurrentScene->layers2D)
+		for (auto& sl : _CurrentScene->GetLayers())
 		{
 			for (auto& go : sl->children)
 			{
@@ -603,7 +603,7 @@ namespace Osiris
 		MonoImageOpenStatus status = MONO_IMAGE_ERROR_ERRNO;
 		
 		
-		(*image) = mono_image_open_from_data(&buffer[0], buffer.size(), 1, &status); 
+		(*image) = mono_image_open_from_data(&buffer[0], (uint32_t)buffer.size(), 1, &status); 
 		if (status != MONO_IMAGE_OK || (*image) == NULL)
 		{
 			return;

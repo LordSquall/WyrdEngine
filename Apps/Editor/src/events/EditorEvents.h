@@ -82,9 +82,9 @@ namespace Osiris::Editor::Events
 	class SelectedGameObjectChangedArgs : public EventArgs
 	{
 	public:
-		SelectedGameObjectChangedArgs(const std::shared_ptr<Osiris::GameObject> gameObject) : gameObject(gameObject) { }
+		SelectedGameObjectChangedArgs(Osiris::GameObject* gameObject) : gameObject(gameObject) { }
 
-		const std::shared_ptr<Osiris::GameObject> gameObject;
+		Osiris::GameObject* gameObject;
 
 		EVENT_ARGS_CLONE(SelectedGameObjectChangedArgs)
 	};

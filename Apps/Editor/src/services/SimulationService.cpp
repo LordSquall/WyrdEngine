@@ -123,7 +123,7 @@ namespace Osiris::Editor
 	void SimulationService::CompileAll()
 	{
 		/* clear all the code logs from the output */
-		_EventService->Publish(Events::EventType::ClearLogEntry, std::make_shared<Events::ClearLogEntryArgs>(LogType::Code));
+		_EventService->Publish(Events::EventType::ClearLogEntry, std::make_unique<Events::ClearLogEntryArgs>(LogType::Code));
 
 		std::vector<std::string> scriptFiles;
 		for (auto& [key, value] : _ResourceService->GetResources())
@@ -150,7 +150,7 @@ namespace Osiris::Editor
 		{
 			for (auto& err : results.errors)
 			{
-				_EventService->Publish(Events::EventType::AddLogEntry, std::make_shared<Events::AddLogEntryArgs>(LogType::Code, Severity::Error, err));
+				_EventService->Publish(Events::EventType::AddLogEntry, std::make_unique<Events::AddLogEntryArgs>(LogType::Code, Severity::Error, err));
 			}
 		}
 		else

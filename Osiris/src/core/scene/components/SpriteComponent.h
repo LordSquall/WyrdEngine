@@ -20,7 +20,7 @@ namespace Osiris {
 	class OSR_LIBRARY_API SpriteComponent : public IBaseComponent
 	{
 	public:
-		SpriteComponent(std::shared_ptr<GameObject> owner);
+		SpriteComponent(GameObject* gameObject);
 		SpriteComponent(const SpriteComponent& obj);
 		~SpriteComponent() = default;
 

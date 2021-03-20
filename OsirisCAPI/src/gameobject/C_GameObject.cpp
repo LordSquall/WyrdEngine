@@ -65,7 +65,7 @@ void GameObject_AddChild(void* obj, void* child)
 	std::shared_ptr<GameObject>* gameObject = (std::shared_ptr<GameObject>*)obj;
 	Osiris::GameObject* childGameObject = (Osiris::GameObject*)child;
 
-	(*gameObject)->AddChild(std::shared_ptr<GameObject>(childGameObject));
+	//(*gameObject)->AddChild(std::move(std::make_unique<GameObject>(childGameObject)));
 }
 
 int GameObject_Get_Component_Count(void* obj)
@@ -86,25 +86,26 @@ void* GameObject_Create(void* parentGameObject, const char* name, bool retrieveM
 {
 	std::shared_ptr<Osiris::GameObject>* parent = (std::shared_ptr<Osiris::GameObject>*)parentGameObject;
 
-	std::shared_ptr<Osiris::GameObject> go = std::make_shared<Osiris::GameObject>(name, true);
+	//std::shared_ptr<Osiris::GameObject> go = std::make_shared<Osiris::GameObject>(name, true);
 
-	MonoObject* managedGameObject = nullptr;
-	if (retrieveManagedObject == true)
-	{
-		MonoObject* exception = nullptr;
-		managedGameObject = mono_runtime_invoke((MonoMethod*)_behaviour->GetClass("ObjectStore")->Properties["LastCreatedObject"]->GetGetter(), nullptr, nullptr, &exception);
-		if (exception != nullptr) mono_print_unhandled_exception(exception);
-	}
+	//MonoObject* managedGameObject = nullptr;
+	//if (retrieveManagedObject == true)
+	//{
+	//	MonoObject* exception = nullptr;
+	//	managedGameObject = mono_runtime_invoke((MonoMethod*)_behaviour->GetClass("ObjectStore")->Properties["LastCreatedObject"]->GetGetter(), nullptr, nullptr, &exception);
+	//	if (exception != nullptr) mono_print_unhandled_exception(exception);
+	//}
 
-	/* add transform 2D */
-	go->transform2D = std::make_shared<Osiris::Transform2DComponent>(go);
+	///* add transform 2D */
+	//go->transform2D = std::make_shared<Osiris::Transform2DComponent>(go);
 
-	_behaviour->AddScriptedGameObject(go->uid, go, managedGameObject);
+	//_behaviour->AddScriptedGameObject(go->uid, go, managedGameObject);
 
-	std::shared_ptr<GameObject>* goAdded = (*parent)->AddChild(go);
-	(*goAdded)->parent = (*parent);
+	//std::shared_ptr<GameObject>* goAdded = (*parent)->AddChild(go);
+	//(*goAdded)->parent = (*parent);
 
-	return goAdded;
+	//return goAdded;
+	return nullptr;
 }
 
 void GameObject_Destroy(void* gameObject)

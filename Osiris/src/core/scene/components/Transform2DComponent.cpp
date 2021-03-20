@@ -3,11 +3,11 @@
 #include "core/Log.h"
 #include "Transform2DComponent.h"
 #include "core/scene/GameObject.h"
-
+#include "serial/TypeSerialisers.h"
 
 namespace Osiris
 {
-	Transform2DComponent::Transform2DComponent(std::shared_ptr<GameObject> gameObject) : IBaseComponent(gameObject, SceneComponentType::Transform2D), matrix(glm::identity<glm::mat4>()), worldMatrix(glm::identity<glm::mat4>()), _IsMatrixValid(false)
+	Transform2DComponent::Transform2DComponent(GameObject* gameObject) : TransformComponent(gameObject, SceneComponentType::Transform2D), matrix(glm::identity<glm::mat4>()), worldMatrix(glm::identity<glm::mat4>()), _IsMatrixValid(false)
 	{
 		position = vec2(0.0f, 0.0f);
 		rotation = 0.0f;
@@ -17,19 +17,6 @@ namespace Osiris
 
 		ClearTransformationDelta();
 
-		_IsMatrixValid = false;
-	}
-
-	Transform2DComponent::Transform2DComponent(const Transform2DComponent& obj) : IBaseComponent(obj.Owner, SceneComponentType::Transform2D), matrix(glm::identity<glm::mat4>())
-	{
-		position = obj.position;
-		rotation = obj.rotation;
-		scale = obj.scale;
-
-		Initialised = true;
-
-		ClearTransformationDelta();
-		
 		_IsMatrixValid = false;
 	}
 
@@ -108,5 +95,24 @@ namespace Osiris
 
 			ClearTransformationDelta();
 		}
+	}
+
+	jsonxx::Object Transform2DComponent::ToJson()
+	{
+		jsonxx::Object object;
+
+		/* position */
+		object << "position" << glm::vec3(position, 1.0f);
+
+		return object;
+	}
+
+	bool Transform2DComponent::FromJson(jsonxx::Object& object)
+	{
+		/* position color */
+		if (object.has<jsonxx::Array>("position"))
+			position << object.get<jsonxx::Array>("position");
+
+		return true;
 	}
 }

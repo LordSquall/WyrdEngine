@@ -8,7 +8,7 @@
 /* local includes */
 #include "PropertiesViewer.h"
 #include "PropertyViewFactory.h"
-#include "views/DataModels/components/Transform2DView.h"
+#include "views/DataModels/components/Transform2DComponentView.h"
 #include "services/ServiceManager.h"
 #include "support/ImGuiUtils.h"
 
@@ -17,7 +17,7 @@
 
 namespace Osiris::Editor
 {
-	std::shared_ptr<Osiris::GameObject> PropertiesViewer::_SelectedGameObject = NULL;
+	Osiris::GameObject* PropertiesViewer::_SelectedGameObject = nullptr;
 	std::shared_ptr<Resource> PropertiesViewer::_SelectedAsset = NULL;
 
 	PropertiesViewer::PropertiesViewer(EditorLayer* editorLayer) : EditorViewBase("Properties", editorLayer), _Mode(None)
@@ -53,7 +53,7 @@ namespace Osiris::Editor
 		/* before changes the selected game object, we need to clear any component state values such as debug overlays etc.... */
 		if (_SelectedGameObject != nullptr)
 		{
-			for (auto component : _SelectedGameObject->components)
+			for (auto& component : _SelectedGameObject->components)
 			{
 				component->debugOverlayFunction = nullptr;
 			}
@@ -79,14 +79,15 @@ namespace Osiris::Editor
 		/* we only need to create new views if we have a selected game object */
 		if (_SelectedGameObject != nullptr)
 		{
-			/* create the required views */
-			_PropertiesViews.push_back(std::make_shared<Transform2DView>(&*_SelectedGameObject->transform2D));
-
-			for (auto component : _SelectedGameObject->components)
+			/* create the required views, a transform view is always needed */
+			if (_SelectedGameObject->transform->GetType() == SceneComponentType::Transform2D)
 			{
-				std::shared_ptr<IPropertiesView> newView = PropertyViewFactory::Create(component, &*_SelectedGameObject);
-				_PropertiesViews.push_back(newView);
-				component->debugOverlayFunction = std::bind(&IPropertiesView::OnSceneViewerDraw, newView, std::placeholders::_1);
+				_PropertiesViews.push_back(std::move(PropertyViewFactory::Create(_SelectedGameObject->transform.get(), _SelectedGameObject)));
+			}
+
+			for (auto& component : _SelectedGameObject->components)
+			{
+				_PropertiesViews.push_back(std::move(PropertyViewFactory::Create(component.get(), _SelectedGameObject)));
 			}
 
 			_Mode = GameObjectUI;

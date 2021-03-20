@@ -48,14 +48,14 @@ namespace Osiris::Editor
 
 		if (texture == nullptr) texture = Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)];
 
-		ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
+		ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2((float)texture->GetWidth(), (float)texture->GetHeight()));
 		if (ImGui::BeginDragDropTarget())
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_TEXTURE"))
 			{
 				std::shared_ptr<Texture> texture = *(std::shared_ptr<Texture>*)payload->Data;
 				_BaseComponent->SetTexture(texture);
-				_BaseComponent->SetSize(texture->GetWidth(), texture->GetHeight());
+				_BaseComponent->SetSize((float)texture->GetWidth(), (float)texture->GetHeight());
 			}
 			ImGui::EndDragDropTarget();
 		}

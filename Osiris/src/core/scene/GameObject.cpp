@@ -11,7 +11,6 @@
 #include "core/behaviour/Behaviour.h"
 #include "core/behaviour/ScriptedClass.h"
 
-
 namespace Osiris
 {
 	GameObject::GameObject() : name("Untitled")
@@ -24,26 +23,15 @@ namespace Osiris
 			uid = UIDUtils::Create();
 	}
 
-	GameObject::GameObject(const GameObject& obj)
-	{
-		name = obj.name;
-		components = obj.components;
-		inputArea = obj.inputArea;
-		layer = obj.layer;
-
-		uid = obj.uid;
-	}
-
 	GameObject::~GameObject() { }
 
-	std::shared_ptr<GameObject>* GameObject::AddChild(std::shared_ptr<GameObject> gameObject)
+	GameObject* GameObject::AddChild(std::unique_ptr<GameObject> gameObject)
 	{
-		children.push_back(gameObject);
-
 		gameObject->layer = layer;
+	
+		_GameObjects.push_back(std::move(gameObject));
 
-
-		return &children.back();
+		return &*_GameObjects.back();
 	}
 
 	void GameObject::RemoveChild(UID uid)
@@ -96,20 +84,20 @@ namespace Osiris
 		children[b] = tmp;
 	}
 
-	void GameObject::AddComponent(std::shared_ptr<IBaseComponent> component)
+	void GameObject::AddComponent(std::unique_ptr<IBaseComponent> component)
 	{
 		component->Setup();
 
-		components.push_back(component);
+		components.push_back(std::move(component));
 	}
 
-	std::shared_ptr<ScriptComponent> GameObject::FindScriptComponent(const std::string& name)
+	ScriptComponent* GameObject::FindScriptComponent(const std::string& name)
 	{
 		for (auto& component : components)
 		{
 			if (component->GetType() == SceneComponentType::ScriptComponent)
 			{
-				std::shared_ptr<ScriptComponent> sc = std::dynamic_pointer_cast<ScriptComponent>(component);
+				ScriptComponent* sc = dynamic_cast<ScriptComponent*>(component.get());
 
 				if (sc->GetClass()->GetName() == name)
 				{
@@ -146,7 +134,7 @@ namespace Osiris
 		{
 			if (component->GetType() == SceneComponentType::ScriptComponent)
 			{
-				std::shared_ptr<ScriptComponent> sc = std::dynamic_pointer_cast<ScriptComponent>(component);
+				ScriptComponent* sc = (ScriptComponent*)&*component;
 
 				std::string oldName = sc->GetClass()->GetName();
 				std::shared_ptr<PropertyList_t> oldProperties = sc->Properties;
@@ -170,5 +158,40 @@ namespace Osiris
 		{
 			go->AssignScripts(behaviour);
 		}
+	}
+
+	jsonxx::Object GameObject::ToJson()
+	{
+		jsonxx::Object object;
+
+		/* name */
+		object << "name" << name;
+
+		/* uid */
+		object << "uid" << uid.str();
+
+		/* transform component */
+		object << "transform2D" << transform->ToJson();
+
+		return object;
+	}
+
+	bool GameObject::FromJson(jsonxx::Object& object)
+	{
+		/* name */
+		name = object.get<jsonxx::String>("name", "MISSING");
+
+		/* uid */
+		uid = UID(object.get<jsonxx::String>("uid", "MISSING"));
+
+		/* transform component */
+		if (object.has<jsonxx::Object>("transform2D") == true)
+		{
+			std::unique_ptr<Transform2DComponent> transform2DComponent = std::make_unique<Transform2DComponent>(this);
+			transform2DComponent->FromJson(object.get<jsonxx::Object>("transform2D"));
+			transform = std::move(transform2DComponent);
+		}
+
+		return true;
 	}
 }

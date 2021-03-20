@@ -12,7 +12,7 @@
 
 namespace Osiris
 {
-	PhysicsComponent::PhysicsComponent(std::shared_ptr<GameObject> owner) : IBaseComponent(owner, SceneComponentType::PhysicsComponent),
+	PhysicsComponent::PhysicsComponent(GameObject* gameObject) : IBaseComponent(gameObject, SceneComponentType::PhysicsComponent),
 		_velocity({ 0.0f, 0.0 })
 	{ 		
 		Initialised = true;
@@ -58,7 +58,7 @@ namespace Osiris
 		if (_CollisionStates.find(collisionKey) == _CollisionStates.end())
 		{
 			_CollisionStates.insert({ collisionKey, 1 });
-			Application::Get().GetBehaviour().BroadcastTriggerCall(Owner, std::string("OnTriggerCollision"), collisionKey->Owner, { });
+			//Application::Get().GetBehaviour().BroadcastTriggerCall(Owner, std::string("OnTriggerCollision"), collisionKey->Owner, { });
 			
 		}
 	}

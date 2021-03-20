@@ -1,7 +1,7 @@
 #pragma once
 
 /* local includes */
-#include "core/scene/components/IBaseComponent.h"
+#include "core/scene/components/TransformComponent.h"
 
 /* external includes */
 #include <glm/glm.hpp>
@@ -11,11 +11,10 @@ using namespace glm;
 
 namespace Osiris {
 
-	class OSR_LIBRARY_API Transform2DComponent : public IBaseComponent
+	class OSR_LIBRARY_API Transform2DComponent : public TransformComponent
 	{
 	public:
-		Transform2DComponent(std::shared_ptr<GameObject> gameObject);
-		Transform2DComponent(const Transform2DComponent& obj);
+		Transform2DComponent(GameObject* gameObject);
 
 		inline virtual const std::string GetManagedType() { return "Transform2DComponent"; }
 
@@ -35,6 +34,19 @@ namespace Osiris {
 		void Initialise();
 		void Recalculate();
 		
+		/**
+		 * @brief Serialise the gameobject into a json object
+		 * @return json object
+		*/
+		virtual jsonxx::Object ToJson() override;
+
+		/**
+		 * @brief Deserialise a json object into a gameobject
+		 * @param object json object
+		 * @return true is successful
+		*/
+		virtual bool FromJson(jsonxx::Object& object) override;
+
 		vec2 position;
 		float rotation;
 		vec2 scale;

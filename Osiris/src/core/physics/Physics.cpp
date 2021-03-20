@@ -36,7 +36,7 @@ namespace Osiris
 		_IsRunning = true;
 
 		// iterate the scene and find all objects with a physics component 
-		for (auto& layer : scene->layers2D)
+		for (auto& layer : scene->GetLayers())
 		{
 			for (auto gameObject : layer->children)
 			{
@@ -61,7 +61,7 @@ namespace Osiris
 					{
 						if (physicsA->GetAABB().ContainsRect(physicsB->GetAABB()))
 						{
-							Application::Get().GetBehaviour().BroadcastTriggerCall(physicsA->Owner, std::string("OnTriggerCollision"), physicsB->Owner, { });
+							//Application::Get().GetBehaviour().BroadcastTriggerCall(physicsA->Owner, std::string("OnTriggerCollision"), physicsB->Owner, { });
 						}
 						///* first of all, if the AABB is overlapping then we need to update the collision states */
 						//if (physicsA->GetAABB().ContainsRect(physicsB->GetAABB()))
@@ -187,7 +187,7 @@ namespace Osiris
 			SearchGameObject(child);
 		}
 
-		for (auto component : gameObject->components)
+		for (auto& component : gameObject->components)
 		{
 			if (component->GetType() == SceneComponentType::PhysicsComponent)
 			{

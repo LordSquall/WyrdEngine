@@ -15,11 +15,11 @@ using namespace glm;
 
 namespace Osiris::Editor {
 
-	class Transform2DView : public IPropertiesView
+	class Transform2DComponentView : public IPropertiesView
 	{
 	public:
-		Transform2DView(Transform2DComponent* baseComponent) : _BaseComponent(baseComponent) {}
-		Transform2DView(const Transform2DView& obj) {}
+		Transform2DComponentView(Transform2DComponent* baseComponent) : _BaseComponent(baseComponent) {}
+		Transform2DComponentView(const Transform2DComponentView& obj) {}
 	
 		void OnPropertyEditorDraw() override;
 

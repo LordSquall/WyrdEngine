@@ -49,7 +49,7 @@ namespace Osiris::Editor
 
 		if (ImGui::Button("OK", ImVec2(120, 0)))
 		{
-			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::CreateNewProject, std::make_shared<Events::CreateNewProjectArgs>(std::string(name_buffer), std::string(scenename_buffer), std::string(folder_buffer)));
+			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::CreateNewProject, std::make_unique<Events::CreateNewProjectArgs>(std::string(name_buffer), std::string(scenename_buffer), std::string(folder_buffer)));
 			ImGui::CloseCurrentPopup();
 			Close();
 		}

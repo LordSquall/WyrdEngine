@@ -5,22 +5,25 @@
 
 namespace Osiris
 {
-	Transform3DComponent::Transform3DComponent(std::shared_ptr<GameObject> gameObject) : IBaseComponent(gameObject, SceneComponentType::Transform3D)
+	Transform3DComponent::Transform3DComponent(GameObject* gameObject) : TransformComponent(gameObject, SceneComponentType::Transform3D)
 	{
-		Initialised = true;
-	}
-
-	Transform3DComponent::Transform3DComponent(const Transform3DComponent& obj) : IBaseComponent(obj.Owner, SceneComponentType::Transform3D)
-	{
-		position = obj.position;
-		rotation = obj.rotation; 
-		scale = obj.scale;
-
 		Initialised = true;
 	}
 
 	Transform3DComponent::~Transform3DComponent()
 	{
 
+	}
+
+	jsonxx::Object Transform3DComponent::ToJson()
+	{
+		jsonxx::Object object;
+
+		return object;
+	}
+
+	bool Transform3DComponent::FromJson(jsonxx::Object& object)
+	{
+		return true;
 	}
 }

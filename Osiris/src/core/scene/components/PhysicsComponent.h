@@ -16,7 +16,7 @@ namespace Osiris {
 	class OSR_LIBRARY_API PhysicsComponent : public IBaseComponent
 	{
 	public:
-		PhysicsComponent(std::shared_ptr<GameObject> owner);
+		PhysicsComponent(GameObject* gameObject);
 		PhysicsComponent(const PhysicsComponent& obj);
 		~PhysicsComponent();
 

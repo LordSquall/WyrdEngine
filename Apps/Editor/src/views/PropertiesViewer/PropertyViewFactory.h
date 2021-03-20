@@ -6,6 +6,7 @@
 #include <core/scene/components/IBaseComponent.h>
 
 /* local includes */
+#include "views/DataModels/components/Transform2DComponentView.h"
 #include "views/DataModels/components/SpriteComponentView.h"
 #include "views/DataModels/components/PhysicsComponentView.h"
 #include "views/DataModels/components/ScriptComponentView.h"
@@ -18,24 +19,27 @@ namespace Osiris::Editor
 	class PropertyViewFactory
 	{
 	public:
-		static std::shared_ptr<IPropertiesView> Create(std::shared_ptr<IBaseComponent> baseComponent, const Osiris::GameObject* gameObject)
+		static std::unique_ptr<IPropertiesView> Create(IBaseComponent* baseComponent, const Osiris::GameObject* gameObject)
 		{
-			std::shared_ptr<IPropertiesView> newComponent;
+			std::unique_ptr<IPropertiesView> newComponent;
 
 			switch (baseComponent->GetType())
 			{
+			case SceneComponentType::Transform2D:
+				newComponent = std::make_unique<Transform2DComponentView>((Transform2DComponent*)baseComponent);
+				break;
 			case SceneComponentType::SpriteRenderer:
-				newComponent = std::make_shared<SpriteComponentView>((SpriteComponent*)&*baseComponent);
+				newComponent = std::make_unique<SpriteComponentView>((SpriteComponent*)baseComponent);
 				break;
 			case SceneComponentType::PhysicsComponent:
-				newComponent = std::make_shared<PhysicsComponentView>((PhysicsComponent*)&*baseComponent);
+				newComponent = std::make_unique<PhysicsComponentView>((PhysicsComponent*)baseComponent);
 				break;
 			case SceneComponentType::ScriptComponent:
-				newComponent = std::make_shared<ScriptComponentView>((ScriptComponent*)&*baseComponent);
+				newComponent = std::make_unique<ScriptComponentView>((ScriptComponent*)baseComponent);
 				break;
 			}
 
-			return newComponent;
+			return std::move(newComponent);
 		}
 
 	};

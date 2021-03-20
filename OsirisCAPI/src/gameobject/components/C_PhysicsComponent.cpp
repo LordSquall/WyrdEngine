@@ -12,14 +12,15 @@
 
 void* PhysicsComponent_Create(void* obj)
 {
-	std::shared_ptr<GameObject>* gameObject = (std::shared_ptr<GameObject>*)obj;
+	//std::shared_ptr<GameObject>* gameObject = (std::shared_ptr<GameObject>*)obj;
 
-	std::shared_ptr<Osiris::PhysicsComponent> physicsComponent = std::make_shared<Osiris::PhysicsComponent>(std::shared_ptr<Osiris::GameObject>((*gameObject)));
-	(*gameObject)->components.push_back(physicsComponent);
+	//std::shared_ptr<Osiris::PhysicsComponent> physicsComponent = std::make_shared<Osiris::PhysicsComponent>(std::shared_ptr<Osiris::GameObject>((*gameObject)));
+	//(*gameObject)->components.push_back(physicsComponent);
 
-	_physics->AddObject(physicsComponent.get());
+	//_physics->AddObject(physicsComponent.get());
 
-	return &*physicsComponent;
+	//return &*physicsComponent;
+	return nullptr;
 }
 
 void PhysicsComponent_SetIsTrigger(void* obj, bool isTrigger)

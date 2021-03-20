@@ -9,6 +9,7 @@
 #include <core/KeyCodes.h>
 #include <core/MouseCodes.h>
 #include <core/scene/Layer2D.h>
+#include <core/scene/SceneLayer.h>
 #include <core/scene/components/Transform2DComponent.h>
 
 /* local include */
@@ -81,7 +82,7 @@ namespace Osiris::Editor
 		if (_Scene != nullptr)
 		{
 			/* Render Each sprite layer */
-			for (auto sl : _Scene->layers2D)
+			for (auto& sl : _Scene->GetLayers())
 			{
 				for (auto go : sl->children)
 				{
@@ -107,7 +108,7 @@ namespace Osiris::Editor
 			if (_Scene != nullptr)
 			{
 				/* Render each of the sprite layers */
-				for (auto& sl : _Scene->layers2D)
+				for (auto& sl : _Scene->GetLayers())
 				{
 					sl->Render(renderer, _CameraController->GetCamera().GetViewProjectionMatrix());
 				}
@@ -194,7 +195,7 @@ namespace Osiris::Editor
 				if (ImGui::MenuItem("Delete"))
 				{
 					_SelectedGameObject->parent->RemoveChild(_SelectedGameObject->uid);
-					_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(nullptr));
+					_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(nullptr));
 				}
 				ImGui::EndPopup();
 			}
@@ -348,7 +349,7 @@ namespace Osiris::Editor
 			if (_SelectedGameObject != nullptr)
 			{
 				_SelectedGameObject->parent->RemoveChild(_SelectedGameObject->uid);
-				_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(nullptr));
+				_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(nullptr));
 			}
 			break;
 		}
@@ -358,7 +359,7 @@ namespace Osiris::Editor
 
 	void SceneViewer::RenderGameObject(std::shared_ptr<GameObject> gameObject, Timestep ts, Renderer& renderer)
 	{
-		for (auto component : gameObject->components)
+		for (auto& component : gameObject->components)
 		{
 			component->Render(ts, renderer);
 		}
@@ -392,7 +393,7 @@ namespace Osiris::Editor
 	std::shared_ptr<GameObject> SceneViewer::FindGameObjectInScene(glm::vec2 inputPosition)
 	{
 		/* Query each of the layer scene objects in reverse */
-		for (std::vector<std::shared_ptr<Layer2D>>::reverse_iterator layer = _Scene->layers2D.rbegin(); layer != _Scene->layers2D.rend(); ++layer)
+		for (std::vector<std::unique_ptr<SceneLayer>>::reverse_iterator layer = _Scene->GetLayers().rbegin(); layer != _Scene->GetLayers().rend(); ++layer)
 		{
 			for (std::vector<std::shared_ptr<GameObject>>::reverse_iterator gameObject = (*layer)->children.rbegin(); gameObject != (*layer)->children.rend(); ++gameObject)
 			{
@@ -447,6 +448,6 @@ namespace Osiris::Editor
 	{
 		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
 
-		_SelectedGameObject = evtArgs.gameObject;
+		//_SelectedGameObject = evtArgs.gameObject;
 	}
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 /* local includes */
+#include <core/renderer/Renderer.h>
 #include <core/scene/GameObject.h>
 
 /* external includes */

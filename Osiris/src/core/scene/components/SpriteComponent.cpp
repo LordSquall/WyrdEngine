@@ -17,7 +17,7 @@
 
 namespace Osiris
 {
-	SpriteComponent::SpriteComponent(std::shared_ptr<GameObject> owner) : IBaseComponent(owner, SceneComponentType::SpriteRenderer)
+	SpriteComponent::SpriteComponent(GameObject* gameObject) : IBaseComponent(gameObject, SceneComponentType::SpriteRenderer)
 		, position(glm::vec2(0.0f, 0.0f)), size(glm::vec2(64.0f, 64.0f)), color({ 1.0f, 1.0f, 1.0f, 1.0f }), BatchIndex(0)
 	{
 

@@ -37,8 +37,8 @@ namespace Osiris::Editor
 		void DrawAssetUI();
 
 		std::shared_ptr<EventService> _EventService;
-		std::list<std::shared_ptr<IPropertiesView>> _PropertiesViews;
-		static std::shared_ptr<Osiris::GameObject> _SelectedGameObject;
+		std::vector<std::unique_ptr<IPropertiesView>> _PropertiesViews;
+		static Osiris::GameObject* _SelectedGameObject;
 		static std::shared_ptr<Resource> _SelectedAsset;
 	};
 }

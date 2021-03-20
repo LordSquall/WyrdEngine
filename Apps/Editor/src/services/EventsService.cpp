@@ -33,12 +33,12 @@ namespace Osiris::Editor
 		}
 	}
 
-	void EventService::Publish(Events::EventType type, std::shared_ptr<Events::EventArgs> args, bool enforceMainThread)
+	void EventService::Publish(Events::EventType type, std::unique_ptr<Events::EventArgs> args, bool enforceMainThread)
 	{
 		/* we should make sure all events are processed on the main thread */
 		if (std::this_thread::get_id() == Application::Get().GetMainThreadID() && enforceMainThread == true)
 		{
-			_BackgroundEvents.push_back({ type, args });
+			_BackgroundEvents.push_back({ type, std::move(args) });
 		}
 		else
 		{

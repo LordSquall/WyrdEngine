@@ -9,7 +9,7 @@
 
 namespace Osiris
 {
-	ScriptComponent::ScriptComponent(std::shared_ptr<GameObject> owner) : IBaseComponent(owner, SceneComponentType::ScriptComponent)
+	ScriptComponent::ScriptComponent(GameObject* gameObject) : IBaseComponent(gameObject, SceneComponentType::ScriptComponent)
 	{
 		Initialised = true;
 	}

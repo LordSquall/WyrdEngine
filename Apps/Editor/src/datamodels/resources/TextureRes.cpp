@@ -28,7 +28,7 @@ namespace Osiris::Editor
 			_texture = ServiceManager::Get<ResourceService>(ServiceManager::Resources)->GetDefaultTexture()->GetTexture();
 
 			/* swap an event to trigger the load on the main thread */
-			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::LoadAsset, std::make_shared<Events::LoadAssetArgs>(this));
+			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::LoadAsset, std::make_unique<Events::LoadAssetArgs>(this));
 		}
 		else
 		{

@@ -6,6 +6,7 @@
 #include <core/Application.h>
 #include <core/Layer.h>
 #include <core/scene/Layer2D.h>
+#include <core/scene/SceneLayer2D.h>
 #include <core/scene/components/Transform2DComponent.h>
 #include <core/scene/components/SpriteComponent.h>
 #include <core/scene/components/ScriptComponent.h>
@@ -17,7 +18,7 @@
 
 namespace Osiris::Editor
 {
-	SpriteLayerEditor::SpriteLayerEditor(EditorLayer* editorLayer) : EditorViewBase("Sprite Layer Editor", editorLayer), _SelectedGameObject(nullptr), _SelectedLayer2D(nullptr) { }
+	SpriteLayerEditor::SpriteLayerEditor(EditorLayer* editorLayer) : EditorViewBase("Sprite Layer Editor", editorLayer), _SelectedGameObject(nullptr), _SelectedLayer2D(nullptr), _SelectedSceneLayer(nullptr), _SelectedSceneLayerIdx(0) { }
 
 	SpriteLayerEditor::~SpriteLayerEditor() { }
 
@@ -31,6 +32,10 @@ namespace Osiris::Editor
 		_EventService->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(SpriteLayerEditor::OnSelectedGameObjectChanged));
 
 		/* cache icons */
+		_Layer2DIcon = _ResourceService->GetIconLibrary().GetIcon("common", "layers_2d");
+		_GameObjectIcon = _ResourceService->GetIconLibrary().GetIcon("common", "gameobject");
+		_LockIcon = _ResourceService->GetIconLibrary().GetIcon("common", "lock");
+		_EyeIcon = _ResourceService->GetIconLibrary().GetIcon("common", "eye");
 		_LayerRenameIcon = _ResourceService->GetIconLibrary().GetIcon("common", "layer_rename");
 	}
 
@@ -40,157 +45,128 @@ namespace Osiris::Editor
 		
 		if (_WorkspaceService->IsSceneLoaded())
 		{
-			/* retrieve a pointer to the loaded scenes layer data structure */
-			auto layers = &_WorkspaceService->GetLoadedScene()->layers2D;
-
-			ImGui::PushID("layer_combobox");
-			if (ImGui::BeginCombo("##nolabel", (_SelectedLayer2D != nullptr) ? _SelectedLayer2D->name.c_str() : NULL, 0))
+			if (ImGui::CollapsingHeader("Layers", ImGuiTreeNodeFlags_DefaultOpen))
 			{
-				for (int n = 0; n < layers->size(); n++)
+				ImGui::BeginChild("_LayerStackViewChild", ImVec2(ImGui::GetWindowContentRegionWidth(), ImGui::GetWindowSize().y * .25f));
+				if (ImGui::BeginTable("spriteLayerTable", 2 ))
 				{
-					bool selectedLayer = (_SelectedLayer2D == layers->at(n));
-					if (ImGui::Selectable(layers->at(n)->name.c_str(), selectedLayer))
-						_SelectedLayer2D = layers->at(n);
-					if (selectedLayer)
-						ImGui::SetItemDefaultFocus();
-				}
-				ImGui::EndCombo();
-			}
-			ImGui::PopID();
+					ImGui::TableSetupColumn("Name");
+					ImGui::TableSetupColumn("UID");
+					ImGui::TableSetupScrollFreeze(0, 1); // Make row always visible
+					ImGui::TableHeadersRow();
 
-			/* Add New Layer button */
-			ImGui::SameLine();
-			if (ImGui::Button("+") == true)
-			{
-				std::shared_ptr<Layer2D> newLayer2D = std::make_shared<Layer2D>();
-				newLayer2D->Initialise();
-				newLayer2D->name = std::string("New Layer " + std::to_string(layers->size() + 1));
-
-				layers->push_back(newLayer2D);
-				_SelectedLayer2D = newLayer2D;
-			}
-
-			/* Remove Current selected Layer button - Only want this button to appear if a layer to currently selected */
-			if (_SelectedLayer2D != nullptr)
-			{
-				ImGui::SameLine();
-
-				if (ImGui::TextButton("-", (layers->size() > 1)) == true)
-				{
-					auto target = std::find(layers->begin(), layers->end(), _SelectedLayer2D);
-					layers->erase(target);
-					_SelectedLayer2D = *layers->begin();
-				}
-
-				ImGui::SameLine();
-
-				
-				if (ImGui::IconButton(_LayerRenameIcon, 1, true, ImVec2(16.0f, 16.0f)) == true)
-					ImGui::OpenPopup("Rename Layer");
-
-				if (ImGui::BeginPopupModal("Rename Layer", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-				{
-					ImGui::InputText(_SelectedLayer2D->name.c_str(), &layerName[0], 64);
-					if (ImGui::Button("Confirm"))
+					int rowIndexCnt = 0;
+					for (const auto& layer : _WorkspaceService->GetLoadedScene()->GetLayers())
 					{
-						_SelectedLayer2D->name = layerName;
-						ImGui::CloseCurrentPopup();
+						bool selectedLayer = (_SelectedSceneLayer != nullptr) && _SelectedSceneLayer->GetUID() == layer->GetUID(); 
+
+						ImGui::PushID(&*layer);
+						ImGui::TableNextRow(ImGuiTableRowFlags_None, ImGui::GetTextLineHeightWithSpacing() * 1.2f);
+						ImGui::TableNextColumn();
+						if (ImGui::Selectable(layer->GetName().c_str(), &selectedLayer, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowItemOverlap))
+						{
+							_SelectedSceneLayer = &*layer;
+							_SelectedSceneLayerIdx = rowIndexCnt;
+						}
+
+						if (ImGui::BeginPopupContextItem())
+						{
+							ImGui::Text("%s : %s", layer->GetName().c_str(), layer->GetUID().str().c_str());
+							ImGui::EndPopup();
+						}
+
+						ImGui::TableNextColumn();
+						ImGui::Text("%s", layer->GetUID().str().c_str());
+						ImGui::PopID();
+
+						rowIndexCnt++;
 					}
-					ImGui::SameLine();
-					if (ImGui::Button("Cancel"))
-						ImGui::CloseCurrentPopup();
-					ImGui::EndPopup();
+					
+					ImGui::EndTable();
 				}
+
+				ImGui::EndChild();
 			}
 
-			/* Sprite Layer List */
-			int spriteIdx = 0;
-
-			ImGui::BeginChild("gameobject_inner");
-			if (_SelectedLayer2D != nullptr && !_SelectedLayer2D->children.empty())
+			/* layer stack  controls */
+			if (ImGui::TextButton("UP", (_SelectedSceneLayer != nullptr) && _SelectedSceneLayerIdx > 0))
 			{
-				for (int i = 0; i < _SelectedLayer2D->children.size(); i++)
-				{
-					RenderGameObjectTreeNode(_SelectedLayer2D->children[i]);
-				}
+				/* swap the current layer with the previous */
+				std::iter_swap(_WorkspaceService->GetLoadedScene()->GetLayers().begin() + _SelectedSceneLayerIdx, _WorkspaceService->GetLoadedScene()->GetLayers().begin() + _SelectedSceneLayerIdx - 1);
+				_SelectedSceneLayerIdx--;
 			}
-			else
+			ImGui::SameLine();
+			if (ImGui::TextButton("DOWN", (_SelectedSceneLayer != nullptr) && _SelectedSceneLayerIdx < (_WorkspaceService->GetLoadedScene()->GetLayers().size() - 1)))
 			{
-				ImGui::Text("No sprites :(");
+				/* swap the current layer with the next */
+				std::iter_swap(_WorkspaceService->GetLoadedScene()->GetLayers().begin() + _SelectedSceneLayerIdx, _WorkspaceService->GetLoadedScene()->GetLayers().begin() + _SelectedSceneLayerIdx + 1);
+				_SelectedSceneLayerIdx++;
+			}
+			ImGui::SameLine();
+			if (ImGui::TextButton("DUP", _SelectedSceneLayer != nullptr))
+			{
+				// TODO
+			}
+			ImGui::SameLine();
+			if (ImGui::TextButton("DEL", _SelectedSceneLayer != nullptr))
+			{
+				/* remove the selected layer */
+				_WorkspaceService->GetLoadedScene()->RemoveLayer(_SelectedSceneLayer->GetUID());
+				_SelectedSceneLayer = nullptr;
+			}
+			ImGui::SameLine();
+			if (ImGui::TextButton("ADD", true))
+			{
+				/* create a new layer and add to scene */
+				std::unique_ptr<SceneLayer> newSceneLayer = std::make_unique<SceneLayer2D>("New Layer");
+				_WorkspaceService->GetLoadedScene()->AddLayer(std::move(newSceneLayer));
 			}
 
-			/* Sprite list context menu */
-			if(ImGui::BeginPopupContextWindow() == true)
-			{ 
-				if (ImGui::Selectable("Add Child") == true)
+			if (ImGui::CollapsingHeader("Layer Hierarchy", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				ImGui::BeginChild("_LayerViewChild", ImVec2(ImGui::GetWindowContentRegionWidth(), ImGui::GetWindowSize().y * .50f));
+				if (_SelectedSceneLayer != nullptr)
 				{
-					if (_SelectedGameObject != nullptr)
-					{
-						_SelectedGameObject->AddChild(CreateEmptyGameObject());
+					if (!_SelectedSceneLayer->GetGameObjects().empty())
+					{	
+						for (auto& gameobject : _SelectedSceneLayer->GetGameObjects())
+						{
+							RenderGameObjectTreeNode(gameobject);
+						}
 					}
 					else
 					{
-						_SelectedLayer2D->AddChild(CreateEmptyGameObject());
+						ImGui::Text("No Scene Objects in Layer");
 					}
 				}
-				if (ImGui::BeginMenu("Add Component", _SelectedGameObject != nullptr))
+				else
 				{
-					if (ImGui::MenuItem("Sprite") == true)
-					{
-						std::shared_ptr<SpriteComponent> newComponent = std::make_shared<SpriteComponent>(_SelectedGameObject);
-						newComponent->Initialise();
-						newComponent->SetTexture(Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)]);
-						(Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)]);
-						newComponent->spriteLayer = _SelectedLayer2D;
-						
-						_SelectedLayer2D->RegisterSprite(newComponent);
-						
-						_SelectedGameObject->AddComponent(newComponent);
-
-						_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
-					}
-					if (ImGui::MenuItem("Script") == true)
-					{
-						std::shared_ptr<ScriptComponent> newComponent = std::make_shared<ScriptComponent>(_SelectedGameObject);
-						newComponent->Initialise();
-						_SelectedGameObject->AddComponent(newComponent);
-
-						_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
-					}
-					if (ImGui::MenuItem("Physics") == true)
-					{
-						std::shared_ptr<PhysicsComponent> newComponent = std::make_shared<PhysicsComponent>(_SelectedGameObject);
-						newComponent->Initialise();
-						_SelectedGameObject->AddComponent(newComponent);
-
-						_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
-					}
-
-					ImGui::EndMenu();
+					ImGui::Text("No Scene Layer Selected");
 				}
 
-				ImGui::Separator();
-				if (ImGui::MenuItem("Delete") == true)
-				{
-					if (_SelectedGameObject != nullptr)
-					{
-						if (_SelectedGameObject->parent == nullptr)
-							_SelectedLayer2D->RemoveChild(_SelectedGameObject->uid);
-						else
-							_SelectedGameObject->parent->RemoveChild(_SelectedGameObject->uid);
-					}
-				}
-				ImGui::EndPopup();
+				ImGui::EndChild();
 			}
-			ImGui::EndChild();
+
+			/* layer controls */
+			if (ImGui::TextButton("ADD_GO", _SelectedSceneLayer != nullptr))
+			{
+				std::unique_ptr<GameObject> go = std::make_unique<GameObject>("Game Object");
+				go->uid = UIDUtils::Create();
+
+				go->transform = std::move(std::make_unique<Transform2DComponent>(&*go));
+
+				/* create a new gameobject and add to current layer */
+				_SelectedSceneLayer->AddChild(std::move(go));
+			}
 		}
 	}
 
 	void SpriteLayerEditor::OnSceneOpened(Events::EventArgs& args)
 	{
-		if (_WorkspaceService->GetLoadedScene()->layers2D.size() > 0)
+		if (!_WorkspaceService->GetLoadedScene()->GetLayers().empty())
 		{
-			_SelectedLayer2D = _WorkspaceService->GetLoadedScene()->layers2D[0];
+			_SelectedSceneLayer = &*_WorkspaceService->GetLoadedScene()->GetLayers()[0];
+			_SelectedSceneLayerIdx = 0;
 		}
 	}
 
@@ -201,8 +177,7 @@ namespace Osiris::Editor
 		_SelectedGameObject = evtArgs.gameObject;
 	}
 
-
-	void SpriteLayerEditor::RenderGameObjectTreeNode(std::shared_ptr<GameObject> gameObject)
+	void SpriteLayerEditor::RenderGameObjectTreeNode(std::unique_ptr<GameObject>& gameObject)
 	{
 		ImGui::PushID(gameObject->uid.str().c_str());
 
@@ -210,7 +185,7 @@ namespace Osiris::Editor
 		ImGuiTreeNodeFlags TreeNodeEx_flags = ImGuiTreeNodeFlags_None;
 		TreeNodeEx_flags |= ImGuiTreeNodeFlags_OpenOnArrow;
 		gameObject->children.size() == 0 ? TreeNodeEx_flags |= ImGuiTreeNodeFlags_Leaf : ImGuiTreeNodeFlags_None;			/* add children */
-		gameObject == _SelectedGameObject ? TreeNodeEx_flags |= ImGuiTreeNodeFlags_Selected : ImGuiTreeNodeFlags_None;		/* currently selected */
+		(&*gameObject == _SelectedGameObject) ? TreeNodeEx_flags |= ImGuiTreeNodeFlags_Selected : ImGuiTreeNodeFlags_None;		/* currently selected */
 		
 		if (ImGui::TreeNodeEx(gameObject->name.c_str(), TreeNodeEx_flags))
 		{
@@ -224,7 +199,7 @@ namespace Osiris::Editor
 			/* clicking functions */
 			if (ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemClicked(ImGuiMouseButton_Right))
 			{
-				_DraggingSelectedGameObject = gameObject;
+				_DraggingSelectedGameObject = &*gameObject;
 			}
 
 			if (ImGui::IsItemHovered())
@@ -241,29 +216,18 @@ namespace Osiris::Editor
 						_DraggingSelectedGameObject = nullptr;
 
 						/* Fire a change of selection event */
-						_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
+						_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
 					}
 				}
 			}
 
-			for (int i = 0; i < gameObject->children.size(); i++)
+			for (auto& go : gameObject->GetGameObjects())
 			{
-				RenderGameObjectTreeNode(gameObject->children[i]);
+				RenderGameObjectTreeNode(go);
 			}
 
 			ImGui::TreePop();
 		}
 		ImGui::PopID();
-	}
-
-	std::shared_ptr<GameObject> SpriteLayerEditor::CreateEmptyGameObject()
-	{
-		std::shared_ptr<GameObject> go = std::make_shared<GameObject>("Game Object");
-		go->uid = UIDUtils::Create();
-
-		/* add transform 2D */
-		go->transform2D = std::make_shared<Transform2DComponent>(go);
-
-		return go;
 	}
 }

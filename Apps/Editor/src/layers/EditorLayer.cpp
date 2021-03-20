@@ -8,7 +8,6 @@
 #include "events/ApplicationEvent.h"
 #include "services/ServiceManager.h"
 #include "services/SimulationService.h"
-#include "layers/EditorRenderer2DLayer.h"
 #include "views/SceneViewer/SceneViewer.h"
 #include "views/PropertiesViewer/PropertiesViewer.h"
 #include "views/LayerViewer/LayerViewer.h"
@@ -41,8 +40,6 @@ namespace Osiris::Editor
 	static ImFont*		s_defaultFont							= nullptr;
 	Utils util;
 
-	static EditorRenderer2DLayer* renderer2DLayer;
-
 	EditorLayer::EditorLayer()
 		: Layer("EditorLayer")
 	{
@@ -71,9 +68,6 @@ namespace Osiris::Editor
 		/* cache icon resources */
 		_playButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "sim_play");
 		_stopButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "sim_stop");
-
-		/* retrieve the renderer 2D layer */
-		renderer2DLayer = (EditorRenderer2DLayer*)Application::Get().GetLayerStack()->FindLayer("Editor2DLayer");
 
 		/* setup event bindings */
 		_eventService->Subscribe(Editor::Events::EventType::SceneOpened, EVENT_FUNC(EditorLayer::OnSceneOpened));
@@ -413,7 +407,7 @@ namespace Osiris::Editor
 			bool showFlag = *(it->second)->GetShowFlagRef();
 			if (showFlag == true)
 			{
-				(it->second)->OnUpdate(ts);
+				//(it->second)->OnUpdate(ts);
 
 				(it->second)->OnRender(ts, renderer);
 

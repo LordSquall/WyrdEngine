@@ -388,6 +388,12 @@ namespace Osiris::Editor
 		/* configure properties */
 		layer2D->name = json.get<jsonxx::String>("name", "untitled");
 
+		/* retrieve the layer2D uid */
+		if (json.has<jsonxx::String>("uid"))
+			layer2D->uid = UID(json.get<jsonxx::String>("uid"));
+		else
+			layer2D->uid = UIDUtils::Create();
+
 		/* process game objects */
 		if (json.has<jsonxx::Array>("gameObjects") == true)
 		{
@@ -413,6 +419,7 @@ namespace Osiris::Editor
 
 		/* base properties */
 		layer2DJson << "name" << layer2D->name;
+		layer2DJson << "uid" << layer2D->uid.str();
 		
 		/* write game objects */
 		jsonxx::Array gameObjectJson;
@@ -441,34 +448,21 @@ namespace Osiris::Editor
 
 			if (o.parse(ss.str()) == true)
 			{
-				/* scene name */
-				scene.name = path;
+				scene.FromJson(o);
+				
+				///* layer 2D */
+				//if (o.has<jsonxx::Array>("layers2D") == true)
+				//{
+				//	for (size_t i = 0; i < o.get<jsonxx::Array>("layers2D").size(); i++)
+				//	{
+				//		//scene.layers2D.push_back(Read_Layer2D(o.get<jsonxx::Array>("layers2D").get<jsonxx::Object>((int)i)));
+				//	}
+				//}
 
-				/* background color */
-				if (o.has<jsonxx::Array>("bgcolor") == true)
-					Read_Color(o.get<jsonxx::Array>("bgcolor"), &scene.bgcolor);
-
-				/* camera position */
-				if (o.has<jsonxx::Array>("cameraPosition") == true)
-					Read_Vec3(o.get<jsonxx::Array>("cameraPosition"), &scene.cameraPosition);
-
-				/* camera Zoom */
-				if (o.has<jsonxx::Number>("cameraZoom") == true)
-					scene.cameraZoom = (float)o.get<jsonxx::Number>("cameraZoom");
-
-				/* layer 2D */
-				if (o.has<jsonxx::Array>("layers2D") == true)
-				{
-					for (size_t i = 0; i < o.get<jsonxx::Array>("layers2D").size(); i++)
-					{
-						scene.layers2D.push_back(Read_Layer2D(o.get<jsonxx::Array>("layers2D").get<jsonxx::Object>((int)i)));
-					}
-				}
-
-				for (auto& resolveProperty : _resolveProperties)
-				{
-					resolveProperty.second->Resolve(scene);
-				}
+				//for (auto& resolveProperty : _resolveProperties)
+				//{
+				//	resolveProperty.second->Resolve(scene);
+				//}
 
 			}
 			else
@@ -487,27 +481,28 @@ namespace Osiris::Editor
 	SceneLoader::Result SceneLoader::Save(std::string path, Scene& scene)
 	{
 		SceneLoader::Result result = Success;
-		jsonxx::Object o;
 
-		/*  background color */
-		Write_Color(o, "bgcolor", &scene.bgcolor);
+		jsonxx::Object o = scene.ToJson();
 
-		/* camera position */
-		Write_Vec3(o, "cameraPosition", &scene.cameraPosition[0]);
-		
-		/* camera Zoom */
-		o << "cameraZoom" << scene.cameraZoom;
+		///*  background color */
+		//Write_Color(o, "bgcolor", &scene.bgcolor);
 
-		/* layer 2D */
-		jsonxx::Array layer2DJson;
+		///* camera position */
+		//Write_Vec3(o, "cameraPosition", &scene.cameraPosition[0]);
+		//
+		///* camera Zoom */
+		//o << "cameraZoom" << scene.cameraZoom;
 
-		for (size_t i = 0; i < scene.layers2D.size(); i++)
-		{
-			/* create new Layer2D object array */
-			layer2DJson << Write_Layer2D(scene.layers2D[i]);
-		}
+		///* layer 2D */
+		//jsonxx::Array layer2DJson;
 
-		o << "layers2D" << layer2DJson;
+		//for (size_t i = 0; i < scene.GetLayers().size(); i++)
+		//{
+		//	/* create new Layer2D object array */
+		//	layer2DJson << Write_Layer2D(scene.GetLayers[i]);
+		//}
+
+		//o << "layers2D" << layer2DJson;
 
 		std::ofstream out(path);
 		out << o.json();

@@ -21,7 +21,7 @@ namespace Osiris {
 	class OSR_LIBRARY_API ScriptComponent : public IBaseComponent
 	{
 	public:
-		ScriptComponent(std::shared_ptr<GameObject> owner);
+		ScriptComponent(GameObject* gameObject);
 		ScriptComponent(const ScriptComponent& obj);
 		~ScriptComponent();
 

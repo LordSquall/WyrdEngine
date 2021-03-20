@@ -18,7 +18,10 @@ namespace ImGui
 	bool TextButton(const char* label, bool enabled = true, const ImVec2& size = { 0, 0 }, ImGuiButtonFlags = 0);
 
 	/* Image */
-	void Image(std::shared_ptr<Osiris::Editor::Icon> icon, const ImVec2& size, const ImVec4& tint_col = ImVec4(1, 1, 1, 1), const ImVec4& border_col = ImVec4(1, 1, 1, 1));
+	void Image(const Osiris::Editor::Icon& icon, const ImVec2& size, const ImVec4& tint_col = ImVec4(1, 1, 1, 1), const ImVec4& border_col = ImVec4(1, 1, 1, 1));
+
+	/* Misc */
+	bool CollapsingHeader(const Osiris::Editor::Icon& icon, const char* label, ImGuiTreeNodeFlags flags, const char* label_end = (const char*)0);
 
 	/* Vector Outputs */
 	void LabelVec2(const char* label, glm::vec2& vector, const std::string& xcompLabel = "x", const std::string& ycompLabel = "y");

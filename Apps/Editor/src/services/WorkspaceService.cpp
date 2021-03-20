@@ -4,6 +4,7 @@
 #include <osrpch.h>
 #include <core/Log.h>
 #include <core/scene/Layer2D.h>
+#include <core/scene/SceneLayer2D.h>
 
 /* local includes */
 #include "WorkspaceService.h"
@@ -30,16 +31,16 @@ namespace Osiris::Editor
 			switch (action)
 			{
 			case efsw::Actions::Add:
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddFileEntry, std::make_shared<Events::AddFileEntryArgs>(dir, dir + "\\" + filename, isDir), true);
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddFileEntry, std::make_unique<Events::AddFileEntryArgs>(dir, dir + "\\" + filename, isDir), true);
 				break;
 			case efsw::Actions::Delete:
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::DeleteFileEntry, std::make_shared<Events::DeleteFileEntryArgs>(dir, dir + "\\" + filename, isDir), true);
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::DeleteFileEntry, std::make_unique<Events::DeleteFileEntryArgs>(dir, dir + "\\" + filename, isDir), true);
 				break;
 			case efsw::Actions::Modified:				
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ModifiedFileEntry, std::make_shared<Events::ModifiedFileEntryArgs>(dir, dir + "\\" + filename, isDir), true);
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ModifiedFileEntry, std::make_unique<Events::ModifiedFileEntryArgs>(dir, dir + "\\" + filename, isDir), true);
 				break;
 			case efsw::Actions::Moved:
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::RenameFileEntry, std::make_shared<Events::RenameFileEntryArgs>(dir, dir + "\\" + filename, oldFilename, isDir), true);
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::RenameFileEntry, std::make_unique<Events::RenameFileEntryArgs>(dir, dir + "\\" + filename, oldFilename, isDir), true);
 
 				break;
 			default:
@@ -128,7 +129,7 @@ namespace Osiris::Editor
 
 			/* Send a Project Loaded Event */
 			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ProjectLoaded,
-				std::make_shared<Events::ProjectLoadedArgs>(_LoadedProject->initialScene, _LoadedProject, Utils::GetPath(_LoadedProjectPath)));
+				std::make_unique<Events::ProjectLoadedArgs>(_LoadedProject->initialScene, _LoadedProject, Utils::GetPath(_LoadedProjectPath)));
 		}
 	}
 
@@ -195,7 +196,7 @@ namespace Osiris::Editor
 
 			/* Send a Project Loaded Event */
 			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ProjectLoaded,
-				std::make_shared<Events::ProjectLoadedArgs>(_LoadedProject->initialScene, _LoadedProject, Utils::GetPath(projectfile)));
+				std::make_unique<Events::ProjectLoadedArgs>(_LoadedProject->initialScene, _LoadedProject, Utils::GetPath(projectfile)));
 
 
 			if (Utils::FileExists(_LoadedProject->initialScene) == true)
@@ -225,13 +226,13 @@ namespace Osiris::Editor
 		_LoadedScene = std::make_shared<Scene>(name);
 
 		/* Add a default layer into the new scene */
-		_LoadedScene->layers2D.push_back(std::make_shared<Layer2D>("Default Layer"));
+		_LoadedScene->AddLayer(std::move(std::make_unique<SceneLayer2D>("Initial Layer")));
 
 		/* Mark scene loaded */
 		IsSceneLoaded(true);
 
 		/* fire scene loaded event on the editor system */
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Editor::Events::EventType::SceneOpened, std::make_shared<Events::SceneOpenedArgs>(_LoadedScene));
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Editor::Events::EventType::SceneOpened, std::make_unique<Events::SceneOpenedArgs>(_LoadedScene));
 
 		return true;
 	}
@@ -266,7 +267,7 @@ namespace Osiris::Editor
 			_LoadedScenePath = path;
 
 			/* fire scene loaded event on the editor system */
-			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Editor::Events::EventType::SceneOpened, std::make_shared<Events::SceneOpenedArgs>(_LoadedScene));
+			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Editor::Events::EventType::SceneOpened, std::make_unique<Events::SceneOpenedArgs>(_LoadedScene));
 
 			return true;
 		}
@@ -280,7 +281,7 @@ namespace Osiris::Editor
 	bool WorkspaceService::CloseScene()
 	{
 		/* Send a Scene Close Event */
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::SceneClosed, std::make_shared<Events::SceneClosedArgs>());
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::SceneClosed, std::make_unique<Events::SceneClosedArgs>());
 
 		_LoadedScene = nullptr;
 

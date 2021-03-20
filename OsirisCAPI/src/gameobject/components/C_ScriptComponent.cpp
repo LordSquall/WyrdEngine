@@ -18,20 +18,21 @@
 void* ScriptComponent_Create(void* obj)
 {
 	/* cast the target gameobject */
-	std::shared_ptr<Osiris::GameObject>* gameObject = (std::shared_ptr<Osiris::GameObject>*)obj;
+	//std::shared_ptr<Osiris::GameObject>* gameObject = (std::shared_ptr<Osiris::GameObject>*)obj;
 
 	/* create a new script component */
-	std::shared_ptr<Osiris::ScriptComponent> scriptComponent = std::make_shared<Osiris::ScriptComponent>(std::shared_ptr<Osiris::GameObject>((*gameObject)));
-	scriptComponent->Initialise();
+	//std::shared_ptr<Osiris::ScriptComponent> scriptComponent = std::make_shared<Osiris::ScriptComponent>(std::shared_ptr<Osiris::GameObject>((*gameObject)));
+	//scriptComponent->Initialise();
 
 	/* retrieve the matching managed object */
-	MonoObject* exception = nullptr;
-	scriptComponent->ManagedObject = mono_runtime_invoke((MonoMethod*)_behaviour->GetClass("ObjectStore")->Properties["LastCreatedObject"]->GetGetter(), nullptr, nullptr, &exception);
-	if (exception != nullptr) mono_print_unhandled_exception(exception);
+	//MonoObject* exception = nullptr;
+	//scriptComponent->ManagedObject = mono_runtime_invoke((MonoMethod*)_behaviour->GetClass("ObjectStore")->Properties["LastCreatedObject"]->GetGetter(), nullptr, nullptr, &exception);
+	//if (exception != nullptr) mono_print_unhandled_exception(exception);
 
-	(*gameObject)->components.push_back(scriptComponent);
+	//(*gameObject)->components.push_back(scriptComponent);
 
-	return &(*gameObject)->components.back();
+	//return &(*gameObject)->components.back();
+	return nullptr;
 }
 
 void ScriptComponent_Enabled(void* obj, bool enable)

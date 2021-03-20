@@ -128,7 +128,7 @@ namespace Osiris::Editor
 		if (Application::Get().GetMainThreadID() != std::this_thread::get_id())
 		{
 			/* swap an event to trigger the load on the main thread */
-			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::BuildBehaviourModel, std::make_shared<Events::BuildBehaviourModelArgs>());
+			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::BuildBehaviourModel, std::make_unique<Events::BuildBehaviourModelArgs>());
 		}
 		else
 		{

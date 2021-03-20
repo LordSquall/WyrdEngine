@@ -247,7 +247,7 @@ namespace Osiris::Editor
 	{
 		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
 
-		_GameObject = evtArgs.gameObject;
+		//_GameObject = evtArgs.gameObject;
 	}
 
 
