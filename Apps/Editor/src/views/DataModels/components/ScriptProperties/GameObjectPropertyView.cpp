@@ -18,7 +18,7 @@ namespace Osiris::Editor
 	{
 		GameObject* gameObject = _Property->GetValue();
 
-		ImGui::Text(gameObject != nullptr ? gameObject->name.c_str() : "<< Not Set >>");
+		ImGui::Text("GameObject: %s", gameObject != nullptr ? gameObject->name.c_str() : "<< Not Set >>");
 
 		if (gameObject != nullptr)
 		{
@@ -32,12 +32,19 @@ namespace Osiris::Editor
 
 		if (ImGui::BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_GAMEOBJECT"))
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GAMEOBJECT_PAYLOAD"))
 			{
-				std::shared_ptr<GameObject>* gameObject = (std::shared_ptr<GameObject>*)payload->Data;
-				OSR_TRACE("UID: {0}", (*gameObject)->uid.str());
+				UID* gameobjectUID = (UID*)payload->Data;
+				GameObject* foundGameObject = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace)->GetLoadedScene()->FindGameObject(*gameobjectUID);
+				if (foundGameObject != nullptr)
+				{
+					_Property->SetValue(foundGameObject);
+				}
+				else
+				{
+					OSR_TRACE("Unable to find gameobject UID: {0}", gameobjectUID->str());
+				}
 
-				_Property->SetValue(gameObject->get());
 			}
 			ImGui::EndDragDropTarget();
 		}

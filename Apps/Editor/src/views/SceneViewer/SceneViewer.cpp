@@ -84,7 +84,7 @@ namespace Osiris::Editor
 			/* Render Each sprite layer */
 			for (auto& sl : _Scene->GetLayers())
 			{
-				for (auto go : sl->children)
+				for (auto& go : sl->GetGameObjects())
 				{
 					UpdateGameObject(go, ts, false);
 				}
@@ -110,7 +110,8 @@ namespace Osiris::Editor
 				/* Render each of the sprite layers */
 				for (auto& sl : _Scene->GetLayers())
 				{
-					sl->Render(renderer, _CameraController->GetCamera().GetViewProjectionMatrix());
+					if (sl->IsVisible())
+						sl->Render(renderer, _CameraController->GetCamera().GetViewProjectionMatrix());
 				}
 
 				if (_SelectedGameObject)
@@ -194,7 +195,6 @@ namespace Osiris::Editor
 			{
 				if (ImGui::MenuItem("Delete"))
 				{
-					_SelectedGameObject->parent->RemoveChild(_SelectedGameObject->uid);
 					_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(nullptr));
 				}
 				ImGui::EndPopup();
@@ -348,7 +348,6 @@ namespace Osiris::Editor
 		case OSR_KEY_DELETE:
 			if (_SelectedGameObject != nullptr)
 			{
-				_SelectedGameObject->parent->RemoveChild(_SelectedGameObject->uid);
 				_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(nullptr));
 			}
 			break;
@@ -357,47 +356,43 @@ namespace Osiris::Editor
 		return true;
 	}
 
-	void SceneViewer::RenderGameObject(std::shared_ptr<GameObject> gameObject, Timestep ts, Renderer& renderer)
+	void SceneViewer::RenderGameObject(std::unique_ptr<GameObject>& gameObject, Timestep ts, Renderer& renderer)
 	{
 		for (auto& component : gameObject->components)
 		{
 			component->Render(ts, renderer);
 		}
 
-		for (auto child : gameObject->children)
+		for (auto& child : gameObject->GetGameObjects())
 		{
 			RenderGameObject(child, ts, renderer);
 		}
 	}
 
-	void SceneViewer::UpdateGameObject(std::shared_ptr<GameObject> gameObject, Timestep ts, bool updateTransform)
+	void SceneViewer::UpdateGameObject(std::unique_ptr<GameObject>& gameObject, Timestep ts, bool updateTransform)
 	{
 		// check if the game has an invalid matrix as this will need to be propogated
-		bool transformPropogation = gameObject->transform2D->IsMatrixValid();
 
-		if (updateTransform == true)
-			gameObject->transform2D->SetMatrixValid(false);
-
-		gameObject->transform2D->Recalculate();
+		gameObject->transform->Recalculate();
 		for (auto& component : gameObject->components)
 		{
 			component->Recalculate();
 		}
 
-		for (auto& child : gameObject->children)
+		for (auto& child : gameObject->GetGameObjects())
 		{
-			UpdateGameObject(child, ts, transformPropogation);
+			//UpdateGameObject(child, ts, transformPropogation);
 		}
 	}
 
-	std::shared_ptr<GameObject> SceneViewer::FindGameObjectInScene(glm::vec2 inputPosition)
+	GameObject* SceneViewer::FindGameObjectInScene(glm::vec2 inputPosition)
 	{
 		/* Query each of the layer scene objects in reverse */
 		for (std::vector<std::unique_ptr<SceneLayer>>::reverse_iterator layer = _Scene->GetLayers().rbegin(); layer != _Scene->GetLayers().rend(); ++layer)
 		{
-			for (std::vector<std::shared_ptr<GameObject>>::reverse_iterator gameObject = (*layer)->children.rbegin(); gameObject != (*layer)->children.rend(); ++gameObject)
+			for (std::vector<std::unique_ptr<GameObject>>::reverse_iterator gameObject = (*layer)->GetGameObjects().rbegin(); gameObject != (*layer)->GetGameObjects().rend(); ++gameObject)
 			{
-				std::shared_ptr<GameObject> foundGameObject = FindGameObjectInGameObject(*gameObject, inputPosition);
+				GameObject* foundGameObject = FindGameObjectInGameObject((*gameObject).get(), inputPosition);
 				if (foundGameObject != nullptr)
 				{
 					return foundGameObject;
@@ -408,17 +403,17 @@ namespace Osiris::Editor
 		return nullptr;
 	}
 
-	std::shared_ptr<GameObject> SceneViewer::FindGameObjectInGameObject(std::shared_ptr<GameObject> gameObject, glm::vec2 inputPosition)
+	GameObject* SceneViewer::FindGameObjectInGameObject(GameObject* gameObject, glm::vec2 inputPosition)
 	{
-		for (std::vector<std::shared_ptr<GameObject>>::reverse_iterator child = gameObject->children.rbegin(); child != gameObject->children.rend(); ++child)
+		for (std::vector<std::unique_ptr<GameObject>>::reverse_iterator child = gameObject->GetGameObjects().rbegin(); child != gameObject->GetGameObjects().rend(); ++child)
 		{
-			if (FindGameObjectInGameObject(*child, inputPosition) != nullptr)
+			if (FindGameObjectInGameObject((*child).get(), inputPosition) != nullptr)
 			{
-				return *child;
+				return (*child).get();
 			}
 		}
 
-		glm::mat4 mvpInverse = glm::inverse(_CameraController->GetCamera().GetViewProjectionMatrix() * gameObject->transform2D->matrix);
+		/*glm::mat4 mvpInverse = glm::inverse(_CameraController->GetCamera().GetViewProjectionMatrix() * gameObject->transform2D->matrix);
 		glm::vec4 nearPoint = mvpInverse * glm::vec4(inputPosition, 0.0f, 1.0f);
 		Rect inputArea = { { gameObject->inputArea.x, gameObject->inputArea.y }, { 0.0, 1.0 } };
 		Rect translatedInputArea = _CameraController->GetCamera().GetViewProjectionMatrix() * inputArea;
@@ -427,7 +422,7 @@ namespace Osiris::Editor
 		if (translatedInputArea.ContainsPoint({ nearPoint.x, nearPoint.y }) == true)
 		{
 			return gameObject;
-		}
+		}*/
 
 
 		return nullptr;

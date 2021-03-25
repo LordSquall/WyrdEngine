@@ -21,6 +21,11 @@ namespace Osiris {
 		inline virtual const std::string GetManagedType() { return "Transform3DComponent"; }
 
 		/**
+		 * @brief See TransformComponent::GetModelMatrix()
+		*/
+		virtual const glm::mat4& GetModelMatrix() override { return _ModelMatrix; };
+
+		/**
 		 * @brief Serialise the gameobject into a json object
 		 * @return json object
 		*/
@@ -37,5 +42,8 @@ namespace Osiris {
 		vec3 position;
 		vec3 rotation;
 		vec3 scale;
+
+	private:
+		glm::mat4 _ModelMatrix;
 	};
 }

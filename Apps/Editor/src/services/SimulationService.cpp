@@ -171,6 +171,8 @@ namespace Osiris::Editor
 		{
 			_WorkspaceService->GetLoadedScene()->AssignScripts(Application::Get().GetBehaviourPtr());
 		}
+
+		_EventService->Publish(Events::EventType::RefreshView, std::make_unique<Events::RefreshViewEventArgs>());
 	}
 
 	std::shared_ptr<Osiris::ScriptedClass> SimulationService::GetClass(const std::string& className)

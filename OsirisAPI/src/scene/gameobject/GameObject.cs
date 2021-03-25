@@ -77,6 +77,8 @@ namespace OsirisAPI
             {
                 component.Owner = this;
                 _components[component.GetType()] = component;
+
+                Console.WriteLine("GameObject: {0} Added {1}", this.Name, component.GetType().Name);
             }
         }
         

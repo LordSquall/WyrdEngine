@@ -310,9 +310,12 @@ namespace Osiris::Editor
 			bool fileOperationsFlag = _workspaceService->IsSceneLoaded() && _workspaceService->IsProjectLoaded();
 
 			if (ImGui::MenuItem("New Scene", nullptr, nullptr, _workspaceService->IsProjectLoaded())) {
-				std::string filepath = util.SaveFileDialog("Scene Json Files", "*.scene");
-				_workspaceService->SaveSceneAs(filepath);
-				_workspaceService->LoadScene(filepath);
+				std::optional<std::string> filepath = util.SaveFile("*.scene");
+				if (filepath.has_value())
+				{
+					_workspaceService->SaveSceneAs(filepath.value());
+					_workspaceService->LoadScene(filepath.value());
+				}
 			}
 
 			if (ImGui::MenuItem("Save Scene", nullptr, nullptr, _workspaceService->IsProjectLoaded() && _workspaceService->IsSceneLoaded())) {
@@ -407,7 +410,7 @@ namespace Osiris::Editor
 			bool showFlag = *(it->second)->GetShowFlagRef();
 			if (showFlag == true)
 			{
-				//(it->second)->OnUpdate(ts);
+				(it->second)->OnUpdate(ts);
 
 				(it->second)->OnRender(ts, renderer);
 

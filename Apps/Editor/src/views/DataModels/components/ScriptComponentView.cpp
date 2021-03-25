@@ -67,7 +67,7 @@ namespace Osiris::Editor
 				}
 				else
 				{
-					_PropertyViews.push_back(std::make_unique<UnknownPropertyView>(prop.second));
+					_PropertyViews.push_back(std::make_unique<UnknownPropertyView>(prop.second, prop.second->GetTypeName()));
 				}
 			}
 		}

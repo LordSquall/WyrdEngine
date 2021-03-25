@@ -33,7 +33,7 @@ namespace Osiris {
 		inline xg::Guid GetUID() const { return _uid; }
 		inline void SetUID(xg::Guid uid) { _uid = uid; }
 
-		virtual void Initialise() {};
+		virtual bool Initialise() { return true; };
 		virtual void Setup() {};
 		virtual void Recalculate() {};
 		virtual void Render(Timestep ts, Renderer& renderer) {};

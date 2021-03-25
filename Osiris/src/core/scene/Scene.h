@@ -27,7 +27,7 @@ namespace Osiris {
 
 		inline std::vector<std::unique_ptr<SceneLayer>>& GetLayers() { return _Layers; }
 
-		std::shared_ptr<GameObject> FindGameObject(const UID uid);
+		GameObject* FindGameObject(const UID uid);
 
 		void AssignScripts(Behaviour* behaviour);
 

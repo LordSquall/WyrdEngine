@@ -44,6 +44,16 @@ namespace Osiris {
 		unsigned int CurrentCollisionState(PhysicsComponent* collisionKey);
 		void RemoveCollisionState(PhysicsComponent* collisionKey);
 
+		/**
+		 * @brief See IBaseComponent::ToJson()
+		*/
+		virtual jsonxx::Object ToJson() override;
+
+		/**
+		 * @brief See IBaseComponent::FromJson()
+		*/
+		virtual bool FromJson(jsonxx::Object& object) override;
+
 	public:
 		glm::vec2 previousPosition;
 

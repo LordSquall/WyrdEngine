@@ -16,40 +16,41 @@
 
 const char* GameObject_Name_Get(void* obj)
 {
-	std::shared_ptr<GameObject>* gameObject = (std::shared_ptr<GameObject>*)obj;
+	GameObject* gameObject = (GameObject*)obj;
 
-	return (*gameObject)->name.c_str();
+	return gameObject->name.c_str();
 }
 
 int GameObject_UID_Get(void* obj)
 {
-	std::shared_ptr<GameObject>* gameObject = (std::shared_ptr<GameObject>*)obj;
-	return (intptr_t)&(*gameObject)->uid;
+	GameObject* gameObject = (GameObject*)obj;
+	return 0;
+	///return (intptr_t)&(*gameObject)->uid;
 }
 
 void GameObject_Move(void* obj, float x, float y)
 {
-	std::shared_ptr<GameObject>* gameObject = (std::shared_ptr<GameObject>*)obj;
-	(*gameObject)->transform2D->Translate({ x, y });
+	GameObject* gameObject = (GameObject*)obj;
+	//gameObject->transform->Translate({ x, y });
 }
 
 void GameObject_Rotate(void* obj, float angle)
 {
 	std::shared_ptr<GameObject>* gameObject = (std::shared_ptr<GameObject>*)obj;
-	(*gameObject)->transform2D->Rotate(angle);
+	//(*gameObject)->transform2D->Rotate(angle);
 }
 
 void GameObject_Scale(void* obj, float x, float y)
 {
 	std::shared_ptr<GameObject>* gameObject = (std::shared_ptr<GameObject>*)obj;
-	(*gameObject)->transform2D->Scale({ x, y });
+	//(*gameObject)->transform2D->Scale({ x, y });
 }
 
 
 void GameObject_SetAngle(void* obj, float angle)
 {
 	std::shared_ptr<GameObject>* gameObject = (std::shared_ptr<GameObject>*)obj;
-	(*gameObject)->transform2D->SetRotation(angle);
+	//(*gameObject)->transform2D->SetRotation(angle);
 }
 
 void GameObject_SetVelocity(void* obj, float vX, float vY)
@@ -111,9 +112,6 @@ void* GameObject_Create(void* parentGameObject, const char* name, bool retrieveM
 void GameObject_Destroy(void* gameObject)
 {
 	std::shared_ptr<Osiris::GameObject>* go = (std::shared_ptr<Osiris::GameObject>*)gameObject;
-
-	/* remove from scene */
-	(*go)->parent->RemoveChild((*go)->uid);
 
 	/* remove from physics system if applicable */
 	if ((*go)->physics != nullptr)

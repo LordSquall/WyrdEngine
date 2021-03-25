@@ -21,4 +21,11 @@ namespace Osiris {
 		float x;
 		float y;
 	};
+
+	struct Vector3
+	{
+		float x;
+		float y;
+		float z;
+	};
 }

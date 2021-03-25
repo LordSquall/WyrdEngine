@@ -38,9 +38,9 @@ namespace Osiris
 		// iterate the scene and find all objects with a physics component 
 		for (auto& layer : scene->GetLayers())
 		{
-			for (auto gameObject : layer->children)
+			for (auto& gameObject : layer->GetGameObjects())
 			{
-				SearchGameObject(gameObject);
+				SearchGameObject(gameObject.get());
 			}
 		}
 	}
@@ -180,11 +180,11 @@ namespace Osiris
 		std::remove(_physicsObjects.begin(), _physicsObjects.end(), object);
 	}
 
-	void Physics::SearchGameObject(std::shared_ptr<GameObject> gameObject)
+	void Physics::SearchGameObject(GameObject* gameObject)
 	{
-		for (auto& child : gameObject->children)
+		for (auto& child : gameObject->GetGameObjects())
 		{
-			SearchGameObject(child);
+			SearchGameObject(child.get());
 		}
 
 		for (auto& component : gameObject->components)

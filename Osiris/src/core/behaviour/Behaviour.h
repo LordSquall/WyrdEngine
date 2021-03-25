@@ -119,6 +119,13 @@ namespace Osiris
 		std::shared_ptr<ScriptedClass> GetCustomClass(std::string name);
 
 		/**
+		 * @brief Retrieve a User behaviour class model by uid.
+		 * @param uid 
+		 * @return 
+		*/
+		std::shared_ptr<ScriptedClass> GetCustomClassByUID(UID& uid);
+
+		/**
 		 * @brief Retrieve a GameObject reference from the behaviour model by UID
 		 * @param uid 
 		 * @return 
@@ -138,7 +145,7 @@ namespace Osiris
 		 * @param gameObject
 		 * @param managedObject
 		*/
-		void AddScriptedGameObject(UID uid, std::shared_ptr<GameObject> gameObject, void* managedObject = nullptr);
+		void AddScriptedGameObject(UID uid, GameObject* gameObject, void* managedObject = nullptr);
 
 		/**
 		 * @brief Add a Scripted Custom Object to the bahaviour subsystem
@@ -158,24 +165,22 @@ namespace Osiris
 		void BroadcastTriggerCall(std::shared_ptr<GameObject> gameObject, std::string& funcName, std::shared_ptr<GameObject> triggerObject, std::vector<void*> args);
 
 	private:
-		void SetInputState(std::shared_ptr<GameObject> gameObject, int key, int state);
+		void SetInputState(GameObject* gameObject, int key, int state);
 
 		void BuildManagedGameObjects();
-		void BuildManagedGameObjects(std::shared_ptr<GameObject> gameObject, std::shared_ptr<ScriptedClass> gameObjectClass);
-
-		void BuildManagedGameObjectHierarchy();
+		void BuildManagedGameObjects(GameObject* gameObject, std::shared_ptr<ScriptedClass> gameObjectClass);
 
 		void LinkManagedGameObjects();
-		void LinkManagedGameObjects(std::shared_ptr<GameObject> gameObject);
+		void LinkManagedGameObjects(GameObject* gameObject);
 
 		void LinkGameObjectProperties();
-		void LinkGameObjectProperties(std::shared_ptr<GameObject> gameObject);
+		void LinkGameObjectProperties(GameObject* gameObject);
 
 		void StartManagedGameObjects();
-		void StartManagedGameObjects(std::shared_ptr<GameObject> gameObject);
+		void StartManagedGameObjects(GameObject* gameObject);
 
 		void UpdateManagedGameObjects(Timestep ts);
-		void UpdateManagedGameObjects(Timestep ts, std::shared_ptr<GameObject> gameObject);
+		void UpdateManagedGameObjects(Timestep ts, GameObject* gameObject);
 
 		void UpdateInputState();
 

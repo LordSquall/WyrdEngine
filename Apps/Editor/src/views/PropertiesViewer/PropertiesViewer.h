@@ -30,6 +30,7 @@ namespace Osiris::Editor
 		Mode _Mode;
 		void OnSelectedGameObjectChanged(Events::EventArgs& args);
 		void OnSelectedAssetChanged(Events::EventArgs& args);
+		void OnRefreshView(Events::EventArgs& args);
 		
 		void RefreshComponentViews();
 		

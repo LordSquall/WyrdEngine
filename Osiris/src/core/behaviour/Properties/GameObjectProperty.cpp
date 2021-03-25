@@ -17,16 +17,19 @@ namespace Osiris
 {
 	void GameObjectProperty::Set(void* object)
 	{
-		
-		void* addComponentArgs[1] = { Application::Get().GetBehaviour().GetGameObject(_Value->uid)->Object };
-
-		MonoObject* exception;
-
-		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &addComponentArgs[0], &exception);
-
-		if (exception != nullptr)
+		/* check to ensure that we have a valid game object */
+		if (_Value != nullptr)
 		{
-			mono_print_unhandled_exception(exception);
+			void* addComponentArgs[1] = { Application::Get().GetBehaviour().GetGameObject(_Value->uid)->Object };
+
+			MonoObject* exception;
+
+			mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &addComponentArgs[0], &exception);
+
+			if (exception != nullptr)
+			{
+				mono_print_unhandled_exception(exception);
+			}
 		}
 	}
 

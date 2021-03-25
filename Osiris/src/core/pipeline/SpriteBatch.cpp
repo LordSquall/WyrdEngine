@@ -25,7 +25,7 @@ namespace Osiris
 		_VertexArray->SetAttribute(1, 2, 2, sizeof(SpriteVertex));
 	}
 
-	int32_t SpriteBatch::AddSprite(std::shared_ptr<SpriteComponent> sprite)
+	int32_t SpriteBatch::AddSprite(SpriteComponent* sprite)
 	{
 		/* add vertices */
 		_vertices.push_back({ (float)sprite->position.x, (float)sprite->position.y, 0.0f, 0.0f });
@@ -45,16 +45,16 @@ namespace Osiris
 		return _SpriteMap.size() - 1;
 	}
 
-	void SpriteBatch::UpdateSprite(SpriteComponent& sprite)
+	void SpriteBatch::UpdateSprite(SpriteComponent* sprite)
 	{
 		/* retrieve the sprite batch entry */
-		SpriteBatchEntry& entry = _SpriteMap.at(sprite.BatchIndex);
+		SpriteBatchEntry& entry = _SpriteMap.at(sprite->BatchIndex);
 
 		/* update vertices */
-		_vertices.at(entry.offset + 0) = { (float)sprite.position.x, (float)sprite.position.y, 0.0f, 0.0f };
-		_vertices.at(entry.offset + 1) = { (float)sprite.position.x, (float)sprite.position.y + (float)sprite.size.y, 0.0f, -1.0f };
-		_vertices.at(entry.offset + 2) = { (float)sprite.position.x + (float)sprite.size.x, (float)sprite.position.y + (float)sprite.size.y, 1.0f, -1.0f };
-		_vertices.at(entry.offset + 3) = { (float)sprite.position.x + (float)sprite.size.x, (float)sprite.position.y, 1.0f, 0.0f };
+		_vertices.at(entry.offset + 0) = { (float)sprite->position.x, (float)sprite->position.y, 0.0f, 0.0f };
+		_vertices.at(entry.offset + 1) = { (float)sprite->position.x, (float)sprite->position.y + (float)sprite->size.y, 0.0f, -1.0f };
+		_vertices.at(entry.offset + 2) = { (float)sprite->position.x + (float)sprite->size.x, (float)sprite->position.y + (float)sprite->size.y, 1.0f, -1.0f };
+		_vertices.at(entry.offset + 3) = { (float)sprite->position.x + (float)sprite->size.x, (float)sprite->position.y, 1.0f, 0.0f };
 
 		/* bind the batch vertex array */
 		_VertexArray->Bind();
@@ -66,7 +66,7 @@ namespace Osiris
 	void SpriteBatch::RemoveSprite(SpriteComponent* sprite)
 	{
 		/* retrieve the batch entry */
-		auto spriteBatchEntry = std::find_if(_SpriteMap.begin(), _SpriteMap.end(), [&sprite](const SpriteBatchEntry& s) { return sprite == s.sprite.get(); });
+		auto spriteBatchEntry = std::find_if(_SpriteMap.begin(), _SpriteMap.end(), [&sprite](const SpriteBatchEntry& s) { return sprite == s.sprite; });
 
 		if (spriteBatchEntry != _SpriteMap.end())
 		{
@@ -93,10 +93,11 @@ namespace Osiris
 		for (auto&& sprite : _SpriteMap)
 		{
 			sprite.sprite->GetTexture()->Bind();
+			
+			_Shader->SetModelMatrix(sprite.sprite->Owner->transform->GetModelMatrix());
 
-			_Shader->SetModelMatrix(sprite.sprite->Owner->transform2D->matrix);
 			_Shader->SetUniformColor("blendColor", sprite.sprite->color);
-
+			
 			renderer.DrawArray(RendererDrawType::TriangleFan, sprite.offset, 4);
 		}
 	}

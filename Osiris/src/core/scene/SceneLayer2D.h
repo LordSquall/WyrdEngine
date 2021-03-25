@@ -20,18 +20,28 @@ namespace Osiris {
 		/**
 		 *	@brief Initailise the Layer2D internal resources
 		*/
-		bool Initialise();
+		virtual bool Initialise() override;
 
 		/**
 		 * @brief Add a game object to the layer. 
 		 * Note: this will take ownership of the gameobject
 		*/
-		inline void AddGameObject(std::unique_ptr<GameObject> gameObject) { _GameObjects.push_back(std::move(gameObject)); }
+		virtual GameObject* AddGameObject(std::unique_ptr<GameObject> gameObject);
 
 		/**
 		 * @brief See SceneLayer::Render()
 		*/
 		virtual void Render(Renderer& renderer, const glm::mat4& viewProjectionMat) override;
+
+		/**
+		* @brief Get the Layers Sprite Batch
+		*/
+		inline SpriteBatch* GetSpriteBatch() const { return _SpriteBatch.get(); }
+
+		/**
+		 * @brief See GameObject::AssignScripts()
+		*/
+		virtual void AssignScripts(Behaviour* behaviour) override;
 
 		/**
 		 * @brief See SceneLayer::ToJson()

@@ -16,21 +16,23 @@ namespace Osiris
 	class OSR_LIBRARY_API ScriptedGameObject
 	{
 	public:
-		ScriptedGameObject(Behaviour* behaviour, std::shared_ptr<ScriptedClass>, std::shared_ptr<GameObject> gameObject, void* managedObject = nullptr);
+		ScriptedGameObject(Behaviour* behaviour, std::shared_ptr<ScriptedClass>, GameObject* gameObject, void* managedObject = nullptr);
 		virtual ~ScriptedGameObject();
 
 		inline const std::string& GetName() const { return _Name; }
 		inline void SetName(const std::string& name) { _Name = name; }
 
-		std::shared_ptr<GameObject> const GetGameObject();
+		GameObject* GetGameObject();
 
 	public:
 		MonoClass* Class;
 		MonoObject* Object;
 		
 	private:
-		std::shared_ptr<GameObject> _GameObject;
+		GameObject* _GameObject;
 		std::map<std::string, MonoMethod*> _Methods;
 		std::string _Name;
+
+		std::vector<void*> _NativePtrMap;
 	};
 }

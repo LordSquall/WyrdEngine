@@ -18,20 +18,37 @@ namespace Osiris::Editor
 	{
 		GameObject* gameObject = _Property->GetValue();
 
-		ImGui::Text(gameObject != nullptr ? gameObject->name.c_str() : "<< Not Set >>");
+		ImGui::Text("Scripted Object: %s", gameObject != nullptr ? gameObject->name.c_str() : "<< Not Set >>");
+
+		if (gameObject != nullptr)
+		{
+			if (ImGui::IsItemHovered())
+			{
+				ImGui::BeginTooltip();
+				ImGui::Text("UID: %s", gameObject->uid.str().c_str());
+				ImGui::EndTooltip();
+			}
+		}
 
 		if (ImGui::BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_GAMEOBJECT"))
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GAMEOBJECT_PAYLOAD"))
 			{
-				std::shared_ptr<GameObject>* gameObject = (std::shared_ptr<GameObject>*)payload->Data;
-				
-				auto scriptComponent = (*gameObject)->FindScriptComponent(_Property->GetTypeName());
-
-				if (scriptComponent != nullptr)
+				UID* gameobjectUID = (UID*)payload->Data;
+				GameObject* foundGameObject = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace)->GetLoadedScene()->FindGameObject(*gameobjectUID);
+				if (foundGameObject != nullptr)
 				{
-					_Property->SetValue(gameObject->get());
+					ScriptComponent* component = foundGameObject->FindScriptComponent("SecondaryClass");
+					if (component != nullptr)
+					{
+						_Property->SetValue(foundGameObject);
+					}
 				}
+				else
+				{
+					OSR_TRACE("Unable to find gameobject UID: {0}", gameobjectUID->str());
+				}
+
 			}
 			ImGui::EndDragDropTarget();
 		}

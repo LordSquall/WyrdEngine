@@ -36,12 +36,12 @@ namespace Osiris
 		{
 			if (Owner->sprite != nullptr)
 			{
-				_AABB = { Owner->transform2D->globalPosition + Owner->sprite->position, Owner->sprite->size };
+				//_AABB = { Owner->transform2D->globalPosition + Owner->sprite->position, Owner->sprite->size };
 			}
 			else
 			{
 				//TODO using print instead of OSR_
-				printf("Unable to Add Physics Component with 'UseSpriteBoundary' without a matching Sprite Component");
+				//printf("Unable to Add Physics Component with 'UseSpriteBoundary' without a matching Sprite Component");
 			}
 		}
 	}
@@ -49,8 +49,8 @@ namespace Osiris
 	void PhysicsComponent::Update(Timestep ts)
 	{
 		/* Apply physics position update */
-		Owner->transform2D->position += _velocity * ts.GetSeconds();
-		Owner->transform2D->SetMatrixValid(false);
+		//Owner->transform2D->position += _velocity * ts.GetSeconds();
+		//Owner->transform2D->SetMatrixValid(false);
 	}
 
 	void PhysicsComponent::AddCollisionState(PhysicsComponent* collisionKey)
@@ -77,5 +77,37 @@ namespace Osiris
 		{
 			_CollisionStates.erase(collisionKey);
 		}
+	}
+
+	jsonxx::Object PhysicsComponent::ToJson()
+	{
+		jsonxx::Object object;
+
+		object << "componentType" << (int)SceneComponentType::PhysicsComponent;
+
+		/* is static */
+		object << "isStatic" << _IsStatic;
+
+		/* is trigger */
+		object << "isTrigger" << _IsTrigger;
+
+		/* use sprite boundary*/
+		object << "useSpriteBoundary" << _UseSpriteBoundary;
+
+		return object;
+	}
+
+	bool PhysicsComponent::FromJson(jsonxx::Object& object)
+	{
+		/* is static */
+		_IsStatic = object.get<jsonxx::Boolean>("isStatic", false);
+
+		/* is trigger */
+		_IsTrigger = object.get<jsonxx::Boolean>("isTrigger", false);
+
+		/* use sprite boundary*/
+		_UseSpriteBoundary = object.get<jsonxx::Boolean>("useSpriteBoundary", false);
+
+		return true;
 	}
 }

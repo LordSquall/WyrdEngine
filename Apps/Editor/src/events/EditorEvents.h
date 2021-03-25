@@ -20,8 +20,8 @@
 namespace Osiris::Editor::Events
 {
 	enum class EventType {
-		SettingsUpdated,
-		SelectedCleared, SelectedGameObjectChanged, SelectedAssetChanged,
+		SettingsUpdated, RefreshView,
+		SelectedCleared, SelectedGameObjectChanged, SelectedAssetChanged, 
 		CreateNewProject, OpenProject, CloseProject, ProjectLoaded,
 		SceneClosed, SceneOpened,
 		OpenSceneViewerContextMenu,
@@ -63,6 +63,24 @@ namespace Osiris::Editor::Events
 	{
 	public:
 		SettingsUpdateEvent() : Event(EventType::SettingsUpdated) { }
+	};
+
+#pragma endregion
+
+#pragma region RefreshView
+
+	class RefreshViewEventArgs : public EventArgs
+	{
+	public:
+		RefreshViewEventArgs() {}
+
+		EVENT_ARGS_CLONE(RefreshViewEventArgs)
+	};
+
+	class RefreshViewEvent : public Event
+	{
+	public:
+		RefreshViewEvent() : Event(EventType::RefreshView) { }
 	};
 
 #pragma endregion

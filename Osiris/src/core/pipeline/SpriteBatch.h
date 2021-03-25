@@ -32,9 +32,9 @@ namespace Osiris {
 
 		void Render(Renderer& renderer, const glm::mat4& viewProjectionMat);
 
-		int32_t AddSprite(std::shared_ptr<SpriteComponent> sprite);
+		int32_t AddSprite(SpriteComponent* sprite);
 
-		void UpdateSprite(SpriteComponent& sprite);
+		void UpdateSprite(SpriteComponent* sprite);
 
 		void RemoveSprite(SpriteComponent* sprite);
 
@@ -54,7 +54,7 @@ namespace Osiris {
 	struct SpriteBatchEntry
 	{
 		/* sprite component source data model */
-		std::shared_ptr<SpriteComponent> sprite;
+		SpriteComponent* sprite;
 
 		/* position within the parent batch data */
 		uint32_t offset;

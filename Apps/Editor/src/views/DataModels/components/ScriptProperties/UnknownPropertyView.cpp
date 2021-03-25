@@ -12,7 +12,7 @@ namespace Osiris::Editor
 {
 	void UnknownPropertyView::DrawUI()
 	{
-		ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f),  "Unknown Variable Type");
+		ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "%s : Unknown Variable Type", _name.c_str());
 	}
 
 	SCRIPT_PROPERTY_VIEW_FACTORY_REGISTER(UnknownPropertyView);

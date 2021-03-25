@@ -30,6 +30,7 @@ namespace Osiris::Editor
 		GameObject* _SelectedGameObject;
 		SceneLayer* _SelectedSceneLayer;
 		uint32_t _SelectedSceneLayerIdx;
+		uint32_t _SelectedGameObjectIdx;
 
 		std::shared_ptr<Icon> _Layer2DIcon;
 		std::shared_ptr<Icon> _GameObjectIcon;

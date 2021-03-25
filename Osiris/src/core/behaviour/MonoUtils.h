@@ -18,6 +18,8 @@ namespace Osiris
 
 		static MonoObject* CreateNewObject(MonoDomain* domain, std::shared_ptr<ScriptedClass> monoClass);
 
+		static MonoObject* CreateNewUnmanagedObject(MonoDomain* domain, std::shared_ptr<ScriptedClass> monoClass, Behaviour* behaviour, void** unmanagedObject);
+
 		static std::pair<MonoMethod*, MonoMethod*> FindPropertyInClass(std::shared_ptr<ScriptedClass> scriptedClass, const char* propertyName);
 
 		static MonoMethod* FindMethodInClass(std::shared_ptr<ScriptedClass> scriptedClass, const char* methodName, int argumentCount, bool terminateOnMissing = false);

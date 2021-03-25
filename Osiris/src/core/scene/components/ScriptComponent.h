@@ -33,6 +33,16 @@ namespace Osiris {
 		inline const std::shared_ptr<ScriptedClass> GetClass() const { return _Class; }
 		inline const std::shared_ptr<ScriptedCustomObject> GetCustomObject() const { return _Object; }
 		
+		/**
+		 * @brief See IBaseComponent::ToJson()
+		*/
+		virtual jsonxx::Object ToJson() override;
+
+		/**
+		 * @brief See IBaseComponent::FromJson()
+		*/
+		virtual bool FromJson(jsonxx::Object& object) override;
+
 	public:
 		std::shared_ptr<PropertyList_t> Properties;
 

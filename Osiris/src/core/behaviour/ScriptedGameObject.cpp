@@ -17,7 +17,7 @@
 
 namespace Osiris
 {
-	ScriptedGameObject::ScriptedGameObject(Behaviour* behaviour, std::shared_ptr<ScriptedClass> scriptedClass, std::shared_ptr<GameObject> gameObject, void* managedObject)
+	ScriptedGameObject::ScriptedGameObject(Behaviour* behaviour, std::shared_ptr<ScriptedClass> scriptedClass, GameObject* gameObject, void* managedObject)
 	{
 		/* Store the gameobject */
  		_GameObject = gameObject;
@@ -34,33 +34,30 @@ namespace Osiris
 		MonoObject* exception = nullptr;
 
 		/* Set the Native GameObject pointer */
-		void* setNativePtrArgs[1] = { &*_GameObject };
+		void* setNativePtrArgs[1] = { &_GameObject };
  		mono_runtime_invoke((MonoMethod*)behaviour->GetClass("UnmanagedObject")->Properties["NativePtr"]->GetSetter(), Object, &setNativePtrArgs[0], &exception);
 		if (exception != nullptr) mono_print_unhandled_exception(exception);
 
-		/* Add the transform2D component */
-		gameObject->transform2D->ManagedObject = MonoUtils::CreateNewObject((MonoDomain*)behaviour->GetDomain(), behaviour->GetClass("Transform2D"));
+		/* store the native pointer to the transform component */
+		_NativePtrMap.push_back(_GameObject->transform.get());
 
-		void* setTranform2DComponentNativePtrArgs[1] = { &_GameObject->transform2D };
-		mono_runtime_invoke((MonoMethod*)behaviour->GetClass("UnmanagedObject")->Properties["NativePtr"]->GetSetter(), (MonoObject*)gameObject->transform2D->ManagedObject, &setTranform2DComponentNativePtrArgs[0], &exception);
+		/* create the managed object for transform component */
+		_GameObject->transform->ManagedObject = MonoUtils::CreateNewUnmanagedObject((MonoDomain*)behaviour->GetDomain(), behaviour->GetClass("Transform2D"), behaviour, &_NativePtrMap[_NativePtrMap.size() - 1]);
+
+		/* add the transform component to the managed game object */
+		void* addTranform2DComponentComponentArgs[1] = { _GameObject->transform->ManagedObject };
+		mono_runtime_invoke(behaviour->GetClass("GameObject")->Methods["AddComponent"]->GetManagedMethod(), Object, &addTranform2DComponentComponentArgs[0], &exception);
 		if (exception != nullptr) mono_print_unhandled_exception(exception);
-
-		void* addTransform2DComponentArgs[1] = { (MonoObject*)gameObject->transform2D->ManagedObject };
-		mono_runtime_invoke(behaviour->GetClass("GameObject")->Methods["AddComponent"]->GetManagedMethod(), Object, &addTransform2DComponentArgs[0], &exception);
-		if (exception != nullptr) mono_print_unhandled_exception(exception);
-
+		
 		for (auto& component : _GameObject->components)
 		{
-			std::shared_ptr<ScriptedClass> componentClass = behaviour->GetClass(component->GetManagedType());
-			MonoObject* componentManagedObject = MonoUtils::CreateNewObject((MonoDomain*)behaviour->GetDomain(), componentClass);
-			
-			component->ManagedObject = componentManagedObject;
+			/* store the native pointer to the component */
+			_NativePtrMap.push_back(component.get());
 
-			void* setComponentNativePtrArgs[1] = { &*component };
-			mono_runtime_invoke((MonoMethod*)behaviour->GetClass("UnmanagedObject")->Properties["NativePtr"]->GetSetter(), componentManagedObject, &setComponentNativePtrArgs[0], &exception);
-			if (exception != nullptr) mono_print_unhandled_exception(exception);
+			/* create the managed object for component */
+			component->ManagedObject = MonoUtils::CreateNewUnmanagedObject((MonoDomain*)behaviour->GetDomain(), behaviour->GetClass(component->GetManagedType()), behaviour, &_NativePtrMap[_NativePtrMap.size() - 1]);
 
-			void* addComponentArgs[1] = { componentManagedObject };
+			void* addComponentArgs[1] = { component->ManagedObject };
 			mono_runtime_invoke(behaviour->GetClass("GameObject")->Methods["AddComponent"]->GetManagedMethod(), Object, &addComponentArgs[0], &exception);
 			if (exception != nullptr) mono_print_unhandled_exception(exception);
 		}
@@ -71,7 +68,7 @@ namespace Osiris
 
 	}
 
-	std::shared_ptr<GameObject> const ScriptedGameObject::GetGameObject()
+	GameObject* ScriptedGameObject::GetGameObject()
 	{
 		return _GameObject;
 	}

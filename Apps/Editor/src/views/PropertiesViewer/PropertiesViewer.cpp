@@ -26,6 +26,7 @@ namespace Osiris::Editor
 
 		_EventService->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(PropertiesViewer::OnSelectedGameObjectChanged));
 		_EventService->Subscribe(Events::EventType::SelectedAssetChanged, EVENT_FUNC(PropertiesViewer::OnSelectedAssetChanged));
+		_EventService->Subscribe(Events::EventType::RefreshView, EVENT_FUNC(PropertiesViewer::OnRefreshView));
 	}
 
 	PropertiesViewer::~PropertiesViewer() {}
@@ -69,6 +70,12 @@ namespace Osiris::Editor
 		Events::SelectedAssetChangedArgs& evtArgs = static_cast<Events::SelectedAssetChangedArgs&>(args);
 		_SelectedAsset = evtArgs.resource;
 		_Mode = AssetUI;
+	}
+
+	void PropertiesViewer::OnRefreshView(Events::EventArgs& args)
+	{
+		Events::RefreshViewEventArgs& evtArgs = static_cast<Events::RefreshViewEventArgs&>(args);
+		RefreshComponentViews();
 	}
 
 	void PropertiesViewer::RefreshComponentViews()

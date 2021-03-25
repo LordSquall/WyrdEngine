@@ -19,9 +19,24 @@ namespace Osiris
 		return true;
 	}
 
+	GameObject* SceneLayer2D::AddGameObject(std::unique_ptr<GameObject> gameObject) {
+		gameObject->SetSceneLayer(this);
+		_GameObjects.push_back(std::move(gameObject));
+
+		return _GameObjects.back().get();
+	}
+
 	void SceneLayer2D::Render(Renderer& renderer, const glm::mat4& viewProjectionMat)
 	{
 		_SpriteBatch->Render(renderer, viewProjectionMat);
+	}
+
+	void SceneLayer2D::AssignScripts(Behaviour* behaviour)
+	{
+		for (auto& gameobject : _GameObjects)
+		{
+			gameobject->AssignScripts(behaviour);
+		}
 	}
 
 	jsonxx::Object SceneLayer2D::ToJson()
@@ -33,6 +48,12 @@ namespace Osiris
 
 		/* uid */
 		object << "uid" << _UID.str();
+
+		/* is visible */
+		object << "isVisible" << _IsVisible;
+
+		/* is active */
+		object << "isActive" << _IsActive;
 
 		/* game objects */
 		jsonxx::Array gameObjects;
@@ -55,14 +76,21 @@ namespace Osiris
 		/* uid */
 		_UID = UID(object.get<jsonxx::String>("uid", "MISSING"));
 
+		/* is visible */
+		_IsVisible = object.get<jsonxx::Boolean>("isVisible", true);
+
+		/* is active */
+		_IsActive = object.get<jsonxx::Boolean>("isActive", true);
+
 		/* game objects */
 		if (object.has<jsonxx::Array>("gameObjects") == true)
 		{
 			for (size_t i = 0; i < object.get<jsonxx::Array>("gameObjects").size(); i++)
 			{
 				std::unique_ptr<GameObject> newGameObject = std::make_unique<GameObject>("NewGameObject");
-				newGameObject->FromJson(object.get<jsonxx::Array>("gameObjects").get<jsonxx::Object>((int)i));
-				AddGameObject(std::move(newGameObject));
+				GameObject* gameObject = AddGameObject(std::move(newGameObject));
+
+				gameObject->FromJson(object.get<jsonxx::Array>("gameObjects").get<jsonxx::Object>((int)i));
 			}
 		}
 		return true;

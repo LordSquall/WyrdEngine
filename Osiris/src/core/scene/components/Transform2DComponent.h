@@ -31,9 +31,14 @@ namespace Osiris {
 		
 		void ClearTransformationDelta();
 
-		void Initialise();
+		bool Initialise();
 		void Recalculate();
 		
+		/**
+		 * @brief See TransformComponent::GetModelMatrix()
+		*/
+		virtual const glm::mat4& GetModelMatrix() override { return _ModelMatrix; };
+
 		/**
 		 * @brief Serialise the gameobject into a json object
 		 * @return json object
@@ -53,7 +58,6 @@ namespace Osiris {
 
 		vec2 globalPosition;
 
-		glm::mat4 matrix;
 		glm::mat4 worldMatrix;
 
 		std::string toString() const { return "Hello"; }
@@ -64,5 +68,7 @@ namespace Osiris {
 		vec2	_ScaleDelta;
 
 		bool	_IsMatrixValid;
+
+		glm::mat4 _ModelMatrix;
 	};
 }

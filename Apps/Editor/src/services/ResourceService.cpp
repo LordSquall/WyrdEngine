@@ -140,7 +140,11 @@ namespace Osiris::Editor
 				auto downcastedPtr = std::dynamic_pointer_cast<ScriptRes>(value);
 				if (downcastedPtr)
 				{
-					downcastedPtr->Script = ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->GetClass(value->GetName());
+					auto scriptedClass = ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->GetClass(value->GetName());
+
+					/* set the uid of the scripted class to match the resource */
+					scriptedClass->SetUID(downcastedPtr->GetResourceID());
+					downcastedPtr->Script = scriptedClass;
 				}
 			}
 		}

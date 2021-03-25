@@ -28,7 +28,7 @@ namespace Osiris
 		void RemoveObject(PhysicsComponent* object);
 
 	private:
-		void SearchGameObject(std::shared_ptr<GameObject> gameObject);
+		void SearchGameObject(GameObject* gameObject);
 
 	private:
 		bool _IsRunning;

@@ -100,7 +100,7 @@ namespace Osiris
 			BuildManagedGameObjects();
 
 			/* next stage to build hierarchy in between GameObjects */
-			BuildManagedGameObjectHierarchy();
+			//BuildManagedGameObjectHierarchy();
 
 			/* next stage is to pass over any script components and create custom objects for each one */
 			LinkManagedGameObjects();
@@ -150,18 +150,18 @@ namespace Osiris
 				/* traverse each of the gameobjects within the scene*/
 				for (auto& sl : _CurrentScene->GetLayers())
 				{
-					for (auto& go : sl->children)
+					for (auto& go : sl->GetGameObjects())
 					{
-						SetInputState(go, key, state);
+						SetInputState(go.get(), key, state);
 					}
 				}
 			}
 		}
 	}
 
-	void Behaviour::SetInputState(std::shared_ptr<GameObject> object, int key, int state)
+	void Behaviour::SetInputState(GameObject* gameObject, int key, int state)
 	{
-		for (auto& component : object->components)
+		for (auto& component : gameObject->components)
 		{
 			if (component->GetType() == SceneComponentType::ScriptComponent)
 			{
@@ -180,9 +180,9 @@ namespace Osiris
 			}
 		}
 
-		for (auto& go : object->children)
+		for (auto& go : gameObject->GetGameObjects())
 		{
-			SetInputState(go, key, state);
+			SetInputState(go.get(), key, state);
 		}
 	}
 
@@ -230,6 +230,17 @@ namespace Osiris
 		return _ScriptedCustomClasses[name]; 
 	}
 
+	std::shared_ptr<ScriptedClass> Behaviour::GetCustomClassByUID(UID& uid)
+	{
+		for (auto& sc : _ScriptedCustomClasses)
+		{
+			if (sc.second->GetUID() == uid)
+				return sc.second;
+		}
+
+		return nullptr;
+	}
+
 	std::shared_ptr<ScriptedGameObject> Behaviour::GetGameObject(UID uid)
 	{ 
 		return _ScriptedGameObjects[uid]; 
@@ -240,7 +251,7 @@ namespace Osiris
 		return _ScriptedCustomObjects[uid]; 
 	}
 
-	void Behaviour::AddScriptedGameObject(UID uid, std::shared_ptr<GameObject> gameObject, void* managedObject)
+	void Behaviour::AddScriptedGameObject(UID uid, GameObject* gameObject, void* managedObject)
 	{
 		_ScriptedGameObjects[uid] = std::make_shared<ScriptedGameObject>(this, _ScriptedClasses["GameObject"], gameObject, managedObject);
 	}
@@ -389,42 +400,21 @@ namespace Osiris
 
 		for (auto& sl : _CurrentScene->GetLayers())
 		{
-			for (auto& go : sl->children)
+			for (auto& go : sl->GetGameObjects())
 			{
-				BuildManagedGameObjects(go, gameObjectClass);
+				BuildManagedGameObjects(go.get(), gameObjectClass);
 			}
 		}
 	}
 
-	void Behaviour::BuildManagedGameObjects(std::shared_ptr<GameObject> gameObject, std::shared_ptr<ScriptedClass> gameObjectClass)
+	void Behaviour::BuildManagedGameObjects(GameObject* gameObject, std::shared_ptr<ScriptedClass> gameObjectClass)
 	{
-		for (auto& go : gameObject->children)
+		for (auto& go : gameObject->GetGameObjects())
 		{
-			BuildManagedGameObjects(go, gameObjectClass);
+			BuildManagedGameObjects(go.get(), gameObjectClass);
 		}
 
 		_ScriptedGameObjects[gameObject->uid] = std::make_shared<ScriptedGameObject>(this, gameObjectClass, gameObject);
-	}
-
-	void Behaviour::BuildManagedGameObjectHierarchy()
-	{
-		std::shared_ptr<ScriptedClass> gameObjectClass = _ScriptedClasses["GameObject"];
-
-		for (auto& sgo : _ScriptedGameObjects)
-		{
-			auto parentGameObject = sgo.second->GetGameObject()->parent;
-
-			auto scriptParentGameObject = _ScriptedGameObjects[parentGameObject->uid];
-
-			if (scriptParentGameObject != nullptr)
-			{
-				std::vector<void*> args;
-				args.push_back(sgo.second->Object);
-
-				mono_runtime_invoke(gameObjectClass->Methods["_AddGameObject"]->GetManagedMethod(), (MonoObject*)scriptParentGameObject->Object, &args[0], nullptr);
-			}
-
-		}
 	}
 
 	void Behaviour::LinkManagedGameObjects()
@@ -432,18 +422,18 @@ namespace Osiris
 		/* Query each of the layer scene objects */
 		for (auto& sl : _CurrentScene->GetLayers())
 		{
-			for (auto& go : sl->children)
+			for (auto& go : sl->GetGameObjects())
 			{
-				LinkManagedGameObjects(go);
+				LinkManagedGameObjects(go.get());
 			}
 		}
 	}
 
-	void Behaviour::LinkManagedGameObjects(std::shared_ptr<GameObject> gameObject)
+	void Behaviour::LinkManagedGameObjects(GameObject* gameObject)
 	{
-		for (auto& go : gameObject->children)
+		for (auto& go : gameObject->GetGameObjects())
 		{
-			LinkManagedGameObjects(go);
+			LinkManagedGameObjects(go.get());
 		}
 
 		for (auto& component : gameObject->components)
@@ -477,18 +467,18 @@ namespace Osiris
 		/* Query each of the layer scene objects */
 		for (auto& sl : _CurrentScene->GetLayers())
 		{
-			for (auto& go : sl->children)
+			for (auto& go : sl->GetGameObjects())
 			{
-				LinkGameObjectProperties(go);
+				LinkGameObjectProperties(go.get());
 			}
 		}
 	}
 
-	void Behaviour::LinkGameObjectProperties(std::shared_ptr<GameObject> gameObject)
+	void Behaviour::LinkGameObjectProperties(GameObject* gameObject)
 	{
-		for (auto& go : gameObject->children)
+		for (auto& go : gameObject->GetGameObjects())
 		{
-			LinkGameObjectProperties(go);
+			LinkGameObjectProperties(go.get());
 		}
 
 		for (auto& component : gameObject->components)
@@ -514,18 +504,18 @@ namespace Osiris
 	{
 		for (auto& sl : _CurrentScene->GetLayers())
 		{
-			for (auto& go : sl->children)
+			for (auto& go : sl->GetGameObjects())
 			{
-				StartManagedGameObjects(go);
+				StartManagedGameObjects(go.get());
 			}
 		}
 	}
 
-	void Behaviour::StartManagedGameObjects(std::shared_ptr<GameObject> gameObject)
+	void Behaviour::StartManagedGameObjects(GameObject* gameObject)
 	{
-		for (auto& go : gameObject->children)
+		for (auto& go : gameObject->GetGameObjects())
 		{
-			StartManagedGameObjects(go);
+			StartManagedGameObjects(go.get());
 		}
 
 		for (auto& component : gameObject->components)
@@ -550,20 +540,20 @@ namespace Osiris
 		/* Query each of the layer scene objects */
 		for (auto& sl : _CurrentScene->GetLayers())
 		{
-			for (auto& go : sl->children)
+			for (auto& go : sl->GetGameObjects())
 			{
-				UpdateManagedGameObjects(ts, go);
+				UpdateManagedGameObjects(ts, go.get());
 			}
 		}
 	}
 
-	void Behaviour::UpdateManagedGameObjects(Timestep ts, std::shared_ptr<GameObject> gameObject)
+	void Behaviour::UpdateManagedGameObjects(Timestep ts, GameObject* gameObject)
 	{
 		std::vector<void*> updateArgs = std::vector<void*>({ &ts });
 
-		for (auto& go : gameObject->children)
+		for (auto& go : gameObject->GetGameObjects())
 		{
-			UpdateManagedGameObjects(ts, go);
+			UpdateManagedGameObjects(ts, go.get());
 		}
 
 		/* traverse each of the gameobjects within the scene*/

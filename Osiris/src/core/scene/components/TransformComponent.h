@@ -16,6 +16,12 @@ namespace Osiris {
 		inline virtual const std::string GetManagedType() { return "Transform2DComponent"; }
 
 		/**
+		 * @brief Get the computed model matrix for this game object
+		 * @return model matrix
+		*/
+		virtual const glm::mat4& GetModelMatrix() = 0;
+
+		/**
 		 * @brief Serialise the gameobject into a json object
 		 * @return json object
 		*/

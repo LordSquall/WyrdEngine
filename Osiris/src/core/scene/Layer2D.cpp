@@ -41,7 +41,7 @@ namespace Osiris
 
 	bool Layer2D::RegisterSprite(std::shared_ptr<SpriteComponent> spriteComponent)
 	{
-		spriteComponent->BatchIndex = _SpriteBatch->AddSprite(spriteComponent);
+		//spriteComponent->BatchIndex = _SpriteBatch->AddSprite(spriteComponent);
 
 		return true;
 	}
@@ -49,7 +49,7 @@ namespace Osiris
 
 	void Layer2D::AssignScripts(Behaviour* behaviour)
 	{
-		for (auto& go : children)
+		for (auto& go : _GameObjects)
 		{
 			go->AssignScripts(behaviour);
 		}

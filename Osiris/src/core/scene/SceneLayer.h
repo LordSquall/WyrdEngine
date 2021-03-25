@@ -21,11 +21,22 @@ namespace Osiris {
 		~SceneLayer() {}
 
 		/**
+		 *	@brief Initailise the Layer2D internal resources
+		*/
+		virtual bool Initialise() = 0;
+
+		/**
 		 * @brief Get the layer name
 		 * @param current system renderer
 		 * @param view projection matrix to use for the render operation
 		*/
 		virtual void Render(Renderer& renderer, const glm::mat4& viewProjectionMat) = 0;
+
+		/**
+		 * @brief Add a gameobject to the layer
+		 * @param game object
+		*/
+		virtual GameObject* AddGameObject(std::unique_ptr<GameObject> gameObject) = 0;
 
 		/**
 		 * @brief Get the layer name
@@ -34,10 +45,37 @@ namespace Osiris {
 		inline const std::string& GetName() { return _Name; }
 
 		/**
+		 * @brief Get the layer visible status
+		 * @return layer visible
+		*/
+		inline const bool IsVisible() { return _IsVisible; }
+
+		/**
+		 * @brief Set the layer visible status
+		*/
+		inline void SetVisible(const bool visible) { _IsVisible = visible; }
+
+		/**
+		 * @brief Get the layer active status
+		 * @return layer active
+		*/
+		inline const bool IsActive() { return _IsActive; }
+
+		/**
+		* @brief Set the layer active status
+		*/
+		inline void SetActive(const bool active) { _IsActive = active; }
+
+		/**
 		 * @brief Get the layer uid
 		 * @return layer uid
 		*/
 		inline const UID& GetUID() { return _UID; }
+
+		/**
+		 * @brief See GameObject::AssignScripts()
+		*/
+		virtual void AssignScripts(Behaviour* behaviour) = 0;
 
 		/**
 		 * @brief Serialise the scenelayer into a json object
@@ -55,5 +93,7 @@ namespace Osiris {
 	protected:
 		std::string _Name;
 		UID _UID;
+		bool _IsVisible;
+		bool _IsActive;
 	};
 }

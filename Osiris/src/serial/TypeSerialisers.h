@@ -24,4 +24,12 @@ namespace Osiris
 	jsonxx::Object& operator<<(jsonxx::Object& obj, const Osiris::Color& color);
 
 	Osiris::Color& operator<<(Osiris::Color& color, const jsonxx::Array& arr);
+
+	jsonxx::Object& operator<<(jsonxx::Object& obj, const Osiris::Vector2& vector);
+
+	Osiris::Vector2& operator<<(Osiris::Vector2& vector, const jsonxx::Array& arr);
+
+	jsonxx::Object& operator<<(jsonxx::Object& obj, const Osiris::Vector3& vector);
+
+	Osiris::Vector3& operator<<(Osiris::Vector3& vector, const jsonxx::Array& arr);
 }

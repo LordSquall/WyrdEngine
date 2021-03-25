@@ -61,24 +61,40 @@ namespace Osiris::Editor
 		ImGui::SameLine();
 		ImGui::Checkbox("Debug", &_ShowDebug);
 
-		ImGui::PushItemWidth(-1);
-	
-		for(int i = 0; i < _LogItems.size(); ++i)
+		if (ImGui::BeginTable("outputLogTable", 2, ImGuiTableFlags_SizingFixedFit))
 		{
-			switch (_LogItems[i].type)
+			ImGui::TableSetupColumn("Type");
+			ImGui::TableSetupColumn("Message");
+			ImGui::TableSetupScrollFreeze(0, 1);
+			ImGui::TableHeadersRow();
+
+			int rowIndexCnt = 0;
+			for (int i = 0; i < _LogItems.size(); ++i)
 			{
-			case LogType::Core:
-				DrawCoreLogItem(i, _LogItems[i]);
-				break;
-			case LogType::Code:
-				DrawCodeLogItem(i, _LogItems[i]);
-				break;
-			case LogType::User:
-				DrawUserLogItem(i, _LogItems[i]);
-				break;
+				ImGui::PushID(&_LogItems[i]);
+				ImGui::TableNextRow(ImGuiTableRowFlags_None, ImGui::GetTextLineHeightWithSpacing() * 1.2f);
+				ImGui::TableNextColumn();
+
+				switch (_LogItems[i].type)
+				{
+				case LogType::Core:
+					DrawCoreLogItem(i, _LogItems[i]);
+					break;
+				case LogType::Code:
+					DrawCodeLogItem(i, _LogItems[i]);
+					break;
+				case LogType::User:
+					DrawUserLogItem(i, _LogItems[i]);
+					break;
+				}
+
+				ImGui::PopID();
+
+				rowIndexCnt++;
 			}
+
+			ImGui::EndTable();
 		}
-		ImGui::PopItemWidth();
 	}
 
 	void OutputView::DrawCoreLogItem(int idx, const LogItem& item)
@@ -92,14 +108,14 @@ namespace Osiris::Editor
 		std::string filename = item.message.substr(0, item.message.find('('));
 		std::string p = item.message.substr(assetsFolderLength);
 
-		ImGui::BeginGroup(); 
 		if (ImGui::IconButton(_CodeIcon, idx, true, ImVec2(16, 16), -1, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 0.0f, 0.0f, 1.0f)))
 		{
 			Utils::OpenFileWithSystem(filename);
 		}
-		ImGui::SameLine();
+
+		ImGui::TableNextColumn();
+
 		ImGui::Text(p.c_str());
-		ImGui::EndGroup();
 	}
 
 	void OutputView::DrawUserLogItem(int idx, const LogItem& item)

@@ -3,11 +3,7 @@
 /* local includes */
 #include "osrpch.h"
 #include "GameObject.h"
-#include "core/scene/components/Transform2DComponent.h"
-#include "core/scene/components/Transform3DComponent.h"
-#include "core/scene/components/SpriteComponent.h"
-#include "core/scene/components/ScriptComponent.h"
-#include "core/scene/components/PhysicsComponent.h"
+#include "core/scene/components/SceneComponentFactory.h"
 #include "core/behaviour/Behaviour.h"
 #include "core/behaviour/ScriptedClass.h"
 
@@ -25,24 +21,15 @@ namespace Osiris
 
 	GameObject::~GameObject() { }
 
-	GameObject* GameObject::AddChild(std::unique_ptr<GameObject> gameObject)
-	{
-		gameObject->layer = layer;
-	
-		_GameObjects.push_back(std::move(gameObject));
-
-		return &*_GameObjects.back();
-	}
-
 	void GameObject::RemoveChild(UID uid)
 	{
 		/* retrieve the gameobject with matching id */
-		auto gameObject = std::find_if(children.begin(), children.end(), [&uid](const std::shared_ptr<GameObject>& c) { return c->uid == uid; });
+		auto gameObject = std::find_if(_GameObjects.begin(), _GameObjects.end(), [&uid](const std::unique_ptr<GameObject>& c) { return c->uid == uid; });
 
-		if (gameObject != children.end())
+		if (gameObject != _GameObjects.end())
 		{
 			/* remove all the children if any */
-			for (auto& child : (*gameObject)->children)
+			for (auto& child : (*gameObject)->GetGameObjects())
 			{
 				child->RemoveChildren();
 			}
@@ -53,14 +40,14 @@ namespace Osiris
 				component->Remove();
 			}
 
-			children.erase(gameObject);
+			_GameObjects.erase(gameObject);
 		}
 	}
 
 	void GameObject::RemoveChildren()
 	{
 		/* remove all the children if any */
-		for (auto& child : children)
+		for (auto& child : _GameObjects)
 		{
 			child->RemoveChildren();
 		}
@@ -79,16 +66,18 @@ namespace Osiris
 
 	void GameObject::SwapChild(int a, int b)
 	{
-		std::shared_ptr<GameObject> tmp = children[a];
+		/*std::unique_ptr<GameObject> tmp = _GameObjects[a];
 		children[a] = children[b];
-		children[b] = tmp;
+		children[b] = tmp;*/
 	}
 
-	void GameObject::AddComponent(std::unique_ptr<IBaseComponent> component)
+	IBaseComponent* GameObject::AddComponent(std::unique_ptr<IBaseComponent> component)
 	{
 		component->Setup();
 
 		components.push_back(std::move(component));
+
+		return components.back().get();
 	}
 
 	ScriptComponent* GameObject::FindScriptComponent(const std::string& name)
@@ -110,13 +99,13 @@ namespace Osiris
 	}
 
 
-	std::shared_ptr<GameObject> GameObject::FindChild(const UID uid)
+	GameObject* GameObject::FindChild(const UID uid)
 	{
-		for (auto& child : children)
+		for (auto& child : GetGameObjects())
 		{
 			if (child->uid == uid)
 			{
-				return child;
+				return child.get();
 			}
 
 			auto found = child->FindChild(uid);
@@ -154,7 +143,7 @@ namespace Osiris
 			}
 		}
 
-		for (auto& go : children)
+		for (auto& go : _GameObjects)
 		{
 			go->AssignScripts(behaviour);
 		}
@@ -173,6 +162,14 @@ namespace Osiris
 		/* transform component */
 		object << "transform2D" << transform->ToJson();
 
+		/* additional component */
+		jsonxx::Array componentsArray;
+		for (auto& component : components)
+		{
+			componentsArray << component->ToJson();
+		}
+		object << "components" << componentsArray;
+
 		return object;
 	}
 
@@ -190,6 +187,18 @@ namespace Osiris
 			std::unique_ptr<Transform2DComponent> transform2DComponent = std::make_unique<Transform2DComponent>(this);
 			transform2DComponent->FromJson(object.get<jsonxx::Object>("transform2D"));
 			transform = std::move(transform2DComponent);
+		}
+
+		/* additional components */
+		if (object.has<jsonxx::Array>("components") == true)
+		{
+			for (size_t i = 0; i < object.get<jsonxx::Array>("components").size(); i++)
+			{
+				jsonxx::Object componentJson = object.get<jsonxx::Array>("components").get<jsonxx::Object>((int)i);
+				std::unique_ptr<IBaseComponent> component = SceneComponentFactory::Create((SceneComponentType)componentJson.get<jsonxx::Number>("componentType"), this);
+				component->FromJson(object.get<jsonxx::Array>("components").get<jsonxx::Object>((int)i));
+				components.push_back(std::move(component));
+			}
 		}
 
 		return true;

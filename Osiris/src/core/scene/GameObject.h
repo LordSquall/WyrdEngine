@@ -11,7 +11,7 @@
 namespace Osiris {
 
 	class Behaviour;
-	class Layer2D;
+	class SceneLayer;
 	class IBaseComponent;
 	class TransformComponent;
 	class Transform2DComponent;
@@ -28,20 +28,29 @@ namespace Osiris {
 		GameObject(std::string name, bool generateUID = false);
 		~GameObject();
 
-		GameObject* AddChild(std::unique_ptr<GameObject> gameObject);
 		void RemoveChild(UID uid);
 		void RemoveChildren();
 		void DuplicateChild(UID uid);
 		void SwapChild(int a, int b);
 
-		void AddComponent(std::unique_ptr<IBaseComponent> component);
+		IBaseComponent* AddComponent(std::unique_ptr<IBaseComponent> component);
 
-		std::shared_ptr<GameObject> FindChild(const UID uid);
+		GameObject* FindChild(const UID uid);
 		ScriptComponent* FindScriptComponent(const std::string& name);
 
-		void AssignScripts(Behaviour* behaviour);
+		virtual void AssignScripts(Behaviour* behaviour);
 
 		inline std::vector<std::unique_ptr<GameObject>>& GetGameObjects() { return _GameObjects; }
+
+		/**
+		 * Set the layer which this game object belongs too
+		*/
+		inline void SetSceneLayer(SceneLayer* sceneLayer) { _SceneLayer = sceneLayer; }
+
+		/**
+		 * Get the layer which this game object belongs too
+		*/
+		inline SceneLayer* GetSceneLayer() const { return _SceneLayer; }
 
 		/**
 		 * @brief Serialise the gameobject into a json object
@@ -61,22 +70,18 @@ namespace Osiris {
 
 		std::unique_ptr<TransformComponent> transform;
 
-		std::shared_ptr<Transform2DComponent> transform2D;
 		std::shared_ptr<SpriteComponent> sprite;
 		std::shared_ptr<PhysicsComponent> physics;
 
 		std::vector<std::unique_ptr<IBaseComponent>> components;
-		
-		std::shared_ptr<Layer2D> layer;
-
-		std::shared_ptr<GameObject> parent;
-		std::vector<std::shared_ptr<GameObject>> children;
-
+	
 		glm::vec4 inputArea;
 
 		UID uid;
 
 	protected:
+		SceneLayer* _SceneLayer;
+
 		std::vector<std::unique_ptr<GameObject>> _GameObjects;
 	};
 

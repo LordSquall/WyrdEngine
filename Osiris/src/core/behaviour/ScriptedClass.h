@@ -5,6 +5,7 @@
 #include "core/export.h"
 #include "core/behaviour/Properties/ScriptProperty.h"
 #include "core/behaviour/ScriptedMethod.h"
+#include "core/UID.h"
 
 /* external includes */
 #include <mono/jit/jit.h>
@@ -35,6 +36,18 @@ namespace Osiris
 		virtual ~ScriptedClass() = default;
 
 		/**
+		 * @brief Get the Class UID
+		 * @return Class uid
+		*/
+		inline const UID& GetUID() const { return _UID; }
+
+		/**
+		 * @brief Set the Class UID
+		 * @param uid
+		*/
+		inline void SetUID(const UID& uid) { _UID = uid; }
+
+		/**
 		 * @brief Get the Class Name
 		 * @return Class name
 		*/
@@ -55,5 +68,6 @@ namespace Osiris
 
 	private:
 		std::string		_Name;
+		UID				_UID;
 	};
 }

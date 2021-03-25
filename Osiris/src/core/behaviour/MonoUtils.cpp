@@ -49,6 +49,26 @@ namespace Osiris
 		return object;
 	}
 
+	MonoObject* MonoUtils::CreateNewUnmanagedObject(MonoDomain* domain, std::shared_ptr<ScriptedClass> monoClass, Behaviour* behaviour, void** unmanagedObject)
+	{
+		MonoObject* object = mono_object_new((MonoDomain*)domain, (MonoClass*)*monoClass->ManagedClass);
+		if (object == NULL)
+		{
+			OSR_CORE_ERROR("mono_object_new for {0}", monoClass->GetName());
+		}
+
+		/* Call the object default constructor */
+		mono_runtime_object_init(object);
+
+		/* */
+		MonoObject* exception = nullptr;
+		void* nativePtrArgs[1] = { unmanagedObject };
+		mono_runtime_invoke((MonoMethod*)behaviour->GetClass("UnmanagedObject")->Properties["NativePtr"]->GetSetter(), object, &nativePtrArgs[0], &exception);
+		if (exception != nullptr) mono_print_unhandled_exception(exception);
+
+		return object;
+	}
+
 	
 	std::pair<MonoMethod*, MonoMethod*> MonoUtils::FindPropertyInClass(std::shared_ptr<ScriptedClass> scriptedClass, const char* propertyName)
 	{

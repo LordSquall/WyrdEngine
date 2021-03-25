@@ -21,8 +21,12 @@ namespace Osiris {
 	{
 	public:
 		SpriteComponent(GameObject* gameObject);
-		SpriteComponent(const SpriteComponent& obj);
 		~SpriteComponent() = default;
+
+		/**
+		* @brief Initialise all the internal resources required from the Sprite Component
+		*/
+		bool Initialise();
 
 		inline virtual const std::string GetManagedType() { return "SpriteComponent"; }
 
@@ -32,6 +36,16 @@ namespace Osiris {
 		void SetTexture(std::shared_ptr<Texture> texture);
 		const std::shared_ptr<Texture> GetTexture();
 
+		/**
+		 * @brief See IBaseComponent::ToJson()
+		*/
+		virtual jsonxx::Object ToJson() override;
+
+		/**
+		 * @brief See IBaseComponent::FromJson()
+		*/
+		virtual bool FromJson(jsonxx::Object& object) override;
+
 		std::shared_ptr<Shader> shader;
 		std::shared_ptr<Layer2D> spriteLayer;
 		glm::vec2 position;
@@ -40,7 +54,7 @@ namespace Osiris {
 		int32_t BatchIndex;
 
 	public:
-		void Initialise();
+
 		void Recalculate();
 		void Render(Timestep ts, Renderer& renderer);
 		void Remove();

@@ -21,7 +21,7 @@ namespace Osiris
 		if (_Value != nullptr)
 		{
 			/* retreieve the scripted gameobject */
-			auto scriptedGameObject = Application::Get().GetBehaviour().GetGameObject(_Value->uid);
+ 			auto scriptedGameObject = Application::Get().GetBehaviour().GetGameObject(_Value->uid);
 
 			if (scriptedGameObject != nullptr)
 			{
