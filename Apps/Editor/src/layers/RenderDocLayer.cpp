@@ -89,7 +89,7 @@ namespace Osiris::Editor
 
 						if (Utils::ToBool(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__AUTOOPEN, "1")))
 						{
-							Utils::OpenFileWithSystem(std::string(filenameBuffer));
+							Utils::OpenFileWithSystem(_LastFileCreatedName + "_capture.rdc");
 						}
 
 						free(filenameBuffer);
@@ -141,7 +141,18 @@ namespace Osiris::Editor
 			{
 				if (Utils::ToBool(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__ENABLED, "0")))
 				{
-					_RDOCAPI->SetCaptureFilePathTemplate(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__CAPTUREDIR, "my_captures/example").c_str());
+					time_t rawtime;
+					struct tm* timeinfo;
+					char buffer[80];
+
+					time(&rawtime);
+					timeinfo = localtime(&rawtime);
+
+					strftime(buffer, sizeof(buffer), "%d-%m-%Y_%H-%M-%S", timeinfo);
+					std::string datetime(buffer);
+					_LastFileCreatedName = _SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__CAPTUREDIR, "my_captures/example") + datetime;
+
+					_RDOCAPI->SetCaptureFilePathTemplate(_LastFileCreatedName.c_str());
 					_RDOCAPI->StartFrameCapture(NULL, NULL);
 
 					int ret = _RDOCAPI->IsFrameCapturing();
