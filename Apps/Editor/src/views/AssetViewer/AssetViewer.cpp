@@ -12,6 +12,7 @@
 #include "datamodels/resources/Resource.h"
 #include "datamodels/resources/TextureRes.h"
 #include "views/Dialogs/NewScriptDialog.h"
+#include "views/Dialogs/NewSceneDialog.h"
 #include "services/ServiceManager.h"
 #include "support/ImGuiUtils.h"
 
@@ -337,6 +338,14 @@ namespace Osiris::Editor
 
 			if (ImGui::BeginMenu("New Asset"))
 			{
+				//if (ImGui::MenuItem("Scene"))
+				//{
+				//	/* find the directory entry from the id */
+				//	auto dir = FindDirectoryEntry(directoryTree, nodeId);
+
+				//	_dialogService->OpenDialog(std::make_shared<NewSceneDialog>(_EditorLayer, dir->dir));
+				//}
+
 				if (ImGui::MenuItem("Script"))
 				{
 					/* find the directory entry from the id */

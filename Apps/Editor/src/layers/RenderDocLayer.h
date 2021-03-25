@@ -46,7 +46,6 @@ namespace Osiris::Editor
 		unsigned int _FrameCaptureCount = 1;
 
 		std::shared_ptr<SettingsService> _SettingsService;
-		std::string _LastFileCreatedName;
 	};
 }
 

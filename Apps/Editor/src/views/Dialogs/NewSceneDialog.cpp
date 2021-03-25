@@ -2,17 +2,17 @@
 
 #include "osrpch.h"
 
-#include "NewScriptDialog.h"
+#include "NewSceneDialog.h"
 #include "imgui.h"
 
 namespace Osiris::Editor
 {
-	NewScriptDialog::NewScriptDialog(EditorLayer* editorLayer, const std::string& folder) : EditorViewDialogBase("New Script", editorLayer), _Folder(folder)
+	NewSceneDialog::NewSceneDialog(EditorLayer* editorLayer, const std::string& folder) : EditorViewDialogBase("New Script", editorLayer), _Folder(folder)
 	{
 
 	}
 
-	void NewScriptDialog::OnDialogRender()
+	void NewSceneDialog::OnDialogRender()
 	{
 		static char name_buffer[255];
 		static char folder_buffer[255];
@@ -26,13 +26,10 @@ namespace Osiris::Editor
 
 		if (ImGui::Button("OK", ImVec2(120, 0)))
 		{
-			/* load the script template */
-			std::string scriptTemplate = Utils::ReadFileToString(Utils::GetEditorResFolder() + "\\templates\\Script.cs");
+			/* load the scene template */
+			std::string sceneTemplate = Utils::ReadFileToString(Utils::GetEditorResFolder() + "\\templates\\Scene.scene");
 
-			/* replace the main class name */
-			std::string scriptContent = Utils::ReplaceAll(scriptTemplate, "<<CLASS_NAME>>", name_buffer);
-
-			Utils::CreateRawFile(_Folder + "\\" + name_buffer + ".cs", scriptContent);
+			Utils::CreateRawFile(_Folder + "\\" + name_buffer + ".scene", sceneTemplate);
 
 			ImGui::CloseCurrentPopup();
 			Close();

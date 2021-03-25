@@ -19,6 +19,8 @@
 
 namespace Osiris::Editor
 {
+	std::string lastFileCreatedName;
+
 	RenderDocLayer::RenderDocLayer()
 		: Layer("RenderDocLayer")
 	{
@@ -89,7 +91,7 @@ namespace Osiris::Editor
 
 						if (Utils::ToBool(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__AUTOOPEN, "1")))
 						{
-							Utils::OpenFileWithSystem(_LastFileCreatedName + "_capture.rdc");
+							Utils::OpenFileWithSystem(lastFileCreatedName + "_capture.rdc");
 						}
 
 						free(filenameBuffer);
@@ -150,9 +152,9 @@ namespace Osiris::Editor
 
 					strftime(buffer, sizeof(buffer), "%d-%m-%Y_%H-%M-%S", timeinfo);
 					std::string datetime(buffer);
-					_LastFileCreatedName = _SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__CAPTUREDIR, "my_captures/example") + datetime;
+					lastFileCreatedName = _SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__CAPTUREDIR, "my_captures/example") + datetime;
 
-					_RDOCAPI->SetCaptureFilePathTemplate(_LastFileCreatedName.c_str());
+					_RDOCAPI->SetCaptureFilePathTemplate(lastFileCreatedName.c_str());
 					_RDOCAPI->StartFrameCapture(NULL, NULL);
 
 					int ret = _RDOCAPI->IsFrameCapturing();
