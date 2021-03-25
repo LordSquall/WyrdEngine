@@ -559,11 +559,6 @@ namespace Osiris
 		/* traverse each of the gameobjects within the scene*/
 		for (auto& component : gameObject->components)
 		{
-			if (component->Initialised == false)
-			{
-				component->Initialise();
-			}
-
 			if (component->GetType() == SceneComponentType::ScriptComponent)
 			{
 				ScriptComponent* scriptComponent = (ScriptComponent*)&*component;
