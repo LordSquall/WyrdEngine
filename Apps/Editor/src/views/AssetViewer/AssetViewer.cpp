@@ -338,13 +338,13 @@ namespace Osiris::Editor
 
 			if (ImGui::BeginMenu("New Asset"))
 			{
-				//if (ImGui::MenuItem("Scene"))
-				//{
-				//	/* find the directory entry from the id */
-				//	auto dir = FindDirectoryEntry(directoryTree, nodeId);
+				if (ImGui::MenuItem("Scene"))
+				{
+					/* find the directory entry from the id */
+					auto dir = FindDirectoryEntry(directoryTree, nodeId);
 
-				//	_dialogService->OpenDialog(std::make_shared<NewSceneDialog>(_EditorLayer, dir->dir));
-				//}
+					_dialogService->OpenDialog(std::make_shared<NewSceneDialog>(_EditorLayer, dir->dir));
+				}
 
 				if (ImGui::MenuItem("Script"))
 				{
@@ -420,7 +420,47 @@ namespace Osiris::Editor
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 		if (dir != nullptr)
 		{
-			ImGui::Columns(layoutSettings.itemColumnCnt, NULL, false);
+			if (ImGui::BeginTable("outputLogTable", 2, ImGuiTableFlags_SizingFixedFit))
+			{
+				ImGui::TableSetupColumn("Type");
+				ImGui::TableSetupColumn("Name");
+				ImGui::TableSetupScrollFreeze(0, 1);
+				ImGui::TableHeadersRow();
+
+				int rowIndexCnt = 0;
+				for (auto& res : dir->files)
+				{
+					ImGui::PushID(&res);
+					ImGui::TableNextRow(ImGuiTableRowFlags_None, ImGui::GetTextLineHeightWithSpacing() * 1.2f);
+					ImGui::TableNextColumn();
+
+					ResourceType resType = static_cast<ResourceType>(res.second->GetType());
+
+					switch (resType)
+					{
+					case ResourceType::TEXTURE:
+						DrawTextureItem(rowIndexCnt, (TextureRes&)*res.second.get());
+						break;
+					case ResourceType::SCENE:
+						DrawSceneItem(rowIndexCnt, (SceneRes&)*res.second.get());
+						break;
+					case ResourceType::SCRIPT:
+						DrawScriptItem(rowIndexCnt, (ScriptRes&)*res.second.get());
+						break;
+					case ResourceType::SHADER:break;
+					case ResourceType::NONE:
+					default:
+						break;
+					}
+
+					ImGui::PopID();
+
+					rowIndexCnt++;
+				}
+
+				ImGui::EndTable();
+			}
+			/*ImGui::Columns(layoutSettings.itemColumnCnt, NULL, false);
 			for (auto& res : dir->files)
 			{
 				ResourceType resType = static_cast<ResourceType>(res.second->GetType());
@@ -449,220 +489,226 @@ namespace Osiris::Editor
 				ImGui::PopID();
 				ImGui::NextColumn();
 				resIdx++;
-			}
-			ImGui::Columns(1);
+			}*/
 		}
+		//ImGui::Columns(1);
 		ImGui::PopStyleVar();
 	}
 
-	void AssetViewer::DrawTextureItem(uint32_t resIdx, std::shared_ptr<TextureRes> textureResource)
+	void AssetViewer::DrawTextureItem(uint32_t resIdx, TextureRes& textureResource)
 	{
+		ImGui::Image((ImTextureID)(INT_PTR)textureResource.GetTexture()->GetHandle(), ImVec2((float)std::clamp(textureResource.GetWidth(), (uint32_t)1, (uint32_t)layoutSettings.itemGroupWidth), (float)std::clamp(textureResource.GetHeight(), (uint32_t)1, (uint32_t)layoutSettings.itemGroupWidth)));
+		
+		ImGui::TableNextColumn();
+
+		ImGui::Text(textureResource.GetName().c_str());
+
 		/* calculate the total height of the item */
-		ImVec2 labelSize = ImGui::CalcTextSize(textureResource->GetName().c_str());
-		ImVec2 groupSize = ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemColumnWidth + labelSize.y);
+		//ImVec2 labelSize = ImGui::CalcTextSize(textureResource.GetName().c_str());
+		//ImVec2 groupSize = ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemColumnWidth + labelSize.y);
 
-		if (ImGui::Selectable("##title", _currentSelectedResource != nullptr ? _currentSelectedResource->GetResourceID() == textureResource->GetResourceID() : false, ImGuiSelectableFlags_SelectOnClick, groupSize))
-		{
-			_currentSelectedResource = textureResource;
-		}
+		//if (ImGui::Selectable("##title", _currentSelectedResource != nullptr ? _currentSelectedResource->GetResourceID() == textureResource->GetResourceID() : false, ImGuiSelectableFlags_SelectOnClick, groupSize))
+		//{
+		//	_currentSelectedResource = textureResource;
+		//}
 
-		if (ImGui::BeginPopupContextItem())
-		{
-			_currentSelectedResource = textureResource;
+		//if (ImGui::BeginPopupContextItem())
+		//{
+		//	_currentSelectedResource = textureResource;
 
-			if (ImGui::MenuItem("Copy")) { OSR_TRACE("Texture Copied"); };
-			if (ImGui::MenuItem("Cut")) { OSR_TRACE("Texture Cut"); };
-			if (ImGui::MenuItem("Paste")) { OSR_TRACE("Texture Paste"); };
-			ImGui::Separator();
+		//	if (ImGui::MenuItem("Copy")) { OSR_TRACE("Texture Copied"); };
+		//	if (ImGui::MenuItem("Cut")) { OSR_TRACE("Texture Cut"); };
+		//	if (ImGui::MenuItem("Paste")) { OSR_TRACE("Texture Paste"); };
+		//	ImGui::Separator();
 
-			if (ImGui::MenuItem("Delete")) 
-			{ 
-				_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to delete?", 
-					[&](void* data) {
-						Utils::RemoveFile(std::dynamic_pointer_cast<TextureRes> (_currentSelectedResource)->GetPath());
-					});
-			};
+		//	if (ImGui::MenuItem("Delete")) 
+		//	{ 
+		//		_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to delete?", 
+		//			[&](void* data) {
+		//				Utils::RemoveFile(std::dynamic_pointer_cast<TextureRes> (_currentSelectedResource)->GetPath());
+		//			});
+		//	};
 
-			ImGui::EndPopup();
-		}
+		//	ImGui::EndPopup();
+		//}
 	
-		/* Drag and Drop */
-		if (ImGui::BeginDragDropSource())
-		{
-			//std::shared_ptr<Osiris::Texture> texture = textureResource->GetTexture();
-			ImGui::SetDragDropPayload("DND_TEXTURE", &textureResource->GetTexture(), sizeof(std::shared_ptr<Texture>));
-			ImGui::Image((ImTextureID)(INT_PTR)textureResource->GetTexture()->GetHandle(), ImVec2(32, 32));
-			ImGui::EndDragDropSource();
-		}
+		///* Drag and Drop */
+		//if (ImGui::BeginDragDropSource())
+		//{
+		//	//std::shared_ptr<Osiris::Texture> texture = textureResource->GetTexture();
+		//	ImGui::SetDragDropPayload("DND_TEXTURE", &textureResource->GetTexture(), sizeof(std::shared_ptr<Texture>));
+		//	ImGui::Image((ImTextureID)(INT_PTR)textureResource->GetTexture()->GetHandle(), ImVec2(32, 32));
+		//	ImGui::EndDragDropSource();
+		//}
 
-		/* Tool Tip */
-		if (ImGui::IsItemHovered())
-		{
-			ImGui::BeginTooltip();
-			ImGui::Text(textureResource->GetName().c_str());
-			ImGui::Text("Filename: %s", textureResource->GetPath().c_str());
-			ImGui::Text("UID: %s", textureResource->GetResourceID().str().c_str());
-			ImGui::EndTooltip();
-		}
+		///* Tool Tip */
+		//if (ImGui::IsItemHovered())
+		//{
+		//	ImGui::BeginTooltip();
+		//	ImGui::Text(textureResource->GetName().c_str());
+		//	ImGui::Text("Filename: %s", textureResource->GetPath().c_str());
+		//	ImGui::Text("UID: %s", textureResource->GetResourceID().str().c_str());
+		//	ImGui::EndTooltip();
+		//}
 
-		/* reset the cursor */
-		ImGui::SameLine();
-		ImGui::SetCursorPosX((ImGui::GetCursorPosX() - groupSize.x) + layoutSettings.itemGroupPaddingX);
+		///* reset the cursor */
+		//ImGui::SameLine();
+		//ImGui::SetCursorPosX((ImGui::GetCursorPosX() - groupSize.x) + layoutSettings.itemGroupPaddingX);
 
-		ImGui::Image((ImTextureID)(INT_PTR)textureResource->GetTexture()->GetHandle(), ImVec2((float)std::clamp(textureResource->GetWidth(), (uint32_t)1, (uint32_t)layoutSettings.itemGroupWidth), (float)std::clamp(textureResource->GetHeight(), (uint32_t)1, (uint32_t)layoutSettings.itemGroupWidth)));
-		ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 2, ImGui::GetCursorPosY() - labelSize.y));
+		//ImGui::Image((ImTextureID)(INT_PTR)textureResource->GetTexture()->GetHandle(), ImVec2((float)std::clamp(textureResource->GetWidth(), (uint32_t)1, (uint32_t)layoutSettings.itemGroupWidth), (float)std::clamp(textureResource->GetHeight(), (uint32_t)1, (uint32_t)layoutSettings.itemGroupWidth)));
+		//ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 2, ImGui::GetCursorPosY() - labelSize.y));
 
-		if (labelSize.x > (layoutSettings.itemColumnWidth - 4))
-		{
-			ImGui::Text("%.*s...", layoutSettings.itemLabelShortCharLimit, textureResource->GetName().c_str());
-		}
-		else
-		{
-			ImGui::Text(textureResource->GetName().c_str());
-		}
+		//if (labelSize.x > (layoutSettings.itemColumnWidth - 4))
+		//{
+		//	ImGui::Text("%.*s...", layoutSettings.itemLabelShortCharLimit, textureResource->GetName().c_str());
+		//}
+		//else
+		//{
+		//	ImGui::Text(textureResource->GetName().c_str());
+		//}
 	}
 
-	void AssetViewer::DrawSceneItem(uint32_t resIdx, std::shared_ptr<SceneRes> sceneResource)
+	void AssetViewer::DrawSceneItem(uint32_t resIdx, SceneRes& sceneResource)
 	{
-		/* calculate the total height of the item */
-		ImVec2 labelSize = ImGui::CalcTextSize(sceneResource->GetName().c_str());
-		ImVec2 groupSize = ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemColumnWidth + labelSize.y);
+		///* calculate the total height of the item */
+		//ImVec2 labelSize = ImGui::CalcTextSize(sceneResource->GetName().c_str());
+		//ImVec2 groupSize = ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemColumnWidth + labelSize.y);
 
-		if (ImGui::Selectable("##title", _currentSelectedResource != nullptr ? _currentSelectedResource->GetResourceID() == sceneResource->GetResourceID() : false, ImGuiSelectableFlags_SelectOnClick, groupSize))
-		{
-			_currentSelectedResource = sceneResource;
-			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-			{
-				_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to load scene?",
-					[&](void* data) {
-						_workspaceService->LoadScene(dynamic_pointer_cast<SceneRes>(_currentSelectedResource)->GetPath());
-					});
-			}
-		}
+		//if (ImGui::Selectable("##title", _currentSelectedResource != nullptr ? _currentSelectedResource->GetResourceID() == sceneResource->GetResourceID() : false, ImGuiSelectableFlags_SelectOnClick, groupSize))
+		//{
+		//	_currentSelectedResource = sceneResource;
+		//	if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+		//	{
+		//		_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to load scene?",
+		//			[&](void* data) {
+		//				_workspaceService->LoadScene(dynamic_pointer_cast<SceneRes>(_currentSelectedResource)->GetPath());
+		//			});
+		//	}
+		//}
 
-		if (ImGui::BeginPopupContextItem())
-		{
-			_currentSelectedResource = sceneResource;
+		//if (ImGui::BeginPopupContextItem())
+		//{
+		//	_currentSelectedResource = sceneResource;
 
-			if (ImGui::MenuItem("Copy")) { OSR_TRACE("Texture Copied"); };
-			if (ImGui::MenuItem("Cut")) { OSR_TRACE("Texture Cut"); };
-			if (ImGui::MenuItem("Paste")) { OSR_TRACE("Texture Paste"); };
-			ImGui::Separator();
+		//	if (ImGui::MenuItem("Copy")) { OSR_TRACE("Texture Copied"); };
+		//	if (ImGui::MenuItem("Cut")) { OSR_TRACE("Texture Cut"); };
+		//	if (ImGui::MenuItem("Paste")) { OSR_TRACE("Texture Paste"); };
+		//	ImGui::Separator();
 
-			if (ImGui::MenuItem("Delete")) 
-			{ 
-				_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to delete?", 
-					[&](void* data) {
-						Utils::RemoveFile(std::dynamic_pointer_cast<TextureRes> (_currentSelectedResource)->GetPath());
-					});
-			};
-			
-			ImGui::Separator();
-			if (ImGui::MenuItem("Open in external editor"))
-			{
-				Utils::OpenFileWithSystem(sceneResource->GetPath());
-			}
+		//	if (ImGui::MenuItem("Delete")) 
+		//	{ 
+		//		_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to delete?", 
+		//			[&](void* data) {
+		//				Utils::RemoveFile(std::dynamic_pointer_cast<TextureRes> (_currentSelectedResource)->GetPath());
+		//			});
+		//	};
+		//	
+		//	ImGui::Separator();
+		//	if (ImGui::MenuItem("Open in external editor"))
+		//	{
+		//		Utils::OpenFileWithSystem(sceneResource->GetPath());
+		//	}
 
-			ImGui::EndPopup();
-		}
+		//	ImGui::EndPopup();
+		//}
 
-		/* Tool Tip */
-		if (ImGui::IsItemHovered())
-		{
-			ImGui::BeginTooltip();
-			ImGui::Text(sceneResource->GetName().c_str());
-			ImGui::EndTooltip();
-		}
+		///* Tool Tip */
+		//if (ImGui::IsItemHovered())
+		//{
+		//	ImGui::BeginTooltip();
+		//	ImGui::Text(sceneResource->GetName().c_str());
+		//	ImGui::EndTooltip();
+		//}
 
-		/* reset the cursor */
-		ImGui::SameLine();
-		ImGui::SetCursorPosX((ImGui::GetCursorPosX() - groupSize.x) + layoutSettings.itemGroupPaddingX);
+		///* reset the cursor */
+		//ImGui::SameLine();
+		//ImGui::SetCursorPosX((ImGui::GetCursorPosX() - groupSize.x) + layoutSettings.itemGroupPaddingX);
 
-		ImGui::Image(*_SceneIcon, ImVec2(layoutSettings.itemGroupWidth, layoutSettings.itemGroupWidth));
-		ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 2, ImGui::GetCursorPosY() - labelSize.y));
+		//ImGui::Image(*_SceneIcon, ImVec2(layoutSettings.itemGroupWidth, layoutSettings.itemGroupWidth));
+		//ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 2, ImGui::GetCursorPosY() - labelSize.y));
 
-		if (labelSize.x > (layoutSettings.itemColumnWidth - 4))
-		{
-			ImGui::Text("%.*s...", layoutSettings.itemLabelShortCharLimit, sceneResource->GetName().c_str());
-		}
-		else
-		{
-			ImGui::Text(sceneResource->GetName().c_str());
-		}
+		//if (labelSize.x > (layoutSettings.itemColumnWidth - 4))
+		//{
+		//	ImGui::Text("%.*s...", layoutSettings.itemLabelShortCharLimit, sceneResource->GetName().c_str());
+		//}
+		//else
+		//{
+		//	ImGui::Text(sceneResource->GetName().c_str());
+		//}
 	}
 
-	void AssetViewer::DrawScriptItem(uint32_t resIdx, std::shared_ptr<ScriptRes> scriptResource)
+	void AssetViewer::DrawScriptItem(uint32_t resIdx, ScriptRes& scriptResource)
 	{
-		/* calculate the total height of the item */
-		ImVec2 labelSize = ImGui::CalcTextSize(scriptResource->GetName().c_str());
-		ImVec2 groupSize = ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemColumnWidth + labelSize.y);
+		///* calculate the total height of the item */
+		//ImVec2 labelSize = ImGui::CalcTextSize(scriptResource->GetName().c_str());
+		//ImVec2 groupSize = ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemColumnWidth + labelSize.y);
 
-		if (ImGui::Selectable("##title", _currentSelectedResource != nullptr ? _currentSelectedResource->GetResourceID() == scriptResource->GetResourceID() : false, ImGuiSelectableFlags_SelectOnClick, groupSize))
-		{
-			_currentSelectedResource = scriptResource;
-			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-			{
+		//if (ImGui::Selectable("##title", _currentSelectedResource != nullptr ? _currentSelectedResource->GetResourceID() == scriptResource->GetResourceID() : false, ImGuiSelectableFlags_SelectOnClick, groupSize))
+		//{
+		//	_currentSelectedResource = scriptResource;
+		//	if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+		//	{
 
-			}
-		}
+		//	}
+		//}
 
-		if (ImGui::BeginPopupContextItem())
-		{
-			_currentSelectedResource = scriptResource;
+		//if (ImGui::BeginPopupContextItem())
+		//{
+		//	_currentSelectedResource = scriptResource;
 
-			if (ImGui::MenuItem("Copy")) { OSR_TRACE("Texture Copied"); };
-			if (ImGui::MenuItem("Cut")) { OSR_TRACE("Texture Cut"); };
-			if (ImGui::MenuItem("Paste")) { OSR_TRACE("Texture Paste"); };
-			ImGui::Separator();
+		//	if (ImGui::MenuItem("Copy")) { OSR_TRACE("Texture Copied"); };
+		//	if (ImGui::MenuItem("Cut")) { OSR_TRACE("Texture Cut"); };
+		//	if (ImGui::MenuItem("Paste")) { OSR_TRACE("Texture Paste"); };
+		//	ImGui::Separator();
 
-			if (ImGui::MenuItem("Delete"))
-			{
-				_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to delete?",
-					[&](void* data) {
-						Utils::RemoveFile(std::dynamic_pointer_cast<ScriptRes> (_currentSelectedResource)->GetPath());
-					});
-			};
+		//	if (ImGui::MenuItem("Delete"))
+		//	{
+		//		_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to delete?",
+		//			[&](void* data) {
+		//				Utils::RemoveFile(std::dynamic_pointer_cast<ScriptRes> (_currentSelectedResource)->GetPath());
+		//			});
+		//	};
 
-			ImGui::Separator();
-			if (ImGui::MenuItem("Open in external editor"))
-			{
-				Utils::OpenFileWithSystem(scriptResource->GetPath());
-			}
+		//	ImGui::Separator();
+		//	if (ImGui::MenuItem("Open in external editor"))
+		//	{
+		//		Utils::OpenFileWithSystem(scriptResource->GetPath());
+		//	}
 
-			ImGui::EndPopup();
-		}
+		//	ImGui::EndPopup();
+		//}
 
-		/* Tool Tip */
-		if (ImGui::IsItemHovered())
-		{
-			ImGui::BeginTooltip();
-			ImGui::Text(scriptResource->GetName().c_str());
-			ImGui::EndTooltip();
-		}
+		///* Tool Tip */
+		//if (ImGui::IsItemHovered())
+		//{
+		//	ImGui::BeginTooltip();
+		//	ImGui::Text(scriptResource->GetName().c_str());
+		//	ImGui::EndTooltip();
+		//}
 
-		/* Drag and Drop */
-		if (ImGui::BeginDragDropSource())
-		{
-			ImGui::SetDragDropPayload("SCRIPT_ASSET_PAYLOAD", &scriptResource, sizeof(std::shared_ptr<ScriptRes>));
-			ImGui::Image(*_ScriptIcon, ImVec2(32, 32));
-			ImGui::EndDragDropSource();
-		}
+		///* Drag and Drop */
+		//if (ImGui::BeginDragDropSource())
+		//{
+		//	ImGui::SetDragDropPayload("SCRIPT_ASSET_PAYLOAD", &scriptResource, sizeof(std::shared_ptr<ScriptRes>));
+		//	ImGui::Image(*_ScriptIcon, ImVec2(32, 32));
+		//	ImGui::EndDragDropSource();
+		//}
 
-		/* reset the cursor */
-		ImGui::SameLine();
-		ImGui::SetCursorPosX((ImGui::GetCursorPosX() - groupSize.x) + layoutSettings.itemGroupPaddingX);
+		///* reset the cursor */
+		//ImGui::SameLine();
+		//ImGui::SetCursorPosX((ImGui::GetCursorPosX() - groupSize.x) + layoutSettings.itemGroupPaddingX);
 
-		ImGui::Image(*_ScriptIcon, ImVec2(layoutSettings.itemGroupWidth, layoutSettings.itemGroupWidth));
-		ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 2, ImGui::GetCursorPosY() - labelSize.y));
+		//ImGui::Image(*_ScriptIcon, ImVec2(layoutSettings.itemGroupWidth, layoutSettings.itemGroupWidth));
+		//ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 2, ImGui::GetCursorPosY() - labelSize.y));
 
-		if (labelSize.x > (layoutSettings.itemColumnWidth - 4))
-		{
-			ImGui::Text("%.*s...", layoutSettings.itemLabelShortCharLimit, scriptResource->GetName().c_str());
-		}
-		else
-		{
-			ImGui::Text(scriptResource->GetName().c_str());
-		}
+		//if (labelSize.x > (layoutSettings.itemColumnWidth - 4))
+		//{
+		//	ImGui::Text("%.*s...", layoutSettings.itemLabelShortCharLimit, scriptResource->GetName().c_str());
+		//}
+		//else
+		//{
+		//	ImGui::Text(scriptResource->GetName().c_str());
+		//}
 	}
 
 	void AssetViewer::DrawUnknownItem(uint32_t resIdx, std::string& unknownResourceName)

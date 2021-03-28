@@ -94,6 +94,20 @@ namespace Osiris
 		std::vector<void*> resourceArgs = std::vector<void*>({ &_ResourcesSubsystem });
 		mono_property_set_value(resourcesProp, nullptr, &resourceArgs[0], nullptr);
 
+		/* add all the managed texture objects */
+		for (auto& textureResource : _ResourcesSubsystem->Textures)
+		{
+			_NativePtrMap.push_back(textureResource.second.get());
+			MonoObject* newResource = MonoUtils::CreateNewUnmanagedObject((MonoDomain*)_ClientDomain, _ScriptedClasses["Texture"], this, &_NativePtrMap.back());
+
+			std::vector<void*> args;
+			args.push_back(newResource);
+
+			MonoObject* exception = nullptr;
+			mono_runtime_invoke(_ScriptedClasses["ResourceManager"]->Methods["AddResource"]->GetManagedMethod(), nullptr, &args[0], &exception);
+			if (exception != nullptr) mono_print_unhandled_exception(exception);
+		}
+
 		/* first stage is to create a instance of each gameobject within mono */
 		if (_CurrentScene != nullptr)
 		{
@@ -118,6 +132,8 @@ namespace Osiris
 		/* clear managed objects */
 		_ScriptedGameObjects.clear();
 		_ScriptedCustomObjects.clear();
+
+		_NativePtrMap.clear();
 
 		mono_runtime_invoke(MonoUtils::FindMethodInClass(GetClass("GameObjectManager"), "Reset", 0, true), NULL, NULL, NULL);
 

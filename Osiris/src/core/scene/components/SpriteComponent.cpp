@@ -30,7 +30,8 @@ namespace Osiris
 		SceneLayer2D* layer2D = dynamic_cast<SceneLayer2D*>(Owner->GetSceneLayer());
 		if (layer2D != nullptr)
 		{
-			layer2D->GetSpriteBatch()->AddSprite(this);
+			sceneLayer = layer2D;
+			BatchIndex = layer2D->GetSpriteBatch()->AddSprite(this);
 		}
 		else
 		{
@@ -48,8 +49,7 @@ namespace Osiris
 
 		Owner->inputArea = { position.x, position.y, size.x, size.y };
 
-
-		//spriteLayer->GetSpriteBatch().UpdateSprite(*this);
+		sceneLayer->GetSpriteBatch()->UpdateSprite(this);
 	}
 
 	void SpriteComponent::SetTexture(std::shared_ptr<Texture> texture)
@@ -71,7 +71,7 @@ namespace Osiris
 
 		Owner->inputArea = { position.x, position.y, size.x, size.y };
 
-		//spriteLayer->GetSpriteBatch().UpdateSprite(*this);
+		sceneLayer->GetSpriteBatch()->UpdateSprite(this);
 	}
 
 

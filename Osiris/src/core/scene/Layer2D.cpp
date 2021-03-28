@@ -41,7 +41,7 @@ namespace Osiris
 
 	bool Layer2D::RegisterSprite(std::shared_ptr<SpriteComponent> spriteComponent)
 	{
-		//spriteComponent->BatchIndex = _SpriteBatch->AddSprite(spriteComponent);
+		spriteComponent->BatchIndex = _SpriteBatch->AddSprite(spriteComponent.get());
 
 		return true;
 	}

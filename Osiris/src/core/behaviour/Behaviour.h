@@ -211,6 +211,8 @@ namespace Osiris
 		Physics*		_PhysicsSubsystem;
 		Resources*		_ResourcesSubsystem;
 		
+		std::vector<void*> _NativePtrMap;
+
 		BehaviourInput	_Input;
 
 		void*			_RootDomain;

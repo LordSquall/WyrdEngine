@@ -49,7 +49,6 @@ namespace Osiris {
 
 	public:
 		std::string name;
-		//std::vector<std::shared_ptr<Layer2D>> layers2D;
 		Color bgcolor;
 
 		glm::vec3 cameraPosition = { 0.0f, 0.0f, 0.0f };

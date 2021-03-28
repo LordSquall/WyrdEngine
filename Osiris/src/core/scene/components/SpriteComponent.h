@@ -15,7 +15,7 @@ namespace Osiris {
 	class Shader;
 	class Texture;
 	class Sprite;
-	class Layer2D;
+	class SceneLayer2D;
 
 	class OSR_LIBRARY_API SpriteComponent : public IBaseComponent
 	{
@@ -47,7 +47,7 @@ namespace Osiris {
 		virtual bool FromJson(jsonxx::Object& object) override;
 
 		std::shared_ptr<Shader> shader;
-		std::shared_ptr<Layer2D> spriteLayer;
+		SceneLayer2D* sceneLayer;
 		glm::vec2 position;
 		glm::vec2 size;
 		Color color;

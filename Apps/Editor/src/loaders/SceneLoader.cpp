@@ -47,6 +47,9 @@ namespace Osiris::Editor
 			{
 				scene.FromJson(o);
 
+				/* we want to use the file name as the scene name */
+				scene.name = Utils::GetFilename(path);
+
 				/* we need to process of linked properties */
 				for (auto& layer : scene.GetLayers())
 				{

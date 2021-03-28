@@ -47,9 +47,9 @@ namespace Osiris::Editor
 
 		void DrawAssetsItems();
 
-		void DrawTextureItem(uint32_t resIdx, std::shared_ptr<TextureRes> textureResource);
-		void DrawSceneItem(uint32_t resIdx, std::shared_ptr<SceneRes> sceneResource);
-		void DrawScriptItem(uint32_t resIdx, std::shared_ptr<ScriptRes> scriptResource);
+		void DrawTextureItem(uint32_t resIdx, TextureRes& textureResource);
+		void DrawSceneItem(uint32_t resIdx, SceneRes& sceneResource);
+		void DrawScriptItem(uint32_t resIdx, ScriptRes& scriptResource);
 		void DrawUnknownItem(uint32_t resIdx, std::string& unknownResourceName);
 
 		/* Directory State */
@@ -58,7 +58,7 @@ namespace Osiris::Editor
 		bool _refreshing;
 		
 		/* Resource State */
-		std::shared_ptr<Resource> _currentSelectedResource;
+		UID _currentSelectedResourceUID;
 
 		/* Services*/
 		std::shared_ptr<ResourceService> _resourcesService;

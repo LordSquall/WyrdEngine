@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OsirisAPI
 {
-    class ResourceManager
+    public class ResourceManager
     {
         private static Dictionary<int, Texture> _Textures = new Dictionary<int, Texture>();
 
@@ -22,8 +22,13 @@ namespace OsirisAPI
         /// <param name="pointer"></param>
         public static void AddResource(Texture texture)
         {
-            _Textures.Add(0, texture);
+            _Textures.Add(_Textures.Count, texture);
             Console.WriteLine("Texture Added ");
+        }
+
+        public static Texture GetResource(int index)
+        {
+            return _Textures[index];
         }
 
         #region P/Invoke functions
