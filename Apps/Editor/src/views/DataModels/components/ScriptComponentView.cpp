@@ -3,6 +3,8 @@
 /* core osiris includes */
 #include <osrpch.h>
 #include <core/behaviour/MonoUtils.h>
+#include <core/Application.h>
+#include <core/Resources.h>
 
 /* local includes */
 #include "ScriptComponentView.h"
@@ -34,11 +36,12 @@ namespace Osiris::Editor
 
 		if (ImGui::BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ASSET_PAYLOAD"))
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_SCRIPT"))
 			{
-				std::shared_ptr<ScriptRes> scriptRes = *(std::shared_ptr<ScriptRes>*)payload->Data;
-				_BaseComponent->SetClass(scriptRes->Script);
-				_BaseComponent->SetUID(scriptRes->GetResourceID());
+				UID* scriptUID = (UID*)payload->Data;
+				auto& script = Application::Get().GetBehaviour().GetCustomClassByUID(*scriptUID);
+				_BaseComponent->SetClass(script);
+				_BaseComponent->SetUID(*scriptUID);
 				RebuildPropertyViews();
 			}
 			ImGui::EndDragDropTarget();

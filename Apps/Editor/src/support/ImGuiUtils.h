@@ -12,10 +12,13 @@ namespace ImGui
 {
 	/* Icon extensions */
 	void Icon(std::shared_ptr<Osiris::Editor::Icon> icon, ImVec2& size);
-	bool IconButton(std::shared_ptr<Osiris::Editor::Icon> icon, ImGuiID id, bool enabled = 1, ImVec2& size = ImVec2(16.0f, 16.0f), int frame_padding = -1, const ImVec4& bg_col = ImVec4(0, 0, 0, 0), const ImVec4& tint_col = ImVec4(1, 1, 1, 1));
 
 	/* Buttons */
+	bool IconButton(std::shared_ptr<Osiris::Editor::Icon> icon, ImGuiID id, bool enabled = 1, ImVec2& size = ImVec2(16.0f, 16.0f), int frame_padding = -1, const ImVec4& bg_col = ImVec4(0, 0, 0, 0), const ImVec4& tint_col = ImVec4(1, 1, 1, 1));
 	bool TextButton(const char* label, bool enabled = true, const ImVec2& size = { 0, 0 }, ImGuiButtonFlags = 0);
+
+	/* Text */
+	void TextClipped(const char* text, float clipLength, const ImVec4& text_col, const char* suffix);
 
 	/* Image */
 	void Image(const Osiris::Editor::Icon& icon, const ImVec2& size, const ImVec4& tint_col = ImVec4(1, 1, 1, 1), const ImVec4& border_col = ImVec4(1, 1, 1, 1));

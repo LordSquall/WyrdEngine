@@ -9,12 +9,15 @@
 
 namespace ImGui 
 {
+    /* Icon extensions */
 	void ImGui::Icon(std::shared_ptr<Osiris::Editor::Icon> icon, ImVec2& size)
 	{
 		std::shared_ptr<Osiris::Editor::TextureRes> texture = icon->iconSet->Texture;
 		ImGui::Image((ImTextureID)(INT_PTR)texture->GetTexture()->GetHandle(), size, ImVec2(icon->uv[0].x, icon->uv[0].y), ImVec2(icon->uv[2].x, icon->uv[2].y), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 	}
 
+
+    /* Buttons */
 	bool ImGui::IconButton(std::shared_ptr<Osiris::Editor::Icon> icon, ImGuiID id, bool enabled, ImVec2& size, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
 	{
 		std::shared_ptr<Osiris::Editor::TextureRes> texture = icon->iconSet->Texture;
@@ -67,7 +70,6 @@ namespace ImGui
 		return pressed;
 	}
 
-
 	bool ImGui::TextButton(const char* label, bool enabled, const ImVec2& size_arg, ImGuiButtonFlags flags)
 	{
 		ImGuiWindow* window = GetCurrentWindow();
@@ -111,7 +113,35 @@ namespace ImGui
 		return pressed;
 	}
 
+    /* Text */
+    void ImGui::TextClipped(const char* text, float clipLength, const ImVec4& text_col, const char* suffix = "")
+    {
+        std::string textContent = text;
+        const ImVec2 p0 = ImGui::GetItemRectMin();
+        const ImVec2 p1 = ImGui::GetItemRectMax();
+        const ImVec2 textPosition = ImVec2(p0.x, p1.y);
+        ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
+        ImVec2 textSize = ImGui::CalcTextSize(text);
+        ImVec2 clippedTextSize = ImVec2(clipLength, textSize.y);
+
+        int textLength = strlen(text);
+        int suffixLength = strlen(suffix);
+        if (suffixLength > 0 && textLength > suffixLength)
+        {
+            textContent.replace(textContent.end() - suffixLength, textContent.end(), suffix);
+        }
+
+        ImGui::PushClipRect(textPosition, ImVec2(p1.x, p1.y + textSize.y), true);
+        draw_list->AddText(textPosition, GetColorU32(text_col), textContent.c_str());
+        ImGui::PopClipRect();
+
+        ImRect bb(textPosition, textPosition + clippedTextSize);
+        ItemSize(clippedTextSize, 0.0f);
+        ItemAdd(bb, 0);
+    }
+
+    /* Image */
 	void ImGui::Image(const Osiris::Editor::Icon& icon, const ImVec2& size, const ImVec4& tint_col, const ImVec4& border_col)
 	{
 		std::shared_ptr<Osiris::Editor::TextureRes> texture = icon.iconSet->Texture;
@@ -344,7 +374,6 @@ namespace ImGui
         IMGUI_TEST_ENGINE_ITEM_INFO(id, label, window->DC.ItemFlags | (is_leaf ? 0 : ImGuiItemStatusFlags_Openable) | (is_open ? ImGuiItemStatusFlags_Opened : 0));
         return is_open;
 	}
-
 
 	/* Vector Outputs */
 	void ImGui::LabelVec2(const char* label, glm::vec2& vector, const std::string& xcompLabel, const std::string& ycompLabel)

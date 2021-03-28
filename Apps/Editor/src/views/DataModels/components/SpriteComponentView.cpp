@@ -53,8 +53,8 @@ namespace Osiris::Editor
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_TEXTURE"))
 			{
-				std::shared_ptr<Texture> texture = *(std::shared_ptr<Texture>*)payload->Data;
-				_BaseComponent->SetTexture(texture);
+				UID* textureUID = (UID*)payload->Data;
+				_BaseComponent->SetTexture(Application::Get().GetResources().Textures[*textureUID]);
 				_BaseComponent->SetSize((float)texture->GetWidth(), (float)texture->GetHeight());
 			}
 			ImGui::EndDragDropTarget();
