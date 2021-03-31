@@ -9,6 +9,7 @@
 #include <core/scene/components/SpriteComponent.h>
 #include <core/scene/components/ScriptComponent.h>
 #include <core/scene/components/PhysicsComponent.h>
+#include <core/scene/components/CameraComponent.h>
 
 
 namespace Osiris
@@ -35,6 +36,9 @@ namespace Osiris
 				break;
 			case SceneComponentType::ScriptComponent:
 				newComponent = std::make_unique<ScriptComponent>(gameObject);
+				break;
+			case SceneComponentType::CameraComponent:
+				newComponent = std::make_unique<CameraComponent>(gameObject);
 				break;
 			}
 

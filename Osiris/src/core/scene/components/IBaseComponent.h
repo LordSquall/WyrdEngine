@@ -19,7 +19,8 @@ namespace Osiris {
 		Transform3D,
 		SpriteRenderer,
 		ScriptComponent,
-		PhysicsComponent
+		PhysicsComponent,
+		CameraComponent
 	};
 
 	class OSR_LIBRARY_API IBaseComponent

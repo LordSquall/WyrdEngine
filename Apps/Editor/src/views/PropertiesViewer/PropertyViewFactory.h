@@ -10,6 +10,7 @@
 #include "views/DataModels/components/SpriteComponentView.h"
 #include "views/DataModels/components/PhysicsComponentView.h"
 #include "views/DataModels/components/ScriptComponentView.h"
+#include "views/DataModels/components/CameraComponentView.h"
 
 
 namespace Osiris::Editor
@@ -36,6 +37,9 @@ namespace Osiris::Editor
 				break;
 			case SceneComponentType::ScriptComponent:
 				newComponent = std::make_unique<ScriptComponentView>((ScriptComponent*)baseComponent);
+				break;
+			case SceneComponentType::CameraComponent:
+				newComponent = std::make_unique<CameraComponentView>((CameraComponent*)baseComponent);
 				break;
 			}
 

@@ -196,8 +196,12 @@ namespace Osiris
 			{
 				jsonxx::Object componentJson = object.get<jsonxx::Array>("components").get<jsonxx::Object>((int)i);
 				std::unique_ptr<IBaseComponent> component = SceneComponentFactory::Create((SceneComponentType)componentJson.get<jsonxx::Number>("componentType"), this);
-				component->FromJson(object.get<jsonxx::Array>("components").get<jsonxx::Object>((int)i));
-				components.push_back(std::move(component));
+				
+				if (component != nullptr)
+				{
+					component->FromJson(object.get<jsonxx::Array>("components").get<jsonxx::Object>((int)i));
+					components.push_back(std::move(component));
+				}
 			}
 		}
 

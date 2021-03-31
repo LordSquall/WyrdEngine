@@ -200,6 +200,15 @@ namespace Osiris::Editor
 											_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
 										}
 
+										if (ImGui::MenuItem("Camera"))
+										{
+											IBaseComponent* component = gameobject->AddComponent(std::move(SceneComponentFactory::Create(SceneComponentType::CameraComponent, gameobject.get())));
+											component->Initialise();
+
+											/* fire a change of selection event to refresh the display */
+											_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(_SelectedGameObject));
+										}
+
 										ImGui::EndMenu();
 									}
 									ImGui::EndPopup();
