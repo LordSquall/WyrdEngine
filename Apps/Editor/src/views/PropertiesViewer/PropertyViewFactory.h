@@ -43,6 +43,8 @@ namespace Osiris::Editor
 				break;
 			}
 
+			newComponent->Initialise();
+
 			return std::move(newComponent);
 		}
 

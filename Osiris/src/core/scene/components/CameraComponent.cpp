@@ -7,8 +7,9 @@
 
 namespace Osiris
 {
-	CameraComponent::CameraComponent(GameObject* gameObject) : IBaseComponent(gameObject, SceneComponentType::CameraComponent), _Position(0.0f, 0.0f)
+	CameraComponent::CameraComponent(GameObject* gameObject) : IBaseComponent(gameObject, SceneComponentType::CameraComponent), _Size(0.0f), _CameraUID(UIDUtils::Create())
 	{
+		_Camera = std::make_unique<OrthographicCamera>();
 	}
 
 	jsonxx::Object CameraComponent::ToJson()
@@ -17,17 +18,24 @@ namespace Osiris
 
 		object << "componentType" << (int)SceneComponentType::CameraComponent;
 
-		/* position */
-		object << "position" << _Position;
+		/* size */
+		object << "size" << _Size;
+
+		/* camera uid */
+		object << "camerauid" << _CameraUID.str();
 
 		return object;
 	}
 
 	bool CameraComponent::FromJson(jsonxx::Object& object)
 	{
-		/* position */
-		if (object.has<jsonxx::Array>("position"))
-			_Position << object.get<jsonxx::Array>("position");
+		/* size */
+		if (object.has<jsonxx::Number>("size"))
+			_Size = (float)object.get<jsonxx::Number>("size");
+
+		/* camera uid */
+		if (object.has<jsonxx::String>("camerauid"))
+			_CameraUID = UID(object.get<jsonxx::String>("camerauid", "MISSING"));
 
 		return true;
 	}

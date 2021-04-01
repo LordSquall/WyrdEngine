@@ -5,6 +5,7 @@
 #include <core/Log.h>
 #include <core/scene/Layer2D.h>
 #include <core/scene/SceneLayer2D.h>
+#include <core/scene/components/CameraComponent.h>
 
 /* local includes */
 #include "WorkspaceService.h"
@@ -67,6 +68,11 @@ namespace Osiris::Editor
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::OpenProject, [this](Events::EventArgs& args) {});
 
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::CloseProject, [this](Events::EventArgs& args) {});
+
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::SetSceneCamera, [this](Events::EventArgs& args) {
+			Events::SetSceneCameraArgs& a = (Events::SetSceneCameraArgs&)args;
+			_LoadedScene->SetPrimaryCameraUID(a.cameraComponent->GetCameraUID());
+			});
 	}
 
 	void Osiris::Editor::WorkspaceService::OnDestroy()

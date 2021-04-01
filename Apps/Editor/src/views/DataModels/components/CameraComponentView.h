@@ -21,9 +21,14 @@ namespace Osiris::Editor {
 		CameraComponentView(CameraComponent* baseComponent) : _BaseComponent(baseComponent) {}
 		CameraComponentView(const CameraComponentView& obj) {}
 	
+		void Initialise() override;
+
 		void OnPropertyEditorDraw() override;
 
 		const std::string GetName() override { return "Camera"; }
+
+	private:
+		void OnSceneViewerRender(Renderer& renderer, Timestep timestep, const glm::mat4& matrix);
 
 	private:
 		CameraComponent* _BaseComponent;

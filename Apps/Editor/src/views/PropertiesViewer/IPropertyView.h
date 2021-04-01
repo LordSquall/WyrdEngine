@@ -5,11 +5,15 @@
 #include <core/export.h>
 #include <core/scene/components/IBaseComponent.h>
 
+
+#define ONSCENERENDER_BIND(f)	std::bind(&##f, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
+
 namespace Osiris::Editor
 {
 	class IPropertiesView
 	{
 	public:
+		virtual void Initialise() {};
 		virtual void OnPropertyEditorDraw() = 0;
 		virtual void OnSceneViewerDraw(const glm::mat4& viewProjectMatrix) {};
 

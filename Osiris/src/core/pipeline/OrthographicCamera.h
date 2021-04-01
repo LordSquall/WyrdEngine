@@ -21,6 +21,8 @@ namespace Osiris
 		void SetProjection(float size, float nearPlane, float farPlane);
 		inline void SetViewportSize(float width, float height) { _AspectRatio = width / height; RecalulateProjection(); }
 
+		inline const Rect& GetViewport() { return _Viewport; }
+
 		/* Getters and Setters */
 		inline const glm::vec3& GetPosition() const { return _Position; }
 		inline void SetPosition(const glm::vec3& position) { _Position = position; RecalulateView(); }
@@ -56,6 +58,8 @@ namespace Osiris
 		float _NearPlane;
 		float _FarPlane;
 		float _AspectRatio;
+
+		Rect _Viewport;
 
 		glm::vec3 _Position = { 0.0f, 0.0f, 0.0f };
 		float _Rotation = 0.0f;

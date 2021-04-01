@@ -34,7 +34,8 @@ namespace Osiris
 		virtual void DrawElements(RendererDrawType type, uint32_t count) const = 0;
 		virtual void DrawArray(RendererDrawType type, uint32_t offset, uint32_t count) const = 0;
 
-		virtual	void DrawRect(const Rect& rect, const glm::vec4& color, const glm::mat4& vpMatrix) const = 0;
+		virtual	void DrawRect(const Rect& rect, float thickness, const glm::vec4& color, const glm::mat4& vpMatrix) const = 0;
+		virtual	void DrawFilledRect(const Rect& rect, const glm::vec4& color, const glm::mat4& vpMatrix) const = 0;
 		virtual	void DrawRay(const Ray& ray, const glm::vec4& color, float length, float thickness, const glm::mat4& vpMatrix) const = 0;
 		virtual	void DrawCircle(const glm::vec2& position, const glm::vec2& radius, const glm::vec4& color, const glm::mat4& vpMatrix) const = 0;
 

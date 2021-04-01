@@ -28,7 +28,8 @@ namespace Osiris::Editor::Events
 		AddLogEntry, ClearLogEntry,
 		AddFileEntry, DeleteFileEntry, ModifiedFileEntry, RenameFileEntry,
 		AddResource, DeleteResource, ReloadResource, RenameResource,
-		LoadAsset, BuildBehaviourModel
+		LoadAsset, BuildBehaviourModel,
+		SetSceneCamera
 	};
 
 	class Event
@@ -546,6 +547,26 @@ namespace Osiris::Editor::Events
 	{
 	public:
 		BuildBehaviourModelEvent() : Event(EventType::BuildBehaviourModel) { }
+	};
+
+#pragma endregion
+
+#pragma region SetSceneCamera
+
+	class SetSceneCameraArgs : public EventArgs
+	{
+	public:
+		SetSceneCameraArgs(CameraComponent* cc) : cameraComponent(cc) {}
+
+		CameraComponent* cameraComponent;
+
+		EVENT_ARGS_CLONE(SetSceneCameraArgs)
+	};
+
+	class SetSceneCameraEvent : public Event
+	{
+	public:
+		SetSceneCameraEvent() : Event(EventType::SetSceneCamera) { }
 	};
 
 #pragma endregion

@@ -13,6 +13,7 @@ namespace Osiris {
 	class Layer2D;
 	class GameObject;
 	class Behaviour;
+	class CameraComponent;
 
 	/* Editor Scene Data Model Structure */
 	class OSR_LIBRARY_API Scene
@@ -33,6 +34,12 @@ namespace Osiris {
 
 		void AddLayer(std::unique_ptr<SceneLayer> layer);
 		void RemoveLayer(const UID& uid);
+
+
+		inline const UID& GetPrimaryCameraUID() { return _ScenePrimaryCamera; }
+		inline void SetPrimaryCameraUID(const UID& uid) { _ScenePrimaryCamera = uid; }
+
+		CameraComponent* GetPrimaryCamera();
 
 		/**
 		 * @brief Serialise the scene into a json object
@@ -56,5 +63,6 @@ namespace Osiris {
 
 	private:
 		std::vector<std::unique_ptr<SceneLayer>> _Layers;
+		UID _ScenePrimaryCamera;
 	};
 }

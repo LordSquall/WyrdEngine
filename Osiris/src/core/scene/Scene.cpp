@@ -82,6 +82,22 @@ namespace Osiris
 		_Layers.erase(std::remove(_Layers.begin(), _Layers.end(), *layerItr));
 	}
 
+
+	CameraComponent* Scene::GetPrimaryCamera()
+	{
+		for (auto& layer : _Layers)
+		{
+			for (auto& gameObject : layer->GetGameObjects())
+			{
+				CameraComponent* camera = gameObject->FindCameraComponent(_ScenePrimaryCamera);
+				if (camera != nullptr)
+					return camera;
+			}
+		}
+
+		return nullptr;
+	}
+
 	jsonxx::Object Scene::ToJson()
 	{
 		jsonxx::Object object;
@@ -102,6 +118,8 @@ namespace Osiris
 			sceneLayers << layer->ToJson();
 		}
 		object << "sceneLayers" << sceneLayers;
+
+		object << "primaryCameraUID" << _ScenePrimaryCamera.str();
 
 		return object;
 	}
@@ -130,6 +148,10 @@ namespace Osiris
 				AddLayer(std::move(newLayer));
 			}
 		}
+
+		/* primary camera uid*/
+		if (object.has<jsonxx::String>("primaryCameraUID"))
+			_ScenePrimaryCamera = UID(object.get<jsonxx::String>("primaryCameraUID"));
 
 		return true;
 	}

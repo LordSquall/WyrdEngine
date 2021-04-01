@@ -23,7 +23,7 @@
 
 namespace Osiris::Editor
 {
-	SceneViewer::SceneViewer(EditorLayer* editorLayer) : EditorViewBase("Scene Viewer", editorLayer)
+	SceneViewer::SceneViewer(EditorLayer* editorLayer) : EditorViewBase("Scene Viewer", editorLayer), _SelectedGameObject(nullptr)
 	{
 		/* retrieve services */
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
@@ -118,7 +118,10 @@ namespace Osiris::Editor
 				{
 					for (auto& component : _SelectedGameObject->components)
 					{
-						component->debugOverlayFunction(_CameraController->GetCamera().GetViewProjectionMatrix());
+						if (component->debugOverlayFunction != nullptr)
+						{
+							component->debugOverlayFunction(renderer, ts, _CameraController->GetCamera().GetViewProjectionMatrix());
+						}
 					}
 
 					_TranslationGizmo->Render(ts, renderer);
@@ -443,6 +446,6 @@ namespace Osiris::Editor
 	{
 		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
 
-		//_SelectedGameObject = evtArgs.gameObject;
+		_SelectedGameObject = evtArgs.gameObject;
 	}
 }

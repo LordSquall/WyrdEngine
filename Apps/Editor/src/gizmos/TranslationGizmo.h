@@ -63,7 +63,7 @@ namespace Osiris::Editor
 
 	private:
 		std::shared_ptr<EventService>		_EventService;
-		std::shared_ptr<GameObject>		_GameObject;
+		GameObject*		_GameObject;
 
 		InputState _InputState;
 		AxisState _AxisState;

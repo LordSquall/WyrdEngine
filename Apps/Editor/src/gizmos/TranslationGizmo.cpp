@@ -81,7 +81,7 @@ namespace Osiris::Editor
             return true;
     }
 
-    TranslationGizmo::TranslationGizmo(SceneViewer* sceneViewer) : Gizmo(sceneViewer), _InputState(InputState::NONE), _AxisState(AxisState::XY), _MovementState(MovementState::LOCAL), _LastMouseWorldPos(0.0f, 0.0f)
+    TranslationGizmo::TranslationGizmo(SceneViewer* sceneViewer) : Gizmo(sceneViewer), _GameObject(nullptr), _InputState(InputState::NONE), _AxisState(AxisState::XY), _MovementState(MovementState::LOCAL), _LastMouseWorldPos(0.0f, 0.0f)
 	{
 		/* retrieve the services */
 		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
@@ -141,7 +141,7 @@ namespace Osiris::Editor
         _Shader->SetMatrix("scale", glm::scale(glm::vec3(diff, diff, diff)));
                 
         /* Set the model matrix of the gameobject, however we want to ammend the scale by the viewport difference */
-        //_Shader->SetMatrix("model", _GameObject->transform2D->matrix);
+        _Shader->SetMatrix("model", _GameObject->transform->GetModelMatrix());
 
         /* set the default uniforms */
         _Shader->SetUniformVec4("blendColor", glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
@@ -168,55 +168,56 @@ namespace Osiris::Editor
 
         vec4 worldSpace = glm::vec4(_SceneViewer->Convert2DToWorldSpace({ e.GetX(), e.GetY() }), -1.0f, 1.0f);
 
-        //vec4 modelSpace = glm::inverse(_GameObject->transform2D->matrix * glm::scale(glm::vec3(diff, diff, diff))) * worldSpace;
+        vec4 modelSpace = glm::inverse(_GameObject->transform->GetModelMatrix() * glm::scale(glm::vec3(diff, diff, diff))) * worldSpace;
 
-        //Point ptCoords = { modelSpace.x, modelSpace.y };
+        Point ptCoords = { modelSpace.x, modelSpace.y };
 
-        //bool updateVertices = false;
+        bool updateVertices = false;
 
-        //if (_InputState == InputState::NONE || _InputState == InputState::OVER)
-        //{
-        //    /* test each of the handles to see if we have a mouse event */
-        //    if (InsidePolygon(_Vertices, _VertexGroups["XY_Handle"], ptCoords))
-        //    {
-        //        SetAxisState(AxisState::XY);
-        //        SetInputState(InputState::OVER);
-        //    } 
-        //    else if (InsidePolygon(_Vertices, _VertexGroups["X_Handle"], ptCoords))
-        //    {
-        //        SetAxisState(AxisState::X);
-        //        SetInputState(InputState::OVER);
-        //    } 
-        //    else if (InsidePolygon(_Vertices, _VertexGroups["Y_Handle"], ptCoords))
-        //    {
-        //        SetAxisState(AxisState::Y);
-        //        SetInputState(InputState::OVER);
-        //    }
-        //    else
-        //    {
-        //        SetAxisState(AxisState::NONE);
-        //        SetInputState(InputState::NONE);
-        //    }
-        //}else
-        //{
-        //    glm::vec2 worldSpaceDelta = _LastMouseWorldPos - _SceneViewer->GetMouseWorldPos();
+        if (_InputState == InputState::NONE || _InputState == InputState::OVER)
+        {
+            /* test each of the handles to see if we have a mouse event */
+            if (InsidePolygon(_Vertices, _VertexGroups["XY_Handle"], ptCoords))
+            {
+                SetAxisState(AxisState::XY);
+                SetInputState(InputState::OVER);
+            } 
+            else if (InsidePolygon(_Vertices, _VertexGroups["X_Handle"], ptCoords))
+            {
+                SetAxisState(AxisState::X);
+                SetInputState(InputState::OVER);
+            } 
+            else if (InsidePolygon(_Vertices, _VertexGroups["Y_Handle"], ptCoords))
+            {
+                SetAxisState(AxisState::Y);
+                SetInputState(InputState::OVER);
+            }
+            else
+            {
+                SetAxisState(AxisState::NONE);
+                SetInputState(InputState::NONE);
+            }
+        }else
+        {
+            Transform2DComponent* transform2D = dynamic_cast<Transform2DComponent*>(_GameObject->transform.get());
+            glm::vec2 worldSpaceDelta = _LastMouseWorldPos - _SceneViewer->GetMouseWorldPos();
 
-        //    switch (_AxisState)
-        //    {
-        //    case AxisState::XY:
-        //        _GameObject->transform2D->Translate({ -worldSpaceDelta.x, -worldSpaceDelta.y });
-        //        break;
-        //    case AxisState::X:
-        //        _GameObject->transform2D->Translate({ -worldSpaceDelta.x, 0.0f });
-        //        break;
-        //    case AxisState::Y:
-        //        _GameObject->transform2D->Translate({ 0.0f, -worldSpaceDelta.y });
-        //        break;
-        //    }
+            switch (_AxisState)
+            {
+            case AxisState::XY:
+                transform2D->Translate({ -worldSpaceDelta.x, -worldSpaceDelta.y });
+                break;
+            case AxisState::X:
+                transform2D->Translate({ -worldSpaceDelta.x, 0.0f });
+                break;
+            case AxisState::Y:
+                transform2D->Translate({ 0.0f, -worldSpaceDelta.y });
+                break;
+            }
 
-        //    _LastMouseWorldPos = _SceneViewer->GetMouseWorldPos();
-        //}
-        //        
+            _LastMouseWorldPos = _SceneViewer->GetMouseWorldPos();
+        }
+                
         return true;
     }
 
@@ -247,7 +248,12 @@ namespace Osiris::Editor
 	{
 		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
 
-		//_GameObject = evtArgs.gameObject;
+
+        Transform2DComponent* transform2D = dynamic_cast<Transform2DComponent*>(evtArgs.gameObject->transform.get());
+        if (transform2D != nullptr)
+        {
+            _GameObject = evtArgs.gameObject;
+        }
 	}
 
 

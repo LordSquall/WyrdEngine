@@ -2,6 +2,8 @@
 
 /* local includes */
 #include "core/scene/components/IBaseComponent.h"
+#include "core/Structures.h"
+#include "core/pipeline/OrthographicCamera.h"
 
 /* external includes */
 #include <glm/glm.hpp>
@@ -19,9 +21,14 @@ namespace Osiris {
 
 		inline virtual const std::string GetManagedType() { return "CameraComponent"; }
 
-		inline void SetPosition(const vec2& pos) { _Position = pos; }
-		inline const vec2& GetPosition() const { return _Position; }
-				
+		inline void SetSize(float size) { _Size = size; }
+		inline float GetSize() const { return _Size; }
+
+		inline void SetCameraUID(const UID& uid) { _CameraUID = uid; }
+		inline const UID& GetCameraUID() const { return _CameraUID; }
+
+		inline OrthographicCamera& GetCamera() const { return *_Camera; }
+						
 		/**
 		 * @brief Serialise the gameobject into a json object
 		 * @return json object
@@ -38,6 +45,9 @@ namespace Osiris {
 		std::string toString() const { return "CameraComponent"; }
 
 	private:
-		vec2 _Position;
+		float _Size;
+
+		UID _CameraUID;
+		std::unique_ptr<OrthographicCamera> _Camera;
 	};
 }

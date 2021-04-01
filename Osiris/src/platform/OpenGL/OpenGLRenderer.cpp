@@ -162,7 +162,48 @@ namespace Osiris
 		glDrawArrays(primitiveType, offset, count);
 	}
 
-	void OpenGLRenderer::DrawRect(const Rect& rect, const glm::vec4& color, const glm::mat4& vpMatrix) const
+	void OpenGLRenderer::DrawRect(const Rect& rect, float thickness, const glm::vec4& color, const glm::mat4& vpMatrix) const
+	{
+		float t = thickness * 0.5f;
+
+		float vertices[] = {
+			// top
+			rect.position.x,					rect.position.y + rect.size.y + t,			0.0f,	// top right
+			rect.position.x,					rect.position.y + rect.size.y - t,			0.0f,	// bottom right
+			rect.position.x + rect.size.x,		rect.position.y + rect.size.y - t,			0.0f,	// bottom left
+			rect.position.x + rect.size.x,		rect.position.y + rect.size.y + t,			0.0f,	// top left 
+			// bottom
+			rect.position.x,					rect.position.y + t,						0.0f,	// top right
+			rect.position.x,					rect.position.y - t,						0.0f,	// bottom right
+			rect.position.x + rect.size.x,		rect.position.y - t,						0.0f,	// bottom left
+			rect.position.x + rect.size.x,		rect.position.y + t,						0.0f,	// top left 
+			// right
+			rect.position.x - t,				rect.position.y + rect.size.y + t,			0.0f,	// top right
+			rect.position.x - t,				rect.position.y - t,						0.0f,	// bottom right
+			rect.position.x + t,				rect.position.y - t,						0.0f,	// bottom left
+			rect.position.x + t,				rect.position.y + rect.size.y + t,			0.0f,	// top left 
+			// left
+			rect.position.x + rect.size.x - t,	rect.position.y + rect.size.y + t,			0.0f,	// top right
+			rect.position.x + rect.size.x - t,	rect.position.y - t,						0.0f,	// bottom right
+			rect.position.x + rect.size.x + t,	rect.position.y - t,						0.0f,	// bottom left
+			rect.position.x + rect.size.x + t,	rect.position.y + rect.size.y + t,			0.0f	// top left 
+		};
+
+
+		glBindBuffer(GL_ARRAY_BUFFER, _debugVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+		glUseProgram(_debugShader);
+		glUniformMatrix4fv(_debugVPMatLoc, 1, GL_FALSE, glm::value_ptr(vpMatrix));
+		glUniformMatrix4fv(_debugModelMatLoc, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
+		glUniform4fv(_debugColorLoc, 1, glm::value_ptr(color));
+
+		glBindVertexArray(_debugVAO);
+		glDrawArrays(GL_QUADS, 0, 16);
+		glBindVertexArray(0);
+	}
+
+	void OpenGLRenderer::DrawFilledRect(const Rect& rect, const glm::vec4& color, const glm::mat4& vpMatrix) const
 	{
 		float vertices[] = {
 			rect.position.x,				rect.position.y + rect.size.y,	0.0f,	// top right

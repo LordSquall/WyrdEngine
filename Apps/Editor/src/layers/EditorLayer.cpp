@@ -9,6 +9,7 @@
 #include "services/ServiceManager.h"
 #include "services/SimulationService.h"
 #include "views/SceneViewer/SceneViewer.h"
+#include "views/GameViewer/GameViewer.h"
 #include "views/PropertiesViewer/PropertiesViewer.h"
 #include "views/LayerViewer/LayerViewer.h"
 #include "views/SpriteLayerEditor/SpriteLayerEditor.h"
@@ -47,6 +48,7 @@ namespace Osiris::Editor
 		LayerStack* stack = app.GetLayerStack();
 
 		_views["Scene Viewer"] = std::make_shared<SceneViewer>(this);
+		_views["Game Viewer"] = std::make_shared<GameViewer>(this);
 		_views["Properties"] = std::make_shared<PropertiesViewer>(this);
 		_views["Sprite Layer Editor"] = std::make_shared<SpriteLayerEditor>(this);
 		_views["Asset Viewer"] = std::make_shared<AssetViewer>(this);

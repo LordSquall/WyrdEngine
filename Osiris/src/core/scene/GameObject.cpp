@@ -98,6 +98,30 @@ namespace Osiris
 		return nullptr;
 	}
 
+	CameraComponent* GameObject::FindCameraComponent(const UID& uid)
+	{
+		for (auto& component : components)
+		{
+			if (component->GetType() == SceneComponentType::CameraComponent)
+			{
+				CameraComponent* cc = dynamic_cast<CameraComponent*>(component.get());
+
+				if (cc->GetCameraUID() == uid)
+				{
+					return cc;
+				}
+			}
+		}
+
+		for (auto& gameobject : _GameObjects)
+		{
+			CameraComponent* cc = gameobject->FindCameraComponent(uid);
+			if (cc != nullptr)
+				return cc;
+		}
+
+		return nullptr;
+	}
 
 	GameObject* GameObject::FindChild(const UID uid)
 	{

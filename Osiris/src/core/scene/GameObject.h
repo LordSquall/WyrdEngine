@@ -18,6 +18,7 @@ namespace Osiris {
 	class SpriteComponent;
 	class ScriptComponent;
 	class PhysicsComponent;
+	class CameraComponent;
 
 	/* Editor GameObject Data Model Structure */
 	class OSR_LIBRARY_API GameObject
@@ -37,6 +38,7 @@ namespace Osiris {
 
 		GameObject* FindChild(const UID uid);
 		ScriptComponent* FindScriptComponent(const std::string& name);
+		CameraComponent* FindCameraComponent(const UID& uid);
 
 		virtual void AssignScripts(Behaviour* behaviour);
 

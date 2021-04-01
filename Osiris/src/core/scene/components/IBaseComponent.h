@@ -62,7 +62,7 @@ namespace Osiris {
 		GameObject* Owner;
 
 		bool Initialised;
-		std::function<void(const glm::mat4&)> debugOverlayFunction;
+		std::function<void(Renderer&, Timestep, const glm::mat4&)> debugOverlayFunction;
 
 	private:
 		SceneComponentType _type;
