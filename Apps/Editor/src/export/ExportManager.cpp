@@ -72,13 +72,13 @@ namespace Osiris::Editor
 		Exporter::Write(game, display);
 
 		/* Scene Listings */
-		//GameFileFormat_SceneListings sceneListings;
-		//for (auto& exportableScene : project->GetExportSettings().exportableScenes)
-		//{
-		//	sceneListings.sceneUIDs.push_back(exportableScene.first.str());
-		//}
-		//sceneListings.initialScene = project->GetExportSettings().initialScene;
-		//GameExporter::Write(game, sceneListings);
+		GameFormat_SceneListings sceneListings;
+		for (auto& exportableScene : project->GetExportSettings().exportableScenes)
+		{
+			sceneListings.sceneUIDs.push_back(exportableScene.first.str());
+		}
+		sceneListings.initialScene = project->GetExportSettings().initialScene;
+		Exporter::Write(game, sceneListings);
 
 		game.close();
 	}

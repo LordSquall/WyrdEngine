@@ -89,7 +89,15 @@ bool ControlLayer::LoadGameFile()
 	
 	Application::Get().GetWindow().SetSize(display.width, display.height);
 
+	/* scene listings */
+	GameFormat_SceneListings sceneListings;
+	Importer::Read(game, sceneListings);
 
+	for (auto& listing : sceneListings.sceneUIDs)
+		OSR_TRACE("Scene Listing: {0}", listing);
+	OSR_TRACE("Initial Scene: {0}", sceneListings.initialScene);
+
+	/* close the file */
 	game.close();
 
 	return true;

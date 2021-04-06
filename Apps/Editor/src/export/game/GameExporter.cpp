@@ -19,6 +19,19 @@ void Exporter::Write(std::ofstream& stream, GameFormat_Display& display)
 }
 
 
+void Exporter::Write(std::ofstream& stream, GameFormat_SceneListings& sceneListings)
+{
+	UIntHelper(stream, sceneListings.sceneUIDs.size());
+
+	for (auto& sceneListing : sceneListings.sceneUIDs)
+	{
+		StringHelper(stream, sceneListing);
+	}
+
+	StringHelper(stream, sceneListings.initialScene);
+}
+
+
 //#pragma once
 //
 //#include "loaders/GameFileImporter.h"
