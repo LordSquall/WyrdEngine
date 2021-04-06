@@ -15,9 +15,9 @@
 #include "views/SpriteLayerEditor/SpriteLayerEditor.h"
 #include "views/AssetViewer/AssetViewer.h"
 #include "views/OutputView/OutputView.h"
+#include "views/ExportView/ExportView.h"
 #include "views/Dialogs/PreferencesDialog.h"
 #include "views/Dialogs/NewProjectDialog.h"
-#include "export/Exporter.h"
 #include "platform/OpenGL/imgui_opengl_renderer.h"
 #include "support/ImGuiUtils.h"
 
@@ -53,6 +53,7 @@ namespace Osiris::Editor
 		_views["Sprite Layer Editor"] = std::make_shared<SpriteLayerEditor>(this);
 		_views["Asset Viewer"] = std::make_shared<AssetViewer>(this);
 		_views["Output"] = std::make_shared<OutputView>(this);
+		_views["Export View"] = std::make_shared<ExportView>(this);
 
 		util = Utils();
 
@@ -367,15 +368,6 @@ namespace Osiris::Editor
 			if (ImGui::MenuItem("Preferences"))
 			{
 				_dialogService->OpenDialog(std::make_shared<PreferencesDialog>(this));
-			}
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Export", true))
-		{
-			if (ImGui::MenuItem("Export Windows Executable") == true)
-			{
-				Exporter::Export();
 			}
 			ImGui::EndMenu();
 		}

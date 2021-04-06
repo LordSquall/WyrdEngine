@@ -9,10 +9,10 @@
 
 using namespace Osiris;
 
-class PrimaryLayer : public Layer
+class ControlLayer : public Layer
 {
 public:
-	PrimaryLayer() : Layer("PrimaryLayer")
+	ControlLayer() : Layer("ControlLayer"), baseDirectory("")
 	{
 
 	}
@@ -24,4 +24,11 @@ public:
 	void OnUpdate(Timestep ts) override;
 
 	void OnRender(Timestep ts, Renderer& renderer) override;
+
+public:
+	std::string baseDirectory;
+
+	bool LoadCoreFile();
+	bool LoadGameFile();
+	bool LoadCommonBundleFile();
 };

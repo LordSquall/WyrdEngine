@@ -1,39 +1,17 @@
 #pragma once
 
-#include "osrpch.h"
-#include "core/Log.h"
+#include <osrpch.h>
 
 #include "Exporter.h"
-#include "services/ServiceManager.h"
-#include "services/WorkspaceService.h"
-#include "support/Utils.h"
 
-namespace Osiris::Editor
+void Exporter::UIntHelper(std::ofstream& stream, uint32_t val)
 {
-	Exporter::Exporter()
-	{
-		
-	}
+	stream.write((char*)&val, sizeof(uint32_t));
+}
 
-	Exporter::~Exporter() {}
-
-
-	void Exporter::Export()
-	{
-		auto workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
-
-		std::ofstream core;
-		core.open(Utils::GetBuildsFolder() + "/Core.dat", std::ios::out | std::ios::binary);
-		
-		core.close();
-
-		std::ofstream game;
-		game.open(Utils::GetBuildsFolder() + "/Game.dat", std::ios::out | std::ios::binary);
-
-		/* game title */
-		game.write(workspaceService->GetCurrentProject()->name.c_str(), 100);
-		game.close();
-
-		OSR_CORE_TRACE("Exporting Windows Game Files");
-	}
+void Exporter::StringHelper(std::ofstream& stream, std::string& str)
+{
+	size_t length = str.length();
+	stream.write((char*)&length, sizeof(size_t));
+	stream.write(str.c_str(), sizeof(char) * str.length());
 }

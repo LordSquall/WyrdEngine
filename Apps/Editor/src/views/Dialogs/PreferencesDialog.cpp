@@ -34,6 +34,9 @@ namespace Osiris::Editor
 		if (ImGui::Button("RenderDoc", ImVec2(navigationPanelWidth, 0)))
 			subMenu = std::bind(&PreferencesDialog::OnEditorRender_RenderDoc, this);
 
+		if (ImGui::Button("Windows Player", ImVec2(navigationPanelWidth, 0)))
+			subMenu = std::bind(&PreferencesDialog::OnEditorRender_WindowsPlayer, this);
+
 		ImGui::EndChildFrame();
 
 		ImGui::SameLine();
@@ -126,6 +129,18 @@ namespace Osiris::Editor
 
 			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
 
+		}
+	}
+
+	void PreferencesDialog::OnEditorRender_WindowsPlayer()
+	{
+		static std::string binPath = _SettingsService->GetSetting(CONFIG_WINDOWSPLAYER, CONFIG_WINDOWSPLAYER__BINPATH, std::string("../../bin/Debug/WindowsPlayer/WindowsPlayer.exe"));
+
+		if (ImGui::Button("Apply") == true)
+		{
+			_SettingsService->SetSetting(binPath, CONFIG_WINDOWSPLAYER, CONFIG_WINDOWSPLAYER__BINPATH);
+
+			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
 		}
 	}
 }

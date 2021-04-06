@@ -21,20 +21,15 @@ namespace Osiris::Editor
 		if (f.is_open() == true) {
 			std::ostringstream ss;
 			ss << f.rdbuf();
-			
+
 			if (o.parse(ss.str()) == true)
 			{
-				project.name = o.get<jsonxx::String>("name");
-				project.initialScene = o.get<jsonxx::String>("initialScene");
+				project.FromJson(o);
 			}
 			else
 			{
 				result = FileMalformed;
 			}
-		}
-		else
-		{
-			result = FileNotFound;
 		}
 
 		return result;
@@ -43,11 +38,7 @@ namespace Osiris::Editor
 	ProjectLoader::Result ProjectLoader::Save(std::string path, Project& project)
 	{
 		ProjectLoader::Result result = Success;
-		jsonxx::Object o;
-
-
-		o << "name" << project.name;
-		o << "initialScene" << project.initialScene;
+		jsonxx::Object o = project.ToJson();
 
 		std::ofstream out(path);
 		out << o.json();

@@ -261,161 +261,160 @@ project "OsirisAPI"
 			runtime "Release"
 			symbols "on"
 
-	project "Editor"
-		location "Apps/Editor"
-		kind "ConsoleApp"
-		language "C++"
-		cppdialect "C++17"
-		staticruntime "off"
+project "Editor"
+	location "Apps/Editor"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "off"
 
-		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-		objdir ("obj/" .. outputdir .. "/%{prj.name}")
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("obj/" .. outputdir .. "/%{prj.name}")
 
-		files
+	files
+	{
+		"Apps/%{prj.name}/src/**.h",
+		"Apps/%{prj.name}/src/**.cpp",
+		"Apps/%{prj.name}/res/**.vs",
+		"Apps/%{prj.name}/res/**.fs"
+	}
+
+	includedirs
+	{
+		"Apps/%{prj.name}/src",
+		"Apps/Players/Player/src",
+		"Osiris/src",
+		"%{includedir.glm}",
+		"%{includedir.GLFW}",
+		"%{includedir.GLAD}",
+		"%{includedir.jsonxx}",
+		"%{includedir.SOIL}",
+		"%{includedir.imgui}",
+		"%{includedir.glm}",
+		"%{includedir.tinyobjloader}",
+		"%{includedir.mono}",
+		"%{includedir.efsw}",
+		"%{includedir.spdlog}",
+		"%{includedir.uuid}",
+		"%{includedir.hash}",
+		iif(renderdocfound, includedir["renderdoc"], "")
+	}
+	
+	links
+	{
+		"Osiris",
+		"GLFW",
+		"GLAD",
+		"SOIL",
+		"jsonxx",
+		"imgui",
+		"efsw",
+		"opengl32.dll"
+	}
+	
+	dependson 
+	{ 
+		"OsirisAPI", 
+		"OsirisCAPI",
+		"Player"
+	}
+
+	filter "system:windows"
+		systemversion "latest"
+
+		defines
 		{
-			"Apps/%{prj.name}/src/**.h",
-			"Apps/%{prj.name}/src/**.cpp",
-			"Apps/%{prj.name}/res/**.vs",
-			"Apps/%{prj.name}/res/**.fs"
-		}
+			"OSR_PLATFORM_WINDOWS",
+			"OSR_EDITOR_ENABLED",
+			"GLM_ENABLE_EXPERIMENTAL",
+			"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
+			"MONO_INSTALL_LOC=" .. monodir,
+			iif(renderdocfound, "OSR_RENDERDOC_ENABLED", "")
 
-		includedirs
-		{
-			"Apps/%{prj.name}/src",
-			"Osiris/src",
-			"%{includedir.glm}",
-			"%{includedir.GLFW}",
-			"%{includedir.GLAD}",
-			"%{includedir.jsonxx}",
-			"%{includedir.SOIL}",
-			"%{includedir.imgui}",
-			"%{includedir.glm}",
-			"%{includedir.tinyobjloader}",
-			"%{includedir.mono}",
-			"%{includedir.efsw}",
-			"%{includedir.spdlog}",
-			"%{includedir.uuid}",
-			"%{includedir.hash}",
-			iif(renderdocfound, includedir["renderdoc"], "")
 		}
 		
-		links
+		linkoptions { "/WHOLEARCHIVE:Osiris" }
+		
+		if renderdocfound then
+			debugenvs { renderdocFolder }
+		end
+
+	filter "configurations:Debug"
+		defines "ORS_DEBUG"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		defines "ORS_RELEASE"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Distribution"
+		defines "ORS_DISTRIBUTION"
+		runtime "Debug"
+		symbols "on"
+
+
+project "Player"
+	location "Apps/Player"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "off"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("obj/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"Apps/%{prj.name}/src/**.h",
+		"Apps/%{prj.name}/src/**.cpp",
+		"Apps/%{prj.name}/res/**.vs",
+		"Apps/%{prj.name}/res/**.fs"
+	}
+
+	includedirs
+	{
+		"Apps/%{prj.name}/src",
+		"Osiris/src",
+		"%{includedir.spdlog}",
+		"%{includedir.glm}",
+		"%{includedir.uuid}",
+		"%{includedir.mono}"
+	}
+	
+	links
+	{
+		"Osiris"
+	}
+	
+	filter "system:windows"
+		systemversion "latest"
+
+		defines
 		{
-			"Osiris",
-			"GLFW",
-			"GLAD",
-			"SOIL",
-			"jsonxx",
-			"imgui",
-			"efsw",
-			"opengl32.dll"
+			"OSR_PLATFORM_WINDOWS",
+			"OSR_EDITOR_ENABLED",
+			"GLM_ENABLE_EXPERIMENTAL",
+			"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
+			"MONO_INSTALL_LOC=" .. monodir,
+			iif(renderdocfound, "OSR_RENDERDOC_ENABLED", "")
+
 		}
 		
-		dependson 
-		{ 
-			"OsirisAPI", 
-			"OsirisCAPI" 
-		}
-
-		filter "system:windows"
-			systemversion "latest"
-
-			defines
-			{
-				"OSR_PLATFORM_WINDOWS",
-				"OSR_EDITOR_ENABLED",
-				"GLM_ENABLE_EXPERIMENTAL",
-				"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
-				"MONO_INSTALL_LOC=" .. monodir,
-				iif(renderdocfound, "OSR_RENDERDOC_ENABLED", "")
-
-			}
-			
-			linkoptions { "/WHOLEARCHIVE:Osiris" }
-			
-			if renderdocfound then
-				debugenvs { renderdocFolder }
-			end
-
-		filter "configurations:Debug"
-			defines "ORS_DEBUG"
-			runtime "Debug"
-			symbols "on"
-
-		filter "configurations:Release"
-			defines "ORS_RELEASE"
-			runtime "Debug"
-			symbols "on"
-
-		filter "configurations:Distribution"
-			defines "ORS_DISTRIBUTION"
-			runtime "Debug"
-			symbols "on"
-
-
-group "Players"
-	project "WindowsPlayer"
-		location "Apps/WindowsPlayer"
-		kind "ConsoleApp"
-		language "C++"
-		cppdialect "C++17"
-		staticruntime "off"
-
-		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-		objdir ("obj/" .. outputdir .. "/%{prj.name}")
-
-		files
-		{
-			"Apps/%{prj.name}/src/**.h",
-			"Apps/%{prj.name}/src/**.cpp",
-			"Apps/%{prj.name}/res/**.vs",
-			"Apps/%{prj.name}/res/**.fs"
-		}
-
-		includedirs
-		{
-			"Apps/%{prj.name}/src",
-			"Osiris/src",
-			"%{includedir.spdlog}",
-			"%{includedir.glm}",
-			"%{includedir.uuid}",
-			"%{includedir.mono}"
-		}
+		linkoptions { "/WHOLEARCHIVE:Osiris" }
 		
-		links
-		{
-			"Osiris"
-		}
-		
-		filter "system:windows"
-			systemversion "latest"
+	filter "configurations:Debug"
+		defines "ORS_DEBUG"
+		runtime "Debug"
+		symbols "on"
 
-			defines
-			{
-				"OSR_PLATFORM_WINDOWS",
-				"OSR_EDITOR_ENABLED",
-				"GLM_ENABLE_EXPERIMENTAL",
-				"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
-				"MONO_INSTALL_LOC=" .. monodir,
-				iif(renderdocfound, "OSR_RENDERDOC_ENABLED", "")
+	filter "configurations:Release"
+		defines "ORS_RELEASE"
+		runtime "Debug"
+		symbols "on"
 
-			}
-			
-			linkoptions { "/WHOLEARCHIVE:Osiris" }
-			
-		filter "configurations:Debug"
-			defines "ORS_DEBUG"
-			runtime "Debug"
-			symbols "on"
-
-		filter "configurations:Release"
-			defines "ORS_RELEASE"
-			runtime "Debug"
-			symbols "on"
-
-		filter "configurations:Distribution"
-			defines "ORS_DISTRIBUTION"
-			runtime "Debug"
-			symbols "on"
-
-group ""
+	filter "configurations:Distribution"
+		defines "ORS_DISTRIBUTION"
+		runtime "Debug"
+		symbols "on"

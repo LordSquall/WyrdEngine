@@ -35,6 +35,8 @@
 #define CONFIG_RENDERDOC__MAXFILEPATH		"max_filepath"
 #define CONFIG_RENDERDOC__CAPTUREDIR		"capture_dir"
 
+#define CONFIG_WINDOWSPLAYER				"Preferences-Windows-Player"
+#define CONFIG_WINDOWSPLAYER__BINPATH		"bin_path"
 
 namespace Osiris::Editor
 {

@@ -16,4 +16,9 @@ namespace Osiris
 		OSR_CORE_ASSERT(false, "Unknown Renderer API");
 		return nullptr;
 	}
+
+	const std::string& Shader::GetSource(ShaderStage stage)
+	{
+		return _Source[stage];
+	}
 }

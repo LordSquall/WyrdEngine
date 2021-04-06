@@ -18,6 +18,10 @@ namespace Osiris
 
 	bool OpenGLShader::Build(const std::string& vertexSrc, const std::string& fragmentSrc)
 	{
+		// Store the source code
+		_Source[ShaderStage::Vertex] = vertexSrc;
+		_Source[ShaderStage::Fragment] = fragmentSrc;
+
 		// Create an empty vertex shader handle
 		GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 

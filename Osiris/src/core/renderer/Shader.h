@@ -12,6 +12,12 @@
 
 namespace Osiris
 {
+	enum ShaderStage
+	{
+		Vertex,
+		Fragment
+	};
+
 	class OSR_LIBRARY_API Shader
 	{
 	public:
@@ -32,5 +38,9 @@ namespace Osiris
 
 		static Shader* Create();
 
+		const std::string& GetSource(ShaderStage stage);
+
+	protected:
+		std::map<ShaderStage, std::string> _Source;
 	};
 }
