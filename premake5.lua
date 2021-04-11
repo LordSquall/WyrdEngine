@@ -85,107 +85,56 @@ include "externalbuild/premake5-spdlog.lua"
 include "externalbuild/premake5-uuid.lua"
 include "externalbuild/premake5-hash.lua"
 
--- group "Code Gen"
+group "Code Gen"
+	project "OsirisBindings"
+	location "codegen"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "off"
 
--- project "OsirisAPIModels"
-		-- location "OsirisAPIModels"
-		-- kind "SharedLib"
-		-- language "C#"
-
-		-- targetdir ("lib/" .. outputdir .. "/%{prj.name}")
-		-- objdir ("obj/" .. outputdir .. "/%{prj.name}")
+	targetdir ("lib/" .. outputdir .. "/%{prj.name}")
+	objdir ("obj/" .. outputdir .. "/%{prj.name}")
 		
-		-- files
-		-- {
-			-- "%{prj.name}/**.cs",
-			-- "%{prj.name}/**.xml"
-		-- }
+	files
+	{
+		"codegen/src/PlayerAPI/include/**.h",
+		"codegen/src/PlayerAPI/src/**.cpp",
+		"codegen/src/Common/include/**.h",
+		"codegen/src/Common/src/**.cpp"
+	}
+	
+	includedirs
+	{
+		"codegen/src/PlayerAPI/include/",
+		"codegen/src/Common/include/",
+		"Osiris/src",
+		"%{includedir.uuid}"
+	}
+	
+	links
+	{
+		"uuid"
+	}
 
-		-- links
-		-- {
-			-- "System.XML"
-		-- }
+
+	filter "system:windows"
+		systemversion "latest"
 		
-		-- filter "system:windows"
-			-- systemversion "latest"
+	filter "configurations:Debug"
+		defines "ORS_DEBUG"
+		runtime "Debug"
+		symbols "on"
 
-			-- defines
-			-- {
-				-- "OSR_PLATFORM_WINDOWS",
-				-- "OSR_EDITOR_ENABLED",
-				-- "GLFW_INCLUDE_NONE",
-				-- "GLM_ENABLE_EXPERIMENTAL"
-			-- }
+	filter "configurations:Release"
+		defines "ORS_RELEASE"
+		runtime "Release"
+		symbols "on"
 
-		-- filter "configurations:Debug"
-			-- defines "ORS_DEBUG"
-			-- runtime "Debug"
-			-- symbols "on"
-
-		-- filter "configurations:Release"
-			-- defines "ORS_RELEASE"
-			-- runtime "Release"
-			-- symbols "on"
-
-		-- filter "configurations:Distribution"
-			-- defines "ORS_DISTRIBUTION"
-			-- runtime "Release"
-			-- symbols "on"
-			
--- project "OsirisTemplates"
-		-- location "OsirisTemplates"
-		-- kind "ConsoleApp"
-		-- language "C#"
-		
-		-- buildcustomizations { "string" }
-
-		-- targetdir ("lib/" .. outputdir .. "/%{prj.name}")
-		-- objdir ("obj/" .. outputdir .. "/%{prj.name}")
-		
-		-- files
-		-- {
-			-- "%{prj.name}/**.cs",
-			-- "%{prj.name}/**.tt"
-		-- }
-
-		-- links
-		-- {
-			-- "OsirisAPIModels",
-			-- "System.XML"
-		-- }
-		
-		-- -- TextTemplatingFileGenerator
-		
-		-- filter "system:windows"
-			-- systemversion "latest"
-			
-			-- -- One or more commands to run (required)
-			-- buildcommands {
-			  -- 'luac -o "%{cfg.objdir}/%{file.basename}.out" "%{file.relpath}"'
-			-- }
-
-			-- defines
-			-- {
-			-- "OSR_PLATFORM_WINDOWS",
-			-- "OSR_EDITOR_ENABLED",
-			-- "GLFW_INCLUDE_NONE",
-			-- "GLM_ENABLE_EXPERIMENTAL"
-			-- }
-
-		-- filter "configurations:Debug"
-			-- defines "ORS_DEBUG"
-			-- runtime "Debug"
-			-- symbols "on"
-
-		-- filter "configurations:Release"
-			-- defines "ORS_RELEASE"
-			-- runtime "Release"
-			-- symbols "on"
-
-		-- filter "configurations:Distribution"
-			-- defines "ORS_DISTRIBUTION"
-			-- runtime "Release"
-			-- symbols "on"
+	filter "configurations:Distribution"
+		defines "ORS_DISTRIBUTION"
+		runtime "Release"
+		symbols "on"
 
 group ""
 	project "Osiris"
@@ -365,7 +314,6 @@ project "OsirisAPI"
 			runtime "Release"
 			symbols "on"
 
-group "Apps"	
 project "Editor"
 	location "Apps/Editor"
 	kind "ConsoleApp"
@@ -388,6 +336,8 @@ project "Editor"
 	{
 		"Apps/%{prj.name}/src",
 		"Apps/Players/Player/src",
+		"codegen/src/Common/include",
+		"codegen/src/PlayerAPI/include",
 		"Osiris/src",
 		"%{includedir.glm}",
 		"%{includedir.GLFW}",
@@ -408,6 +358,7 @@ project "Editor"
 	links
 	{
 		"Osiris",
+		"OsirisBindings",
 		"GLFW",
 		"GLAD",
 		"SOIL",
@@ -421,6 +372,7 @@ project "Editor"
 	{ 
 		"OsirisAPI", 
 		"OsirisCAPI",
+		"OsirisBindings",
 		"Player"
 	}
 
@@ -482,6 +434,8 @@ project "Player"
 	{
 		"Apps/%{prj.name}/src",
 		"Osiris/src",
+		"codegen/src/Common/include",
+		"codegen/src/PlayerAPI/include",
 		"%{includedir.spdlog}",
 		"%{includedir.glm}",
 		"%{includedir.uuid}",
@@ -490,7 +444,8 @@ project "Player"
 	
 	links
 	{
-		"Osiris"
+		"Osiris",
+		"OsirisBindings"
 	}
 	
 	filter "system:windows"

@@ -6,8 +6,17 @@
 #include <core/Resources.h>
 #include <core/renderer/Shader.h>
 
+/* export headers */
+#include "CoreFormat.h"
+#include "CoreExporter.h"
+#include "GameFormat.h"
+#include "GameExporter.h"
+#include "BundleFormat.h"
+#include "BundleExporter.h"
+#include "SceneFormat.h"
+#include "SceneExporter.h"
+
 #include "ExportManager.h"
-#include "Exporter.h"
 #include "services/ServiceManager.h"
 #include "services/WorkspaceService.h"
 #include "support/Utils.h"
@@ -46,7 +55,7 @@ namespace Osiris::Editor
 		/* bundle configuration header */
 		CoreFormat_Config config;
 		config.version = "1.0.0";
-		Exporter::Write(core, config);
+		Write(core, config);
 
 		core.close();
 	}
@@ -63,22 +72,23 @@ namespace Osiris::Editor
 		GameFormat_Config config;
 		config.version = "1.0.0";
 		config.name = project->name;
-		Exporter::Write(game, config);
+		Write(game, config);
 
 		/* Display Configuration */
 		GameFormat_Display display;
-		display.width = 500;
-		display.height = 300;
-		Exporter::Write(game, display);
+		display.width = (uint32_t)project->GetExportSettings().width;
+		display.height = (uint32_t)project->GetExportSettings().height;
+		Write(game, display);
 
 		/* Scene Listings */
 		GameFormat_SceneListings sceneListings;
 		for (auto& exportableScene : project->GetExportSettings().exportableScenes)
 		{
-			sceneListings.sceneUIDs.push_back(exportableScene.first.str());
+			sceneListings.sceneUIDs.push_back(exportableScene.first);
 		}
+		sceneListings.sceneUIDs_cnt = project->GetExportSettings().exportableScenes.size();
 		sceneListings.initialScene = project->GetExportSettings().initialScene;
-		Exporter::Write(game, sceneListings);
+		Write(game, sceneListings);
 
 		game.close();
 	}
@@ -91,7 +101,7 @@ namespace Osiris::Editor
 		/* bundle configuration header */
 		BundleFormat_Config config;
 		config.version = "1.0.0";
-		Exporter::Write(commonBundle, config);
+		Write(commonBundle, config);
 
 		commonBundle.close();
 	}
@@ -104,7 +114,7 @@ namespace Osiris::Editor
 		/* scene configuration header */
 		SceneFormat_Config config;
 		config.version = "1.0.0";
-		Exporter::Write(sceneBundle, config);
+		Write(sceneBundle, config);
 
 		sceneBundle.close();
 	}

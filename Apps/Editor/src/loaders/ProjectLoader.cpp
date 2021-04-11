@@ -13,7 +13,7 @@ namespace Osiris::Editor
 {;
 	ProjectLoader::Result ProjectLoader::Load(std::string path, Project& project)
 	{
-		ProjectLoader::Result result = Success;
+		ProjectLoader::Result result = FileNotFound;
 		jsonxx::Object o;
 		
 		std::ifstream f(path);
@@ -24,7 +24,8 @@ namespace Osiris::Editor
 
 			if (o.parse(ss.str()) == true)
 			{
-				project.FromJson(o);
+				if (project.FromJson(o))
+					result = Success;
 			}
 			else
 			{

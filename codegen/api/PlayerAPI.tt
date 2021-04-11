@@ -1,0 +1,235 @@
+<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="codegen/models/CodeGenModels.dll" #>
+<#@ assembly name="system.xml" #>
+<#@ import namespace="CodeGenModels" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Xml.Serialization" #>
+<#@ output extension="/" #>
+<#@include file="Manager.ttinclude" #>
+<#
+    /* create the new file manager to allow multiple code gen output files */
+    var manager = Manager.Create(Host, GenerationEnvironment);
+
+    string path = "./codegen/api/PlayerAPI.xml";
+	
+	/* path settings */
+	string includePathRoot =  "../src/PlayerAPI/include/";
+	string srcPathRoot =  "../src/PlayerAPI/src/";
+	
+    PlayerAPI api = null;
+
+    if (File.Exists(path))
+    {
+        string xmlContent = File.ReadAllText(path);
+        XmlSerializer serializer = new XmlSerializer(typeof(PlayerAPI));
+        using (TextReader reader = new StringReader(xmlContent))
+        {
+            api = (PlayerAPI)serializer.Deserialize(reader);
+        }
+    }
+	else
+	{
+		throw new Exception("Error reading file: " + path + " | Current path is : " + Directory.GetCurrentDirectory());
+	}
+
+    foreach(FileModel fileModel in api.Files)
+    {    
+        string defName = fileModel.Name + "Format";
+        string importerName = fileModel.Name + "Importer";
+        string exporterName = fileModel.Name + "Exporter";
+
+        string timestamp = DateTime.Now.ToString("MMM yyyy ddd HH:mm:ss");
+
+        /**
+        * File Header
+        */
+
+        manager.StartHeader();
+#>
+/// Auto Generated
+/// Date: <#= timestamp #>
+
+#pragma once
+
+#include <osrpch.h>
+
+<#
+        manager.EndBlock();
+
+
+        /**
+        * Definition Header File
+        */
+
+        /* create file directory */
+        manager.StartNewFile(includePathRoot + defName + ".h");
+#>
+#include <core/UID.h>
+
+<#
+        foreach (Block block in fileModel.Blocks)
+        {
+            TypeMappings.Types[block.Name] = defName + "_" + block.Name;
+            
+#>
+struct <#= defName + "_" + block.Name #>
+{
+<#
+            foreach (Item item in block.Items)
+            {
+                string itemDef = TypeMappings.Types[item.Type] + " " + item.Name + ";";
+#>
+    <#= itemDef #>
+<#
+            }
+
+            foreach (ItemList list in block.ItemLists)
+            {
+                string itemListDef = "std::vector<" + TypeMappings.Types[list.Type] + "> " + list.Name + ";";
+#>
+    uint32_t <#= list.Name #>_cnt;
+    <#= itemListDef #>
+<#
+            }
+#>
+};
+
+<#
+        }
+
+        manager.EndBlock();
+        
+        /**
+        * Importer Header File
+        */
+
+        manager.StartNewFile(includePathRoot + importerName + ".h");
+
+#>
+#include "<#= defName + ".h" #>"
+
+<#
+        foreach (Block block in fileModel.Blocks)
+        {
+            TypeMappings.Types[block.Name] = defName  + "_" + block.Name;
+            
+#>
+void Read(std::ifstream& s, <#= defName + "_" + block.Name #>& d);
+<#
+        }
+
+        manager.EndBlock();
+        
+        /**
+        * Importer Source File
+        */
+
+        manager.StartNewFile(srcPathRoot + importerName + ".cpp");
+#>
+#include "<#= importerName + ".h" #>"
+#include "CommonImports.h"
+
+<#
+        foreach (Block block in fileModel.Blocks)
+        {
+            TypeMappings.Types[block.Name] = defName + "_" + block.Name;
+            
+#>
+void Read(std::ifstream& s, <#= defName + "_" + block.Name #>& d)
+{
+<#
+            foreach (Item item in block.Items)
+            {
+#>
+    Read(s, d.<#= item.Name #>);
+<#
+            }
+
+            foreach (ItemList list in block.ItemLists)
+            {
+                string itemListDef = "std::vector<" + TypeMappings.Types[list.Type] + "> " + list.Name + ";";
+#>
+    Read(s, d.<#= list.Name #>_cnt);
+    for (uint32_t i = 0; i < d.<#= list.Name #>_cnt; i++)
+    {
+        <#= TypeMappings.Types[list.Type] #> item;
+        Read(s, item);
+        d.<#= list.Name #>.push_back(item);
+    }
+<#
+            }
+#>
+};
+
+<#
+        }
+
+        manager.EndBlock();
+
+        /**
+        * Exporter Header File
+        */
+
+        manager.StartNewFile(includePathRoot + exporterName + ".h");
+
+#>
+#include "<#= defName + ".h" #>"
+
+<#
+        foreach (Block block in fileModel.Blocks)
+        {
+            TypeMappings.Types[block.Name] = defName + "_" + block.Name;
+            
+#>
+void Write(std::ofstream& s, <#= defName + "_" + block.Name #>& d);
+<#
+        }
+
+        manager.EndBlock();
+        
+        /**
+        * Expoter Source File
+        */
+
+        manager.StartNewFile(srcPathRoot + exporterName + ".cpp");
+#>
+#include "<#= exporterName + ".h" #>"
+#include "CommonExports.h"
+
+<#
+        foreach (Block block in fileModel.Blocks)
+        {
+            TypeMappings.Types[block.Name] = defName + "_" + block.Name;
+            
+#>
+void Write(std::ofstream& s, <#= defName + "_" + block.Name #>& d)
+{
+<#
+            foreach (Item item in block.Items)
+            {
+#>
+    Write(s, d.<#= item.Name #>);
+<#
+            }
+
+            foreach (ItemList list in block.ItemLists)
+            {
+                string itemListDef = "std::vector<" + TypeMappings.Types[list.Type] + "> " + list.Name + ";";
+#>
+    Write(s, d.<#= list.Name #>_cnt);
+    for (uint32_t i = 0; i < d.<#= list.Name #>_cnt; i++)
+    {
+        Write(s, d.<#= list.Name #>[i]);
+    }
+<#
+            }
+#>
+};
+
+<#
+        }
+
+        manager.EndBlock();	
+    }
+#>
+<# manager.Process(true);#>

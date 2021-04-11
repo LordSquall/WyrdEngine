@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <PlayerAPI>
-  
   <File name="Core">
     
     <Block name="Config">
@@ -14,6 +13,7 @@
     
     <Block name="Config">
       <Item name="version" type="String" />
+      <Item name="name" type="String" />
     </Block>
     
     <Block name="Display">
@@ -23,7 +23,7 @@
     
     <Block name="SceneListings">
       <ItemList name="sceneUIDs" type="UID" />
-      <Item name="initialScene" type="String" />
+      <Item name="initialScene" type="UID" />
     </Block>
     
   </File>

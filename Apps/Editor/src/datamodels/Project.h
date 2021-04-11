@@ -12,6 +12,9 @@ namespace Osiris::Editor {
 		std::map<UID, std::string> exportableScenes;
 
 		UID initialScene;
+
+		int width;
+		int height;
 	};
 
 	/* Editor Project Data Model Structure */

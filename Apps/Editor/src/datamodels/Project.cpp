@@ -39,6 +39,9 @@ namespace Osiris::Editor
 
 		exportSettingsObj << "initialScene" << _ExportSettings.initialScene.str();
 
+		exportSettingsObj << "width" << _ExportSettings.width;
+		exportSettingsObj << "height" << _ExportSettings.height;
+
 		exportSettingsObj << "exportableScenes" << exportableScenes;
 
 		object << "exportSettings" << exportSettingsObj;
@@ -81,6 +84,10 @@ namespace Osiris::Editor
 			{
 				_ExportSettings.initialScene = UID();
 			}
+
+			/* size */
+			_ExportSettings.width = (int)exportSettings.get<jsonxx::Number>("width", 1920);
+			_ExportSettings.height = (int)exportSettings.get<jsonxx::Number>("height", 1080);
 		}
 
 		return true;

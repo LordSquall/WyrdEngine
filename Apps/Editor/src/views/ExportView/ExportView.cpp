@@ -42,26 +42,34 @@ namespace Osiris::Editor
 		{
 			ExportManager::Export();
 
-			std::string windowsBinPath = _SettingsService->GetSetting(CONFIG_WINDOWSPLAYER, CONFIG_WINDOWSPLAYER__BINPATH, std::string("../../bin/Debug/WindowsPlayer/WindowsPlayer.exe"));
+			auto p = std::filesystem::current_path();
+
+			std::string windowsBinPath = _SettingsService->GetSetting(CONFIG_WINDOWSPLAYER, CONFIG_WINDOWSPLAYER__BINPATH, std::string("../../bin/Debug/Player/Player.exe"));
 
 			ShellExecuteA(NULL, "open", windowsBinPath.c_str(), "", NULL, SW_SHOW);
 		}
 
 		if (ImGui::BeginListBox("Scenes"))
 		{
-			for (auto& sceneUID : project->GetExportSettings().exportableScenes)
+			if (project != nullptr)
 			{
-				std::string name = sceneUID.second;
-
-				if (ImGui::Selectable(name.c_str(), sceneUID.first == _SelectedSceneUID))
+				for (auto& sceneUID : project->GetExportSettings().exportableScenes)
 				{
-					_SelectedSceneUID = sceneUID.first;
+					std::string name = sceneUID.second;
+
+					if (ImGui::Selectable(name.c_str(), sceneUID.first == _SelectedSceneUID))
+					{
+						_SelectedSceneUID = sceneUID.first;
+					}
 				}
 			}
 			ImGui::EndListBox();
 		}
+		
+		ImGui::Text("Initial Scene: %s", project != nullptr ? project->GetExportSettings().initialScene.str().c_str() :  "NO PROJECT LOADED");
 
-		ImGui::Text("Initial Scene: %s", project->GetExportSettings().initialScene.str().c_str());
+		//int size[2];
+		ImGui::InputInt2("Size", (int*)&project->GetExportSettings().width);
 
 		if (ImGui::BeginDragDropTarget())
 		{

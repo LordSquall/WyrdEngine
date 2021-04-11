@@ -7,9 +7,10 @@ namespace OsirisAPI
     [StructLayout(LayoutKind.Sequential)]
     public class GameObject : UnmanagedObject
     {
-        #region public properties
 
-        public String Name
+#region public properties
+
+public String Name
         {
             get
             {
