@@ -74,7 +74,7 @@ if renderdocfound then
 	includedir["renderdoc"] = renderdocdir
 end
 
-group "ThirdParty"
+group "Third Party"
 include "externalbuild/premake5-glfw.lua"
 include "externalbuild/premake5-glad.lua"
 include "externalbuild/premake5-jsonxx.lua"
@@ -84,6 +84,108 @@ include "externalbuild/premake5-efsw.lua"
 include "externalbuild/premake5-spdlog.lua"
 include "externalbuild/premake5-uuid.lua"
 include "externalbuild/premake5-hash.lua"
+
+-- group "Code Gen"
+
+-- project "OsirisAPIModels"
+		-- location "OsirisAPIModels"
+		-- kind "SharedLib"
+		-- language "C#"
+
+		-- targetdir ("lib/" .. outputdir .. "/%{prj.name}")
+		-- objdir ("obj/" .. outputdir .. "/%{prj.name}")
+		
+		-- files
+		-- {
+			-- "%{prj.name}/**.cs",
+			-- "%{prj.name}/**.xml"
+		-- }
+
+		-- links
+		-- {
+			-- "System.XML"
+		-- }
+		
+		-- filter "system:windows"
+			-- systemversion "latest"
+
+			-- defines
+			-- {
+				-- "OSR_PLATFORM_WINDOWS",
+				-- "OSR_EDITOR_ENABLED",
+				-- "GLFW_INCLUDE_NONE",
+				-- "GLM_ENABLE_EXPERIMENTAL"
+			-- }
+
+		-- filter "configurations:Debug"
+			-- defines "ORS_DEBUG"
+			-- runtime "Debug"
+			-- symbols "on"
+
+		-- filter "configurations:Release"
+			-- defines "ORS_RELEASE"
+			-- runtime "Release"
+			-- symbols "on"
+
+		-- filter "configurations:Distribution"
+			-- defines "ORS_DISTRIBUTION"
+			-- runtime "Release"
+			-- symbols "on"
+			
+-- project "OsirisTemplates"
+		-- location "OsirisTemplates"
+		-- kind "ConsoleApp"
+		-- language "C#"
+		
+		-- buildcustomizations { "string" }
+
+		-- targetdir ("lib/" .. outputdir .. "/%{prj.name}")
+		-- objdir ("obj/" .. outputdir .. "/%{prj.name}")
+		
+		-- files
+		-- {
+			-- "%{prj.name}/**.cs",
+			-- "%{prj.name}/**.tt"
+		-- }
+
+		-- links
+		-- {
+			-- "OsirisAPIModels",
+			-- "System.XML"
+		-- }
+		
+		-- -- TextTemplatingFileGenerator
+		
+		-- filter "system:windows"
+			-- systemversion "latest"
+			
+			-- -- One or more commands to run (required)
+			-- buildcommands {
+			  -- 'luac -o "%{cfg.objdir}/%{file.basename}.out" "%{file.relpath}"'
+			-- }
+
+			-- defines
+			-- {
+			-- "OSR_PLATFORM_WINDOWS",
+			-- "OSR_EDITOR_ENABLED",
+			-- "GLFW_INCLUDE_NONE",
+			-- "GLM_ENABLE_EXPERIMENTAL"
+			-- }
+
+		-- filter "configurations:Debug"
+			-- defines "ORS_DEBUG"
+			-- runtime "Debug"
+			-- symbols "on"
+
+		-- filter "configurations:Release"
+			-- defines "ORS_RELEASE"
+			-- runtime "Release"
+			-- symbols "on"
+
+		-- filter "configurations:Distribution"
+			-- defines "ORS_DISTRIBUTION"
+			-- runtime "Release"
+			-- symbols "on"
 
 group ""
 	project "Osiris"
@@ -164,7 +266,9 @@ group ""
 			defines "ORS_DISTRIBUTION"
 			runtime "Release"
 			symbols "on"
-			
+
+
+group "Scripting"			
 project "OsirisCAPI"
 		location "OsirisCAPI"
 		kind "SharedLib"
@@ -261,6 +365,7 @@ project "OsirisAPI"
 			runtime "Release"
 			symbols "on"
 
+group "Apps"	
 project "Editor"
 	location "Apps/Editor"
 	kind "ConsoleApp"

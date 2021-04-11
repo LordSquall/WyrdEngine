@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<PlayerAPI>
+  
+  <File name="Core">
+    
+    <Block name="Config">
+      <Item name="name" type="String" />
+      <Item name="version" type="String" />
+    </Block>
+    
+  </File>
+
+  <File name="Game">
+    
+    <Block name="Config">
+      <Item name="version" type="String" />
+    </Block>
+    
+    <Block name="Display">
+      <Item name="width" type="UInt32" />
+      <Item name="height" type="UInt32" />
+    </Block>
+    
+    <Block name="SceneListings">
+      <ItemList name="sceneUIDs" type="UID" />
+      <Item name="initialScene" type="String" />
+    </Block>
+    
+  </File>
+
+  <File name="Bundle">
+    
+    <Block name="Config">
+      <Item name="version" type="String" />
+    </Block>
+
+
+    <Block name="Shader">
+      <Item name="vertexSrc" type="String" />
+      <Item name="fragmentSrc" type="String" />
+    </Block>
+    
+    <Block name="ShaderConfig">
+      <Item name="count" type="UInt32" />
+      <ItemList name="shaders" type="Shader" />
+    </Block>
+
+    <Block name="Texture">
+      <Item name="width" type="UInt32" />
+      <Item name="height" type="UInt32" />
+      <Item name="channels" type="UInt32" />
+    </Block>
+    
+    <Block name="TextureConfig">      
+      <Item name="count" type="UInt32" />
+      <ItemList name="textures" type="Texture" />
+    </Block>
+  </File>
+
+  <File name="Scene">
+    
+    <Block name="Config">
+      <Item name="version" type="String" />
+    </Block>
+    
+  </File>
+  
+</PlayerAPI>
