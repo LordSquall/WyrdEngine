@@ -1,5 +1,5 @@
 /// Auto Generated
-/// Date: Apr 2021 Sun 23:43:17
+/// Date: Apr 2021 Tue 21:51:40
 
 #pragma once
 
@@ -8,3 +8,5 @@
 #include "CoreFormat.h"
 
 void Read(std::ifstream& s, CoreFormat_Config& d);
+void Write(std::ofstream& s, CoreFormat_Config& d);
+

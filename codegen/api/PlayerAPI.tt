@@ -35,8 +35,7 @@
     foreach(FileModel fileModel in api.Files)
     {    
         string defName = fileModel.Name + "Format";
-        string importerName = fileModel.Name + "Importer";
-        string exporterName = fileModel.Name + "Exporter";
+        string functionsFileName = fileModel.Name + "Functions";
 
         string timestamp = DateTime.Now.ToString("MMM yyyy ddd HH:mm:ss");
 
@@ -103,7 +102,7 @@ struct <#= defName + "_" + block.Name #>
         * Importer Header File
         */
 
-        manager.StartNewFile(includePathRoot + importerName + ".h");
+        manager.StartNewFile(includePathRoot + functionsFileName + ".h");
 
 #>
 #include "<#= defName + ".h" #>"
@@ -115,19 +114,22 @@ struct <#= defName + "_" + block.Name #>
             
 #>
 void Read(std::ifstream& s, <#= defName + "_" + block.Name #>& d);
+void Write(std::ofstream& s, <#= defName + "_" + block.Name #>& d);
+
 <#
         }
 
         manager.EndBlock();
         
         /**
-        * Importer Source File
+        * Functions Source File
         */
 
-        manager.StartNewFile(srcPathRoot + importerName + ".cpp");
+        manager.StartNewFile(srcPathRoot + functionsFileName + ".cpp");
 #>
-#include "<#= importerName + ".h" #>"
-#include "CommonImports.h"
+#include "CommonFunctions.h"
+
+#include "<#= defName + ".h" #>"
 
 <#
         foreach (Block block in fileModel.Blocks)
@@ -161,47 +163,6 @@ void Read(std::ifstream& s, <#= defName + "_" + block.Name #>& d)
 #>
 };
 
-<#
-        }
-
-        manager.EndBlock();
-
-        /**
-        * Exporter Header File
-        */
-
-        manager.StartNewFile(includePathRoot + exporterName + ".h");
-
-#>
-#include "<#= defName + ".h" #>"
-
-<#
-        foreach (Block block in fileModel.Blocks)
-        {
-            TypeMappings.Types[block.Name] = defName + "_" + block.Name;
-            
-#>
-void Write(std::ofstream& s, <#= defName + "_" + block.Name #>& d);
-<#
-        }
-
-        manager.EndBlock();
-        
-        /**
-        * Expoter Source File
-        */
-
-        manager.StartNewFile(srcPathRoot + exporterName + ".cpp");
-#>
-#include "<#= exporterName + ".h" #>"
-#include "CommonExports.h"
-
-<#
-        foreach (Block block in fileModel.Blocks)
-        {
-            TypeMappings.Types[block.Name] = defName + "_" + block.Name;
-            
-#>
 void Write(std::ofstream& s, <#= defName + "_" + block.Name #>& d)
 {
 <#
@@ -229,7 +190,8 @@ void Write(std::ofstream& s, <#= defName + "_" + block.Name #>& d)
 <#
         }
 
-        manager.EndBlock();	
+        manager.EndBlock();
+
     }
 #>
 <# manager.Process(true);#>

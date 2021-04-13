@@ -7,11 +7,11 @@
 #include "import/ImportManager.h"
 
 #include "CoreFormat.h"
-#include "CoreImporter.h"
+#include "CoreFunctions.h"
 #include "GameFormat.h"
-#include "GameImporter.h"
+#include "GameFunctions.h"
 #include "BundleFormat.h"
-#include "BundleImporter.h"
+#include "BundleFunctions.h"
 
 void ImportManager::ImportCore()
 {

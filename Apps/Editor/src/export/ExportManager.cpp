@@ -8,13 +8,13 @@
 
 /* export headers */
 #include "CoreFormat.h"
-#include "CoreExporter.h"
+#include "CoreFunctions.h"
 #include "GameFormat.h"
-#include "GameExporter.h"
+#include "GameFunctions.h"
 #include "BundleFormat.h"
-#include "BundleExporter.h"
+#include "BundleFunctions.h"
 #include "SceneFormat.h"
-#include "SceneExporter.h"
+#include "SceneFunctions.h"
 
 #include "ExportManager.h"
 #include "services/ServiceManager.h"
