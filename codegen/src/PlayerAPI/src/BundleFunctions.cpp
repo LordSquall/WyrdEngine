@@ -1,5 +1,5 @@
 /// Auto Generated
-/// Date: Apr 2021 Tue 21:51:40
+/// Date: Apr 2021 Tue 22:10:41
 
 #pragma once
 
@@ -21,19 +21,20 @@ void Write(std::ofstream& s, BundleFormat_Config& d)
 
 void Read(std::ifstream& s, BundleFormat_Shader& d)
 {
+    Read(s, d.uid);
     Read(s, d.vertexSrc);
     Read(s, d.fragmentSrc);
 };
 
 void Write(std::ofstream& s, BundleFormat_Shader& d)
 {
+    Write(s, d.uid);
     Write(s, d.vertexSrc);
     Write(s, d.fragmentSrc);
 };
 
 void Read(std::ifstream& s, BundleFormat_ShaderConfig& d)
 {
-    Read(s, d.count);
     Read(s, d.shaders_cnt);
     for (uint32_t i = 0; i < d.shaders_cnt; i++)
     {
@@ -45,7 +46,6 @@ void Read(std::ifstream& s, BundleFormat_ShaderConfig& d)
 
 void Write(std::ofstream& s, BundleFormat_ShaderConfig& d)
 {
-    Write(s, d.count);
     Write(s, d.shaders_cnt);
     for (uint32_t i = 0; i < d.shaders_cnt; i++)
     {
@@ -69,7 +69,6 @@ void Write(std::ofstream& s, BundleFormat_Texture& d)
 
 void Read(std::ifstream& s, BundleFormat_TextureConfig& d)
 {
-    Read(s, d.count);
     Read(s, d.textures_cnt);
     for (uint32_t i = 0; i < d.textures_cnt; i++)
     {
@@ -81,7 +80,6 @@ void Read(std::ifstream& s, BundleFormat_TextureConfig& d)
 
 void Write(std::ofstream& s, BundleFormat_TextureConfig& d)
 {
-    Write(s, d.count);
     Write(s, d.textures_cnt);
     for (uint32_t i = 0; i < d.textures_cnt; i++)
     {

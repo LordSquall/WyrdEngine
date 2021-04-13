@@ -3,6 +3,7 @@
 #include <osrpch.h>
 #include <core/Log.h>
 #include <core/Application.h>
+#include <core/renderer/Shader.h>
 
 #include "import/ImportManager.h"
 
@@ -92,6 +93,26 @@ void ImportManager::ImportCommonBundle()
 	Read(common, config);
 
 	OSR_TRACE("Common Config Version: {0}", config.version);
+
+	/* shader configuration */
+	BundleFormat_ShaderConfig shaderConfig;
+	Read(common, shaderConfig);
+
+	OSR_TRACE("Shader Config Count: {0}", shaderConfig.shaders_cnt);
+
+	for (auto& s : shaderConfig.shaders)
+	{
+		std::shared_ptr<Osiris::Shader> shader = std::shared_ptr<Osiris::Shader>(Osiris::Shader::Create());
+		if (shader->Build(s.vertexSrc, s.fragmentSrc))
+		{
+			Osiris::Application::Get().GetResources().Shaders[s.uid.str()] = shader;
+			OSR_INFO("Shader Compiled and Added! [{0}]", s.uid.str());
+		}
+		else
+		{
+			OSR_ERROR("Unable to Compile Shader [{0}]", s.uid.str());
+		}
+	}
 
 	common.close();
 }

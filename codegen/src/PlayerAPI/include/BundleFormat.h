@@ -1,5 +1,5 @@
 /// Auto Generated
-/// Date: Apr 2021 Tue 21:51:40
+/// Date: Apr 2021 Tue 22:10:41
 
 #pragma once
 
@@ -14,13 +14,13 @@ struct BundleFormat_Config
 
 struct BundleFormat_Shader
 {
+    Osiris::UID uid;
     std::string vertexSrc;
     std::string fragmentSrc;
 };
 
 struct BundleFormat_ShaderConfig
 {
-    uint32_t count;
     uint32_t shaders_cnt;
     std::vector<BundleFormat_Shader> shaders;
 };
@@ -34,7 +34,6 @@ struct BundleFormat_Texture
 
 struct BundleFormat_TextureConfig
 {
-    uint32_t count;
     uint32_t textures_cnt;
     std::vector<BundleFormat_Texture> textures;
 };

@@ -36,12 +36,12 @@
 
 
     <Block name="Shader">
+      <Item name="uid" type="UID" />
       <Item name="vertexSrc" type="String" />
       <Item name="fragmentSrc" type="String" />
     </Block>
     
     <Block name="ShaderConfig">
-      <Item name="count" type="UInt32" />
       <ItemList name="shaders" type="Shader" />
     </Block>
 
@@ -51,8 +51,7 @@
       <Item name="channels" type="UInt32" />
     </Block>
     
-    <Block name="TextureConfig">      
-      <Item name="count" type="UInt32" />
+    <Block name="TextureConfig">
       <ItemList name="textures" type="Texture" />
     </Block>
   </File>

@@ -103,6 +103,19 @@ namespace Osiris::Editor
 		config.version = "1.0.0";
 		Write(commonBundle, config);
 
+		/* shader configuration */
+		BundleFormat_ShaderConfig shaderConfig;
+		for (auto& s : Application::Get().GetResources().Shaders)
+		{
+			BundleFormat_Shader shader;
+			shader.uid = UIDUtils::Create(); // TODO
+			shader.vertexSrc = s.second->GetSource(ShaderStage::Vertex);
+			shader.fragmentSrc = s.second->GetSource(ShaderStage::Fragment);
+			shaderConfig.shaders.push_back(shader);
+		}
+		shaderConfig.shaders_cnt = Application::Get().GetResources().Shaders.size();
+		Write(commonBundle, shaderConfig);
+
 		commonBundle.close();
 	}
 
