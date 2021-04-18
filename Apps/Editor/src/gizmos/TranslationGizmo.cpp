@@ -90,7 +90,7 @@ namespace Osiris::Editor
 		_EventService->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(TranslationGizmo::OnSelectedGameObjectChanged));
 		
 		/* retrieve the shader */
-		_Shader = Application::Get().GetResources().Shaders["Gizmo"];
+		//_Shader = Application::Get().GetResources().Shaders["Gizmo"];
 
 		/* create and bind a default VAO */
 		_VertexArray.reset(VertexArray::Create());
@@ -113,10 +113,10 @@ namespace Osiris::Editor
 		_VertexArray->SetAttribute(1, 2, 4, sizeof(GizmoVertex));
 
 		/* bind the shader */
-		_Shader->Bind();
+		//_Shader->Bind();
 
 		/* set the vp matrix to a standard otho matrix */
-		_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
+		//_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
 
 	}
 
@@ -125,29 +125,29 @@ namespace Osiris::Editor
 
 	void TranslationGizmo::Render(Timestep ts, Renderer& renderer)
 	{
-		/* calculate the different between the camera viewport and the sceneviewer to set the scalling */
-        float diff = _CameraController->GetSize() / std::min(_SceneViewer->GetViewport().size.x, _SceneViewer->GetViewport().size.y);
+		///* calculate the different between the camera viewport and the sceneviewer to set the scalling */
+  //      float diff = _CameraController->GetSize() / std::min(_SceneViewer->GetViewport().size.x, _SceneViewer->GetViewport().size.y);
 
-        /* setup the pipeline objects */
-        _VertexArray->Bind();
-        _Shader->Bind();
-        _VertexBuffer->Bind();
-        _IndexBuffer->Bind();
+  //      /* setup the pipeline objects */
+  //      _VertexArray->Bind();
+  //      _Shader->Bind();
+  //      _VertexBuffer->Bind();
+  //      _IndexBuffer->Bind();
 
-        /* render using the cameras VP matrix */
-        _Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
+  //      /* render using the cameras VP matrix */
+  //      _Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
 
-        /* set the scale matrix for the gizmo */
-        _Shader->SetMatrix("scale", glm::scale(glm::vec3(diff, diff, diff)));
-                
-        /* Set the model matrix of the gameobject, however we want to ammend the scale by the viewport difference */
-        _Shader->SetMatrix("model", _GameObject->transform->GetModelMatrix());
+  //      /* set the scale matrix for the gizmo */
+  //      _Shader->SetMatrix("scale", glm::scale(glm::vec3(diff, diff, diff)));
+  //              
+  //      /* Set the model matrix of the gameobject, however we want to ammend the scale by the viewport difference */
+  //      _Shader->SetMatrix("model", _GameObject->transform->GetModelMatrix());
 
-        /* set the default uniforms */
-        _Shader->SetUniformVec4("blendColor", glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
+  //      /* set the default uniforms */
+  //      _Shader->SetUniformVec4("blendColor", glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 
-        /* perform the draw */
-		renderer.DrawElements(RendererDrawType::Triangles, _IndexBuffer->GetCount());
+  //      /* perform the draw */
+		//renderer.DrawElements(RendererDrawType::Triangles, _IndexBuffer->GetCount());
 	}
 
 
@@ -248,11 +248,17 @@ namespace Osiris::Editor
 	{
 		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
 
-
-        Transform2DComponent* transform2D = dynamic_cast<Transform2DComponent*>(evtArgs.gameObject->transform.get());
-        if (transform2D != nullptr)
+        if (evtArgs.gameObject != nullptr)
         {
-            _GameObject = evtArgs.gameObject;
+            Transform2DComponent* transform2D = dynamic_cast<Transform2DComponent*>(evtArgs.gameObject->transform.get());
+            if (transform2D != nullptr)
+            {
+                _GameObject = evtArgs.gameObject;
+            }
+        }
+        else
+        {
+            _GameObject = nullptr;
         }
 	}
 

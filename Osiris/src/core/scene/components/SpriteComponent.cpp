@@ -17,6 +17,8 @@
 #include "core/scene/components/Transform2DComponent.h"
 #include "serial/TypeSerialisers.h"
 
+#include <jsonxx.h>
+
 namespace Osiris
 {
 	SpriteComponent::SpriteComponent(GameObject* gameObject) : IBaseComponent(gameObject, SceneComponentType::SpriteRenderer)
@@ -90,10 +92,8 @@ namespace Osiris
 		//spriteLayer->GetSpriteBatch().RemoveSprite(this);
 	}
 
-	jsonxx::Object SpriteComponent::ToJson()
+	bool SpriteComponent::ToJson(jsonxx::Object& object)
 	{
-		jsonxx::Object object;
-
 		object << "componentType" << (int)SceneComponentType::SpriteRenderer;
 
 		/* texture */
@@ -108,7 +108,7 @@ namespace Osiris
 		/* blend color */
 		object << "blendColor" << color;
 
-		return object;
+		return true;
 	}
 
 	bool SpriteComponent::FromJson(jsonxx::Object& object)

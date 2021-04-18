@@ -30,11 +30,11 @@ namespace Osiris {
 		/**
 		 * @brief See SceneLayer::ToJson()
 		*/
-		virtual jsonxx::Object ToJson();
+		virtual bool ToJson(jsonxx::Object& object) override;
 
 		/**
 		 * @brief See SceneLayer::FromJson()
 		*/
-		virtual bool FromJson(jsonxx::Object& object);
+		virtual bool FromJson(jsonxx::Object& object) override;
 	};
 }

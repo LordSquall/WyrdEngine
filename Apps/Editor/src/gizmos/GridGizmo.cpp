@@ -35,7 +35,7 @@ namespace Osiris::Editor
 		_EventService->Subscribe(Events::EventType::SettingsUpdated, EVENT_FUNC(GridGizmo::OnSettingsChanged));
 
 		/* Retrieve the shader */
-		_Shader = Application::Get().GetResources().Shaders["Gizmo"];
+		//_Shader = Application::Get().GetResources().Shaders["Gizmo"];
 
 		/* Create and bind a default VAO */
 		_VertexArray.reset(VertexArray::Create());
@@ -54,21 +54,21 @@ namespace Osiris::Editor
 
 	void GridGizmo::Render(Timestep ts, Renderer& renderer)
 	{
-		_VertexArray->Bind();
-		_Shader->Bind();
-		_VertexBuffer->Bind();
-		_IndexBuffer->Bind(); 
-				
-		_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
-		_Shader->SetMatrix("model", glm::mat4(1.0f));
+		//_VertexArray->Bind();
+		//_Shader->Bind();
+		//_VertexBuffer->Bind();
+		//_IndexBuffer->Bind(); 
+		//		
+		//_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
+		//_Shader->SetMatrix("model", glm::mat4(1.0f));
 
-		/* set the blend color */
-		_Shader->SetUniformVec4("blendColor", glm::vec4{ _Color.r, _Color.g, _Color.b, _Color.a });
+		///* set the blend color */
+		//_Shader->SetUniformVec4("blendColor", glm::vec4{ _Color.r, _Color.g, _Color.b, _Color.a });
 
-		/* set the scale matrix for the gizmo */
-		_Shader->SetMatrix("scale", glm::scale(glm::vec3(1.0f, 1.0f, 1.0f)));
+		///* set the scale matrix for the gizmo */
+		//_Shader->SetMatrix("scale", glm::scale(glm::vec3(1.0f, 1.0f, 1.0f)));
 
-		renderer.DrawElements(RendererDrawType::Triangles, _IndexBuffer->GetCount());
+		//renderer.DrawElements(RendererDrawType::Triangles, _IndexBuffer->GetCount());
 
 	}
 
@@ -128,10 +128,10 @@ namespace Osiris::Editor
 		_VertexArray->SetAttribute(1, 2, 4, sizeof(GizmoVertex));
 
 		/* bind the shader */
-		_Shader->Bind();
+		//_Shader->Bind();
 
 		/* set the vp matrix to a standard otho matrix */
-		_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
+		//_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
 	}
 
 

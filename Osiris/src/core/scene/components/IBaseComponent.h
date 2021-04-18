@@ -16,11 +16,11 @@ namespace Osiris {
 	enum class SceneComponentType
 	{
 		Transform2D = 1,
-		Transform3D,
-		SpriteRenderer,
-		ScriptComponent,
-		PhysicsComponent,
-		CameraComponent
+		Transform3D = 2,
+		SpriteRenderer = 3,
+		ScriptComponent = 4,
+		PhysicsComponent = 5,
+		CameraComponent = 6
 	};
 
 	class OSR_LIBRARY_API IBaseComponent
@@ -45,9 +45,10 @@ namespace Osiris {
 
 		/**
 		 * @brief Serialise the gameobject into a json object
-		 * @return json object
+		 * @param object json object
+		 * @return true is successful
 		*/
-		virtual jsonxx::Object ToJson() = 0;
+		virtual bool ToJson(jsonxx::Object& object) = 0;
 
 		/**
 		 * @brief Deserialise a json object into a gameobject

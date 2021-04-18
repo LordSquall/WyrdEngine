@@ -90,6 +90,25 @@ struct <#= defName + "_" + block.Name #>
     <#= itemListDef #>
 <#
             }
+
+            foreach (ConditionalItemList conditionItemLists in block.ConditionalItemList)
+            {
+#>
+    union <#= conditionItemLists.Type #>
+    {
+<#
+                foreach (ConditionalItem conditionalItem in conditionItemLists.ConditionalItems)
+                {
+                    string itemDef = TypeMappings.Types[conditionalItem.Type] + " " + conditionalItem.Name + ";";
+#>
+        <#= itemDef #>      
+<#
+                }
+#>
+        <#= conditionItemLists.Type #>() { }
+    } <#= conditionItemLists.Name #>;
+<#
+            }
 #>
 };
 
@@ -160,6 +179,25 @@ void Read(std::ifstream& s, <#= defName + "_" + block.Name #>& d)
     }
 <#
             }
+            
+            foreach (ConditionalItemList conditionalItemList in block.ConditionalItemList)
+            {
+#>
+    switch (d.<#= conditionalItemList.Control #>)
+    {
+<#
+                foreach (ConditionalItem conditionalItem in conditionalItemList.ConditionalItems)
+                {
+#>
+        case <#= conditionalItem.Value #>:
+            Read(s, d.<#= conditionalItemList.Name + "." + conditionalItem.Name #>);
+            break;
+<#
+                }
+#>
+    }
+<#
+            }
 #>
 };
 
@@ -181,6 +219,25 @@ void Write(std::ofstream& s, <#= defName + "_" + block.Name #>& d)
     for (uint32_t i = 0; i < d.<#= list.Name #>_cnt; i++)
     {
         Write(s, d.<#= list.Name #>[i]);
+    }
+<#
+            }
+            
+            foreach (ConditionalItemList conditionalItemList in block.ConditionalItemList)
+            {
+#>
+    switch (d.<#= conditionalItemList.Control #>)
+    {
+<#
+                foreach (ConditionalItem conditionalItem in conditionalItemList.ConditionalItems)
+                {
+#>
+        case <#= conditionalItem.Value #>:
+            Write(s, d.<#= conditionalItemList.Name + "." + conditionalItem.Name #>);
+            break;
+<#
+                }
+#>
     }
 <#
             }

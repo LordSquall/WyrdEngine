@@ -314,6 +314,7 @@ project "OsirisAPI"
 			runtime "Release"
 			symbols "on"
 
+group "Applications"
 project "Editor"
 	location "Apps/Editor"
 	kind "ConsoleApp"

@@ -29,6 +29,9 @@ namespace CodeGenModels
 
         [XmlElement("ItemList")]
         public List<ItemList> ItemLists { get; set; }
+		
+        [XmlElement("ConditionalItemList")]
+        public List<ConditionalItemList> ConditionalItemList { get; set; }
     }
 
     public class Item
@@ -47,5 +50,32 @@ namespace CodeGenModels
 
         [XmlAttribute("type")]
         public string Type { get; set; }
+    }
+	
+	public class ConditionalItem
+    {
+		[XmlAttribute("value")]
+        public string Value { get; set; }
+		
+        [XmlAttribute("name")]
+        public string Name { get; set; }
+
+        [XmlAttribute("type")]
+        public string Type { get; set; }
+    }
+
+    public class ConditionalItemList
+    {
+        [XmlAttribute("control")]
+        public string Control { get; set; }
+
+        [XmlAttribute("type")]
+        public string Type { get; set; }
+
+        [XmlAttribute("name")]
+        public string Name { get; set; }
+
+        [XmlElement("ConditionalItem")]
+        public List<ConditionalItem> ConditionalItems { get; set; }
     }
 }

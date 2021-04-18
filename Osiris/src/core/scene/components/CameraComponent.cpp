@@ -5,6 +5,8 @@
 #include "core/scene/GameObject.h"
 #include "serial/TypeSerialisers.h"
 
+#include <jsonxx.h>
+
 namespace Osiris
 {
 	CameraComponent::CameraComponent(GameObject* gameObject) : IBaseComponent(gameObject, SceneComponentType::CameraComponent), _Size(0.0f), _CameraUID(UIDUtils::Create())
@@ -12,10 +14,8 @@ namespace Osiris
 		_Camera = std::make_unique<OrthographicCamera>();
 	}
 
-	jsonxx::Object CameraComponent::ToJson()
+	bool CameraComponent::ToJson(jsonxx::Object& object)
 	{
-		jsonxx::Object object;
-
 		object << "componentType" << (int)SceneComponentType::CameraComponent;
 
 		/* size */
@@ -24,7 +24,7 @@ namespace Osiris
 		/* camera uid */
 		object << "camerauid" << _CameraUID.str();
 
-		return object;
+		return true;
 	}
 
 	bool CameraComponent::FromJson(jsonxx::Object& object)

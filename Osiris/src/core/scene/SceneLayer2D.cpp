@@ -7,6 +7,8 @@
 #include "core/pipeline/SpriteBatch.h"
 #include "core/Resources.h"
 
+#include <jsonxx.h>
+
 namespace Osiris
 {
 	bool SceneLayer2D::Initialise()
@@ -39,10 +41,8 @@ namespace Osiris
 		}
 	}
 
-	jsonxx::Object SceneLayer2D::ToJson()
+	bool SceneLayer2D::ToJson(jsonxx::Object& object)
 	{
-		jsonxx::Object object;
-
 		/* name */
 		object << "name" << _Name;
 
@@ -59,11 +59,13 @@ namespace Osiris
 		jsonxx::Array gameObjects;
 		for (auto& gameobject : GetGameObjects())
 		{
-			gameObjects << gameobject->ToJson();
+			jsonxx::Object goObject;
+			gameobject->ToJson(goObject);
+			gameObjects << goObject;
 		}
 		object << "gameObjects" << gameObjects;
 
-		return object;
+		return true;
 	}
 
 	bool SceneLayer2D::FromJson(jsonxx::Object& object)

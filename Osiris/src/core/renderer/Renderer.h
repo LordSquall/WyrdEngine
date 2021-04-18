@@ -30,6 +30,7 @@ namespace Osiris
 	public:
 		virtual ~Renderer() {}
 
+		virtual void SetViewport(float width, float height) = 0;
 		virtual void Clear(float r, float g, float b) const = 0;
 		virtual void DrawElements(RendererDrawType type, uint32_t count) const = 0;
 		virtual void DrawArray(RendererDrawType type, uint32_t offset, uint32_t count) const = 0;

@@ -10,6 +10,8 @@
 #include "core/scene/components/Transform2DComponent.h"
 #include "core/scene/components/SpriteComponent.h"
 
+#include <jsonxx.h>
+
 namespace Osiris
 {
 	PhysicsComponent::PhysicsComponent(GameObject* gameObject) : IBaseComponent(gameObject, SceneComponentType::PhysicsComponent),
@@ -79,10 +81,8 @@ namespace Osiris
 		}
 	}
 
-	jsonxx::Object PhysicsComponent::ToJson()
+	bool PhysicsComponent::ToJson(jsonxx::Object& object)
 	{
-		jsonxx::Object object;
-
 		object << "componentType" << (int)SceneComponentType::PhysicsComponent;
 
 		/* is static */
@@ -94,7 +94,7 @@ namespace Osiris
 		/* use sprite boundary*/
 		object << "useSpriteBoundary" << _UseSpriteBoundary;
 
-		return object;
+		return true;
 	}
 
 	bool PhysicsComponent::FromJson(jsonxx::Object& object)

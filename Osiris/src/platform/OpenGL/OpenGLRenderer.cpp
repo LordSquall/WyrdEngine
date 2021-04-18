@@ -114,6 +114,12 @@ namespace Osiris
 		}
 	}
 
+
+	void OpenGLRenderer::SetViewport(float width, float height)
+	{
+		glViewport(0, 0, width, height);
+	}
+
 	void OpenGLRenderer::Clear(float r, float g, float b) const
 	{
 		glClearColor(r, g, b, 1);

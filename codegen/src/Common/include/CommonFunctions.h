@@ -27,6 +27,9 @@ void Write(std::ofstream& s, uint32_t d);
 void Read(std::ifstream& s, uint64_t& d);
 void Write(std::ofstream& s, uint64_t d);
 
+void Read(std::ifstream& s, float& d);
+void Write(std::ofstream& s, float d);
+
 void Read(std::ifstream& s, Osiris::UID& uid);
 void Write(std::ofstream& s, Osiris::UID& uid);
 

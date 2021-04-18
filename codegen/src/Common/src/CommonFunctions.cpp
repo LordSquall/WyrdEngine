@@ -90,6 +90,17 @@ void Write(std::ofstream& s, uint64_t d)
     s.write((char*)&d, sizeof(uint64_t));
 }
 
+/* float */
+void Read(std::ifstream& s, float& d)
+{
+    s.read((char*)&d, sizeof(float));
+}
+
+void Write(std::ofstream& s, float d)
+{
+    s.write((char*)&d, sizeof(float));
+}
+
 /* std::string */
 void Read(std::ifstream& s, std::string& d)
 {

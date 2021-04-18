@@ -65,7 +65,7 @@ namespace Osiris::Editor
 				_CameraComponent->GetCamera().SetPosition(vec3(transform2D->position, 0.0f));
 
 				/* Set the camera viewport */
-				_CameraComponent->GetCamera().SetViewportSize(_Viewport.size.x, _Viewport.size.y);
+				_CameraComponent->GetCamera().SetViewportSize(800.0f, 600.0f);
 			}
 		}
 	}

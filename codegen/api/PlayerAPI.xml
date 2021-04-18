@@ -60,8 +60,71 @@
     
     <Block name="Config">
       <Item name="version" type="String" />
+      <Item name="name" type="String" />
+      <Item name="camera" type="UID" />
+    </Block>
+
+    <Block name="Transform2DComponent">
+      <Item name="x" type="Float" />
+      <Item name="y" type="Float" />
+      <Item name="angle" type="Float" />
+      <Item name="scaleX" type="Float" />
+      <Item name="scaleY" type="Float" />
+    </Block>
+	
+	 <Block name="Transform3DComponent">
+      <Item name="x" type="Float" />
+      <Item name="y" type="Float" />
+      <Item name="z" type="Float" />
+      <Item name="angleX" type="Float" />
+      <Item name="angleY" type="Float" />
+      <Item name="angleZ" type="Float" />
+      <Item name="scaleX" type="Float" />
+      <Item name="scaleY" type="Float" />
+      <Item name="scaleZ" type="Float" />
+    </Block>
+	
+    <Block name="SpriteComponent">
+      <Item name="x" type="Float" />
+      <Item name="y" type="Float" />
+      <Item name="width" type="Float" />
+      <Item name="height" type="Float" />
+    </Block>
+
+    <Block name="CameraComponent">
+      <Item name="uid" type="UID" />
+      <Item name="size" type="Float" />
+      <Item name="width" type="Float" />
+      <Item name="height" type="Float" />
     </Block>
     
+    <Block name="Component">
+      <Item name="type" type="Int32" />
+      <ConditionalItemList control="type" type="ComponentDef" name="componentDef">
+        <ConditionalItem value="3" name="sprite" type="SpriteComponent" />
+        <ConditionalItem value="6" name="camera" type="CameraComponent" />
+      </ConditionalItemList>
+    </Block>
+    
+    <Block name="GameObject">
+      <Item name="name" type="String" />
+      <Item name="uid" type="UID" />
+      <Item name="transformType" type="Int32" />
+	  <ConditionalItemList control="transformType" type="TransformDef" name="transformDef">
+        <ConditionalItem value="1" name="transform2D" type="Transform2DComponent" />
+        <ConditionalItem value="2" name="transform3D" type="Transform3DComponent" />
+      </ConditionalItemList>
+      <ItemList name="components" type="Component" />
+    </Block>
+    
+    <Block name="Layer">
+      <Item name="name" type="String" />
+      <ItemList name="gameObjects" type="GameObject" />
+    </Block>
+
+    <Block name="LayerConfig">
+      <ItemList name="layers" type="Layer" />
+    </Block>
   </File>
   
 </PlayerAPI>

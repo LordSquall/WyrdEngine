@@ -173,10 +173,8 @@ namespace Osiris
 		}
 	}
 
-	jsonxx::Object GameObject::ToJson()
+	bool GameObject::ToJson(jsonxx::Object& object)
 	{
-		jsonxx::Object object;
-
 		/* name */
 		object << "name" << name;
 
@@ -184,17 +182,21 @@ namespace Osiris
 		object << "uid" << uid.str();
 
 		/* transform component */
-		object << "transform2D" << transform->ToJson();
+		jsonxx::Object transformObj;
+		transform->ToJson(transformObj);
+		object << "transform2D" << transformObj;
 
 		/* additional component */
 		jsonxx::Array componentsArray;
 		for (auto& component : components)
 		{
-			componentsArray << component->ToJson();
+			jsonxx::Object componentObj;
+			component->ToJson(componentObj);
+			componentsArray << componentObj;
 		}
 		object << "components" << componentsArray;
 
-		return object;
+		return true;
 	}
 
 	bool GameObject::FromJson(jsonxx::Object& object)

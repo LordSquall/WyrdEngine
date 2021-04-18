@@ -6,7 +6,11 @@
 
 /* external includes */
 #include <glm/glm.hpp>
-#include <jsonxx.h>
+
+namespace jsonxx
+{
+	class Object;
+};
 
 namespace Osiris {
 
@@ -58,7 +62,7 @@ namespace Osiris {
 		 * @brief Serialise the gameobject into a json object
 		 * @return json object
 		*/
-		jsonxx::Object ToJson();
+		bool ToJson(jsonxx::Object& object);
 
 		/**
 		 * @brief Deserialise a json object into a gameobject

@@ -15,11 +15,9 @@ namespace Osiris
 
 	}
 
-	jsonxx::Object Transform3DComponent::ToJson()
+	bool Transform3DComponent::ToJson(jsonxx::Object& object)
 	{
-		jsonxx::Object object;
-
-		return object;
+		return true;
 	}
 
 	bool Transform3DComponent::FromJson(jsonxx::Object& object)

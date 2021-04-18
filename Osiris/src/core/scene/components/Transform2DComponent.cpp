@@ -96,14 +96,12 @@ namespace Osiris
 		}
 	}
 
-	jsonxx::Object Transform2DComponent::ToJson()
+	bool Transform2DComponent::ToJson(jsonxx::Object& object)
 	{
-		jsonxx::Object object;
-
 		/* position */
 		object << "position" << position;
 
-		return object;
+		return true;
 	}
 
 	bool Transform2DComponent::FromJson(jsonxx::Object& object)

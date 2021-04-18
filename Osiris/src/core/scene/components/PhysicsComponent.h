@@ -47,7 +47,7 @@ namespace Osiris {
 		/**
 		 * @brief See IBaseComponent::ToJson()
 		*/
-		virtual jsonxx::Object ToJson() override;
+		virtual bool ToJson(jsonxx::Object& object) override;
 
 		/**
 		 * @brief See IBaseComponent::FromJson()

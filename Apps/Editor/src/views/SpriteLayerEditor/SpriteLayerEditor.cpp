@@ -271,7 +271,11 @@ namespace Osiris::Editor
 			ImGui::SameLine();
 			if (ImGui::TextButton("DUP_GO", layerControlsActive)) {}
 			ImGui::SameLine();
-			if (ImGui::TextButton("DEL_GO", layerControlsActive)) {}
+			if (ImGui::TextButton("DEL_GO", layerControlsActive)) 
+			{
+				_SelectedSceneLayer->RemoveChild(_SelectedGameObject->uid);
+				_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(nullptr));
+			}
 			ImGui::SameLine();
 			if (ImGui::TextButton("ADD_GO", _SelectedSceneLayer != nullptr))
 			{

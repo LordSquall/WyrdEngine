@@ -40,6 +40,8 @@ namespace Osiris::Editor
 
 		if (ImGui::Button("Export"))
 		{
+			_WorkspaceService->SaveScene();
+
 			ExportManager::Export();
 
 			auto p = std::filesystem::current_path();

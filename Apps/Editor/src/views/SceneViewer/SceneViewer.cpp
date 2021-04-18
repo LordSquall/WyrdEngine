@@ -50,7 +50,7 @@ namespace Osiris::Editor
 		_GizmoShader.reset(Shader::Create());
 
 		/* Add shader to core */
-		Application::Get().GetResources().Shaders["Gizmo"] = _GizmoShader;
+		//Application::Get().GetResources().Shaders["Gizmo"] = _GizmoShader;
 
 		if (_GizmoShader->Build(vertexSrc, fragmentSrc) == false)
 		{

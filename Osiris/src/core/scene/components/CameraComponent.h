@@ -31,9 +31,10 @@ namespace Osiris {
 						
 		/**
 		 * @brief Serialise the gameobject into a json object
-		 * @return json object
+		 * @param object json object
+		 * @return true is successful
 		*/
-		virtual jsonxx::Object ToJson() override;
+		virtual bool ToJson(jsonxx::Object& object) override;
 
 		/**
 		 * @brief Deserialise a json object into a gameobject

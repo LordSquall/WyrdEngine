@@ -8,6 +8,8 @@
 #include "core/behaviour/ScriptedClass.h"
 #include "core/behaviour/ScriptedCustomObject.h"
 
+#include <jsonxx.h>
+
 namespace Osiris
 {
 	ScriptComponent::ScriptComponent(GameObject* gameObject) : IBaseComponent(gameObject, SceneComponentType::ScriptComponent)
@@ -36,10 +38,8 @@ namespace Osiris
 		_Object = scriptedObject;
 	}
 
-	jsonxx::Object ScriptComponent::ToJson()
+	bool ScriptComponent::ToJson(jsonxx::Object& object)
 	{
-		jsonxx::Object object;
-
 		object << "componentType" << (int)SceneComponentType::ScriptComponent;
 
 
@@ -61,7 +61,7 @@ namespace Osiris
 			object << "properties" << properties;
 		}
 
-		return object;
+		return true;
 	}
 
 	bool ScriptComponent::FromJson(jsonxx::Object& object)

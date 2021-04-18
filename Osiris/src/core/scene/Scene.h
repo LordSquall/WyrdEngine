@@ -32,7 +32,7 @@ namespace Osiris {
 
 		void AssignScripts(Behaviour* behaviour);
 
-		void AddLayer(std::unique_ptr<SceneLayer> layer);
+		const std::unique_ptr<SceneLayer>& AddLayer(std::unique_ptr<SceneLayer> layer);
 		void RemoveLayer(const UID& uid);
 
 

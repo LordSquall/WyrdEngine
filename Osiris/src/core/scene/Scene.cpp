@@ -67,9 +67,10 @@ namespace Osiris
 	}
 
 
-	void Scene::AddLayer(std::unique_ptr<SceneLayer> layer)
+	const std::unique_ptr<SceneLayer>& Scene::AddLayer(std::unique_ptr<SceneLayer> layer)
 	{
 		_Layers.push_back(std::move(layer));
+		return _Layers.back();
 	}
 	
 	void Scene::RemoveLayer(const UID& uid)
@@ -115,7 +116,9 @@ namespace Osiris
 		jsonxx::Array sceneLayers;
 		for (auto& layer : _Layers)
 		{
-			sceneLayers << layer->ToJson();
+			jsonxx::Object layerObject;
+			layer->ToJson(layerObject);
+			sceneLayers << layerObject;
 		}
 		object << "sceneLayers" << sceneLayers;
 

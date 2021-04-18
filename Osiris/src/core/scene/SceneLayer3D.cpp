@@ -21,11 +21,10 @@ namespace Osiris
 
 	}
 
-	jsonxx::Object SceneLayer3D::ToJson()
+	bool SceneLayer3D::ToJson(jsonxx::Object& object)
 	{
-		jsonxx::Object object;
 		//TODO
-		return object;
+		return true;
 	}
 
 	bool SceneLayer3D::FromJson(jsonxx::Object& object)
