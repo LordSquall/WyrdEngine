@@ -4,6 +4,7 @@
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/renderer/Shader.h>
+#include <core/renderer/Texture.h>
 #include <core/scene/SceneLayer2D.h>
 #include <core/scene/components/SceneComponentFactory.h>
 
@@ -119,6 +120,21 @@ void ImportManager::ImportCommonBundle(const std::string& root)
 		}
 	}
 
+	/* texture configuration */
+	BundleFormat_TextureConfig textureConfig;
+	Read(common, textureConfig);
+
+	OSR_TRACE("Texture Config Count: {0}", textureConfig.textures_cnt);
+
+	for (auto& t : textureConfig.textures)
+	{
+		std::shared_ptr<Osiris::Texture> texture = std::shared_ptr<Osiris::Texture>(Osiris::Texture::Create(&t.data[0], t.width, t.height, t.channels, "Debug Description"));
+		texture->SetUID(t.uid);
+		Application::Get().GetResources().Textures[t.uid] = texture;
+
+		OSR_INFO("Texture Added [{0}]", t.uid.str());
+	}
+
 	common.close();
 }
 
@@ -170,20 +186,24 @@ std::unique_ptr<Osiris::Scene> ImportManager::ImportScene(const std::string& roo
 
 			for (auto& c : go.components)
 			{
-				OSR_TRACE("       -> Added Component: {0}", c.type);
 				switch ((Osiris::SceneComponentType)c.type)
 				{
 				case Osiris::SceneComponentType::SpriteRenderer:
 					{
+						OSR_TRACE("       -> Added Component: Sprite Component");
 						IBaseComponent* component = gameObject->AddComponent(std::move(SceneComponentFactory::Create(SceneComponentType::SpriteRenderer, gameObject)));
 						Osiris::SpriteComponent* spriteComponent = (Osiris::SpriteComponent*)component;
 						component->Initialise();
 						spriteComponent->SetPosition(c.componentDef.sprite.x, c.componentDef.sprite.y);
 						spriteComponent->SetSize(c.componentDef.sprite.width, c.componentDef.sprite.height);
+						spriteComponent->SetTexture(Application::Get().GetResources().Textures[c.componentDef.sprite.texture]);
+
+						OSR_TRACE("           -> X:{0}, Y:{1}, W:{2}, H:{3}, UID:{4}", c.componentDef.sprite.x, c.componentDef.sprite.y, c.componentDef.sprite.width, c.componentDef.sprite.height, c.componentDef.sprite.texture);
 					}
 					break;
 				case Osiris::SceneComponentType::CameraComponent:
 					{
+						OSR_TRACE("       -> Added Component: Camera Component");
 						IBaseComponent* component = gameObject->AddComponent(std::move(SceneComponentFactory::Create(SceneComponentType::CameraComponent, gameObject)));
 						Osiris::CameraComponent* cameraComponent = (Osiris::CameraComponent*)component;
 						component->Initialise();

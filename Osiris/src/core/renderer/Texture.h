@@ -29,11 +29,14 @@ namespace Osiris
 		inline UID GetUID() { return _uid; }
 		inline void SetUID(UID uid) { _uid = uid; }
 
+		inline unsigned char* GetData() const { return _data; }
+
 		static std::shared_ptr<Texture> Create(unsigned char* data, int width, int height, int channels, const std::string& description);
 
 	protected:
 		UID _uid;
 		int _height;
 		int _width;
+		unsigned char* _data;
 	};
 }

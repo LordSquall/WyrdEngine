@@ -17,7 +17,8 @@ namespace CodeGenModels
             { "UInt64", "uint64_t" },
             { "Float", "float" },
             { "String", "std::string" },
-            { "UID", "Osiris::UID" }
+            { "UID", "Osiris::UID" },
+            { "Byte", "unsigned char" },
         };
     }
 }

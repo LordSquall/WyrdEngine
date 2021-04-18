@@ -1,5 +1,5 @@
 /// Auto Generated
-/// Date: Apr 2021 Sun 20:08:01
+/// Date: Apr 2021 Sun 21:39:54
 
 #pragma once
 
@@ -27,9 +27,12 @@ struct BundleFormat_ShaderConfig
 
 struct BundleFormat_Texture
 {
+    Osiris::UID uid;
     uint32_t width;
     uint32_t height;
     uint32_t channels;
+    uint32_t data_cnt;
+    std::vector<unsigned char> data;
 };
 
 struct BundleFormat_TextureConfig

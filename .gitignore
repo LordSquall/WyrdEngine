@@ -18,3 +18,4 @@ externalbuild/bin/
 externalbuild/bin-int/
 lib/
 sub_modules/
+codegen/models/obj/

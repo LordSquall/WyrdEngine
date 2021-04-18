@@ -46,9 +46,11 @@
     </Block>
 
     <Block name="Texture">
+      <Item name="uid" type="UID" />
       <Item name="width" type="UInt32" />
       <Item name="height" type="UInt32" />
       <Item name="channels" type="UInt32" />
+      <ItemList name="data" type="Byte" />
     </Block>
     
     <Block name="TextureConfig">
@@ -89,6 +91,7 @@
       <Item name="y" type="Float" />
       <Item name="width" type="Float" />
       <Item name="height" type="Float" />
+      <Item name="texture" type="UID" />
     </Block>
 
     <Block name="CameraComponent">

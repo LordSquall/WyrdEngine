@@ -1,5 +1,5 @@
 /// Auto Generated
-/// Date: Apr 2021 Sun 20:08:01
+/// Date: Apr 2021 Sun 21:39:54
 
 #pragma once
 
@@ -55,16 +55,30 @@ void Write(std::ofstream& s, BundleFormat_ShaderConfig& d)
 
 void Read(std::ifstream& s, BundleFormat_Texture& d)
 {
+    Read(s, d.uid);
     Read(s, d.width);
     Read(s, d.height);
     Read(s, d.channels);
+    Read(s, d.data_cnt);
+    for (uint32_t i = 0; i < d.data_cnt; i++)
+    {
+        unsigned char item;
+        Read(s, item);
+        d.data.push_back(item);
+    }
 };
 
 void Write(std::ofstream& s, BundleFormat_Texture& d)
 {
+    Write(s, d.uid);
     Write(s, d.width);
     Write(s, d.height);
     Write(s, d.channels);
+    Write(s, d.data_cnt);
+    for (uint32_t i = 0; i < d.data_cnt; i++)
+    {
+        Write(s, d.data[i]);
+    }
 };
 
 void Read(std::ifstream& s, BundleFormat_TextureConfig& d)

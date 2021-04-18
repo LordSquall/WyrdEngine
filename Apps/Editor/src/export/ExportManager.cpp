@@ -100,6 +100,8 @@ namespace Osiris::Editor
 
 	void ExportManager::GenerateCommonBundleFile()
 	{
+		auto resourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
+
 		std::ofstream commonBundle;
 		commonBundle.open(Utils::GetBuildsFolder() + "/common.bundle", std::ios::out | std::ios::binary);
 
@@ -120,6 +122,51 @@ namespace Osiris::Editor
 		}
 		shaderConfig.shaders_cnt = Application::Get().GetResources().Shaders.size();
 		Write(commonBundle, shaderConfig);
+
+		/* texture configuration */
+		BundleFormat_TextureConfig textureConfig;
+
+		uint32_t textureCount = 0;
+
+		/* add the default texture */
+		auto defaultTexture = Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)];
+		BundleFormat_Texture defaultTextureFormat;
+		defaultTextureFormat.uid = defaultTexture->GetUID();
+		defaultTextureFormat.width = defaultTexture->GetWidth();
+		defaultTextureFormat.height = defaultTexture->GetHeight();
+		defaultTextureFormat.channels = 4;
+		defaultTextureFormat.data_cnt = defaultTextureFormat.width * defaultTextureFormat.height * defaultTextureFormat.channels;
+
+		for (int i = 0; i < defaultTextureFormat.data_cnt; i++)
+		{
+			defaultTextureFormat.data.push_back(defaultTexture->GetData()[i]);
+		}
+		textureConfig.textures.push_back(defaultTextureFormat);
+		textureCount++;
+
+		for (auto& r : resourceService->GetResources())
+		{
+			TextureRes* textureRes = dynamic_cast<TextureRes*>(r.second.get());
+			if (textureRes != nullptr)
+			{
+				BundleFormat_Texture texture;
+				texture.uid = textureRes->GetTexture()->GetUID();
+				texture.width = textureRes->GetWidth();
+				texture.height = textureRes->GetHeight();
+				texture.channels = textureRes->GetChannels();
+				texture.data_cnt = texture.width * texture.height * texture.channels;
+
+				for (int i = 0; i < texture.data_cnt; i++)
+				{
+					texture.data.push_back(textureRes->GetData()[i]);
+				}
+
+				textureConfig.textures.push_back(texture);
+				textureCount++;
+			}
+		}
+		textureConfig.textures_cnt = textureCount;
+		Write(commonBundle, textureConfig);
 
 		commonBundle.close();
 	}
@@ -178,6 +225,7 @@ namespace Osiris::Editor
 							component.componentDef.sprite.y = spriteComponent->position.y;
 							component.componentDef.sprite.width = spriteComponent->size.x;
 							component.componentDef.sprite.height = spriteComponent->size.y;
+							component.componentDef.sprite.texture = spriteComponent->GetTexture()->GetUID();
 						}
 						break;
 					case SceneComponentType::CameraComponent:

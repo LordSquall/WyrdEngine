@@ -8,9 +8,10 @@ namespace Osiris
 
 	OpenGLTexture::OpenGLTexture(unsigned char* data, int width, int height, int channels, const std::string& description)
 	{
-		/* Store width and height */
+		/* Store width, height and data */
 		_width = width;
 		_height = height;
+		_data = data;
 
 		glGenTextures(1, &_rendererID);
 		glBindTexture(GL_TEXTURE_2D, _rendererID);

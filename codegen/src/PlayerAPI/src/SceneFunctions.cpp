@@ -1,5 +1,5 @@
 /// Auto Generated
-/// Date: Apr 2021 Sun 20:08:01
+/// Date: Apr 2021 Sun 21:39:54
 
 #pragma once
 
@@ -73,6 +73,7 @@ void Read(std::ifstream& s, SceneFormat_SpriteComponent& d)
     Read(s, d.y);
     Read(s, d.width);
     Read(s, d.height);
+    Read(s, d.texture);
 };
 
 void Write(std::ofstream& s, SceneFormat_SpriteComponent& d)
@@ -81,6 +82,7 @@ void Write(std::ofstream& s, SceneFormat_SpriteComponent& d)
     Write(s, d.y);
     Write(s, d.width);
     Write(s, d.height);
+    Write(s, d.texture);
 };
 
 void Read(std::ifstream& s, SceneFormat_CameraComponent& d)

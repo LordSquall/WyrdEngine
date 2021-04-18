@@ -1,5 +1,5 @@
 /// Auto Generated
-/// Date: Apr 2021 Sun 20:08:01
+/// Date: Apr 2021 Sun 21:39:54
 
 #pragma once
 
@@ -42,6 +42,7 @@ struct SceneFormat_SpriteComponent
     float y;
     float width;
     float height;
+    Osiris::UID texture;
 };
 
 struct SceneFormat_CameraComponent
