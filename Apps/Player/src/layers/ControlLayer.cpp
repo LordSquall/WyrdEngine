@@ -42,6 +42,8 @@ bool ControlLayer::OnAttach()
 
 	auto scene = SceneManager::getInstance().GetScene();
 
+	Application::Get().GetBehaviour().Start(std::shared_ptr<Osiris::Scene>(scene));
+
 	return true;
 }
 
@@ -51,9 +53,11 @@ void ControlLayer::OnUpdate(Timestep ts)
 {
 	auto scene = SceneManager::getInstance().GetScene();
 
+
 	if (scene != nullptr)
 	{
-		/* Render Each sprite layer */
+		Application::Get().GetBehaviour().Update(ts);
+
 		for (auto& sl : scene->GetLayers())
 		{
 			for (auto& go : sl->GetGameObjects())

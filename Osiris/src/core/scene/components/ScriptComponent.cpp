@@ -53,7 +53,8 @@ namespace Osiris
 			jsonxx::Array properties;
 			for (auto& prop : *Properties)
 			{
-				jsonxx::Object propObj = prop.second->ToJson();
+				jsonxx::Object propObj;
+				prop.second->ToJson(propObj);
 				propObj << "name" << prop.second->GetName();
 
 				properties << propObj;

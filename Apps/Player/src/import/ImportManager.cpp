@@ -7,6 +7,7 @@
 #include <core/renderer/Texture.h>
 #include <core/scene/SceneLayer2D.h>
 #include <core/scene/components/SceneComponentFactory.h>
+#include <core/behaviour/ScriptedClass.h>
 
 #include "import/ImportManager.h"
 #include "managers/SceneManager.h"
@@ -128,11 +129,25 @@ void ImportManager::ImportCommonBundle(const std::string& root)
 
 	for (auto& t : textureConfig.textures)
 	{
-		std::shared_ptr<Osiris::Texture> texture = std::shared_ptr<Osiris::Texture>(Osiris::Texture::Create(&t.data[0], t.width, t.height, t.channels, "Debug Description"));
+		std::shared_ptr<Osiris::Texture> texture = std::shared_ptr<Osiris::Texture>(Osiris::Texture::Create((unsigned char*)&t.data[0], t.width, t.height, t.channels, "Debug Description"));
 		texture->SetUID(t.uid);
 		Application::Get().GetResources().Textures[t.uid] = texture;
 
 		OSR_INFO("Texture Added [{0}]", t.uid.str());
+	}
+
+	/* managed libaries configuration */
+	BundleFormat_ManagedLibConfig managedLibConfig;
+	Read(common, managedLibConfig);
+
+	OSR_TRACE("Managed Lib Config Lin Count		: {0}", managedLibConfig.managedLibraries_cnt);
+	OSR_TRACE("Managed Lib Config Classes Cnt   : {0}", managedLibConfig.classes_cnt);
+
+	Application::Get().GetBehaviour().LoadBehaviourModel(managedLibConfig.classes, managedLibConfig.managedLibraries[0].data, managedLibConfig.managedLibraries[1].data);
+
+	for (size_t i = 0; i < managedLibConfig.classes.size(); i++)
+	{
+		Application::Get().GetBehaviour().GetCustomClass(managedLibConfig.classes[i])->SetUID(managedLibConfig.classesUIDs[i]);
 	}
 
 	common.close();
@@ -201,6 +216,16 @@ std::unique_ptr<Osiris::Scene> ImportManager::ImportScene(const std::string& roo
 						OSR_TRACE("           -> X:{0}, Y:{1}, W:{2}, H:{3}, UID:{4}", c.componentDef.sprite.x, c.componentDef.sprite.y, c.componentDef.sprite.width, c.componentDef.sprite.height, c.componentDef.sprite.texture);
 					}
 					break;
+				case Osiris::SceneComponentType::ScriptComponent:
+					{
+						OSR_TRACE("       -> Added Component: Script Component");
+						IBaseComponent* component = gameObject->AddComponent(std::move(SceneComponentFactory::Create(SceneComponentType::ScriptComponent, gameObject)));
+						Osiris::ScriptComponent* scriptComponent = (Osiris::ScriptComponent*)component;
+						component->Initialise();
+						scriptComponent->SetClass(Application::Get().GetBehaviour().GetCustomClassByUID(c.componentDef.script.script));
+						OSR_TRACE("           -> Script UID:{0}", c.componentDef.script.script);
+					}
+					break;
 				case Osiris::SceneComponentType::CameraComponent:
 					{
 						OSR_TRACE("       -> Added Component: Camera Component");
@@ -219,6 +244,9 @@ std::unique_ptr<Osiris::Scene> ImportManager::ImportScene(const std::string& roo
 	}
 
 	scene.close();
+
+
+	newScene->AssignScripts(Application::Get().GetBehaviourPtr());
 
 	return std::move(newScene);
 }

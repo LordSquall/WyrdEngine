@@ -1,5 +1,5 @@
 /// Auto Generated
-/// Date: Apr 2021 Sun 21:39:54
+/// Date: Apr 2021 Thu 22:14:39
 
 #pragma once
 
@@ -32,12 +32,29 @@ struct BundleFormat_Texture
     uint32_t height;
     uint32_t channels;
     uint32_t data_cnt;
-    std::vector<unsigned char> data;
+    std::vector<char> data;
 };
 
 struct BundleFormat_TextureConfig
 {
     uint32_t textures_cnt;
     std::vector<BundleFormat_Texture> textures;
+};
+
+struct BundleFormat_ManagedLib
+{
+    std::string name;
+    uint32_t data_cnt;
+    std::vector<char> data;
+};
+
+struct BundleFormat_ManagedLibConfig
+{
+    uint32_t classes_cnt;
+    std::vector<std::string> classes;
+    uint32_t classesUIDs_cnt;
+    std::vector<Osiris::UID> classesUIDs;
+    uint32_t managedLibraries_cnt;
+    std::vector<BundleFormat_ManagedLib> managedLibraries;
 };
 

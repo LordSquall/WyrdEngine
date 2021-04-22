@@ -56,6 +56,18 @@
     <Block name="TextureConfig">
       <ItemList name="textures" type="Texture" />
     </Block>
+
+    <Block name="ManagedLib">
+      <Item name="name" type="String" />
+      <ItemList name="data" type="Byte" />
+    </Block>
+
+    <Block name="ManagedLibConfig">
+      <ItemList name="classes" type="String" />
+      <ItemList name="classesUIDs" type="UID" />
+      <ItemList name="managedLibraries" type="ManagedLib" />
+    </Block>
+    
   </File>
 
   <File name="Scene">
@@ -94,6 +106,10 @@
       <Item name="texture" type="UID" />
     </Block>
 
+    <Block name="ScriptComponent">
+      <Item name="script" type="UID" />
+    </Block>
+
     <Block name="CameraComponent">
       <Item name="uid" type="UID" />
       <Item name="size" type="Float" />
@@ -105,6 +121,7 @@
       <Item name="type" type="Int32" />
       <ConditionalItemList control="type" type="ComponentDef" name="componentDef">
         <ConditionalItem value="3" name="sprite" type="SpriteComponent" />
+        <ConditionalItem value="4" name="script" type="ScriptComponent" />
         <ConditionalItem value="6" name="camera" type="CameraComponent" />
       </ConditionalItemList>
     </Block>

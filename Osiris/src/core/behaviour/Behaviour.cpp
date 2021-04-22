@@ -24,10 +24,6 @@
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
 
-#ifndef NATIVE_API_LIB_LOC
-#define NATIVE_API_LIB_LOC "C:/Projects/Osiris/OsirisEngine/lib/Debug/"
-#endif
-
 #ifndef MONO_INSTALL_LOC
 #define MONO_INSTALL_LOC "C:/PROGRA~1/Mono/"
 #endif
@@ -342,6 +338,23 @@ namespace Osiris
 
 	void Behaviour::LoadBehaviourModel(const std::vector<std::string>& files, const std::string& inputFile)
 	{
+		std::string apiLibraryLocation = NATIVE_API_LIB_LOC "OsirisAPI/OsirisAPI.dll";
+
+		/* Read the core library into memory */
+		std::ifstream coreLibFileStream(apiLibraryLocation.c_str(), std::ios::binary);
+		std::vector<char> coreLibData((std::istreambuf_iterator<char>(coreLibFileStream)), (std::istreambuf_iterator<char>()));
+		coreLibFileStream.close();
+
+		/* Read the client library into memory */
+		std::ifstream clientLibFileStream(inputFile.c_str(), std::ios::binary);
+		std::vector<char> clientLibData((std::istreambuf_iterator<char>(clientLibFileStream)), (std::istreambuf_iterator<char>()));
+		clientLibFileStream.close();
+
+		LoadBehaviourModel(files, coreLibData, clientLibData);
+	}
+
+	void Behaviour::LoadBehaviourModel(const std::vector<std::string>& files, std::vector<char>& coreData, std::vector<char>& clientData)
+	{
 		/* Unload the client domain */
 		if (_ClientDomain != nullptr)
 		{
@@ -355,11 +368,11 @@ namespace Osiris
 		/* Switch to the client domain */
 		mono_domain_set((MonoDomain*)_ClientDomain, true);
 
-		std::string apiLibraryLocation = NATIVE_API_LIB_LOC "OsirisAPI/OsirisAPI.dll";
-		std::string assemblyPath = inputFile.c_str();
+		//std::string apiLibraryLocation = NATIVE_API_LIB_LOC "OsirisAPI/OsirisAPI.dll";
+		//std::string assemblyPath = inputFile.c_str();
 
-		LoadAssembly(_ClientDomain, &_CoreImage, &_CoreAssembly, "OsirisAPI", apiLibraryLocation);
-		LoadAssembly(_ClientDomain, &_ClientImage, &_ClientAssembly, "OsirisGame", assemblyPath);
+		LoadAssembly(_ClientDomain, &_CoreImage, &_CoreAssembly, "OsirisAPI", coreData);
+		LoadAssembly(_ClientDomain, &_ClientImage, &_ClientAssembly, "OsirisGame", clientData);
 
 
 		/* Search for all valid classes in the DLL and add build the scripted classes */
@@ -409,6 +422,7 @@ namespace Osiris
 		_InputMousePos = mono_runtime_invoke((MonoMethod*)_ScriptedClasses["Input"]->Properties["MousePos"]->GetGetter(), nullptr, nullptr, nullptr);
 		_InputMouseButtonState = mono_runtime_invoke((MonoMethod*)_ScriptedClasses["Input"]->Properties["MouseButtons"]->GetGetter(), nullptr, nullptr, nullptr);
 	}
+
 
 	void Behaviour::BuildManagedGameObjects()
 	{
@@ -543,9 +557,15 @@ namespace Osiris
 				/* Check if we have an assigned object */
 				if (scriptComponent->GetCustomObject() != nullptr)
 				{
+					MonoObject* exec = nullptr;
 					MonoObject* object = (scriptComponent->GetCustomObject())->Object;
 					MonoMethod* method = scriptComponent->GetCustomObject()->GetMethod("OnStart");
-					mono_runtime_invoke(method, object, nullptr, nullptr);
+					mono_runtime_invoke(method, object, nullptr, &exec);
+
+					if (exec != nullptr)
+					{
+						mono_print_unhandled_exception(exec);
+					}
 				}
 			}
 		}
@@ -591,26 +611,19 @@ namespace Osiris
 	}
 
 
-	void Behaviour::LoadAssembly(void* domain, void** image, void** assembly, const std::string& ns, const std::string& filepath)
-	{
-		OSR_CORE_TRACE("Loading assembly {0} into {1}", filepath, mono_domain_get_friendly_name((MonoDomain*)domain));
-
-		//open file
-		std::ifstream input(filepath.c_str(), std::ios::binary);
-		std::vector<char> buffer((std::istreambuf_iterator<char>(input)), (std::istreambuf_iterator<char>()));
-		input.close(); 
-		
+	void Behaviour::LoadAssembly(void* domain, void** image, void** assembly, const std::string& ns, std::vector<char>& assemblyData)
+	{		
 		/* need to add the OsirisAPI dll to the assembly to allow runtime access */
 		MonoImageOpenStatus status = MONO_IMAGE_ERROR_ERRNO;
 		
 		
-		(*image) = mono_image_open_from_data(&buffer[0], (uint32_t)buffer.size(), 1, &status); 
+		(*image) = mono_image_open_from_data(&assemblyData[0], (uint32_t)assemblyData.size(), 1, &status);
 		if (status != MONO_IMAGE_OK || (*image) == NULL)
 		{
 			return;
 		}
 		
-		(*assembly) = mono_assembly_load_from((MonoImage*)(*image), filepath.c_str(), &status);
+		(*assembly) = mono_assembly_load_from((MonoImage*)(*image), "", &status);
 		if (status != MONO_IMAGE_OK || (*assembly) == NULL) {
 			return; 
 		} 

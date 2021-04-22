@@ -101,6 +101,17 @@ void Write(std::ofstream& s, float d)
     s.write((char*)&d, sizeof(float));
 }
 
+/* char */
+void Read(std::ifstream& s, char& d)
+{
+    s.read((char*)&d, sizeof(char));
+}
+
+void Write(std::ofstream& s, char d)
+{
+    s.write((char*)&d, sizeof(char));
+}
+
 /* std::string */
 void Read(std::ifstream& s, std::string& d)
 {

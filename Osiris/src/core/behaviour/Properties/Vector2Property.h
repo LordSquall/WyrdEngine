@@ -14,8 +14,8 @@ namespace Osiris
 	{
 	public:
 		virtual void Set(void* object) override;
-		
-		virtual jsonxx::Object ToJson() override;
+
+		virtual bool ToJson(jsonxx::Object& object) override;
 		virtual bool FromJson(jsonxx::Object& object) override;
 		inline Vector2* GetValue() { return &_Value; }
 

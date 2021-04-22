@@ -8,6 +8,7 @@
 
 /* external includes */
 #include <mono/jit/jit.h>
+#include <jsonxx.h>
 
 namespace Osiris
 {
@@ -16,11 +17,10 @@ namespace Osiris
 		//TODO
 	}
 
-	jsonxx::Object BoolArrayProperty::ToJson()
+	bool BoolArrayProperty::ToJson(jsonxx::Object& object)
 	{
-		jsonxx::Object object;
 		//TODO
-		return object;
+		return true;
 	}
 
 	bool BoolArrayProperty::FromJson(jsonxx::Object& object)

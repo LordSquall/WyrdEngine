@@ -13,6 +13,7 @@
 
 /* external includes */
 #include <mono/jit/jit.h>
+#include <jsonxx.h>
 
 namespace Osiris
 {
@@ -38,14 +39,13 @@ namespace Osiris
 		}
 	}
 
-	jsonxx::Object ScriptedObjectProperty::ToJson()
+	bool ScriptedObjectProperty::ToJson(jsonxx::Object& object)
 	{
-		jsonxx::Object object;
 		if (_Value != nullptr)
 		{
 			object << "value" << _Value->uid.str();
 		}
-		return object;
+		return true;
 	}
 
 	bool ScriptedObjectProperty::FromJson(jsonxx::Object& object)

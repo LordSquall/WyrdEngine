@@ -8,6 +8,7 @@
 
 /* external includes */
 #include <mono/jit/jit.h>
+#include <jsonxx.h>
 
 namespace Osiris
 {
@@ -16,10 +17,9 @@ namespace Osiris
 
 	}
 
-	jsonxx::Object ObjectProperty::ToJson()
+	bool ObjectProperty::ToJson(jsonxx::Object& object)
 	{
-		jsonxx::Object object;
-		return object;
+		return true;
 	}
 
 	bool ObjectProperty::FromJson(jsonxx::Object& object)

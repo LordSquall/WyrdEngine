@@ -1,5 +1,5 @@
 /// Auto Generated
-/// Date: Apr 2021 Sun 21:39:54
+/// Date: Apr 2021 Thu 22:14:39
 
 #pragma once
 
@@ -21,4 +21,10 @@ void Write(std::ofstream& s, BundleFormat_Texture& d);
 
 void Read(std::ifstream& s, BundleFormat_TextureConfig& d);
 void Write(std::ofstream& s, BundleFormat_TextureConfig& d);
+
+void Read(std::ifstream& s, BundleFormat_ManagedLib& d);
+void Write(std::ofstream& s, BundleFormat_ManagedLib& d);
+
+void Read(std::ifstream& s, BundleFormat_ManagedLibConfig& d);
+void Write(std::ofstream& s, BundleFormat_ManagedLibConfig& d);
 

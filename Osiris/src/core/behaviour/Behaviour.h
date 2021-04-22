@@ -10,6 +10,10 @@
 
 #include <mono/metadata/object-forward.h>
 
+#ifndef NATIVE_API_LIB_LOC
+#define NATIVE_API_LIB_LOC "C:/Projects/Osiris/OsirisEngine/lib/Debug/"
+#endif
+
 namespace Osiris
 {
 	/* Forward Declarations */
@@ -92,11 +96,19 @@ namespace Osiris
 		void CompileAll(const std::vector<std::string>& files, const std::string& outputFile, CompileResults& results);
 
 		/**
-		 * @brief Load a new behavioural model
+		 * @brief Load a new behavioural model from file locations
+		 * @param files
+		 * @param inputFile
+		 * NOTE: To be moved into external application
+		*/
+		void LoadBehaviourModel(const std::vector<std::string>& files, const std::string& inputFile);
+
+		/**
+		 * @brief Load a new behavioural model from memory
 		 * @param files
 		 * @param inputFile
 		*/
-		void LoadBehaviourModel(const std::vector<std::string>& files, const std::string& inputFile);
+		void LoadBehaviourModel(const std::vector<std::string>& files, std::vector<char>& coreData, std::vector<char>& clientData);
 
 		/**
 		 * @brief Get the domain context pointer
@@ -186,7 +198,7 @@ namespace Osiris
 
 		static void DebugPrintFunc(const std::string& s);
 
-		void LoadAssembly(void* domain, void** image, void** assembly, const std::string& ns, const std::string& filepath);
+		void LoadAssembly(void* domain, void** image, void** assembly, const std::string& ns, std::vector<char>& assemblyData);
 
 	private:
 		std::map<UID, std::shared_ptr<ScriptedResource>>	_ScriptedResourceObject;

@@ -4,10 +4,12 @@
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/Resources.h>
+#include <core/behaviour/Behaviour.h>
 #include <core/renderer/Shader.h>
 #include <core/scene/components/IBaseComponent.h>
 #include <core/scene/components/Transform2DComponent.h>
 #include <core/scene/components/SpriteComponent.h>
+#include <core/scene/components/ScriptComponent.h>
 #include <core/scene/components/CameraComponent.h>
 
 /* export headers */
@@ -101,6 +103,7 @@ namespace Osiris::Editor
 	void ExportManager::GenerateCommonBundleFile()
 	{
 		auto resourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
+		auto workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
 
 		std::ofstream commonBundle;
 		commonBundle.open(Utils::GetBuildsFolder() + "/common.bundle", std::ios::out | std::ios::binary);
@@ -168,6 +171,48 @@ namespace Osiris::Editor
 		textureConfig.textures_cnt = textureCount;
 		Write(commonBundle, textureConfig);
 
+		/* managed libraries configuration */
+		BundleFormat_ManagedLibConfig managedLibConfig;
+
+		//TODO
+		std::string coreAPIPath = "C:/Projects/Osiris/OsirisEngine/lib/Debug/OsirisAPI/OsirisAPI.dll";
+		std::string clientAPIPath = Utils::GetPath(workspaceService->GetLoadedProjectPath()) + "\\" + workspaceService->GetCurrentProject()->name + ".dll";
+
+		BundleFormat_ManagedLib managedCoreLib;
+		managedCoreLib.name = "Core";
+
+		std::ifstream coreManagedLibFileStream(coreAPIPath.c_str(), std::ios::binary);
+		managedCoreLib.data.assign((std::istreambuf_iterator<char>(coreManagedLibFileStream)), (std::istreambuf_iterator<char>()));
+		managedCoreLib.data_cnt = managedCoreLib.data.size();
+		coreManagedLibFileStream.close();
+
+		BundleFormat_ManagedLib managedClientLib;
+		managedClientLib.name = "Client";
+
+		std::ifstream clientManagedLibFileStream(clientAPIPath.c_str(), std::ios::binary);
+		managedClientLib.data.assign((std::istreambuf_iterator<char>(clientManagedLibFileStream)), (std::istreambuf_iterator<char>()));
+		managedClientLib.data_cnt = managedClientLib.data.size();
+		clientManagedLibFileStream.close();
+
+		managedLibConfig.managedLibraries.push_back(managedCoreLib);
+		managedLibConfig.managedLibraries.push_back(managedClientLib);
+		managedLibConfig.managedLibraries_cnt = managedLibConfig.managedLibraries.size();
+
+		std::vector<std::string> scriptFiles;
+		for (auto& [key, value] : resourceService->GetResources())
+		{
+			auto downcastedPtr = std::dynamic_pointer_cast<ScriptRes>(value);
+			if (downcastedPtr)
+			{
+				managedLibConfig.classes.push_back(value->GetName());
+				managedLibConfig.classesUIDs.push_back(value->GetResourceID());
+			}
+		}
+		managedLibConfig.classes_cnt = managedLibConfig.classes.size();
+		managedLibConfig.classesUIDs_cnt = managedLibConfig.classesUIDs.size();
+
+		Write(commonBundle, managedLibConfig);
+
 		commonBundle.close();
 	}
 
@@ -226,6 +271,12 @@ namespace Osiris::Editor
 							component.componentDef.sprite.width = spriteComponent->size.x;
 							component.componentDef.sprite.height = spriteComponent->size.y;
 							component.componentDef.sprite.texture = spriteComponent->GetTexture()->GetUID();
+						}
+						break;
+					case SceneComponentType::ScriptComponent:
+						{
+							ScriptComponent* scriptComponent = dynamic_cast<ScriptComponent*>(c.get());
+							component.componentDef.script.script = scriptComponent->GetUID();
 						}
 						break;
 					case SceneComponentType::CameraComponent:

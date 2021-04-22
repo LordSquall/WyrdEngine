@@ -13,6 +13,7 @@
 
 /* external includes */
 #include <mono/jit/jit.h>
+#include <jsonxx.h>
 
 namespace Osiris
 {
@@ -46,11 +47,10 @@ namespace Osiris
 		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
 	}
 
-	jsonxx::Object Vector3Property::ToJson()
+	bool Vector3Property::ToJson(jsonxx::Object& object)
 	{
-		jsonxx::Object object;
 		object << "value" << _Value;
-		return object;
+		return true;
 	}
 
 	bool Vector3Property::FromJson(jsonxx::Object& object)

@@ -12,6 +12,7 @@
 
 /* external includes */
 #include <mono/jit/jit.h>
+#include <jsonxx.h>
 
 namespace Osiris
 {
@@ -49,14 +50,12 @@ namespace Osiris
 		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
 	}
 
-	jsonxx::Object ColorProperty::ToJson()
+	bool ColorProperty::ToJson(jsonxx::Object& object)
 	{
-		jsonxx::Object object;
 		jsonxx::Array colorArray;
 		colorArray << _Value.r << _Value.g << _Value.b << _Value.a;
 		object << "channels" << colorArray;
-
-		return object;
+		return true;
 	}
 
 	bool ColorProperty::FromJson(jsonxx::Object& object)

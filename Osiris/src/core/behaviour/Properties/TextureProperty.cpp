@@ -12,6 +12,7 @@
 
 /* external includes */
 #include <mono/jit/jit.h>
+#include <jsonxx.h>
 
 namespace Osiris
 {
@@ -42,9 +43,9 @@ namespace Osiris
 		}
 	}
 
-	jsonxx::Object TextureProperty::ToJson()
+
+	bool TextureProperty::ToJson(jsonxx::Object& object)
 	{
-		jsonxx::Object object;
 		if (_Value != nullptr)
 		{
 			object << "value" << _Value->GetUID().str();
@@ -54,7 +55,7 @@ namespace Osiris
 			object << "value" << RESOURCE_DEFAULT_TEXTURE;
 		}
 
-		return object;
+		return true;
 	}
 
 	bool TextureProperty::FromJson(jsonxx::Object& object)

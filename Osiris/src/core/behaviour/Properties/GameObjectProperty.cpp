@@ -12,6 +12,7 @@
 
 /* external includes */
 #include <mono/jit/jit.h>
+#include <jsonxx.h>
 
 namespace Osiris
 {
@@ -33,15 +34,14 @@ namespace Osiris
 		}
 	}
 
-	jsonxx::Object GameObjectProperty::ToJson()
+	bool GameObjectProperty::ToJson(jsonxx::Object& object)
 	{
-		jsonxx::Object object;
 		if (_Value != nullptr)
 		{
 			object << "value" << _Value->uid.str();
 		}
 
-		return object;
+		return true;
 	}
 
 	bool GameObjectProperty::FromJson(jsonxx::Object& object)

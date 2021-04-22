@@ -4,8 +4,10 @@
 #include "osrpch.h"
 #include "core/export.h"
 
-/* external includes */
-#include <jsonxx.h>
+namespace jsonxx
+{
+	class Object;
+};
 
 namespace Osiris
 {
@@ -29,9 +31,10 @@ namespace Osiris
 
 		/**
 		 * @brief Serialise the Property to json object
+		 * @param object json object
 		 * @return 
 		*/
-		virtual jsonxx::Object ToJson() = 0;
+		virtual bool ToJson(jsonxx::Object& object) = 0;
 
 		/**
 		 * @brief Deserialise a json object

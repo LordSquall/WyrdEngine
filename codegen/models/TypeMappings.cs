@@ -18,7 +18,7 @@ namespace CodeGenModels
             { "Float", "float" },
             { "String", "std::string" },
             { "UID", "Osiris::UID" },
-            { "Byte", "unsigned char" },
+            { "Byte", "char" },
         };
     }
 }

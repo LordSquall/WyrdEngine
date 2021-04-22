@@ -1,5 +1,5 @@
 /// Auto Generated
-/// Date: Apr 2021 Sun 21:39:54
+/// Date: Apr 2021 Thu 22:14:39
 
 #pragma once
 
@@ -85,6 +85,16 @@ void Write(std::ofstream& s, SceneFormat_SpriteComponent& d)
     Write(s, d.texture);
 };
 
+void Read(std::ifstream& s, SceneFormat_ScriptComponent& d)
+{
+    Read(s, d.script);
+};
+
+void Write(std::ofstream& s, SceneFormat_ScriptComponent& d)
+{
+    Write(s, d.script);
+};
+
 void Read(std::ifstream& s, SceneFormat_CameraComponent& d)
 {
     Read(s, d.uid);
@@ -109,6 +119,9 @@ void Read(std::ifstream& s, SceneFormat_Component& d)
         case 3:
             Read(s, d.componentDef.sprite);
             break;
+        case 4:
+            Read(s, d.componentDef.script);
+            break;
         case 6:
             Read(s, d.componentDef.camera);
             break;
@@ -122,6 +135,9 @@ void Write(std::ofstream& s, SceneFormat_Component& d)
     {
         case 3:
             Write(s, d.componentDef.sprite);
+            break;
+        case 4:
+            Write(s, d.componentDef.script);
             break;
         case 6:
             Write(s, d.componentDef.camera);

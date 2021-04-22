@@ -7,6 +7,8 @@
 #include "core/behaviour/Behaviour.h"
 #include "core/behaviour/ScriptedClass.h"
 
+#include <jsonxx.h>
+
 namespace Osiris
 {
 	GameObject::GameObject() : name("Untitled")

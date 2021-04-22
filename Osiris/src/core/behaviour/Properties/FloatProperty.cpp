@@ -8,6 +8,7 @@
 
 /* external includes */
 #include <mono/jit/jit.h>
+#include <jsonxx.h>
 
 namespace Osiris
 {
@@ -20,11 +21,10 @@ namespace Osiris
 		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
 	}
 
-	jsonxx::Object FloatProperty::ToJson()
+	bool FloatProperty::ToJson(jsonxx::Object& object)
 	{
-		jsonxx::Object object;
 		object << "value" << _Value;
-		return object;
+		return true;
 	}
 
 	bool FloatProperty::FromJson(jsonxx::Object& object)

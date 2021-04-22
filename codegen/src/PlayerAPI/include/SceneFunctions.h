@@ -1,5 +1,5 @@
 /// Auto Generated
-/// Date: Apr 2021 Sun 21:39:54
+/// Date: Apr 2021 Thu 22:14:39
 
 #pragma once
 
@@ -18,6 +18,9 @@ void Write(std::ofstream& s, SceneFormat_Transform3DComponent& d);
 
 void Read(std::ifstream& s, SceneFormat_SpriteComponent& d);
 void Write(std::ofstream& s, SceneFormat_SpriteComponent& d);
+
+void Read(std::ifstream& s, SceneFormat_ScriptComponent& d);
+void Write(std::ofstream& s, SceneFormat_ScriptComponent& d);
 
 void Read(std::ifstream& s, SceneFormat_CameraComponent& d);
 void Write(std::ofstream& s, SceneFormat_CameraComponent& d);
