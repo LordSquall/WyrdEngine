@@ -15,7 +15,7 @@
 
 namespace Osiris::Editor
 {
-	Gizmo::Gizmo(SceneViewer* sceneViewer) : _SceneViewer(sceneViewer)
+	Gizmo::Gizmo(SceneViewer* sceneViewer, Shader* shader) : _SceneViewer(sceneViewer), _Shader(shader)
 	{
 		_CameraController = sceneViewer->GetCamera();
 	}

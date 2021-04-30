@@ -11,6 +11,7 @@
 
 
 /* local includes */
+#include "Gizmo.h"
 #include "gizmos/GizmoVertex.h"
 #include "services/ServiceManager.h"
 #include "datamodels/OrthographicCameraController.h"
@@ -19,10 +20,10 @@
 
 namespace Osiris::Editor
 {
-	class GridGizmo
+	class GridGizmo : public Gizmo
 	{
 	public:
-		GridGizmo(std::shared_ptr<OrthographicCameraController> cameraController);
+		GridGizmo(SceneViewer* sceneViewer, Shader* shader);
 		~GridGizmo();
 
 		void Render(Timestep ts, Renderer& renderer);
@@ -44,14 +45,6 @@ namespace Osiris::Editor
 
 		std::shared_ptr<OrthographicCameraController> _CameraController;
 		std::shared_ptr<GameObject>		_GameObject;
-
-		std::shared_ptr<Shader>			_Shader;
-		std::shared_ptr<VertexArray>	_VertexArray;
-		std::shared_ptr<VertexBuffer>	_VertexBuffer; 
-		std::shared_ptr<IndexBuffer>	_IndexBuffer;
-
-		std::vector<GizmoVertex> _Vertices;
-		std::vector<uint32_t> _Indices;
 
 		bool _Enabled;
 		Color _Color;

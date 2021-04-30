@@ -19,7 +19,7 @@ namespace Osiris::Editor
 {
 	class SceneViewer;
 
-	class TranslationGizmo : Gizmo
+	class TranslationGizmo : public Gizmo
 	{
 		enum class InputState
 		{
@@ -43,7 +43,7 @@ namespace Osiris::Editor
 		};
 
 	public:
-		TranslationGizmo(SceneViewer* sceneViewer);
+		TranslationGizmo(SceneViewer* sceneViewer, Shader* shader);
 		~TranslationGizmo();
 
 		void Render(Timestep ts, Renderer& renderer) override;

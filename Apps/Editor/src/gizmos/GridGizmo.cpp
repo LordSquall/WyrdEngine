@@ -10,6 +10,7 @@
 #include "services/ServiceManager.h"
 #include "services/EventsService.h"
 #include "services/SettingsService.h"
+#include "views/SceneViewer/SceneViewer.h"
 #include "events/EditorEvents.h"
 
 /* external includes */
@@ -17,11 +18,10 @@
 
 namespace Osiris::Editor
 {
-
-	GridGizmo::GridGizmo(std::shared_ptr<OrthographicCameraController> cameraController)
+	GridGizmo::GridGizmo(SceneViewer* sceneViewer, Shader* shader) : Gizmo(sceneViewer, shader)
 	{
 		/* Store the camera controller */
-		_CameraController = cameraController;
+		_CameraController = sceneViewer->GetCamera();
 
 		/* Retrieve the services */
 		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
@@ -34,16 +34,12 @@ namespace Osiris::Editor
 		/* Subscribe to settings events */
 		_EventService->Subscribe(Events::EventType::SettingsUpdated, EVENT_FUNC(GridGizmo::OnSettingsChanged));
 
-		/* Retrieve the shader */
-		//_Shader = Application::Get().GetResources().Shaders["Gizmo"];
-
 		/* Create and bind a default VAO */
 		_VertexArray.reset(VertexArray::Create());
 		_VertexArray->Bind();
 
 		BuildGrid();
-
-
+		
 		return;
 	}
 
@@ -54,22 +50,21 @@ namespace Osiris::Editor
 
 	void GridGizmo::Render(Timestep ts, Renderer& renderer)
 	{
-		//_VertexArray->Bind();
-		//_Shader->Bind();
-		//_VertexBuffer->Bind();
-		//_IndexBuffer->Bind(); 
-		//		
-		//_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
-		//_Shader->SetMatrix("model", glm::mat4(1.0f));
+		_VertexArray->Bind();
+		_Shader->Bind();
+		_VertexBuffer->Bind();
+		_IndexBuffer->Bind(); 
+				
+		_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
+		_Shader->SetMatrix("model", glm::mat4(1.0f));
 
-		///* set the blend color */
-		//_Shader->SetUniformVec4("blendColor", glm::vec4{ _Color.r, _Color.g, _Color.b, _Color.a });
+		/* set the blend color */
+		_Shader->SetUniformVec4("blendColor", glm::vec4{ _Color.r, _Color.g, _Color.b, _Color.a });
 
-		///* set the scale matrix for the gizmo */
-		//_Shader->SetMatrix("scale", glm::scale(glm::vec3(1.0f, 1.0f, 1.0f)));
+		/* set the scale matrix for the gizmo */
+		_Shader->SetMatrix("scale", glm::scale(glm::vec3(1.0f, 1.0f, 1.0f)));
 
-		//renderer.DrawElements(RendererDrawType::Triangles, _IndexBuffer->GetCount());
-
+		renderer.DrawElements(RendererDrawType::Triangles, _IndexBuffer->GetCount());
 	}
 
 	void GridGizmo::BuildGrid()

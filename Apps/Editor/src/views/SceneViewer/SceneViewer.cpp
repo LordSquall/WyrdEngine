@@ -50,7 +50,7 @@ namespace Osiris::Editor
 		_GizmoShader.reset(Shader::Create());
 
 		/* Add shader to core */
-		//Application::Get().GetResources().Shaders["Gizmo"] = _GizmoShader;
+		Application::Get().GetResources().Shaders["Gizmo"] = _GizmoShader;
 
 		if (_GizmoShader->Build(vertexSrc, fragmentSrc) == false)
 		{
@@ -61,8 +61,8 @@ namespace Osiris::Editor
 		_GizmoShader->Unbind();
 
 		/* initialise each of the gizmos */
-		_GridGizmo = std::make_unique<GridGizmo>(_CameraController);
-		_TranslationGizmo = std::make_unique<TranslationGizmo>(this);
+		_GridGizmo = std::make_unique<GridGizmo>(this, _GizmoShader.get());
+		_TranslationGizmo = std::make_unique<TranslationGizmo>(this, _GizmoShader.get());
 
 		/* create a new framebuffer */
 		_Framebuffer.reset(Osiris::FrameBuffer::Create(FrameBufferConfig()));

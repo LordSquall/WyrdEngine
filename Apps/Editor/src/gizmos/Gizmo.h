@@ -20,9 +20,8 @@ namespace Osiris::Editor
 
 	class Gizmo
 	{
-
 	public:
-		Gizmo(SceneViewer* sceneViewer);
+		Gizmo(SceneViewer* sceneViewer, Shader* shader);
 		virtual ~Gizmo() = default;
 
 		virtual void Render(Timestep ts, Renderer& renderer) = 0;
@@ -31,7 +30,7 @@ namespace Osiris::Editor
 		std::shared_ptr<OrthographicCameraController> _CameraController;
 		SceneViewer* _SceneViewer;
 
-		std::shared_ptr<Shader>			_Shader;
+		Shader*			_Shader;
 		std::shared_ptr<VertexArray>	_VertexArray;
 		std::shared_ptr<VertexBuffer>	_VertexBuffer;
 		std::shared_ptr<IndexBuffer>	_IndexBuffer;
