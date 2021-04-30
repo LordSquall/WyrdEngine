@@ -16,7 +16,7 @@
 
 namespace Osiris::Editor
 {
-	SpriteLayerEditor::SpriteLayerEditor(EditorLayer* editorLayer) : EditorViewBase("Sprite Layer Editor", editorLayer), _SelectedGameObject(nullptr), _SelectedLayer2D(nullptr), _SelectedSceneLayer(nullptr), _SelectedSceneLayerIdx(0), _SelectedGameObjectIdx(0) { }
+	SpriteLayerEditor::SpriteLayerEditor(EditorLayer* editorLayer) : EditorViewBase("Sprite Layer Editor", editorLayer), _SelectedGameObject(nullptr), _SelectedLayer2D(nullptr), _SelectedSceneLayer(nullptr), _SelectedSceneLayerIdx(0), _SelectedGameObjectIdx(0), _EditLayerNameMode(0) { }
 
 	SpriteLayerEditor::~SpriteLayerEditor() { }
 
@@ -61,15 +61,32 @@ namespace Osiris::Editor
 						ImGui::PushID(&*layer);
 						ImGui::TableNextRow(ImGuiTableRowFlags_None, ImGui::GetTextLineHeightWithSpacing() * 1.2f);
 						ImGui::TableNextColumn();
-						if (ImGui::Selectable(layer->GetName().c_str(), &selectedLayer, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowItemOverlap))
+
+						if (_EditLayerNameMode)
 						{
-							_SelectedSceneLayer = &*layer;
-							_SelectedSceneLayerIdx = rowIndexCnt;
+							ImGui::SetKeyboardFocusHere(0);
+							if (ImGui::InputText("##label", &layer->GetName(),
+								ImGuiInputTextFlags_CallbackCharFilter | ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll, ImGui::InputTextCallback))
+							{
+								OSR_TRACE("Updated Layer Name!!");
+								_EditLayerNameMode = false;
+							}
+						}
+						else
+						{
+							if (ImGui::Selectable(layer->GetName().c_str(), &selectedLayer, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowItemOverlap))
+							{
+								_SelectedSceneLayer = &*layer;
+								_SelectedSceneLayerIdx = rowIndexCnt;
+							}
 						}
 
 						if (ImGui::BeginPopupContextItem())
-						{
-							ImGui::Text("%s : %s", layer->GetName().c_str(), layer->GetUID().str().c_str());
+						{	
+							if (ImGui::MenuItem("Rename"))
+							{
+								_EditLayerNameMode = true;
+							}
 							ImGui::EndPopup();
 						}
 

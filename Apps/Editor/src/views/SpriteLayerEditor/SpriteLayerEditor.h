@@ -43,7 +43,8 @@ namespace Osiris::Editor
 		std::shared_ptr<Icon> _EyeIcon;
 		std::shared_ptr<Icon> _LayerRenameIcon;
 
-
 		GameObject* _DraggingSelectedGameObject;
+
+		bool _EditLayerNameMode;
 	};
 }

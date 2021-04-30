@@ -41,7 +41,7 @@ namespace Osiris {
 		 * @brief Get the layer name
 		 * @return layer name
 		*/
-		inline const std::string& GetName() { return _Name; }
+		inline std::string& GetName() { return _Name; }
 
 		/**
 		 * @brief Get the layer visible status
