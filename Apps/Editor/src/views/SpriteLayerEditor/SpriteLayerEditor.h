@@ -2,6 +2,7 @@
 
 #include "services/ServiceManager.h"
 #include "views/EditorViewBase.h"
+#include "events/KeyEvent.h"
 
 namespace Osiris::Editor
 {
@@ -14,11 +15,15 @@ namespace Osiris::Editor
 		void OnInitialise() override;
 		void OnEditorRender() override;
 
-	private:
+		void OnEvent(Event& event) override;
+
+			private:
 		void OnSceneOpened(Events::EventArgs& args);
 		void OnSelectedGameObjectChanged(Events::EventArgs& args);
+		bool OnKeyReleasedEvent(KeyReleasedEvent& e);
 
 		void RenderGameObjectTreeNode(std::unique_ptr<GameObject>& gameObject);
+
 
 	private:
 		std::shared_ptr<EventService> _EventService;

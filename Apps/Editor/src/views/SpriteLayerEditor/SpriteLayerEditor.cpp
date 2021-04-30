@@ -8,6 +8,7 @@
 #include <core/scene/Layer2D.h>
 #include <core/scene/SceneLayer2D.h>
 #include <core/scene/components/SceneComponentFactory.h>
+#include <core/KeyCodes.h>
 
 /* local includes */
 #include "SpriteLayerEditor.h"
@@ -290,6 +291,13 @@ namespace Osiris::Editor
 		}
 	}
 
+	void SpriteLayerEditor::OnEvent(Event& event)
+	{
+		EventDispatcher dispatcher(event);
+		dispatcher.Dispatch<KeyReleasedEvent>(OSR_BIND_EVENT_FN(SpriteLayerEditor::OnKeyReleasedEvent));
+	}
+
+
 	void SpriteLayerEditor::OnSceneOpened(Events::EventArgs& args)
 	{
 		if (!_WorkspaceService->GetLoadedScene()->GetLayers().empty())
@@ -297,6 +305,12 @@ namespace Osiris::Editor
 			_SelectedSceneLayer = &*_WorkspaceService->GetLoadedScene()->GetLayers()[0];
 			_SelectedSceneLayerIdx = 0;
 		}
+	}
+
+
+	bool SpriteLayerEditor::OnKeyReleasedEvent(KeyReleasedEvent& e)
+	{
+		return true;
 	}
 
 	void SpriteLayerEditor::OnSelectedGameObjectChanged(Events::EventArgs& args)

@@ -498,8 +498,6 @@ namespace Osiris::Editor
 			}
 		}
 
-		_mouseEventOwner = nullptr;
-
 		return false;
 	}
 
@@ -545,13 +543,8 @@ namespace Osiris::Editor
 		ImGuiIO& io = ImGui::GetIO();
 		io.KeysDown[e.GetKeyCode()] = false;
 
-		for (auto& it = _views.begin(); it != _views.end(); it++)
-		{
-			/* store the view as the event owner */
-			_mouseEventOwner = (it->second);
-
-			(it->second)->OnEvent(e);
-		}
+		if (_mouseEventOwner != nullptr)
+			_mouseEventOwner->OnEvent(e);
 
 		return false;
 	}
@@ -573,13 +566,8 @@ namespace Osiris::Editor
 			_simulationService->CompileAll();
 		}
 
-		for (auto& it = _views.begin(); it != _views.end(); it++)
-		{
-			/* store the view as the event owner */
-			_mouseEventOwner = (it->second);
-
-			(it->second)->OnEvent(e);
-		}
+		if (_mouseEventOwner != nullptr)
+			_mouseEventOwner->OnEvent(e);
 
 		return false;
 	}
