@@ -130,6 +130,10 @@ namespace Osiris
 		if (object.has<jsonxx::Array>("blendColor"))
 			color << object.get<jsonxx::Array>("blendColor");
 
+
+		/* update the sprite */
+		sceneLayer->GetSpriteBatch()->UpdateSprite(this);
+
 		return true;
 	}
 }
