@@ -1,13 +1,13 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 
 /* local includes */
 #include "SettingsService.h"
 #include "services/ServiceManager.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	
 	void SettingsService::OnCreate()

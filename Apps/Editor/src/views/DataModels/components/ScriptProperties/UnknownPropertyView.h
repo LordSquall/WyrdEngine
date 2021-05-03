@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/export.h>
 #include <core/behaviour/Properties/ScriptProperty.h>
 
@@ -9,7 +9,7 @@
 /* local includes */
 #include "views/DataModels/components/ScriptProperties/ScriptPropertyViewFactory.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class UnknownPropertyView : public ScriptPropertyView
 	{

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "osrpch.h"
+#include "wyrdpch.h"
 
 #include "ConfirmationDialog.h"
 #include "imgui.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	ConfirmationDialog::ConfirmationDialog(EditorLayer* editorLayer) : EditorViewDialogBase("Confirm?", editorLayer)
 	{

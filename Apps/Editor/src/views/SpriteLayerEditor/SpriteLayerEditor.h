@@ -4,7 +4,7 @@
 #include "views/EditorViewBase.h"
 #include "events/KeyEvent.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class SpriteLayerEditor : public EditorViewBase
 	{

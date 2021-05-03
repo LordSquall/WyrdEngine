@@ -1,6 +1,6 @@
 #pragma once
 
-/* core osiris includes */
+/* core wyrd includes */
 #include <core/Log.h>
 
 /* local includes */
@@ -12,7 +12,7 @@
 /* external includes */
 #include <jsonxx.h>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	std::shared_ptr<ResourceService> _ResourceService = nullptr;
 
@@ -51,7 +51,7 @@ namespace Osiris::Editor
 					}
 					else
 					{
-						OSR_TRACE("Missing File from cache: {0}", filePath);
+						WYRD_TRACE("Missing File from cache: {0}", filePath);
 					}
 
 					_ResourceService->CachedFiles[filePath] = UID(uuid);

@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/export.h>
 #include <core/Timestep.h>
@@ -19,7 +19,7 @@
 /* external includes */
 #include <glm/glm.hpp>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 
 #define HANDLE_XY "XY_Handle"

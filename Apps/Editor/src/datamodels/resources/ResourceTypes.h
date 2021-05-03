@@ -1,9 +1,9 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	enum ResourceType
 	{

@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/behaviour/Properties/ScriptProperty.h>
 
 /* local includes */
@@ -25,7 +25,7 @@ private:\
 	std::shared_ptr<propertytype> _Property;\
 	static bool s_registered;
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class ScriptPropertyViewFactory
 	{

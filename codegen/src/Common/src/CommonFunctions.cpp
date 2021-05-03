@@ -128,18 +128,18 @@ void Write(std::ofstream& s, std::string& d)
     s.write(d.c_str(), sizeof(char) * size);
 }
 
-/* Osiris::UID */
-void Read(std::ifstream& s, Osiris::UID& uid)
+/* Wyrd::UID */
+void Read(std::ifstream& s, Wyrd::UID& uid)
 {
     std::string str;
     uint32_t size;
     s.read((char*)&size, sizeof(uint32_t));
     str.resize(size);
     s.read((char*)&str[0], sizeof(char) * size);
-    uid = Osiris::UID(str.c_str());
+    uid = Wyrd::UID(str.c_str());
 }
 
-void Write(std::ofstream& s, Osiris::UID& uid)
+void Write(std::ofstream& s, Wyrd::UID& uid)
 {
     std::string uidStr = uid.str();
     uint32_t size = (uint32_t)uidStr.length();

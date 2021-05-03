@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	struct GizmoVertex
 	{

@@ -1,6 +1,6 @@
 #pragma once
 
-/* core osiris includes */
+/* core wyrd includes */
 #include <core/Timestep.h>
 #include <events/MouseEvent.h>
 #include <events/KeyEvent.h>
@@ -9,7 +9,7 @@
 /* local includes */
 #include "core/pipeline/OrthographicCamera.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	/* Editor Orthographic Camera Controller */
 	class OrthographicCameraController

@@ -1,6 +1,6 @@
 #pragma once
 
-/* core osiris includes */
+/* core wyrd includes */
 #include <core/export.h>
 #include <core/Layer.h>
 
@@ -10,7 +10,7 @@
 /* external includes */
 #include <glm/glm.hpp>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class IconSet;
 

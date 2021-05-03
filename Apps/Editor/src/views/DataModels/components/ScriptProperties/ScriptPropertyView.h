@@ -1,10 +1,10 @@
 #pragma once
 
 /* local includes */
-#include "osrpch.h"
+#include "wyrdpch.h"
 #include "core/export.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class ScriptPropertyView
 	{

@@ -5,7 +5,7 @@
 
 #include <jsonxx.h>
 
-namespace Osiris::Editor {
+namespace Wyrd::Editor {
 
 	struct ExportSettings
 	{

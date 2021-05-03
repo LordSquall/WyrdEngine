@@ -5,7 +5,7 @@
 
 #include "datamodels/logging/LogMessage.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class OutputView : public EditorViewBase
 	{

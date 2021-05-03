@@ -53,7 +53,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "osrpch.h"
+#include "wyrdpch.h"
 #include "imgui.h"
 #include "imgui_opengl_renderer.h"
 #include "core/renderer/Texture.h"
@@ -238,7 +238,7 @@ void    ImGui_ImplOpenGL3_RenderDrawData(ImDrawData* draw_data)
                     // Bind texture, Draw
 					/*if ((int)pcmd->TextureId > 16)
 					{
-						Osiris::Texture* tex = (Osiris::Texture*)pcmd->TextureId;
+						Wyrd::Texture* tex = (Wyrd::Texture*)pcmd->TextureId;
 						tex->Bind();
 					}
 					else

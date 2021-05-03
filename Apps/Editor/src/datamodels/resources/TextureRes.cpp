@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/renderer/Texture.h>
 
 /* local includes */
@@ -12,7 +12,7 @@
 /* external includes */
 #include <core/Application.h>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	TextureRes::TextureRes(const std::string& filepath) : Resource(Utils::GetFilename(filepath), filepath), _loaded(false), _width(0u), _height(0u), _channels(0u), _data(0)
 	{
@@ -36,7 +36,7 @@ namespace Osiris::Editor
 			TextureLoader::Load(_path, *this);
 
 			/* create the core renderer resource and load */
-			_texture = Osiris::Texture::Create(_data, _width, _height, _channels, Utils::GetFilename(_path, true) + "_Texture");
+			_texture = Wyrd::Texture::Create(_data, _width, _height, _channels, Utils::GetFilename(_path, true) + "_Texture");
 
 			/* in the editor project, we want to the core assets uid to match the resource to allow easy decoupled linkage */
 			_texture->SetUID(_resourceID);

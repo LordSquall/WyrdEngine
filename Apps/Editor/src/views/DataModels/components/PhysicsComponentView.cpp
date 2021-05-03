@@ -1,5 +1,5 @@
 #pragma once
-#include "osrpch.h"
+#include "wyrdpch.h"
 
 #include <imgui.h>
 
@@ -10,7 +10,7 @@
 #include <core/Application.h>
 #include <core/renderer/Renderer.h>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	void PhysicsComponentView::OnPropertyEditorDraw()
 	{
@@ -32,6 +32,6 @@ namespace Osiris::Editor
 
 	void PhysicsComponentView::OnSceneViewerDraw(const glm::mat4& viewProjectMatrix)
 	{
-		Osiris::Application::Get().GetRenderer().DrawRect( _BaseComponent->GetAABB(), 5.0f, { 1.0f, 1.0f, 1.0f, 0.5f }, viewProjectMatrix);		
+		Wyrd::Application::Get().GetRenderer().DrawRect( _BaseComponent->GetAABB(), 5.0f, { 1.0f, 1.0f, 1.0f, 0.5f }, viewProjectMatrix);		
 	}
 }

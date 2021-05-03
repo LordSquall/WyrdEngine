@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/export.h>
 #include <core/behaviour/ScriptedClass.h>
 
@@ -11,7 +11,7 @@
 #include "datamodels/resources/ResourceTypes.h"
 
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class ScriptRes : public Resource
 	{
@@ -25,6 +25,6 @@ namespace Osiris::Editor
 		int GetType() override { return ResourceType::SCRIPT; }
 
 	public:
-		std::shared_ptr<Osiris::ScriptedClass> Script;
+		std::shared_ptr<Wyrd::ScriptedClass> Script;
 	};
 }

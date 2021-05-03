@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/KeyCodes.h>
 #include <core/Application.h>
@@ -19,7 +19,7 @@
 /* external includes */
 #include <imgui.h>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	struct EditSettings_s
 	{
@@ -127,7 +127,7 @@ namespace Osiris::Editor
 					/* re-apply the directory entry to ensure the user selection is maintained */
 					_currentSelectedDir = FindDirectoryEntry(directoryTree, originalSelected);
 
-					OSR_TRACE("Folder Renamed!");
+					WYRD_TRACE("Folder Renamed!");
 				}
 			});
 	}
@@ -381,7 +381,7 @@ namespace Osiris::Editor
 						Utils::DeleteFolder(dir->dir);
 					},
 					[&](void* data) {
-						OSR_TRACE("Failure Callback Hit!!");
+						WYRD_TRACE("Failure Callback Hit!!");
 					});
 			}
 
@@ -494,9 +494,9 @@ namespace Osiris::Editor
 		/* context menu */
 		if (ImGui::BeginPopupContextItem())
 		{
-			if (ImGui::MenuItem("Copy")) { OSR_TRACE("Texture Copied"); };
-			if (ImGui::MenuItem("Cut")) { OSR_TRACE("Texture Cut"); };
-			if (ImGui::MenuItem("Paste")) { OSR_TRACE("Texture Paste"); };
+			if (ImGui::MenuItem("Copy")) { WYRD_TRACE("Texture Copied"); };
+			if (ImGui::MenuItem("Cut")) { WYRD_TRACE("Texture Cut"); };
+			if (ImGui::MenuItem("Paste")) { WYRD_TRACE("Texture Paste"); };
 			ImGui::Separator();
 
 			if (ImGui::MenuItem("Delete")) 
@@ -544,9 +544,9 @@ namespace Osiris::Editor
 		/* context menu */
 		if (ImGui::BeginPopupContextItem())
 		{
-			if (ImGui::MenuItem("Copy")) { OSR_TRACE("Texture Copied"); };
-			if (ImGui::MenuItem("Cut")) { OSR_TRACE("Texture Cut"); };
-			if (ImGui::MenuItem("Paste")) { OSR_TRACE("Texture Paste"); };
+			if (ImGui::MenuItem("Copy")) { WYRD_TRACE("Texture Copied"); };
+			if (ImGui::MenuItem("Cut")) { WYRD_TRACE("Texture Cut"); };
+			if (ImGui::MenuItem("Paste")) { WYRD_TRACE("Texture Paste"); };
 			ImGui::Separator();
 
 			if (ImGui::MenuItem("Delete")) 
@@ -589,9 +589,9 @@ namespace Osiris::Editor
 		/* context menu */
 		if (ImGui::BeginPopupContextItem())
 		{
-			if (ImGui::MenuItem("Copy")) { OSR_TRACE("Texture Copied"); };
-			if (ImGui::MenuItem("Cut")) { OSR_TRACE("Texture Cut"); };
-			if (ImGui::MenuItem("Paste")) { OSR_TRACE("Texture Paste"); };
+			if (ImGui::MenuItem("Copy")) { WYRD_TRACE("Texture Copied"); };
+			if (ImGui::MenuItem("Cut")) { WYRD_TRACE("Texture Cut"); };
+			if (ImGui::MenuItem("Paste")) { WYRD_TRACE("Texture Paste"); };
 			ImGui::Separator();
 
 			if (ImGui::MenuItem("Delete"))

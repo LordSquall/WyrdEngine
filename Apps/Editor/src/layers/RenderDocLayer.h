@@ -18,7 +18,7 @@
 
 #include "renderdoc_app.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class  RenderDocLayer : public Layer
 	{

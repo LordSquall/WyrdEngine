@@ -20,19 +20,19 @@ bool ControlLayer::OnAttach()
 	
 	if (!LoadCoreFile())
 	{
-		OSR_CORE_ERROR("Unable to load Core File");
+		WYRD_CORE_ERROR("Unable to load Core File");
 		return false;
 	}
 
 	if (!LoadGameFile())
 	{
-		OSR_CORE_ERROR("Unable to load Game File");
+		WYRD_CORE_ERROR("Unable to load Game File");
 		return false;
 	}
 
 	if (!LoadCommonBundleFile())
 	{
-		OSR_CORE_ERROR("Unable to load Common Bundle File");
+		WYRD_CORE_ERROR("Unable to load Common Bundle File");
 		return false;
 	}
 
@@ -42,7 +42,7 @@ bool ControlLayer::OnAttach()
 
 	auto scene = SceneManager::getInstance().GetScene();
 
-	Application::Get().GetBehaviour().Start(std::shared_ptr<Osiris::Scene>(scene));
+	Application::Get().GetBehaviour().Start(std::shared_ptr<Wyrd::Scene>(scene));
 
 	return true;
 }

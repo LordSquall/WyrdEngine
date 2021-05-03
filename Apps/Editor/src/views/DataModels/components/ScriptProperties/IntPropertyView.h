@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/export.h>
 #include <core/behaviour/Properties/IntProperty.h>
 
@@ -9,7 +9,7 @@
 #include "views/DataModels/components/ScriptProperties/ScriptPropertyViewFactory.h"
 
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class IntPropertyView : public ScriptPropertyView
 	{
@@ -18,6 +18,6 @@ namespace Osiris::Editor
 		virtual void DrawUI();
 
 
-		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(IntPropertyView, Osiris::IntProperty, "System.Int32");
+		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(IntPropertyView, Wyrd::IntProperty, "System.Int32");
 	};
 }

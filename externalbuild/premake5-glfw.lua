@@ -1,4 +1,4 @@
-externallibsdir = os.getenv("OSIRIS_EXTERN_REPOS")
+externallibsdir = os.getenv("WYRD_EXTERN_REPOS")
 
 print("GLFW Premake build started")
 

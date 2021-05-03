@@ -1,4 +1,4 @@
-/* core osiris includes */
+/* core wyrd includes */
 #include <core/EntryPoint.h>
 #include <core/Application.h>
 
@@ -8,16 +8,16 @@
 #include "layers/EditorLayer.h"
 #include "support/IniParser.h"
 
-using namespace Osiris::Editor;
+using namespace Wyrd::Editor;
 
 #ifdef OSR_RENDERDOC_ENABLED
 void* renderdocContext;
 #endif
 
-class ClientApplication : public Osiris::Application
+class ClientApplication : public Wyrd::Application
 {
 public:
-	ClientApplication(const Osiris::AppProps& props) : Application(props)
+	ClientApplication(const Wyrd::AppProps& props) : Application(props)
 	{
 		std::string defaultProject;
 
@@ -32,7 +32,7 @@ public:
 		PushLayer(RenderDocLayer);
 #endif
 
-		PushOverlay(new Osiris::Editor::EditorLayer());
+		PushOverlay(new Wyrd::Editor::EditorLayer());
 	}
 
 	~ClientApplication()
@@ -56,7 +56,7 @@ private:
 	std::shared_ptr<SettingsService> _SettingsService;
 };
 
-Osiris::Application* Osiris::CreateApplication()
+Wyrd::Application* Wyrd::CreateApplication()
 {
 	AppProps properties = AppProps();
 
@@ -73,10 +73,10 @@ Osiris::Application* Osiris::CreateApplication()
 	return new ClientApplication(properties);
 }
 
-void Osiris::OnPreAppCreation(Osiris::Application* application)
+void Wyrd::OnPreAppCreation(Wyrd::Application* application)
 {
 #ifdef OSR_RENDERDOC_ENABLED
 	ClientApplication* clientApplication = (ClientApplication*)application;
-	clientApplication->RenderDocLayer = new Osiris::Editor::RenderDocLayer();
+	clientApplication->RenderDocLayer = new Wyrd::Editor::RenderDocLayer();
 #endif
 }

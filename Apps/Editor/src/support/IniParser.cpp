@@ -1,6 +1,6 @@
 #pragma once
 
-#include "osrpch.h"
+#include "wyrdpch.h"
 
 #include "IniParser.h"
 

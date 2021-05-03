@@ -1,6 +1,6 @@
 #pragma once
 
-/* core osiris include */
+/* core wyrd include */
 #include <core/scene/components/SpriteComponent.h>
 
 /* local includes */
@@ -12,12 +12,12 @@
 
 using namespace glm;
 
-namespace Osiris::Editor {
+namespace Wyrd::Editor {
 
 	class SpriteComponentView : public IPropertiesView
 	{
 	public:
-		SpriteComponentView(Osiris::SpriteComponent* baseComponent) : _BaseComponent(baseComponent) {}
+		SpriteComponentView(Wyrd::SpriteComponent* baseComponent) : _BaseComponent(baseComponent) {}
 		SpriteComponentView(const SpriteComponentView& obj) {}
 
 		void OnPropertyEditorDraw() override;
@@ -25,6 +25,6 @@ namespace Osiris::Editor {
 		const std::string GetName() override { return "Sprite"; }
 
 	private:
-		Osiris::SpriteComponent* _BaseComponent;
+		Wyrd::SpriteComponent* _BaseComponent;
 	};
 }

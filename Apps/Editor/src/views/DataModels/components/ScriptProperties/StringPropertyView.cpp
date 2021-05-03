@@ -1,14 +1,14 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Log.h>
 
 /* local includes */
 #include "views/DataModels/components/ScriptProperties/StringPropertyView.h"
 #include "support/ImGuiUtils.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	void StringPropertyView::DrawUI()
 	{

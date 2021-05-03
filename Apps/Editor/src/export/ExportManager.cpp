@@ -1,6 +1,6 @@
 #pragma once
 
-#include <osrpch.h>
+#include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/Resources.h>
@@ -29,7 +29,7 @@
 #include "support/Utils.h"
 
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	void ExportManager::Export()
 	{
@@ -51,7 +51,7 @@ namespace Osiris::Editor
 			GenerateSceneBundleFile(exportableScene.first, bundlesDir);
 		}
 
-		OSR_CORE_TRACE("Exported Game Files");
+		WYRD_CORE_TRACE("Exported Game Files");
 	}
 
 	void ExportManager::GenerateCoreFile()
@@ -216,7 +216,7 @@ namespace Osiris::Editor
 		commonBundle.close();
 	}
 
-	void ExportManager::GenerateSceneBundleFile(const Osiris::UID& sceneUID, const std::string& dir)
+	void ExportManager::GenerateSceneBundleFile(const Wyrd::UID& sceneUID, const std::string& dir)
 	{
 		std::ofstream sceneBundle;
 		sceneBundle.open(dir + sceneUID.str() + ".bundle", std::ios::out | std::ios::binary);

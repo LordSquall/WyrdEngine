@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include "core/export.h"
 
 /* local includes */
@@ -9,7 +9,7 @@
 #include "support/Utils.h"
 #include "datamodels/resources/ResourceTypes.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class SceneRes : public Resource
 	{

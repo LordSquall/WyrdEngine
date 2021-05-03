@@ -7,9 +7,9 @@
 #include <core/renderer/Buffer.h>
 #include <core/renderer/Shader.h>
 
-class Osiris::CameraComponent;
+class Wyrd::CameraComponent;
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class GameViewer : public EditorViewBase
 	{
@@ -24,7 +24,7 @@ namespace Osiris::Editor
 
 		void OnResize() override;
 
-		inline const Osiris::Rect& GetViewport() { return _Viewport; }
+		inline const Wyrd::Rect& GetViewport() { return _Viewport; }
 
 	private:
 		void OnSceneOpened(Events::EventArgs& args);
@@ -37,7 +37,7 @@ namespace Osiris::Editor
 		std::shared_ptr<ResourceService>		_ResourceService;
 		std::shared_ptr<SettingsService>		_SettingsService;
 		std::shared_ptr<SimulationService>		_SimulationService;
-		std::unique_ptr<Osiris::FrameBuffer>	_Framebuffer;
+		std::unique_ptr<Wyrd::FrameBuffer>	_Framebuffer;
 
 		std::shared_ptr<Scene>							_Scene;
 		std::shared_ptr<Shader>							_Shader;
@@ -48,7 +48,7 @@ namespace Osiris::Editor
 		bool _mouseEventStarted;
 
 		glm::vec2 _mouseOffset;
-		Osiris::Rect _ViewportBoundary;
-		Osiris::Rect _Viewport;
+		Wyrd::Rect _ViewportBoundary;
+		Wyrd::Rect _Viewport;
 	};
 }

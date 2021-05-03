@@ -1,14 +1,14 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 
 /* local includes */
 #include "datamodels/resources/Resource.h"
 
-using namespace Osiris;
+using namespace Wyrd;
 
-namespace Osiris::Editor {
+namespace Wyrd::Editor {
 
 	class AssetCacheLoader
 	{

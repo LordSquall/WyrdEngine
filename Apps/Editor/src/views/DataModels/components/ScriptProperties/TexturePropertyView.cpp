@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/behaviour/Behaviour.h>
@@ -12,7 +12,7 @@
 #include "services/ServiceManager.h"
 #include "support/ImGuiUtils.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	void TexturePropertyView::DrawUI()
 	{

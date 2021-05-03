@@ -1,12 +1,12 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 
 /* local includes */
 #include "views/DataModels/components/ScriptProperties/ScriptPropertyViewFactory.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
     std::map<std::string, ScriptPropertyViewFactory::CreatePropertyViewFunc>* GetPropertyViews()
     {

@@ -5,7 +5,7 @@
 
 #include "views/EditorViewDialogBase.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class NewScriptDialog : public EditorViewDialogBase
 	{

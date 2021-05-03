@@ -1,10 +1,10 @@
 #pragma once
-#include "osrpch.h"
+#include "wyrdpch.h"
 
 /* Local includes */
 #include "Project.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	Project::Project() : name("Untitled"), initialScene("initialScene") { }
 

@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <ProjectGuid>{8555514F-F134-D0EA-FA4C-5BC166AB364C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WyrdAPI</RootNamespace>
+    <AssemblyName>WyrdAPI</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\lib\Debug\WyrdAPI\</OutputPath>
+    <BaseIntermediateOutputPath>..\obj\Debug\WyrdAPI\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
+    <DefineConstants>WYRD_PLATFORM_WINDOWS;WYRD_EDITOR_ENABLED;GLFW_INCLUDE_NONE;GLM_ENABLE_EXPERIMENTAL;WYRD_DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\lib\Release\WyrdAPI\</OutputPath>
+    <BaseIntermediateOutputPath>..\obj\Release\WyrdAPI\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
+    <DefineConstants>WYRD_PLATFORM_WINDOWS;WYRD_EDITOR_ENABLED;GLFW_INCLUDE_NONE;GLM_ENABLE_EXPERIMENTAL;WYRD_RELEASE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Distribution|x64' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\lib\Distribution\WyrdAPI\</OutputPath>
+    <BaseIntermediateOutputPath>..\obj\Distribution\WyrdAPI\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
+    <DefineConstants>WYRD_PLATFORM_WINDOWS;WYRD_EDITOR_ENABLED;GLFW_INCLUDE_NONE;GLM_ENABLE_EXPERIMENTAL;WYRD_DISTRIBUTION</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src\enums\InputEnums.cs" />
+    <Compile Include="src\framework\Color.cs" />
+    <Compile Include="src\framework\Input.cs" />
+    <Compile Include="src\framework\MathUtils.cs" />
+    <Compile Include="src\framework\ScriptedObject.cs" />
+    <Compile Include="src\framework\Texture.cs" />
+    <Compile Include="src\framework\Vector2.cs" />
+    <Compile Include="src\framework\Vector3.cs" />
+    <Compile Include="src\managers\GameObjectManager.cs" />
+    <Compile Include="src\managers\ObjectStore.cs" />
+    <Compile Include="src\managers\ResourceManager.cs" />
+    <Compile Include="src\managers\SubsystemManager.cs" />
+    <Compile Include="src\scene\gameobject\GameObject.cs" />
+    <Compile Include="src\scene\gameobject\UnmanagedObject.cs" />
+    <Compile Include="src\scene\gameobject\components\CameraComponent.cs" />
+    <Compile Include="src\scene\gameobject\components\GameObjectComponent.cs" />
+    <Compile Include="src\scene\gameobject\components\PhysicsComponent.cs" />
+    <Compile Include="src\scene\gameobject\components\ScriptComponent.cs" />
+    <Compile Include="src\scene\gameobject\components\SpriteComponent.cs" />
+    <Compile Include="src\scene\gameobject\components\Transform2D.cs" />
+    <Compile Include="src\scene\gameobject\components\Transform3D.cs" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

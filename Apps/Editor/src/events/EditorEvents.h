@@ -1,6 +1,6 @@
 #pragma once
 
-/* core osiris includes */
+/* core wyrd includes */
 #include <core/export.h>
 #include <core/Layer.h>
 #include <core/scene/Scene.h>
@@ -17,7 +17,7 @@
 
 #define EVENT_ARGS_CLONE(type)	public:  std::shared_ptr<EventArgs> Clone() { return std::make_shared<type>(*this); } 
 
-namespace Osiris::Editor::Events
+namespace Wyrd::Editor::Events
 {
 	enum class EventType {
 		SettingsUpdated, RefreshView,
@@ -101,9 +101,9 @@ namespace Osiris::Editor::Events
 	class SelectedGameObjectChangedArgs : public EventArgs
 	{
 	public:
-		SelectedGameObjectChangedArgs(Osiris::GameObject* gameObject) : gameObject(gameObject) { }
+		SelectedGameObjectChangedArgs(Wyrd::GameObject* gameObject) : gameObject(gameObject) { }
 
-		Osiris::GameObject* gameObject;
+		Wyrd::GameObject* gameObject;
 
 		EVENT_ARGS_CLONE(SelectedGameObjectChangedArgs)
 	};

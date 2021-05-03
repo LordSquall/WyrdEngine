@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/Layer.h>
@@ -14,7 +14,7 @@
 #include "SpriteLayerEditor.h"
 #include "support/ImGuiUtils.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	SpriteLayerEditor::SpriteLayerEditor(EditorLayer* editorLayer) : EditorViewBase("Sprite Layer Editor", editorLayer), _SelectedGameObject(nullptr), _SelectedLayer2D(nullptr), _SelectedSceneLayer(nullptr), _SelectedSceneLayerIdx(0), _SelectedGameObjectIdx(0), _EditLayerNameMode(0) { }
 
@@ -68,7 +68,7 @@ namespace Osiris::Editor
 							if (ImGui::InputText("##label", &layer->GetName(),
 								ImGuiInputTextFlags_CallbackCharFilter | ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll, ImGui::InputTextCallback))
 							{
-								OSR_TRACE("Updated Layer Name!!");
+								WYRD_TRACE("Updated Layer Name!!");
 								_EditLayerNameMode = false;
 							}
 						}

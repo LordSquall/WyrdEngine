@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/Layer.h>
@@ -22,7 +22,7 @@
 /* external includes */
 #include <imgui.h>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	GameViewer::GameViewer(EditorLayer* editorLayer) : EditorViewBase("Game Viewer", editorLayer), _CameraComponent(nullptr)
 	{
@@ -41,7 +41,7 @@ namespace Osiris::Editor
 		});
 
 		/* create a new framebuffer */
-		_Framebuffer.reset(Osiris::FrameBuffer::Create(FrameBufferConfig()));
+		_Framebuffer.reset(Wyrd::FrameBuffer::Create(FrameBufferConfig()));
 
 		/* setup window config */
 		config.windowPaddingX = 0.0f;
@@ -50,7 +50,7 @@ namespace Osiris::Editor
 
 	GameViewer::~GameViewer()
 	{
-		OSR_TRACE("SceneViewer::~");
+		WYRD_TRACE("SceneViewer::~");
 	}
 
 	void GameViewer::OnUpdate(Timestep ts)

@@ -1,14 +1,14 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/export.h>
 #include <core/scene/components/IBaseComponent.h>
 
 
 #define ONSCENERENDER_BIND(f)	std::bind(&##f, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class IPropertiesView
 	{

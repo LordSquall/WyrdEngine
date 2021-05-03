@@ -1,4 +1,4 @@
-/* core osiris includes */
+/* core wyrd includes */
 #include <core/export.h>
 #include <core/Timestep.h>
 #include <core/Application.h>
@@ -18,7 +18,7 @@
 #include "support/IconLibrary.h"
 #include "events/EditorEvents.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class GridGizmo : public Gizmo
 	{

@@ -9,7 +9,7 @@
 /* external includes */
 #include <glm/glm.hpp>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	/* forward declarations */
 	class EditorLayer;
@@ -85,7 +85,7 @@ namespace Osiris::Editor
 		 * @brief Get the rendering boundary of the view
 		 * @return 
 		*/
-		inline Osiris::Rect GetBoundary() const { return _Boundary; }
+		inline Wyrd::Rect GetBoundary() const { return _Boundary; }
 
 		/**
 		 * @brief Get the Name
@@ -111,7 +111,7 @@ namespace Osiris::Editor
 		EditorLayer*		_EditorLayer;
 		std::string			_Name;
 		bool				_ShowFlag = true;
-		Osiris::Rect		_Boundary;
-		Osiris::Rect		_PrevBoundary;
+		Wyrd::Rect		_Boundary;
+		Wyrd::Rect		_PrevBoundary;
 	};
 }

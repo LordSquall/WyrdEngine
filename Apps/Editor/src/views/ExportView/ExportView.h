@@ -3,9 +3,9 @@
 #include "events/EditorEvents.h"
 #include "services/ServiceManager.h"
 
-class Osiris::CameraComponent;
+class Wyrd::CameraComponent;
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class ExportView : public EditorViewBase
 	{

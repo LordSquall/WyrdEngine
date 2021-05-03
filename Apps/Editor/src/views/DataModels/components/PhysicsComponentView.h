@@ -1,6 +1,6 @@
 #pragma once
 
-/* core osiris include */
+/* core wyrd include */
 #include <core/scene/components/PhysicsComponent.h>
 
 /* local includes */
@@ -10,10 +10,10 @@
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-using namespace Osiris;
+using namespace Wyrd;
 using namespace glm;
 
-namespace Osiris::Editor {
+namespace Wyrd::Editor {
 
 	class PhysicsComponentView : public IPropertiesView
 	{

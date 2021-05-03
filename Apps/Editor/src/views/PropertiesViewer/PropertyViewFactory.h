@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/export.h>
 #include <core/scene/components/IBaseComponent.h>
 
@@ -13,14 +13,14 @@
 #include "views/DataModels/components/CameraComponentView.h"
 
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class GameObject;
 
 	class PropertyViewFactory
 	{
 	public:
-		static std::unique_ptr<IPropertiesView> Create(IBaseComponent* baseComponent, const Osiris::GameObject* gameObject)
+		static std::unique_ptr<IPropertiesView> Create(IBaseComponent* baseComponent, const Wyrd::GameObject* gameObject)
 		{
 			std::unique_ptr<IPropertiesView> newComponent;
 

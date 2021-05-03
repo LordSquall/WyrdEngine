@@ -1,9 +1,9 @@
 /// Auto Generated
-/// Date: Apr 2021 Thu 22:14:39
+/// Date: May 2021 Sun 22:56:12
 
 #pragma once
 
-#include <osrpch.h>
+#include <wyrdpch.h>
 
 #include <core/UID.h>
 
@@ -14,7 +14,7 @@ struct BundleFormat_Config
 
 struct BundleFormat_Shader
 {
-    Osiris::UID uid;
+    Wyrd::UID uid;
     std::string vertexSrc;
     std::string fragmentSrc;
 };
@@ -27,7 +27,7 @@ struct BundleFormat_ShaderConfig
 
 struct BundleFormat_Texture
 {
-    Osiris::UID uid;
+    Wyrd::UID uid;
     uint32_t width;
     uint32_t height;
     uint32_t channels;
@@ -53,7 +53,7 @@ struct BundleFormat_ManagedLibConfig
     uint32_t classes_cnt;
     std::vector<std::string> classes;
     uint32_t classesUIDs_cnt;
-    std::vector<Osiris::UID> classesUIDs;
+    std::vector<Wyrd::UID> classesUIDs;
     uint32_t managedLibraries_cnt;
     std::vector<BundleFormat_ManagedLib> managedLibraries;
 };

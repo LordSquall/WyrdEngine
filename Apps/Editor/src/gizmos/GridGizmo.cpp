@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/scene/components/Transform2DComponent.h>
 
@@ -16,7 +16,7 @@
 /* external includes */
 #include <glm/glm.hpp>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	GridGizmo::GridGizmo(SceneViewer* sceneViewer, Shader* shader) : Gizmo(sceneViewer, shader)
 	{
@@ -45,7 +45,7 @@ namespace Osiris::Editor
 
 	GridGizmo::~GridGizmo() 
 	{
-		OSR_TRACE("GOOEL");
+		WYRD_TRACE("GOOEL");
 	}
 
 	void GridGizmo::Render(Timestep ts, Renderer& renderer)
@@ -132,6 +132,6 @@ namespace Osiris::Editor
 
 	void GridGizmo::OnSettingsChanged(Events::EventArgs& args)
 	{
-		OSR_TRACE("UPDATE GRID: SETTINGS MAY HAVE CHANGED!!!");
+		WYRD_TRACE("UPDATE GRID: SETTINGS MAY HAVE CHANGED!!!");
 	}
 }

@@ -1,14 +1,14 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/export.h>
 #include <core/behaviour/Properties/StringProperty.h>
 
 /* local includes */
 #include "views/DataModels/components/ScriptProperties/ScriptPropertyViewFactory.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class StringPropertyView : public ScriptPropertyView
 	{
@@ -16,6 +16,6 @@ namespace Osiris::Editor
 
 		virtual void DrawUI();
 
-		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(StringPropertyView, Osiris::StringProperty, "System.String");
+		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(StringPropertyView, Wyrd::StringProperty, "System.String");
 	};
 }

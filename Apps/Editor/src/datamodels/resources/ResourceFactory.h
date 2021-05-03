@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 
 /* local includes */
 #include "datamodels/resources/ResourceTypes.h"
@@ -10,7 +10,7 @@
 #include "datamodels/resources/SceneRes.h"
 #include "datamodels/resources/ScriptRes.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class ResourceFactory
 	{

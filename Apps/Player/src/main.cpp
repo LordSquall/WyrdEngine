@@ -6,7 +6,7 @@
 
 #include "core/EntryPoint.h"
 
-class PlayerApp : public Osiris::Application
+class PlayerApp : public Wyrd::Application
 {
 public:
 	PlayerApp(const AppProps& props) : Application(props)
@@ -23,10 +23,10 @@ public:
 	}
 };
 
-Osiris::Application* Osiris::CreateApplication()
+Wyrd::Application* Wyrd::CreateApplication()
 {
 	AppProps properties = AppProps();
 	return new PlayerApp(properties);
 }
 
-void Osiris::OnPreAppCreation(Osiris::Application* application) { }
+void Wyrd::OnPreAppCreation(Wyrd::Application* application) { }

@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 
 /* local includes */
 #include "ProjectLoader.h"
@@ -9,7 +9,7 @@
 /* external include */
 #include <jsonxx.h>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {;
 	ProjectLoader::Result ProjectLoader::Load(std::string path, Project& project)
 	{

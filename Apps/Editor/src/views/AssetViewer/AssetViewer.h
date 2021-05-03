@@ -1,5 +1,5 @@
 
-/* core osiris includes */
+/* core wyrd includes */
 #include <core/export.h>
 #include <events/KeyEvent.h>
 
@@ -7,7 +7,7 @@
 #include "views/EditorViewBase.h"
 #include "services/ServiceManager.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class AssetViewer : public EditorViewBase
 	{

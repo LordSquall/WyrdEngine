@@ -1,6 +1,6 @@
 #pragma once
 
-/* core osiris includes */
+/* core wyrd includes */
 #include <core/export.h>
 #include <core/Timestep.h>
 #include <core/renderer/Renderer.h>
@@ -13,7 +13,7 @@
 #include "gizmos/Gizmo.h"
 #include "views/SceneViewer/SceneViewer.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	Gizmo::Gizmo(SceneViewer* sceneViewer, Shader* shader) : _SceneViewer(sceneViewer), _Shader(shader)
 	{

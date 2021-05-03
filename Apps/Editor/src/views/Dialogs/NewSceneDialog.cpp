@@ -1,11 +1,11 @@
 #pragma once
 
-#include "osrpch.h"
+#include "wyrdpch.h"
 
 #include "NewSceneDialog.h"
 #include "imgui.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	NewSceneDialog::NewSceneDialog(EditorLayer* editorLayer, const std::string& folder) : EditorViewDialogBase("New Script", editorLayer), _Folder(folder)
 	{

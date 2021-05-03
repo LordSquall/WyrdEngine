@@ -1,6 +1,6 @@
 #include "core/export.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class ExportManager
 	{
@@ -13,6 +13,6 @@ namespace Osiris::Editor
 		static void GenerateCoreFile();
 		static void GenerateGameFile();
 		static void GenerateCommonBundleFile();
-		static void GenerateSceneBundleFile(const Osiris::UID& sceneUID, const std::string& dir);
+		static void GenerateSceneBundleFile(const Wyrd::UID& sceneUID, const std::string& dir);
 	};
 }

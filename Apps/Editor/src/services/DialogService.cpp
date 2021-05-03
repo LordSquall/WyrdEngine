@@ -1,13 +1,13 @@
 #pragma once
 
-#include "osrpch.h"
+#include "wyrdpch.h"
 #include "ServiceManager.h"
 #include "DialogService.h"
 #include "events/EditorEvents.h"
 #include "support/Utils.h"
 #include "platform/OpenGL/imgui_opengl_renderer.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	std::shared_ptr<EditorViewDialogBase> DialogService::_activeDialog = nullptr;
 	bool(*DialogService::_popupDialogCallback)(std::shared_ptr<EditorViewDialogBase>) = [](std::shared_ptr<EditorViewDialogBase> dialog)->bool { return false; };

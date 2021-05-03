@@ -1,6 +1,6 @@
 #pragma once
 
-#include "osrpch.h"
+#include "wyrdpch.h"
 
 #include "ScriptRes.h"
 
@@ -9,7 +9,7 @@
 
 #include "datamodels/logging/LogMessage.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	ScriptRes::ScriptRes(const std::string& path) : Resource(Utils::GetFilename(path), path)
 	{

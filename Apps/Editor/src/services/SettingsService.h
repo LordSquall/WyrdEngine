@@ -1,6 +1,6 @@
 #pragma once
 
-/* core osiris includes */
+/* core wyrd includes */
 #include <core/export.h>
 
 /* local includes */
@@ -38,7 +38,7 @@
 #define CONFIG_WINDOWSPLAYER				"Preferences-Windows-Player"
 #define CONFIG_WINDOWSPLAYER__BINPATH		"bin_path"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class SettingsService : public IService
 	{

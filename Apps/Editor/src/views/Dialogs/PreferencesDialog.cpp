@@ -1,13 +1,13 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 
 /* local includes */
 #include "PreferencesDialog.h"
 #include "support/ImGuiUtils.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	PreferencesDialog::PreferencesDialog(EditorLayer* editorLayer) : EditorViewDialogBase("Preferences Viewer", editorLayer)
 	{

@@ -22,7 +22,7 @@
 #include "support/ImGuiUtils.h"
 
 /* core includes */
-#include <osrpch.h>
+#include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/Layer.h>
@@ -34,7 +34,7 @@
 #include <SOIL.h>
 #include <shellapi.h>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	static bool			s_MouseJustPressed[5]					= { false, false, false, false, false };
 	static GLFWcursor*  s_MouseCursors[ImGuiMouseCursor_COUNT]	= { 0 };
@@ -292,10 +292,10 @@ namespace Osiris::Editor
 					_dialogService->OpenDialog(std::make_shared<NewProjectDialog>(this));
 				}
 				if (ImGui::MenuItem("Open File", "Ctrl+O")) {
-					OSR_INFO(util.OpenFileDialog("*.scene"));
+					WYRD_INFO(util.OpenFileDialog("*.scene"));
 				}
 				if (ImGui::MenuItem("Open Folder")) {
-					OSR_INFO(util.OpenFolderDialog());
+					WYRD_INFO(util.OpenFolderDialog());
 				}
 				ImGui::EndMenu();
 			}
@@ -324,7 +324,7 @@ namespace Osiris::Editor
 			if (ImGui::MenuItem("Save Scene", nullptr, nullptr, _workspaceService->IsProjectLoaded() && _workspaceService->IsSceneLoaded())) {
 				if (_workspaceService->SaveScene() == true)
 				{
-					OSR_CORE_INFO("Saved Scene");
+					WYRD_CORE_INFO("Saved Scene");
 				}
 			}
 
@@ -332,7 +332,7 @@ namespace Osiris::Editor
 				std::string filepath = util.SaveFileDialog("Scene Json Files", "scene");
 				if (_workspaceService->SaveSceneAs(filepath) == true)
 				{
-					OSR_CORE_INFO("Saved Scene As");
+					WYRD_CORE_INFO("Saved Scene As");
 				}
 			}
 
@@ -340,7 +340,7 @@ namespace Osiris::Editor
 				std::string filepath = util.OpenFileDialog(".scene");
 				if (_workspaceService->LoadScene(filepath) == true)
 				{
-					OSR_CORE_INFO("Opened Scene");
+					WYRD_CORE_INFO("Opened Scene");
 				}
 			}
 

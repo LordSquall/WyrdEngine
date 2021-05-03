@@ -1,14 +1,14 @@
 #pragma once
-#include "osrpch.h"
+#include "wyrdpch.h"
 
-/* core osiris includes */
+/* core wyrd includes */
 #include <core/Input.h>
 #include <core/KeyCodes.h>
 
 /* local includes */
 #include "OrthographicCameraController.h"
 
-namespace Osiris::Editor {
+namespace Wyrd::Editor {
 
 	OrthographicCameraController::OrthographicCameraController()
 	{

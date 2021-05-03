@@ -13,7 +13,7 @@
 
 #include "services/ServiceManager.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class EditorLayer : public Layer
 	{

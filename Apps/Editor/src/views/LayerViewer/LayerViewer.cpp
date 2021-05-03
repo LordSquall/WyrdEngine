@@ -1,6 +1,6 @@
 #pragma once
 
-#include "osrpch.h"
+#include "wyrdpch.h"
 
 #include "LayerViewer.h"
 
@@ -13,7 +13,7 @@
 
 #include "imgui.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	bool v;
 

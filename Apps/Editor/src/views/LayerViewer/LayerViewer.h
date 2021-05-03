@@ -3,7 +3,7 @@
 
 #include "views/EditorViewBase.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class LayerViewer : public EditorViewBase
 	{

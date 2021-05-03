@@ -1,6 +1,6 @@
 #pragma once
 
-/* core osiris includes */
+/* core wyrd includes */
 #include <core/export.h>
 #include <core/behaviour/Behaviour.h>
 
@@ -8,7 +8,7 @@
 #include "services/IService.h"
 #include "events/EditorEvents.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class EventService;
 	class ResourceService;
@@ -42,7 +42,7 @@ namespace Osiris::Editor
 			
 		void CompileAll();
 
-		std::shared_ptr<Osiris::ScriptedClass> GetClass(const std::string& className);
+		std::shared_ptr<Wyrd::ScriptedClass> GetClass(const std::string& className);
 
 	private:
 		bool _IsRunning;

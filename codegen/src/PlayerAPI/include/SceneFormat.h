@@ -1,9 +1,9 @@
 /// Auto Generated
-/// Date: Apr 2021 Thu 22:14:39
+/// Date: May 2021 Sun 22:56:12
 
 #pragma once
 
-#include <osrpch.h>
+#include <wyrdpch.h>
 
 #include <core/UID.h>
 
@@ -11,7 +11,7 @@ struct SceneFormat_Config
 {
     std::string version;
     std::string name;
-    Osiris::UID camera;
+    Wyrd::UID camera;
 };
 
 struct SceneFormat_Transform2DComponent
@@ -42,17 +42,17 @@ struct SceneFormat_SpriteComponent
     float y;
     float width;
     float height;
-    Osiris::UID texture;
+    Wyrd::UID texture;
 };
 
 struct SceneFormat_ScriptComponent
 {
-    Osiris::UID script;
+    Wyrd::UID script;
 };
 
 struct SceneFormat_CameraComponent
 {
-    Osiris::UID uid;
+    Wyrd::UID uid;
     float size;
     float width;
     float height;
@@ -73,7 +73,7 @@ struct SceneFormat_Component
 struct SceneFormat_GameObject
 {
     std::string name;
-    Osiris::UID uid;
+    Wyrd::UID uid;
     int32_t transformType;
     uint32_t components_cnt;
     std::vector<SceneFormat_Component> components;

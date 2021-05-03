@@ -1,13 +1,13 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/export.h>
 #include <core/UID.h>
 
 /* local includes */
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class Resource
 	{

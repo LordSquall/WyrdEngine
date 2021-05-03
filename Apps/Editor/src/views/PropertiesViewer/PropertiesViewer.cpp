@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Application.h>
 #include <core/Layer.h>
 
@@ -15,9 +15,9 @@
 /* external includes */
 #include <imgui.h>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
-	Osiris::GameObject* PropertiesViewer::_SelectedGameObject = nullptr;
+	Wyrd::GameObject* PropertiesViewer::_SelectedGameObject = nullptr;
 	std::shared_ptr<Resource> PropertiesViewer::_SelectedAsset = NULL;
 
 	PropertiesViewer::PropertiesViewer(EditorLayer* editorLayer) : EditorViewBase("Properties", editorLayer), _Mode(None)

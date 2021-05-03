@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/export.h>
 #include <core/Structures.h>
 
@@ -11,7 +11,7 @@
 /* external includes */
 
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class Utils 
 	{

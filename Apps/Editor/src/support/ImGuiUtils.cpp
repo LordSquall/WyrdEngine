@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/renderer/Texture.h>
 
 /* local includes */
@@ -10,17 +10,17 @@
 namespace ImGui 
 {
     /* Icon extensions */
-	void ImGui::Icon(std::shared_ptr<Osiris::Editor::Icon> icon, ImVec2& size)
+	void ImGui::Icon(std::shared_ptr<Wyrd::Editor::Icon> icon, ImVec2& size)
 	{
-		std::shared_ptr<Osiris::Editor::TextureRes> texture = icon->iconSet->Texture;
+		std::shared_ptr<Wyrd::Editor::TextureRes> texture = icon->iconSet->Texture;
 		ImGui::Image((ImTextureID)(INT_PTR)texture->GetTexture()->GetHandle(), size, ImVec2(icon->uv[0].x, icon->uv[0].y), ImVec2(icon->uv[2].x, icon->uv[2].y), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 	}
 
 
     /* Buttons */
-	bool ImGui::IconButton(std::shared_ptr<Osiris::Editor::Icon> icon, ImGuiID id, bool enabled, ImVec2& size, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
+	bool ImGui::IconButton(std::shared_ptr<Wyrd::Editor::Icon> icon, ImGuiID id, bool enabled, ImVec2& size, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
 	{
-		std::shared_ptr<Osiris::Editor::TextureRes> texture = icon->iconSet->Texture;
+		std::shared_ptr<Wyrd::Editor::TextureRes> texture = icon->iconSet->Texture;
 
 		ImGuiWindow* window = GetCurrentWindow();
 		if (window->SkipItems)
@@ -61,7 +61,7 @@ namespace ImGui
 		if (bg_col.w > 0.0f)
 			window->DrawList->AddRectFilled(image_bb.Min, image_bb.Max, GetColorU32(bg_col));
 
-		std::shared_ptr<Osiris::Texture> tex = texture->GetTexture();
+		std::shared_ptr<Wyrd::Texture> tex = texture->GetTexture();
 		if (tex != nullptr)
 		{
 			ImTextureID tempid = (ImTextureID)(UINT_PTR)tex->GetHandle();
@@ -142,9 +142,9 @@ namespace ImGui
     }
 
     /* Image */
-	void ImGui::Image(const Osiris::Editor::Icon& icon, const ImVec2& size, const ImVec4& tint_col, const ImVec4& border_col)
+	void ImGui::Image(const Wyrd::Editor::Icon& icon, const ImVec2& size, const ImVec4& tint_col, const ImVec4& border_col)
 	{
-		std::shared_ptr<Osiris::Editor::TextureRes> texture = icon.iconSet->Texture;
+		std::shared_ptr<Wyrd::Editor::TextureRes> texture = icon.iconSet->Texture;
 
 		ImGuiWindow* window = GetCurrentWindow();
 		if (window->SkipItems)
@@ -157,7 +157,7 @@ namespace ImGui
 		if (!ItemAdd(bb, 0))
 			return;
 
-		std::shared_ptr<Osiris::Texture> tex = texture->GetTexture();
+		std::shared_ptr<Wyrd::Texture> tex = texture->GetTexture();
 		ImTextureID tempid = (ImTextureID)(UINT_PTR)tex->GetHandle();
 
 		if (border_col.w > 0.0f)
@@ -172,7 +172,7 @@ namespace ImGui
 	}
 
 	/* Misc */
-	bool ImGui::CollapsingHeader(const Osiris::Editor::Icon& icon, const char* label, ImGuiTreeNodeFlags flags, const char* label_end)
+	bool ImGui::CollapsingHeader(const Wyrd::Editor::Icon& icon, const char* label, ImGuiTreeNodeFlags flags, const char* label_end)
 	{
 	    ImGuiWindow* window = GetCurrentWindow();
         if (window->SkipItems)

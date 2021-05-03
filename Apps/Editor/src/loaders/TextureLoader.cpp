@@ -1,11 +1,11 @@
 #pragma once
-#include "osrpch.h"
+#include "wyrdpch.h"
 
 #include "TextureLoader.h"
 
 #include "SOIL.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	TextureLoader::Result TextureLoader::Load(std::string path, TextureRes& texture)
 	{

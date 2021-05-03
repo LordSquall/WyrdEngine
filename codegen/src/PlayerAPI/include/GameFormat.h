@@ -1,9 +1,9 @@
 /// Auto Generated
-/// Date: Apr 2021 Thu 22:14:39
+/// Date: May 2021 Sun 22:56:12
 
 #pragma once
 
-#include <osrpch.h>
+#include <wyrdpch.h>
 
 #include <core/UID.h>
 
@@ -21,8 +21,8 @@ struct GameFormat_Display
 
 struct GameFormat_SceneListings
 {
-    Osiris::UID initialScene;
+    Wyrd::UID initialScene;
     uint32_t sceneUIDs_cnt;
-    std::vector<Osiris::UID> sceneUIDs;
+    std::vector<Wyrd::UID> sceneUIDs;
 };
 

@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/Application.h>
 
@@ -11,7 +11,7 @@
 
 /* external includes */
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	void EventService::Subscribe(Events::EventType type, std::function<void(Events::EventArgs&)> callback)
 	{

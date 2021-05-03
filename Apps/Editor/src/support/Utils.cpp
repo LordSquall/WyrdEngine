@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Application.h>
 #include <core/Log.h>
 
@@ -19,7 +19,7 @@
 #include <GLFW/glfw3native.h>
 
 
-namespace Osiris::Editor {
+namespace Wyrd::Editor {
 
 	std::string Utils::canonical_path = std::filesystem::canonical(std::filesystem::current_path()).string();
 	std::string Utils::asset_path = "\\assets";

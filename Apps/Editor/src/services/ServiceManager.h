@@ -9,7 +9,7 @@
 #include "SettingsService.h"
 #include "SimulationService.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class ServiceManager
 	{

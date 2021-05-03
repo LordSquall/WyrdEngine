@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/Resources.h>
@@ -13,7 +13,7 @@
 #include "loaders/TextureLoader.h"
 #include "datamodels/resources/TextureRes.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	void ResourceService::OnCreate()
 	{
@@ -87,7 +87,7 @@ namespace Osiris::Editor
 		}
 		else
 		{
-			//OSR_CORE_INFO("Skipping Asset file: [{0}] - As extension is on the ignored list!", resourcePath);
+			//WYRD_CORE_INFO("Skipping Asset file: [{0}] - As extension is on the ignored list!", resourcePath);
 		}
 	}
 
@@ -178,7 +178,7 @@ namespace Osiris::Editor
 	{
 		if (!std::filesystem::exists(filePath))
 		{
-			OSR_INFO("Unable to find Asset cache file.");
+			WYRD_INFO("Unable to find Asset cache file.");
 			return true;
 		}
 

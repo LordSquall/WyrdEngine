@@ -7,7 +7,7 @@
 #include "core/renderer/Buffer.h"
 #include "core/renderer/VertexArray.h"
 
-using namespace Osiris;
+using namespace Wyrd;
 
 class ControlLayer : public Layer
 {

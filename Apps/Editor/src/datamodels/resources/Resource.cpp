@@ -1,9 +1,9 @@
 #pragma once
 
-#include "osrpch.h"
+#include "wyrdpch.h"
 #include "Resource.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 
 }

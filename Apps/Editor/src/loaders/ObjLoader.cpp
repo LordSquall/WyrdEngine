@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Log.h>
 
 /* local includes */
@@ -9,7 +9,7 @@
 
 /* external include */
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	ObjLoader::Result ObjLoader::Load(std::string path, std::vector<GizmoVertex>& vertices, std::vector<uint32_t>& indices, std::map<std::string, std::pair<uint32_t, uint32_t>>& vertexGroups, float scaleFactor)
 	{
@@ -74,17 +74,17 @@ namespace Osiris::Editor
 		// DEBUG
 		//for (auto& v : vertices)
 		//{
-		//	OSR_TRACE("V: x:{0} y:{1} r:{2} g:{3} b:{4} a:{5}", v.x, v.y, v.r, v.g, v.b, v.a);
+		//	WYRD_TRACE("V: x:{0} y:{1} r:{2} g:{3} b:{4} a:{5}", v.x, v.y, v.r, v.g, v.b, v.a);
 		//}
 
 		//for (int i = 0; i < indices.size(); i = i+3)
 		//{
-		//	OSR_TRACE("I: p0:{0} p1:{1} p2:{2}", indices[i], indices[i+1], indices[i+2]);
+		//	WYRD_TRACE("I: p0:{0} p1:{1} p2:{2}", indices[i], indices[i+1], indices[i+2]);
 		//}
 
 		//for (auto& g : vertexGroups)
 		//{
-		//	OSR_TRACE("G: name:{0} s:{1} e:{2}", g.first, g.second.first, g.second.second);
+		//	WYRD_TRACE("G: name:{0} s:{1} e:{2}", g.first, g.second.first, g.second.second);
 		//}
 
 		return result;

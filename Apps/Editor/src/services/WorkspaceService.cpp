@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/scene/Layer2D.h>
 #include <core/scene/SceneLayer2D.h>
@@ -17,7 +17,7 @@
 #include <efsw/efsw.hpp>
 #include <jsonxx.h>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class FSUpdateListener : public efsw::FileWatchListener
 	{
@@ -54,7 +54,7 @@ namespace Osiris::Editor
 	efsw::WatchID		watchID;
 	FSUpdateListener	updateListener;
 
-	void Osiris::Editor::WorkspaceService::OnCreate()
+	void Wyrd::Editor::WorkspaceService::OnCreate()
 	{
 		/* Initialise Defaults */
 		IsProjectLoaded(false);
@@ -75,13 +75,13 @@ namespace Osiris::Editor
 			});
 	}
 
-	void Osiris::Editor::WorkspaceService::OnDestroy()
+	void Wyrd::Editor::WorkspaceService::OnDestroy()
 	{
 		/* TEMP if (_LoadedProject != nullptr) */ SaveProject();
 		if (_LoadedScene != nullptr) SaveScene();
 	}
 
-	void Osiris::Editor::WorkspaceService::CreateNewProject(std::string location, std::string sceneName, std::string name)
+	void Wyrd::Editor::WorkspaceService::CreateNewProject(std::string location, std::string sceneName, std::string name)
 	{
 		/* Build project file name */
 		_LoadedProjectPath = location + "\\" + name + "\\" + name + ".oproj";
@@ -139,7 +139,7 @@ namespace Osiris::Editor
 		}
 	}
 
-	bool Osiris::Editor::WorkspaceService::SaveProject()
+	bool Wyrd::Editor::WorkspaceService::SaveProject()
 	{
 		ProjectLoader::Result result = ProjectLoader::Result::Success;
 		
@@ -172,7 +172,7 @@ namespace Osiris::Editor
 		return false;
 	}
 
-	bool Osiris::Editor::WorkspaceService::LoadProject(std::string projectfile)
+	bool Wyrd::Editor::WorkspaceService::LoadProject(std::string projectfile)
 	{
 		bool result = false;
 
@@ -211,7 +211,7 @@ namespace Osiris::Editor
 			}
 			else
 			{
-				OSR_WARN("Unable to find scene {0}. Creating new Scene...", _LoadedProject->initialScene);
+				WYRD_WARN("Unable to find scene {0}. Creating new Scene...", _LoadedProject->initialScene);
 				CreateNewScene("Unknown");
 			}
 

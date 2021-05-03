@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/scene/Scene.h>
@@ -25,7 +25,7 @@
 
 using namespace glm;
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	static std::shared_ptr<ResourceService> _resourceService;
 	static PropertyList_t _resolveProperties;

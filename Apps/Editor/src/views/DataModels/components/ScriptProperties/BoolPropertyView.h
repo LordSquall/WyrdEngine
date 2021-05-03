@@ -1,14 +1,14 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/export.h>
 #include <core/behaviour/Properties/BoolProperty.h>
 
 /* local includes */
 #include "views/DataModels/components/ScriptProperties/ScriptPropertyViewFactory.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class BoolPropertyView : public ScriptPropertyView
 	{
@@ -17,6 +17,6 @@ namespace Osiris::Editor
 		virtual void DrawUI();
 
 
-		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(BoolPropertyView, Osiris::BoolProperty, "System.Boolean");
+		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(BoolPropertyView, Wyrd::BoolProperty, "System.Boolean");
 	};
 }

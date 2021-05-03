@@ -3,7 +3,7 @@
 /* Core includes */
 
 /* Local includes */
-namespace Osiris::Editor {
+namespace Wyrd::Editor {
 	
 	enum class Severity
 	{

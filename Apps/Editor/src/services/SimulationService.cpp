@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/scene/GameObject.h>
@@ -17,7 +17,7 @@
 #include <glm/glm.hpp>
 #include <iostream>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	void SimulationService::OnCreate()
 	{
@@ -47,7 +47,7 @@ namespace Osiris::Editor
 
 	void SimulationService::Start()
 	{
-		OSR_TRACE("Starting Simulation Service");
+		WYRD_TRACE("Starting Simulation Service");
 
 		/* ensure the scene is saved before starting the simulation */
 		_WorkspaceService->SaveScene();
@@ -66,7 +66,7 @@ namespace Osiris::Editor
 
 		_WorkspaceService->ReloadScene();
 
-		OSR_TRACE("Stopping Simulation Service");
+		WYRD_TRACE("Stopping Simulation Service");
 
 		_IsRunning = false;
 	}
@@ -175,7 +175,7 @@ namespace Osiris::Editor
 		_EventService->Publish(Events::EventType::RefreshView, std::make_unique<Events::RefreshViewEventArgs>());
 	}
 
-	std::shared_ptr<Osiris::ScriptedClass> SimulationService::GetClass(const std::string& className)
+	std::shared_ptr<Wyrd::ScriptedClass> SimulationService::GetClass(const std::string& className)
 	{
 		return Application::Get().GetBehaviour().GetCustomClass(className);
 	}

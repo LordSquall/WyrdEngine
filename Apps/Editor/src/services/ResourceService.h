@@ -10,7 +10,7 @@
 #include "datamodels/resources/ScriptRes.h"
 #include "events/EditorEvents.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class ResourceService : public IService
 	{

@@ -1,13 +1,13 @@
 #pragma once
 
-/* core osiris includes */
+/* core wyrd includes */
 
 /* local includes */
 #include "datamodels/Project.h"
 
-using namespace Osiris;
+using namespace Wyrd;
 
-namespace Osiris::Editor {
+namespace Wyrd::Editor {
 
 	class ProjectLoader
 	{

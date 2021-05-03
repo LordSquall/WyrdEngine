@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/export.h>
 #include <core/behaviour/Properties/Vector3Property.h>
 
@@ -9,7 +9,7 @@
 #include "views/DataModels/components/ScriptProperties/ScriptPropertyViewFactory.h"
 
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class Vector3PropertyView : public ScriptPropertyView
 	{
@@ -18,6 +18,6 @@ namespace Osiris::Editor
 		virtual void DrawUI();
 
 
-		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(Vector3PropertyView, Osiris::Vector3Property, "OsirisAPI.Vector3");
+		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(Vector3PropertyView, Wyrd::Vector3Property, "OsirisAPI.Vector3");
 	};
 }

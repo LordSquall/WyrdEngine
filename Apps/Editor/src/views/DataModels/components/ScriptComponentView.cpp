@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/behaviour/MonoUtils.h>
 #include <core/Application.h>
 #include <core/Resources.h>
@@ -16,7 +16,7 @@
 #include <imgui.h>
 #include <core/Log.h>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	ScriptComponentView::ScriptComponentView(ScriptComponent* baseComponent) : _BaseComponent(baseComponent)
 	{

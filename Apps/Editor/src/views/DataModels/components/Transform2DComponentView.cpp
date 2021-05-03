@@ -1,11 +1,11 @@
 #pragma once
-#include "osrpch.h"
+#include "wyrdpch.h"
 
 #include <imgui.h>
 
 #include "Transform2DComponentView.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	void Transform2DComponentView::OnPropertyEditorDraw()
 	{

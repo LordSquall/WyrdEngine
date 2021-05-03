@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Log.h>
 
 /* local includes */
@@ -11,7 +11,7 @@
 /* external includes */
 #include <SOIL.h>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	Icon::Icon(const Icon& obj)
 	{
@@ -93,13 +93,13 @@ namespace Osiris::Editor
 			}
 			else
 			{
-				OSR_WARN("Unable to find matching icon {0} in iconset {0}", name, setName);
+				WYRD_WARN("Unable to find matching icon {0} in iconset {0}", name, setName);
 				return _DefaultIcon;
 			}
 		}
 		else
 		{
-			OSR_WARN("Unable to find icon set {0}", setName);
+			WYRD_WARN("Unable to find icon set {0}", setName);
 			return _DefaultIcon;
 		}
 	}

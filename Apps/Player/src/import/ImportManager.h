@@ -1,9 +1,9 @@
 #pragma once
 
-#include <osrpch.h>
+#include <wyrdpch.h>
 #include <core/UID.h>
 
-namespace Osiris
+namespace Wyrd
 {
 	class Scene;
 };
@@ -14,5 +14,5 @@ public:
 	static void ImportCore(const std::string& root);
 	static void ImportGame(const std::string& root);
 	static void ImportCommonBundle(const std::string& root);
-	static std::unique_ptr<Osiris::Scene> ImportScene(const std::string& root, const Osiris::UID& sceneUID);
+	static std::unique_ptr<Wyrd::Scene> ImportScene(const std::string& root, const Wyrd::UID& sceneUID);
 };

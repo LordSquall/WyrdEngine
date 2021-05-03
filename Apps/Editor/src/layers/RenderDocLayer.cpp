@@ -3,8 +3,8 @@
 // This layer should be able enabled if the rendererdoc symbol is defined
 #ifdef OSR_RENDERDOC_ENABLED
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/Layer.h>
@@ -17,7 +17,7 @@
 /* local includes */
 #include "RenderDocLayer.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	std::string lastFileCreatedName;
 
@@ -32,7 +32,7 @@ namespace Osiris::Editor
 
 			if (ret == 1)
 			{
-				OSR_INFO("RenderDoc GetApi Successfully connected.");
+				WYRD_INFO("RenderDoc GetApi Successfully connected.");
 			}
 			else
 			{
@@ -87,7 +87,7 @@ namespace Osiris::Editor
 
 						_RDOCAPI->GetCapture(0, &filenameBuffer[0], &pathLength, &timestamp);
 
-						OSR_INFO("Renderdoc Capture Ended. Capture Successful: {0}", filenameBuffer);
+						WYRD_INFO("Renderdoc Capture Ended. Capture Successful: {0}", filenameBuffer);
 
 						if (Utils::ToBool(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__AUTOOPEN, "1")))
 						{
@@ -162,7 +162,7 @@ namespace Osiris::Editor
 					_FrameCounter = 0;
 					_CaptureRunning = true;
 
-					OSR_INFO("Renderdoc Capture Started");
+					WYRD_INFO("Renderdoc Capture Started");
 					return true;
 				}
 			}

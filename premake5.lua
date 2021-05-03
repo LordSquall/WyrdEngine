@@ -1,4 +1,4 @@
-workspace "Osiris"
+workspace "Wyrd"
 	architecture "x64"
 	startproject "Editor"
 
@@ -9,7 +9,7 @@ workspace "Osiris"
 		"Distribution"
 	}
 
-externallibsdir = os.getenv("OSIRIS_EXTERN_REPOS")
+externallibsdir = os.getenv("WYRD_EXTERN_REPOS")
 
 renderdocfound = false
 renderdocdir = ""
@@ -33,6 +33,7 @@ if os.istarget("windows") then
 		print("Mono installation found")
 		monofound = true
 		monolibdir = "C:/Program Files/Mono/lib/"
+		monobindir = "C:/Program Files/Mono/bin/"
 		monodir = "C:/PROGRA~1/Mono/"
 	else
 		print("Unable to find Mono installation. Please install before continuing")
@@ -54,7 +55,7 @@ outputdir = "%{cfg.buildcfg}"
 
 includedir = {}
 includedir["GLFW"] = externallibsdir .. "/GLFW/include"
-includedir["GLAD"] = "Osiris/vendor/GLAD/include"
+includedir["GLAD"] = "Wyrd/vendor/GLAD/include"
 includedir["SOIL"] = externallibsdir .. "/Simple-OpenGL-Image-Library/src"
 includedir["glm"] = externallibsdir .. "/glm"
 includedir["jsonxx"] = externallibsdir .. "/jsonxx"
@@ -86,7 +87,7 @@ include "externalbuild/premake5-uuid.lua"
 include "externalbuild/premake5-hash.lua"
 
 group "Code Gen"
-	project "OsirisBindings"
+	project "WyrdBindings"
 	location "codegen"
 	kind "StaticLib"
 	language "C++"
@@ -108,7 +109,7 @@ group "Code Gen"
 	{
 		"codegen/src/PlayerAPI/include/",
 		"codegen/src/Common/include/",
-		"Osiris/src",
+		"Wyrd/src",
 		"%{includedir.uuid}"
 	}
 	
@@ -122,23 +123,23 @@ group "Code Gen"
 		systemversion "latest"
 		
 	filter "configurations:Debug"
-		defines "ORS_DEBUG"
+		defines "WYRD_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		defines "ORS_RELEASE"
+		defines "WYRD_RELEASE"
 		runtime "Release"
 		symbols "on"
 
 	filter "configurations:Distribution"
-		defines "ORS_DISTRIBUTION"
+		defines "WYRD_DISTRIBUTION"
 		runtime "Release"
 		symbols "on"
 
 group ""
-	project "Osiris"
-		location "Osiris"
+	project "Wyrd"
+		location "Wyrd"
 		kind "StaticLib"
 		language "C++"
 		cppdialect "C++17"
@@ -148,8 +149,8 @@ group ""
 		objdir ("obj/" .. outputdir .. "/%{prj.name}")
 
 
-		pchheader "osrpch.h"
-		pchsource "Osiris/src/osrpch.cpp"
+		pchheader "wyrdpch.h"
+		pchsource "Wyrd/src/wyrdpch.cpp"
 
 		files
 		
@@ -195,31 +196,31 @@ group ""
 
 			defines
 			{
-				"OSR_PLATFORM_WINDOWS",
-				"OSR_LIBRARY_EXPORT",
+				"WYRD_PLATFORM_WINDOWS",
+				"WYRD_LIBRARY_EXPORT",
 				"GLFW_INCLUDE_NONE",
 				"GLM_ENABLE_EXPERIMENTAL"
 			}
 			
 		filter "configurations:Debug"
-			defines "ORS_DEBUG"
+			defines "WYRD_DEBUG"
 			runtime "Debug"
 			symbols "on"
 
 		filter "configurations:Release"
-			defines "ORS_RELEASE"
+			defines "WYRD_RELEASE"
 			runtime "Release"
 			symbols "on"
 
 		filter "configurations:Distribution"
-			defines "ORS_DISTRIBUTION"
+			defines "WYRD_DISTRIBUTION"
 			runtime "Release"
 			symbols "on"
 
 
 group "Scripting"			
-project "OsirisCAPI"
-		location "OsirisCAPI"
+project "WyrdCAPI"
+		location "WyrdCAPI"
 		kind "SharedLib"
 		language "C++"
 		cppdialect "C++17"
@@ -236,7 +237,7 @@ project "OsirisCAPI"
 		
 		includedirs
 		{
-			"Osiris/src",
+			"Wyrd/src",
 			"%{includedir.glm}",
 			"%{includedir.uuid}",
 			"%{includedir.mono}",
@@ -245,7 +246,7 @@ project "OsirisCAPI"
 		
         links { 
 			"uuid",
-			"Osiris"
+			"Wyrd"
 		}
 
 		filter "system:windows"
@@ -253,30 +254,30 @@ project "OsirisCAPI"
 
 			defines
 			{
-				"OSR_PLATFORM_WINDOWS",
-				"OSR_EDITOR_ENABLED",
+				"WYRD_PLATFORM_WINDOWS",
+				"WYRD_EDITOR_ENABLED",
 				"GLFW_INCLUDE_NONE",
 				"GLM_ENABLE_EXPERIMENTAL",
 				"LIBRARY_EXPORT"
 			}
 
 		filter "configurations:Debug"
-			defines "ORS_DEBUG"
+			defines "WYRD_DEBUG"
 			runtime "Debug"
 			symbols "on"
 
 		filter "configurations:Release"
-			defines "ORS_RELEASE"
+			defines "WYRD_RELEASE"
 			runtime "Release"
 			symbols "on"
 
 		filter "configurations:Distribution"
-			defines "ORS_DISTRIBUTION"
+			defines "WYRD_DISTRIBUTION"
 			runtime "Release"
 			symbols "on"
 			
-project "OsirisAPI"
-		location "OsirisAPI"
+project "WyrdAPI"
+		location "WyrdAPI"
 		kind "SharedLib"
 		language "C#"
 
@@ -293,24 +294,24 @@ project "OsirisAPI"
 
 			defines
 			{
-				"OSR_PLATFORM_WINDOWS",
-				"OSR_EDITOR_ENABLED",
+				"WYRD_PLATFORM_WINDOWS",
+				"WYRD_EDITOR_ENABLED",
 				"GLFW_INCLUDE_NONE",
 				"GLM_ENABLE_EXPERIMENTAL"
 			}
 
 		filter "configurations:Debug"
-			defines "ORS_DEBUG"
+			defines "WYRD_DEBUG"
 			runtime "Debug"
 			symbols "on"
 
 		filter "configurations:Release"
-			defines "ORS_RELEASE"
+			defines "WYRD_RELEASE"
 			runtime "Release"
 			symbols "on"
 
 		filter "configurations:Distribution"
-			defines "ORS_DISTRIBUTION"
+			defines "WYRD_DISTRIBUTION"
 			runtime "Release"
 			symbols "on"
 
@@ -339,7 +340,7 @@ project "Editor"
 		"Apps/Players/Player/src",
 		"codegen/src/Common/include",
 		"codegen/src/PlayerAPI/include",
-		"Osiris/src",
+		"Wyrd/src",
 		"%{includedir.glm}",
 		"%{includedir.GLFW}",
 		"%{includedir.GLAD}",
@@ -358,8 +359,8 @@ project "Editor"
 	
 	links
 	{
-		"Osiris",
-		"OsirisBindings",
+		"Wyrd",
+		"WyrdBindings",
 		"GLFW",
 		"GLAD",
 		"SOIL",
@@ -371,9 +372,9 @@ project "Editor"
 	
 	dependson 
 	{ 
-		"OsirisAPI", 
-		"OsirisCAPI",
-		"OsirisBindings",
+		"WyrdAPI", 
+		"WyrdCAPI",
+		"WyrdBindings",
 		"Player"
 	}
 
@@ -382,33 +383,31 @@ project "Editor"
 
 		defines
 		{
-			"OSR_PLATFORM_WINDOWS",
-			"OSR_EDITOR_ENABLED",
+			"WYRD_PLATFORM_WINDOWS",
+			"WYRD_EDITOR_ENABLED",
 			"GLM_ENABLE_EXPERIMENTAL",
 			"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
 			"MONO_INSTALL_LOC=" .. monodir,
-			iif(renderdocfound, "OSR_RENDERDOC_ENABLED", "")
+			iif(renderdocfound, "WYRD_RENDERDOC_ENABLED", "")
 
 		}
 		
-		linkoptions { "/WHOLEARCHIVE:Osiris" }
+		linkoptions { "/WHOLEARCHIVE:Wyrd" }
 		
-		if renderdocfound then
-			debugenvs { renderdocFolder }
-		end
+		debugenvs { "PATH=" .. monobindir .. ";" .. renderdocdir .. ";%PATH%" }
 
 	filter "configurations:Debug"
-		defines "ORS_DEBUG"
+		defines "WYRD_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		defines "ORS_RELEASE"
+		defines "WYRD_RELEASE"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Distribution"
-		defines "ORS_DISTRIBUTION"
+		defines "WYRD_DISTRIBUTION"
 		runtime "Debug"
 		symbols "on"
 
@@ -434,7 +433,7 @@ project "Player"
 	includedirs
 	{
 		"Apps/%{prj.name}/src",
-		"Osiris/src",
+		"Wyrd/src",
 		"codegen/src/Common/include",
 		"codegen/src/PlayerAPI/include",
 		"%{includedir.spdlog}",
@@ -445,8 +444,8 @@ project "Player"
 	
 	links
 	{
-		"Osiris",
-		"OsirisBindings"
+		"Wyrd",
+		"WyrdBindings"
 	}
 	
 	filter "system:windows"
@@ -454,28 +453,28 @@ project "Player"
 
 		defines
 		{
-			"OSR_PLATFORM_WINDOWS",
-			"OSR_EDITOR_ENABLED",
+			"WYRD_PLATFORM_WINDOWS",
+			"WYRD_EDITOR_ENABLED",
 			"GLM_ENABLE_EXPERIMENTAL",
 			"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
 			"MONO_INSTALL_LOC=" .. monodir,
-			iif(renderdocfound, "OSR_RENDERDOC_ENABLED", "")
+			iif(renderdocfound, "WYRD_RENDERDOC_ENABLED", "")
 
 		}
 		
-		linkoptions { "/WHOLEARCHIVE:Osiris" }
+		linkoptions { "/WHOLEARCHIVE:Wyrd" }
 		
 	filter "configurations:Debug"
-		defines "ORS_DEBUG"
+		defines "WYRD_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		defines "ORS_RELEASE"
+		defines "WYRD_RELEASE"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Distribution"
-		defines "ORS_DISTRIBUTION"
+		defines "WYRD_DISTRIBUTION"
 		runtime "Debug"
 		symbols "on"

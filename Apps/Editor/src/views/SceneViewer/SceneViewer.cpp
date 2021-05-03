@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/Layer.h>
@@ -21,7 +21,7 @@
 /* external includes */
 #include <imgui.h>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	SceneViewer::SceneViewer(EditorLayer* editorLayer) : EditorViewBase("Scene Viewer", editorLayer), _SelectedGameObject(nullptr)
 	{
@@ -54,7 +54,7 @@ namespace Osiris::Editor
 
 		if (_GizmoShader->Build(vertexSrc, fragmentSrc) == false)
 		{
-			OSR_ERROR("Unable to build shader.");
+			WYRD_ERROR("Unable to build shader.");
 		}
 		_GizmoShader->Bind();
 		_GizmoShader->SetUniformVec4("blendColor", glm::vec4{ 0.8f, 0.2f, 0.2f, 1.0f });
@@ -65,7 +65,7 @@ namespace Osiris::Editor
 		_TranslationGizmo = std::make_unique<TranslationGizmo>(this, _GizmoShader.get());
 
 		/* create a new framebuffer */
-		_Framebuffer.reset(Osiris::FrameBuffer::Create(FrameBufferConfig()));
+		_Framebuffer.reset(Wyrd::FrameBuffer::Create(FrameBufferConfig()));
 
 		/* setup window config */
 		config.windowPaddingX = 0.0f;
@@ -74,7 +74,7 @@ namespace Osiris::Editor
 
 	SceneViewer::~SceneViewer() 
 	{
-		OSR_TRACE("SceneViewer::~");
+		WYRD_TRACE("SceneViewer::~");
 	}
 
 	void SceneViewer::OnUpdate(Timestep ts)

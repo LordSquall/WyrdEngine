@@ -4,8 +4,8 @@ project "glad"
 	cppdialect "C++17"
 	staticruntime "off"
     
-	src_dir = "../Osiris/vendor/glad/"
-	include_dir = "../Osiris/vendor/glad/include/"
+	src_dir = "../Wyrd/vendor/glad/"
+	include_dir = "../Wyrd/vendor/glad/include/"
 	
 	basedir("../")
 	

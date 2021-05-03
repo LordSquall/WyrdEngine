@@ -8,7 +8,7 @@
 
 #define EVENT_FUNC(f)	std::bind(&##f, this, std::placeholders::_1)
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class EventService : public IService
 	{

@@ -1,6 +1,6 @@
 #pragma once
 
-/* core osiris includes */
+/* core wyrd includes */
 #include <core/export.h>
 #include <core/scene/Scene.h>
 
@@ -8,7 +8,7 @@
 #include "IService.h"
 #include "datamodels/Project.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class Project;
 

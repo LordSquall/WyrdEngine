@@ -1,5 +1,5 @@
 #pragma once
-#include "osrpch.h"
+#include "wyrdpch.h"
 
 #include <imgui.h>
 
@@ -8,7 +8,7 @@
 
 #include <core/scene/components/Transform2DComponent.h>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	void CameraComponentView::Initialise()
 	{

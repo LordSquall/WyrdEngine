@@ -1,6 +1,6 @@
 #pragma once
 
-/* core osiris include */
+/* core wyrd include */
 #include <core/scene/components/ScriptComponent.h>
 
 /* local includes */
@@ -13,10 +13,10 @@
 #include <glm/ext/matrix_transform.hpp>
 
 
-using namespace Osiris;
+using namespace Wyrd;
 using namespace glm;
 
-namespace Osiris::Editor {
+namespace Wyrd::Editor {
 
 	class ScriptComponentView : public IPropertiesView
 	{

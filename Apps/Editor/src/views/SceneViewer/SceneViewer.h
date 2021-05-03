@@ -7,7 +7,7 @@
 #include <core/renderer/Buffer.h>
 #include <core/renderer/Shader.h>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class TranslationGizmo;
 	class GridGizmo;
@@ -26,7 +26,7 @@ namespace Osiris::Editor
 
 		void OnResize() override;
 
-		inline const Osiris::Rect& GetViewport() { return _Viewport; }
+		inline const Wyrd::Rect& GetViewport() { return _Viewport; }
 		inline const std::shared_ptr<OrthographicCameraController> GetCamera() const { return _CameraController; }
 
 		inline const glm::vec2 GetMouseWorldPos() const { return _MouseWorldPos; }
@@ -60,7 +60,7 @@ namespace Osiris::Editor
 		std::shared_ptr<SettingsService>		_SettingsService;
 		std::shared_ptr<DialogService>			_DialogService;
 		std::shared_ptr<SimulationService>		_SimulationService;
-		std::unique_ptr<Osiris::FrameBuffer>	_Framebuffer;
+		std::unique_ptr<Wyrd::FrameBuffer>	_Framebuffer;
 
 		std::shared_ptr<Scene>							_Scene;
 		std::shared_ptr<OrthographicCameraController>	_CameraController;
@@ -83,7 +83,7 @@ namespace Osiris::Editor
 		bool _mouseEventStarted;
 
 		glm::vec2 _mouseOffset;
-		Osiris::Rect _ViewportBoundary;
-		Osiris::Rect _Viewport;
+		Wyrd::Rect _ViewportBoundary;
+		Wyrd::Rect _Viewport;
 	};
 }

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "osrpch.h"
+#include "wyrdpch.h"
 
 #include "core/export.h"
 
 #include "support/IconLibrary.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class IService
 	{

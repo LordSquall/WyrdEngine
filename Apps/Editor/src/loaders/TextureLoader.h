@@ -1,11 +1,11 @@
 #pragma once
 
-/* core osiris includes */
+/* core wyrd includes */
 
 /* local includes */
 #include "datamodels/resources/TextureRes.h"
 
-namespace Osiris::Editor {
+namespace Wyrd::Editor {
 
 	class TextureLoader
 	{

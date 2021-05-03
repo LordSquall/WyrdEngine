@@ -2,7 +2,7 @@
 
 #include "views/EditorViewDialogBase.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class EditorLayer;
 

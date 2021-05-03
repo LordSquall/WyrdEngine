@@ -1,6 +1,6 @@
-C:\Projects\Osiris\OsirisEngine\codegen\models\obj\Debug\OsirisAPIModels\CodeGenModels.csproj.CoreCompileInputs.cache
-C:\Projects\Osiris\OsirisEngine\codegen\models\obj\Debug\OsirisAPIModels\CodeGenModels.dll
-C:\Projects\Osiris\OsirisEngine\codegen\models\obj\Debug\OsirisAPIModels\CodeGenModels.pdb
+C:\Projects\Osiris\OsirisEngine\codegen\models\obj\Debug\WyrdAPIModels\CodeGenModels.csproj.CoreCompileInputs.cache
+C:\Projects\Osiris\OsirisEngine\codegen\models\obj\Debug\WyrdAPIModels\CodeGenModels.dll
+C:\Projects\Osiris\OsirisEngine\codegen\models\obj\Debug\WyrdAPIModels\CodeGenModels.pdb
 C:\Projects\Osiris\OsirisEngine\codegen\models\CodeGenModels.dll
 C:\Projects\Osiris\OsirisEngine\codegen\models\CodeGenModels.pdb
-C:\Projects\Osiris\OsirisEngine\codegen\models\obj\Debug\OsirisAPIModels\CodeGenModels.csprojAssemblyReference.cache
+C:\Projects\Osiris\OsirisEngine\codegen\models\obj\Debug\WyrdAPIModels\CodeGenModels.csprojAssemblyReference.cache

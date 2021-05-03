@@ -1,13 +1,13 @@
 #pragma once
 
-#include "osrpch.h"
+#include "wyrdpch.h"
 
 #include "OutputView.h"
 
 #include "support/ImGuiUtils.h"
 #include "imgui.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	OutputView::OutputView(EditorLayer* editorLayer) : EditorViewBase("Output", editorLayer)
 	{

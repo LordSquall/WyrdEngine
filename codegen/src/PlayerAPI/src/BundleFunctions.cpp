@@ -1,9 +1,9 @@
 /// Auto Generated
-/// Date: Apr 2021 Thu 22:14:39
+/// Date: May 2021 Sun 22:56:12
 
 #pragma once
 
-#include <osrpch.h>
+#include <wyrdpch.h>
 
 #include "CommonFunctions.h"
 
@@ -135,7 +135,7 @@ void Read(std::ifstream& s, BundleFormat_ManagedLibConfig& d)
     Read(s, d.classesUIDs_cnt);
     for (uint32_t i = 0; i < d.classesUIDs_cnt; i++)
     {
-        Osiris::UID item;
+        Wyrd::UID item;
         Read(s, item);
         d.classesUIDs.push_back(item);
     }

@@ -10,7 +10,7 @@
 /* external includes */
 #include <glm/glm.hpp>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	/**
 	 * @brief Base class for all Editor Dialog Views

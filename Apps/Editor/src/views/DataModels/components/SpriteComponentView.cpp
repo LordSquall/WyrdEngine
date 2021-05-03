@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/scene/GameObject.h>
 #include <core/Application.h>
 #include <core/Resources.h>
@@ -13,7 +13,7 @@
 /* external includes */
 #include <imgui.h>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	void SpriteComponentView::OnPropertyEditorDraw()
 	{

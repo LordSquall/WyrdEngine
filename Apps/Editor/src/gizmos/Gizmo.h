@@ -1,6 +1,6 @@
 #pragma once
 
-/* core osiris includes */
+/* core wyrd includes */
 #include <core/export.h>
 #include <core/Timestep.h>
 #include <core/renderer/Renderer.h>
@@ -14,7 +14,7 @@
 #include "datamodels/OrthographicCameraController.h"
 #include "events/EditorEvents.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	class SceneViewer;
 

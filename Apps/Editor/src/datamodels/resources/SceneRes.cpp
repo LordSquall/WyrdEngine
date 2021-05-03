@@ -1,11 +1,11 @@
 #pragma once
 
-#include "osrpch.h"
+#include "wyrdpch.h"
 
 #include "SceneRes.h"
 
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	SceneRes::SceneRes(const std::string& path) : Resource(Utils::GetFilename(path, false), path)
 	{

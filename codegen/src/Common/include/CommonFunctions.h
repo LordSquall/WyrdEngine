@@ -1,6 +1,6 @@
 #pragma once
 
-#include <osrpch.h>
+#include <wyrdpch.h>
 #include <core/UID.h>
 
 void Read(std::ifstream& s, int8_t& d);
@@ -33,8 +33,8 @@ void Write(std::ofstream& s, float d);
 void Read(std::ifstream& s, char& d);
 void Write(std::ofstream& s, char d);
 
-void Read(std::ifstream& s, Osiris::UID& uid);
-void Write(std::ofstream& s, Osiris::UID& uid);
+void Read(std::ifstream& s, Wyrd::UID& uid);
+void Write(std::ofstream& s, Wyrd::UID& uid);
 
 void Read(std::ifstream& s, std::string& d);
 void Write(std::ofstream& s, std::string& d);

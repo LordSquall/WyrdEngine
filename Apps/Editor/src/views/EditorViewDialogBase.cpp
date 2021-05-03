@@ -4,7 +4,7 @@
 
 #include <imgui.h>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	void EditorViewDialogBase::Close()
 	{

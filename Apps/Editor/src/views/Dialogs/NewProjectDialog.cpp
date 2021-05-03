@@ -1,11 +1,11 @@
 #pragma once
 
-#include "osrpch.h"
+#include "wyrdpch.h"
 
 #include "NewProjectDialog.h"
 #include "imgui.h"
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	NewProjectDialog::NewProjectDialog(EditorLayer* editorLayer) : EditorViewDialogBase("New Project", editorLayer)
 	{

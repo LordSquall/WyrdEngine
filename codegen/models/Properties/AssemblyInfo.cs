@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Code  Generation Models")]
-[assembly: AssemblyDescription("Code Models required for Code Generating the Osiris Bindings Code")]
+[assembly: AssemblyDescription("Code Models required for Code Generating the Wyrd Bindings Code")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("CodeGenModels.Properties")]

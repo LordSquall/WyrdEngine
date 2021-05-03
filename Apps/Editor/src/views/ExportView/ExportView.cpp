@@ -1,7 +1,7 @@
 #pragma once
 
-/* core osiris includes */
-#include <osrpch.h>
+/* core wyrd includes */
+#include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/Layer.h>
@@ -17,7 +17,7 @@
 /* external includes */
 #include <imgui.h>
 
-namespace Osiris::Editor
+namespace Wyrd::Editor
 {
 	ExportView::ExportView(EditorLayer* editorLayer) : EditorViewBase("Export View", editorLayer)
 	{
@@ -31,7 +31,7 @@ namespace Osiris::Editor
 
 	ExportView::~ExportView()
 	{
-		OSR_TRACE("ExportView::~");
+		WYRD_TRACE("ExportView::~");
 	}
 	
 	void ExportView::OnEditorRender()
