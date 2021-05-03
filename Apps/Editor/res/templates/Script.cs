@@ -1,7 +1,7 @@
 using System;
-using OsirisAPI;
+using WyrdAPI;
 
-namespace OsirisGame
+namespace WyrdGame
 { 
     public class <<CLASS_NAME>> : ScriptedObject
     {

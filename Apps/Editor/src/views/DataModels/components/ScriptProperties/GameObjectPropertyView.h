@@ -16,6 +16,6 @@ namespace Wyrd::Editor
 
 		virtual void DrawUI();
 
-		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(GameObjectPropertyView, Wyrd::GameObjectProperty, "OsirisAPI.GameObject");
+		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(GameObjectPropertyView, Wyrd::GameObjectProperty, "WyrdAPI.GameObject");
 	};
 }

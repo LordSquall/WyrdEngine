@@ -16,6 +16,6 @@ namespace Wyrd::Editor
 
 		virtual void DrawUI();
 
-		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(ColorPropertyView, Wyrd::ColorProperty, "OsirisAPI.Color");
+		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(ColorPropertyView, Wyrd::ColorProperty, "WyrdAPI.Color");
 	};
 }

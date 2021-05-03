@@ -68,20 +68,23 @@ namespace Wyrd::Editor
 			ImGui::EndListBox();
 		}
 		
-		ImGui::Text("Initial Scene: %s", project != nullptr ? project->GetExportSettings().initialScene.str().c_str() :  "NO PROJECT LOADED");
-
-		//int size[2];
-		ImGui::InputInt2("Size", (int*)&project->GetExportSettings().width);
-
-		if (ImGui::BeginDragDropTarget())
+		if (project != nullptr)
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_SCENE"))
+			ImGui::Text("Initial Scene: %s", project->GetExportSettings().initialScene.str().c_str());
+
+			//int size[2];
+			ImGui::InputInt2("Size", (int*)&project->GetExportSettings().width);
+
+			if (ImGui::BeginDragDropTarget())
 			{
-				UID* sceneUID = (UID*)payload->Data;
-				auto sceneResource = _ResourceService->GetResourceByID<SceneRes>(*sceneUID);
-				project->GetExportSettings().exportableScenes[*sceneUID] = sceneResource->GetName();
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_SCENE"))
+				{
+					UID* sceneUID = (UID*)payload->Data;
+					auto sceneResource = _ResourceService->GetResourceByID<SceneRes>(*sceneUID);
+					project->GetExportSettings().exportableScenes[*sceneUID] = sceneResource->GetName();
+				}
+				ImGui::EndDragDropTarget();
 			}
-			ImGui::EndDragDropTarget();
 		}
 
 		if (ImGui::TextButton("Set as Default Scene", _SelectedSceneUID != UID()))

@@ -16,6 +16,6 @@ namespace Wyrd::Editor
 	public:
 		virtual void DrawUI();
 
-		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(Vector2PropertyView, Wyrd::Vector2Property, "OsirisAPI.Vector2");
+		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(Vector2PropertyView, Wyrd::Vector2Property, "WyrdAPI.Vector2");
 	};
 }

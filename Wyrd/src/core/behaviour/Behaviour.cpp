@@ -305,7 +305,7 @@ namespace Wyrd
 		std::remove(file_name.c_str());
 
 		// add library and wyrd runtime 
-		command += " -target:library -lib:" MONO_INSTALL_LOC  "lib/mono/4.5/Facades/," NATIVE_API_LIB_LOC "WyrdCAPI/ -r:System.Runtime.InteropServices.dll,WyrdCAPI.dll -debug ";
+		command += " -target:library -lib:" MONO_INSTALL_LOC  "lib/mono/4.5/Facades/," NATIVE_API_LIB_LOC "WyrdAPI/ -r:System.Runtime.InteropServices.dll,WyrdAPI.dll -debug ";
 
 		// set the putput file
 		command += "-out:" + outputFile;
@@ -338,7 +338,7 @@ namespace Wyrd
 
 	void Behaviour::LoadBehaviourModel(const std::vector<std::string>& files, const std::string& inputFile)
 	{
-		std::string apiLibraryLocation = NATIVE_API_LIB_LOC "WyrdAPI/WyrdCAPI.dll";
+		std::string apiLibraryLocation = NATIVE_API_LIB_LOC "WyrdAPI/WyrdAPI.dll";
 
 		/* Read the core library into memory */
 		std::ifstream coreLibFileStream(apiLibraryLocation.c_str(), std::ios::binary);

@@ -175,7 +175,7 @@ namespace Wyrd::Editor
 		BundleFormat_ManagedLibConfig managedLibConfig;
 
 		//TODO
-		std::string coreAPIPath = "C:/Projects/Osiris/OsirisEngine/lib/Debug/OsirisAPI/OsirisAPI.dll";
+		std::string coreAPIPath = "C:/Projects/Wyrd/WyrdEngine/lib/Debug/WyrdAPI/WyrdAPI.dll";
 		std::string clientAPIPath = Utils::GetPath(workspaceService->GetLoadedProjectPath()) + "\\" + workspaceService->GetCurrentProject()->name + ".dll";
 
 		BundleFormat_ManagedLib managedCoreLib;

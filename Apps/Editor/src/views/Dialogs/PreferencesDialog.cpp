@@ -92,7 +92,7 @@ namespace Wyrd::Editor
 
 		}
 #else
-		ImGui::TextColored({ 1.0, 0.0, 0.0, 1.0 }, "Renderdoc has not been build against this version of the Osiris Editor.");
+		ImGui::TextColored({ 1.0, 0.0, 0.0, 1.0 }, "Renderdoc has not been build against this version of the Wyrd Editor.");
 		ImGui::TextColored({ 1.0, 0.0, 0.0, 1.0 }, "Please install RenderDoc 64-Bit and rebuild.");
 #endif
 

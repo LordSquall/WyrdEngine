@@ -16,6 +16,6 @@ namespace Wyrd::Editor
 
 		virtual void DrawUI();
 
-		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(TexturePropertyView, Wyrd::TextureProperty, "OsirisAPI.Texture");
+		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(TexturePropertyView, Wyrd::TextureProperty, "WyrdAPI.Texture");
 	};
 }

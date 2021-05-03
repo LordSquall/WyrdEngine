@@ -16,6 +16,6 @@ namespace Wyrd::Editor
 
 		virtual void DrawUI();
 
-		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(ScriptedObjectPropertyView, Wyrd::ScriptedObjectProperty, "OsirisGame.ScriptedObject");
+		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(ScriptedObjectPropertyView, Wyrd::ScriptedObjectProperty, "WyrdGame.ScriptedObject");
 	};
 }

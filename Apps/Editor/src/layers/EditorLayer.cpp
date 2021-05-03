@@ -453,7 +453,7 @@ namespace Wyrd::Editor
 		std::string projectName = _workspaceService->GetCurrentProject()->name;
 
 		/* set the title */
-		Application::Get().GetWindow().SetTitle("Osiris Engine - " + projectName + " [" + evtArgs.scene->name + "] ");
+		Application::Get().GetWindow().SetTitle("Wyrd Engine - " + projectName + " [" + evtArgs.scene->name + "] ");
 
 		/* set the background color */
 		Application::Get().color.r = evtArgs.scene->bgcolor.r;
