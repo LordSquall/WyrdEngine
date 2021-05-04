@@ -1,4 +1,4 @@
-# Osiris Engine
+# Wyrd Engine
 
 ## Build Instructions:
 ### Prerequisites:
