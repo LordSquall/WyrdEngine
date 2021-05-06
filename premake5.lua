@@ -394,7 +394,7 @@ project "Editor"
 		
 		linkoptions { "/WHOLEARCHIVE:Wyrd" }
 		
-		debugenvs { "PATH=" .. monobindir .. ";" .. renderdocdir .. ";%PATH%" }
+		debugenvs { "PATH=" .. monobindir .. ";" .. renderdocdir .. ";../../lib/Debug/WyrdCAPI/;%PATH%" }
 		
 		
 
