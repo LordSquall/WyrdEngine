@@ -18,6 +18,7 @@
 #include "SceneLoader.h"
 #include "services/ServiceManager.h"
 #include "services/ResourceService.h"
+#include "extensions/systems/EditorSystem.h"
 
 /* external includes */
 #include <glm/glm.hpp>
@@ -28,6 +29,7 @@ using namespace glm;
 namespace Wyrd::Editor
 {
 	static std::shared_ptr<ResourceService> _resourceService;
+	static std::shared_ptr<CoreSystemsService> _coreSystemService;
 	static PropertyList_t _resolveProperties;
 
 	SceneLoader::Result SceneLoader::Load(std::string path, Scene& scene)
@@ -36,6 +38,7 @@ namespace Wyrd::Editor
 		jsonxx::Object o;
 
 		_resourceService = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources);
+		_coreSystemService = ServiceManager::Get<CoreSystemsService>(ServiceManager::Service::CoreSystems);
 
 		std::ifstream f(path);
 
@@ -47,14 +50,18 @@ namespace Wyrd::Editor
 			{
 				scene.FromJson(o);
 
+
 				/* we want to use the file name as the scene name */
 				scene.name = Utils::GetFilename(path);
 
-				/* we need to process of linked properties */
+				/* there are number of additional operations we need to perform on the scene once loaded */
 				for (auto& layer : scene.GetLayers())
 				{
 					for (auto& go : layer->GetGameObjects())
 					{
+						/* create an assign a editor component to each game object */
+						IBaseComponent* editorComponent = _coreSystemService->GetSystem<EditorSystem>("Editor")->CreateComponent(go.get());
+
 						for (auto& comp : go->components)
 						{
 							ScriptComponent* script = dynamic_cast<ScriptComponent*>(comp.get());

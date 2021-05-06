@@ -7,6 +7,7 @@
 #include "layers/RenderDocLayer.h"
 #include "layers/EditorLayer.h"
 #include "support/IniParser.h"
+#include "extensions/systems/EditorSystem.h"
 
 using namespace Wyrd::Editor;
 
@@ -24,9 +25,12 @@ public:
 		/* initialise editor services */
 		ServiceManager::StartServices();
 
+		/* initialise the editor extension system */
+		_EditorSystem = std::make_unique<EditorSystem>();
 
-		_SettingsService = ServiceManager::Get<SettingsService>(ServiceManager::Settings);
-				
+		/* register the system within the CoreSystemService */
+		ServiceManager::Get<CoreSystemsService>(ServiceManager::CoreSystems)->RegisterSystem("Editor", _EditorSystem.get());
+
 		/* if we are building with renderdoc installed then we can add the layer in */
 #ifdef OSR_RENDERDOC_ENABLED
 		PushLayer(RenderDocLayer);
@@ -37,10 +41,12 @@ public:
 
 	~ClientApplication()
 	{
-		_SettingsService->SetSetting(std::to_string(_Window->GetWidth()), CONFIG_WINDOW, CONFIG_WINDOW__WIDTH);
-		_SettingsService->SetSetting(std::to_string(_Window->GetHeight()), CONFIG_WINDOW, CONFIG_WINDOW__HEIGHT);
-		_SettingsService->SetSetting(std::to_string(_Window->GetX()), CONFIG_WINDOW, CONFIG_WINDOW__X);
-		_SettingsService->SetSetting(std::to_string(_Window->GetY()), CONFIG_WINDOW, CONFIG_WINDOW__Y);
+
+		std::shared_ptr<SettingsService> settingsService = ServiceManager::Get<SettingsService>(ServiceManager::Settings);
+		settingsService->SetSetting(std::to_string(_Window->GetWidth()), CONFIG_WINDOW, CONFIG_WINDOW__WIDTH);
+		settingsService->SetSetting(std::to_string(_Window->GetHeight()), CONFIG_WINDOW, CONFIG_WINDOW__HEIGHT);
+		settingsService->SetSetting(std::to_string(_Window->GetX()), CONFIG_WINDOW, CONFIG_WINDOW__X);
+		settingsService->SetSetting(std::to_string(_Window->GetY()), CONFIG_WINDOW, CONFIG_WINDOW__Y);
 
 
 		/* initialise editor services */
@@ -53,7 +59,8 @@ public:
 #endif
 
 private:
-	std::shared_ptr<SettingsService> _SettingsService;
+	std::unique_ptr<EditorSystem>		_EditorSystem;
+
 };
 
 Wyrd::Application* Wyrd::CreateApplication()

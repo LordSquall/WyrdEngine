@@ -50,9 +50,6 @@ namespace Wyrd::Editor
 		void RenderGameObject(std::unique_ptr<GameObject>&, Timestep ts, Renderer& renderer);
 		void UpdateGameObject(std::unique_ptr<GameObject>&, Timestep ts, bool updateTransform);
 
-		GameObject* FindGameObjectInScene(glm::vec2 inputPosition);
-		GameObject* FindGameObjectInGameObject(GameObject* gameObject, glm::vec2 inputPosition);
-
 	private:
 		std::shared_ptr<WorkspaceService>		_WorkspaceService;
 		std::shared_ptr<EventService>			_EventService;
@@ -60,6 +57,7 @@ namespace Wyrd::Editor
 		std::shared_ptr<SettingsService>		_SettingsService;
 		std::shared_ptr<DialogService>			_DialogService;
 		std::shared_ptr<SimulationService>		_SimulationService;
+		std::shared_ptr<CoreSystemsService>		_CoreSystemService;
 		std::unique_ptr<Wyrd::FrameBuffer>	_Framebuffer;
 
 		std::shared_ptr<Scene>							_Scene;

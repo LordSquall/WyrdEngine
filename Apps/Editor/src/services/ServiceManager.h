@@ -8,6 +8,7 @@
 #include "DialogService.h"
 #include "SettingsService.h"
 #include "SimulationService.h"
+#include "CoreSystemsService.h"
 
 namespace Wyrd::Editor
 {
@@ -21,17 +22,19 @@ namespace Wyrd::Editor
 			Resources,
 			Dialog,
 			Settings,
-			Simulation
+			Simulation,
+			CoreSystems
 		};
 	public:
 		static void StartServices()
 		{
-			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Events,		std::make_shared<EventService>()));
-			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Resources,	std::make_shared<ResourceService>()));
-			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Simulation, std::make_shared<SimulationService>()));
-			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Workspace,	std::make_shared<WorkspaceService>()));
-			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Dialog,		std::make_shared<DialogService>()));
-			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Settings,	std::make_shared<SettingsService>()));
+			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Events,			std::make_shared<EventService>()));
+			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Resources,		std::make_shared<ResourceService>()));
+			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Simulation,		std::make_shared<SimulationService>()));
+			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Workspace,		std::make_shared<WorkspaceService>()));
+			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Dialog,			std::make_shared<DialogService>()));
+			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::Settings,		std::make_shared<SettingsService>()));
+			_Services.insert(std::pair<Service, std::shared_ptr<IService>>(Service::CoreSystems,	std::make_shared<CoreSystemsService>()));
 
 			/* Order matters!!! */
 			_Services[Service::Events]->OnCreate();
@@ -40,10 +43,12 @@ namespace Wyrd::Editor
 			_Services[Service::Workspace]->OnCreate();
 			_Services[Service::Dialog]->OnCreate();
 			_Services[Service::Simulation]->OnCreate();
+			_Services[Service::CoreSystems]->OnCreate();
 		}
 
 		static void EndServices()
 		{
+			_Services[Service::CoreSystems]->OnDestroy();
 			_Services[Service::Simulation]->OnDestroy();
 			_Services[Service::Dialog]->OnDestroy();
 			_Services[Service::Workspace]->OnDestroy();

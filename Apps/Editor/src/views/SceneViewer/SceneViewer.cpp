@@ -17,6 +17,7 @@
 #include "gizmos/TranslationGizmo.h"
 #include "gizmos/GridGizmo.h"
 #include "support/ImGuiUtils.h"
+#include "extensions/systems/EditorSystem.h"
 
 /* external includes */
 #include <imgui.h>
@@ -32,6 +33,7 @@ namespace Wyrd::Editor
 		_DialogService = ServiceManager::Get<DialogService>(ServiceManager::Dialog);
 		_SettingsService = ServiceManager::Get<SettingsService>(ServiceManager::Settings);
 		_SimulationService = ServiceManager::Get<SimulationService>(ServiceManager::Simulation);
+		_CoreSystemService = ServiceManager::Get<CoreSystemsService>(ServiceManager::CoreSystems);
 
 		/* setup event bindings */
 		_EventService->Subscribe(Events::EventType::SceneOpened, EVENT_FUNC(SceneViewer::OnSceneOpened));
@@ -79,6 +81,9 @@ namespace Wyrd::Editor
 
 	void SceneViewer::OnUpdate(Timestep ts)
 	{
+
+		_CoreSystemService->GetSystem<EditorSystem>("Editor")->OnUpdate();
+
 		if (_Scene != nullptr)
 		{
 			/* Render Each sprite layer */
@@ -249,38 +254,28 @@ namespace Wyrd::Editor
 	bool SceneViewer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
 	{
 		_SimulationService->SetMouseButtonState(e.GetMouseButton(), true);
-		//bool itemFound = false;
-		//glm::vec2 normalisedMouseCoords;
-		//glm::vec2 mouseCoords = glm::vec2(e.GetPositionX(), e.GetPositionY()) - _mouseOffset;
 
+		/* build the initial mouse position vector */
+		glm::vec2 mousePos = { e.GetPositionX(), e.GetPositionY() };
 
-		//if (_Viewport.ContainsPoint(mouseCoords) == true)
-		//{
-		//	normalisedMouseCoords.x = (2.0f * (mouseCoords.x) / (_Viewport.size.x)) - 1.0f;
-		//	normalisedMouseCoords.y = -((2.0f * (mouseCoords.y) / (_Viewport.size.y)) - 1.0f);
+		/* viewport mouse position */
+		glm::vec2 viewportPos = GetViewportSpaceFromPoint(mousePos);
 
-		//	if (_Scene != nullptr)
-		//	{
-		//		/* this point we need to run a check on the scene tree to find which child has been clicked */
-		//		std::shared_ptr<GameObject> selectedGameObject = FindGameObjectInScene(normalisedMouseCoords);
+		/* we only want to process mouse events within the viewport of the scene */
+		if (_Viewport.ContainsPoint(viewportPos) == true)
+		{
+			glm::vec2 worldSpace = Convert2DToWorldSpace(mousePos);		
+			if (_Scene != nullptr)
+			{
+				/* test each of the editor components to check input */
+				GameObject* selectedGameObject = _CoreSystemService->GetSystem<EditorSystem>("Editor")->FindInWorldSpace(worldSpace);
 
-		//		switch (e.GetMouseButton())
-		//		{
-		//		case OSR_MOUSE_BUTTON_LEFT:
-		//			_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(selectedGameObject));
-		//			_OpenContextMenu = false;
-		//			break;
-		//		case OSR_MOUSE_BUTTON_RIGHT:
-		//			_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_shared<Events::SelectedGameObjectChangedArgs>(selectedGameObject));
-		//			_MenuPos.x = (float)e.GetPositionX();
-		//			_MenuPos.y = (float)e.GetPositionY();
-		//			_OpenContextMenu = true;
-		//			break;
-		//		}
-		//	}
-		//}
-
-		//_LastMousePos = { mouseCoords.x, mouseCoords.y };
+				if (selectedGameObject != nullptr)
+				{
+					_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(selectedGameObject));
+				}
+			}
+		}
 
 		return true;
 	}
@@ -375,7 +370,6 @@ namespace Wyrd::Editor
 	void SceneViewer::UpdateGameObject(std::unique_ptr<GameObject>& gameObject, Timestep ts, bool updateTransform)
 	{
 		// check if the game has an invalid matrix as this will need to be propogated
-
 		gameObject->transform->Recalculate();
 		for (auto& component : gameObject->components)
 		{
@@ -386,49 +380,6 @@ namespace Wyrd::Editor
 		{
 			//UpdateGameObject(child, ts, transformPropogation);
 		}
-	}
-
-	GameObject* SceneViewer::FindGameObjectInScene(glm::vec2 inputPosition)
-	{
-		/* Query each of the layer scene objects in reverse */
-		for (std::vector<std::unique_ptr<SceneLayer>>::reverse_iterator layer = _Scene->GetLayers().rbegin(); layer != _Scene->GetLayers().rend(); ++layer)
-		{
-			for (std::vector<std::unique_ptr<GameObject>>::reverse_iterator gameObject = (*layer)->GetGameObjects().rbegin(); gameObject != (*layer)->GetGameObjects().rend(); ++gameObject)
-			{
-				GameObject* foundGameObject = FindGameObjectInGameObject((*gameObject).get(), inputPosition);
-				if (foundGameObject != nullptr)
-				{
-					return foundGameObject;
-				}
-			}
-		}
-
-		return nullptr;
-	}
-
-	GameObject* SceneViewer::FindGameObjectInGameObject(GameObject* gameObject, glm::vec2 inputPosition)
-	{
-		for (std::vector<std::unique_ptr<GameObject>>::reverse_iterator child = gameObject->GetGameObjects().rbegin(); child != gameObject->GetGameObjects().rend(); ++child)
-		{
-			if (FindGameObjectInGameObject((*child).get(), inputPosition) != nullptr)
-			{
-				return (*child).get();
-			}
-		}
-
-		/*glm::mat4 mvpInverse = glm::inverse(_CameraController->GetCamera().GetViewProjectionMatrix() * gameObject->transform2D->matrix);
-		glm::vec4 nearPoint = mvpInverse * glm::vec4(inputPosition, 0.0f, 1.0f);
-		Rect inputArea = { { gameObject->inputArea.x, gameObject->inputArea.y }, { 0.0, 1.0 } };
-		Rect translatedInputArea = _CameraController->GetCamera().GetViewProjectionMatrix() * inputArea;
-		translatedInputArea.size.x = gameObject->inputArea.z;
-		translatedInputArea.size.y = gameObject->inputArea.w;
-		if (translatedInputArea.ContainsPoint({ nearPoint.x, nearPoint.y }) == true)
-		{
-			return gameObject;
-		}*/
-
-
-		return nullptr;
 	}
 
 	void SceneViewer::OnSceneOpened(Events::EventArgs& args)

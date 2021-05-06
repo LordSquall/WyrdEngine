@@ -20,7 +20,8 @@ namespace Wyrd {
 		SpriteRenderer = 3,
 		ScriptComponent = 4,
 		PhysicsComponent = 5,
-		CameraComponent = 6
+		CameraComponent = 6,
+		CustomComponent = 100
 	};
 
 	class WYRD_LIBRARY_API IBaseComponent
