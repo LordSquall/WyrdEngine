@@ -395,6 +395,8 @@ project "Editor"
 		linkoptions { "/WHOLEARCHIVE:Wyrd" }
 		
 		debugenvs { "PATH=" .. monobindir .. ";" .. renderdocdir .. ";%PATH%" }
+		
+		
 
 	filter "configurations:Debug"
 		defines "WYRD_DEBUG"

@@ -46,9 +46,10 @@ namespace Wyrd::Editor
 
 			auto p = std::filesystem::current_path();
 
-			std::string windowsBinPath = _SettingsService->GetSetting(CONFIG_WINDOWSPLAYER, CONFIG_WINDOWSPLAYER__BINPATH, std::string("../../bin/Debug/Player/Player.exe"));
+			std::string windowsBinPath = _SettingsService->GetSetting(CONFIG_WINDOWSPLAYER, CONFIG_WINDOWSPLAYER__BINPATH, std::string("..\\..\\bin\\Debug\\Player\\Player.exe"));
 
-			ShellExecuteA(NULL, "open", windowsBinPath.c_str(), "", NULL, SW_SHOW);
+
+			Utils::OpenFileWithSystem(windowsBinPath);
 		}
 
 		if (ImGui::BeginListBox("Scenes"))
