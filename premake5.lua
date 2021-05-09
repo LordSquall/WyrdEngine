@@ -1,6 +1,6 @@
 workspace "Wyrd"
 	architecture "x64"
-	startproject "Editor"
+	startproject "ESCTestApp"
 
 	configurations
 	{
@@ -466,6 +466,8 @@ project "Player"
 		
 		linkoptions { "/WHOLEARCHIVE:Wyrd" }
 		
+		debugenvs { "PATH=" .. monobindir .. ";" .. renderdocdir .. ";../../lib/Debug/WyrdCAPI/;%PATH%" }
+		
 	filter "configurations:Debug"
 		defines "WYRD_DEBUG"
 		runtime "Debug"
@@ -480,3 +482,71 @@ project "Player"
 		defines "WYRD_DISTRIBUTION"
 		runtime "Debug"
 		symbols "on"
+
+project "ESCTestApp"
+	location "Apps/ESCTestApp"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "off"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("obj/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"Apps/%{prj.name}/src/**.h",
+		"Apps/%{prj.name}/src/**.cpp",
+		"Apps/%{prj.name}/res/**.vs",
+		"Apps/%{prj.name}/res/**.fs"
+	}
+
+	includedirs
+	{
+		"Apps/%{prj.name}/src",
+		"Wyrd/src",
+		"codegen/src/Common/include",
+		"codegen/src/PlayerAPI/include",
+		"%{includedir.spdlog}",
+		"%{includedir.glm}",
+		"%{includedir.uuid}",
+		"%{includedir.mono}"
+	}
+	
+	links
+	{
+		"Wyrd",
+		"WyrdBindings"
+	}
+	
+	filter "system:windows"
+		systemversion "latest"
+
+		defines
+		{
+			"WYRD_PLATFORM_WINDOWS",
+			"WYRD_EDITOR_ENABLED",
+			"GLM_ENABLE_EXPERIMENTAL",
+			"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
+			"MONO_INSTALL_LOC=" .. monodir,
+			iif(renderdocfound, "WYRD_RENDERDOC_ENABLED", "")
+
+		}
+		
+		linkoptions { "/WHOLEARCHIVE:Wyrd" }
+		
+	filter "configurations:Debug"
+		defines "WYRD_DEBUG"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		defines "WYRD_RELEASE"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Distribution"
+		defines "WYRD_DISTRIBUTION"
+		runtime "Debug"
+		symbols "on"
+
