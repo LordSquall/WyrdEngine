@@ -13,6 +13,7 @@
 #include <functional>
 #include <regex> 
 #include <mutex>
+#include <bitset>
 
 #include <string>
 #include <optional>

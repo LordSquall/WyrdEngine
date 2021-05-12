@@ -5,6 +5,7 @@
 #include "core/LayerStack.h"
 #include "core/Timestep.h"
 #include "core/Window.h"
+#include "core/ecs/ECS.h"
 #include "core/renderer/Renderer.h"
 #include "core/Resources.h"
 #include "core/behaviour/Behaviour.h"
@@ -65,6 +66,13 @@ namespace Wyrd {
 		 * @return application instance
 		*/
 		inline static Application& Get() { return *s_Instance; }
+
+
+		/**
+		 * @brief Get ECS Subsystem
+		 * @return - ecs subsystem object
+		*/
+		inline ECS& GetECS() { return *_ECS; }
 
 		/**
 		 * @brief Get Renderer Subsystem
@@ -141,6 +149,7 @@ namespace Wyrd {
 
 	protected:
 		std::unique_ptr<Window>		_Window;
+		std::unique_ptr<ECS>		_ECS;
 		std::unique_ptr<Resources>	_Resources;
 		std::unique_ptr<Renderer>	_Renderer;
 		std::unique_ptr<Behaviour>	_Behaviour;
