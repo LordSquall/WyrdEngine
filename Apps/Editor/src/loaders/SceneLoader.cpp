@@ -13,6 +13,7 @@
 #include <core/scene/components/ScriptComponent.h>
 #include <core/scene/components/PhysicsComponent.h>
 #include <core/renderer/Texture.h>
+#include <core/ecs/Components.h>
 
 /* local includes */
 #include "SceneLoader.h"
@@ -85,6 +86,21 @@ namespace Wyrd::Editor
 		else
 		{
 			result = FileNotFound;
+		}
+
+		// TEMP TEST ECS Data set
+		for (auto& l : scene.GetLayers())
+		{
+			for (auto& go : l->GetGameObjects())
+			{
+				/* create the entity */
+				Entity entity = scene.CreateEntity();
+
+				/* add the meta data */
+				MetaDataComponent* metadataComp = scene.AssignComponent<MetaDataComponent>(entity);
+				metadataComp->name = go->name;
+				metadataComp->layerName = l->GetName();
+			}
 		}
 
 		return result;

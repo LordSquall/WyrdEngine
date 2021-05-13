@@ -16,6 +16,7 @@
 #include "views/AssetViewer/AssetViewer.h"
 #include "views/OutputView/OutputView.h"
 #include "views/ExportView/ExportView.h"
+#include "views/ESCLayerEditor/ECSLayerEditor.h"
 #include "views/Dialogs/PreferencesDialog.h"
 #include "views/Dialogs/NewProjectDialog.h"
 #include "platform/OpenGL/imgui_opengl_renderer.h"
@@ -54,6 +55,7 @@ namespace Wyrd::Editor
 		_views["Asset Viewer"] = std::make_shared<AssetViewer>(this);
 		_views["Output"] = std::make_shared<OutputView>(this);
 		_views["Export View"] = std::make_shared<ExportView>(this);
+		_views["ECS Layer View"] = std::make_shared<ECSLayerEditor>(this);
 
 		util = Utils();
 

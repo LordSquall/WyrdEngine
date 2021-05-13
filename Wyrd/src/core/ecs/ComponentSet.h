@@ -1,11 +1,13 @@
 #pragma once
 
-#include <core/scene/Scene.h>
+#include "core/export.h"
+#include "core/scene/Scene.h"
+#include "core/ecs/Components.h"
 
 namespace Wyrd
 {
 	template<typename... ComponentTypes>
-	struct ComponentSet
+	struct WYRD_LIBRARY_API ComponentSet
 	{
 		ComponentSet(Scene& scene) : scene(&scene)
 		{
@@ -15,7 +17,7 @@ namespace Wyrd
 			}
 			else
 			{
-				int componentIds[] = { 0, GetId<ComponentTypes>() ... };
+				int componentIds[] = { 0, GetID<ComponentTypes>() ... };
 				for (int i = 1; i < (sizeof...(ComponentTypes) + 1); i++)
 				{
 					componentMask.set(componentIds[i]);
@@ -25,7 +27,7 @@ namespace Wyrd
 
 		struct Iterator
 		{
-			Iterator(ECSScene* scene, EntityIndex index, ComponentMask mask, bool all) :
+			Iterator(Scene* scene, EntityIndex index, ComponentMask mask, bool all) :
 				scene(scene), index(index), mask(mask), all(all) {}
 
 			Entity operator*() const

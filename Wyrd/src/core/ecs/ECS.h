@@ -2,17 +2,36 @@
 
 #include "wyrdpch.h"
 #include "core/export.h"
-#include "core/ecs/System.h"
+
+const int MAX_ENTITIES = 1000;
+const int MAX_COMPONENTS = 32;
 
 namespace Wyrd 
 {
-	class WYRD_LIBRARY_API ECS
+	typedef unsigned long long Entity;
+
+	typedef unsigned int EntityIndex;
+
+	typedef std::bitset<MAX_COMPONENTS> ComponentMask;
+
+	struct WYRD_LIBRARY_API EntityDesc
 	{
-	public:
-		virtual ~ECS() {};
-
-		template <typename Component>
-		void RegisterSystem(System<Component>* system);
-
+		Entity id;
+		ComponentMask mask;
 	};
+
+	extern int _ComponentCounter;
+
+	template <class ComponentType>
+	int GetID()
+	{
+		static int _ComponentID = _ComponentCounter++;
+		return _ComponentID;
+	}
+
+	inline bool IsEntityValid(Wyrd::Entity id)
+	{
+		// Check if the index is our invalid index
+		return (id >> 32) != EntityIndex(-1);
+	}
 };

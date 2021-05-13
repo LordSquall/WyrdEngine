@@ -7,15 +7,10 @@
 #include <core/scene/SceneLayer2D.h>
 #include <core/scene/components/CameraComponent.h>
 #include <core/scene/components/Transform2DComponent.h>
-#include <core/ecs/Entity.h>
 
 #include <fstream>
 
 #include "TestLayer.h"
-#include "ECSScene.h"
-#include "ComponentSet.h"
-
-int s_componentCounter = 0;
 
 struct MovementComponent
 {
@@ -29,17 +24,16 @@ struct PhysicsUpdateComponent
 	float dy;
 };
 
-ECSScene scene;
 
 bool TestLayer::OnAttach()
 {
-	Entity entity = scene.CreateEntity();
-
-	MovementComponent* movementComp = scene.AssignComponent<MovementComponent>(entity);
-	PhysicsUpdateComponent* physicsComp = scene.AssignComponent<PhysicsUpdateComponent>(entity);
-	
-	physicsComp->dx = 0.1f;
-	physicsComp->dy = 0.2f;
+	//Entity entity = scene.CreateEntity();
+	//
+	//MovementComponent* movementComp = scene.AssignComponent<MovementComponent>(entity);
+	//PhysicsUpdateComponent* physicsComp = scene.AssignComponent<PhysicsUpdateComponent>(entity);
+	//
+	//physicsComp->dx = 0.1f;
+	//physicsComp->dy = 0.2f;
 
 	return true;
 }
@@ -48,23 +42,23 @@ void TestLayer::OnDetach() { }
 
 void TestLayer::OnUpdate(Timestep ts) 
 {
-	// Update position based on physics delta
-	for (Entity e : ComponentSet<MovementComponent, PhysicsUpdateComponent>(scene))
-	{
-		MovementComponent*		movementComp	= scene.Get<MovementComponent>(e);
-		PhysicsUpdateComponent* physicsComp		= scene.Get<PhysicsUpdateComponent>(e);
-		
-		movementComp->x += physicsComp->dx;
-		movementComp->y += physicsComp->dy;
-	}
-
-	// print to screen
-	for (Entity e : ComponentSet<MovementComponent>(scene))
-	{
-		MovementComponent* movementComp = scene.Get<MovementComponent>(e);
-
-		WYRD_TRACE("MovementComp: {0}, {1}", movementComp->x, movementComp->y);
-	}
+	//// Update position based on physics delta
+	//for (Entity e : ComponentSet<MovementComponent, PhysicsUpdateComponent>(scene))
+	//{
+	//	MovementComponent*		movementComp	= scene.Get<MovementComponent>(e);
+	//	PhysicsUpdateComponent* physicsComp		= scene.Get<PhysicsUpdateComponent>(e);
+	//	
+	//	movementComp->x += physicsComp->dx;
+	//	movementComp->y += physicsComp->dy;
+	//}
+	//
+	//// print to screen
+	//for (Entity e : ComponentSet<MovementComponent>(scene))
+	//{
+	//	MovementComponent* movementComp = scene.Get<MovementComponent>(e);
+	//
+	//	WYRD_TRACE("MovementComp: {0}, {1}", movementComp->x, movementComp->y);
+	//}
 }
 
 void TestLayer::OnRender(Timestep ts, Renderer& renderer)

@@ -158,4 +158,10 @@ namespace Wyrd
 
 		return true;
 	}
+
+	Entity Scene::CreateEntity()
+	{
+		entities.push_back({ entities.size(), ComponentMask() });
+		return entities.back().id;
+	}
 }
