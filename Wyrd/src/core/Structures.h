@@ -1,10 +1,7 @@
 #pragma once
 
 #include "core/export.h"
-#include "events/Event.h"
 
-#include "core/renderer/Renderer.h"
-#include "core/Timestep.h"
 
 namespace Wyrd {
 

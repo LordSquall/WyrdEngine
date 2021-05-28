@@ -180,69 +180,6 @@ std::unique_ptr<Wyrd::Scene> ImportManager::ImportScene(const std::string& root,
 	SceneFormat_LayerConfig layerConfig;
 	Read(scene, layerConfig);
 
-	for (auto& l : layerConfig.layers)
-	{
-		auto& layer = newScene->AddLayer(std::make_unique<SceneLayer2D>(l.name));
-		WYRD_TRACE(" -> Added Layer: {0}", layer->GetName());
-		layer->Initialise();
-
-		for (auto& go : l.gameObjects)
-		{
-			auto gameObject = layer->AddGameObject(std::make_unique<GameObject>(go.name));
-			gameObject->uid = go.uid;
-			WYRD_TRACE("   -> Added GameObject: {0}", gameObject->name);
-
-			// TODO - Only supports Transform 2D
-			gameObject->transform = std::move(std::make_unique<Transform2DComponent>(gameObject));
-			Transform2DComponent* transform2DComponent = dynamic_cast<Transform2DComponent*>(gameObject->transform.get());
-			transform2DComponent->SetPosition({ go.transformDef.transform2D.x, go.transformDef.transform2D.y });
-			transform2DComponent->SetRotation(go.transformDef.transform2D.angle);
-			transform2DComponent->SetScale({ go.transformDef.transform2D.scaleX, go.transformDef.transform2D.scaleY });
-
-			for (auto& c : go.components)
-			{
-				switch ((Wyrd::SceneComponentType)c.type)
-				{
-				case Wyrd::SceneComponentType::SpriteRenderer:
-					{
-						WYRD_TRACE("       -> Added Component: Sprite Component");
-						IBaseComponent* component = gameObject->AddComponent(std::move(SceneComponentFactory::Create(SceneComponentType::SpriteRenderer, gameObject)));
-						Wyrd::SpriteComponent* spriteComponent = (Wyrd::SpriteComponent*)component;
-						component->Initialise();
-						spriteComponent->SetPosition(c.componentDef.sprite.x, c.componentDef.sprite.y);
-						spriteComponent->SetSize(c.componentDef.sprite.width, c.componentDef.sprite.height);
-						spriteComponent->SetTexture(Application::Get().GetResources().Textures[c.componentDef.sprite.texture]);
-
-						WYRD_TRACE("           -> X:{0}, Y:{1}, W:{2}, H:{3}, UID:{4}", c.componentDef.sprite.x, c.componentDef.sprite.y, c.componentDef.sprite.width, c.componentDef.sprite.height, c.componentDef.sprite.texture);
-					}
-					break;
-				case Wyrd::SceneComponentType::ScriptComponent:
-					{
-						WYRD_TRACE("       -> Added Component: Script Component");
-						IBaseComponent* component = gameObject->AddComponent(std::move(SceneComponentFactory::Create(SceneComponentType::ScriptComponent, gameObject)));
-						Wyrd::ScriptComponent* scriptComponent = (Wyrd::ScriptComponent*)component;
-						component->Initialise();
-						scriptComponent->SetClass(Application::Get().GetBehaviour().GetCustomClassByUID(c.componentDef.script.script));
-						WYRD_TRACE("           -> Script UID:{0}", c.componentDef.script.script);
-					}
-					break;
-				case Wyrd::SceneComponentType::CameraComponent:
-					{
-						WYRD_TRACE("       -> Added Component: Camera Component");
-						IBaseComponent* component = gameObject->AddComponent(std::move(SceneComponentFactory::Create(SceneComponentType::CameraComponent, gameObject)));
-						Wyrd::CameraComponent* cameraComponent = (Wyrd::CameraComponent*)component;
-						component->Initialise();
-						cameraComponent->SetCameraUID(c.componentDef.camera.uid);
-						cameraComponent->GetCamera().SetSize(c.componentDef.camera.size);
-						cameraComponent->SetSize(c.componentDef.camera.size);
-						cameraComponent->GetCamera().SetViewportSize(800.0f, 600.00f);
-					}
-					break;
-				}
-			}
-		}
-	}
-
 	scene.close();
 
 

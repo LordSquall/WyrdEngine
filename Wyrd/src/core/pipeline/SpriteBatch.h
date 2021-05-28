@@ -1,11 +1,12 @@
 #pragma once
 
-#include "core/renderer/Renderer.h"
+#include "core/renderer/commands/RendererCommands.h"
 
 using namespace Wyrd;
 
 namespace Wyrd {
 
+	class Renderer;
 	class Texture;
 	class VertexArray;
 	class VertexBuffer;
@@ -27,39 +28,24 @@ namespace Wyrd {
 		friend struct SpriteBatchEntry;
 
 	public:
-		SpriteBatch();
 		~SpriteBatch() = default;
 
-		void Render(Renderer& renderer, const glm::mat4& viewProjectionMat);
+		bool Initialise(Renderer* renderer);
 
-		int32_t AddSprite(SpriteComponent* sprite);
+		void Submit(DrawSpriteCommand& cmd);
 
-		void UpdateSprite(SpriteComponent* sprite);
-
-		void RemoveSprite(SpriteComponent* sprite);
-
-		void SetShader(std::shared_ptr<Shader> shader);
+		void Flush();
 
 	private:
+		Renderer*						_Renderer;
+		std::vector<SpriteVertex2>		_vertices;
+		std::shared_ptr<VertexArray>	_VertexArray;
+		std::shared_ptr<VertexBuffer>	_VertexBuffer;
 
-		std::vector<SpriteVertex2> _vertices;
-		std::shared_ptr<VertexArray> _VertexArray;
-		std::shared_ptr<VertexBuffer> _VertexBuffer;
-		std::shared_ptr<Shader> _Shader;
-
-		std::vector<SpriteBatchEntry> _SpriteMap;
-	};
-
-	/* represents a single sprite entry in a batch table */
-	struct SpriteBatchEntry
-	{
-		/* sprite component source data model */
-		SpriteComponent* sprite;
-
-		/* position within the parent batch data */
-		uint32_t offset;
-
-		/* current parent batch */
-		SpriteBatch* batch;
+		uint32_t						_SpriteCount;
+		glm::mat4						_VPMatrix;
+		Shader*							_Shader;
+		Texture*						_Texture;
+		Color							_Color;
 	};
 }

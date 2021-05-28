@@ -14,24 +14,45 @@
 
 namespace Wyrd
 {
-	SpriteBatch::SpriteBatch()
+	bool SpriteBatch::Initialise(Renderer* renderer)
 	{
-		SpriteVertex verts = { 0.0f, 0.0f, 0.0f, 0.0f};
+		_Renderer = renderer;
+		_SpriteCount = 0;
+
+		SpriteVertex verts = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 		_VertexBuffer.reset(VertexBuffer::Create((float*)&verts, sizeof(SpriteVertex), "spritebatch"));
 
 		_VertexArray.reset(VertexArray::Create());
 		_VertexArray->SetAttribute(0, 0, 2, sizeof(SpriteVertex));
 		_VertexArray->SetAttribute(1, 2, 2, sizeof(SpriteVertex));
+
+		_Shader = nullptr;
+		_Texture = nullptr;
+
+		return true;
 	}
 
-	int32_t SpriteBatch::AddSprite(SpriteComponent* sprite)
+
+	void SpriteBatch::Submit(DrawSpriteCommand& cmd)
 	{
+		bool flushRequired = false;
+
+		/* switching texture requires a flush */
+		if ((_Texture != nullptr) && _Texture != cmd.texture)
+			flushRequired = true;
+
+		/* flush if required */
+		if (flushRequired == true)
+			Flush();
+
 		/* add vertices */
-		_vertices.push_back({ (float)sprite->position.x, (float)sprite->position.y, 0.0f, 0.0f });
-		_vertices.push_back({ (float)sprite->position.x, (float)sprite->position.y + (float)sprite->size.y, 0.0f, -1.0f });
-		_vertices.push_back({ (float)sprite->position.x + (float)sprite->size.x, (float)sprite->position.y + (float)sprite->size.y, 1.0f, -1.0f });
-		_vertices.push_back({ (float)sprite->position.x + (float)sprite->size.x, (float)sprite->position.y, 1.0f, 0.0f });
+		_vertices.push_back({ (float)cmd.position.x, (float)cmd.position.y, 0.0f, 0.0f });
+		_vertices.push_back({ (float)cmd.position.x, (float)cmd.position.y + (float)cmd.size.y, 0.0f, -1.0f });
+		_vertices.push_back({ (float)cmd.position.x + (float)cmd.size.x, (float)cmd.position.y + (float)cmd.size.y, 1.0f, -1.0f });
+		_vertices.push_back({ (float)cmd.position.x + (float)cmd.size.x, (float)cmd.position.y + (float)cmd.size.y, 1.0f, -1.0f });
+		_vertices.push_back({ (float)cmd.position.x + (float)cmd.size.x, (float)cmd.position.y, 1.0f, 0.0f });
+		_vertices.push_back({ (float)cmd.position.x, (float)cmd.position.y, 0.0f, 0.0f });
 
 		/* bind the batch vertex array */
 		_VertexArray->Bind();
@@ -39,66 +60,36 @@ namespace Wyrd
 		/* update both the vertex and index buffers */
 		_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(SpriteVertex) * (uint32_t)_vertices.size(), 0);
 
-		/* create and add a new batch entry */
-		_SpriteMap.push_back({ sprite, (uint32_t)(_SpriteMap.size() * 4), this });
+		_VPMatrix = cmd.vpMatrix;
+		_Shader = cmd.shader;
+		_Texture = cmd.texture;
+		_Color = cmd.color;
 
-		return _SpriteMap.size() - 1;
+		_SpriteCount++;
 	}
 
-	void SpriteBatch::UpdateSprite(SpriteComponent* sprite)
+
+	void SpriteBatch::Flush()
 	{
-		/* retrieve the sprite batch entry */
-		SpriteBatchEntry& entry = _SpriteMap.at(sprite->BatchIndex);
-
-		/* update vertices */
-		_vertices.at(entry.offset + 0) = { (float)sprite->position.x, (float)sprite->position.y, 0.0f, 0.0f };
-		_vertices.at(entry.offset + 1) = { (float)sprite->position.x, (float)sprite->position.y + (float)sprite->size.y, 0.0f, -1.0f };
-		_vertices.at(entry.offset + 2) = { (float)sprite->position.x + (float)sprite->size.x, (float)sprite->position.y + (float)sprite->size.y, 1.0f, -1.0f };
-		_vertices.at(entry.offset + 3) = { (float)sprite->position.x + (float)sprite->size.x, (float)sprite->position.y, 1.0f, 0.0f };
-
-		/* bind the batch vertex array */
-		_VertexArray->Bind();
-
-		/* update both the vertex and index buffers */
-		_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(SpriteVertex) * (uint32_t)_vertices.size(), 0);
-	}
-
-	void SpriteBatch::RemoveSprite(SpriteComponent* sprite)
-	{
-		/* retrieve the batch entry */
-		auto spriteBatchEntry = std::find_if(_SpriteMap.begin(), _SpriteMap.end(), [&sprite](const SpriteBatchEntry& s) { return sprite == s.sprite; });
-
-		if (spriteBatchEntry != _SpriteMap.end())
+		if (_Shader == nullptr)
 		{
-			_SpriteMap.erase(spriteBatchEntry);
+			return;
 		}
-	}
 
-	void SpriteBatch::SetShader(std::shared_ptr<Shader> shader)
-	{
-		_Shader = shader;
-	}
-
-	void SpriteBatch::Render(Renderer& renderer, const glm::mat4& viewProjectionMat)
-	{
 		_Shader->Bind();
 
-		_Shader->SetVPMatrix(viewProjectionMat);
+		_Shader->SetVPMatrix(_VPMatrix);
 
 		_Shader->SetModelMatrix(glm::mat4(1.0f));
+		_Shader->SetUniformColor("blendColor", _Color);
 
+		_Texture->Bind();
 		_VertexArray->Bind();
 		_VertexBuffer->Bind();
 
-		for (auto&& sprite : _SpriteMap)
-		{
-			sprite.sprite->GetTexture()->Bind();
-			
-			_Shader->SetModelMatrix(sprite.sprite->Owner->transform->GetModelMatrix());
+		_Renderer->DrawArray(RendererDrawType::Triangles, 0, _SpriteCount * 6);
 
-			_Shader->SetUniformColor("blendColor", sprite.sprite->color);
-			
-			renderer.DrawArray(RendererDrawType::TriangleFan, sprite.offset, 4);
-		}
+		_vertices.clear();
+		_SpriteCount = 0;
 	}
 }

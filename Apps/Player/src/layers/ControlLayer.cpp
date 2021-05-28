@@ -58,17 +58,7 @@ void ControlLayer::OnUpdate(Timestep ts)
 	{
 		Application::Get().GetBehaviour().Update(ts);
 
-		for (auto& sl : scene->GetLayers())
-		{
-			for (auto& go : sl->GetGameObjects())
-			{
-				go->transform->Recalculate();
-				for (auto& component : go->components)
-				{
-					component->Recalculate();
-				}
-			}
-		}
+		
 	}
 }
 
@@ -76,27 +66,6 @@ void ControlLayer::OnRender(Timestep ts, Renderer& renderer)
 { 
 	auto scene = SceneManager::getInstance().GetScene();
 
-	auto camera = scene->GetPrimaryCamera();
-
-	Transform2DComponent* transform2D = dynamic_cast<Transform2DComponent*>(camera->Owner->transform.get());
-
-	camera->GetCamera().SetPosition(vec3(transform2D->position, 0.0f));
-	camera->GetCamera().RecalulateViewProjection();
-
-	if (scene)
-	{
-		renderer.Clear(scene->bgcolor.r, scene->bgcolor.g, scene->bgcolor.b);
-
-		for (auto& l : scene->GetLayers())
-		{
-			auto layer2D = dynamic_cast<SceneLayer2D*>(l.get());
-			layer2D->GetSpriteBatch()->Render(renderer, camera->GetCamera().GetViewProjectionMatrix());
-		}
-	}
-	else
-	{
-		renderer.Clear(1.0, 0.0, 0.0);
-	}
 }
 
 bool ControlLayer::LoadCoreFile()

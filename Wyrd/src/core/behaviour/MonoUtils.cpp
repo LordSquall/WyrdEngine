@@ -18,6 +18,67 @@
 
 namespace Wyrd
 {
+	bool MonoUtils::SetProperty(MonoImage* image, const std::string& ns, const std::string& cls, const std::string& prop, MonoObject* obj, std::vector<void*> value)
+	{
+		MonoObject* exc = nullptr;
+
+		/* retrieve the class */
+		MonoClass* clsPtr = mono_class_from_name(image, ns.c_str(), cls.c_str());
+		if (clsPtr == nullptr)
+		{
+			WYRD_ERROR("class not found: {0}", ns + "::" + cls);
+			return false;
+		}
+
+		/* retrieve the property */
+		MonoProperty* propPtr = mono_class_get_property_from_name(clsPtr, prop.c_str());
+		if (propPtr == nullptr)
+		{
+			WYRD_ERROR("property not found: {0}", ns + "::" + cls + "::" + prop);
+			return false;
+		}
+
+		mono_property_set_value(propPtr, obj, &value[0], &exc);
+		if (exc != nullptr)
+		{
+			mono_print_unhandled_exception(exc);
+			return false;
+		}
+
+		return true;
+	}
+
+	bool MonoUtils::InvokeMethod(MonoImage* image, const std::string& ns, const std::string& cls, const std::string& method, MonoObject* obj, std::vector<void*> value)
+	{
+		MonoObject* exc = nullptr;
+
+		/* retrieve the class */
+		MonoClass* clsPtr = mono_class_from_name(image, ns.c_str(), cls.c_str());
+		if (clsPtr == nullptr)
+		{
+			WYRD_ERROR("class not found: {0}", ns + "::" + cls);
+			return false;
+		}
+
+		/* retrieve the property */
+		MonoMethod* methodPtr = mono_class_get_method_from_name(clsPtr, method.c_str(), value.size());
+		if (methodPtr == nullptr)
+		{
+			WYRD_ERROR("method not found: {0}", ns + "::" + cls + "::" + method);
+			return false;
+		}
+
+		mono_runtime_invoke(methodPtr, obj, (value.size() == 0) ? nullptr : &value[0], &exc);
+		if (exc != nullptr)
+		{
+			mono_print_unhandled_exception(exc);
+			return false;
+		}
+
+		return true;
+	}
+
+
 	void* MonoUtils::ExecuteScriptMethod(ScriptComponent* scriptComponent, std::string& functionName, std::vector<void*> args)
 	{
 		MonoMethod* method = &*scriptComponent->GetCustomObject()->GetMethod(functionName);
@@ -77,7 +138,7 @@ namespace Wyrd
 		return { mono_property_get_get_method(gameObjectProp), mono_property_get_set_method(gameObjectProp) };
 	}
 
-	MonoMethod* MonoUtils::FindMethodInClass(std::shared_ptr<ScriptedClass> scriptedClass, const char* methodName, int argumentCount, bool terminateOnMissing)
+	MonoMethod* MonoUtils::FindMethodInClass(const ScriptedClass* scriptedClass, const char* methodName, int argumentCount, bool terminateOnMissing)
 	{
 		MonoMethod* method = mono_class_get_method_from_name((MonoClass*)*scriptedClass->ManagedClass, methodName, argumentCount);
 		if (method == nullptr)

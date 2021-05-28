@@ -18,7 +18,7 @@
 
 namespace Wyrd
 {
-	ScriptedCustomObject::ScriptedCustomObject(void* domain, std::shared_ptr<ScriptedClass> scriptedClass)
+	ScriptedCustomObject::ScriptedCustomObject(void* domain, const ScriptedClass* scriptedClass, const ScriptedClass* scriptedEntityClass, Entity entity)
 	{
 		/* Store the class */
 		Class = scriptedClass->ManagedClass;
@@ -27,7 +27,6 @@ namespace Wyrd
 		TypeName = scriptedClass->GetName();
 
 		/* Map methods */
-		_Properties["GameObject"]		= MonoUtils::FindPropertyInClass(scriptedClass, "GameObject");
 		_Methods["OnStart"]				= MonoUtils::FindMethodInClass(scriptedClass, "OnStart", 0, false);
 		_Methods["OnUpdate"]			= MonoUtils::FindMethodInClass(scriptedClass, "OnUpdate", 1, false);
 		_Methods["OnTriggerCollision"]	= MonoUtils::FindMethodInClass(scriptedClass, "OnTriggerCollision", 1, false);
@@ -36,7 +35,22 @@ namespace Wyrd
 		_Methods["OnKeyUp"]				= MonoUtils::FindMethodInClass(scriptedClass, "OnKeyUp", 1, false);
 
 		/* Create Object */
-		Object = MonoUtils::CreateNewObject((MonoDomain*)domain, scriptedClass);
+		Object = mono_object_new((MonoDomain*)domain, (MonoClass*)*scriptedClass->ManagedClass);
+		if (Object == NULL)
+		{
+			WYRD_CORE_ERROR("mono_object_new for {0}", scriptedClass->GetName());
+		}
+
+		/* Call the object default constructor */
+		mono_runtime_object_init(Object);
+
+		MonoMethod* registerEntityMethod = mono_class_get_method_from_name((MonoClass*)*scriptedEntityClass->ManagedClass, "RegisterEntity", 1);
+
+		MonoObject* exc = nullptr;
+		void* registerEntityArgs[1] = { &entity };
+		mono_runtime_invoke(registerEntityMethod, Object, registerEntityArgs, &exc);
+
+		if (exc != nullptr) mono_print_unhandled_exception(exc);
 	}
 
 	ScriptedCustomObject::~ScriptedCustomObject()

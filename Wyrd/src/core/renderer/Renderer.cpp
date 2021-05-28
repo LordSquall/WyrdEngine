@@ -9,13 +9,37 @@ namespace Wyrd
 
 	Renderer* Renderer::Create()
 	{
+		Renderer* newRenderer = nullptr;
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::None:		OSR_CORE_ASSERT(false, "RendererAPI::None is currently not supported"); return nullptr;
-		case RendererAPI::OpenGL:	return new OpenGLRenderer();
+		case RendererAPI::OpenGL:	newRenderer = new OpenGLRenderer();
 		}
 
-		OSR_CORE_ASSERT(false, "Unknown Renderer API");
-		return nullptr;
+		if (newRenderer == nullptr)
+		{
+			OSR_CORE_ASSERT(false, "Unknown Renderer API");
+			return newRenderer;
+		}
+
+		/* Initialise the renderer subsystems */
+		newRenderer->Initialise();
+
+		return newRenderer;
+	}
+
+	void Renderer::Initialise() 
+	{
+		_spriteBatch.Initialise(this);
+	}
+
+	void Renderer::Submit(DrawSpriteCommand& cmd)
+	{
+		_spriteBatch.Submit(cmd);
+	}
+
+	void Renderer::Flush()
+	{
+		_spriteBatch.Flush();
 	}
 }

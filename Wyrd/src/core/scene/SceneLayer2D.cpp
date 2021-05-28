@@ -16,7 +16,7 @@ namespace Wyrd
 		/* initiailse the sprite batch */
 		_SpriteBatch = std::move(std::make_unique<SpriteBatch>());
 
-		_SpriteBatch->SetShader(Resources::Get().Shaders["Sprite"]);
+		//_SpriteBatch->SetShader(Resources::Get().Shaders["Sprite"]);
 
 		return true;
 	}
@@ -30,7 +30,7 @@ namespace Wyrd
 
 	void SceneLayer2D::Render(Renderer& renderer, const glm::mat4& viewProjectionMat)
 	{
-		_SpriteBatch->Render(renderer, viewProjectionMat);
+		//_SpriteBatch->Render(renderer, viewProjectionMat);
 	}
 
 	void SceneLayer2D::AssignScripts(Behaviour* behaviour)

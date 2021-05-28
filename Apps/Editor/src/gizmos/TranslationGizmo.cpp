@@ -245,7 +245,7 @@ namespace Wyrd::Editor
 	{
 		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
 
-        if (evtArgs.gameObject != nullptr)
+        /*if (evtArgs.gameObject != nullptr)
         {
             Transform2DComponent* transform2D = dynamic_cast<Transform2DComponent*>(evtArgs.gameObject->transform.get());
             if (transform2D != nullptr)
@@ -256,7 +256,7 @@ namespace Wyrd::Editor
         else
         {
             _GameObject = nullptr;
-        }
+        }*/
 	}
 
 

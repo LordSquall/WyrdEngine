@@ -2,13 +2,13 @@
 
 /* core wyrd includes */
 #include <wyrdpch.h>
+#include <core/Log.h>
 #include <core/Application.h>
 #include <core/Layer.h>
+#include <core/ecs/Components.h>
 
 /* local includes */
 #include "PropertiesViewer.h"
-#include "PropertyViewFactory.h"
-#include "views/DataModels/components/Transform2DComponentView.h"
 #include "services/ServiceManager.h"
 #include "support/ImGuiUtils.h"
 
@@ -17,145 +17,128 @@
 
 namespace Wyrd::Editor
 {
-	Wyrd::GameObject* PropertiesViewer::_SelectedGameObject = nullptr;
-	std::shared_ptr<Resource> PropertiesViewer::_SelectedAsset = NULL;
+	Wyrd::Entity PropertiesViewer::_SelectedEntity = 0;
 
-	PropertiesViewer::PropertiesViewer(EditorLayer* editorLayer) : EditorViewBase("Properties", editorLayer), _Mode(None)
+	PropertiesViewer::PropertiesViewer(EditorLayer* editorLayer) : EditorViewBase("Properties", editorLayer)
 	{
 		_EventService = ServiceManager::Get<EventService>(ServiceManager::Service::Events);
+		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace);
 
 		_EventService->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(PropertiesViewer::OnSelectedGameObjectChanged));
-		_EventService->Subscribe(Events::EventType::SelectedAssetChanged, EVENT_FUNC(PropertiesViewer::OnSelectedAssetChanged));
-		_EventService->Subscribe(Events::EventType::RefreshView, EVENT_FUNC(PropertiesViewer::OnRefreshView));
 	}
 
 	PropertiesViewer::~PropertiesViewer() {}
 
 	void PropertiesViewer::OnEditorRender()
 	{
-		switch (_Mode)
-		{
-		case None:
-			ImGui::Text("No Context Selected");
-			break;
-		case GameObjectUI:
-			DrawGameObjectUI();
-			break;
-		case AssetUI:
-			DrawAssetUI();
-			break;
-		}
+		DrawGameObjectUI();
 	}
 
 	void PropertiesViewer::OnSelectedGameObjectChanged(Events::EventArgs& args)
 	{
 		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
 
-		/* before changes the selected game object, we need to clear any component state values such as debug overlays etc.... */
-		if (_SelectedGameObject != nullptr)
-		{
-			for (auto& component : _SelectedGameObject->components)
-			{
-				component->debugOverlayFunction = nullptr;
-			}
-		}
-
-		_SelectedGameObject = evtArgs.gameObject;
-
-		RefreshComponentViews();
-	}
-
-	void PropertiesViewer::OnSelectedAssetChanged(Events::EventArgs& args)
-	{
-		Events::SelectedAssetChangedArgs& evtArgs = static_cast<Events::SelectedAssetChangedArgs&>(args);
-		_SelectedAsset = evtArgs.resource;
-		_Mode = AssetUI;
-	}
-
-	void PropertiesViewer::OnRefreshView(Events::EventArgs& args)
-	{
-		Events::RefreshViewEventArgs& evtArgs = static_cast<Events::RefreshViewEventArgs&>(args);
-		RefreshComponentViews();
-	}
-
-	void PropertiesViewer::RefreshComponentViews()
-	{
-		/* clear the property views */
-		_PropertiesViews.clear();
-
-		/* we only need to create new views if we have a selected game object */
-		if (_SelectedGameObject != nullptr)
-		{
-			/* create the required views, a transform view is always needed */
-			if (_SelectedGameObject->transform->GetType() == SceneComponentType::Transform2D)
-			{
-				_PropertiesViews.push_back(std::move(PropertyViewFactory::Create(_SelectedGameObject->transform.get(), _SelectedGameObject)));
-			}
-
-			for (auto& component : _SelectedGameObject->components)
-			{
-				_PropertiesViews.push_back(std::move(PropertyViewFactory::Create(component.get(), _SelectedGameObject)));
-			}
-
-			_Mode = GameObjectUI;
-		}
+		_SelectedEntity = evtArgs.entity;
 	}
 
 	void PropertiesViewer::DrawGameObjectUI()
 	{
-		if (_SelectedGameObject != NULL)
+		if (_SelectedEntity == ENTITY_INVALID)
 		{
-			static char spriteName[32] = "SpriteName";
-			strcpy(spriteName, _SelectedGameObject->name.c_str());
-			ImGui::Text("Name:");
+			return;
+		}
+
+
+		/* Create the basic metadata component view. All entities must have this component */
+		MetaDataComponent* metaDataComp = _WorkspaceService->GetLoadedScene()->Get<MetaDataComponent>(_SelectedEntity);
+		if (metaDataComp == nullptr)
+		{
+			WYRD_CORE_ERROR("Entity does not contain MetaDataComponent : {0}", _SelectedEntity);
+		}
+
+		ImGui::Text("Name:");
+		ImGui::SameLine();
+		ImGui::InputText("##label", metaDataComp->name, 32);
+		//ImGui::InputText("##label", &(metaDataComp->name), ImGuiInputTextFlags_CallbackCharFilter | ImGuiInputTextFlags_AutoSelectAll, ImGui::InputTextCallback);
+		ImGui::Separator();
+
+		/* Process each of the registered component views to see if the entity has a matching assigned component */
+		std::bitset<64> mask = _WorkspaceService->GetLoadedScene()->GetMask(_SelectedEntity);
+
+		for (int i = 0; i < _WorkspaceService->GetLoadedScene()->componentPools.size(); ++i)
+		{
+			if (mask.test(i))
+			{
+				// TODO
+			}
+		}
+
+		ECSTransform2DComponent* transformComp = _WorkspaceService->GetLoadedScene()->Get<ECSTransform2DComponent>(_SelectedEntity);
+		if (transformComp != nullptr)
+		{
+			ImGui::TextColored({1.0f, 0.0f, 0.0f, 1.0f }, "Transform");
+			ImGui::InputFloat2("Pos     ", (float*)&transformComp->position);
+		}
+		ImGui::Separator();
+
+		ECSSpriteComponent* spriteComp = _WorkspaceService->GetLoadedScene()->Get<ECSSpriteComponent>(_SelectedEntity);
+		if (spriteComp != nullptr)
+		{
+			ImGui::TextColored({ 1.0f, 0.0f, 0.0f, 1.0f }, "Sprite");
+			if (ImGui::Button("REMOVED"))
+			{
+				_WorkspaceService->GetLoadedScene()->RemoveComponent<ECSSpriteComponent>(_SelectedEntity);
+			}
+			ImGui::InputFloat2("Pos ", (float*)&spriteComp->position);
+			ImGui::InputFloat2("Size", (float*)&spriteComp->size);
+
+			//TODO - need to move to util function
+			ImGui::Text("Texture");
+			ImGui::PushID("texture");
 			ImGui::SameLine();
-			if (ImGui::InputText("##edit", spriteName, IM_ARRAYSIZE(spriteName)) == true)
-			{
-				_SelectedGameObject->name = std::string(spriteName);
-			}
 
-			ImGui::Separator();
+			auto texture = Application::Get().GetResources().Textures[spriteComp->texture];
 
-			
-			int componentIdx = 0;
-			int removableIdx = -1;
-			for (auto& view : _PropertiesViews)
+			ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2((float)texture->GetWidth(), (float)texture->GetHeight()));
+			if (ImGui::BeginDragDropTarget())
 			{
-				ImGui::AlignTextToFramePadding();
-				if (ImGui::TreeNodeEx(view->GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap))
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_TEXTURE"))
 				{
-					if (view->GetEnabledControls())
-					{
-						ImGui::SameLine(ImGui::GetWindowWidth() - 30);
-						if (ImGui::Button("x"))
-						{
-							removableIdx = componentIdx - 1;
-						}
-					}
-
-					view->OnPropertyEditorDraw();
-
-					ImGui::TreePop();
+					UID* textureUID = (UID*)payload->Data;
+					spriteComp->texture = *textureUID;
+					spriteComp->size = { (float)texture->GetWidth(), (float)texture->GetHeight() };
 				}
-				componentIdx++;
+				ImGui::EndDragDropTarget();
 			}
+			ImGui::PopID();
 
-			if (removableIdx != -1)
-			{
-				_SelectedGameObject->components.erase(_SelectedGameObject->components.begin() + removableIdx);
-
-				RefreshComponentViews();
-
-				removableIdx = -1;
-			}
+			ImGui::ColorEdit3("Color", (float*)&spriteComp->color);
 		}
-	}
+		ImGui::Separator();
 
-	void PropertiesViewer::DrawAssetUI()
-	{
-		if (_SelectedAsset != NULL)
+		ECSScriptComponent* scriptComp = _WorkspaceService->GetLoadedScene()->Get<ECSScriptComponent>(_SelectedEntity);
+		if (scriptComp != nullptr)
 		{
-			ImGui::TextColored(ImVec4(1, 0, 0, 1), "No Assets");
+			ImGui::TextColored({ 1.0f, 0.0f, 0.0f, 1.0f }, "Script");
+			ImGui::Text("Script: %s", scriptComp->script.str().c_str());
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_SCRIPT"))
+				{
+					UID* scriptUID = (UID*)payload->Data;
+					scriptComp->script = *scriptUID;
+				}
+				ImGui::EndDragDropTarget();
+			}
 		}
+		ImGui::Separator();
+
+		ECSCameraComponent* cameraComp = _WorkspaceService->GetLoadedScene()->Get<ECSCameraComponent>(_SelectedEntity);
+		if (cameraComp != nullptr)
+		{
+			ImGui::TextColored({ 1.0f, 0.0f, 0.0f, 1.0f }, "Camera");
+			ImGui::InputFloat("Size     ", &cameraComp->size);
+		}
+		ImGui::Separator();
 	}
 }

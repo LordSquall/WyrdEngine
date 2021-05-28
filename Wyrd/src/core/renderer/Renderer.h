@@ -5,6 +5,8 @@
 #include "core/export.h"
 #include "core/maths/Rect.h"
 #include "events/Event.h"
+#include "core/renderer/commands/RendererCommands.h"
+#include "core/pipeline/SpriteBatch.h"
 
 namespace Wyrd
 {
@@ -40,15 +42,21 @@ namespace Wyrd
 		virtual	void DrawRay(const Ray& ray, const glm::vec4& color, float length, float thickness, const glm::mat4& vpMatrix) const = 0;
 		virtual	void DrawCircle(const glm::vec2& position, const glm::vec2& radius, const glm::vec4& color, const glm::mat4& vpMatrix) const = 0;
 
-		static Renderer* Create();
+		virtual void Initialise();
+		virtual void Submit(DrawSpriteCommand& cmd);
+		virtual void Flush();
 
 		inline struct RendererInfo& GetVendorInfo() { return _vendorInfo; }
 
 		inline static RendererAPI GetAPI() { return s_RendererAPI; }
 
+		static Renderer* Create();
+	private:
+		SpriteBatch _spriteBatch;
+
 	private:
 		static RendererAPI s_RendererAPI;
-
+		
 	protected:
 		struct RendererInfo _vendorInfo;
 	};

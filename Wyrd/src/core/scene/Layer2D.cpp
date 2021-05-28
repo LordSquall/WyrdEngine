@@ -27,7 +27,7 @@ namespace Wyrd
 		/* Initiailse the sprite batch */
 		_SpriteBatch = std::make_shared<SpriteBatch>();
 
-		_SpriteBatch->SetShader(Resources::Get().Shaders["Sprite"]);
+		//_SpriteBatch->SetShader(Resources::Get().Shaders["Sprite"]);
 
 		return true;
 	}
@@ -36,12 +36,12 @@ namespace Wyrd
 
 	void Layer2D::Render(Renderer& renderer, const glm::mat4& viewProjectionMat)
 	{
-		_SpriteBatch->Render(renderer, viewProjectionMat);
+		//_SpriteBatch->Render(renderer, viewProjectionMat);
 	}
 
 	bool Layer2D::RegisterSprite(std::shared_ptr<SpriteComponent> spriteComponent)
 	{
-		spriteComponent->BatchIndex = _SpriteBatch->AddSprite(spriteComponent.get());
+		//spriteComponent->BatchIndex = _SpriteBatch->AddSprite(spriteComponent.get());
 
 		return true;
 	}

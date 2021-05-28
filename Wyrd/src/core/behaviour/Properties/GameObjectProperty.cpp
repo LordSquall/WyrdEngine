@@ -52,7 +52,7 @@ namespace Wyrd
 
 	void GameObjectProperty::Resolve(Scene& scene)
 	{
-		_Value = &*(scene.FindGameObject(_ValueUID));
+		//_Value = &*(scene.FindGameObject(_ValueUID));
 	}
 
 	SCRIPT_PROPERTY_FACTORY_REGISTER(GameObjectProperty);

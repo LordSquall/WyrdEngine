@@ -1,17 +1,31 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WyrdAPI
 {
     [StructLayout(LayoutKind.Sequential)]
     public class Vector2
     {
-        public float X { get; set; } = 0.0f;
-        public float Y { get; set; } = 0.0f;
+        private float _x = 0.0f;
+        private float _y = 0.0f;
+
+        public float X 
+        { 
+            get { return _x; }
+            set 
+            { 
+                _x = value;
+            }
+        }
+
+        public float Y
+        {
+            get { return _y; }
+            set
+            {
+                _y = value;
+            }
+        }
 
         public Vector2() { }
 

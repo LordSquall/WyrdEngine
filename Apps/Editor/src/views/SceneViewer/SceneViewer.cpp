@@ -11,6 +11,8 @@
 #include <core/scene/Layer2D.h>
 #include <core/scene/SceneLayer.h>
 #include <core/scene/components/Transform2DComponent.h>
+#include <core/ecs/ECS.h>
+#include <core/ecs/EntitySet.h>
 
 /* local include */
 #include "SceneViewer.h"
@@ -81,19 +83,14 @@ namespace Wyrd::Editor
 
 	void SceneViewer::OnUpdate(Timestep ts)
 	{
-
-		_CoreSystemService->GetSystem<EditorSystem>("Editor")->OnUpdate();
-
-		if (_Scene != nullptr)
+		for (Entity e : EntitySet<ECSTransform2DComponent, ECSSpriteComponent, ECSEditorComponent>(*_Scene.get()))
 		{
-			/* Render Each sprite layer */
-			for (auto& sl : _Scene->GetLayers())
-			{
-				for (auto& go : sl->GetGameObjects())
-				{
-					UpdateGameObject(go, ts, false);
-				}
-			}
+			ECSTransform2DComponent* transform = _Scene->Get<ECSTransform2DComponent>(e);
+			ECSSpriteComponent* sprite = _Scene->Get<ECSSpriteComponent>(e);
+			ECSEditorComponent* editorComponent = _Scene->Get<ECSEditorComponent>(e);
+
+			editorComponent->inputArea.position = sprite->position + transform->position;
+			editorComponent->inputArea.size = sprite->size;
 		}
 	}
 
@@ -106,31 +103,26 @@ namespace Wyrd::Editor
 			_Framebuffer->Bind();
 
 			renderer.Clear(0.1f, 0.1f, 0.1f);
-
-			if (_GridGizmo->IsEnabled())
-				_GridGizmo->Render(ts, renderer);
-
 			if (_Scene != nullptr)
 			{
-				/* Render each of the sprite layers */
-				for (auto& sl : _Scene->GetLayers())
+				for (Entity e : EntitySet<ECSTransform2DComponent, ECSSpriteComponent>(*_Scene.get()))
 				{
-					if (sl->IsVisible())
-						sl->Render(renderer, _CameraController->GetCamera().GetViewProjectionMatrix());
+					ECSTransform2DComponent* transform = _Scene->Get<ECSTransform2DComponent>(e);
+					ECSSpriteComponent* sprite = _Scene->Get<ECSSpriteComponent>(e);
+
+					Wyrd::DrawSpriteCommand cmd{};
+					cmd.type = 1;
+					cmd.position = sprite->position + transform->position;
+					cmd.size = sprite->size;
+					cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
+					cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
+					cmd.texture = Application::Get().GetResources().Textures[sprite->texture].get();
+					cmd.color = sprite->color;
+
+					renderer.Submit(cmd);
 				}
 
-				if (_SelectedGameObject)
-				{
-					for (auto& component : _SelectedGameObject->components)
-					{
-						if (component->debugOverlayFunction != nullptr)
-						{
-							component->debugOverlayFunction(renderer, ts, _CameraController->GetCamera().GetViewProjectionMatrix());
-						}
-					}
-
-					_TranslationGizmo->Render(ts, renderer);
-				}
+				renderer.Flush();
 			}
 
 			_Framebuffer->Unbind();
@@ -203,7 +195,7 @@ namespace Wyrd::Editor
 			{
 				if (ImGui::MenuItem("Delete"))
 				{
-					_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(nullptr));
+					_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(ENTITY_INVALID));
 				}
 				ImGui::EndPopup();
 			}
@@ -268,11 +260,14 @@ namespace Wyrd::Editor
 			if (_Scene != nullptr)
 			{
 				/* test each of the editor components to check input */
-				GameObject* selectedGameObject = _CoreSystemService->GetSystem<EditorSystem>("Editor")->FindInWorldSpace(worldSpace);
-
-				if (selectedGameObject != nullptr)
+				for (Entity e : EntitySet<ECSEditorComponent>(*_Scene.get()))
 				{
-					_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(selectedGameObject));
+					ECSEditorComponent* editorComponent = _Scene->Get<ECSEditorComponent>(e);
+
+					if (editorComponent->inputArea.ContainsPoint(worldSpace) == true)
+					{
+						_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(e));
+					}
 				}
 			}
 		}
@@ -346,7 +341,7 @@ namespace Wyrd::Editor
 		case OSR_KEY_DELETE:
 			if (_SelectedGameObject != nullptr)
 			{
-				_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(nullptr));
+				//_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(nullptr));
 			}
 			break;
 		}
@@ -397,6 +392,6 @@ namespace Wyrd::Editor
 	{
 		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
 
-		_SelectedGameObject = evtArgs.gameObject;
+		//_SelectedGameObject = evtArgs.gameObject;
 	}
 }

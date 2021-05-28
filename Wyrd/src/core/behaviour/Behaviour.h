@@ -7,6 +7,7 @@
 #include "core/behaviour/CompileResults.h"
 #include "core/UID.h"
 #include "core/behaviour/BehaviourInput.h"
+#include "core/ecs/ECS.h"
 
 #include <mono/metadata/object-forward.h>
 
@@ -177,22 +178,10 @@ namespace Wyrd
 		void BroadcastTriggerCall(std::shared_ptr<GameObject> gameObject, std::string& funcName, std::shared_ptr<GameObject> triggerObject, std::vector<void*> args);
 
 	private:
+
+		ScriptedCustomObject* GetCustomObject(UID& uid, uint32_t instanceID);
+
 		void SetInputState(GameObject* gameObject, int key, int state);
-
-		void BuildManagedGameObjects();
-		void BuildManagedGameObjects(GameObject* gameObject, std::shared_ptr<ScriptedClass> gameObjectClass);
-
-		void LinkManagedGameObjects();
-		void LinkManagedGameObjects(GameObject* gameObject);
-
-		void LinkGameObjectProperties();
-		void LinkGameObjectProperties(GameObject* gameObject);
-
-		void StartManagedGameObjects();
-		void StartManagedGameObjects(GameObject* gameObject);
-
-		void UpdateManagedGameObjects(Timestep ts);
-		void UpdateManagedGameObjects(Timestep ts, GameObject* gameObject);
 
 		void UpdateInputState();
 
@@ -209,6 +198,8 @@ namespace Wyrd
 		std::map<UID, std::shared_ptr<ScriptedGameObject>>		_ScriptedGameObjects;
 		std::map<UID, std::shared_ptr<ScriptedCustomObject>>	_ScriptedCustomObjects;
 
+		std::map<UID, std::vector<std::shared_ptr<ScriptedCustomObject>>>		_ECSScriptedCustomObjects;
+
 		std::map<int, std::string> _FunctionKeyStateMap;
 
 		void* _InputMousePos;
@@ -222,8 +213,8 @@ namespace Wyrd
 		Behaviour*		_BehaviourSubsystem;
 		Physics*		_PhysicsSubsystem;
 		Resources*		_ResourcesSubsystem;
-		
-		std::vector<void*> _NativePtrMap;
+
+		Scene* 			_Scene;
 
 		BehaviourInput	_Input;
 

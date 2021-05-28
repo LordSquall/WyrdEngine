@@ -24,7 +24,7 @@ namespace Wyrd
 		void* propertyIter = NULL;
 		void* methodIter = NULL;
 
-		WYRD_TRACE("Mapping Scripted Class: {0}", className);
+		//WYRD_TRACE("Mapping Scripted Class: {0}", className);
 
 		/* locate each of the functions with the class */
 		while ((unmangedMethod = mono_class_get_methods((MonoClass*)*ManagedClass, &methodIter))) {
@@ -50,7 +50,7 @@ namespace Wyrd
 
 			if (valueMethod)
 			{
-				WYRD_TRACE("- Method: {0}", methodName);
+				//WYRD_TRACE("- Method: {0}", methodName);
 				std::shared_ptr<ScriptedMethod> method = std::make_shared<ScriptedMethod>(unmangedMethod);
 				Methods[methodName] = method;
 			}
@@ -94,7 +94,7 @@ namespace Wyrd
 					scriptProp->SetSetter(setter);
 					scriptProp->SetGetter(getter);
 
-					WYRD_TRACE("- Property: {0}", name);
+					//WYRD_TRACE("- Property: {0}", name);
 					Properties[name] = std::move(scriptProp);
 				}
 				else

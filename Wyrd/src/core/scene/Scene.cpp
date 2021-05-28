@@ -5,8 +5,10 @@
 #include "Scene.h"
 #include "Layer2D.h"
 #include "GameObject.h"
+#include "core/ecs/Components.h"
 #include "core/scene/components/Transform2DComponent.h"
 #include "core/scene/SceneLayer2D.h"
+#include "serial/ComponentSerialiserFactory.h"
 #include "serial/TypeSerialisers.h"
 
 namespace Wyrd
@@ -27,78 +29,23 @@ namespace Wyrd
 		bgcolor.a = 1.0f;
 	}
 
-
-	void Scene::Update()
+	bool Scene::Initialise()
 	{
-		/* update each layer */
-		for(auto& layer : _Layers)
-		{
-			//layer->Update();
-		}
+		/* register all the inbuild components with the ECS */
+		RegisterComponent<MetaDataComponent>("MetaData", "MetaDataComponent");
+		RegisterComponent<ECSTransform2DComponent>("Transform2D", "Transform2DComponent");
+		RegisterComponent<ECSSpriteComponent>("Sprite", "SpriteComponent");
+		RegisterComponent<ECSScriptComponent>("Script", "ScriptComponent");
+		RegisterComponent<ECSScriptInternalComponent>("ScriptInternal", "ScriptInternalComponent");
+		RegisterComponent<ECSCameraComponent>("Camera", "CameraComponent");
+		return true;
 	}
-
-
-	GameObject* Scene::FindGameObject(const UID uid)
-	{
-		/* update each layer */
-		for (auto& layer : _Layers)
-		{
-			for (auto& gameObject : layer->GetGameObjects())
-			{
-				if (gameObject->uid == uid)
-					return gameObject.get();
-
-				auto found = gameObject->FindChild(uid);
-				if (found != nullptr)
-					return found;
-			}
-		}
-
-		return nullptr;
-	}
-
 
 	void Scene::AssignScripts(Behaviour* behaviour)
 	{
-		for (auto& layer : _Layers)
-		{
-			layer->AssignScripts(behaviour);
-		}
-	}
 
-
-	const std::unique_ptr<SceneLayer>& Scene::AddLayer(std::unique_ptr<SceneLayer> layer)
-	{
-		_Layers.push_back(std::move(layer));
-		return _Layers.back();
 	}
 	
-	void Scene::RemoveLayer(const UID& uid)
-	{
-		std::vector<std::unique_ptr<SceneLayer>>::iterator layerItr =
-			find_if(_Layers.begin(), _Layers.end(),
-				[&](std::unique_ptr<SceneLayer>& obj) { return obj->GetUID() == uid; }
-		);
-
-		_Layers.erase(std::remove(_Layers.begin(), _Layers.end(), *layerItr));
-	}
-
-
-	CameraComponent* Scene::GetPrimaryCamera()
-	{
-		for (auto& layer : _Layers)
-		{
-			for (auto& gameObject : layer->GetGameObjects())
-			{
-				CameraComponent* camera = gameObject->FindCameraComponent(_ScenePrimaryCamera);
-				if (camera != nullptr)
-					return camera;
-			}
-		}
-
-		return nullptr;
-	}
-
 	jsonxx::Object Scene::ToJson()
 	{
 		jsonxx::Object object;
@@ -112,17 +59,44 @@ namespace Wyrd
 		/* camera zoom */
 		object << "cameraZoom" << cameraZoom;
 
-		/* scene layers */
-		jsonxx::Array sceneLayers;
-		for (auto& layer : _Layers)
-		{
-			jsonxx::Object layerObject;
-			layer->ToJson(layerObject);
-			sceneLayers << layerObject;
-		}
-		object << "sceneLayers" << sceneLayers;
-
+		/* primary camerauid */
 		object << "primaryCameraUID" << _ScenePrimaryCamera.str();
+
+		/* entity list */
+		jsonxx::Array entityArray;
+
+		for (auto& e : entities)
+		{
+			jsonxx::Object entity;
+			entity << "id" << e.id;
+			entity << "mask" << e.mask.to_ullong();
+			entityArray << entity;
+		}
+
+		object << "entities" << entityArray;
+
+
+		/* component pools */
+		jsonxx::Array poolArray;
+		for (auto& p : componentPools)
+		{
+			jsonxx::Object pool;
+
+			pool << "name" << p->name;
+			pool << "elementSize" << p->elementSize;
+
+			jsonxx::Array components;
+
+			for (size_t i = 0; i < entities.size(); i++)
+			{
+				components <<  ComponentSerialiserFactory::Serialise(p->name, &p->data[i * p->elementSize]);
+				pool << "components" << components;
+			}
+
+			poolArray << pool;
+		}
+
+		object << "componentPools" << poolArray;
 
 		return object;
 	}
@@ -141,27 +115,90 @@ namespace Wyrd
 		if (object.has<jsonxx::Number>("cameraZoom"))
 			cameraZoom = object.get<jsonxx::Number>("cameraZoom");
 
-		/* layer 2D */
-		if (object.has<jsonxx::Array>("sceneLayers") == true)
-		{
-			for (size_t i = 0; i < object.get<jsonxx::Array>("sceneLayers").size(); i++)
-			{
-				std::unique_ptr<SceneLayer2D> newLayer = std::make_unique<SceneLayer2D>("NewLayer");
-				newLayer->FromJson(object.get<jsonxx::Array>("sceneLayers").get<jsonxx::Object>((int)i));
-				AddLayer(std::move(newLayer));
-			}
-		}
-
 		/* primary camera uid*/
 		if (object.has<jsonxx::String>("primaryCameraUID"))
 			_ScenePrimaryCamera = UID(object.get<jsonxx::String>("primaryCameraUID"));
+
+		/* entity list */
+		if (object.has<jsonxx::Array>("entities"))
+		{
+			jsonxx::Array entityArray = object.get<jsonxx::Array>("entities");
+		
+			for (size_t i = 0; i < entityArray.size(); i++)
+			{
+				jsonxx::Object entity = entityArray.get<jsonxx::Object>(i);
+				Entity id = (Entity)entity.get<jsonxx::Number>("id");
+				ComponentMask mask = (ComponentMask)entity.get<jsonxx::Number>("mask");
+				
+				/* check to make sure there is space to store this entity */
+				if (id > entities.size())
+					entities.resize(id);
+		
+				entities[id - 1] = { id, mask };
+			}
+		}
+		
+		/* component pools */
+		if (object.has<jsonxx::Array>("componentPools"))
+		{
+			jsonxx::Array componentPoolsArray = object.get<jsonxx::Array>("componentPools");
+			for (size_t i = 0; i < componentPoolsArray.size(); i++)
+			{
+				jsonxx::Object pool = componentPoolsArray.get<jsonxx::Object>(i);
+		
+				std::string poolName = pool.get<String>("name");
+				int poolElementSize = pool.get<Number>("elementSize"); 
+		
+				jsonxx::Array compnentArray = pool.get<jsonxx::Array>("components");
+				for (size_t j = 0; j < compnentArray.size(); j++)
+				{
+					jsonxx::Object component = compnentArray.get<jsonxx::Object>(j);
+		
+					ComponentSerialiserFactory::Deserialise(poolName, component, &(componentPools[i]->data[j * poolElementSize]));
+					componentPools[i]->count++;
+				}
+			}
+		}
 
 		return true;
 	}
 
 	Entity Scene::CreateEntity()
 	{
-		entities.push_back({ entities.size(), ComponentMask() });
+		entities.push_back({ entities.size() + 1, ComponentMask() });
 		return entities.back().id;
+	}
+
+	void Scene::DestroyEntity(Entity entity)
+	{
+		// remove the components from the pool
+		for (auto& p : componentPools)
+		{
+			memcpy(p->data + ((entity-1)*p->elementSize), p->data + (entity * p->elementSize), p->elementSize * (MAX_ENTITIES - entity));
+		}
+		
+		// remove entity from list
+		entities.erase(entities.begin() + (entity-1));
+
+		// update id in remaining entities
+		for (int i = (entity - 1); i < entities.size(); ++i)
+		{
+			entities[i].id--;
+		}
+	}
+
+	void Scene::SwapEntity(Entity entityA, Entity entityB)
+	{
+		// swap components
+		for (auto& p : componentPools)
+		{
+			char* a = p->data + ((entityA - 1) * p->elementSize);
+			char* b = p->data + ((entityB - 1) * p->elementSize);
+			char* t = p->data + (p->elementSize * MAX_ENTITIES);
+
+			memcpy(t, a, p->elementSize);
+			memcpy(a, b, p->elementSize);
+			memcpy(b, t, p->elementSize);
+		}
 	}
 }

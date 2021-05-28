@@ -12,11 +12,10 @@
 #include "views/GameViewer/GameViewer.h"
 #include "views/PropertiesViewer/PropertiesViewer.h"
 #include "views/LayerViewer/LayerViewer.h"
-#include "views/SpriteLayerEditor/SpriteLayerEditor.h"
 #include "views/AssetViewer/AssetViewer.h"
 #include "views/OutputView/OutputView.h"
 #include "views/ExportView/ExportView.h"
-#include "views/ESCLayerEditor/ECSLayerEditor.h"
+#include "views/SceneEditor/SceneEditor.h"
 #include "views/Dialogs/PreferencesDialog.h"
 #include "views/Dialogs/NewProjectDialog.h"
 #include "platform/OpenGL/imgui_opengl_renderer.h"
@@ -51,11 +50,10 @@ namespace Wyrd::Editor
 		_views["Scene Viewer"] = std::make_shared<SceneViewer>(this);
 		_views["Game Viewer"] = std::make_shared<GameViewer>(this);
 		_views["Properties"] = std::make_shared<PropertiesViewer>(this);
-		_views["Sprite Layer Editor"] = std::make_shared<SpriteLayerEditor>(this);
+		_views["Scene Editor"] = std::make_shared<SceneEditor>(this);
 		_views["Asset Viewer"] = std::make_shared<AssetViewer>(this);
 		_views["Output"] = std::make_shared<OutputView>(this);
 		_views["Export View"] = std::make_shared<ExportView>(this);
-		_views["ECS Layer View"] = std::make_shared<ECSLayerEditor>(this);
 
 		util = Utils();
 

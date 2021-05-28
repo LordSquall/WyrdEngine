@@ -83,8 +83,6 @@ namespace Wyrd::Editor
 
 			Application::Get().GetBehaviour().Update(ts);
 			Application::Get().GetPhysics().Update(ts);
-
-			_WorkspaceService->GetLoadedScene()->Update();
 		}
 	}
 

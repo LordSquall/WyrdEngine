@@ -82,16 +82,6 @@ namespace Wyrd::Editor
 
 				renderer.Clear(0.1f, 0.1f, 0.1f);
 
-				if (_Scene != nullptr)
-				{
-					/* Render each of the sprite layers */
-					for (auto& sl : _Scene->GetLayers())
-					{
-						if (sl->IsVisible())
-							sl->Render(renderer, _CameraComponent->GetCamera().GetViewProjectionMatrix());
-					}
-				}
-
 				_Framebuffer->Unbind();
 			}
 		}
@@ -152,22 +142,5 @@ namespace Wyrd::Editor
 		Events::SceneOpenedArgs& evtArgs = static_cast<Events::SceneOpenedArgs&>(args);
 
 		_Scene = evtArgs.scene;
-
-		/* Get the current active camera */
-		_CameraComponent = _Scene->GetPrimaryCamera();
-
-		if (_CameraComponent != nullptr)
-		{
-			/* at the moment only functional for 2D transforms */
-			Transform2DComponent* transform2D = dynamic_cast<Transform2DComponent*>(_CameraComponent->Owner->transform.get());
-			if (transform2D != nullptr)
-			{
-				_CameraComponent->GetCamera().SetSize(_CameraComponent->GetSize());
-				_CameraComponent->GetCamera().SetPosition(vec3(transform2D->position, 0.0f));
-
-				/* Set the camera viewport */
-				_CameraComponent->GetCamera().SetViewportSize(_Viewport.size.x, _Viewport.size.y);
-			}
-		}
 	}
 }

@@ -68,7 +68,7 @@ namespace Wyrd::Editor
 
 	void PreferencesDialog::OnEditorRender_RenderDoc()
 	{
-#ifdef OSR_RENDERDOC_ENABLED
+#ifdef WYRD_RENDERDOC_ENABLED
 		static bool enableRenderDoc = Utils::ToBool(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__ENABLED, std::string("0")));
 		static bool enableOverlay = Utils::ToBool(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__DISPLAYOVERLAY, std::string("0")));
 		static bool autoOpenOnCapture = Utils::ToBool(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__AUTOOPEN, std::string("0")));

@@ -15,7 +15,7 @@ namespace Wyrd
 	class WYRD_LIBRARY_API ScriptedCustomObject
 	{
 	public:
-		ScriptedCustomObject(void* domain, std::shared_ptr<ScriptedClass> scriptedClass);
+		ScriptedCustomObject(void* domain, const ScriptedClass* scriptedClass, const ScriptedClass* scriptedEntityClass, Entity entity);
 		virtual ~ScriptedCustomObject();
 
 		inline const std::string& GetName() const { return _Name; }

@@ -1,7 +1,7 @@
 #pragma once
 
 // This layer should be able enabled if the rendererdoc symbol is 
-#ifdef OSR_RENDERDOC_ENABLED
+#ifdef WYRD_RENDERDOC_ENABLED
 
 #include "core/export.h"
 #include "core/Layer.h"

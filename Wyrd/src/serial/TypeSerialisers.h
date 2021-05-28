@@ -32,4 +32,8 @@ namespace Wyrd
 	jsonxx::Object& operator<<(jsonxx::Object& obj, const Wyrd::Vector3& vector);
 
 	Wyrd::Vector3& operator<<(Wyrd::Vector3& vector, const jsonxx::Array& arr);
+
+	jsonxx::Object& operator<<(jsonxx::Object& obj, const Wyrd::UID& uid);
+
+	Wyrd::UID& operator<<(Wyrd::UID& uid, const jsonxx::Array& arr);
 }

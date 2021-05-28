@@ -4,7 +4,8 @@
 #include "core/export.h"
 
 const int MAX_ENTITIES = 1000;
-const int MAX_COMPONENTS = 32;
+const int MAX_COMPONENTS = 64;
+const unsigned long long ENTITY_INVALID = 0;
 
 namespace Wyrd 
 {

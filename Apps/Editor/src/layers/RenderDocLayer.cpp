@@ -1,7 +1,7 @@
 #pragma once
 
 // This layer should be able enabled if the rendererdoc symbol is defined
-#ifdef OSR_RENDERDOC_ENABLED
+#ifdef WYRD_RENDERDOC_ENABLED
 
 /* core wyrd includes */
 #include <wyrdpch.h>
@@ -36,7 +36,7 @@ namespace Wyrd::Editor
 			}
 			else
 			{
-				OSR_ERROR("Attempted to load RenderDoc DLL GetAPI function. However unable to resolve.");
+				WYRD_ERROR("Attempted to load RenderDoc DLL GetAPI function. However unable to resolve.");
 			}
 		}
 	}
@@ -77,7 +77,7 @@ namespace Wyrd::Editor
 					int result = _RDOCAPI->EndFrameCapture(NULL, NULL);
 					if (result == 0)
 					{
-						OSR_ERROR("Failed to capture doc in Render Doc");
+						WYRD_ERROR("Failed to capture doc in Render Doc");
 					}
 					else
 					{

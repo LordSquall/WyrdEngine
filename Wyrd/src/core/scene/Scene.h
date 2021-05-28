@@ -26,28 +26,50 @@ namespace Wyrd {
 		Scene(std::string name);
 		~Scene() {}
 
-		void Update();
-
-		inline std::vector<std::unique_ptr<SceneLayer>>& GetLayers() { return _Layers; }
-
-		GameObject* FindGameObject(const UID uid);
+		bool Initialise();
 
 		void AssignScripts(Behaviour* behaviour);
 
-		const std::unique_ptr<SceneLayer>& AddLayer(std::unique_ptr<SceneLayer> layer);
-		void RemoveLayer(const UID& uid);
-
-
 		inline const UID& GetPrimaryCameraUID() { return _ScenePrimaryCamera; }
 		inline void SetPrimaryCameraUID(const UID& uid) { _ScenePrimaryCamera = uid; }
-
-		CameraComponent* GetPrimaryCamera();
 
 		/**
 		 * @brief Create a new entity within the scene
 		 * @return Entity
 		*/
 		Entity CreateEntity();
+
+		/**
+		 * @brief Create a new entity within the scene
+		 * @param entity Entity to be destroyed
+		 * @return Entity
+		*/
+		void DestroyEntity(Entity entity);
+
+		/**
+		 * @brief Swap entities 
+		 * @param entityA Entity src
+		 * @param entityB Entity dest
+		 * @return Entity
+		*/
+		void SwapEntity(Entity entityA, Entity entityB);
+
+		/**
+		 * @brief Register a new component type with the ECS
+		 * @param name Entity Name
+		*/
+		template<typename Component>
+		void RegisterComponent(const std::string& name, const std::string& scriptName)
+		{
+			int componentID = GetID<Component>();
+
+			if (componentPools.size() <= componentID)
+			{
+				componentPools.resize(componentID + 1, nullptr);
+			}
+
+			componentPools[componentID] = new ComponentPool(name, componentID, sizeof(Component), scriptName);
+		}
 
 		/**
 		 * @brief Assign a component object to a respective entity
@@ -59,22 +81,27 @@ namespace Wyrd {
 		{
 			int componentID = GetID<Component>();
 
-			// ensure there enough space
-			if (componentPools.size() <= componentID)
-			{
-				componentPools.resize(componentID + 1, nullptr);
-			}
-
-			// create if not initialied
-			if (componentPools[componentID] == nullptr)
-			{
-				componentPools[componentID] = new ComponentPool(sizeof(Component));
-			}
-
 			Component* comp = new (componentPools[componentID]->get(entity)) Component();
 
-			entities[entity].mask.set(componentID);
+			entities[entity-1].mask.set(componentID);
+			
+			componentPools[componentID]->count++;
+
 			return comp;
+		}
+
+		/**
+		 * @brief Remove a component object to a respective entity
+		 * @param Entity to remove from
+		*/
+		template<typename Component>
+		void RemoveComponent(Entity entity)
+		{
+			int componentID = GetID<Component>();
+
+			entities[entity - 1].mask.set(componentID, false);
+
+			componentPools[componentID]->count--;
 		}
 
 		/**
@@ -86,11 +113,34 @@ namespace Wyrd {
 		Component* Get(Entity entity)
 		{
 			int componentID = GetID<Component>();
-			if (!entities[entity].mask.test(componentID))
+			if (!entities[entity-1].mask.test(componentID))
 				return nullptr;
 
 			Component* comp = static_cast<Component*>(componentPools[componentID]->get(entity));
 			return comp;
+		}
+
+		/**
+		 * @brief Retrieve a Component from a entity based on a pool index
+		 * @param Entity to query
+		 * @return Pointer to the component, nullptr if not assigned
+		*/
+		void* Get(uint32_t poolIndex, Entity entity)
+		{
+			if (!entities[entity - 1].mask.test(poolIndex))
+				return nullptr;
+
+			return componentPools[poolIndex]->get(entity);
+		}
+
+		/**
+		 * @brief Retrieve a Component Mask from a entity
+		 * @param Entity to query
+		 * @return Component Mask
+		*/
+		std::bitset<64> GetMask(Entity entity)
+		{
+			return entities[entity - 1].mask;
 		}
 
 		/**
@@ -114,7 +164,6 @@ namespace Wyrd {
 		float cameraZoom = 0.0f;
 
 	private:
-		std::vector<std::unique_ptr<SceneLayer>> _Layers;
 		UID _ScenePrimaryCamera;
 
 	public:

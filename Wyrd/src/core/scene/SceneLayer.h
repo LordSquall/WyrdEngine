@@ -5,6 +5,7 @@
 #include "core/UID.h"
 #include "core/Structures.h"
 #include "core/scene/GameObject.h"
+#include "core/renderer/Renderer.h"
 
 /* external includes */
 #include <glm/glm.hpp>

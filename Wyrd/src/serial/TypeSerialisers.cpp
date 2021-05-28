@@ -2,6 +2,7 @@
 #include "wyrdpch.h"
 
 /* local includes  */
+#include "core/UID.h"
 #include "serial/TypeSerialisers.h"
 
 namespace glm
@@ -76,5 +77,18 @@ namespace Wyrd
 		vector.y = (float)arr.get<jsonxx::Number>(1);
 		vector.z = (float)arr.get<jsonxx::Number>(2);
 		return vector;
+	}
+
+	jsonxx::Object& operator<<(jsonxx::Object& obj, const UID& uid) {
+		jsonxx::Array arr;
+		arr << uid.str();
+		obj << arr;
+		return obj;
+	}
+
+	UID& operator<<(UID& uid, const jsonxx::Array& arr) {
+		std::string uidStr = arr.get<jsonxx::String>(0);
+		uid = UID(uidStr);
+		return uid;
 	}
 }

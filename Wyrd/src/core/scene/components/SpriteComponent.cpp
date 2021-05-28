@@ -33,7 +33,7 @@ namespace Wyrd
 		if (layer2D != nullptr)
 		{
 			sceneLayer = layer2D;
-			BatchIndex = layer2D->GetSpriteBatch()->AddSprite(this);
+			//BatchIndex = layer2D->GetSpriteBatch()->AddSprite(this);
 		}
 		else
 		{
@@ -51,7 +51,7 @@ namespace Wyrd
 
 		Owner->inputArea = { position.x, position.y, size.x, size.y };
 
-		sceneLayer->GetSpriteBatch()->UpdateSprite(this);
+		//sceneLayer->GetSpriteBatch()->UpdateSprite(this);
 	}
 
 	void SpriteComponent::SetTexture(std::shared_ptr<Texture> texture)
@@ -73,7 +73,7 @@ namespace Wyrd
 
 		Owner->inputArea = { position.x, position.y, size.x, size.y };
 
-		sceneLayer->GetSpriteBatch()->UpdateSprite(this);
+		//sceneLayer->GetSpriteBatch()->UpdateSprite(this);
 	}
 
 
@@ -132,7 +132,7 @@ namespace Wyrd
 
 
 		/* update the sprite */
-		sceneLayer->GetSpriteBatch()->UpdateSprite(this);
+		//sceneLayer->GetSpriteBatch()->UpdateSprite(this);
 
 		return true;
 	}

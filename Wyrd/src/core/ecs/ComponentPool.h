@@ -6,10 +6,13 @@ namespace Wyrd
 {
 	struct WYRD_LIBRARY_API ComponentPool
 	{
-		ComponentPool(size_t elementSize)
+		ComponentPool(const std::string& name, int32_t idx, size_t elementSize, const std::string& scriptName)
 		{
+			this->name = name;
+			this->idx = idx;
 			this->elementSize = elementSize;
-			data = new char[this->elementSize * MAX_ENTITIES];
+			this->scriptName = scriptName;
+			data = new char[this->elementSize * (MAX_ENTITIES + 1)];
 		}
 
 		~ComponentPool()
@@ -19,10 +22,18 @@ namespace Wyrd
 
 		inline void* get(size_t index)
 		{
-			return data + index * elementSize;
+			return data + (index - 1) * elementSize;
 		}
 
+		uint32_t idx{ 0 };
+
+		std::string name{ "" };
+
+		std::string scriptName{ "" };
+
 		char* data{ nullptr };
+
+		uint32_t count{ 0 };
 
 		size_t elementSize{ 0 };
 	};

@@ -237,69 +237,6 @@ namespace Wyrd::Editor
 
 		/* layer configuration */
 		SceneFormat_LayerConfig layerConfig;
-		for (auto& l : scene.GetLayers())
-		{
-			SceneFormat_Layer layer;
-			layer.name = l->GetName();
-
-			for (auto& go : l->GetGameObjects())
-			{
-				SceneFormat_GameObject gameObject;
-				gameObject.name = go->name;
-				gameObject.uid = go->uid;
-
-				Transform2DComponent* transform2DComponent = dynamic_cast<Transform2DComponent*>(go->transform.get());
-				gameObject.transformType = 1;
-				gameObject.transformDef.transform2D.x = transform2DComponent->position.x;  
-				gameObject.transformDef.transform2D.y = transform2DComponent->position.y;
-				gameObject.transformDef.transform2D.angle = transform2DComponent->rotation;
-				gameObject.transformDef.transform2D.scaleX = transform2DComponent->scale.y;
-				gameObject.transformDef.transform2D.scaleY = transform2DComponent->scale.y;
-
-				for (auto& c : go->components)
-				{
-					SceneFormat_Component component;
-					component.type = (int32_t)c->GetType();
-
-					switch ((SceneComponentType)component.type)
-					{
-					case SceneComponentType::SpriteRenderer:
-						{
-							SpriteComponent* spriteComponent = dynamic_cast<SpriteComponent*>(c.get());
-							component.componentDef.sprite.x = spriteComponent->position.x;
-							component.componentDef.sprite.y = spriteComponent->position.y;
-							component.componentDef.sprite.width = spriteComponent->size.x;
-							component.componentDef.sprite.height = spriteComponent->size.y;
-							component.componentDef.sprite.texture = spriteComponent->GetTexture()->GetUID();
-						}
-						break;
-					case SceneComponentType::ScriptComponent:
-						{
-							ScriptComponent* scriptComponent = dynamic_cast<ScriptComponent*>(c.get());
-							component.componentDef.script.script = scriptComponent->GetUID();
-						}
-						break;
-					case SceneComponentType::CameraComponent:
-						{
-							CameraComponent* cameraComponent = dynamic_cast<CameraComponent*>(c.get());
-							component.componentDef.camera.uid = cameraComponent->GetCameraUID();
-							component.componentDef.camera.size = cameraComponent->GetSize();
-							component.componentDef.camera.width = cameraComponent->GetCamera().GetViewport().size.x;
-							component.componentDef.camera.height = cameraComponent->GetCamera().GetViewport().size.y;
-						}
-						break;
-					}
-					gameObject.components.push_back(component);
-				}
-				gameObject.components_cnt = go->components.size();
-
-				layer.gameObjects.push_back(gameObject);
-			}
-			layer.gameObjects_cnt = l->GetGameObjects().size();
-
-			layerConfig.layers.push_back(layer);
-		}
-		layerConfig.layers_cnt = scene.GetLayers().size();
 		Write(sceneBundle, layerConfig);
 
 		sceneBundle.close();

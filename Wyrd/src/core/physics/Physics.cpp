@@ -34,15 +34,6 @@ namespace Wyrd
 	void Physics::Start(std::shared_ptr<Scene> scene)
 	{
 		_IsRunning = true;
-
-		// iterate the scene and find all objects with a physics component 
-		for (auto& layer : scene->GetLayers())
-		{
-			for (auto& gameObject : layer->GetGameObjects())
-			{
-				SearchGameObject(gameObject.get());
-			}
-		}
 	}
 
 	void Physics::Update(Timestep ts)

@@ -231,9 +231,6 @@ namespace Wyrd::Editor
 		/* Create a new scene shared pointer */
 		_LoadedScene = std::make_shared<Scene>(name);
 
-		/* Add a default layer into the new scene */
-		_LoadedScene->AddLayer(std::move(std::make_unique<SceneLayer2D>("Initial Layer")));
-
 		/* Mark scene loaded */
 		IsSceneLoaded(true);
 
@@ -246,6 +243,7 @@ namespace Wyrd::Editor
 	bool WorkspaceService::LoadScene(const std::string& path)
 	{
 		_LoadedScene = std::make_shared<Scene>();
+		_LoadedScene->Initialise();
 
 		/* Load the scene object */
 		SceneLoader::Result result = SceneLoader::Load(path, *_LoadedScene);
@@ -296,7 +294,8 @@ namespace Wyrd::Editor
 
 	bool WorkspaceService::SaveScene()
 	{
-		SceneLoader::Result result = SceneLoader::Save(_LoadedScenePath, *_LoadedScene);
+		std::string tempSaveFile = _LoadedScenePath;
+		SceneLoader::Result result = SceneLoader::Save(tempSaveFile, *_LoadedScene);
 
 		if (result != SceneLoader::Result::Success)
 		{

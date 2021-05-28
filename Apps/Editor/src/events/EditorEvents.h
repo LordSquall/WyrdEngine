@@ -101,9 +101,9 @@ namespace Wyrd::Editor::Events
 	class SelectedGameObjectChangedArgs : public EventArgs
 	{
 	public:
-		SelectedGameObjectChangedArgs(Wyrd::GameObject* gameObject) : gameObject(gameObject) { }
+		SelectedGameObjectChangedArgs(Wyrd::Entity entity) : entity(entity) { }
 
-		Wyrd::GameObject* gameObject;
+		Wyrd::Entity entity;
 
 		EVENT_ARGS_CLONE(SelectedGameObjectChangedArgs)
 	};

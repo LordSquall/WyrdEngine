@@ -11,7 +11,7 @@
 
 using namespace Wyrd::Editor;
 
-#ifdef OSR_RENDERDOC_ENABLED
+#ifdef WYRD_RENDERDOC_ENABLED
 void* renderdocContext;
 #endif
 
@@ -32,7 +32,7 @@ public:
 		ServiceManager::Get<CoreSystemsService>(ServiceManager::CoreSystems)->RegisterSystem("Editor", _EditorSystem.get());
 
 		/* if we are building with renderdoc installed then we can add the layer in */
-#ifdef OSR_RENDERDOC_ENABLED
+#ifdef WYRD_RENDERDOC_ENABLED
 		PushLayer(RenderDocLayer);
 #endif
 
@@ -53,7 +53,7 @@ public:
 		ServiceManager::EndServices();
 	}
 
-#ifdef OSR_RENDERDOC_ENABLED
+#ifdef WYRD_RENDERDOC_ENABLED
 public:
 	RenderDocLayer* RenderDocLayer;
 #endif
@@ -82,7 +82,7 @@ Wyrd::Application* Wyrd::CreateApplication()
 
 void Wyrd::OnPreAppCreation(Wyrd::Application* application)
 {
-#ifdef OSR_RENDERDOC_ENABLED
+#ifdef WYRD_RENDERDOC_ENABLED
 	ClientApplication* clientApplication = (ClientApplication*)application;
 	clientApplication->RenderDocLayer = new Wyrd::Editor::RenderDocLayer();
 #endif
