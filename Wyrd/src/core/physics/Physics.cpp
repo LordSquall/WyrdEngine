@@ -4,7 +4,6 @@
 #include "Physics.h"
 #include "core/Application.h"
 #include "core/scene/Scene.h"
-#include "core/behaviour/ScriptedGameObject.h"
 #include "core/behaviour/MonoUtils.h"
 
 #include <glm/glm.hpp>

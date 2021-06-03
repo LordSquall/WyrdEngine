@@ -6,7 +6,6 @@
 #include "core/Application.h"
 #include "core/behaviour/ScriptedClass.h"
 #include "core/behaviour/ScriptedCustomObject.h"
-#include "core/behaviour/ScriptedGameObject.h"
 #include "MonoUtils.h"
 
 /* external includes */
@@ -17,7 +16,7 @@
 
 namespace Wyrd
 {
-	ScriptedCustomObject::ScriptedCustomObject(void* domain, const ScriptedClass* scriptedClass, const ScriptedClass* scriptedEntityClass, Entity entity)
+	ScriptedCustomObject::ScriptedCustomObject(void* domain, void* image, const ScriptedClass* scriptedClass, const ScriptedClass* scriptedEntityClass, Entity entity)
 	{
 		/* Store the class */
 		Class = scriptedClass->ManagedClass;
@@ -26,12 +25,12 @@ namespace Wyrd
 		TypeName = scriptedClass->GetName();
 
 		/* Map methods */
-		//_Methods["OnStart"]				= MonoUtils::FindMethodInClass(scriptedClass, "OnStart", 0, false);
-		//_Methods["OnUpdate"]			= MonoUtils::FindMethodInClass(scriptedClass, "OnUpdate", 1, false);
-		//_Methods["OnTriggerCollision"]	= MonoUtils::FindMethodInClass(scriptedClass, "OnTriggerCollision", 1, false);
-		//_Methods["OnKeyDown"]			= MonoUtils::FindMethodInClass(scriptedClass, "OnKeyDown", 1, false);
-		//_Methods["OnKeyPressed"]		= MonoUtils::FindMethodInClass(scriptedClass, "OnKeyPressed", 1, false);
-		//_Methods["OnKeyUp"]				= MonoUtils::FindMethodInClass(scriptedClass, "OnKeyUp", 1, false);
+		_Methods["OnStart"]				= MonoUtils::FindMethodInClass((MonoImage*)image, "WyrdGame", scriptedClass->GetName(), "OnStart", 0);
+		_Methods["OnUpdate"]			= MonoUtils::FindMethodInClass((MonoImage*)image, "WyrdGame", scriptedClass->GetName(), "OnUpdate", 1);
+		_Methods["OnTriggerCollision"]	= MonoUtils::FindMethodInClass((MonoImage*)image, "WyrdGame", scriptedClass->GetName(), "OnTriggerCollision", 1);
+		_Methods["OnKeyDown"]			= MonoUtils::FindMethodInClass((MonoImage*)image, "WyrdGame", scriptedClass->GetName(), "OnKeyDown", 1);
+		_Methods["OnKeyPressed"]		= MonoUtils::FindMethodInClass((MonoImage*)image, "WyrdGame", scriptedClass->GetName(), "OnKeyPressed", 1);
+		_Methods["OnKeyUp"]				= MonoUtils::FindMethodInClass((MonoImage*)image, "WyrdGame", scriptedClass->GetName(), "OnKeyUp", 1);
 
 		/* Create Object */
 		Object = mono_object_new((MonoDomain*)domain, (MonoClass*)*scriptedClass->ManagedClass);

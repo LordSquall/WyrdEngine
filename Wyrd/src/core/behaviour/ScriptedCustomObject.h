@@ -9,12 +9,10 @@
 
 namespace Wyrd
 {
-	class ScriptedGameObject;
-
 	class WYRD_LIBRARY_API ScriptedCustomObject
 	{
 	public:
-		ScriptedCustomObject(void* domain, const ScriptedClass* scriptedClass, const ScriptedClass* scriptedEntityClass, Entity entity);
+		ScriptedCustomObject(void* domain, void* image, const ScriptedClass* scriptedClass, const ScriptedClass* scriptedEntityClass, Entity entity);
 		virtual ~ScriptedCustomObject();
 
 		inline const std::string& GetName() const { return _Name; }

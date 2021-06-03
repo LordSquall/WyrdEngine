@@ -9,7 +9,6 @@
 #include "core/scene/Scene.h"
 #include "core/renderer/Texture.h"
 #include "core/behaviour/ScriptedClass.h"
-#include "core/behaviour/ScriptedGameObject.h"
 #include "core/behaviour/ScriptedCustomObject.h"
 #include "core/ecs/ECS.h"
 #include "core/ecs/Components.h"
@@ -121,7 +120,7 @@ namespace Wyrd
 				ECSScriptInternalComponent* scriptComponentInternal = _CurrentScene->Get<ECSScriptInternalComponent>(e);
 
 				/* create the actual object*/
-				_ECSScriptedCustomObjects[scriptComponent->script].push_back(std::make_shared<ScriptedCustomObject>((MonoDomain*)_ClientDomain, GetCustomClassByUID(scriptComponent->script).get(), _ScriptedClasses["ScriptedEntity"].get(), e));
+				_ECSScriptedCustomObjects[scriptComponent->script].push_back(std::make_shared<ScriptedCustomObject>((MonoDomain*)_ClientDomain, _ClientImage, GetCustomClassByUID(scriptComponent->script).get(), _ScriptedClasses["ScriptedEntity"].get(), e));
 				
 				/* map the instance Id to the location in the map vector */
 				scriptComponentInternal->instanceID = (uint32_t)_ECSScriptedCustomObjects[scriptComponent->script].size() - 1;
@@ -144,7 +143,6 @@ namespace Wyrd
 	void Behaviour::Stop()
 	{
 		/* clear managed objects */
-		_ScriptedGameObjects.clear();
 		_ScriptedCustomObjects.clear();
 
 		if (MonoUtils::InvokeMethod((MonoImage*)_CoreImage, "WyrdAPI", "Scene", "Reset", nullptr, {}) == false)
@@ -263,11 +261,6 @@ namespace Wyrd
 		}
 
 		return nullptr;
-	}
-
-	std::shared_ptr<ScriptedGameObject> Behaviour::GetGameObject(UID uid)
-	{ 
-		return _ScriptedGameObjects[uid]; 
 	}
 
 	std::shared_ptr<ScriptedCustomObject> Behaviour::GetCustomObject(UID uid)

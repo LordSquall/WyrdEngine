@@ -45,7 +45,7 @@ namespace Wyrd::Editor
 		bool OnKeyReleasedEvent(KeyReleasedEvent& e);
 
 		void OnSceneOpened(Events::EventArgs& args);
-		void OnSelectedGameObjectChanged(Events::EventArgs& args);
+		void OnSelectedEntityChanged(Events::EventArgs& args);
 
 	private:
 		std::shared_ptr<WorkspaceService>		_WorkspaceService;

@@ -17,5 +17,6 @@ namespace Wyrd
 
 		static bool InvokeMethod(MonoImage* image, const std::string& ns, const std::string& cls, const std::string& method, MonoObject* obj, std::vector<void*> values);
 
+		static MonoMethod* FindMethodInClass(MonoImage* image, const std::string& ns, const std::string& cls, const std::string& method, int argumentCount);
 	};
 }

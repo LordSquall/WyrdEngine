@@ -24,7 +24,6 @@ namespace Wyrd
 	class Resource;
 	class Physics;
 	class ScriptedClass;
-	class ScriptedGameObject;
 	class ScriptedCustomObject;
 	class ScriptedResource;
 	class TaskDispatcher;
@@ -138,13 +137,6 @@ namespace Wyrd
 		std::shared_ptr<ScriptedClass> GetCustomClassByUID(UID& uid);
 
 		/**
-		 * @brief Retrieve a GameObject reference from the behaviour model by UID
-		 * @param uid 
-		 * @return 
-		*/
-		std::shared_ptr<ScriptedGameObject> GetGameObject(UID uid);
-
-		/**
 		 * @brief Retreive an custom object instance from the behaviour model by UID
 		 * @param uid 
 		 * @return 
@@ -174,7 +166,6 @@ namespace Wyrd
 		std::map<std::string, std::shared_ptr<ScriptedClass>>		_ScriptedClasses;
 		std::map<std::string, std::shared_ptr<ScriptedClass>>		_ScriptedCustomClasses;
 
-		std::map<UID, std::shared_ptr<ScriptedGameObject>>		_ScriptedGameObjects;
 		std::map<UID, std::shared_ptr<ScriptedCustomObject>>	_ScriptedCustomObjects;
 
 		std::map<UID, std::vector<std::shared_ptr<ScriptedCustomObject>>>		_ECSScriptedCustomObjects;

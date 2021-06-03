@@ -5,7 +5,6 @@
 #include "core/Log.h"
 #include "core/Application.h"
 #include "core/behaviour/ScriptedClass.h"
-#include "core/behaviour/ScriptedGameObject.h"
 #include "core/behaviour/ScriptedCustomObject.h"
 #include "MonoUtils.h"
 
@@ -58,7 +57,7 @@ namespace Wyrd
 			return false;
 		}
 
-		/* retrieve the property */
+		/* retrieve the method */
 		MonoMethod* methodPtr = mono_class_get_method_from_name(clsPtr, method.c_str(), (int)value.size());
 		if (methodPtr == nullptr)
 		{
@@ -74,5 +73,26 @@ namespace Wyrd
 		}
 
 		return true;
+	}
+
+	MonoMethod* MonoUtils::FindMethodInClass(MonoImage* image, const std::string& ns, const std::string& cls, const std::string& method, int argumentCount)
+	{
+		/* retrieve the class */
+		MonoClass* clsPtr = mono_class_from_name(image, ns.c_str(), cls.c_str());
+		if (clsPtr == nullptr)
+		{
+			WYRD_ERROR("class not found: {0}", ns + "::" + cls);
+			return false;
+		}
+
+		/* retrieve the method */
+		MonoMethod* methodPtr = mono_class_get_method_from_name(clsPtr, method.c_str(), argumentCount);
+		if (methodPtr == nullptr)
+		{
+			WYRD_ERROR("method not found: {0}", ns + "::" + cls + "::" + method);
+			return false;
+		}
+
+		return methodPtr;
 	}
 }
