@@ -21,10 +21,10 @@ namespace WyrdAPI
 
         public virtual void OnTriggerCollision(Entity other) { }
 
-        public virtual bool OnKeyDown(KeyCode key) { return false; }
+        public virtual bool OnKeyDown(KeyCode key) { Console.WriteLine("ScriptedEntity::OnKeyDown!"); return false; }
 
-        public virtual bool OnKeyPressed(KeyCode key) { return false; }
+        public virtual bool OnKeyPressed(KeyCode key) { Console.WriteLine("ScriptedEntity::OnKeyPressed!"); return false; }
 
-        public virtual bool OnKeyUp(KeyCode key) { return false; }
+        public virtual bool OnKeyUp(KeyCode key) { Console.WriteLine("ScriptedEntity::OnKeyUp!"); return false; }
     }
 }

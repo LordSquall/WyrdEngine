@@ -1,6 +1,5 @@
 /* core wyrd includes */
 #include <core/export.h>
-#include <core/scene/GameObject.h>
 #include <core/ecs/ECS.h>
 
 /* local includes */
@@ -23,9 +22,9 @@ namespace Wyrd::Editor
 		void OnEditorRender() override;
 
 	private:
-		void OnSelectedGameObjectChanged(Events::EventArgs& args);
+		void OnSelectedEntityChanged(Events::EventArgs& args);
 
-		void DrawGameObjectUI();
+		void DrawEntityUI();
 
 		std::shared_ptr<EventService> _EventService;
 		std::shared_ptr<WorkspaceService> _WorkspaceService;

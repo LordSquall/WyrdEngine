@@ -11,7 +11,16 @@ namespace WyrdAPI
     public class MetaDataComponent : Component
     {
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-        public string Name;
+        private string _name;
+
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                _name = value;
+            }
+        }
 
         public ulong Entity { get; set; }
 

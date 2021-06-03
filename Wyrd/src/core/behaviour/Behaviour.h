@@ -23,7 +23,6 @@ namespace Wyrd
 	class Script;
 	class Resource;
 	class Physics;
-	class GameObject;
 	class ScriptedClass;
 	class ScriptedGameObject;
 	class ScriptedCustomObject;
@@ -153,35 +152,15 @@ namespace Wyrd
 		std::shared_ptr<ScriptedCustomObject> GetCustomObject(UID uid);
 
 		/**
-		 * @brief Add a Scripted Game Object to the bahaviour subsystem
-		 * @param uid
-		 * @param gameObject
-		 * @param managedObject
-		*/
-		void AddScriptedGameObject(UID uid, GameObject* gameObject, void* managedObject = nullptr);
-
-		/**
 		 * @brief Add a Scripted Custom Object to the bahaviour subsystem
 		 * @param uid 
 		 * @param customObject 
 		*/
 		void AddScriptedCustomObject(UID uid, std::shared_ptr<ScriptedCustomObject> customObject);
 
-		/**
-		 * @brief Boardcast a function call to all scripts on a GameObject 
-		 * @param gameObject 
-		 * @param funcName 
-		 * @param triggerObject 
-		 * @param args 
-		*/
-		//TODO: Rename to generic function name
-		void BroadcastTriggerCall(std::shared_ptr<GameObject> gameObject, std::string& funcName, std::shared_ptr<GameObject> triggerObject, std::vector<void*> args);
-
 	private:
 
 		ScriptedCustomObject* GetCustomObject(UID& uid, uint32_t instanceID);
-
-		void SetInputState(GameObject* gameObject, int key, int state);
 
 		void UpdateInputState();
 

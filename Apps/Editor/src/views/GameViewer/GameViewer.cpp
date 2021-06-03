@@ -8,10 +8,6 @@
 #include <core/Input.h>
 #include <core/KeyCodes.h>
 #include <core/MouseCodes.h>
-#include <core/scene/Layer2D.h>
-#include <core/scene/SceneLayer.h>
-#include <core/scene/components/Transform2DComponent.h>
-#include <core/scene/components/CameraComponent.h>
 
 /* local include */
 #include "GameViewer.h"
@@ -55,36 +51,12 @@ namespace Wyrd::Editor
 
 	void GameViewer::OnUpdate(Timestep ts)
 	{
-		if (_CameraComponent != nullptr)
-		{
-			/* at the moment only functional for 2D transforms */
-			Transform2DComponent* transform2D = dynamic_cast<Transform2DComponent*>(_CameraComponent->Owner->transform.get());
-			if (transform2D != nullptr)
-			{
-				_CameraComponent->GetCamera().SetSize(_CameraComponent->GetSize());
-				_CameraComponent->GetCamera().SetPosition(vec3(transform2D->position, 0.0f));
 
-				/* Set the camera viewport */
-				_CameraComponent->GetCamera().SetViewportSize(800.0f, 600.0f);
-			}
-		}
 	}
 
 	void GameViewer::OnRender(Timestep ts, Renderer& renderer)
 	{
-		if (_Framebuffer->GetConfig().height > 0 && _Framebuffer->GetConfig().width > 0)
-		{
-			if (_CameraComponent != nullptr)
-			{
-				_CameraComponent->GetCamera().RecalulateViewProjection();
-
-				_Framebuffer->Bind();
-
-				renderer.Clear(0.1f, 0.1f, 0.1f);
-
-				_Framebuffer->Unbind();
-			}
-		}
+		
 	}
 
 	void GameViewer::OnEditorRender()
@@ -120,20 +92,7 @@ namespace Wyrd::Editor
 		if (_CameraComponent != nullptr)
 		{
 			/* Set the camera viewport */
-			_CameraComponent->GetCamera().SetViewportSize(_Viewport.size.x, _Viewport.size.y);
-		}
-	}
-
-	void GameViewer::RenderGameObject(std::unique_ptr<GameObject>& gameObject, Timestep ts, Renderer& renderer)
-	{
-		for (auto& component : gameObject->components)
-		{
-			component->Render(ts, renderer);
-		}
-
-		for (auto& child : gameObject->GetGameObjects())
-		{
-			RenderGameObject(child, ts, renderer);
+			//_CameraComponent->GetCamera().SetViewportSize(_Viewport.size.x, _Viewport.size.y);
 		}
 	}
 

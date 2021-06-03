@@ -6,7 +6,6 @@
 #include <core/export.h>
 #include <core/Timestep.h>
 #include <core/Application.h>
-#include <core/scene/components/Transform2DComponent.h>
 
 /* local includes */
 #include "TranslationGizmo.h"
@@ -81,13 +80,13 @@ namespace Wyrd::Editor
             return true;
     }
 
-    TranslationGizmo::TranslationGizmo(SceneViewer* sceneViewer, Shader* shader) : Gizmo(sceneViewer, shader), _GameObject(nullptr), _InputState(InputState::NONE), _AxisState(AxisState::XY), _MovementState(MovementState::LOCAL), _LastMouseWorldPos(0.0f, 0.0f)
+    TranslationGizmo::TranslationGizmo(SceneViewer* sceneViewer, Shader* shader) : Gizmo(sceneViewer, shader), _Entity(ENTITY_INVALID), _InputState(InputState::NONE), _AxisState(AxisState::XY), _MovementState(MovementState::LOCAL), _LastMouseWorldPos(0.0f, 0.0f)
 	{
 		/* retrieve the services */
 		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
 
 		/* setup event subscriptions */
-		_EventService->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(TranslationGizmo::OnSelectedGameObjectChanged));
+		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(TranslationGizmo::OnSelectedEntityChanged));
 
 		/* create and bind a default VAO */
 		_VertexArray.reset(VertexArray::Create());
@@ -137,8 +136,8 @@ namespace Wyrd::Editor
         /* set the scale matrix for the gizmo */
         _Shader->SetMatrix("scale", glm::scale(glm::vec3(diff, diff, diff)));
                  
-        /* Set the model matrix of the gameobject, however we want to ammend the scale by the viewport difference */
-        _Shader->SetMatrix("model", _GameObject->transform->GetModelMatrix());
+        /* Set the model matrix of the entity, however we want to ammend the scale by the viewport difference */
+        //_Shader->SetMatrix("model", _Entity->transform->GetModelMatrix());
         
         /* set the default uniforms */
         _Shader->SetUniformVec4("blendColor", glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
@@ -150,7 +149,7 @@ namespace Wyrd::Editor
 
     void TranslationGizmo::OnEvent(Event& event)
     {
-        if (_GameObject != nullptr)
+        if (_Entity != ENTITY_INVALID)
         {
             EventDispatcher dispatcher(event);
             dispatcher.Dispatch<MouseMovedEvent>(OSR_BIND_EVENT_FN(TranslationGizmo::OnMouseMovedEvent));
@@ -163,56 +162,56 @@ namespace Wyrd::Editor
     {
         float diff = _CameraController->GetSize() / std::min(_SceneViewer->GetViewport().size.x, _SceneViewer->GetViewport().size.y);
 
-        vec4 worldSpace = glm::vec4(_SceneViewer->Convert2DToWorldSpace({ e.GetX(), e.GetY() }), -1.0f, 1.0f);
+        //vec4 worldSpace = glm::vec4(_SceneViewer->Convert2DToWorldSpace({ e.GetX(), e.GetY() }), -1.0f, 1.0f);
 
-        vec4 modelSpace = glm::inverse(_GameObject->transform->GetModelMatrix() * glm::scale(glm::vec3(diff, diff, diff))) * worldSpace;
+        //vec4 modelSpace = glm::inverse(_Entity->transform->GetModelMatrix() * glm::scale(glm::vec3(diff, diff, diff))) * worldSpace;
 
-        Point ptCoords = { modelSpace.x, modelSpace.y };
+        //Point ptCoords = { modelSpace.x, modelSpace.y };
 
         bool updateVertices = false;
 
         if (_InputState == InputState::NONE || _InputState == InputState::OVER)
         {
             /* test each of the handles to see if we have a mouse event */
-            if (InsidePolygon(_Vertices, _VertexGroups["XY_Handle"], ptCoords))
-            {
-                SetAxisState(AxisState::XY);
-                SetInputState(InputState::OVER);
-            } 
-            else if (InsidePolygon(_Vertices, _VertexGroups["X_Handle"], ptCoords))
-            {
-                SetAxisState(AxisState::X);
-                SetInputState(InputState::OVER);
-            } 
-            else if (InsidePolygon(_Vertices, _VertexGroups["Y_Handle"], ptCoords))
-            {
-                SetAxisState(AxisState::Y);
-                SetInputState(InputState::OVER);
-            }
-            else
-            {
-                SetAxisState(AxisState::NONE);
-                SetInputState(InputState::NONE);
-            }
+            //if (InsidePolygon(_Vertices, _VertexGroups["XY_Handle"], ptCoords))
+            //{
+            //    SetAxisState(AxisState::XY);
+            //    SetInputState(InputState::OVER);
+            //} 
+            //else if (InsidePolygon(_Vertices, _VertexGroups["X_Handle"], ptCoords))
+            //{
+            //    SetAxisState(AxisState::X);
+            //    SetInputState(InputState::OVER);
+            //} 
+            //else if (InsidePolygon(_Vertices, _VertexGroups["Y_Handle"], ptCoords))
+            //{
+            //    SetAxisState(AxisState::Y);
+            //    SetInputState(InputState::OVER);
+            //}
+            //else
+            //{
+            //    SetAxisState(AxisState::NONE);
+            //    SetInputState(InputState::NONE);
+            //}
         }else
         {
-            Transform2DComponent* transform2D = dynamic_cast<Transform2DComponent*>(_GameObject->transform.get());
-            glm::vec2 worldSpaceDelta = _LastMouseWorldPos - _SceneViewer->GetMouseWorldPos();
-
-            switch (_AxisState)
-            {
-            case AxisState::XY:
-                transform2D->Translate({ -worldSpaceDelta.x, -worldSpaceDelta.y });
-                break;
-            case AxisState::X:
-                transform2D->Translate({ -worldSpaceDelta.x, 0.0f });
-                break;
-            case AxisState::Y:
-                transform2D->Translate({ 0.0f, -worldSpaceDelta.y });
-                break;
-            }
-
-            _LastMouseWorldPos = _SceneViewer->GetMouseWorldPos();
+            //Transform2DComponent* transform2D = dynamic_cast<Transform2DComponent*>(_Entity->transform.get());
+            //glm::vec2 worldSpaceDelta = _LastMouseWorldPos - _SceneViewer->GetMouseWorldPos();
+            //
+            //switch (_AxisState)
+            //{
+            //case AxisState::XY:
+            //    transform2D->Translate({ -worldSpaceDelta.x, -worldSpaceDelta.y });
+            //    break;
+            //case AxisState::X:
+            //    transform2D->Translate({ -worldSpaceDelta.x, 0.0f });
+            //    break;
+            //case AxisState::Y:
+            //    transform2D->Translate({ 0.0f, -worldSpaceDelta.y });
+            //    break;
+            //}
+            //
+            //_LastMouseWorldPos = _SceneViewer->GetMouseWorldPos();
         }
                 
         return true;
@@ -241,21 +240,21 @@ namespace Wyrd::Editor
         return true;
     }
 
-	void TranslationGizmo::OnSelectedGameObjectChanged(Events::EventArgs& args)
+	void TranslationGizmo::OnSelectedEntityChanged(Events::EventArgs& args)
 	{
-		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
+		Events::SelectedEntityChangedArgs& evtArgs = static_cast<Events::SelectedEntityChangedArgs&>(args);
 
-        /*if (evtArgs.gameObject != nullptr)
+        /*if (evtArgs.entity != nullptr)
         {
-            Transform2DComponent* transform2D = dynamic_cast<Transform2DComponent*>(evtArgs.gameObject->transform.get());
+            Transform2DComponent* transform2D = dynamic_cast<Transform2DComponent*>(evtArgs.entity->transform.get());
             if (transform2D != nullptr)
             {
-                _GameObject = evtArgs.gameObject;
+                _Entity = evtArgs.entity;
             }
         }
         else
         {
-            _GameObject = nullptr;
+            _Entity = nullptr;
         }*/
 	}
 

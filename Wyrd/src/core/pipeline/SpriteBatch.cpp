@@ -3,14 +3,12 @@
 /* local includes */
 #include "wyrdpch.h"
 #include "SpriteBatch.h"
+#include "core/renderer/Renderer.h"
 #include "core/renderer/VertexArray.h"
 #include "core/renderer/Buffer.h"
 #include "core/renderer/Texture.h"
 #include "core/renderer/Shader.h"
 #include "core/pipeline/SpriteVertex.h"
-#include "core/scene/GameObject.h"
-#include "core/scene/components/Transform2DComponent.h"
-#include "core/scene/components/SpriteComponent.h"
 
 namespace Wyrd
 {

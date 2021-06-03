@@ -47,9 +47,6 @@ namespace Wyrd::Editor
 		void OnSceneOpened(Events::EventArgs& args);
 		void OnSelectedGameObjectChanged(Events::EventArgs& args);
 
-		void RenderGameObject(std::unique_ptr<GameObject>&, Timestep ts, Renderer& renderer);
-		void UpdateGameObject(std::unique_ptr<GameObject>&, Timestep ts, bool updateTransform);
-
 	private:
 		std::shared_ptr<WorkspaceService>		_WorkspaceService;
 		std::shared_ptr<EventService>			_EventService;
@@ -68,7 +65,6 @@ namespace Wyrd::Editor
 		std::unique_ptr<GridGizmo>						_GridGizmo;
 		std::unique_ptr<TranslationGizmo>				_TranslationGizmo;
 		std::shared_ptr<Shader>							_GizmoShader;
-		GameObject*										_SelectedGameObject;
 
 		glm::vec2 _LastMousePos;
 		glm::vec2 _MenuPos;

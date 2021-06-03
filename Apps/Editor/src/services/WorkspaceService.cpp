@@ -3,9 +3,6 @@
 /* core wyrd includes */
 #include <wyrdpch.h>
 #include <core/Log.h>
-#include <core/scene/Layer2D.h>
-#include <core/scene/SceneLayer2D.h>
-#include <core/scene/components/CameraComponent.h>
 
 /* local includes */
 #include "WorkspaceService.h"
@@ -71,7 +68,7 @@ namespace Wyrd::Editor
 
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::SetSceneCamera, [this](Events::EventArgs& args) {
 			Events::SetSceneCameraArgs& a = (Events::SetSceneCameraArgs&)args;
-			_LoadedScene->SetPrimaryCameraUID(a.cameraComponent->GetCameraUID());
+			//_LoadedScene->SetPrimaryCameraUID(a.cameraComponent->GetCameraUID());
 			});
 	}
 

@@ -8,7 +8,6 @@
 namespace Wyrd
 {
 	class Scene;
-	class GameObject;
 	class PhysicsComponent;
 
 	class WYRD_LIBRARY_API Physics
@@ -26,10 +25,6 @@ namespace Wyrd
 
 		void AddObject(PhysicsComponent* object);
 		void RemoveObject(PhysicsComponent* object);
-
-	private:
-		void SearchGameObject(GameObject* gameObject);
-
 	private:
 		bool _IsRunning;
 

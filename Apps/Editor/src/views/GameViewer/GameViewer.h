@@ -29,8 +29,6 @@ namespace Wyrd::Editor
 	private:
 		void OnSceneOpened(Events::EventArgs& args);
 
-		void RenderGameObject(std::unique_ptr<GameObject>&, Timestep ts, Renderer& renderer);
-
 	private:
 		std::shared_ptr<WorkspaceService>		_WorkspaceService;
 		std::shared_ptr<EventService>			_EventService;

@@ -4,16 +4,20 @@
 #include "core/export.h"
 #include "core/UID.h"
 #include "core/Structures.h"
-#include "core/scene/SceneLayer.h"
 #include "core/ecs/ECS.h"
 #include "core/ecs/ComponentPool.h"
 
+/* external includes */
 #include <glm/glm.hpp>
+
+namespace jsonxx
+{
+	class Object;
+}
 
 namespace Wyrd {
 
 	class Layer2D;
-	class GameObject;
 	class Behaviour;
 	class CameraComponent;
 
@@ -105,6 +109,17 @@ namespace Wyrd {
 		}
 
 		/**
+		 * @brief Remove a component object to a respective entity
+		 * @param Entity to remove from
+		*/
+		void RemoveComponent(uint32_t poolIndex, Entity entity)
+		{
+			entities[entity - 1].mask.set(poolIndex, false);
+
+			componentPools[poolIndex]->count--;
+		}
+
+		/**
 		 * @brief Retrieve a Component from a entity
 		 * @param Entity to query
 		 * @return Pointer to the component, nullptr if not assigned
@@ -145,9 +160,10 @@ namespace Wyrd {
 
 		/**
 		 * @brief Serialise the scene into a json object
-		 * @return json object
+		 * @param object json object
+		 * @return true is successful
 		*/
-		jsonxx::Object ToJson();
+		bool ToJson(jsonxx::Object& object);
 
 		/**
 		 * @brief Deserialise a json object into a scene

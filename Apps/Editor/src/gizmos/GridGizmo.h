@@ -7,8 +7,6 @@
 #include <core/renderer/Shader.h>
 #include <core/renderer/Buffer.h>
 #include <core/renderer/VertexArray.h>
-#include <core/scene/GameObject.h>
-
 
 /* local includes */
 #include "Gizmo.h"
@@ -44,7 +42,6 @@ namespace Wyrd::Editor
 		std::shared_ptr<SettingsService>	_SettingsService;
 
 		std::shared_ptr<OrthographicCameraController> _CameraController;
-		std::shared_ptr<GameObject>		_GameObject;
 
 		bool _Enabled;
 		Color _Color;

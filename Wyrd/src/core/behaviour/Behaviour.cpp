@@ -7,11 +7,6 @@
 #include "core/behaviour/Behaviour.h"
 #include "core/behaviour/MonoUtils.h"
 #include "core/scene/Scene.h"
-#include "core/scene/Layer2D.h"
-#include "core/scene/GameObject.h"
-#include "core/scene/components/Transform2DComponent.h"
-#include "core/scene/components/SpriteComponent.h"
-#include "core/scene/components/ScriptComponent.h"
 #include "core/renderer/Texture.h"
 #include "core/behaviour/ScriptedClass.h"
 #include "core/behaviour/ScriptedGameObject.h"
@@ -198,42 +193,20 @@ namespace Wyrd
 		{
 			if (_CurrentScene != nullptr)
 			{
-				/* traverse each of the gameobjects within the scene*/
-				//for (auto& sl : _CurrentScene->GetLayers())
-				//{
-				//	for (auto& go : sl->GetGameObjects())
-				//	{
-				//		SetInputState(go.get(), key, state);
-				//	}
-				//}
-			}
-		}
-	}
-
-	void Behaviour::SetInputState(GameObject* gameObject, int key, int state)
-	{
-		for (auto& component : gameObject->components)
-		{
-			if (component->GetType() == SceneComponentType::ScriptComponent)
-			{
-				/* convert to script component type */
-				ScriptComponent* scriptComponent = (ScriptComponent*)&*component;
-
-				/* Check if we have an assigned object */
-				if (scriptComponent->GetCustomObject() != nullptr)
+				for (Entity e : EntitySet<ECSScriptComponent, ECSScriptInternalComponent>(*_CurrentScene.get()))
 				{
-					/* build arg list for the key event functions */
-					std::vector<void*> args = std::vector<void*>({ &key });
+					ECSScriptComponent* scriptComponent = _CurrentScene->Get<ECSScriptComponent>(e);
+					ECSScriptInternalComponent* scriptComponentInternal = _CurrentScene->Get<ECSScriptInternalComponent>(e);
 
-					/* call custom script object key event function */
-					MonoUtils::ExecuteScriptMethod(scriptComponent, _FunctionKeyStateMap[state], args);
+					ScriptedCustomObject* obj = GetCustomObject(scriptComponent->script, scriptComponentInternal->instanceID);
+					MonoObject* o = &*obj->Object;
+
+					if (MonoUtils::InvokeMethod((MonoImage*)_ClientImage, "WyrdGame", obj->TypeName, _FunctionKeyStateMap[state], o, { &key }) == false)
+					{
+						WYRD_ERROR("Unable to invoke Key Event!");
+					} 
 				}
 			}
-		}
-
-		for (auto& go : gameObject->GetGameObjects())
-		{
-			SetInputState(go.get(), key, state);
 		}
 	}
 
@@ -302,29 +275,9 @@ namespace Wyrd
 		return _ScriptedCustomObjects[uid]; 
 	}
 
-	void Behaviour::AddScriptedGameObject(UID uid, GameObject* gameObject, void* managedObject)
-	{
-		_ScriptedGameObjects[uid] = std::make_shared<ScriptedGameObject>(this, _ScriptedClasses["GameObject"], gameObject, managedObject);
-	}
-
 	void Behaviour::AddScriptedCustomObject(UID uid, std::shared_ptr<ScriptedCustomObject> customObject)
 	{
 		_ScriptedCustomObjects[uid] = customObject;
-	}
-
-	void Behaviour::BroadcastTriggerCall(std::shared_ptr<GameObject> gameObject, std::string& funcName, std::shared_ptr<GameObject> triggerObject, std::vector<void*> args)
-	{
-		for(auto &component : gameObject->components)
-		{
-			if (component->GetType() == SceneComponentType::ScriptComponent)
-			{
-				ScriptComponent* scriptComponent = (ScriptComponent*)&*component;
-
-				args.insert(args.begin(), _ScriptedGameObjects[triggerObject->uid]->Object);
-
-				MonoUtils::ExecuteScriptMethod((ScriptComponent*)&*component, funcName, args);
-			}
-		}
 	}
 
 	void Behaviour::CompileAll(const std::vector<std::string>& files, const std::string& outputFile, CompileResults& results)

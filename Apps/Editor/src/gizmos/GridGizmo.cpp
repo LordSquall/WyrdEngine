@@ -3,7 +3,6 @@
 /* core wyrd includes */
 #include <wyrdpch.h>
 #include <core/Log.h>
-#include <core/scene/components/Transform2DComponent.h>
 
 /* local includes */
 #include "GridGizmo.h"

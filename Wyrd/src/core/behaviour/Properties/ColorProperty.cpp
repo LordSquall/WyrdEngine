@@ -21,33 +21,33 @@ namespace Wyrd
 		std::vector<void*> args;
 
 		std::shared_ptr<ScriptedClass> colorClass = Application::Get().GetBehaviour().GetClass("Color");
-		MonoObject* colorObject = MonoUtils::CreateNewObject((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), colorClass);
+		//MonoObject* colorObject = MonoUtils::CreateNewObject((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), colorClass);
 
-		MonoProperty* rProperty = mono_class_get_property_from_name((MonoClass*)*colorClass->ManagedClass, "R");
-		MonoProperty* gProperty = mono_class_get_property_from_name((MonoClass*)*colorClass->ManagedClass, "G");
-		MonoProperty* bProperty = mono_class_get_property_from_name((MonoClass*)*colorClass->ManagedClass, "B");
-		MonoProperty* aProperty = mono_class_get_property_from_name((MonoClass*)*colorClass->ManagedClass, "A");
+		//MonoProperty* rProperty = mono_class_get_property_from_name((MonoClass*)*colorClass->ManagedClass, "R");
+		//MonoProperty* gProperty = mono_class_get_property_from_name((MonoClass*)*colorClass->ManagedClass, "G");
+		//MonoProperty* bProperty = mono_class_get_property_from_name((MonoClass*)*colorClass->ManagedClass, "B");
+		//MonoProperty* aProperty = mono_class_get_property_from_name((MonoClass*)*colorClass->ManagedClass, "A");
 
-		MonoMethod* rPropSetter = mono_property_get_set_method(rProperty);
-		MonoMethod* gPropSetter = mono_property_get_set_method(gProperty);
-		MonoMethod* bPropSetter = mono_property_get_set_method(bProperty);
-		MonoMethod* aPropSetter = mono_property_get_set_method(aProperty);
+		//MonoMethod* rPropSetter = mono_property_get_set_method(rProperty);
+		//MonoMethod* gPropSetter = mono_property_get_set_method(gProperty);
+		//MonoMethod* bPropSetter = mono_property_get_set_method(bProperty);
+		//MonoMethod* aPropSetter = mono_property_get_set_method(aProperty);
 
-		args.push_back(&_Value.r);
-		args.push_back(&_Value.g);
-		args.push_back(&_Value.b);
-		args.push_back(&_Value.a);
+		//args.push_back(&_Value.r);
+		//args.push_back(&_Value.g);
+		//args.push_back(&_Value.b);
+		//args.push_back(&_Value.a);
 
-		mono_runtime_invoke(rPropSetter, colorObject, &args[0], nullptr);
-		mono_runtime_invoke(gPropSetter, colorObject, &args[1], nullptr);
-		mono_runtime_invoke(bPropSetter, colorObject, &args[2], nullptr);
-		mono_runtime_invoke(aPropSetter, colorObject, &args[3], nullptr);
+		//mono_runtime_invoke(rPropSetter, colorObject, &args[0], nullptr);
+		//mono_runtime_invoke(gPropSetter, colorObject, &args[1], nullptr);
+		//mono_runtime_invoke(bPropSetter, colorObject, &args[2], nullptr);
+		//mono_runtime_invoke(aPropSetter, colorObject, &args[3], nullptr);
 
-		args.clear();
+		//args.clear();
 
-		args.push_back(colorObject);
+		//args.push_back(colorObject);
 
-		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
+		//mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
 	}
 
 	bool ColorProperty::ToJson(jsonxx::Object& object)

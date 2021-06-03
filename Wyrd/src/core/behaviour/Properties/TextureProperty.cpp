@@ -22,7 +22,7 @@ namespace Wyrd
 		{
 			std::vector<void*> args;
 
-			std::shared_ptr<ScriptedClass> textureClass = Application::Get().GetBehaviour().GetClass("Texture");
+			/*std::shared_ptr<ScriptedClass> textureClass = Application::Get().GetBehaviour().GetClass("Texture");
 			MonoObject* textureObject = MonoUtils::CreateNewObject((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), textureClass);
 
 			MonoProperty* property = mono_class_get_property_from_name((MonoClass*)*textureClass->ManagedClass, "NativePtr");
@@ -39,7 +39,7 @@ namespace Wyrd
 
 			args.push_back(textureObject);
 
-			mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
+			mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);*/
 		}
 	}
 

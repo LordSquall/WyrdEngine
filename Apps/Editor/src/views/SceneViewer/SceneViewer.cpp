@@ -8,9 +8,6 @@
 #include <core/Input.h>
 #include <core/KeyCodes.h>
 #include <core/MouseCodes.h>
-#include <core/scene/Layer2D.h>
-#include <core/scene/SceneLayer.h>
-#include <core/scene/components/Transform2DComponent.h>
 #include <core/ecs/ECS.h>
 #include <core/ecs/EntitySet.h>
 
@@ -19,14 +16,14 @@
 #include "gizmos/TranslationGizmo.h"
 #include "gizmos/GridGizmo.h"
 #include "support/ImGuiUtils.h"
-#include "extensions/systems/EditorSystem.h"
 
 /* external includes */
+#include <glm/glm.hpp>
 #include <imgui.h>
 
 namespace Wyrd::Editor
 {
-	SceneViewer::SceneViewer(EditorLayer* editorLayer) : EditorViewBase("Scene Viewer", editorLayer), _SelectedGameObject(nullptr)
+	SceneViewer::SceneViewer(EditorLayer* editorLayer) : EditorViewBase("Scene Viewer", editorLayer)
 	{
 		/* retrieve services */
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
@@ -39,7 +36,7 @@ namespace Wyrd::Editor
 
 		/* setup event bindings */
 		_EventService->Subscribe(Events::EventType::SceneOpened, EVENT_FUNC(SceneViewer::OnSceneOpened));
-		_EventService->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(SceneViewer::OnSelectedGameObjectChanged));
+		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(SceneViewer::OnSelectedEntityChanged));
 
 		/* initialise camera */
 		_CameraController = std::make_shared<OrthographicCameraController>();
@@ -187,19 +184,6 @@ namespace Wyrd::Editor
 			ImGui::Text("Viewport Offset Coords:   [%d, %d]", (int32_t)_mouseOffset.x, (int32_t)_mouseOffset.y);
 			ImGui::Text("Evt Start Coords: [%d, %d]", (int32_t)_LastMousePos.x, (int32_t)_LastMousePos.y);
 		}
-
-
-		if (_SelectedGameObject != nullptr)
-		{
-			if (ImGui::BeginPopupContextWindow())
-			{
-				if (ImGui::MenuItem("Delete"))
-				{
-					_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(ENTITY_INVALID));
-				}
-				ImGui::EndPopup();
-			}
-		}
 	}
 
 	void SceneViewer::OnResize()
@@ -213,13 +197,13 @@ namespace Wyrd::Editor
 
 	glm::vec2 SceneViewer::Convert2DToWorldSpace(const glm::vec2& point)
 	{
-		vec2 ndcSpace = GetScreenSpaceFromWorldPoint(point);
+		glm::vec2 ndcSpace = GetScreenSpaceFromWorldPoint(point);
 
-		vec4 clipSpace = { ndcSpace.x, ndcSpace.y, -1.0, 1.0f };
+		glm::vec4 clipSpace = { ndcSpace.x, ndcSpace.y, -1.0, 1.0f };
 
-		vec4 eyeSpace = glm::inverse(_CameraController->GetCamera().GetProjectionMatrix()) * clipSpace;
+		glm::vec4 eyeSpace = glm::inverse(_CameraController->GetCamera().GetProjectionMatrix()) * clipSpace;
 
-		vec4 worldSpace = glm::inverse(_CameraController->GetCamera().GetViewMatrix()) * eyeSpace;
+		glm::vec4 worldSpace = glm::inverse(_CameraController->GetCamera().GetViewMatrix()) * eyeSpace;
 
 		return { worldSpace.x, worldSpace.y };
 	}
@@ -266,7 +250,7 @@ namespace Wyrd::Editor
 
 					if (editorComponent->inputArea.ContainsPoint(worldSpace) == true)
 					{
-						_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(e));
+						_EventService->Publish(Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(e));
 					}
 				}
 			}
@@ -339,42 +323,11 @@ namespace Wyrd::Editor
 		switch (e.GetKeyCode())
 		{
 		case OSR_KEY_DELETE:
-			if (_SelectedGameObject != nullptr)
-			{
-				//_EventService->Publish(Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(nullptr));
-			}
+			
 			break;
 		}
 
 		return true;
-	}
-
-	void SceneViewer::RenderGameObject(std::unique_ptr<GameObject>& gameObject, Timestep ts, Renderer& renderer)
-	{
-		for (auto& component : gameObject->components)
-		{
-			component->Render(ts, renderer);
-		}
-
-		for (auto& child : gameObject->GetGameObjects())
-		{
-			RenderGameObject(child, ts, renderer);
-		}
-	}
-
-	void SceneViewer::UpdateGameObject(std::unique_ptr<GameObject>& gameObject, Timestep ts, bool updateTransform)
-	{
-		// check if the game has an invalid matrix as this will need to be propogated
-		gameObject->transform->Recalculate();
-		for (auto& component : gameObject->components)
-		{
-			component->Recalculate();
-		}
-
-		for (auto& child : gameObject->GetGameObjects())
-		{
-			//UpdateGameObject(child, ts, transformPropogation);
-		}
 	}
 
 	void SceneViewer::OnSceneOpened(Events::EventArgs& args)
@@ -388,10 +341,8 @@ namespace Wyrd::Editor
 		_CameraController->SetPosition(_Scene->cameraPosition);
 	}
 
-	void SceneViewer::OnSelectedGameObjectChanged(Events::EventArgs& args)
+	void SceneViewer::OnSelectedEntityChanged(Events::EventArgs& args)
 	{
-		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
-
-		//_SelectedGameObject = evtArgs.gameObject;
+		Events::SelectedEntityChangedArgs& evtArgs = static_cast<Events::SelectedEntityChangedArgs&>(args);
 	}
 }

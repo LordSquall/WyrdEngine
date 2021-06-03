@@ -4,7 +4,6 @@
 #include <core/export.h>
 #include <core/Layer.h>
 #include <core/scene/Scene.h>
-#include <core/scene/GameObject.h>
 
 /* local includes */
 #include "views/EditorViewBase.h"
@@ -21,10 +20,9 @@ namespace Wyrd::Editor::Events
 {
 	enum class EventType {
 		SettingsUpdated, RefreshView,
-		SelectedCleared, SelectedGameObjectChanged, SelectedAssetChanged, 
+		SelectedCleared, SelectedEntityChanged, SelectedAssetChanged, 
 		CreateNewProject, OpenProject, CloseProject, ProjectLoaded,
 		SceneClosed, SceneOpened,
-		OpenSceneViewerContextMenu,
 		AddLogEntry, ClearLogEntry,
 		AddFileEntry, DeleteFileEntry, ModifiedFileEntry, RenameFileEntry,
 		AddResource, DeleteResource, ReloadResource, RenameResource,
@@ -96,22 +94,22 @@ namespace Wyrd::Editor::Events
 
 #pragma endregion
 
-#pragma region SelectedGameObjectChangedEvent
+#pragma region SelectedEntityChangedEvent
 
-	class SelectedGameObjectChangedArgs : public EventArgs
+	class SelectedEntityChangedArgs : public EventArgs
 	{
 	public:
-		SelectedGameObjectChangedArgs(Wyrd::Entity entity) : entity(entity) { }
+		SelectedEntityChangedArgs(Wyrd::Entity entity) : entity(entity) { }
 
 		Wyrd::Entity entity;
 
-		EVENT_ARGS_CLONE(SelectedGameObjectChangedArgs)
+		EVENT_ARGS_CLONE(SelectedEntityChangedArgs)
 	};
 
-	class SelectedGameObjectChangedEvent : public Event
+	class SelectedEntityChangedEvent : public Event
 	{
 	public:
-		SelectedGameObjectChangedEvent() : Event(EventType::SelectedGameObjectChanged) { }
+		SelectedEntityChangedEvent() : Event(EventType::SelectedEntityChanged) { }
 	};
 
 #pragma endregion
@@ -256,26 +254,6 @@ namespace Wyrd::Editor::Events
 	{
 	public:
 		SceneOpenedEvent() : Event(EventType::SceneOpened) { }
-	};
-
-#pragma endregion
-
-#pragma region OpenSceneViewerContextMenu
-
-	class OpenSceneViewerContextMenuArgs : public EventArgs
-	{
-	public:
-		OpenSceneViewerContextMenuArgs(std::shared_ptr<GameObject> gameObject) : gameobject(gameObject) {}
-
-		std::shared_ptr<GameObject> gameobject;
-
-		EVENT_ARGS_CLONE(OpenSceneViewerContextMenuArgs)
-	};
-
-	class OpenSceneViewerContextMenuEvent : public Event
-	{
-	public:
-		OpenSceneViewerContextMenuEvent() : Event(EventType::OpenSceneViewerContextMenu) { }
 	};
 
 #pragma endregion

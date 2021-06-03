@@ -7,7 +7,6 @@
 #include "layers/RenderDocLayer.h"
 #include "layers/EditorLayer.h"
 #include "support/IniParser.h"
-#include "extensions/systems/EditorSystem.h"
 
 using namespace Wyrd::Editor;
 
@@ -24,12 +23,6 @@ public:
 
 		/* initialise editor services */
 		ServiceManager::StartServices();
-
-		/* initialise the editor extension system */
-		_EditorSystem = std::make_unique<EditorSystem>();
-
-		/* register the system within the CoreSystemService */
-		ServiceManager::Get<CoreSystemsService>(ServiceManager::CoreSystems)->RegisterSystem("Editor", _EditorSystem.get());
 
 		/* if we are building with renderdoc installed then we can add the layer in */
 #ifdef WYRD_RENDERDOC_ENABLED
@@ -57,9 +50,6 @@ public:
 public:
 	RenderDocLayer* RenderDocLayer;
 #endif
-
-private:
-	std::unique_ptr<EditorSystem>		_EditorSystem;
 
 };
 

@@ -6,11 +6,6 @@
 #include <core/Resources.h>
 #include <core/behaviour/Behaviour.h>
 #include <core/renderer/Shader.h>
-#include <core/scene/components/IBaseComponent.h>
-#include <core/scene/components/Transform2DComponent.h>
-#include <core/scene/components/SpriteComponent.h>
-#include <core/scene/components/ScriptComponent.h>
-#include <core/scene/components/CameraComponent.h>
 
 /* export headers */
 #include "CoreFormat.h"

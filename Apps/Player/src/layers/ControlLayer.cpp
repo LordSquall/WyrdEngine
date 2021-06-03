@@ -7,9 +7,6 @@
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/scene/Scene.h>
-#include <core/scene/SceneLayer2D.h>
-#include <core/scene/components/CameraComponent.h>
-#include <core/scene/components/Transform2DComponent.h>
 
 #include <fstream>
 

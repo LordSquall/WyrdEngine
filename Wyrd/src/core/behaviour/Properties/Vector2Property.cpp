@@ -21,7 +21,7 @@ namespace Wyrd
 	{
 		std::vector<void*> args;
 
-		std::shared_ptr<ScriptedClass> vector2Class = Application::Get().GetBehaviour().GetClass("Vector2");
+		/*std::shared_ptr<ScriptedClass> vector2Class = Application::Get().GetBehaviour().GetClass("Vector2");
 		MonoObject* vector2Object = MonoUtils::CreateNewObject((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), vector2Class);
 
 		MonoProperty* xProperty = mono_class_get_property_from_name((MonoClass*)*vector2Class->ManagedClass, "X");
@@ -40,7 +40,7 @@ namespace Wyrd
 
 		args.push_back(vector2Object);
 
-		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
+		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);*/
 	}
 
 	bool Vector2Property::ToJson(jsonxx::Object& object)

@@ -3,13 +3,11 @@
 
 /* Local includes */
 #include "Scene.h"
-#include "Layer2D.h"
-#include "GameObject.h"
 #include "core/ecs/Components.h"
-#include "core/scene/components/Transform2DComponent.h"
-#include "core/scene/SceneLayer2D.h"
 #include "serial/ComponentSerialiserFactory.h"
 #include "serial/TypeSerialisers.h"
+
+#include <jsonxx.h>
 
 namespace Wyrd
 {
@@ -46,10 +44,8 @@ namespace Wyrd
 
 	}
 	
-	jsonxx::Object Scene::ToJson()
+	bool Scene::ToJson(jsonxx::Object& object)
 	{
-		jsonxx::Object object;
-
 		/* background color */
 		object << "bgcolor" << bgcolor;
 
@@ -98,7 +94,7 @@ namespace Wyrd
 
 		object << "componentPools" << poolArray;
 
-		return object;
+		return true;
 	}
 
 	bool Scene::FromJson(jsonxx::Object& object)
@@ -113,7 +109,7 @@ namespace Wyrd
 
 		/* camera zoom */
 		if (object.has<jsonxx::Number>("cameraZoom"))
-			cameraZoom = object.get<jsonxx::Number>("cameraZoom");
+			cameraZoom = (float)object.get<jsonxx::Number>("cameraZoom");
 
 		/* primary camera uid*/
 		if (object.has<jsonxx::String>("primaryCameraUID"))
@@ -126,7 +122,7 @@ namespace Wyrd
 		
 			for (size_t i = 0; i < entityArray.size(); i++)
 			{
-				jsonxx::Object entity = entityArray.get<jsonxx::Object>(i);
+				jsonxx::Object entity = entityArray.get<jsonxx::Object>((unsigned int)i);
 				Entity id = (Entity)entity.get<jsonxx::Number>("id");
 				ComponentMask mask = (ComponentMask)entity.get<jsonxx::Number>("mask");
 				
@@ -144,7 +140,7 @@ namespace Wyrd
 			jsonxx::Array componentPoolsArray = object.get<jsonxx::Array>("componentPools");
 			for (size_t i = 0; i < componentPoolsArray.size(); i++)
 			{
-				jsonxx::Object pool = componentPoolsArray.get<jsonxx::Object>(i);
+				jsonxx::Object pool = componentPoolsArray.get<jsonxx::Object>((unsigned int)i);
 		
 				std::string poolName = pool.get<String>("name");
 				int poolElementSize = pool.get<Number>("elementSize"); 
@@ -152,7 +148,7 @@ namespace Wyrd
 				jsonxx::Array compnentArray = pool.get<jsonxx::Array>("components");
 				for (size_t j = 0; j < compnentArray.size(); j++)
 				{
-					jsonxx::Object component = compnentArray.get<jsonxx::Object>(j);
+					jsonxx::Object component = compnentArray.get<jsonxx::Object>((unsigned int)j);
 		
 					ComponentSerialiserFactory::Deserialise(poolName, component, &(componentPools[i]->data[j * poolElementSize]));
 					componentPools[i]->count++;

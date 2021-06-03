@@ -7,7 +7,6 @@
 #include <core/renderer/Shader.h>
 #include <core/renderer/Buffer.h>
 #include <core/renderer/VertexArray.h>
-#include <core/scene/GameObject.h>
 
 /* local includes */
 #include "gizmos/Gizmo.h"
@@ -53,7 +52,7 @@ namespace Wyrd::Editor
 		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
 		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
 
-		void OnSelectedGameObjectChanged(Events::EventArgs& args);
+		void OnSelectedEntityChanged(Events::EventArgs& args);
 
 	private:
 		void SetInputState(InputState state);
@@ -63,7 +62,7 @@ namespace Wyrd::Editor
 
 	private:
 		std::shared_ptr<EventService>		_EventService;
-		GameObject*		_GameObject;
+		Entity		_Entity;
 
 		InputState _InputState;
 		AxisState _AxisState;

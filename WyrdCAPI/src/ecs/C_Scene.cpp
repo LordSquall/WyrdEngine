@@ -1,5 +1,6 @@
 #include "C_Scene.h" 
 #include "core/scene/Scene.h"
+#include "core/ecs/ECS.h"
 #include "core/ecs/Components.h"
 
 
@@ -7,12 +8,12 @@ void Scene_BuildComponentList(void* scenePtr)
 {
 	Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
 
-	int metaDataComponentID			= GetID<MetaDataComponent>();
-	int transform2DComponenttID		= GetID<ECSTransform2DComponent>();
-	int spriteComponentID			= GetID<ECSSpriteComponent>();
-	int scriptComponentID			= GetID<ECSScriptComponent>();
-	int scriptInternalComponentID	= GetID<ECSScriptInternalComponent>();
-	int cameraComponentID			= GetID<ECSCameraComponent>();
+	int metaDataComponentID			= Wyrd::GetID<Wyrd::MetaDataComponent>();
+	int transform2DComponenttID		= Wyrd::GetID<Wyrd::ECSTransform2DComponent>();
+	int spriteComponentID			= Wyrd::GetID<Wyrd::ECSSpriteComponent>();
+	int scriptComponentID			= Wyrd::GetID<Wyrd::ECSScriptComponent>();
+	int scriptInternalComponentID	= Wyrd::GetID<Wyrd::ECSScriptInternalComponent>();
+	int cameraComponentID			= Wyrd::GetID<Wyrd::ECSCameraComponent>();
 
 	std::cout << "MetaDataComponent Type ID "			<< std::to_string(metaDataComponentID) << std::endl;
 	std::cout << "ECSTransform2DComponent Type ID "		<< std::to_string(transform2DComponenttID) << std::endl;

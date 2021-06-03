@@ -5,9 +5,6 @@
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/Layer.h>
-#include <core/scene/Layer2D.h>
-#include <core/scene/SceneLayer2D.h>
-#include <core/scene/components/SceneComponentFactory.h>
 #include <core/KeyCodes.h>
 #include <core/ecs/EntitySet.h>
 
@@ -27,7 +24,7 @@ namespace Wyrd::Editor
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace);
 		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources);
 
-		_EventService->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(SceneEditor::OnSelectedEntityChanged));
+		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(SceneEditor::OnSelectedEntityChanged));
 	}
 
 	void SceneEditor::OnEditorRender()
@@ -56,7 +53,7 @@ namespace Wyrd::Editor
 						if (ImGui::Selectable(metadataComp->name, &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowItemOverlap))
 						{
 							WYRD_TRACE("Selected: {0}", metadataComp->name);
-							_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(e));
+							_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(e));
 							_SelectedEntity = e;
 						}
 
@@ -69,6 +66,13 @@ namespace Wyrd::Editor
 
 						if (ImGui::BeginPopupContextItem())
 						{
+							if (ImGui::MenuItem("Add Transform"))
+							{
+								ECSTransform2DComponent* c = scene.AssignComponent<ECSTransform2DComponent>(e);
+								c->position = { 0.0f, 0.0f };
+								c->rotation = 0.0f;
+							}
+							ImGui::Separator();
 							if (ImGui::MenuItem("Add Sprite"))
 							{
 								ECSSpriteComponent* c = scene.AssignComponent<ECSSpriteComponent>(e);
@@ -101,19 +105,19 @@ namespace Wyrd::Editor
 				if (ImGui::TextButton("^", (_SelectedEntity != ENTITY_INVALID) && (_SelectedEntity - 1 != ENTITY_INVALID)))
 				{
 					scene.SwapEntity(_SelectedEntity, _SelectedEntity - 1);
-					_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(_SelectedEntity - 1));
+					_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(_SelectedEntity - 1));
 				}
 				ImGui::SameLine();
 				if (ImGui::TextButton("v", (_SelectedEntity != ENTITY_INVALID) && (_SelectedEntity + 1 != (scene.entities.size()+1))))
 				{
 					scene.SwapEntity(_SelectedEntity, _SelectedEntity + 1);
-					_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(_SelectedEntity + 1));
+					_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(_SelectedEntity + 1));
 				}
 				ImGui::SameLine();
 				if (ImGui::TextButton("R")) 
 				{
 					scene.DestroyEntity(_SelectedEntity);
-					_EventService->Publish(Editor::Events::EventType::SelectedGameObjectChanged, std::make_unique<Events::SelectedGameObjectChangedArgs>(ENTITY_INVALID));
+					_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(ENTITY_INVALID));
 				}
 				ImGui::SameLine();
 				if (ImGui::TextButton("A")) 
@@ -137,7 +141,7 @@ namespace Wyrd::Editor
 
 	void SceneEditor::OnSelectedEntityChanged(Events::EventArgs& args)
 	{
-		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
+		Events::SelectedEntityChangedArgs& evtArgs = static_cast<Events::SelectedEntityChangedArgs&>(args);
 
 		_SelectedEntity = evtArgs.entity;
 	}

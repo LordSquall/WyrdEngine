@@ -6,9 +6,11 @@
 #include <core/Application.h>
 #include <core/Layer.h>
 #include <core/ecs/Components.h>
+#include <core/ecs/ComponentPool.h>
 
 /* local includes */
 #include "PropertiesViewer.h"
+#include "views/PropertiesViewer/ComponentViews/ComponentViewFactory.h"
 #include "services/ServiceManager.h"
 #include "support/ImGuiUtils.h"
 
@@ -24,121 +26,61 @@ namespace Wyrd::Editor
 		_EventService = ServiceManager::Get<EventService>(ServiceManager::Service::Events);
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace);
 
-		_EventService->Subscribe(Events::EventType::SelectedGameObjectChanged, EVENT_FUNC(PropertiesViewer::OnSelectedGameObjectChanged));
+		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(PropertiesViewer::OnSelectedEntityChanged));
 	}
 
 	PropertiesViewer::~PropertiesViewer() {}
 
 	void PropertiesViewer::OnEditorRender()
 	{
-		DrawGameObjectUI();
+		DrawEntityUI();
 	}
 
-	void PropertiesViewer::OnSelectedGameObjectChanged(Events::EventArgs& args)
+	void PropertiesViewer::OnSelectedEntityChanged(Events::EventArgs& args)
 	{
-		Events::SelectedGameObjectChangedArgs& evtArgs = static_cast<Events::SelectedGameObjectChangedArgs&>(args);
+		Events::SelectedEntityChangedArgs& evtArgs = static_cast<Events::SelectedEntityChangedArgs&>(args);
 
 		_SelectedEntity = evtArgs.entity;
 	}
 
-	void PropertiesViewer::DrawGameObjectUI()
+	void PropertiesViewer::DrawEntityUI()
 	{
 		if (_SelectedEntity == ENTITY_INVALID)
 		{
 			return;
 		}
 
-
-		/* Create the basic metadata component view. All entities must have this component */
-		MetaDataComponent* metaDataComp = _WorkspaceService->GetLoadedScene()->Get<MetaDataComponent>(_SelectedEntity);
-		if (metaDataComp == nullptr)
-		{
-			WYRD_CORE_ERROR("Entity does not contain MetaDataComponent : {0}", _SelectedEntity);
-		}
-
-		ImGui::Text("Name:");
-		ImGui::SameLine();
-		ImGui::InputText("##label", metaDataComp->name, 32);
-		//ImGui::InputText("##label", &(metaDataComp->name), ImGuiInputTextFlags_CallbackCharFilter | ImGuiInputTextFlags_AutoSelectAll, ImGui::InputTextCallback);
-		ImGui::Separator();
+		auto scene = _WorkspaceService->GetLoadedScene();
 
 		/* Process each of the registered component views to see if the entity has a matching assigned component */
-		std::bitset<64> mask = _WorkspaceService->GetLoadedScene()->GetMask(_SelectedEntity);
+		std::bitset<64> mask = scene->GetMask(_SelectedEntity);
 
-		for (int i = 0; i < _WorkspaceService->GetLoadedScene()->componentPools.size(); ++i)
+		for (int i = 0; i < scene->componentPools.size(); ++i)
 		{
 			if (mask.test(i))
 			{
-				// TODO
-			}
-		}
+				bool removed = false;
 
-		ECSTransform2DComponent* transformComp = _WorkspaceService->GetLoadedScene()->Get<ECSTransform2DComponent>(_SelectedEntity);
-		if (transformComp != nullptr)
-		{
-			ImGui::TextColored({1.0f, 0.0f, 0.0f, 1.0f }, "Transform");
-			ImGui::InputFloat2("Pos     ", (float*)&transformComp->position);
-		}
-		ImGui::Separator();
+				ImGui::PushID(i);
+				ImGui::Text(scene->componentPools[i]->scriptName.c_str());
 
-		ECSSpriteComponent* spriteComp = _WorkspaceService->GetLoadedScene()->Get<ECSSpriteComponent>(_SelectedEntity);
-		if (spriteComp != nullptr)
-		{
-			ImGui::TextColored({ 1.0f, 0.0f, 0.0f, 1.0f }, "Sprite");
-			if (ImGui::Button("REMOVED"))
-			{
-				_WorkspaceService->GetLoadedScene()->RemoveComponent<ECSSpriteComponent>(_SelectedEntity);
-			}
-			ImGui::InputFloat2("Pos ", (float*)&spriteComp->position);
-			ImGui::InputFloat2("Size", (float*)&spriteComp->size);
-
-			//TODO - need to move to util function
-			ImGui::Text("Texture");
-			ImGui::PushID("texture");
-			ImGui::SameLine();
-
-			auto texture = Application::Get().GetResources().Textures[spriteComp->texture];
-
-			ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2((float)texture->GetWidth(), (float)texture->GetHeight()));
-			if (ImGui::BeginDragDropTarget())
-			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_TEXTURE"))
+				/* we cant allow the metadata component to be deleted */
+				if (i != 0)
 				{
-					UID* textureUID = (UID*)payload->Data;
-					spriteComp->texture = *textureUID;
-					spriteComp->size = { (float)texture->GetWidth(), (float)texture->GetHeight() };
+					ImGui::SameLine();
+					if (ImGui::SmallButton("x"))
+					{
+						scene->RemoveComponent(i, _SelectedEntity);
+						removed = true;
+					}
 				}
-				ImGui::EndDragDropTarget();
-			}
-			ImGui::PopID();
 
-			ImGui::ColorEdit3("Color", (float*)&spriteComp->color);
-		}
-		ImGui::Separator();
-
-		ECSScriptComponent* scriptComp = _WorkspaceService->GetLoadedScene()->Get<ECSScriptComponent>(_SelectedEntity);
-		if (scriptComp != nullptr)
-		{
-			ImGui::TextColored({ 1.0f, 0.0f, 0.0f, 1.0f }, "Script");
-			ImGui::Text("Script: %s", scriptComp->script.str().c_str());
-			if (ImGui::BeginDragDropTarget())
-			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_SCRIPT"))
-				{
-					UID* scriptUID = (UID*)payload->Data;
-					scriptComp->script = *scriptUID;
-				}
-				ImGui::EndDragDropTarget();
+				if (removed == false)
+					ComponentViewFactory::Create(scene->componentPools[i]->name, scene->Get(i, _SelectedEntity));
+				
+				ImGui::Separator();
+				ImGui::PopID();
 			}
 		}
-		ImGui::Separator();
-
-		ECSCameraComponent* cameraComp = _WorkspaceService->GetLoadedScene()->Get<ECSCameraComponent>(_SelectedEntity);
-		if (cameraComp != nullptr)
-		{
-			ImGui::TextColored({ 1.0f, 0.0f, 0.0f, 1.0f }, "Camera");
-			ImGui::InputFloat("Size     ", &cameraComp->size);
-		}
-		ImGui::Separator();
 	}
 }
