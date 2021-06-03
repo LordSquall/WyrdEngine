@@ -16,13 +16,13 @@ namespace Wyrd
 		obj << "name" << data->name;
 	}
 
-	void ComponentSerialiserFactory::Serialise(Object& obj, const Wyrd::ECSTransform2DComponent* data)
+	void ComponentSerialiserFactory::Serialise(Object& obj, const Wyrd::Transform2DComponent* data)
 	{
 		obj << "position" << data->position;
 		obj << "rotation" << data->rotation;
 	}
 
-	void ComponentSerialiserFactory::Serialise(Object& obj, const Wyrd::ECSSpriteComponent* data)
+	void ComponentSerialiserFactory::Serialise(Object& obj, const Wyrd::SpriteComponent* data)
 	{
 		obj << "position" << data->position;
 		obj << "size" << data->size;
@@ -30,22 +30,17 @@ namespace Wyrd
 		obj << "texture" << data->texture;
 	}
 
-	void ComponentSerialiserFactory::Serialise(Object& obj, const Wyrd::ECSScriptComponent* data)
+	void ComponentSerialiserFactory::Serialise(Object& obj, const Wyrd::ScriptComponent* data)
 	{
 		obj << "script" << data->script;
 	}
 
-	void ComponentSerialiserFactory::Serialise(Object& obj, const Wyrd::ECSScriptInternalComponent* data)
-	{
-		obj << "instanceID" << data->instanceID;
-	}
-
-	void ComponentSerialiserFactory::Serialise(Object& obj, const Wyrd::ECSCameraComponent* data)
+	void ComponentSerialiserFactory::Serialise(Object& obj, const Wyrd::CameraComponent* data)
 	{
 		obj << "size" << data->size;
 	}
 
-	void ComponentSerialiserFactory::Serialise(Object& obj, const Wyrd::ECSEditorComponent* data)
+	void ComponentSerialiserFactory::Serialise(Object& obj, const Wyrd::EditorComponent* data)
 	{
 		obj << "inputArea" << data->inputArea;
 	}
@@ -57,13 +52,13 @@ namespace Wyrd
 		strcpy(data->name, name.c_str());
 	}
 
-	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::ECSTransform2DComponent* data)
+	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::Transform2DComponent* data)
 	{
 		data->position << obj.get<Array>("position");
 		data->rotation = (float)obj.get<Number>("rotation");
 	}
 
-	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::ECSSpriteComponent* data)
+	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::SpriteComponent* data)
 	{
 		data->position << obj.get<Array>("position");
 		data->size << obj.get<Array>("size");
@@ -71,22 +66,17 @@ namespace Wyrd
 		data->texture << obj.get<Array>("texture");
 	}
 
-	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::ECSScriptComponent* data)
+	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::ScriptComponent* data)
 	{
 		data->script << obj.get<Array>("script");
 	}
 
-	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::ECSScriptInternalComponent* data)
-	{
-		data->instanceID = obj.get<Number>("instanceID");
-	}
-
-	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::ECSCameraComponent* data)
+	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::CameraComponent* data)
 	{
 		data->size = obj.get<Number>("size");
 	}
 
-	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::ECSEditorComponent* data)
+	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::EditorComponent* data)
 	{
 
 	}

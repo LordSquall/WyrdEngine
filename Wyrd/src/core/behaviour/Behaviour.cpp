@@ -114,25 +114,23 @@ namespace Wyrd
 			}
 
 			/* create a managed object for each of the script components */
-			for (Entity e : EntitySet<ECSScriptComponent, ECSScriptInternalComponent>(*_CurrentScene.get()))
+			for (Entity e : EntitySet<ScriptComponent>(*_CurrentScene.get()))
 			{
-				ECSScriptComponent* scriptComponent = _CurrentScene->Get<ECSScriptComponent>(e);
-				ECSScriptInternalComponent* scriptComponentInternal = _CurrentScene->Get<ECSScriptInternalComponent>(e);
+				ScriptComponent* scriptComponent = _CurrentScene->Get<ScriptComponent>(e);
 
 				/* create the actual object*/
 				_ECSScriptedCustomObjects[scriptComponent->script].push_back(std::make_shared<ScriptedCustomObject>((MonoDomain*)_ClientDomain, _ClientImage, GetCustomClassByUID(scriptComponent->script).get(), _ScriptedClasses["ScriptedEntity"].get(), e));
 				
 				/* map the instance Id to the location in the map vector */
-				scriptComponentInternal->instanceID = (uint32_t)_ECSScriptedCustomObjects[scriptComponent->script].size() - 1;
+				scriptComponent->instanceID = (uint32_t)_ECSScriptedCustomObjects[scriptComponent->script].size() - 1;
 			}
 
 			/* call the initial start function on each of the managed objects */
-			for (Entity e : EntitySet<ECSScriptComponent, ECSScriptInternalComponent>(*_CurrentScene.get()))
+			for (Entity e : EntitySet<ScriptComponent>(*_CurrentScene.get()))
 			{
-				ECSScriptComponent* scriptComponent = _CurrentScene->Get<ECSScriptComponent>(e);
-				ECSScriptInternalComponent* scriptComponentInternal = _CurrentScene->Get<ECSScriptInternalComponent>(e);
+				ScriptComponent* scriptComponent = _CurrentScene->Get<ScriptComponent>(e);
 
-				ScriptedCustomObject* obj = GetCustomObject(scriptComponent->script, scriptComponentInternal->instanceID);
+				ScriptedCustomObject* obj = GetCustomObject(scriptComponent->script, scriptComponent->instanceID);
 				MonoMethod* m = &*obj->GetMethod("OnStart");
 				MonoObject* o = &*obj->Object;
 				mono_runtime_invoke(m, o, nullptr, nullptr);
@@ -161,14 +159,13 @@ namespace Wyrd
 		{
 			std::vector<void*> updateArgs = std::vector<void*>({ &ts });
 
-			for (Entity e : EntitySet<ECSScriptComponent, ECSScriptInternalComponent>(*_CurrentScene.get()))
+			for (Entity e : EntitySet<ScriptComponent>(*_CurrentScene.get()))
 			{
-				ECSScriptComponent* scriptComponent = _CurrentScene->Get<ECSScriptComponent>(e);
-				ECSScriptInternalComponent* scriptComponentInternal = _CurrentScene->Get<ECSScriptInternalComponent>(e);
+				ScriptComponent* scriptComponent = _CurrentScene->Get<ScriptComponent>(e);
 
 				// TODO rework mapping
 				MonoObject* ecx = nullptr;
-				ScriptedCustomObject* obj = GetCustomObject(scriptComponent->script, scriptComponentInternal->instanceID);
+				ScriptedCustomObject* obj = GetCustomObject(scriptComponent->script, scriptComponent->instanceID);
 				MonoMethod* m = &*obj->GetMethod("OnUpdate");
 				MonoObject* o = &*obj->Object;
 				mono_runtime_invoke(m, o, &updateArgs[0], &ecx);
@@ -191,12 +188,11 @@ namespace Wyrd
 		{
 			if (_CurrentScene != nullptr)
 			{
-				for (Entity e : EntitySet<ECSScriptComponent, ECSScriptInternalComponent>(*_CurrentScene.get()))
+				for (Entity e : EntitySet<ScriptComponent>(*_CurrentScene.get()))
 				{
-					ECSScriptComponent* scriptComponent = _CurrentScene->Get<ECSScriptComponent>(e);
-					ECSScriptInternalComponent* scriptComponentInternal = _CurrentScene->Get<ECSScriptInternalComponent>(e);
+					ScriptComponent* scriptComponent = _CurrentScene->Get<ScriptComponent>(e);
 
-					ScriptedCustomObject* obj = GetCustomObject(scriptComponent->script, scriptComponentInternal->instanceID);
+					ScriptedCustomObject* obj = GetCustomObject(scriptComponent->script, scriptComponent->instanceID);
 					MonoObject* o = &*obj->Object;
 
 					if (MonoUtils::InvokeMethod((MonoImage*)_ClientImage, "WyrdGame", obj->TypeName, _FunctionKeyStateMap[state], o, { &key }) == false)

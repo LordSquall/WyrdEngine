@@ -10,7 +10,7 @@
 void Transform2DComponent_SetPosition(void* scenePtr, Wyrd::Entity entity, Wyrd::Vector2* position)
 {
 	Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
-	Wyrd::ECSTransform2DComponent* component = scene->Get<Wyrd::ECSTransform2DComponent>(entity);
+	Wyrd::Transform2DComponent* component = scene->Get<Wyrd::Transform2DComponent>(entity);
 	
 	component->position.x = position->x;
 	component->position.y = position->y;

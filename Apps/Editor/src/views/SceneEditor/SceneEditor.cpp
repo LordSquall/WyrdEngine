@@ -68,14 +68,14 @@ namespace Wyrd::Editor
 						{
 							if (ImGui::MenuItem("Add Transform"))
 							{
-								ECSTransform2DComponent* c = scene.AssignComponent<ECSTransform2DComponent>(e);
+								Transform2DComponent* c = scene.AssignComponent<Transform2DComponent>(e);
 								c->position = { 0.0f, 0.0f };
 								c->rotation = 0.0f;
 							}
 							ImGui::Separator();
 							if (ImGui::MenuItem("Add Sprite"))
 							{
-								ECSSpriteComponent* c = scene.AssignComponent<ECSSpriteComponent>(e);
+								SpriteComponent* c = scene.AssignComponent<SpriteComponent>(e);
 								c->position = { 0.0f, 0.0f };
 								c->size = { 32.0f, 32.0f };
 								c->texture = UID(RESOURCE_DEFAULT_TEXTURE);
@@ -84,11 +84,8 @@ namespace Wyrd::Editor
 							ImGui::Separator();
 							if (ImGui::MenuItem("Add Script"))
 							{
-								ECSScriptComponent* c = scene.AssignComponent<ECSScriptComponent>(e);
+								ScriptComponent* c = scene.AssignComponent<ScriptComponent>(e);
 								c->script = UID();
-
-								ECSScriptInternalComponent* ci = scene.AssignComponent<ECSScriptInternalComponent>(e);
-								ci->instanceID = 0;
 							}
 							ImGui::EndPopup();
 						}
@@ -126,8 +123,8 @@ namespace Wyrd::Editor
 					MetaDataComponent* dataComponent = scene.AssignComponent<MetaDataComponent>(e);
 					strcpy(dataComponent->name, "New Entity");
 
-					ECSTransform2DComponent* transformComponent = scene.AssignComponent<ECSTransform2DComponent>(e);
-					ECSSpriteComponent* cs = scene.AssignComponent<ECSSpriteComponent>(e);
+					Transform2DComponent* transformComponent = scene.AssignComponent<Transform2DComponent>(e);
+					SpriteComponent* cs = scene.AssignComponent<SpriteComponent>(e);
 					cs->color = { 1.0f, 1.0f, 1.0f, 1.0f };
 					cs->size = { 32.0f, 32.0f };
 					cs->texture = UID(RESOURCE_DEFAULT_TEXTURE);

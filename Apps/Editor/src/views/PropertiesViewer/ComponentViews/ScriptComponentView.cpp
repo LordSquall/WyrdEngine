@@ -20,7 +20,7 @@ namespace Wyrd::Editor
 	void ScriptComponentView::OnEditorRender(void* data)
 	{
 		/* Cast to the correct component */
-		ECSScriptComponent* script = (ECSScriptComponent*)data;
+		ScriptComponent* script = (ScriptComponent*)data;
 
 		ImGui::Text("Script: %s", script->script.str().c_str());
 		if (ImGui::BeginDragDropTarget())

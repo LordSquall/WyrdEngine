@@ -21,7 +21,7 @@ namespace Wyrd::Editor
 	void SpriteComponentView::OnEditorRender(void* data)
 	{
 		/* Cast to the correct component */
-		ECSSpriteComponent* sprite = (ECSSpriteComponent*)data;
+		SpriteComponent* sprite = (SpriteComponent*)data;
 
 		ImGui::InputFloat2("Pos ", (float*)&sprite->position);
 		ImGui::InputFloat2("Size", (float*)&sprite->size);

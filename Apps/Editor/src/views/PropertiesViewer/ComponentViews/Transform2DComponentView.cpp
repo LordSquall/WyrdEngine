@@ -20,7 +20,7 @@ namespace Wyrd::Editor
 	void Tranform2DComponentView::OnEditorRender(void* data)
 	{
 		/* Cast to the correct component */
-		ECSTransform2DComponent* transform2D = (ECSTransform2DComponent*)data;
+		Transform2DComponent* transform2D = (Transform2DComponent*)data;
 
 		ImGui::InputFloat2("Pos     ", (float*)&transform2D->position);
 	}

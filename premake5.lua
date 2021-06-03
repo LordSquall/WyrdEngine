@@ -86,57 +86,6 @@ include "externalbuild/premake5-spdlog.lua"
 include "externalbuild/premake5-uuid.lua"
 include "externalbuild/premake5-hash.lua"
 
-group "Code Gen"
-	project "WyrdBindings"
-	location "codegen"
-	kind "StaticLib"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "off"
-
-	targetdir ("lib/" .. outputdir .. "/%{prj.name}")
-	objdir ("obj/" .. outputdir .. "/%{prj.name}")
-		
-	files
-	{
-		"codegen/src/PlayerAPI/include/**.h",
-		"codegen/src/PlayerAPI/src/**.cpp",
-		"codegen/src/Common/include/**.h",
-		"codegen/src/Common/src/**.cpp"
-	}
-	
-	includedirs
-	{
-		"codegen/src/PlayerAPI/include/",
-		"codegen/src/Common/include/",
-		"Wyrd/src",
-		"%{includedir.uuid}"
-	}
-	
-	links
-	{
-		"uuid"
-	}
-
-
-	filter "system:windows"
-		systemversion "latest"
-		
-	filter "configurations:Debug"
-		defines "WYRD_DEBUG"
-		runtime "Debug"
-		symbols "on"
-
-	filter "configurations:Release"
-		defines "WYRD_RELEASE"
-		runtime "Release"
-		symbols "on"
-
-	filter "configurations:Distribution"
-		defines "WYRD_DISTRIBUTION"
-		runtime "Release"
-		symbols "on"
-
 group ""
 	project "Wyrd"
 		location "Wyrd"
@@ -360,7 +309,6 @@ project "Editor"
 	links
 	{
 		"Wyrd",
-		"WyrdBindings",
 		"GLFW",
 		"GLAD",
 		"SOIL",
@@ -374,7 +322,6 @@ project "Editor"
 	{ 
 		"WyrdAPI", 
 		"WyrdCAPI",
-		"WyrdBindings",
 		"Player"
 	}
 
@@ -446,8 +393,7 @@ project "Player"
 	
 	links
 	{
-		"Wyrd",
-		"WyrdBindings"
+		"Wyrd"
 	}
 	
 	filter "system:windows"
@@ -515,8 +461,7 @@ project "ESCTestApp"
 	
 	links
 	{
-		"Wyrd",
-		"WyrdBindings"
+		"Wyrd"
 	}
 	
 	filter "system:windows"

@@ -19,13 +19,13 @@ namespace Wyrd
 		char name[32];
 	};
 
-	struct WYRD_LIBRARY_API ECSTransform2DComponent
+	struct WYRD_LIBRARY_API Transform2DComponent
 	{
 		glm::vec2 position;
 		float rotation;
 	};
 
-	struct WYRD_LIBRARY_API ECSSpriteComponent
+	struct WYRD_LIBRARY_API SpriteComponent
 	{
 		glm::vec2 position;
 		glm::vec2 size;
@@ -34,22 +34,18 @@ namespace Wyrd
 	};
 
 	/* Script Components */
-	struct WYRD_LIBRARY_API ECSScriptComponent
+	struct WYRD_LIBRARY_API ScriptComponent
 	{
 		UID script;
-	};
-
-	struct WYRD_LIBRARY_API ECSScriptInternalComponent
-	{
 		uint32_t instanceID;
 	};
 
-	struct WYRD_LIBRARY_API ECSCameraComponent
+	struct WYRD_LIBRARY_API CameraComponent
 	{
 		float size;
 	};
 
-	struct WYRD_LIBRARY_API ECSEditorComponent
+	struct WYRD_LIBRARY_API EditorComponent
 	{
 		Rect inputArea;
 	};

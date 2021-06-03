@@ -25,23 +25,19 @@ namespace Wyrd
 			}
 			else if (strcmp(name.c_str(), "Transform2D") == 0)
 			{
-				Serialise(obj, (ECSTransform2DComponent*)data);
+				Serialise(obj, (Transform2DComponent*)data);
 			}
 			else if (strcmp(name.c_str(), "Sprite") == 0)
 			{
-				Serialise(obj, (ECSSpriteComponent*)data);
+				Serialise(obj, (SpriteComponent*)data);
 			}
 			else if (strcmp(name.c_str(), "Script") == 0)
 			{
-				Serialise(obj, (ECSScriptComponent*)data);
-			}
-			else if (strcmp(name.c_str(), "ScriptInternal") == 0)
-			{
-				Serialise(obj, (ECSScriptInternalComponent*)data);
+				Serialise(obj, (ScriptComponent*)data);
 			}
 			else if (strcmp(name.c_str(), "Camera") == 0)
 			{
-				Serialise(obj, (ECSCameraComponent*)data);
+				Serialise(obj, (CameraComponent*)data);
 			}
 
 			return obj;
@@ -55,44 +51,38 @@ namespace Wyrd
 			}
 			else if (strcmp(name.c_str(), "Transform2D") == 0)
 			{
-				Deserialise(obj, (ECSTransform2DComponent*)buffer);
+				Deserialise(obj, (Transform2DComponent*)buffer);
 			}
 			else if (strcmp(name.c_str(), "Sprite") == 0)
 			{
-				Deserialise(obj, (ECSSpriteComponent*)buffer);
+				Deserialise(obj, (SpriteComponent*)buffer);
 			}
 			else if (strcmp(name.c_str(), "Script") == 0)
 			{
-				Deserialise(obj, (ECSScriptComponent*)buffer);
-			}
-			else if (strcmp(name.c_str(), "ScriptInternal") == 0)
-			{
-				Deserialise(obj, (ECSScriptInternalComponent*)buffer);
+				Deserialise(obj, (ScriptComponent*)buffer);
 			}
 			else if (strcmp(name.c_str(), "Camera") == 0)
 			{
-				Deserialise(obj, (ECSCameraComponent*)buffer);
+				Deserialise(obj, (CameraComponent*)buffer);
 			}
 			else if (strcmp(name.c_str(), "Camera") == 0)
 			{
-				Deserialise(obj, (ECSEditorComponent*)buffer);
+				Deserialise(obj, (EditorComponent*)buffer);
 			}
 		}
 
 		static void Serialise(Object& obj, const Wyrd::MetaDataComponent* data);
-		static void Serialise(Object& obj, const Wyrd::ECSTransform2DComponent* data);
-		static void Serialise(Object& obj, const Wyrd::ECSSpriteComponent* data);
-		static void Serialise(Object& obj, const Wyrd::ECSScriptComponent* data);
-		static void Serialise(Object& obj, const Wyrd::ECSScriptInternalComponent* data);
-		static void Serialise(Object& obj, const Wyrd::ECSCameraComponent* data);
-		static void Serialise(Object& obj, const Wyrd::ECSEditorComponent* data);
+		static void Serialise(Object& obj, const Wyrd::Transform2DComponent* data);
+		static void Serialise(Object& obj, const Wyrd::SpriteComponent* data);
+		static void Serialise(Object& obj, const Wyrd::ScriptComponent* data);
+		static void Serialise(Object& obj, const Wyrd::CameraComponent* data);
+		static void Serialise(Object& obj, const Wyrd::EditorComponent* data);
 
 		static void Deserialise(Object& obj, Wyrd::MetaDataComponent* data);
-		static void Deserialise(Object& obj, Wyrd::ECSTransform2DComponent* data);
-		static void Deserialise(Object& obj, Wyrd::ECSSpriteComponent* data);
-		static void Deserialise(Object& obj, Wyrd::ECSScriptComponent* data);
-		static void Deserialise(Object& obj, Wyrd::ECSScriptInternalComponent* data);
-		static void Deserialise(Object& obj, Wyrd::ECSCameraComponent* data);
-		static void Deserialise(Object& obj, Wyrd::ECSEditorComponent* data);
+		static void Deserialise(Object& obj, Wyrd::Transform2DComponent* data);
+		static void Deserialise(Object& obj, Wyrd::SpriteComponent* data);
+		static void Deserialise(Object& obj, Wyrd::ScriptComponent* data);
+		static void Deserialise(Object& obj, Wyrd::CameraComponent* data);
+		static void Deserialise(Object& obj, Wyrd::EditorComponent* data);
 	};
 };

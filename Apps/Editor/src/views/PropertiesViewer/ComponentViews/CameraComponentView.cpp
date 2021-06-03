@@ -20,7 +20,7 @@ namespace Wyrd::Editor
 	void CameraComponentView::OnEditorRender(void* data)
 	{
 		/* Cast to the correct component */
-		ECSCameraComponent* cameraComponent = (ECSCameraComponent*)data;
+		CameraComponent* cameraComponent = (CameraComponent*)data;
 		
 		ImGui::InputFloat("Size     ", &cameraComponent->size);
 	}

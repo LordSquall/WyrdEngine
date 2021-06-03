@@ -80,11 +80,11 @@ namespace Wyrd::Editor
 
 	void SceneViewer::OnUpdate(Timestep ts)
 	{
-		for (Entity e : EntitySet<ECSTransform2DComponent, ECSSpriteComponent, ECSEditorComponent>(*_Scene.get()))
+		for (Entity e : EntitySet<Transform2DComponent, SpriteComponent, EditorComponent>(*_Scene.get()))
 		{
-			ECSTransform2DComponent* transform = _Scene->Get<ECSTransform2DComponent>(e);
-			ECSSpriteComponent* sprite = _Scene->Get<ECSSpriteComponent>(e);
-			ECSEditorComponent* editorComponent = _Scene->Get<ECSEditorComponent>(e);
+			Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
+			SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
+			EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
 
 			editorComponent->inputArea.position = sprite->position + transform->position;
 			editorComponent->inputArea.size = sprite->size;
@@ -102,10 +102,10 @@ namespace Wyrd::Editor
 			renderer.Clear(0.1f, 0.1f, 0.1f);
 			if (_Scene != nullptr)
 			{
-				for (Entity e : EntitySet<ECSTransform2DComponent, ECSSpriteComponent>(*_Scene.get()))
+				for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
 				{
-					ECSTransform2DComponent* transform = _Scene->Get<ECSTransform2DComponent>(e);
-					ECSSpriteComponent* sprite = _Scene->Get<ECSSpriteComponent>(e);
+					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
+					SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
 
 					Wyrd::DrawSpriteCommand cmd{};
 					cmd.type = 1;
@@ -244,9 +244,9 @@ namespace Wyrd::Editor
 			if (_Scene != nullptr)
 			{
 				/* test each of the editor components to check input */
-				for (Entity e : EntitySet<ECSEditorComponent>(*_Scene.get()))
+				for (Entity e : EntitySet<EditorComponent>(*_Scene.get()))
 				{
-					ECSEditorComponent* editorComponent = _Scene->Get<ECSEditorComponent>(e);
+					EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
 
 					if (editorComponent->inputArea.ContainsPoint(worldSpace) == true)
 					{

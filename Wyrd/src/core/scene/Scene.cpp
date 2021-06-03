@@ -31,11 +31,10 @@ namespace Wyrd
 	{
 		/* register all the inbuild components with the ECS */
 		RegisterComponent<MetaDataComponent>("MetaData", "MetaDataComponent");
-		RegisterComponent<ECSTransform2DComponent>("Transform2D", "Transform2DComponent");
-		RegisterComponent<ECSSpriteComponent>("Sprite", "SpriteComponent");
-		RegisterComponent<ECSScriptComponent>("Script", "ScriptComponent");
-		RegisterComponent<ECSScriptInternalComponent>("ScriptInternal", "ScriptInternalComponent");
-		RegisterComponent<ECSCameraComponent>("Camera", "CameraComponent");
+		RegisterComponent<Transform2DComponent>("Transform2D", "Transform2DComponent");
+		RegisterComponent<SpriteComponent>("Sprite", "SpriteComponent");
+		RegisterComponent<ScriptComponent>("Script", "ScriptComponent");
+		RegisterComponent<CameraComponent>("Camera", "CameraComponent");
 		return true;
 	}
 
