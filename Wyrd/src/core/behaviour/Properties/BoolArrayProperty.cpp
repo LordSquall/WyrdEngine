@@ -12,18 +12,18 @@
 
 namespace Wyrd
 {
-	void BoolArrayProperty::Set(void* object)
+	void BoolArrayProperty::Set(void* object, void* data)
 	{
 		//TODO
 	}
 
-	bool BoolArrayProperty::ToJson(jsonxx::Object& object)
+	bool BoolArrayProperty::ToJson(jsonxx::Object& object, void* data)
 	{
 		//TODO
 		return true;
 	}
 
-	bool BoolArrayProperty::FromJson(jsonxx::Object& object)
+	bool BoolArrayProperty::FromJson(jsonxx::Object& object, void** data)
 	{
 		//TODO
 		return true;

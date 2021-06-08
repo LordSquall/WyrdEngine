@@ -12,7 +12,6 @@ namespace Wyrd {
 	class VertexBuffer;
 	class IndexBuffer;
 	class Shader;
-	class SpriteComponent;
 
 	/* represents a single sprite vertex */
 	struct SpriteVertex2

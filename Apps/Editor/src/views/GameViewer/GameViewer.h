@@ -7,7 +7,7 @@
 #include <core/renderer/Buffer.h>
 #include <core/renderer/Shader.h>
 
-class Wyrd::CameraComponent;
+struct Wyrd::CameraComponent;
 
 namespace Wyrd::Editor
 {

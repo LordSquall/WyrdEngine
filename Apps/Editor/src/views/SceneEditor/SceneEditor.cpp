@@ -57,6 +57,14 @@ namespace Wyrd::Editor
 							_SelectedEntity = e;
 						}
 
+						/* Drag and Drop */
+						if (ImGui::BeginDragDropSource())
+						{
+							ImGui::SetDragDropPayload("DND_ENTITY", &e, sizeof(Entity));
+							ImGui::Text(metadataComp->name);
+							ImGui::EndDragDropSource();
+						}
+
 						if (ImGui::IsItemHovered())
 						{
 							ImGui::BeginTooltip();

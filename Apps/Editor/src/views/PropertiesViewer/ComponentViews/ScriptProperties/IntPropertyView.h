@@ -6,18 +6,13 @@
 #include <core/behaviour/Properties/IntProperty.h>
 
 /* local includes */
-#include "views/DataModels/components/ScriptProperties/ScriptPropertyViewFactory.h"
-
+#include "views/PropertiesViewer/ComponentViews/ScriptProperties/ScriptPropertyViewFactory.h"
 
 namespace Wyrd::Editor
 {
-	class IntPropertyView : public ScriptPropertyView
+	class IntPropertyView
 	{
 	public:
-
-		virtual void DrawUI();
-
-
 		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(IntPropertyView, Wyrd::IntProperty, "System.Int32");
 	};
 }

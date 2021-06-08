@@ -9,7 +9,7 @@
 
 namespace Wyrd
 {
-	class WYRD_LIBRARY_API BoolProperty : public ScriptProperty
+	class WYRD_LIBRARY_API EntityProperty : public ScriptProperty
 	{
 	public:
 		virtual void Set(void* object, void* data) override;
@@ -17,9 +17,7 @@ namespace Wyrd
 		virtual bool ToJson(jsonxx::Object& object, void* data) override;
 		virtual bool FromJson(jsonxx::Object& object, void** data) override;
 
-		inline bool* GetValue() { return &_Value; }
-
 	private:
-		SCRIPT_PROPERTY_FACTORY_SETUP(BoolProperty, bool, false, "System.Boolean");
+		SCRIPT_PROPERTY_FACTORY_SETUP(EntityProperty, void*, 0, "WyrdAPI.Entity");
 	};
 }

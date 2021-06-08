@@ -5,14 +5,14 @@
 #include <core/Log.h>
 
 /* local includes */
-#include "views/DataModels/components/ScriptProperties/Vector3PropertyView.h"
+#include "Vector3PropertyView.h"
 #include "support/ImGuiUtils.h"
 
 namespace Wyrd::Editor
 {
-	void Vector3PropertyView::DrawUI()
+	void Vector3PropertyView::OnEditorRender(const std::shared_ptr<ScriptProperty>& prop, void* value)
 	{
-		ImGui::InputFloat3(_Property->GetName().c_str(), (float*)_Property->GetValue());
+		ImGui::InputFloat3(prop->GetName().c_str(), (float*)value);
 	}
 
 	SCRIPT_PROPERTY_VIEW_FACTORY_REGISTER(Vector3PropertyView);

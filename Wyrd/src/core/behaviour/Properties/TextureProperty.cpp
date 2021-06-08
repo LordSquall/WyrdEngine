@@ -16,35 +16,37 @@
 
 namespace Wyrd
 {
-	void TextureProperty::Set(void* object)
+	void TextureProperty::Set(void* object, void* data)
 	{
-		if (_Value != nullptr)
-		{
-			std::vector<void*> args;
+		/* cast the texture UID */
+		UID textureUID = UID((char*)data);
 
-			/*std::shared_ptr<ScriptedClass> textureClass = Application::Get().GetBehaviour().GetClass("Texture");
-			MonoObject* textureObject = MonoUtils::CreateNewObject((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), textureClass);
+		/* retrieve the texture pointer for the resource manager */
+		auto texturePtr = Application::Get().GetResources().Textures[textureUID];
 
-			MonoProperty* property = mono_class_get_property_from_name((MonoClass*)*textureClass->ManagedClass, "NativePtr");
+		std::vector<void*> args;
 
-			MonoMethod* propSetter = mono_property_get_set_method(property);
+		std::shared_ptr<ScriptedClass> textureClass = Application::Get().GetBehaviour().GetClass("Texture");
 
-			args.push_back(&_Value);
+		MonoObject* textureObject = mono_object_new((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), *textureClass->ManagedClass);
 
-			WYRD_TRACE("Texture Set: {0}", _Value->GetUID().str());
+		MonoProperty* property = mono_class_get_property_from_name((MonoClass*)*textureClass->ManagedClass, "NativePtr");
 
-			mono_runtime_invoke(propSetter, textureObject, &args[0], nullptr);
+		MonoMethod* propSetter = mono_property_get_set_method(property);
 
-			args.clear();
+		args.push_back(texturePtr.get());
 
-			args.push_back(textureObject);
+		mono_runtime_invoke(propSetter, textureObject, &args[0], nullptr);
 
-			mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);*/
-		}
-	}
+		args.clear();
+
+		args.push_back(textureObject);
+
+		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
+	}	
 
 
-	bool TextureProperty::ToJson(jsonxx::Object& object)
+	bool TextureProperty::ToJson(jsonxx::Object& object, void* data)
 	{
 		if (_Value != nullptr)
 		{
@@ -58,7 +60,7 @@ namespace Wyrd
 		return true;
 	}
 
-	bool TextureProperty::FromJson(jsonxx::Object& object)
+	bool TextureProperty::FromJson(jsonxx::Object& object, void** data)
 	{
 		_ValueUID = UID(object.get<jsonxx::String>("value", ""));
 		return true;

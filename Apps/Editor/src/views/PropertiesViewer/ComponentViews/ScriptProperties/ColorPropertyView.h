@@ -6,16 +6,13 @@
 #include <core/behaviour/Properties/ColorProperty.h>
 
 /* local includes */
-#include "views/DataModels/components/ScriptProperties/ScriptPropertyViewFactory.h"
+#include "views/PropertiesViewer/ComponentViews/ScriptProperties/ScriptPropertyViewFactory.h"
 
 namespace Wyrd::Editor
 {
-	class ColorPropertyView : public ScriptPropertyView
+	class ColorPropertyView
 	{
 	public:
-
-		virtual void DrawUI();
-
 		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(ColorPropertyView, Wyrd::ColorProperty, "WyrdAPI.Color");
 	};
 }

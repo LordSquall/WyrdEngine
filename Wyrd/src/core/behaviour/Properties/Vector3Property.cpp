@@ -17,12 +17,14 @@
 
 namespace Wyrd
 {
-	void Vector3Property::Set(void* object)
+	void Vector3Property::Set(void* object, void* data)
 	{
+		Vector3* vector3 = (Vector3*)data;
+
 		std::vector<void*> args;
 
-		/*std::shared_ptr<ScriptedClass> vector3Class = Application::Get().GetBehaviour().GetClass("Vector3");
-		MonoObject* vector3Object = MonoUtils::CreateNewObject((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), vector3Class);
+		std::shared_ptr<ScriptedClass> vector3Class = Application::Get().GetBehaviour().GetClass("Vector3");
+		MonoObject* vector3Object = mono_object_new((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), *vector3Class->ManagedClass);
 
 		MonoProperty* xProperty = mono_class_get_property_from_name((MonoClass*)*vector3Class->ManagedClass, "X");
 		MonoProperty* yProperty = mono_class_get_property_from_name((MonoClass*)*vector3Class->ManagedClass, "Y");
@@ -32,9 +34,9 @@ namespace Wyrd
 		MonoMethod* yPropSetter = mono_property_get_set_method(yProperty);
 		MonoMethod* zPropSetter = mono_property_get_set_method(zProperty);
 
-		args.push_back(&_Value.x);
-		args.push_back(&_Value.y);
-		args.push_back(&_Value.z);
+		args.push_back(&vector3->x);
+		args.push_back(&vector3->y);
+		args.push_back(&vector3->z);
 
 		mono_runtime_invoke(xPropSetter, vector3Object, &args[0], nullptr);
 		mono_runtime_invoke(yPropSetter, vector3Object, &args[1], nullptr);
@@ -44,16 +46,16 @@ namespace Wyrd
 
 		args.push_back(vector3Object);
 
-		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);*/
+		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
 	}
 
-	bool Vector3Property::ToJson(jsonxx::Object& object)
+	bool Vector3Property::ToJson(jsonxx::Object& object, void* data)
 	{
 		object << "value" << _Value;
 		return true;
 	}
 
-	bool Vector3Property::FromJson(jsonxx::Object& object)
+	bool Vector3Property::FromJson(jsonxx::Object& object, void** data)
 	{
 		_Value << object.get<jsonxx::Array>("value");
 		return true;

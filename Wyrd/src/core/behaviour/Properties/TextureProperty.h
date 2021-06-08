@@ -11,10 +11,10 @@ namespace Wyrd
 	class WYRD_LIBRARY_API TextureProperty : public ScriptProperty
 	{
 	public:
-		virtual void Set(void* object) override;
+		virtual void Set(void* object, void* data) override;
 
-		virtual bool ToJson(jsonxx::Object& object) override;
-		virtual bool FromJson(jsonxx::Object& object) override;
+		virtual bool ToJson(jsonxx::Object& object, void* data) override;
+		virtual bool FromJson(jsonxx::Object& object, void** data) override;
 
 		inline Texture* GetValue() { return _Value; }
 		inline void SetValue(Texture* value) { _Value = value; };

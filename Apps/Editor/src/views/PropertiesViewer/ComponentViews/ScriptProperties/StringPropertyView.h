@@ -6,16 +6,13 @@
 #include <core/behaviour/Properties/StringProperty.h>
 
 /* local includes */
-#include "views/DataModels/components/ScriptProperties/ScriptPropertyViewFactory.h"
+#include "views/PropertiesViewer/ComponentViews/ScriptProperties/ScriptPropertyViewFactory.h"
 
 namespace Wyrd::Editor
 {
-	class StringPropertyView : public ScriptPropertyView
+	class StringPropertyView
 	{
 	public:
-
-		virtual void DrawUI();
-
 		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(StringPropertyView, Wyrd::StringProperty, "System.String");
 	};
 }

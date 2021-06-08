@@ -6,14 +6,14 @@
 #include <core/Structures.h>
 
 /* local includes */
-#include "views/DataModels/components/ScriptProperties/ColorPropertyView.h"
+#include "ColorPropertyView.h"
 #include "support/ImGuiUtils.h"
 
 namespace Wyrd::Editor
 {
-	void ColorPropertyView::DrawUI()
+	void ColorPropertyView::OnEditorRender(const std::shared_ptr<ScriptProperty>& prop, void* value)
 	{
-		ImGui::ColorEdit4(_Property->GetName().c_str(), (float*)_Property->GetValue());
+		ImGui::ColorEdit4(prop->GetName().c_str(), (float*)value);
 	}
 
 	SCRIPT_PROPERTY_VIEW_FACTORY_REGISTER(ColorPropertyView);

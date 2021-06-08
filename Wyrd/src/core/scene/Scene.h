@@ -19,7 +19,6 @@ namespace Wyrd {
 
 	class Layer2D;
 	class Behaviour;
-	class CameraComponent;
 
 	/* Editor Scene Data Model Structure */
 	class WYRD_LIBRARY_API Scene

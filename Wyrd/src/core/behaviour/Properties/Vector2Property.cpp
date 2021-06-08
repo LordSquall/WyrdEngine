@@ -17,12 +17,15 @@
 
 namespace Wyrd
 {
-	void Vector2Property::Set(void* object)
+	void Vector2Property::Set(void* object, void* data)
 	{
+		Vector2* vector2 = (Vector2*)data;
+
 		std::vector<void*> args;
 
-		/*std::shared_ptr<ScriptedClass> vector2Class = Application::Get().GetBehaviour().GetClass("Vector2");
-		MonoObject* vector2Object = MonoUtils::CreateNewObject((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), vector2Class);
+		std::shared_ptr<ScriptedClass> vector2Class = Application::Get().GetBehaviour().GetClass("Vector2");
+
+		MonoObject* vector2Object = mono_object_new((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), *vector2Class->ManagedClass);
 
 		MonoProperty* xProperty = mono_class_get_property_from_name((MonoClass*)*vector2Class->ManagedClass, "X");
 		MonoProperty* yProperty = mono_class_get_property_from_name((MonoClass*)*vector2Class->ManagedClass, "Y");
@@ -30,8 +33,8 @@ namespace Wyrd
 		MonoMethod* xPropSetter = mono_property_get_set_method(xProperty);
 		MonoMethod* yPropSetter = mono_property_get_set_method(yProperty);
 
-		args.push_back(&_Value.x);
-		args.push_back(&_Value.y);
+		args.push_back(&vector2->x);
+		args.push_back(&vector2->y);
 
 		mono_runtime_invoke(xPropSetter, vector2Object, &args[0], nullptr);
 		mono_runtime_invoke(yPropSetter, vector2Object, &args[1], nullptr);
@@ -40,16 +43,16 @@ namespace Wyrd
 
 		args.push_back(vector2Object);
 
-		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);*/
+		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
 	}
 
-	bool Vector2Property::ToJson(jsonxx::Object& object)
+	bool Vector2Property::ToJson(jsonxx::Object& object, void* data)
 	{
 		object << "value" << _Value;
 		return true;
 	}
 
-	bool Vector2Property::FromJson(jsonxx::Object& object)
+	bool Vector2Property::FromJson(jsonxx::Object& object, void** data)
 	{
 		_Value << object.get<jsonxx::Array>("value");
 		return true;

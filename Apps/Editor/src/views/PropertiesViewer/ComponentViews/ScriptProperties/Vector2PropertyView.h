@@ -6,16 +6,13 @@
 #include <core/behaviour/Properties/Vector2Property.h>
 
 /* local includes */
-#include "views/DataModels/components/ScriptProperties/ScriptPropertyViewFactory.h"
-
+#include "views/PropertiesViewer/ComponentViews/ScriptProperties/ScriptPropertyViewFactory.h"
 
 namespace Wyrd::Editor
 {
-	class Vector2PropertyView : public ScriptPropertyView
+	class Vector2PropertyView
 	{
 	public:
-		virtual void DrawUI();
-
 		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(Vector2PropertyView, Wyrd::Vector2Property, "WyrdAPI.Vector2");
 	};
 }

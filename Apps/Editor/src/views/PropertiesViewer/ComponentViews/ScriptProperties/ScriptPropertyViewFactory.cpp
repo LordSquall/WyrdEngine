@@ -4,7 +4,7 @@
 #include <wyrdpch.h>
 
 /* local includes */
-#include "views/DataModels/components/ScriptProperties/ScriptPropertyViewFactory.h"
+#include "views/PropertiesViewer/ComponentViews/ScriptProperties/ScriptPropertyViewFactory.h"
 
 namespace Wyrd::Editor
 {
@@ -26,16 +26,15 @@ namespace Wyrd::Editor
         return false;
     }
 
-    std::unique_ptr<ScriptPropertyView>
-        ScriptPropertyViewFactory::Create(const std::shared_ptr<ScriptProperty>& prop)
+    bool ScriptPropertyViewFactory::Create(const std::shared_ptr<ScriptProperty>& prop, void* data)
     {
         auto views = GetPropertyViews();
         auto factoryName = prop->GetFactoryName();
         if (auto it = views->find(prop->GetFactoryName()); it != views->end())
         {
-            return it->second(prop);
+            it->second(prop, data);
+            return true;
         }
-
-        return nullptr;
+        return false;
     }
 }

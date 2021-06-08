@@ -5,14 +5,14 @@
 #include <core/Log.h>
 
 /* local includes */
-#include "views/DataModels/components/ScriptProperties/IntPropertyView.h"
+#include "IntPropertyView.h"
 #include "support/ImGuiUtils.h"
 
 namespace Wyrd::Editor
 {
-	void IntPropertyView::DrawUI()
+	void IntPropertyView::OnEditorRender(const std::shared_ptr<ScriptProperty>& prop, void* value)
 	{
-		ImGui::DragInt(_Property->GetName().c_str(), _Property->GetValue());
+		ImGui::DragInt(prop->GetName().c_str(), (int*)value);
 	}
 
 	SCRIPT_PROPERTY_VIEW_FACTORY_REGISTER(IntPropertyView);

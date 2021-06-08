@@ -94,7 +94,7 @@ namespace Wyrd
 					scriptProp->SetSetter(setter);
 					scriptProp->SetGetter(getter);
 
-					//WYRD_TRACE("- Property: {0}", name);
+					WYRD_TRACE("- Property: {0}", name);
 					Properties[name] = std::move(scriptProp);
 				}
 				else

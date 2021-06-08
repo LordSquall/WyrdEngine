@@ -5,14 +5,14 @@
 #include <core/Log.h>
 
 /* local includes */
-#include "views/DataModels/components/ScriptProperties/FloatPropertyView.h"
+#include "FloatPropertyView.h"
 #include "support/ImGuiUtils.h"
 
 namespace Wyrd::Editor
 {
-	void FloatPropertyView::DrawUI()
+	void FloatPropertyView::OnEditorRender(const std::shared_ptr<ScriptProperty>& prop, void* value)
 	{
-		ImGui::DragFloat(_Property->GetName().c_str(), _Property->GetValue());
+		ImGui::DragFloat(prop->GetName().c_str(), (float*)value);
 	}
 
 	SCRIPT_PROPERTY_VIEW_FACTORY_REGISTER(FloatPropertyView);

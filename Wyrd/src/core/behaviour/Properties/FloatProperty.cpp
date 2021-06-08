@@ -12,25 +12,25 @@
 
 namespace Wyrd
 {
-	void FloatProperty::Set(void* object)
+	void FloatProperty::Set(void* object, void* data)
 	{
 		std::vector<void*> args;
 
-		args.push_back(&_Value);
+		args.push_back(data);
 
 		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
 	}
 
-	bool FloatProperty::ToJson(jsonxx::Object& object)
+	bool FloatProperty::ToJson(jsonxx::Object& object, void* data)
 	{
-		object << "value" << _Value;
+		object << "value" << (float*)data;
 		return true;
 	}
 
-	bool FloatProperty::FromJson(jsonxx::Object& object)
+	bool FloatProperty::FromJson(jsonxx::Object& object, void** data)
 	{
-		_Value = (float)object.get<jsonxx::Number>("value", 0.0f);
-
+		float val = (float)object.get<jsonxx::Number>("value", 0.0f);
+		memcpy(*data, &val, sizeof(float));
 		return true;
 	}
 

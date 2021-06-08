@@ -150,6 +150,10 @@ namespace Wyrd
 		*/
 		void AddScriptedCustomObject(UID uid, std::shared_ptr<ScriptedCustomObject> customObject);
 
+	public:
+		std::map<Entity, MonoObject*> ScriptedEntities;
+		std::map<UID, MonoObject*> ScriptedTextures;
+
 	private:
 
 		ScriptedCustomObject* GetCustomObject(UID& uid, uint32_t instanceID);

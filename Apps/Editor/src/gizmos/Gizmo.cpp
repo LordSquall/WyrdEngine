@@ -7,7 +7,6 @@
 #include <core/renderer/Shader.h>
 #include <core/renderer/Buffer.h>
 #include <core/renderer/VertexArray.h>
-#include <core/scene/GameObject.h>
 
 /* local includes */
 #include "gizmos/Gizmo.h"

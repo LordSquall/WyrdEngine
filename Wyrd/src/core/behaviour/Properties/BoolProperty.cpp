@@ -12,23 +12,23 @@
 
 namespace Wyrd
 {
-	void BoolProperty::Set(void* object)
+	void BoolProperty::Set(void* object, void* data)
 	{
 		std::vector<void*> args;
 
-		args.push_back(&_Value);
+		args.push_back(data);
 
 		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
 	}
 
-	bool BoolProperty::ToJson(jsonxx::Object& object)
+	bool BoolProperty::ToJson(jsonxx::Object& object, void* data)
 	{
 		object << "name" << _Name;
 		object << "value" << _Value;
 		return true;
 	}
 
-	bool BoolProperty::FromJson(jsonxx::Object& object)
+	bool BoolProperty::FromJson(jsonxx::Object& object, void** data)
 	{
 		_Value = object.get<jsonxx::Boolean>("value");
 

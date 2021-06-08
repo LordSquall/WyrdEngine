@@ -14,24 +14,25 @@
 
 namespace Wyrd
 {
-	void StringProperty::Set(void* object)
+	void StringProperty::Set(void* object, void* data)
 	{
 		std::vector<void*> args;
 
-		args.push_back(mono_string_new((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), _Value.c_str()));
+		args.push_back(mono_string_new((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), (char*)data));
 
 		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
 	}
 
-	bool StringProperty::ToJson(jsonxx::Object& object)
+	bool StringProperty::ToJson(jsonxx::Object& object, void* data)
 	{
 		object << "value" << _Value;
 		return true;
 	}
 
-	bool StringProperty::FromJson(jsonxx::Object& object)
+	bool StringProperty::FromJson(jsonxx::Object& object, void** data)
 	{
-		_Value = object.get<jsonxx::String>("value", "");
+		std::string val = object.get<jsonxx::String>("value", "");
+		strcpy((char*)*data, val.c_str());
 
 		return true;
 	}

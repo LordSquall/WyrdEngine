@@ -4,6 +4,7 @@
 #include <core/export.h>
 #include <core/Layer.h>
 #include <core/scene/Scene.h>
+#include <core/ecs/Components.h>
 
 /* local includes */
 #include "views/EditorViewBase.h"

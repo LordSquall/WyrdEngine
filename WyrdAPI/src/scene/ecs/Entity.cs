@@ -51,5 +51,10 @@ namespace WyrdAPI
         }
 
         private Dictionary<Type, Component> _components = new Dictionary<Type, Component>();
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

@@ -15,6 +15,30 @@ namespace WyrdAPI
         public float B { get; set; } = 1.0f;
         public float A { get; set; } = 1.0f;
 
+        public Color()
+        {
+            R = 1.0f;
+            G = 1.0f;
+            B = 1.0f;
+            A = 1.0f;
+        }
+
+        public Color(float r, float g, float b)
+        {
+            R = r;
+            G = g;
+            B = b;
+            A = 1.0f;
+        }
+        
+        public Color(float r, float g, float b, float a)
+        {
+            R = r;
+            G = g;
+            B = b;
+            A = a;
+        }
+
         public static Color Lerp(Color a, Color b, float t)
         {
             return new Color()

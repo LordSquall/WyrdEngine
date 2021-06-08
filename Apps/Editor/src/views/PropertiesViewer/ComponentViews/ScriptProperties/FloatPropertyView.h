@@ -6,16 +6,13 @@
 #include <core/behaviour/Properties/FloatProperty.h>
 
 /* local includes */
-#include "views/DataModels/components/ScriptProperties/ScriptPropertyViewFactory.h"
+#include "views/PropertiesViewer/ComponentViews/ScriptProperties/ScriptPropertyViewFactory.h"
 
 namespace Wyrd::Editor
 {
-	class FloatPropertyView : public ScriptPropertyView
+	class FloatPropertyView
 	{
 	public:
-
-		virtual void DrawUI();
-
 		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(FloatPropertyView, Wyrd::FloatProperty, "System.Single");
 	};
 }

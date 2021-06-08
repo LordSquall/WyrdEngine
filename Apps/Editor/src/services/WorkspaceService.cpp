@@ -29,16 +29,16 @@ namespace Wyrd::Editor
 			switch (action)
 			{
 			case efsw::Actions::Add:
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddFileEntry, std::make_unique<Events::AddFileEntryArgs>(dir, dir + "\\" + filename, isDir), true);
+				//ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddFileEntry, std::make_unique<Events::AddFileEntryArgs>(dir, dir + "\\" + filename, isDir), true);
 				break;
 			case efsw::Actions::Delete:
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::DeleteFileEntry, std::make_unique<Events::DeleteFileEntryArgs>(dir, dir + "\\" + filename, isDir), true);
+				//ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::DeleteFileEntry, std::make_unique<Events::DeleteFileEntryArgs>(dir, dir + "\\" + filename, isDir), true);
 				break;
 			case efsw::Actions::Modified:				
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ModifiedFileEntry, std::make_unique<Events::ModifiedFileEntryArgs>(dir, dir + "\\" + filename, isDir), true);
+				//ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ModifiedFileEntry, std::make_unique<Events::ModifiedFileEntryArgs>(dir, dir + "\\" + filename, isDir), true);
 				break;
 			case efsw::Actions::Moved:
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::RenameFileEntry, std::make_unique<Events::RenameFileEntryArgs>(dir, dir + "\\" + filename, oldFilename, isDir), true);
+				//ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::RenameFileEntry, std::make_unique<Events::RenameFileEntryArgs>(dir, dir + "\\" + filename, oldFilename, isDir), true);
 
 				break;
 			default:
@@ -227,6 +227,7 @@ namespace Wyrd::Editor
 	{
 		/* Create a new scene shared pointer */
 		_LoadedScene = std::make_shared<Scene>(name);
+		_LoadedScene->Initialise();
 
 		/* Mark scene loaded */
 		IsSceneLoaded(true);

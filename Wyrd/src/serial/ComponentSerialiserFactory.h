@@ -47,36 +47,37 @@ namespace Wyrd
 		{
 			if (strcmp(name.c_str(), "MetaData") == 0)
 			{
-				Deserialise(obj, (MetaDataComponent*)buffer);
+				MetaDataComponent* comp = new (buffer) MetaDataComponent();
+				Deserialise(obj, comp);
 			}
 			else if (strcmp(name.c_str(), "Transform2D") == 0)
 			{
-				Deserialise(obj, (Transform2DComponent*)buffer);
+				Transform2DComponent* comp = new (buffer) Transform2DComponent();
+				Deserialise(obj, comp);
 			}
 			else if (strcmp(name.c_str(), "Sprite") == 0)
 			{
-				Deserialise(obj, (SpriteComponent*)buffer);
+				SpriteComponent* comp = new (buffer) SpriteComponent();
+				Deserialise(obj, comp);
 			}
 			else if (strcmp(name.c_str(), "Script") == 0)
 			{
-				Deserialise(obj, (ScriptComponent*)buffer);
+				ScriptComponent* comp = new (buffer) ScriptComponent();
+				Deserialise(obj, comp);
 			}
 			else if (strcmp(name.c_str(), "Camera") == 0)
 			{
-				Deserialise(obj, (CameraComponent*)buffer);
-			}
-			else if (strcmp(name.c_str(), "Camera") == 0)
-			{
-				Deserialise(obj, (EditorComponent*)buffer);
+				CameraComponent* comp = new (buffer) CameraComponent();
+				Deserialise(obj, comp);
 			}
 		}
 
-		static void Serialise(Object& obj, const Wyrd::MetaDataComponent* data);
-		static void Serialise(Object& obj, const Wyrd::Transform2DComponent* data);
-		static void Serialise(Object& obj, const Wyrd::SpriteComponent* data);
-		static void Serialise(Object& obj, const Wyrd::ScriptComponent* data);
-		static void Serialise(Object& obj, const Wyrd::CameraComponent* data);
-		static void Serialise(Object& obj, const Wyrd::EditorComponent* data);
+		static void Serialise(Object& obj, Wyrd::MetaDataComponent* data);
+		static void Serialise(Object& obj, Wyrd::Transform2DComponent* data);
+		static void Serialise(Object& obj, Wyrd::SpriteComponent* data);
+		static void Serialise(Object& obj, Wyrd::ScriptComponent* data);
+		static void Serialise(Object& obj, Wyrd::CameraComponent* data);
+		static void Serialise(Object& obj, Wyrd::EditorComponent* data);
 
 		static void Deserialise(Object& obj, Wyrd::MetaDataComponent* data);
 		static void Deserialise(Object& obj, Wyrd::Transform2DComponent* data);

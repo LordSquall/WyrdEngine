@@ -5,32 +5,43 @@
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/behaviour/Behaviour.h>
-#include <core/scene/GameObject.h>
 
 /* local includes */
-#include "views/DataModels/components/ScriptProperties/TexturePropertyView.h"
+#include "TexturePropertyView.h"
 #include "services/ServiceManager.h"
 #include "support/ImGuiUtils.h"
 
 namespace Wyrd::Editor
 {
-	void TexturePropertyView::DrawUI()
+	void TexturePropertyView::OnEditorRender(const std::shared_ptr<ScriptProperty>& prop, void* value)
 	{
-		Texture* texture = _Property->GetValue();
+		char* nullCheck = (char*)value;
+		UID textureUID = UID((char*)value);
 
-		if (texture == nullptr)
+		if (*nullCheck == '\0')
 		{
-			texture = &*(Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)]);
+			ImGui::Text("TexturePropertyView: Not Set");
 		}
-		ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2((float)texture->GetWidth(), (float)texture->GetHeight()));
+		else
+		{
+			ImGui::Text("TexturePropertyView: %s", textureUID.str().c_str());
+
+			Texture* texture = &*(Application::Get().GetResources().Textures[textureUID]);
+
+			if (texture == nullptr)
+			{
+				texture = &*(Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)]);
+			}
+
+			ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2((float)texture->GetWidth(), (float)texture->GetHeight()));
+		}
+
 		if (ImGui::BeginDragDropTarget())
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_TEXTURE"))
 			{
-				std::shared_ptr<Texture> texture = *(std::shared_ptr<Texture>*)payload->Data;
-
-				_Property->SetValue(texture.get());
-				_Property->SetValueUID(&texture->GetUID());
+				UID* textureUID = (UID*)payload->Data;
+				strcpy((char*)value, textureUID->str().c_str());
 			}
 			ImGui::EndDragDropTarget();
 		}

@@ -5,14 +5,14 @@
 #include <core/Log.h>
 
 /* local includes */
-#include "views/DataModels/components/ScriptProperties/BoolPropertyView.h"
+#include "BoolPropertyView.h"
 #include "support/ImGuiUtils.h"
 
 namespace Wyrd::Editor
 {
-	void BoolPropertyView::DrawUI()
+	void BoolPropertyView::OnEditorRender(const std::shared_ptr<ScriptProperty>& prop, void* value)
 	{
-		ImGui::Checkbox(_Property->GetName().c_str(), _Property->GetValue());
+		ImGui::Checkbox(prop->GetName().c_str(), (bool*)value);
 	}
 
 	SCRIPT_PROPERTY_VIEW_FACTORY_REGISTER(BoolPropertyView);

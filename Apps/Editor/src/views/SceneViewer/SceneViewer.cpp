@@ -80,14 +80,17 @@ namespace Wyrd::Editor
 
 	void SceneViewer::OnUpdate(Timestep ts)
 	{
-		for (Entity e : EntitySet<Transform2DComponent, SpriteComponent, EditorComponent>(*_Scene.get()))
+		if (_Scene != nullptr)
 		{
-			Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
-			SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
-			EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
+			for (Entity e : EntitySet<Transform2DComponent, SpriteComponent, EditorComponent>(*_Scene.get()))
+			{
+				Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
+				SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
+				EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
 
-			editorComponent->inputArea.position = sprite->position + transform->position;
-			editorComponent->inputArea.size = sprite->size;
+				editorComponent->inputArea.position = sprite->position + transform->position;
+				editorComponent->inputArea.size = sprite->size;
+			}
 		}
 	}
 
