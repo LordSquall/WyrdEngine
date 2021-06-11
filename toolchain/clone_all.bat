@@ -12,4 +12,4 @@ git clone https://github.com/graeme-hill/crossguid.git
 git clone https://github.com/Chocobo1/Hash.git
 git clone https://github.com/microsoft/GSL.git
 
-setx OSIRIS_EXTERN_REPOS %CD%
+setx WYRD_EXTERN_REPOS %CD%
