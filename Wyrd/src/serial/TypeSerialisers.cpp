@@ -5,6 +5,9 @@
 #include "core/UID.h"
 #include "serial/TypeSerialisers.h"
 
+/* external includes */
+#include <jsonxx.h>
+
 namespace glm
 {
 	jsonxx::Object& operator<<(jsonxx::Object& obj, const glm::vec2& vector) {

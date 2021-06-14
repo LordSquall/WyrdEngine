@@ -4,6 +4,8 @@
 #include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/Application.h>
+#include <core/ecs/ECS.h>
+#include <core/ecs/EntitySet.h>
 #include <core/Layer.h>
 #include <core/Input.h>
 #include <core/KeyCodes.h>
@@ -51,12 +53,40 @@ namespace Wyrd::Editor
 
 	void GameViewer::OnUpdate(Timestep ts)
 	{
-
+		_Camera.RecalulateViewProjection();
 	}
 
 	void GameViewer::OnRender(Timestep ts, Renderer& renderer)
 	{
-		
+		if (_Framebuffer->GetConfig().height > 0 && _Framebuffer->GetConfig().width > 0)
+		{
+			_Framebuffer->Bind();
+
+			renderer.Clear(0.1f, 0.1f, 0.1f);
+			if (_Scene != nullptr)
+			{
+				for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
+				{
+					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
+					SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
+
+					Wyrd::DrawSpriteCommand cmd{};
+					cmd.type = 1;
+					cmd.position = sprite->position + transform->position;
+					cmd.size = sprite->size;
+					cmd.vpMatrix = _Camera.GetViewProjectionMatrix();
+					cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
+					cmd.texture = Application::Get().GetResources().Textures[sprite->texture].get();
+					cmd.color = sprite->color;
+
+					renderer.Submit(cmd);
+				}
+
+				renderer.Flush();
+			}
+
+			_Framebuffer->Unbind();
+		}
 	}
 
 	void GameViewer::OnEditorRender()
@@ -64,18 +94,11 @@ namespace Wyrd::Editor
 		static bool showStats = false;
 		static bool showGizmoSettings = false;
 
-		/* calculate the mouse offset for events */
-		_mouseOffset = { ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y };
-
-		/* calculate the viewport boundary */
-		_ViewportBoundary = { {_Boundary.position.x - (_Boundary.size.x - _Viewport.size.x), _Boundary.position.y + (_Boundary.size.y - _Viewport.size.y) }, { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y - ImGui::GetCursorPos().y } };
-
 		/* calculate the viewport size */
 		_Viewport = { { 0.0f, 0.0f }, { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y - ImGui::GetCursorPos().y } };
 
 		if (_CameraComponent != nullptr)
 		{
-
 			ImGui::Image((ImTextureID)(UINT_PTR)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport.size.x, _Viewport.size.y), ImVec2(0, 1), ImVec2(1, 0));
 		}
 		else
@@ -92,14 +115,25 @@ namespace Wyrd::Editor
 		if (_CameraComponent != nullptr)
 		{
 			/* Set the camera viewport */
-			//_CameraComponent->GetCamera().SetViewportSize(_Viewport.size.x, _Viewport.size.y);
+			_Camera.SetPosition({ 100.0f, 100.0f, 0.0f });
+			_Camera.SetSize(_CameraComponent->size);
+			_Camera.SetViewportSize(_Viewport.size.x, _Viewport.size.y);
 		}
 	}
 
 	void GameViewer::OnSceneOpened(Events::EventArgs& args)
 	{
 		Events::SceneOpenedArgs& evtArgs = static_cast<Events::SceneOpenedArgs&>(args);
-
 		_Scene = evtArgs.scene;
+
+		/* check to see if the scene already has a camera component on the camera entity */
+		if (_Scene->GetPrimaryCameraEntity() != ENTITY_INVALID)
+		{
+			CameraComponent* cameraComponent = _Scene->Get<CameraComponent>(_Scene->GetPrimaryCameraEntity());
+			if (cameraComponent != nullptr)
+			{
+				_CameraComponent = cameraComponent;
+			}
+		}
 	}
 }

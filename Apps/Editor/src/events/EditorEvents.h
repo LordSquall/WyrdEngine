@@ -535,8 +535,9 @@ namespace Wyrd::Editor::Events
 	class SetSceneCameraArgs : public EventArgs
 	{
 	public:
-		SetSceneCameraArgs(CameraComponent* cc) : cameraComponent(cc) {}
+		SetSceneCameraArgs(Entity e, CameraComponent* cc) : entity(e), cameraComponent(cc) {}
 
+		Entity entity;
 		CameraComponent* cameraComponent;
 
 		EVENT_ARGS_CLONE(SetSceneCameraArgs)

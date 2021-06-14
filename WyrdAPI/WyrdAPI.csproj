@@ -57,14 +57,14 @@
     <Compile Include="src\framework\Input.cs" />
     <Compile Include="src\framework\MathUtils.cs" />
     <Compile Include="src\framework\ScriptedEntity.cs" />
-    <Compile Include="src\framework\Vector2.cs" />
     <Compile Include="src\framework\Texture.cs" />
+    <Compile Include="src\framework\Vector2.cs" />
     <Compile Include="src\framework\Vector3.cs" />
-    <Compile Include="src\scene\ecs\ResourceManager.cs" />
     <Compile Include="src\scene\Scene.cs" />
     <Compile Include="src\scene\ecs\Component.cs" />
     <Compile Include="src\scene\ecs\Entity.cs" />
     <Compile Include="src\scene\ecs\EntityManager.cs" />
+    <Compile Include="src\scene\ecs\ResourceManager.cs" />
     <Compile Include="src\scene\ecs\components\MetaDataComponent.cs" />
     <Compile Include="src\scene\ecs\components\SpriteComponent.cs" />
     <Compile Include="src\scene\ecs\components\Transform2DComponent.cs" />

@@ -24,9 +24,9 @@ namespace Wyrd::Editor
 		int GetType() override { return ResourceType::TEXTURE; }
 
 		// Getters and Setters
-		inline uint32_t GetWidth() { return _width; }
-		inline void SetWidth(uint32_t width) { _width = width; }
-		inline uint32_t GetHeight() { return _height; }
+		inline uint32_t GetWidth() { return _texture->GetWidth(); }
+		inline void SetWidth(uint32_t width) { _width = width;  }
+		inline uint32_t GetHeight() { return _texture->GetHeight(); }
 		inline void SetHeight(uint32_t height) { _height = height; }
 		inline uint32_t GetChannels() { return _channels; }
 		inline void SetChannels(uint32_t channels) { _channels = channels; }
@@ -39,10 +39,11 @@ namespace Wyrd::Editor
 	private:
 		bool _loaded;
 		std::string _name;
-		uint32_t _width;
-		uint32_t _height;
 		uint32_t _channels;
 		BYTE* _data;
+
+		int32_t _width;
+		int32_t _height;
 
 		std::shared_ptr<Texture> _texture;
 	};

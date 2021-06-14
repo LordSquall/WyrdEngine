@@ -37,7 +37,9 @@ namespace Wyrd
 
 		inline const glm::mat4& GetProjectionMatrix() const { return _ProjectionMatrix; }
 		inline const glm::mat4& GetViewMatrix() const { return _ViewMatrix; }
-		inline const glm::mat4& GetViewProjectionMatrix() const { return _ViewProjectionMatrix; }
+		inline const glm::mat4& GetViewProjectionMatrix() const { 
+			return _ViewProjectionMatrix; 
+		}
 
 		glm::vec2 GetNDCFromPoint(const glm::vec2& point, const Wyrd::Rect& boundary);
 		glm::vec2 GetWorldSpaceFromPoint(const glm::vec2& point, const Wyrd::Rect& boundary);

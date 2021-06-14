@@ -17,7 +17,7 @@ namespace Wyrd::Editor
 {
 	COMPONENT_VIEW_FACTORY_REGISTER(MetaDataComponentView, "MetaData");
 
-	void MetaDataComponentView::OnEditorRender(void* data)
+	void MetaDataComponentView::OnEditorRender(Entity e, void* data)
 	{
 		/* Cast to the correct component */
 		MetaDataComponent* metaData = (MetaDataComponent*)data;

@@ -28,4 +28,12 @@ namespace Wyrd
 		Texture* texture;
 		Color color;
 	};
+
+	struct WYRD_LIBRARY_API DrawRectCommand : public DrawCommand
+	{
+		glm::vec2 position;
+		glm::vec2 size;
+		float thickness;
+		Color color;
+	};
 }

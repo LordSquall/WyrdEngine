@@ -95,6 +95,11 @@ namespace Wyrd::Editor
 								ScriptComponent* c = scene.AssignComponent<ScriptComponent>(e);
 								c->script = UID();
 							}
+							if (ImGui::MenuItem("Add Camera"))
+							{
+								CameraComponent* c = scene.AssignComponent<CameraComponent>(e);
+								c->size = 10.0f;
+							}
 							ImGui::EndPopup();
 						}
 

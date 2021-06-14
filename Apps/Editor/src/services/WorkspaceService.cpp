@@ -68,7 +68,7 @@ namespace Wyrd::Editor
 
 		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::SetSceneCamera, [this](Events::EventArgs& args) {
 			Events::SetSceneCameraArgs& a = (Events::SetSceneCameraArgs&)args;
-			//_LoadedScene->SetPrimaryCameraUID(a.cameraComponent->GetCameraUID());
+				_LoadedScene->SetPrimaryCameraEntity(a.entity);
 			});
 	}
 

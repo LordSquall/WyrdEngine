@@ -15,7 +15,7 @@ bool clsname::s_Registered = ComponentViewFactory::Register(name, &clsname::OnEd
 public:\
 clsname() {}\
 public:\
-	static void OnEditorRender(void* data); \
+	static void OnEditorRender(Entity e, void* data); \
 private:\
 	static bool s_Registered
 
@@ -25,13 +25,13 @@ namespace Wyrd::Editor
 	class WYRD_LIBRARY_API ComponentViewFactory
 	{
 	public:
-		using ViewRenderFunc = void(*)(void* data);
+		using ViewRenderFunc = void(*)(Entity e, void* data);
 
 	public:
 		ComponentViewFactory() = default;
 
 		static bool Register(const std::string name, ViewRenderFunc createFunc);
 
-		static void Create(const std::string& name, void* data);
+		static void Create(const std::string& name, Entity e, void* data);
 	};
 }

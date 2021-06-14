@@ -24,7 +24,9 @@ namespace Wyrd
 		virtual void Delete() = 0;
 
 		inline int GetWidth() const { return _width; }
+		inline void SetWidth(int width) { _width = width; }
 		inline int GetHeight() const { return _height; }
+		inline void SetHeight(int height) { _height = height; }
 
 		inline UID GetUID() { return _uid; }
 		inline void SetUID(UID uid) { _uid = uid; }

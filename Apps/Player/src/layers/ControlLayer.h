@@ -6,13 +6,15 @@
 #include "core/renderer/Shader.h"
 #include "core/renderer/Buffer.h"
 #include "core/renderer/VertexArray.h"
+#include "core/pipeline/OrthographicCamera.h"
+#include "core/ecs/ECS.h"
 
 using namespace Wyrd;
 
 class ControlLayer : public Layer
 {
 public:
-	ControlLayer() : Layer("ControlLayer"), baseDirectory("")
+	ControlLayer() : Layer("ControlLayer"), baseDirectory(""), _Camera(), _CameraEntity(ENTITY_INVALID)
 	{
 
 	}
@@ -31,4 +33,8 @@ public:
 	bool LoadCoreFile();
 	bool LoadGameFile();
 	bool LoadCommonBundleFile();
+
+private:
+	Wyrd::OrthographicCamera _Camera;
+	Entity _CameraEntity;
 };

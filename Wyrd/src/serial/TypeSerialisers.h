@@ -4,8 +4,13 @@
 #include "core/Structures.h"
 
 /* external includes */
-#include <jsonxx.h>
 #include <glm/glm.hpp>
+
+namespace jsonxx
+{
+	class Object;
+	class Array;
+}
 
 namespace glm
 {

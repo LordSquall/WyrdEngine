@@ -24,10 +24,10 @@ namespace Wyrd::Editor
         return false;
     }
 
-    void ComponentViewFactory::Create(const std::string& name, void* data)
+    void ComponentViewFactory::Create(const std::string& name, Entity e, void* data)
     {
         auto functions = GetFunctions();
         if (auto it = functions->find(name); it != functions->end())
-            return it->second(data);
+            return it->second(e, data);
     }
 }

@@ -8,10 +8,7 @@
 #include "core/ecs/ECS.h"
 #include "core/behaviour/Properties/ScriptProperty.h"
 
-#include <jsonxx.h>
 #include <glm/glm.hpp>
-
-using namespace jsonxx;
 
 #define METADATA_COMP_NAME_LENGTH		32
 #define SCRIPT_COMP_PROP_MAX			32

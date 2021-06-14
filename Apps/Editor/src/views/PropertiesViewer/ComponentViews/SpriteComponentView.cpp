@@ -18,7 +18,7 @@ namespace Wyrd::Editor
 {
 	COMPONENT_VIEW_FACTORY_REGISTER(SpriteComponentView, "Sprite");
 
-	void SpriteComponentView::OnEditorRender(void* data)
+	void SpriteComponentView::OnEditorRender(Entity e, void* data)
 	{
 		/* Cast to the correct component */
 		SpriteComponent* sprite = (SpriteComponent*)data;

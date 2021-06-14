@@ -7,7 +7,7 @@
 
 /* local includes */
 #include "CameraComponentView.h"
-
+#include "services/ServiceManager.h"
 #include "support/ImGuiUtils.h"
 
 /* external includes */
@@ -17,11 +17,15 @@ namespace Wyrd::Editor
 {
 	COMPONENT_VIEW_FACTORY_REGISTER(CameraComponentView, "Camera");
 
-	void CameraComponentView::OnEditorRender(void* data)
+	void CameraComponentView::OnEditorRender(Entity e, void* data)
 	{
 		/* Cast to the correct component */
 		CameraComponent* cameraComponent = (CameraComponent*)data;
 		
-		ImGui::InputFloat("Size     ", &cameraComponent->size);
+		ImGui::DragFloat("Size     ", &cameraComponent->size);
+		if (ImGui::Button("Set As Main Camera"))
+		{
+			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Editor::Events::EventType::SetSceneCamera, std::make_unique<Events::SetSceneCameraArgs>(e, cameraComponent));
+		}
 	}
 }

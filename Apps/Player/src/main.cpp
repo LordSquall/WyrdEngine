@@ -19,7 +19,7 @@ public:
 
 	~PlayerApp()
 	{
-		system("pause");
+		//system("pause");
 	}
 };
 

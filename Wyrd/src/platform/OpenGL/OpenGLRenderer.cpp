@@ -163,6 +163,9 @@ namespace Wyrd
 		case RendererDrawType::TriangleFan:
 			primitiveType = GL_TRIANGLE_FAN;
 			break;
+		case RendererDrawType::Quads:
+			primitiveType = GL_QUADS;
+			break;
 		}
 
 		glDrawArrays(primitiveType, offset, count);

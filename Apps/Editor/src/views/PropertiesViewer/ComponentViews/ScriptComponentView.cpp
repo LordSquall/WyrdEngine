@@ -18,7 +18,7 @@ namespace Wyrd::Editor
 {
 	COMPONENT_VIEW_FACTORY_REGISTER(ScriptComponentView, "Script");
 
-	void ScriptComponentView::OnEditorRender(void* data)
+	void ScriptComponentView::OnEditorRender(Entity e, void* data)
 	{
 		/* Cast to the correct component */
 		ScriptComponent* script = (ScriptComponent*)data;

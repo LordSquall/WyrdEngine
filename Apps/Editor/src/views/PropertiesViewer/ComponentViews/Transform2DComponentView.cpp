@@ -17,7 +17,7 @@ namespace Wyrd::Editor
 {
 	COMPONENT_VIEW_FACTORY_REGISTER(Tranform2DComponentView, "Transform2D");
 
-	void Tranform2DComponentView::OnEditorRender(void* data)
+	void Tranform2DComponentView::OnEditorRender(Entity e, void* data)
 	{
 		/* Cast to the correct component */
 		Transform2DComponent* transform2D = (Transform2DComponent*)data;

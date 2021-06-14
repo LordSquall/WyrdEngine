@@ -23,7 +23,7 @@
 
 namespace Wyrd::Editor
 {
-	SceneViewer::SceneViewer(EditorLayer* editorLayer) : EditorViewBase("Scene Viewer", editorLayer)
+	SceneViewer::SceneViewer(EditorLayer* editorLayer) : EditorViewBase("Scene Viewer", editorLayer), _SelectedEntity(ENTITY_INVALID)
 	{
 		/* retrieve services */
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
@@ -121,9 +121,30 @@ namespace Wyrd::Editor
 
 					renderer.Submit(cmd);
 				}
-
-				renderer.Flush();
 			}
+
+			/* Gizmos */
+			if (_SelectedEntity != ENTITY_INVALID)
+			{
+				CameraComponent* cameraComp = _Scene->Get<CameraComponent>(_SelectedEntity);
+				if (cameraComp != nullptr)
+				{
+					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(_SelectedEntity);
+
+					Wyrd::DrawRectCommand cmd{};
+					cmd.type = 1;
+					cmd.position = transform->position;
+					cmd.size = { cameraComp->size, cameraComp->size };
+					cmd.thickness = 5.0f;
+					cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
+					cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
+					cmd.color = { 1.0f, 0.0f, 0.0f, 1.0f };
+
+					renderer.Submit(cmd);
+				}
+			}
+
+			renderer.Flush();
 
 			_Framebuffer->Unbind();
 		}
@@ -347,5 +368,6 @@ namespace Wyrd::Editor
 	void SceneViewer::OnSelectedEntityChanged(Events::EventArgs& args)
 	{
 		Events::SelectedEntityChangedArgs& evtArgs = static_cast<Events::SelectedEntityChangedArgs&>(args);
+		_SelectedEntity = evtArgs.entity;
 	}
 }

@@ -33,8 +33,8 @@ namespace Wyrd {
 
 		void AssignScripts(Behaviour* behaviour);
 
-		inline const UID& GetPrimaryCameraUID() { return _ScenePrimaryCamera; }
-		inline void SetPrimaryCameraUID(const UID& uid) { _ScenePrimaryCamera = uid; }
+		inline const Entity GetPrimaryCameraEntity() { return _ScenePrimaryCameraEntity; }
+		inline void SetPrimaryCameraEntity(const Entity entity) { _ScenePrimaryCameraEntity = entity; }
 
 		/**
 		 * @brief Create a new entity within the scene
@@ -179,7 +179,7 @@ namespace Wyrd {
 		float cameraZoom = 0.0f;
 
 	private:
-		UID _ScenePrimaryCamera;
+		Entity _ScenePrimaryCameraEntity;
 
 	public:
 		std::vector<EntityDesc> entities;

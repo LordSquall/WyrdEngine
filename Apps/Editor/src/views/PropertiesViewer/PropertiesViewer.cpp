@@ -76,7 +76,7 @@ namespace Wyrd::Editor
 				}
 
 				if (removed == false)
-					ComponentViewFactory::Create(scene->componentPools[i]->name, scene->Get(i, _SelectedEntity));
+					ComponentViewFactory::Create(scene->componentPools[i]->name, _SelectedEntity, scene->Get(i, _SelectedEntity));
 				
 				ImGui::Separator();
 				ImGui::PopID();

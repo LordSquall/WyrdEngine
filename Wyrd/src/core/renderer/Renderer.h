@@ -6,6 +6,7 @@
 #include "core/maths/Rect.h"
 #include "events/Event.h"
 #include "core/renderer/commands/RendererCommands.h"
+#include "core/pipeline/Vertex2DBatch.h"
 #include "core/pipeline/SpriteBatch.h"
 
 namespace Wyrd
@@ -17,7 +18,7 @@ namespace Wyrd
 
 	enum class RendererDrawType
 	{
-		Triangles = 0, TriangleStrip = 1, TriangleFan = 3
+		Triangles = 0, TriangleStrip = 1, TriangleFan = 3, Quads = 4
 	};
 
 	struct RendererInfo
@@ -43,6 +44,7 @@ namespace Wyrd
 		virtual	void DrawCircle(const glm::vec2& position, const glm::vec2& radius, const glm::vec4& color, const glm::mat4& vpMatrix) const = 0;
 
 		virtual void Initialise();
+		virtual void Submit(DrawRectCommand& cmd);
 		virtual void Submit(DrawSpriteCommand& cmd);
 		virtual void Flush();
 
@@ -52,6 +54,7 @@ namespace Wyrd
 
 		static Renderer* Create();
 	private:
+		Vertex2DBatch _vertex2DBatch;
 		SpriteBatch _spriteBatch;
 
 	private:
