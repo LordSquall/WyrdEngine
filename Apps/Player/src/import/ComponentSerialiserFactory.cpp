@@ -88,17 +88,6 @@ void ComponentSerialiserFactory::Deserialise(std::ifstream& stream, Wyrd::Script
 		WYRD_CORE_ERROR("Unable to find matching class!");
 
 	}
-
-	/*data->script << obj.get<Array>("script");
-
-	jsonxx::Array props = obj.get<Array>("properties");
-
-	for (int i = 0; i < props.size(); i++)
-	{
-		jsonxx::Object propObj = props.get<jsonxx::Object>(i);
-			
-		ScriptComponentPropDeserialise(propObj, data, i);
-	}*/
 }
 
 void ComponentSerialiserFactory::Deserialise(std::ifstream& stream, Wyrd::CameraComponent* data)
