@@ -32,4 +32,4 @@ cd GSL
 git pull
 cd ..
 
-setx OSIRIS_EXTERN_REPOS %CD%
+setx WYRD_EXTERN_REPOS %CD%
