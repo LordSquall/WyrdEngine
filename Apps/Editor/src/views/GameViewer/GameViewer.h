@@ -42,6 +42,7 @@ namespace Wyrd::Editor
 
 		OrthographicCamera _Camera;
 
+		Entity _CameraEntity;
 		CameraComponent* _CameraComponent;
 		bool _OpenContextMenu;
 

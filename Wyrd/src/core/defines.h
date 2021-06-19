@@ -5,3 +5,4 @@
 
 /* Wrapper for the Event binding function */
 #define OSR_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+#define WYRD_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)

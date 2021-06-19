@@ -66,10 +66,21 @@ void ControlLayer::OnDetach() { }
 
 void ControlLayer::OnUpdate(Timestep ts) 
 {
+	auto scene = SceneManager::getInstance().GetScene();
+
 	Application::Get().GetBehaviour().Update(ts);
 
+	Transform2DComponent* transform = scene->Get<Transform2DComponent>(_CameraEntity);
+	_Camera.SetPosition({ transform->position, 0.0f });
 	_Camera.RecalulateViewProjection();
 
+}
+
+void ControlLayer::OnEvent(Event& event)
+{
+	EventDispatcher dispatcher(event);
+	dispatcher.Dispatch<KeyReleasedEvent>(WYRD_BIND_EVENT_FN(ControlLayer::OnKeyReleasedEvent));
+	dispatcher.Dispatch<KeyPressedEvent>(WYRD_BIND_EVENT_FN(ControlLayer::OnKeyPressedEvent));
 }
 
 void ControlLayer::OnRender(Timestep ts, Renderer& renderer)
@@ -112,4 +123,23 @@ bool ControlLayer::LoadCommonBundleFile()
 {
 	ImportManager::ImportCommonBundle(baseDirectory);
 	return true;
+}
+
+bool ControlLayer::OnKeyReleasedEvent(KeyReleasedEvent& e)
+{
+	Application::Get().GetBehaviour().SetInputState(e.GetKeyCode(), 2);
+	return false;
+}
+
+bool ControlLayer::OnKeyPressedEvent(KeyPressedEvent& e)
+{
+	if (e.GetRepeatCount() == 1)
+	{
+		Application::Get().GetBehaviour().SetInputState(e.GetKeyCode(), 0);
+	}
+	else
+	{
+		Application::Get().GetBehaviour().SetInputState(e.GetKeyCode(), 1);
+	}
+	return false;
 }

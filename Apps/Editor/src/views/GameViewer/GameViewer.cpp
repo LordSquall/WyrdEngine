@@ -22,7 +22,7 @@
 
 namespace Wyrd::Editor
 {
-	GameViewer::GameViewer(EditorLayer* editorLayer) : EditorViewBase("Game Viewer", editorLayer), _CameraComponent(nullptr)
+	GameViewer::GameViewer(EditorLayer* editorLayer) : EditorViewBase("Game Viewer", editorLayer), _CameraEntity(ENTITY_INVALID), _CameraComponent(nullptr)
 	{
 		/* retrieve services */
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
@@ -35,6 +35,7 @@ namespace Wyrd::Editor
 		_EventService->Subscribe(Events::EventType::SceneOpened, EVENT_FUNC(GameViewer::OnSceneOpened));
 		_EventService->Subscribe(Events::EventType::SetSceneCamera, [this](Events::EventArgs& args) {
 			Events::SetSceneCameraArgs& a = (Events::SetSceneCameraArgs&)args;
+			_CameraEntity = a.entity;
 			_CameraComponent = a.cameraComponent;
 		});
 
@@ -53,7 +54,12 @@ namespace Wyrd::Editor
 
 	void GameViewer::OnUpdate(Timestep ts)
 	{
-		_Camera.RecalulateViewProjection();
+		if (_CameraEntity != ENTITY_INVALID)
+		{
+			Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(_CameraEntity);
+			_Camera.SetPosition({ transform->position, 0.0f });
+			_Camera.RecalulateViewProjection();
+		}
 	}
 
 	void GameViewer::OnRender(Timestep ts, Renderer& renderer)
@@ -132,6 +138,7 @@ namespace Wyrd::Editor
 			CameraComponent* cameraComponent = _Scene->Get<CameraComponent>(_Scene->GetPrimaryCameraEntity());
 			if (cameraComponent != nullptr)
 			{
+				_CameraEntity = _Scene->GetPrimaryCameraEntity();
 				_CameraComponent = cameraComponent;
 			}
 		}

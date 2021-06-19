@@ -60,11 +60,6 @@ void ComponentSerialiserFactory::Deserialise(std::ifstream& stream, Wyrd::Sprite
 
 void ComponentSerialiserFactory::Deserialise(std::ifstream& stream, Wyrd::ScriptComponent* data)
 {
-	int32_t instanceID;
-	int32_t propertyCount;
-	char properties[SCRIPT_COMP_PROP_MAX][SCRIPT_COMP_PROP_DATA_LENGTH];
-	std::map<std::string, void*> propertyMap;
-
 	stream.read((char*)&data->script, sizeof(UID));
 	stream.read((char*)&data->instanceID, sizeof(int32_t));
 	stream.read((char*)&data->propertyCount, sizeof(int32_t));
