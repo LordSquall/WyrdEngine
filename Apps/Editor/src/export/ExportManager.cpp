@@ -87,9 +87,8 @@ namespace Wyrd::Editor
 		/* NOTE: Disabled shader export until resources are resolved */
 		/* add the shader resources */
 		size_t shaderCount = Application::Get().GetResources().Shaders.size();
-		shaderCount = 0;
 		commonBundle.write((char*)&shaderCount, sizeof(size_t));
-		/*for (auto& s : Application::Get().GetResources().Shaders)
+		for (auto& s : Application::Get().GetResources().Shaders)
 		{
 			char shaderName[32];
 			strcpy(shaderName, s.first.c_str());
@@ -105,7 +104,7 @@ namespace Wyrd::Editor
 			commonBundle.write((char*)vertSrc.c_str(), sizeof(char) * vertSrcSize);
 			commonBundle.write((char*)&fragSrcSize, sizeof(size_t));
 			commonBundle.write((char*)fragSrc.c_str(), sizeof(char) * fragSrcSize);
-		}*/
+		}
 
 		/* add the texture resources */
 		size_t textureCount = textures.size();

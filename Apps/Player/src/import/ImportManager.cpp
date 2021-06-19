@@ -89,7 +89,6 @@ void ImportManager::ImportCommonBundle(const std::string& root)
 
 		uint32_t width; 
 		uint32_t height;
-		unsigned char* data;
 
 		common.read((char*)&width, sizeof(uint32_t));
 		common.read((char*)&height, sizeof(uint32_t));

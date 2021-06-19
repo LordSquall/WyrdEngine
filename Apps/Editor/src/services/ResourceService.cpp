@@ -5,6 +5,7 @@
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/Resources.h>
+#include <core/renderer/Shader.h>
 
 /* local includes */
 #include "ResourceService.h"
@@ -34,6 +35,35 @@ namespace Wyrd::Editor
 		_extensions.insert(std::pair<std::string, ResourceType>(".shader", ResourceType::SHADER));
 		_extensions.insert(std::pair<std::string, ResourceType>(".scene", ResourceType::SCENE));
 		_extensions.insert(std::pair<std::string, ResourceType>(".script", ResourceType::SCRIPT));
+
+
+		/* add the default shaders */
+		{
+			/* default sprite shader */
+			std::ifstream vertexStream(Utils::GetEditorResFolder() + "shaders/sprite.vs");
+			std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
+
+			std::ifstream fragmentStream(Utils::GetEditorResFolder() + "shaders/sprite.fs");
+			std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
+
+			std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
+			shader->Build(vertexSrc, fragmentSrc);
+			shader->Bind();
+			Application::Get().GetResources().Shaders.insert(std::pair<std::string, std::shared_ptr<Shader>>("Sprite", shader));
+		}
+		{
+			/* default vertex 2D shader */
+			std::ifstream vertexStream(Utils::GetEditorResFolder() + "shaders/vertex2D.vs");
+			std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
+
+			std::ifstream fragmentStream(Utils::GetEditorResFolder() + "shaders/vertex2D.fs");
+			std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
+
+			std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
+			shader->Build(vertexSrc, fragmentSrc);
+			shader->Bind();
+			Application::Get().GetResources().Shaders.insert(std::pair<std::string, std::shared_ptr<Shader>>("Vertex2D", shader));
+		}
 
 		/* Load defaults from the editor resources */
 		_defaultTexture = std::make_shared<TextureRes>(Utils::GetEditorResFolder() + "textures\\default.png");

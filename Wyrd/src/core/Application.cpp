@@ -37,33 +37,6 @@ namespace Wyrd {
 		/* create the resource subsystem */
 		_Resources = std::make_unique<Resources>();
 
-		/* add the inbuilt resources */
-		{
-			/* default sprite shader */
-			std::ifstream vertexStream("../../Wyrd/res/shaders/sprite.vs");
-			std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
-
-			std::ifstream fragmentStream("../../Wyrd/res/shaders/sprite.fs");
-			std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
-
-			std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
-			shader->Build(vertexSrc, fragmentSrc);
-			shader->Bind();
-			_Resources->Shaders.insert(std::pair<std::string, std::shared_ptr<Shader>>("Sprite", shader));
-		}
-		{
-			/* default vertex 2D shader */
-			std::ifstream vertexStream("../../Wyrd/res/shaders/vertex2D.vs");
-			std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
-
-			std::ifstream fragmentStream("../../Wyrd/res/shaders/vertex2D.fs");
-			std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
-
-			std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
-			shader->Build(vertexSrc, fragmentSrc);
-			shader->Bind();
-			_Resources->Shaders.insert(std::pair<std::string, std::shared_ptr<Shader>>("Vertex2D", shader));
-		}
 		{
 			/* default sprite texture */
 			int width, height, channels;
