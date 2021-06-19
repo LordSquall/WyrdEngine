@@ -24,6 +24,14 @@ public:
 		/* initialise editor services */
 		ServiceManager::StartServices();
 
+		/* check if default imgui init file is present, if not copy into place before starting application */
+		if (!Utils::FileExists("imgui.ini"))
+		{
+			WYRD_TRACE("imgui layout file missing. copying default imgui.ini file");
+			Utils::CopySingleFile(Utils::GetEditorResFolder() + "default_imgui.ini", "./");
+			Utils::RenameFile("default_imgui.ini", "imgui.ini");
+		}
+
 		/* if we are building with renderdoc installed then we can add the layer in */
 #ifdef WYRD_RENDERDOC_ENABLED
 		PushLayer(RenderDocLayer);

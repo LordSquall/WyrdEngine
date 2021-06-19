@@ -364,6 +364,17 @@ namespace Wyrd::Editor
 
 			ImGui::Separator();
 
+			if (ImGui::BeginMenu("Layout"))
+			{
+				if (ImGui::MenuItem("Load..."))
+				{
+					std::string file = util.OpenFileDialog(".ini");
+					ImGui::LoadIniSettingsFromDisk(file.c_str());
+				}
+				ImGui::EndMenu();
+			}
+
+			ImGui::Separator();
 
 			if (ImGui::MenuItem("Preferences"))
 			{
