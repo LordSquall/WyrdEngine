@@ -9,6 +9,7 @@
 #include <core/pipeline/OrthographicCamera.h>
 #include <core/ecs/ECS.h>
 #include <events/KeyEvent.h>
+#include <events/MouseEvent.h>
 
 using namespace Wyrd;
 
@@ -29,6 +30,9 @@ public:
 private:
 	bool OnKeyReleasedEvent(KeyReleasedEvent& e);
 	bool OnKeyPressedEvent(KeyPressedEvent& e);
+	bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
+	bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
+	bool OnMouseMovedEvent(MouseMovedEvent& e);
 
 public:
 	std::string baseDirectory;

@@ -81,6 +81,10 @@ void ControlLayer::OnEvent(Event& event)
 	EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<KeyReleasedEvent>(WYRD_BIND_EVENT_FN(ControlLayer::OnKeyReleasedEvent));
 	dispatcher.Dispatch<KeyPressedEvent>(WYRD_BIND_EVENT_FN(ControlLayer::OnKeyPressedEvent));
+	dispatcher.Dispatch<MouseButtonPressedEvent>(WYRD_BIND_EVENT_FN(ControlLayer::OnMouseButtonPressedEvent));
+	dispatcher.Dispatch<MouseButtonReleasedEvent>(WYRD_BIND_EVENT_FN(ControlLayer::OnMouseButtonReleasedEvent));
+	dispatcher.Dispatch<MouseMovedEvent>(WYRD_BIND_EVENT_FN(ControlLayer::OnMouseMovedEvent));
+
 }
 
 void ControlLayer::OnRender(Timestep ts, Renderer& renderer)
@@ -141,5 +145,24 @@ bool ControlLayer::OnKeyPressedEvent(KeyPressedEvent& e)
 	{
 		Application::Get().GetBehaviour().SetInputState(e.GetKeyCode(), 1);
 	}
+	return false;
+}
+
+
+bool ControlLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
+{
+	Application::Get().GetBehaviour().SetMouseButtonState(e.GetMouseButton(), true);
+	return false;
+}
+
+bool ControlLayer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e)
+{
+	Application::Get().GetBehaviour().SetMouseButtonState(e.GetMouseButton(), false);
+	return false;
+}
+
+bool ControlLayer::OnMouseMovedEvent(MouseMovedEvent& e)
+{
+	Application::Get().GetBehaviour().SetMouseState(e.GetX(), e.GetY());
 	return false;
 }
