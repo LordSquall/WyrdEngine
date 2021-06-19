@@ -11,46 +11,10 @@
 #include "loaders/ProjectLoader.h"
 
 /* external includes */
-#include <efsw/efsw.hpp>
 #include <jsonxx.h>
 
 namespace Wyrd::Editor
 {
-	class FSUpdateListener : public efsw::FileWatchListener
-	{
-	public:
-		FSUpdateListener() {}
-		~FSUpdateListener() {}
-
-		void handleFileAction(efsw::WatchID watchID, const std::string& dir, const std::string& filename, efsw::Action action, std::string oldFilename = "") override
-		{
-			bool isDir = Utils::GetFileExtension(filename).empty();
-
-			switch (action)
-			{
-			case efsw::Actions::Add:
-				//ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddFileEntry, std::make_unique<Events::AddFileEntryArgs>(dir, dir + "\\" + filename, isDir), true);
-				break;
-			case efsw::Actions::Delete:
-				//ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::DeleteFileEntry, std::make_unique<Events::DeleteFileEntryArgs>(dir, dir + "\\" + filename, isDir), true);
-				break;
-			case efsw::Actions::Modified:				
-				//ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ModifiedFileEntry, std::make_unique<Events::ModifiedFileEntryArgs>(dir, dir + "\\" + filename, isDir), true);
-				break;
-			case efsw::Actions::Moved:
-				//ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::RenameFileEntry, std::make_unique<Events::RenameFileEntryArgs>(dir, dir + "\\" + filename, oldFilename, isDir), true);
-
-				break;
-			default:
-				std::cout << "Should never happen!" << std::endl;
-			}
-		}
-	};
-
-	efsw::FileWatcher	fileSystemWatcher;
-	efsw::WatchID		watchID;
-	FSUpdateListener	updateListener;
-
 	void Wyrd::Editor::WorkspaceService::OnCreate()
 	{
 		/* Initialise Defaults */
@@ -192,10 +156,6 @@ namespace Wyrd::Editor
 
 			/* Set the utilities to the base root folder */
 			Utils::SetRootProjectFolder(Utils::GetPath(projectfile.c_str()));
-
-			/* Start filesystem watcher */
-			watchID = fileSystemWatcher.addWatch(Utils::GetAssetFolder(), &updateListener, true);
-			fileSystemWatcher.watch();
 
 			/* Send a Project Loaded Event */
 			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ProjectLoaded,

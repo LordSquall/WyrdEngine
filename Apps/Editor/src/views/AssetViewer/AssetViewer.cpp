@@ -31,7 +31,7 @@ namespace Wyrd::Editor
 
 	struct LayoutSettings_s
 	{
-		float itemGroupWidth = 100.0f;
+		float itemGroupWidth = 50.0f;
 		int itemColumnCnt = 4;
 		float itemGroupPaddingX = 32.0f;
 		float itemColumnWidth;
@@ -65,70 +65,6 @@ namespace Wyrd::Editor
 				Refresh();
 
 				SetCurrentSelectedDirectory(FindDirectoryEntry(directoryTree, 1));
-			});
-
-		_EventService->Subscribe(Events::EventType::AddFileEntry, [this](Events::EventArgs& args)
-			{
-				Events::AddFileEntryArgs& evtArgs = static_cast<Events::AddFileEntryArgs&>(args);
-				
-				/* find the directory entry */
-				auto foundDir = FindDirectoryEntry(directoryTree, evtArgs.dir);
-
-				/* save the currently selected dir */
-				std::string originalSelected = _currentSelectedDir->dir;
-
-				/* refresh the directory structure */
-				foundDir->files.clear();
-				std::map<UID, std::shared_ptr<Resource>> dirResources = _resourcesService->GetResourcesByDir(foundDir->dir);
-				foundDir->files.insert(dirResources.begin(), dirResources.end());
-
-				/* re-apply the directory entry to ensure the user selection is maintained */
-				_currentSelectedDir = FindDirectoryEntry(directoryTree, originalSelected);
-			});
-
-		_EventService->Subscribe(Events::EventType::DeleteFileEntry, [this](Events::EventArgs& args)
-			{
-				Events::DeleteFileEntryArgs& evtArgs = static_cast<Events::DeleteFileEntryArgs&>(args);
-
-				auto foundDir = FindDirectoryEntry(directoryTree, evtArgs.dir);
-
-				if (evtArgs.isDir)
-				{
-					/* if we are deleting the current selected directory, we should move to the parent first */
-					SetCurrentSelectedDirectory(foundDir);
-				}
-
-				/* save the currently selected dir */
-				std::string originalSelected = _currentSelectedDir->dir;
-
-				_refreshing = true;
-				RefreshSubDir(std::string(foundDir->parent->dir), foundDir->parent);
-				_refreshing = false;
-
-				/* re-apply the directory entry to ensure the user selection is maintained */
-				_currentSelectedDir = FindDirectoryEntry(directoryTree, originalSelected);
-			});
-
-		_EventService->Subscribe(Events::EventType::RenameFileEntry, [this](Events::EventArgs& args)
-			{
-				Events::RenameFileEntryArgs& evtArgs = static_cast<Events::RenameFileEntryArgs&>(args);
-
-				if (evtArgs.isDir)
-				{
-					auto foundDir = FindDirectoryEntry(directoryTree, evtArgs.dir);
-
-					/* save the currently selected dir */
-					std::string originalSelected = _currentSelectedDir->dir;
-
-					_refreshing = true;
-					RefreshSubDir(std::string(foundDir->dir), foundDir);
-					_refreshing = false;
-
-					/* re-apply the directory entry to ensure the user selection is maintained */
-					_currentSelectedDir = FindDirectoryEntry(directoryTree, originalSelected);
-
-					WYRD_TRACE("Folder Renamed!");
-				}
 			});
 	}
 
