@@ -5,6 +5,7 @@
 #include <core/scene/Scene.h>
 
 /* local includes */
+#include "support/FileWatcher.h"
 #include "IService.h"
 #include "datamodels/Project.h"
 
@@ -51,5 +52,7 @@ namespace Wyrd::Editor
 		bool _IsSceneLoaded = false;
 		std::string _LoadedScenePath;
 		std::shared_ptr<Scene> _LoadedScene;
+
+		FileWatcher _FileWatcher;
 	};
 }

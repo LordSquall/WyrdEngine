@@ -38,6 +38,8 @@ namespace Wyrd::Editor
 
 	void Wyrd::Editor::WorkspaceService::OnDestroy()
 	{
+		_FileWatcher.End();
+
 		/* TEMP if (_LoadedProject != nullptr) */ SaveProject();
 		if (_LoadedScene != nullptr) SaveScene();
 	}
@@ -161,7 +163,6 @@ namespace Wyrd::Editor
 			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ProjectLoaded,
 				std::make_unique<Events::ProjectLoadedArgs>(_LoadedProject->initialScene, _LoadedProject, Utils::GetPath(projectfile)));
 
-
 			if (Utils::FileExists(_LoadedProject->initialScene) == true)
 			{
 				LoadScene(_LoadedProject->initialScene);
@@ -179,6 +180,29 @@ namespace Wyrd::Editor
 			_LoadedProject = nullptr;
 			result = false;
 		}
+
+		_FileWatcher.Initialise(Utils::GetAssetFolder(), std::chrono::milliseconds(500));
+		_FileWatcher.Start([](std::string path, FileStatus status) -> void {
+			if (!std::filesystem::is_regular_file(std::filesystem::path(path)) && status != FileStatus::erased)
+			{
+				return;
+			}
+
+			switch (status)
+			{
+			case FileStatus::created:
+				std::cout << "File Created: " << path << std::endl;
+				break;
+
+			case FileStatus::modified:
+				std::cout << "File Modified: " << path << std::endl;
+				break;
+
+			case FileStatus::erased:
+				std::cout << "File Erase: " << path << std::endl;
+				break;
+			}
+		});
 
 		return result;
 	}

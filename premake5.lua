@@ -60,7 +60,6 @@ includedir["SOIL"] = externallibsdir .. "/Simple-OpenGL-Image-Library/src"
 includedir["glm"] = externallibsdir .. "/glm"
 includedir["jsonxx"] = externallibsdir .. "/jsonxx"
 includedir["imgui"] = externallibsdir .. "/imgui"
-includedir["efsw"] = externallibsdir .. "/efsw/include/"
 includedir["spdlog"] = externallibsdir .. "/spdlog/include/"
 includedir["uuid"] = externallibsdir .. "/crossguid/include/"
 includedir["hash"] = externallibsdir .. "/Hash/include/"
@@ -81,7 +80,6 @@ include "externalbuild/premake5-glad.lua"
 include "externalbuild/premake5-jsonxx.lua"
 include "externalbuild/premake5-soil.lua"
 include "externalbuild/premake5-imgui.lua"
-include "externalbuild/premake5-efsw.lua"
 include "externalbuild/premake5-spdlog.lua"
 include "externalbuild/premake5-uuid.lua"
 include "externalbuild/premake5-hash.lua"
@@ -299,7 +297,6 @@ project "Editor"
 		"%{includedir.glm}",
 		"%{includedir.tinyobjloader}",
 		"%{includedir.mono}",
-		"%{includedir.efsw}",
 		"%{includedir.spdlog}",
 		"%{includedir.uuid}",
 		"%{includedir.hash}",
@@ -314,7 +311,6 @@ project "Editor"
 		"SOIL",
 		"jsonxx",
 		"imgui",
-		"efsw",
 		"opengl32.dll"
 	}
 	
