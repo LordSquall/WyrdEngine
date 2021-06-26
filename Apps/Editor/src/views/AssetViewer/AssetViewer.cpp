@@ -45,7 +45,7 @@ namespace Wyrd::Editor
 	std::shared_ptr<AssetViewer::DirectoryEntry_s> FindDirectoryEntry(std::shared_ptr<AssetViewer::DirectoryEntry_s> root, uint32_t id);
 	std::shared_ptr<AssetViewer::DirectoryEntry_s> FindDirectoryEntry(std::shared_ptr<AssetViewer::DirectoryEntry_s> root, const std::string& dir);
 
-	AssetViewer::AssetViewer(EditorLayer* editorLayer) : EditorViewBase("Asset Viewer", editorLayer), _currentContextNodeIdx(0), _currentSelectedDir(nullptr), _refreshing(false)
+	AssetViewer::AssetViewer(EditorLayer* editorLayer) : EditorViewBase("Asset Viewer", editorLayer), _currentContextNodeIdx(0), _SelectedDir(""), _refreshing(false)
 	{
 		/* cache the service(s) */
 		_resourcesService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
@@ -62,9 +62,7 @@ namespace Wyrd::Editor
 		/* register from events */
 		_EventService->Subscribe(Events::EventType::ProjectLoaded, [this](Events::EventArgs& args)
 			{
-				Refresh();
-
-				SetCurrentSelectedDirectory(FindDirectoryEntry(directoryTree, 1));
+				// TODO
 			});
 	}
 
@@ -79,7 +77,7 @@ namespace Wyrd::Editor
 		{
 			ImGui::BeginChildFrame(1, ImVec2(navigationPanelWidth, ImGui::GetContentRegionAvail().y));
 
-			DirectoryTreeViewRecursive(directoryTree);
+			DirectoryTreeViewRecursive(Utils::GetAssetFolder());
 
 			ImGui::EndChildFrame();
 
@@ -112,129 +110,81 @@ namespace Wyrd::Editor
 		ImGui::End();*/
 	}
 
-	void AssetViewer::Refresh()
+	void AssetViewer::SetCurrentSelectedDirectory(const std::string& directory)
 	{
-		directoryTree = std::make_shared<AssetViewer::DirectoryEntry_s>();
-
-		/* set the root information */
-		directoryTree->id = dirId;
-		directoryTree->name = "Assets";
-		directoryTree->dir = Utils::GetAssetFolder();
-		directoryTree->parent = nullptr;
-
-		/* get all assets in base asset directory */
-		std::map<UID, std::shared_ptr<Resource>> dirResources = _resourcesService->GetResourcesByDir(Utils::GetAssetFolder() + "\\");
-		directoryTree->files.insert(dirResources.begin(), dirResources.end());
-
-		/* increment the dirID to prevent a id clash with the asset folder */
-		dirId++;
-
-		for (const auto& e : std::filesystem::directory_iterator(directoryTree->dir))
-		{
-			if (Utils::FolderExists(e.path().string()))
-			{
-				/* recursively add the sub dirs */
-				directoryTree->subdirs.push_back(RefreshSubDir(e.path().string(), directoryTree));
-			}
-		}
+		_SelectedDir = directory;
 	}
 
-	std::shared_ptr<AssetViewer::DirectoryEntry_s> AssetViewer::RefreshSubDir(const std::string& folder, std::shared_ptr<AssetViewer::DirectoryEntry_s> parent)
+	const std::string& AssetViewer::GetCurrentSelectedDirectory()
 	{
-		std::shared_ptr<AssetViewer::DirectoryEntry_s> entry = std::make_shared<AssetViewer::DirectoryEntry_s>();
-		entry->id = dirId;
-		entry->name = Utils::GetFilename(folder, true);
-		entry->dir = folder;
-		entry->parent = parent;
-
-		/* get all assets in base asset directory */
-		std::map<UID, std::shared_ptr<Resource>> dirResources = _resourcesService->GetResourcesByDir(folder);
-		entry->files.insert(dirResources.begin(), dirResources.end());
-
-		dirId++;
-
-		/* retrieve all the folders */
-		for (const auto& e : std::filesystem::directory_iterator(folder))
-		{
-			/* check if it's a directory, if so recurse */
-			if (Utils::FolderExists(e.path().string()))
-			{
-				entry->subdirs.push_back(RefreshSubDir(e.path().string(), entry));
-			}
-		}
-
-		return entry;
+		return _SelectedDir;
 	}
 
-	void AssetViewer::SetCurrentSelectedDirectory(std::shared_ptr<AssetViewer::DirectoryEntry_s> directory)
+	bool AssetViewer::DirectoryTreeViewRecursive(const std::string& path)
 	{
-		_currentSelectedDir = directory;
-	}
-
-	std::shared_ptr<AssetViewer::DirectoryEntry_s> AssetViewer::GetCurrentSelectedDirectory()
-	{
-		return _currentSelectedDir;
-	}
-
-	bool AssetViewer::DirectoryTreeViewRecursive(std::shared_ptr<AssetViewer::DirectoryEntry_s> dirEntry)
-	{
-		bool itemClicked = false;
-		ImGuiTreeNodeFlags baseFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
-
-		/* set the selected flag if the index if current selected */
-		if (_currentSelectedDir != nullptr && dirEntry->id == _currentSelectedDir->id)
+		/* we don't display any files in the directory tree */
+		if (std::filesystem::is_directory(path))
 		{
-			baseFlags |= ImGuiTreeNodeFlags_Selected;
-		}
+			bool itemClicked = false;
+			ImGuiTreeNodeFlags baseFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
 
-		bool isOpen = false;
-		if (editSettings.enabled == true && editSettings.newDirectoryMode == false && editSettings.id == dirEntry->id)
-		{
-			if (DrawEditNode())
+			/* set the selected flag if the index if current selected */
+			if (_SelectedDir.compare(path) == 0)
 			{
-				std::filesystem::path p(dirEntry->dir);
-				Utils::RenameFolder(dirEntry->dir, p.parent_path().parent_path().string() + "\\" + editSettings.text);
+				baseFlags |= ImGuiTreeNodeFlags_Selected;
 			}
-		}
-		else
-		{
-			isOpen = ImGui::TreeNodeEx((void*)(intptr_t)(dirEntry->id), baseFlags, dirEntry->name.c_str());
-		}
 
-		DrawDirectoryContextMenu(dirEntry->id);
-
-		if (editSettings.enabled == true &&  editSettings.newDirectoryMode == true && editSettings.id == dirEntry->id)
-		{
-			if (DrawEditNode())
+			/* set the selected flag if the index if current selected */
+			int subDirCount = Utils::CountSubDirectories(path);
+			if (subDirCount == 0)
 			{
-				Utils::CreateFolder(dirEntry->dir + "\\" + editSettings.text);
+				baseFlags |= ImGuiTreeNodeFlags_Leaf;
 			}
-		}
 
-		if (isOpen)
-		{
-			for (auto& child : dirEntry->subdirs)
-			{
-				itemClicked = DirectoryTreeViewRecursive(child);
-
-				if (ImGui::IsItemClicked() && !itemClicked)
-				{
-					SetCurrentSelectedDirectory(child);
-					itemClicked = true;
-				}
-			}
+			bool isOpen = false;
 			
-			ImGui::TreePop();
-		}
-		else
-		{
+			/* create directory name */
+			auto lastSlash = path.find_last_of("/\\");
+			lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+			std::string name = path.substr(lastSlash, path.size() - lastSlash);
+
+			/* draw tree node */
+			isOpen = ImGui::TreeNodeEx(path.c_str(), baseFlags, name.c_str());
+			
 			if (ImGui::IsItemClicked())
 			{
-				SetCurrentSelectedDirectory(dirEntry);
+				SetCurrentSelectedDirectory(path);
+				itemClicked = true;
 			}
-		}
 
-		return itemClicked;
+			//DrawDirectoryContextMenu(dirEntry->id);
+
+			if (isOpen)
+			{
+				for (const auto& entry : std::filesystem::directory_iterator(path))
+				{
+					itemClicked = DirectoryTreeViewRecursive(entry.path().string());
+
+					/*if (ImGui::IsItemClicked() && !itemClicked)
+					{
+						SetCurrentSelectedDirectory(entry.path().string());
+						itemClicked = true;
+					}*/
+				}
+
+				ImGui::TreePop();
+			}
+			else
+			{
+				if (ImGui::IsItemClicked())
+				{
+					//SetCurrentSelectedDirectory(dirEntry);
+				}
+			}
+
+			return itemClicked;
+		}
+		return false;
 	}
 
 	void AssetViewer::OnEvent(Event& event)
@@ -247,10 +197,10 @@ namespace Wyrd::Editor
 	{
 		if (e.GetKeyCode() == OSR_KEY_F2)
 		{
-			editSettings.enabled = true;
-			editSettings.newDirectoryMode = false;
-			editSettings.id = _currentSelectedDir->id;
-			editSettings.text = "New File Name";
+			//editSettings.enabled = true;
+			//editSettings.newDirectoryMode = false;
+			//editSettings.id = _currentSelectedDir->id;
+			//editSettings.text = "New File Name";
 		}
 		return true;
 	}
@@ -353,70 +303,87 @@ namespace Wyrd::Editor
 	{
 		uint32_t resIdx = 0;
 
-		std::shared_ptr<AssetViewer::DirectoryEntry_s> dir = GetCurrentSelectedDirectory();
-
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-		if (dir != nullptr)
+		if (_SelectedDir.compare("") != 0)
 		{
 			if (ImGui::BeginTable("assetItemsTable", layoutSettings.itemColumnCnt, ImGuiTableFlags_SizingStretchProp))
 			{
 				uint32_t resIdx = 0;
-				for (auto& res : dir->files)
-				{	
-					uint32_t tableCursor = resIdx % layoutSettings.itemColumnCnt;
 
-					if (tableCursor == 0)
+				for (const auto& entry : std::filesystem::directory_iterator(_SelectedDir))
+				{
+					/* we only care about files */
+					if (std::filesystem::is_regular_file(entry.path().string()))
 					{
-						ImGui::TableNextRow();
+						/* create file name */
+						std::string fullName = entry.path().string();
+							auto lastSlash = fullName.find_last_of("/\\");
+							lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+							std::string name = fullName.substr(lastSlash, fullName.size() - lastSlash);
+
+
+							uint32_t tableCursor = resIdx % layoutSettings.itemColumnCnt;
+
+							if (tableCursor == 0)
+							{
+								ImGui::TableNextRow();
+							}
+
+						ImGui::TableSetColumnIndex(tableCursor);
+
+						ImGui::BeginGroup();
+
+						ImGui::PushID(entry.path().string().c_str());
+
+						/* caculate the additional text size */
+						ImVec2 textSize = ImGui::CalcTextSize(name.c_str());
+
+						// DEBUG ONLY
+						//ImGuiWindow* window = ImGui::GetCurrentWindowRead();
+						//const ImVec2 p0 = window->DC.CursorPos;
+						//ImGui::GetWindowDrawList()->AddRect(p0, p0 + ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemColumnHeight), ImGui::GetColorU32(ImVec4(0.0f, 1.0f, 1.0f, 1.0f)));
+
+
+						/* selectable interface */
+						bool selected = false;
+						if (ImGui::Selectable("##title", selected, ImGuiSelectableFlags_SelectOnClick, ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemGroupWidth + textSize.y)))
+						{
+							//_currentSelectedResourceUID = res.second->GetResourceID();
+						}
+						ImGui::SameLine();
+						ImGui::SetCursorPosX(ImGui::GetCursorPosX() - layoutSettings.itemColumnWidth);
+						ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ((layoutSettings.itemColumnWidth / 2.0f) - (layoutSettings.itemGroupWidth / 2.0f)));
+
+						/* retrieve matching resource cache entry */
+						auto& resource = _resourcesService->GetResourceByFilePath(entry.path().string());
+
+						if (resource != nullptr)
+						{
+							ResourceType resType = static_cast<ResourceType>(resource->GetType());
+
+							switch (resType)
+							{
+							case ResourceType::TEXTURE:
+								DrawTextureItem(resIdx, (TextureRes&)*resource.get());
+								break;
+							case ResourceType::SCENE:
+								DrawSceneItem(resIdx, (SceneRes&)*resource.get());
+								break;
+							case ResourceType::SCRIPT:
+								DrawScriptItem(resIdx, (ScriptRes&)*resource.get());
+								break;
+							case ResourceType::SHADER:break;
+							case ResourceType::NONE:
+							default:
+								break;
+							}
+						}
+
+						ImGui::PopID();
+						ImGui::EndGroup();
+
+						resIdx++;
 					}
-
-					ImGui::TableSetColumnIndex(tableCursor);
-
-					ImGui::BeginGroup();
-
-					ImGui::PushID(&res);
-
-					/* caculate the additional text size */
-					ImVec2 textSize = ImGui::CalcTextSize(res.second->GetName().c_str());
-
-					// DEBUG ONLY
-					//ImGuiWindow* window = ImGui::GetCurrentWindowRead();
-					//const ImVec2 p0 = window->DC.CursorPos;
-					//ImGui::GetWindowDrawList()->AddRect(p0, p0 + ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemColumnHeight), ImGui::GetColorU32(ImVec4(0.0f, 1.0f, 1.0f, 1.0f)));
-
-
-					/* selectable interface */
-					if (ImGui::Selectable("##title", _currentSelectedResourceUID == res.second->GetResourceID(), ImGuiSelectableFlags_SelectOnClick, ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemGroupWidth + textSize.y)))
-					{
-						_currentSelectedResourceUID = res.second->GetResourceID();
-					}
-					ImGui::SameLine();
-					ImGui::SetCursorPosX(ImGui::GetCursorPosX() - layoutSettings.itemColumnWidth);
-					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ((layoutSettings.itemColumnWidth / 2.0f) - (layoutSettings.itemGroupWidth / 2.0f)));
-
-					ResourceType resType = static_cast<ResourceType>(res.second->GetType());
-
-					switch (resType)
-					{
-					case ResourceType::TEXTURE:
-						DrawTextureItem(resIdx, (TextureRes&)*res.second.get());
-						break;
-					case ResourceType::SCENE:
-						DrawSceneItem(resIdx, (SceneRes&)*res.second.get());
-						break;
-					case ResourceType::SCRIPT:
-						DrawScriptItem(resIdx, (ScriptRes&)*res.second.get());
-						break;
-					case ResourceType::SHADER:break;
-					case ResourceType::NONE:
-					default:
-						break;
-					}
-
-					ImGui::PopID();
-					ImGui::EndGroup();
-
-					resIdx++;
 				}
 				
 				ImGui::EndTable();
@@ -465,7 +432,18 @@ namespace Wyrd::Editor
 		}
 
 		/* render widgets */
-		ImGui::Image((ImTextureID)(INT_PTR)textureResource.GetTexture()->GetHandle(), ImVec2(layoutSettings.itemGroupWidth, layoutSettings.itemGroupWidth));
+		/* there is a change that the image may not be loaded yet if currently in the background thread. in this case we want to draw a default texture */
+		ImTextureID thumbnailTexture = 0;
+		if (textureResource.GetTexture() == nullptr)
+		{
+			thumbnailTexture = (ImTextureID)(INT_PTR)_resourcesService->GetDefaultTexture()->GetTexture()->GetHandle();
+		}
+		else
+		{
+			thumbnailTexture = (ImTextureID)(INT_PTR)textureResource.GetTexture()->GetHandle();
+		}
+
+		ImGui::Image(thumbnailTexture, ImVec2(layoutSettings.itemGroupWidth, layoutSettings.itemGroupWidth));
 		ImGui::TextClipped(textureResource.GetName().c_str(), layoutSettings.itemGroupWidth, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
 
 	}

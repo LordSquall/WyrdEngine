@@ -188,10 +188,18 @@ namespace Wyrd::Editor
 				return;
 			}
 
+			/* create filename name */
+			auto lastSlash = path.find_last_of("/\\");
+			lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+			std::string name = path.substr(lastSlash, path.size() - lastSlash);
+
+			bool isDir = std::filesystem::is_directory(path);
+
 			switch (status)
 			{
 			case FileStatus::created:
 				std::cout << "File Created: " << path << std::endl;
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddFileEntry, std::make_unique<Events::AddFileEntryArgs>(path, path, isDir));
 				break;
 
 			case FileStatus::modified:

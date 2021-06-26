@@ -35,13 +35,13 @@ namespace Wyrd::Editor
 		void Refresh();	
 		std::shared_ptr<AssetViewer::DirectoryEntry_s> RefreshSubDir(const std::string& folder, std::shared_ptr<AssetViewer::DirectoryEntry_s> parent);
 
-		void SetCurrentSelectedDirectory(std::shared_ptr<AssetViewer::DirectoryEntry_s> directory);
-		std::shared_ptr<AssetViewer::DirectoryEntry_s> GetCurrentSelectedDirectory();
+		void SetCurrentSelectedDirectory(const std::string& directory);
+		const std::string& GetCurrentSelectedDirectory();
 
 	private:
 		bool OnKeyPressedEvent(KeyPressedEvent& e);
 
-		bool DirectoryTreeViewRecursive(std::shared_ptr<AssetViewer::DirectoryEntry_s> dirEntry);
+		bool DirectoryTreeViewRecursive(const std::string& path);
 		void DrawDirectoryContextMenu(uint32_t nodePtr);
 		bool DrawEditNode();
 
@@ -53,7 +53,7 @@ namespace Wyrd::Editor
 		void DrawUnknownItem(uint32_t resIdx, std::string& unknownResourceName);
 
 		/* Directory State */
-		std::shared_ptr<AssetViewer::DirectoryEntry_s> _currentSelectedDir;
+		std::string _SelectedDir;
 		uint32_t _currentContextNodeIdx;
 		bool _refreshing;
 		

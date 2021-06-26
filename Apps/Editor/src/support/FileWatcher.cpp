@@ -19,6 +19,7 @@ namespace Wyrd::Editor
 		Delay = delay;
 
 		for (auto& file : std::filesystem::recursive_directory_iterator(path)) {
+
 			Paths[file.path().string()] = std::filesystem::last_write_time(file);
 		}
 	}
@@ -32,6 +33,8 @@ namespace Wyrd::Editor
 		Thread = std::thread{
 			[&]()
 			{
+				std::map<std::string, std::string> deletedFiles;
+
 				while (Running)
 				{
 					std::this_thread::sleep_for(Delay);
@@ -41,13 +44,9 @@ namespace Wyrd::Editor
 					{
 						if (!std::filesystem::exists(it->first))
 						{
-							Action(it->first, FileStatus::erased);
-							it = Paths.erase(it);
+							deletedFiles.insert({ it->first, "HASH" });
 						}
-						else
-						{
-							it++;
-						}
+						it++;
 					}
 
 					for (auto& file : std::filesystem::recursive_directory_iterator(Path))
@@ -68,6 +67,23 @@ namespace Wyrd::Editor
 								Paths[file.path().string()] = currentFileWriteTime;
 								Action(file.path().string(), FileStatus::modified);
 							}
+						}
+					}
+					
+
+					auto deletedFilesIt = deletedFiles.begin();
+					while (deletedFilesIt != deletedFiles.end())
+					{
+						if (!std::filesystem::exists(deletedFilesIt->first))
+						{
+							Paths.erase(deletedFilesIt->first);
+							Action(deletedFilesIt->first, FileStatus::erased);
+							deletedFilesIt = deletedFiles.erase(deletedFilesIt);
+							
+						}
+						else
+						{
+							deletedFilesIt++;
 						}
 					}
 				}

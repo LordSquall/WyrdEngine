@@ -42,6 +42,20 @@ namespace Wyrd::Editor
 			return nullptr;
 		}
 
+		std::shared_ptr<Resource> GetResourceByFilePath(std::string& path)
+		{
+			auto it = std::find_if(_resourceMap.begin(), _resourceMap.end(), [&](const auto& e) 
+				{ 
+					return e.second->GetPath().compare(path) == 0; 
+				});
+
+			if (it != _resourceMap.end())
+			{
+				return it->second;
+			}
+			return nullptr;
+		}
+
 		inline const std::map<UID, std::shared_ptr<Resource>> GetResources() { return _resourceMap; };
 
 		std::shared_ptr<ScriptRes> GetScriptResourceByName(const std::string& name);
@@ -71,11 +85,8 @@ namespace Wyrd::Editor
 
 	private:
 		IconLibrary _iconLibrary;
-
 		std::map<UID, std::shared_ptr<Resource>> _resourceMap;
-
 		std::map<std::string, ResourceType> _extensions;
-
 		std::set<std::string> _ignoredExtensions;
 
 		std::shared_ptr<TextureRes> _defaultTexture;

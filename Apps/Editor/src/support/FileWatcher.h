@@ -6,7 +6,7 @@
 
 namespace Wyrd::Editor
 {
-	enum class FileStatus { created, modified, erased };
+	enum class FileStatus { created, modified, erased, renamed };
 
 	class FileWatcher
 	{
