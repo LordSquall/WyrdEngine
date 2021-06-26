@@ -19,6 +19,7 @@ namespace Wyrd::Editor
 		void OnEditorRender_RenderDoc();
 		void OnEditorRender_SceneViewer();
 		void OnEditorRender_WindowsPlayer();
+		void OnEditorRender_ExternalTools();
 
 	private:
 		std::shared_ptr<SettingsService> _SettingsService;

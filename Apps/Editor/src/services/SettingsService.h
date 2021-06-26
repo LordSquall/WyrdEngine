@@ -38,6 +38,9 @@
 #define CONFIG_WINDOWSPLAYER				"Preferences-Windows-Player"
 #define CONFIG_WINDOWSPLAYER__BINPATH		"bin_path"
 
+#define CONFIG_EXTERNALTOOLS				"Preferences-External-Tools"
+#define CONFIG_EXTERNALTOOLS_TEXTUREEDITOR	"texture_editor"
+
 namespace Wyrd::Editor
 {
 	class SettingsService : public IService

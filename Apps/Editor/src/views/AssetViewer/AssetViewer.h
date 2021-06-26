@@ -12,38 +12,18 @@ namespace Wyrd::Editor
 	class AssetViewer : public EditorViewBase
 	{
 	public:
-		struct DirectoryEntry_s;
-
-		struct DirectoryEntry_s
-		{
-			uint32_t id;
-			bool open;
-			std::string name;
-			std::string dir;
-			std::vector<std::shared_ptr<DirectoryEntry_s>> subdirs;
-			std::map<UID, std::shared_ptr<Resource>> files;
-			std::shared_ptr<DirectoryEntry_s> parent;
-		};
-
-	public:
 		AssetViewer(EditorLayer* editorLayer);
 		~AssetViewer() = default;
 
 		void OnEditorRender() override;
 		void OnEvent(Event& event) override;
 
-		void Refresh();	
-		std::shared_ptr<AssetViewer::DirectoryEntry_s> RefreshSubDir(const std::string& folder, std::shared_ptr<AssetViewer::DirectoryEntry_s> parent);
-
-		void SetCurrentSelectedDirectory(const std::string& directory);
-		const std::string& GetCurrentSelectedDirectory();
-
 	private:
 		bool OnKeyPressedEvent(KeyPressedEvent& e);
 
 		bool DirectoryTreeViewRecursive(const std::string& path);
-		void DrawDirectoryContextMenu(uint32_t nodePtr);
-		bool DrawEditNode();
+		void DrawDirectoryContextMenu(const std::string& path);
+		bool DrawEditDirectoryNode();
 
 		void DrawAssetsItems();
 
@@ -52,17 +32,16 @@ namespace Wyrd::Editor
 		void DrawScriptItem(uint32_t resIdx, ScriptRes& scriptResource);
 		void DrawUnknownItem(uint32_t resIdx, std::string& unknownResourceName);
 
-		/* Directory State */
-		std::string _SelectedDir;
-		uint32_t _currentContextNodeIdx;
-		bool _refreshing;
-		
-		/* Resource State */
-		UID _currentSelectedResourceUID;
+		/* Selection State(s) */
+		std::string _SelectedDirectory;
+		Resource* _SelectedResource;
+		std::string _DeleteDirectoryState;
+		std::string _DeleteAssetState;
 
 		/* Services*/
 		std::shared_ptr<ResourceService> _resourcesService;
 		std::shared_ptr<WorkspaceService> _workspaceService;
+		std::shared_ptr<SettingsService> _settingsService;
 		std::shared_ptr<EventService> _EventService;
 		std::shared_ptr<DialogService> _dialogService;
 

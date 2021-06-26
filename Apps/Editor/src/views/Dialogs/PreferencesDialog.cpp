@@ -37,6 +37,9 @@ namespace Wyrd::Editor
 		if (ImGui::Button("Windows Player", ImVec2(navigationPanelWidth, 0)))
 			subMenu = std::bind(&PreferencesDialog::OnEditorRender_WindowsPlayer, this);
 
+		if (ImGui::Button("External Tools", ImVec2(navigationPanelWidth, 0)))
+			subMenu = std::bind(&PreferencesDialog::OnEditorRender_ExternalTools, this);
+
 		ImGui::EndChildFrame();
 
 		ImGui::SameLine();
@@ -141,6 +144,21 @@ namespace Wyrd::Editor
 			_SettingsService->SetSetting(binPath, CONFIG_WINDOWSPLAYER, CONFIG_WINDOWSPLAYER__BINPATH);
 
 			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
+		}
+	}
+
+	void PreferencesDialog::OnEditorRender_ExternalTools()
+	{
+		static std::string textureEditor = _SettingsService->GetSetting(CONFIG_EXTERNALTOOLS, CONFIG_EXTERNALTOOLS_TEXTUREEDITOR, std::string("my_captures/example"));
+
+		ImGui::InputText("Texture Editor", &textureEditor);
+
+		if (ImGui::Button("Apply") == true)
+		{
+			_SettingsService->SetSetting(textureEditor, CONFIG_EXTERNALTOOLS, CONFIG_EXTERNALTOOLS_TEXTUREEDITOR);
+
+			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
+
 		}
 	}
 }

@@ -204,6 +204,7 @@ namespace Wyrd::Editor
 
 			case FileStatus::modified:
 				std::cout << "File Modified: " << path << std::endl;
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ModifiedFileEntry, std::make_unique<Events::ModifiedFileEntryArgs>(path, path, isDir));
 				break;
 
 			case FileStatus::erased:

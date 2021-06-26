@@ -21,13 +21,15 @@
 
 namespace Wyrd::Editor
 {
-	struct EditSettings_s
+	/**
+	* Structure representing the current state of the Edit Directory mechanism
+	*/
+	struct EditDirectoryState_s
 	{
-		bool enabled = false;
 		bool newDirectoryMode = false;
+		std::string path;
 		std::string text;
-		uint32_t id;
-	} editSettings;
+	} editDirectoryState;
 
 	struct LayoutSettings_s
 	{
@@ -39,17 +41,12 @@ namespace Wyrd::Editor
 		int itemLabelShortCharLimit = 9;
 	} layoutSettings;
 
-	static uint32_t dirId = 1;
-	std::shared_ptr<AssetViewer::DirectoryEntry_s> directoryTree;
-
-	std::shared_ptr<AssetViewer::DirectoryEntry_s> FindDirectoryEntry(std::shared_ptr<AssetViewer::DirectoryEntry_s> root, uint32_t id);
-	std::shared_ptr<AssetViewer::DirectoryEntry_s> FindDirectoryEntry(std::shared_ptr<AssetViewer::DirectoryEntry_s> root, const std::string& dir);
-
-	AssetViewer::AssetViewer(EditorLayer* editorLayer) : EditorViewBase("Asset Viewer", editorLayer), _currentContextNodeIdx(0), _SelectedDir(""), _refreshing(false)
+	AssetViewer::AssetViewer(EditorLayer* editorLayer) : EditorViewBase("Asset Viewer", editorLayer), _SelectedDirectory(""), _SelectedResource(nullptr), _DeleteDirectoryState(""), _DeleteAssetState("")
 	{
 		/* cache the service(s) */
 		_resourcesService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
 		_workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
+		_settingsService = ServiceManager::Get<SettingsService>(ServiceManager::Settings);
 		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
 		_dialogService = ServiceManager::Get<DialogService>(ServiceManager::Service::Dialog);
 
@@ -77,7 +74,9 @@ namespace Wyrd::Editor
 		{
 			ImGui::BeginChildFrame(1, ImVec2(navigationPanelWidth, ImGui::GetContentRegionAvail().y));
 
+			ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, 6.0f);
 			DirectoryTreeViewRecursive(Utils::GetAssetFolder());
+			ImGui::PopStyleVar();
 
 			ImGui::EndChildFrame();
 
@@ -90,8 +89,7 @@ namespace Wyrd::Editor
 
 			ImGui::BeginChildFrame(2, ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y));
 
-			if (!_refreshing)
-				DrawAssetsItems();
+			DrawAssetsItems();
 
 			ImGui::EndChildFrame();
 		}
@@ -110,16 +108,6 @@ namespace Wyrd::Editor
 		ImGui::End();*/
 	}
 
-	void AssetViewer::SetCurrentSelectedDirectory(const std::string& directory)
-	{
-		_SelectedDir = directory;
-	}
-
-	const std::string& AssetViewer::GetCurrentSelectedDirectory()
-	{
-		return _SelectedDir;
-	}
-
 	bool AssetViewer::DirectoryTreeViewRecursive(const std::string& path)
 	{
 		/* we don't display any files in the directory tree */
@@ -129,7 +117,7 @@ namespace Wyrd::Editor
 			ImGuiTreeNodeFlags baseFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
 
 			/* set the selected flag if the index if current selected */
-			if (_SelectedDir.compare(path) == 0)
+			if (_SelectedDirectory.compare(path) == 0)
 			{
 				baseFlags |= ImGuiTreeNodeFlags_Selected;
 			}
@@ -150,14 +138,25 @@ namespace Wyrd::Editor
 
 			/* draw tree node */
 			isOpen = ImGui::TreeNodeEx(path.c_str(), baseFlags, name.c_str());
-			
+		
 			if (ImGui::IsItemClicked())
 			{
-				SetCurrentSelectedDirectory(path);
+				_SelectedDirectory = path;
 				itemClicked = true;
 			}
 
-			//DrawDirectoryContextMenu(dirEntry->id);
+
+			/* if we are in edit mode we want to create an edit node as the first element in the tree to allow the new folder creation */
+			if (path == editDirectoryState.path)
+			{
+				if (DrawEditDirectoryNode() == true)
+				{
+					Utils::CreateFolder(path + "\\" + editDirectoryState.text);
+					editDirectoryState.path = "";
+				}
+			}
+
+			DrawDirectoryContextMenu(path);
 
 			if (isOpen)
 			{
@@ -182,6 +181,7 @@ namespace Wyrd::Editor
 				}
 			}
 
+
 			return itemClicked;
 		}
 		return false;
@@ -205,22 +205,17 @@ namespace Wyrd::Editor
 		return true;
 	}
 
-	void AssetViewer::DrawDirectoryContextMenu(uint32_t nodeId)
+	void AssetViewer::DrawDirectoryContextMenu(const std::string& path)
 	{
 		if (ImGui::BeginPopupContextItem())
 		{
-			_currentContextNodeIdx = nodeId;
-
 			if (ImGui::MenuItem("Import Asset"))
 			{
 				std::optional<std::string> file = Utils::OpenFile({ { "All Files (*)", "*.*" } });
 				if (file)
 				{
-					/* find the directory entry from the id */
-					auto dir = FindDirectoryEntry(directoryTree, nodeId);
-
 					/* copy the file into the project */
-					Utils::CopySingleFile(file.value(), dir->dir);
+					Utils::CopySingleFile(file.value(), path);
 				}
 			}
 
@@ -228,18 +223,12 @@ namespace Wyrd::Editor
 			{
 				if (ImGui::MenuItem("Scene"))
 				{
-					/* find the directory entry from the id */
-					auto dir = FindDirectoryEntry(directoryTree, nodeId);
-
-					_dialogService->OpenDialog(std::make_shared<NewSceneDialog>(_EditorLayer, dir->dir));
+					_dialogService->OpenDialog(std::make_shared<NewSceneDialog>(_EditorLayer, path));
 				}
 
 				if (ImGui::MenuItem("Script"))
 				{
-					/* find the directory entry from the id */
-					auto dir = FindDirectoryEntry(directoryTree, nodeId);
-
-					_dialogService->OpenDialog(std::make_shared<NewScriptDialog>(_EditorLayer, dir->dir));
+					_dialogService->OpenDialog(std::make_shared<NewScriptDialog>(_EditorLayer, path));
 				}
 				ImGui::EndMenu();
 			}
@@ -249,25 +238,21 @@ namespace Wyrd::Editor
 			if (ImGui::MenuItem("New Folder")) 
 			{
 				/* setup properties to allow edit */
-				editSettings.enabled = true;
-				editSettings.newDirectoryMode = true;
-				editSettings.id = nodeId;
-				editSettings.text = "New Folder";
+				editDirectoryState.path = path;
+				editDirectoryState.text = "New Folder";
 			}
 
-			if (ImGui::MenuItem("Delete", nullptr, nullptr, nodeId != 1))
+			if (ImGui::MenuItem("Delete"))
 			{
-				_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to delete?", 
+				_DeleteDirectoryState = path;
+				_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to delete?",
 					[&](void* data) {
-
-						/* find the directory entry from the id */
-						auto dir = FindDirectoryEntry(directoryTree, _currentContextNodeIdx);
-
 						/* delete the folder */
-						Utils::DeleteFolder(dir->dir);
+						Utils::DeleteFolder(_DeleteDirectoryState);
+						_DeleteDirectoryState = "";
 					},
 					[&](void* data) {
-						WYRD_TRACE("Failure Callback Hit!!");
+						_DeleteDirectoryState = "";
 					});
 			}
 
@@ -275,23 +260,19 @@ namespace Wyrd::Editor
 
 			if (ImGui::MenuItem("Open in Explorer"))
 			{
-				/* find the directory entry from the id */
-				auto dir = FindDirectoryEntry(directoryTree, nodeId);
-
-				ShellExecuteA(NULL, "open", dir->dir.c_str(), NULL, NULL, SW_SHOWDEFAULT);
+				ShellExecuteA(NULL, "open", path.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 			}
 
 			ImGui::EndPopup();
 		}
 	}
 
-	bool AssetViewer::DrawEditNode()
+	bool AssetViewer::DrawEditDirectoryNode()
 	{
 		ImGui::PushItemWidth(-1);
 		ImGui::SetKeyboardFocusHere();
-		if (ImGui::InputText("##label", &editSettings.text, ImGuiInputTextFlags_EnterReturnsTrue))
+		if (ImGui::InputText("##label", &editDirectoryState.text, ImGuiInputTextFlags_EnterReturnsTrue))
 		{
-			editSettings.enabled = false;
 			return true;
 		}
 		ImGui::PopItemWidth();
@@ -304,17 +285,25 @@ namespace Wyrd::Editor
 		uint32_t resIdx = 0;
 
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-		if (_SelectedDir.compare("") != 0)
+		if (_SelectedDirectory.compare("") != 0)
 		{
 			if (ImGui::BeginTable("assetItemsTable", layoutSettings.itemColumnCnt, ImGuiTableFlags_SizingStretchProp))
 			{
 				uint32_t resIdx = 0;
 
-				for (const auto& entry : std::filesystem::directory_iterator(_SelectedDir))
+				for (const auto& entry : std::filesystem::directory_iterator(_SelectedDirectory))
 				{
 					/* we only care about files */
 					if (std::filesystem::is_regular_file(entry.path().string()))
 					{
+						/* retrieve matching resource cache entry */
+						auto& resource = _resourcesService->GetResourceByFilePath(entry.path().string());
+
+						if (resource == nullptr)
+						{
+							WYRD_CORE_TRACE("Resource Not Found: {0}", entry.path().string());
+						}
+
 						/* create file name */
 						std::string fullName = entry.path().string();
 							auto lastSlash = fullName.find_last_of("/\\");
@@ -345,17 +334,15 @@ namespace Wyrd::Editor
 
 
 						/* selectable interface */
-						bool selected = false;
+						bool selected = _SelectedResource == resource.get();
 						if (ImGui::Selectable("##title", selected, ImGuiSelectableFlags_SelectOnClick, ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemGroupWidth + textSize.y)))
 						{
-							//_currentSelectedResourceUID = res.second->GetResourceID();
+							_SelectedResource = resource.get();
 						}
+
 						ImGui::SameLine();
 						ImGui::SetCursorPosX(ImGui::GetCursorPosX() - layoutSettings.itemColumnWidth);
 						ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ((layoutSettings.itemColumnWidth / 2.0f) - (layoutSettings.itemGroupWidth / 2.0f)));
-
-						/* retrieve matching resource cache entry */
-						auto& resource = _resourcesService->GetResourceByFilePath(entry.path().string());
 
 						if (resource != nullptr)
 						{
@@ -397,17 +384,21 @@ namespace Wyrd::Editor
 		/* context menu */
 		if (ImGui::BeginPopupContextItem())
 		{
-			if (ImGui::MenuItem("Copy")) { WYRD_TRACE("Texture Copied"); };
-			if (ImGui::MenuItem("Cut")) { WYRD_TRACE("Texture Cut"); };
-			if (ImGui::MenuItem("Paste")) { WYRD_TRACE("Texture Paste"); };
+			if (ImGui::MenuItem("Open with System"))
+			{
+				Utils::OpenFileWithSystem(textureResource.GetPath());
+			};
+
 			ImGui::Separator();
 
 			if (ImGui::MenuItem("Delete")) 
 			{ 
-				//_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to delete?", 
-				//	[&](void* data) {
-				//		Utils::RemoveFile(std::dynamic_pointer_cast<TextureRes> (_currentSelectedResource)->GetPath());
-				//	});
+				_DeleteAssetState = textureResource.GetPath();
+				_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to delete?", 
+					[&](void* data) {
+						Utils::RemoveFile(_DeleteAssetState);
+						_DeleteAssetState = nullptr;
+					});
 			};
 
 			ImGui::EndPopup();
@@ -465,10 +456,11 @@ namespace Wyrd::Editor
 
 			if (ImGui::MenuItem("Delete")) 
 			{ 
-				//_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to delete?", 
-				//	[&](void* data) {
-				//		Utils::RemoveFile(std::dynamic_pointer_cast<TextureRes> (_currentSelectedResource)->GetPath());
-				//	});
+				_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to delete?", 
+				[&](void* data) {
+					Utils::RemoveFile(_SelectedResource->GetPath());
+					_SelectedResource = nullptr;
+				});
 			};
 
 			ImGui::EndPopup();
@@ -550,39 +542,5 @@ namespace Wyrd::Editor
 		}
 		ImGui::Text(unknownResourceName.c_str());
 		ImGui::EndGroup();
-	}
-
-	std::shared_ptr<AssetViewer::DirectoryEntry_s> FindDirectoryEntry(std::shared_ptr<AssetViewer::DirectoryEntry_s> root, uint32_t id)
-	{
-		if (root->id == id)
-			return root;
-
-		for (auto& entry : root->subdirs)
-		{
-			auto foundItem = FindDirectoryEntry(entry, id);
-			if (foundItem != nullptr)
-			{
-				return foundItem;
-			}
-		}
-
-		return nullptr;
-	}
-
-	std::shared_ptr<AssetViewer::DirectoryEntry_s> FindDirectoryEntry(std::shared_ptr<AssetViewer::DirectoryEntry_s> root, const std::string& dir)
-	{
-		if (root->dir == dir)
-			return root;
-
-		for (auto& entry : root->subdirs)
-		{
-			auto foundItem = FindDirectoryEntry(entry, dir);
-			if (foundItem != nullptr)
-			{
-				return foundItem;
-			}
-		}
-
-		return nullptr;
 	}
 }
