@@ -89,11 +89,5 @@ namespace Wyrd::Editor
 				}
 			}
 		}
-
-		/* debug */
-		for (int p = 0; p < SCRIPT_COMP_PROP_MAX; p++)
-		{
-			ImGui::Text("[%d] %p -> %f", p, script->properties[p], *((float*)script->properties[p]));
-		}
 	}
 }
