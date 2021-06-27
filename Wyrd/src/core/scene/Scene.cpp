@@ -3,6 +3,9 @@
 
 /* Local includes */
 #include "Scene.h"
+#include "core/Log.h"
+#include "core/Application.h"
+#include "core/behaviour/ScriptedClass.h"
 #include "core/ecs/Components.h"
 #include "serial/ComponentSerialiserFactory.h"
 #include "serial/TypeSerialisers.h"
@@ -38,9 +41,29 @@ namespace Wyrd
 		return true;
 	}
 
-	void Scene::AssignScripts(Behaviour* behaviour)
+	void Scene::AssignScripts(const Entity entity)
 	{
+		ScriptComponent* scriptComponent = Get<ScriptComponent>(entity);
+		if (scriptComponent != nullptr)
+		{
+			auto scriptedClass = Application::Get().GetBehaviour().GetCustomClassByUID(scriptComponent->script);
 
+			if (scriptedClass != nullptr)
+			{
+				scriptComponent->propertyMap.clear();
+
+				int i = 0;
+				for (auto& o : scriptedClass->Properties)
+				{
+					scriptComponent->propertyMap.insert({ o.second->GetName(),  (scriptComponent->properties + (i * SCRIPT_COMP_PROP_DATA_LENGTH)) });
+					i++;
+				}
+			}
+			else
+			{
+				WYRD_CORE_ERROR("Unable to find matching class!");
+			}
+		}
 	}
 	
 	bool Scene::ToJson(jsonxx::Object& object)
@@ -195,5 +218,14 @@ namespace Wyrd
 			memcpy(a, b, p->elementSize);
 			memcpy(b, t, p->elementSize);
 		}
+
+		// swap component masks
+		ComponentMask tempMask = entities[entityA - 1].mask;
+		entities[entityA - 1].mask = entities[entityB - 1].mask;
+		entities[entityB - 1].mask = tempMask;
+
+		// Update script components (if applicable)
+		AssignScripts(entityA);
+		AssignScripts(entityB);
 	}
 }

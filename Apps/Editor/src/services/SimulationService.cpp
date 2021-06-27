@@ -161,12 +161,6 @@ namespace Wyrd::Editor
 			Application::Get().GetBehaviour().LoadBehaviourModel(scriptFiles, finalModelFileName);
 		}
 
-		/* Final state, if we have an open scene we need to reassign the scripts, as the class pointers will most likely have changed */
-		if (_WorkspaceService->GetLoadedScene() != nullptr)
-		{
-			_WorkspaceService->GetLoadedScene()->AssignScripts(Application::Get().GetBehaviourPtr());
-		}
-
 		_EventService->Publish(Events::EventType::RefreshView, std::make_unique<Events::RefreshViewEventArgs>());
 	}
 

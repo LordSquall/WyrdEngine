@@ -31,7 +31,7 @@ namespace Wyrd {
 
 		bool Initialise();
 
-		void AssignScripts(Behaviour* behaviour);
+		void AssignScripts(const Entity entity);
 
 		inline const Entity GetPrimaryCameraEntity() { return _ScenePrimaryCameraEntity; }
 		inline void SetPrimaryCameraEntity(const Entity entity) { _ScenePrimaryCameraEntity = entity; }
