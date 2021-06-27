@@ -42,8 +42,19 @@ namespace Wyrd::Editor
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_TEXTURE"))
 			{
 				UID* textureUID = (UID*)payload->Data;
-				sprite->texture = *textureUID;
-				sprite->size = { (float)texture->GetWidth(), (float)texture->GetHeight() };
+
+				/* retrieve the new texture */
+				auto newTexture = Application::Get().GetResources().Textures[*textureUID];
+
+				if (newTexture)
+				{
+					sprite->texture = *textureUID;
+					sprite->size = { (float)newTexture->GetWidth(), (float)newTexture->GetHeight() };
+				}
+				else
+				{
+					WYRD_ERROR("Unable to find source Texture from Drag and Drop Payload!");
+				}
 			}
 			ImGui::EndDragDropTarget();
 		}

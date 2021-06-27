@@ -12,6 +12,7 @@ namespace Wyrd
 		_width = width;
 		_height = height;
 		_data = data;
+		_description = description;
 
 		glGenTextures(1, &_rendererID);
 		glBindTexture(GL_TEXTURE_2D, _rendererID);

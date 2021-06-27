@@ -33,6 +33,8 @@ namespace Wyrd
 
 		inline unsigned char* GetData() const { return _data; }
 
+		inline const std::string& GetDescription() const { return _description; }
+
 		static std::shared_ptr<Texture> Create(unsigned char* data, int width, int height, int channels, const std::string& description);
 
 	protected:
@@ -40,5 +42,6 @@ namespace Wyrd
 		int _height;
 		int _width;
 		unsigned char* _data;
+		std::string _description;
 	};
 }
