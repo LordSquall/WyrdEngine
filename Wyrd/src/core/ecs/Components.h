@@ -55,6 +55,8 @@ namespace Wyrd
 
 	struct WYRD_LIBRARY_API CameraComponent
 	{
+		Rect viewport;
+		float aspectRatio;
 		float size;
 	};
 

@@ -133,8 +133,8 @@ namespace Wyrd::Editor
 
 					Wyrd::DrawRectCommand cmd{};
 					cmd.type = 1;
-					cmd.position = transform->position;
-					cmd.size = { cameraComp->size, cameraComp->size };
+					cmd.position = { transform->position.x + (-((cameraComp->size * cameraComp->aspectRatio) / 2.0f)), transform->position.y + (-(cameraComp->size) / 2.0f) };
+					cmd.size = { cameraComp->size * cameraComp->aspectRatio, cameraComp->size };
 					cmd.thickness = 5.0f;
 					cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
 					cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();

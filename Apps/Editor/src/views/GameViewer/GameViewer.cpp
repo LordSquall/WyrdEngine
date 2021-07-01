@@ -22,7 +22,7 @@
 
 namespace Wyrd::Editor
 {
-	GameViewer::GameViewer(EditorLayer* editorLayer) : EditorViewBase("Game Viewer", editorLayer), _CameraEntity(ENTITY_INVALID), _CameraComponent(nullptr)
+	GameViewer::GameViewer(EditorLayer* editorLayer) : EditorViewBase("Game Viewer", editorLayer), _CameraEntity(ENTITY_INVALID), _CameraComponent(nullptr), _SizeConfigID(0)
 	{
 		/* retrieve services */
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
@@ -57,7 +57,20 @@ namespace Wyrd::Editor
 		if (_CameraEntity != ENTITY_INVALID)
 		{
 			Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(_CameraEntity);
+
 			_Camera.SetPosition({ transform->position, 0.0f });
+			_Camera.SetSize(_CameraComponent->size);
+
+			switch (_SizeConfigID)
+			{
+			case 0:
+				_Camera.SetViewportSize(_Viewport.size.x, _Viewport.size.y);
+				break;
+			case 1:
+				_Camera.SetViewportSize(800.0f, 600.0f);
+				break;
+			}
+
 			_Camera.RecalulateViewProjection();
 		}
 	}
@@ -101,11 +114,39 @@ namespace Wyrd::Editor
 		static bool showGizmoSettings = false;
 
 		/* calculate the viewport size */
-		_Viewport = { { 0.0f, 0.0f }, { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y - ImGui::GetCursorPos().y } };
+		_Viewport = { { 0.0f, 0.0f }, { ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y - ImGui::GetCursorPos().y } };
+
+
+		const char* items[] = { "Window Size", "800x600" };
+		if (ImGui::Combo("combo", &_SizeConfigID, items, IM_ARRAYSIZE(items)))
+		{
+			switch (_SizeConfigID)
+			{
+			case 0:
+				/* resize the underlying framebuffer */
+				_Framebuffer->Resize((uint32_t)_Viewport.size.x, (uint32_t)_Viewport.size.y);
+				break;
+			case 1:
+				/* resize the underlying framebuffer */
+				_Framebuffer->Resize(800, 600);
+				break;
+			}
+		}
 
 		if (_CameraComponent != nullptr)
 		{
+			_CameraComponent->viewport = _Viewport;
+			_CameraComponent->aspectRatio = _Camera.GetAspectRatio();
+
+			auto pos = ImGui::GetCursorPos();
 			ImGui::Image((ImTextureID)(UINT_PTR)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport.size.x, _Viewport.size.y), ImVec2(0, 1), ImVec2(1, 0));
+
+			ImGui::SetCursorPos(pos);
+			ImGui::Text("X : %f", _Viewport.position.x);
+			ImGui::Text("Y : %f", _Viewport.position.y);
+			ImGui::Text("W : %f", _Viewport.size.x);
+			ImGui::Text("H : %f", _Viewport.size.y);
+			ImGui::Text("Aspect Ratio : %f", _CameraComponent->aspectRatio);
 		}
 		else
 		{
@@ -121,7 +162,6 @@ namespace Wyrd::Editor
 		if (_CameraComponent != nullptr)
 		{
 			/* Set the camera viewport */
-			_Camera.SetPosition({ 100.0f, 100.0f, 0.0f });
 			_Camera.SetSize(_CameraComponent->size);
 			_Camera.SetViewportSize(_Viewport.size.x, _Viewport.size.y);
 		}
@@ -135,12 +175,12 @@ namespace Wyrd::Editor
 		/* check to see if the scene already has a camera component on the camera entity */
 		if (_Scene->GetPrimaryCameraEntity() != ENTITY_INVALID)
 		{
-			CameraComponent* cameraComponent = _Scene->Get<CameraComponent>(_Scene->GetPrimaryCameraEntity());
+			/*CameraComponent* cameraComponent = _Scene->Get<CameraComponent>(_Scene->GetPrimaryCameraEntity());
 			if (cameraComponent != nullptr)
 			{
 				_CameraEntity = _Scene->GetPrimaryCameraEntity();
 				_CameraComponent = cameraComponent;
-			}
+			}*/
 		}
 	}
 }

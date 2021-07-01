@@ -77,6 +77,9 @@ namespace Wyrd
 		/* camera zoom */
 		object << "cameraZoom" << cameraZoom;
 
+		/* scene name */
+		object << "name" << name;
+
 		/* primary camera entity */
 		object << "primaryCameraEntity" << _ScenePrimaryCameraEntity;
 
@@ -132,6 +135,10 @@ namespace Wyrd
 		/* camera zoom */
 		if (object.has<jsonxx::Number>("cameraZoom"))
 			cameraZoom = (float)object.get<jsonxx::Number>("cameraZoom");
+
+		/* scene name */
+		if (object.has<jsonxx::String>("name"))
+			name = object.get<jsonxx::String>("name");
 
 		/* primary camera uid*/
 		if (object.has<jsonxx::Number>("primaryCameraEntity"))

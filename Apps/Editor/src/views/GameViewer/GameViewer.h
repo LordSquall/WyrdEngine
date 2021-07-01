@@ -51,5 +51,7 @@ namespace Wyrd::Editor
 		glm::vec2 _mouseOffset;
 		Wyrd::Rect _ViewportBoundary;
 		Wyrd::Rect _Viewport;
+
+		int _SizeConfigID;
 	};
 }
