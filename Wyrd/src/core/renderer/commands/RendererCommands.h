@@ -25,6 +25,7 @@ namespace Wyrd
 	{
 		glm::vec2 position;
 		glm::vec2 size;
+		glm::vec2 tiling;
 		Texture* texture;
 		Color color;
 	};

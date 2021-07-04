@@ -45,11 +45,11 @@ namespace Wyrd
 			Flush();
 
 		/* add vertices */
-		_vertices.push_back({ (float)cmd.position.x, (float)cmd.position.y, 0.0f, 0.0f });
-		_vertices.push_back({ (float)cmd.position.x, (float)cmd.position.y + (float)cmd.size.y, 0.0f, -1.0f });
-		_vertices.push_back({ (float)cmd.position.x + (float)cmd.size.x, (float)cmd.position.y + (float)cmd.size.y, 1.0f, -1.0f });
-		_vertices.push_back({ (float)cmd.position.x + (float)cmd.size.x, (float)cmd.position.y + (float)cmd.size.y, 1.0f, -1.0f });
-		_vertices.push_back({ (float)cmd.position.x + (float)cmd.size.x, (float)cmd.position.y, 1.0f, 0.0f });
+		_vertices.push_back({ (float)cmd.position.x, (float)cmd.position.y, 0.0, 0.0f });
+		_vertices.push_back({ (float)cmd.position.x, (float)cmd.position.y + (float)cmd.size.y, 0.0f, -(cmd.tiling.y) });
+		_vertices.push_back({ (float)cmd.position.x + (float)cmd.size.x, (float)cmd.position.y + (float)cmd.size.y, (cmd.tiling.x), -(cmd.tiling.y) });
+		_vertices.push_back({ (float)cmd.position.x + (float)cmd.size.x, (float)cmd.position.y + (float)cmd.size.y, (cmd.tiling.x), -(cmd.tiling.y) });
+		_vertices.push_back({ (float)cmd.position.x + (float)cmd.size.x, (float)cmd.position.y, (cmd.tiling.x), 0.0f });
 		_vertices.push_back({ (float)cmd.position.x, (float)cmd.position.y, 0.0f, 0.0f });
 
 		/* bind the batch vertex array */

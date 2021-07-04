@@ -166,6 +166,7 @@ namespace Wyrd
 		obj << "position" << data->position;
 		obj << "size" << data->size;
 		obj << "color" << data->color;
+		obj << "tiling" << data->tiling;
 		obj << "texture" << data->texture;
 	}
 
@@ -217,6 +218,10 @@ namespace Wyrd
 		data->position << obj.get<Array>("position");
 		data->size << obj.get<Array>("size");
 		data->color << obj.get<Array>("color");
+
+		if (obj.has<Array>("tiling"))
+			data->tiling << obj.get<Array>("tiling");
+
 		data->texture << obj.get<Array>("texture");
 	}
 

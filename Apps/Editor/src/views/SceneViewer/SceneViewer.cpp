@@ -115,6 +115,7 @@ namespace Wyrd::Editor
 					cmd.type = 1;
 					cmd.position = sprite->position + transform->position;
 					cmd.size = sprite->size;
+					cmd.tiling = sprite->tiling;
 					cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
 					cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
 					cmd.texture = Application::Get().GetResources().Textures[sprite->texture].get();

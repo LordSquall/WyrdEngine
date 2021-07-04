@@ -84,7 +84,7 @@ namespace Wyrd::Editor
 			renderer.Clear(0.1f, 0.1f, 0.1f);
 			if (_Scene != nullptr)
 			{
-				for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
+				/*for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
 				{
 					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
 					SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
@@ -101,7 +101,7 @@ namespace Wyrd::Editor
 					renderer.Submit(cmd);
 				}
 
-				renderer.Flush();
+				renderer.Flush();*/
 			}
 
 			_Framebuffer->Unbind();

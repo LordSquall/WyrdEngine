@@ -172,18 +172,31 @@ namespace Wyrd
 			jsonxx::Array componentPoolsArray = object.get<jsonxx::Array>("componentPools");
 			for (size_t i = 0; i < componentPoolsArray.size(); i++)
 			{
-				jsonxx::Object pool = componentPoolsArray.get<jsonxx::Object>((unsigned int)i);
+				jsonxx::Object poolObj = componentPoolsArray.get<jsonxx::Object>((unsigned int)i);
 		
-				std::string poolName = pool.get<String>("name");
-				int poolElementSize = pool.get<Number>("elementSize"); 
-		
-				jsonxx::Array compnentArray = pool.get<jsonxx::Array>("components");
+				std::string poolName = poolObj.get<String>("name");
+
+				/* find the component pool */
+				auto foundPoolIt = std::find_if(componentPools.begin(), componentPools.end(),
+					[&poolName](const ComponentPool* p) { return p->name.compare(poolName) == 0; }
+				);
+
+				if (foundPoolIt == componentPools.end())
+				{
+					return false;
+				}
+
+				ComponentPool* pool = *foundPoolIt;
+
+				int poolElementSize = pool->elementSize; 
+
+				jsonxx::Array compnentArray = poolObj.get<jsonxx::Array>("components");
 				for (size_t j = 0; j < compnentArray.size(); j++)
 				{
 					jsonxx::Object component = compnentArray.get<jsonxx::Object>((unsigned int)j);
 		
-					ComponentSerialiserFactory::Deserialise(poolName, component, &(componentPools[i]->data[j * poolElementSize]));
-					componentPools[i]->count++;
+					ComponentSerialiserFactory::Deserialise(poolName, component, &(pool->data[j * poolElementSize]));
+					pool->count++;
 				}
 			}
 		}
