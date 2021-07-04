@@ -84,7 +84,6 @@ namespace Wyrd::Editor
 			}
 		}
 
-		/* NOTE: Disabled shader export until resources are resolved */
 		/* add the shader resources */
 		size_t shaderCount = Application::Get().GetResources().Shaders.size();
 		commonBundle.write((char*)&shaderCount, sizeof(size_t));
@@ -187,7 +186,7 @@ namespace Wyrd::Editor
 		/* load the scene */
 		Scene scene;
 		scene.Initialise();
-		SceneLoader::Load(sceneRes->GetPath(), scene);
+		SceneLoader::Load(sceneRes->GetPath(), scene, false);
 
 		/* write the camera entity */
 		Entity cameraEntity = scene.GetPrimaryCameraEntity();

@@ -37,7 +37,7 @@ bool ControlLayer::OnAttach()
 
 	auto& sceneManager = SceneManager::getInstance();
 
-	sceneManager.LoadScene(baseDirectory, UID("9e38ccae-3887-4f73-b2fa-003f5d5c6a61"));
+	sceneManager.LoadScene(baseDirectory, UID("66bff5b7-e50c-4f30-945c-c880ca709d5a"));
 
 	/* create a new framebuffer */
 	unsigned int width = Application::Get().GetWindow().GetWidth();

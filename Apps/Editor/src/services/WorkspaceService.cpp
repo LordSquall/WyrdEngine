@@ -240,7 +240,7 @@ namespace Wyrd::Editor
 		_LoadedScene->RegisterComponent<EditorComponent>("Editor", "EditorComponent", false);
 
 		/* Load the scene object */
-		SceneLoader::Result result = SceneLoader::Load(path, *_LoadedScene);
+		SceneLoader::Result result = SceneLoader::Load(path, *_LoadedScene, true);
 
 		if (result != SceneLoader::Result::Success)
 		{

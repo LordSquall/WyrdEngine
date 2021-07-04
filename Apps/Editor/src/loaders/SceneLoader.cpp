@@ -26,7 +26,7 @@ namespace Wyrd::Editor
 	static std::shared_ptr<CoreSystemsService> _coreSystemService;
 	static PropertyList_t _resolveProperties;
 
-	SceneLoader::Result SceneLoader::Load(std::string path, Scene& scene)
+	SceneLoader::Result SceneLoader::Load(std::string path, Scene& scene, bool includeEditorComponents)
 	{
 		SceneLoader::Result result = Success;
 		jsonxx::Object o;
@@ -54,9 +54,12 @@ namespace Wyrd::Editor
 			result = FileNotFound;
 		}
 
-		for (auto& entity : scene.entities)
+		if (includeEditorComponents)
 		{
-			scene.AssignComponent<EditorComponent>(entity.id);
+			for (auto& entity : scene.entities)
+			{
+				scene.AssignComponent<EditorComponent>(entity.id);
+			}
 		}
 
 		return result;

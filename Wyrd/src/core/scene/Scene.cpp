@@ -101,20 +101,23 @@ namespace Wyrd
 		jsonxx::Array poolArray;
 		for (auto& p : componentPools)
 		{
-			jsonxx::Object pool;
-
-			pool << "name" << p->name;
-			pool << "elementSize" << p->elementSize;
-
-			jsonxx::Array components;
-
-			for (size_t i = 0; i < entities.size(); i++)
+			if (p->serialise)
 			{
-				components <<  ComponentSerialiserFactory::Serialise(p->name, &p->data[i * p->elementSize]);
-				pool << "components" << components;
-			}
+				jsonxx::Object pool;
 
-			poolArray << pool;
+				pool << "name" << p->name;
+				pool << "elementSize" << p->elementSize;
+
+				jsonxx::Array components;
+
+				for (size_t i = 0; i < entities.size(); i++)
+				{
+					components << ComponentSerialiserFactory::Serialise(p->name, &p->data[i * p->elementSize]);
+					pool << "components" << components;
+				}
+
+				poolArray << pool;
+			}
 		}
 
 		object << "componentPools" << poolArray;
