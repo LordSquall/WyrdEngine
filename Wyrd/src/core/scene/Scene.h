@@ -62,7 +62,7 @@ namespace Wyrd {
 		 * @param name Entity Name
 		*/
 		template<typename Component>
-		void RegisterComponent(const std::string& name, const std::string& scriptName)
+		void RegisterComponent(const std::string& name, const std::string& scriptName, bool serialise)
 		{
 			int componentID = GetID<Component>();
 
@@ -71,7 +71,7 @@ namespace Wyrd {
 				componentPools.resize(componentID + 1, nullptr);
 			}
 
-			componentPools[componentID] = new ComponentPool(name, componentID, sizeof(Component), scriptName);
+			componentPools[componentID] = new ComponentPool(name, componentID, sizeof(Component), scriptName, serialise);
 		}
 
 		/**

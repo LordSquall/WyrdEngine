@@ -9,6 +9,7 @@
 #include "ServiceManager.h"
 #include "loaders/SceneLoader.h"
 #include "loaders/ProjectLoader.h"
+#include "datamodels/EditorComponents.h"
 
 /* external includes */
 #include <jsonxx.h>
@@ -221,6 +222,7 @@ namespace Wyrd::Editor
 		/* Create a new scene shared pointer */
 		_LoadedScene = std::make_shared<Scene>(name);
 		_LoadedScene->Initialise();
+		_LoadedScene->RegisterComponent<EditorComponent>("Editor", "EditorComponent", false);
 
 		/* Mark scene loaded */
 		IsSceneLoaded(true);
@@ -235,6 +237,7 @@ namespace Wyrd::Editor
 	{
 		_LoadedScene = std::make_shared<Scene>();
 		_LoadedScene->Initialise();
+		_LoadedScene->RegisterComponent<EditorComponent>("Editor", "EditorComponent", false);
 
 		/* Load the scene object */
 		SceneLoader::Result result = SceneLoader::Load(path, *_LoadedScene);

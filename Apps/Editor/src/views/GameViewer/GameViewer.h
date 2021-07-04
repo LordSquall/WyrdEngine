@@ -35,7 +35,7 @@ namespace Wyrd::Editor
 		std::shared_ptr<ResourceService>		_ResourceService;
 		std::shared_ptr<SettingsService>		_SettingsService;
 		std::shared_ptr<SimulationService>		_SimulationService;
-		std::unique_ptr<Wyrd::FrameBuffer>	_Framebuffer;
+		std::unique_ptr<Wyrd::FrameBuffer>		_Framebuffer;
 
 		std::shared_ptr<Scene>							_Scene;
 		std::shared_ptr<Shader>							_Shader;

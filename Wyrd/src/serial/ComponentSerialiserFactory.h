@@ -77,13 +77,11 @@ namespace Wyrd
 		static void Serialise(Object& obj, Wyrd::SpriteComponent* data);
 		static void Serialise(Object& obj, Wyrd::ScriptComponent* data);
 		static void Serialise(Object& obj, Wyrd::CameraComponent* data);
-		static void Serialise(Object& obj, Wyrd::EditorComponent* data);
 
 		static void Deserialise(Object& obj, Wyrd::MetaDataComponent* data);
 		static void Deserialise(Object& obj, Wyrd::Transform2DComponent* data);
 		static void Deserialise(Object& obj, Wyrd::SpriteComponent* data);
 		static void Deserialise(Object& obj, Wyrd::ScriptComponent* data);
 		static void Deserialise(Object& obj, Wyrd::CameraComponent* data);
-		static void Deserialise(Object& obj, Wyrd::EditorComponent* data);
 	};
 };

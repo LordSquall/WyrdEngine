@@ -12,6 +12,7 @@
 #include "SceneLoader.h"
 #include "services/ServiceManager.h"
 #include "services/ResourceService.h"
+#include "datamodels/EditorComponents.h"
 
 /* external includes */
 #include <glm/glm.hpp>
@@ -51,6 +52,11 @@ namespace Wyrd::Editor
 		else
 		{
 			result = FileNotFound;
+		}
+
+		for (auto& entity : scene.entities)
+		{
+			scene.AssignComponent<EditorComponent>(entity.id);
 		}
 
 		return result;

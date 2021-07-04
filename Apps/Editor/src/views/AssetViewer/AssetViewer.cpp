@@ -454,6 +454,12 @@ namespace Wyrd::Editor
 			if (ImGui::MenuItem("Paste")) { WYRD_TRACE("Texture Paste"); };
 			ImGui::Separator();
 
+			if (ImGui::MenuItem("Properties"))
+			{
+				_EventService->Publish(Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&sceneResource));
+			}
+
+			ImGui::Separator();
 			if (ImGui::MenuItem("Delete")) 
 			{ 
 				_dialogService->OpenConfirmDialog(_EditorLayer, "Are you sure want to delete?", 

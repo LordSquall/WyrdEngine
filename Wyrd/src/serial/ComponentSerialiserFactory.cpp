@@ -199,11 +199,6 @@ namespace Wyrd
 		obj << "size" << data->size;
 	}
 
-	void ComponentSerialiserFactory::Serialise(Object& obj, Wyrd::EditorComponent* data)
-	{
-		obj << "inputArea" << data->inputArea;
-	}
-
 	/* deserialise */
 	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::MetaDataComponent* data)
 	{
@@ -242,10 +237,5 @@ namespace Wyrd
 	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::CameraComponent* data)
 	{
 		data->size = obj.get<Number>("size");
-	}
-
-	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::EditorComponent* data)
-	{
-
 	}
 }

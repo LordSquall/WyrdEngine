@@ -19,21 +19,22 @@
 
 namespace Wyrd::Editor
 {
-	Wyrd::Entity PropertiesViewer::_SelectedEntity = 0;
-
-	PropertiesViewer::PropertiesViewer(EditorLayer* editorLayer) : EditorViewBase("Properties", editorLayer)
+	PropertiesViewer::PropertiesViewer(EditorLayer* editorLayer) : EditorViewBase("Properties", editorLayer), _EventService(nullptr), _WorkspaceService(nullptr), _SelectedEntity(ENTITY_INVALID), _SelectedAsset(nullptr), _GUIFunc(nullptr)
 	{
 		_EventService = ServiceManager::Get<EventService>(ServiceManager::Service::Events);
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace);
 
 		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(PropertiesViewer::OnSelectedEntityChanged));
+
+		_EventService->Subscribe(Events::EventType::SelectedAssetChanged, EVENT_FUNC(PropertiesViewer::OnSelectedResourceChanged));
 	}
 
 	PropertiesViewer::~PropertiesViewer() {}
 
 	void PropertiesViewer::OnEditorRender()
 	{
-		DrawEntityUI();
+		if (_GUIFunc)
+			_GUIFunc();
 	}
 
 	void PropertiesViewer::OnSelectedEntityChanged(Events::EventArgs& args)
@@ -41,6 +42,17 @@ namespace Wyrd::Editor
 		Events::SelectedEntityChangedArgs& evtArgs = static_cast<Events::SelectedEntityChangedArgs&>(args);
 
 		_SelectedEntity = evtArgs.entity;
+
+		_GUIFunc = std::bind(&PropertiesViewer::DrawEntityUI, this);
+	}
+	
+	void PropertiesViewer::OnSelectedResourceChanged(Events::EventArgs& args)
+	{
+		Events::SelectedAssetChangedArgs& evtArgs = static_cast<Events::SelectedAssetChangedArgs&>(args);
+
+		_SelectedAsset = evtArgs.resource;
+
+		_GUIFunc = std::bind(&PropertiesViewer::DrawResourceUI, this);
 	}
 
 	void PropertiesViewer::DrawEntityUI()
@@ -82,5 +94,10 @@ namespace Wyrd::Editor
 				ImGui::PopID();
 			}
 		}
+	}
+
+	void PropertiesViewer::DrawResourceUI()
+	{
+		ImGui::Text(_SelectedAsset->GetName().c_str());
 	}
 }

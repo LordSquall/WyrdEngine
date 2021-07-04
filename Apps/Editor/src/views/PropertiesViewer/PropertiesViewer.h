@@ -23,12 +23,17 @@ namespace Wyrd::Editor
 
 	private:
 		void OnSelectedEntityChanged(Events::EventArgs& args);
+		void OnSelectedResourceChanged(Events::EventArgs& args);
 
 		void DrawEntityUI();
+		void DrawResourceUI();
 
 		std::shared_ptr<EventService> _EventService;
 		std::shared_ptr<WorkspaceService> _WorkspaceService;
 
-		static Wyrd::Entity _SelectedEntity;
+		Wyrd::Entity _SelectedEntity;
+		Wyrd::Editor::Resource* _SelectedAsset;
+
+		std::function<void()> _GUIFunc;
 	};
 }

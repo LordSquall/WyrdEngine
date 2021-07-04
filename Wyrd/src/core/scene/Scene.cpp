@@ -33,11 +33,11 @@ namespace Wyrd
 	bool Scene::Initialise()
 	{
 		/* register all the inbuild components with the ECS */
-		RegisterComponent<MetaDataComponent>("MetaData", "MetaDataComponent");
-		RegisterComponent<Transform2DComponent>("Transform2D", "Transform2DComponent");
-		RegisterComponent<SpriteComponent>("Sprite", "SpriteComponent");
-		RegisterComponent<ScriptComponent>("Script", "ScriptComponent");
-		RegisterComponent<CameraComponent>("Camera", "CameraComponent");
+		RegisterComponent<MetaDataComponent>("MetaData", "MetaDataComponent", true);
+		RegisterComponent<Transform2DComponent>("Transform2D", "Transform2DComponent", true);
+		RegisterComponent<SpriteComponent>("Sprite", "SpriteComponent", true);
+		RegisterComponent<ScriptComponent>("Script", "ScriptComponent", true);
+		RegisterComponent<CameraComponent>("Camera", "CameraComponent", true);
 		return true;
 	}
 

@@ -205,23 +205,32 @@ namespace Wyrd::Editor
 		}
 
 		/* write the component pool arrays */
-		size_t componentPoolCount = scene.componentPools.size();
+		size_t componentPoolCount = 0;
+		for (auto& cp : scene.componentPools)
+		{
+			if (cp->serialise)
+				componentPoolCount++;
+		}
+
 		sceneBundle.write((char*)&componentPoolCount, sizeof(size_t));
 		for (auto& cp : scene.componentPools)
 		{
-			char poolName[64];
-			size_t poolElementSize;
-			size_t poolElementCount;
+			if (cp->serialise)
+			{
+				char poolName[64];
+				size_t poolElementSize;
+				size_t poolElementCount;
 
-			strcpy(&poolName[0], cp->name.c_str());
-			poolElementSize = cp->elementSize;
-			poolElementCount = cp->count;
+				strcpy(&poolName[0], cp->name.c_str());
+				poolElementSize = cp->elementSize;
+				poolElementCount = cp->count;
 
-			sceneBundle.write((char*)&poolName, sizeof(char) * 64);
-			sceneBundle.write((char*)&poolElementSize, sizeof(size_t));
-			sceneBundle.write((char*)&poolElementCount, sizeof(size_t));
+				sceneBundle.write((char*)&poolName, sizeof(char) * 64);
+				sceneBundle.write((char*)&poolElementSize, sizeof(size_t));
+				sceneBundle.write((char*)&poolElementCount, sizeof(size_t));
 
-			sceneBundle.write(cp->data, poolElementSize * poolElementCount);
+				sceneBundle.write(cp->data, poolElementSize * poolElementCount);
+			}
 		}
 
 		sceneBundle.close();

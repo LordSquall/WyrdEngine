@@ -16,6 +16,7 @@
 #include "gizmos/TranslationGizmo.h"
 #include "gizmos/GridGizmo.h"
 #include "support/ImGuiUtils.h"
+#include "datamodels/EditorComponents.h"
 
 /* external includes */
 #include <glm/glm.hpp>

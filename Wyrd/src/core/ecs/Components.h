@@ -59,9 +59,4 @@ namespace Wyrd
 		float aspectRatio;
 		float size;
 	};
-
-	struct WYRD_LIBRARY_API EditorComponent
-	{
-		Rect inputArea;
-	};
 };
