@@ -104,18 +104,18 @@ namespace Wyrd::Editor
 
 	void OutputView::DrawCodeLogItem(int idx, const LogItem& item)
 	{
-		int assetsFolderLength = Utils::GetAssetFolder().length();
-		std::string filename = item.message.substr(0, item.message.find('('));
-		std::string p = item.message.substr(assetsFolderLength);
-
-		if (ImGui::IconButton(_CodeIcon, idx, true, ImVec2(16, 16), -1, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 0.0f, 0.0f, 1.0f)))
-		{
-			Utils::OpenFileWithSystem(filename);
-		}
-
-		ImGui::TableNextColumn();
-
-		ImGui::Text(p.c_str());
+	//int assetsFolderLength = Utils::GetAssetFolder().length();
+	//std::string filename = item.message.substr(0, item.message.find('('));
+	//std::string p = item.message.substr(assetsFolderLength);
+	//
+	//if (ImGui::IconButton(_CodeIcon, idx, true, ImVec2(16, 16), -1, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 0.0f, 0.0f, 1.0f)))
+	//{
+	//	Utils::OpenFileWithSystem(filename);
+	//}
+	//
+	//ImGui::TableNextColumn();
+	//
+	//ImGui::Text(p.c_str());
 	}
 
 	void OutputView::DrawUserLogItem(int idx, const LogItem& item)

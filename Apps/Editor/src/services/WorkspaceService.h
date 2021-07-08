@@ -23,6 +23,8 @@ namespace Wyrd::Editor
 		virtual void OnCreate() override;
 		virtual void OnDestroy() override;
 
+		void SetProjectRootDirectory(const std::filesystem::path& rootDir);
+
 		inline std::shared_ptr<Project> GetCurrentProject() { return _LoadedProject; }
 		inline std::string& GetLoadedProjectPath() { return _LoadedProjectPath; }
 		inline bool IsProjectLoaded() { return _IsProjectLoaded; }
@@ -44,6 +46,12 @@ namespace Wyrd::Editor
 		bool SaveScene();
 		bool SaveSceneAs(const std::string& path);
 
+		inline const std::filesystem::path& GetProjectRootDirectory() const { return _ProjectRootDirectory; }
+		inline const std::filesystem::path& GetAssetsDirectory() const { return _AssetsDirectory; }
+		inline const std::filesystem::path& GetBuildsDirectory() const { return _BuildDirectory; }
+		inline const std::filesystem::path& GetCacheDirectory() const { return _CacheDirectory; }
+		inline const std::filesystem::path& GetTempDirectory() const { return _TempDirectory; }
+
 	private:
 		bool _IsProjectLoaded = false;
 		std::string _LoadedProjectPath;
@@ -52,6 +60,12 @@ namespace Wyrd::Editor
 		bool _IsSceneLoaded = false;
 		std::string _LoadedScenePath;
 		std::shared_ptr<Scene> _LoadedScene;
+
+		std::filesystem::path _ProjectRootDirectory;
+		std::filesystem::path _AssetsDirectory;
+		std::filesystem::path _BuildDirectory;
+		std::filesystem::path _CacheDirectory;
+		std::filesystem::path _TempDirectory;
 
 		FileWatcher _FileWatcher;
 	};

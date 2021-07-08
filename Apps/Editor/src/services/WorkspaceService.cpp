@@ -45,6 +45,13 @@ namespace Wyrd::Editor
 		if (_LoadedScene != nullptr) SaveScene();
 	}
 
+
+	void Wyrd::Editor::WorkspaceService::SetProjectRootDirectory(const std::filesystem::path& rootDir)
+	{
+		_ProjectRootDirectory = rootDir;
+		_AssetsDirectory = rootDir / "Assets";
+	}
+
 	void Wyrd::Editor::WorkspaceService::CreateNewProject(std::string location, std::string sceneName, std::string name)
 	{
 		/* Build project file name */
@@ -67,23 +74,26 @@ namespace Wyrd::Editor
 			/* Update the settings to ensure this project is loaded by default next time */
 			ServiceManager::Get<SettingsService>(ServiceManager::Settings)->SetSetting(_LoadedProjectPath, CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT);
 				
-			/* Set the utilities to the base root folder */
-			Utils::SetRootProjectFolder(Utils::GetPath(_LoadedProjectPath.c_str()));
-
+			/* Set the base root folder */
+			SetProjectRootDirectory(Utils::GetPath(_LoadedProjectPath.c_str()));
+			
 			/* Create default folders and files */
-			Utils::CreateProjectFileStructure(Utils::GetPath(_LoadedProjectPath));
+			Utils::CreateFolder(_AssetsDirectory.string());
+			Utils::CreateFolder(_BuildDirectory.string());
+			Utils::CreateFolder(_CacheDirectory.string());
+			Utils::CreateFolder(_TempDirectory.string());
 
 			/* Create a new default scene */
 			CreateNewScene(sceneName);
 
 			/* Set the default scene path */
-			_LoadedScenePath = Utils::GetAssetFolder() + "\\" + sceneName + ".scene";
+			_LoadedScenePath = GetAssetsDirectory().string() + "\\" + sceneName + ".scene";
 
 			/* Save the new scene into a known location */
 			SaveScene();
 
 			/* Set the default scene within the project model */
-			_LoadedProject->initialScene = Utils::GetAssetFolder() + "\\" + sceneName + ".scene";
+			_LoadedProject->initialScene = GetAssetsDirectory().string() + "\\" + sceneName + ".scene";
 
 			/* create VS workspace file model */
 			jsonxx::Object root;
@@ -157,8 +167,8 @@ namespace Wyrd::Editor
 			/* Update the settings to ensure this project is loaded by default next time */
 			ServiceManager::Get<SettingsService>(ServiceManager::Settings)->SetSetting(_LoadedProjectPath, CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT);
 
-			/* Set the utilities to the base root folder */
-			Utils::SetRootProjectFolder(Utils::GetPath(projectfile.c_str()));
+			/* Set the project root directory path */
+			SetProjectRootDirectory(Utils::GetPath(projectfile));
 
 			/* Send a Project Loaded Event */
 			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ProjectLoaded,
@@ -182,7 +192,7 @@ namespace Wyrd::Editor
 			result = false;
 		}
 
-		_FileWatcher.Initialise(Utils::GetAssetFolder(), std::chrono::milliseconds(500));
+		_FileWatcher.Initialise(GetAssetsDirectory().string(), std::chrono::milliseconds(500));
 		_FileWatcher.Start([](std::string path, FileStatus status) -> void {
 			if (!std::filesystem::is_regular_file(std::filesystem::path(path)) && status != FileStatus::erased)
 			{

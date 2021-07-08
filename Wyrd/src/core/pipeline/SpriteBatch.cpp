@@ -81,7 +81,9 @@ namespace Wyrd
 		_Shader->SetModelMatrix(glm::mat4(1.0f));
 		_Shader->SetUniformColor("blendColor", _Color);
 
-		_Texture->Bind();
+		if (_Texture != nullptr)
+			_Texture->Bind();
+
 		_VertexArray->Bind();
 		_VertexBuffer->Bind();
 

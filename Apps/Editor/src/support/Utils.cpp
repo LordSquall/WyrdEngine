@@ -21,12 +21,6 @@
 
 namespace Wyrd::Editor {
 
-	std::string Utils::canonical_path = std::filesystem::canonical(std::filesystem::current_path()).string();
-	std::string Utils::asset_path = "\\assets";
-	std::string Utils::cache_path = "\\.cache";
-	std::string Utils::temp_path = "\\.temp";
-	std::string Utils::builds_path = "\\.builds";
-
 	Utils::Utils()
 	{
 
@@ -34,31 +28,6 @@ namespace Wyrd::Editor {
 	Utils::~Utils()
 	{
 
-	}
-
-	void Utils::SetRootProjectFolder(const std::string& rootFolder)
-	{
-		canonical_path = std::filesystem::canonical(rootFolder).string();
-	}
-
-	std::string Utils::GetAssetFolder()
-	{
-		return Utils::canonical_path + Utils::asset_path;
-	}
-
-	std::string Utils::GetCacheFolder()
-	{
-		return Utils::canonical_path + Utils::cache_path;
-	}
-
-	std::string Utils::GetTempFolder()
-	{
-		return Utils::canonical_path + Utils::temp_path;
-	}
-
-	std::string Utils::GetBuildsFolder()
-	{
-		return Utils::canonical_path + Utils::builds_path;
 	}
 
 	std::string Utils::GetEditorResFolder()
@@ -324,10 +293,6 @@ namespace Wyrd::Editor {
 		return std::filesystem::path(path).extension().string();
 	}
 
-	std::string Utils::GetRelativeAssetPath(const std::string& path)
-	{
-		return path.substr(Utils::GetAssetFolder().length(), path.length() - Utils::GetAssetFolder().length());
-	}
 
 	std::vector<std::string> Utils::GetFolderList(const std::string& directory, bool asFullPaths)
 	{
@@ -439,15 +404,6 @@ namespace Wyrd::Editor {
 	{
 		std::filesystem::remove(filename);
 	}
-
-	void Utils::CreateProjectFileStructure(const std::string& rootFolder)
-	{
-		std::filesystem::create_directory(GetAssetFolder());
-		std::filesystem::create_directory(GetCacheFolder());
-		std::filesystem::create_directory(GetTempFolder());
-		std::filesystem::create_directory(GetBuildsFolder());
-	}
-
 
 	const std::string Utils::BuildPath(std::initializer_list<std::reference_wrapper<std::string>> args) {
 		std::ostringstream stream; 

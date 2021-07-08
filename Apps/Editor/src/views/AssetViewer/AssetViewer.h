@@ -33,7 +33,7 @@ namespace Wyrd::Editor
 		void DrawUnknownItem(uint32_t resIdx, std::string& unknownResourceName);
 
 		/* Selection State(s) */
-		std::string _SelectedDirectory;
+		std::filesystem::path _SelectedDirectory;
 		Resource* _SelectedResource;
 		std::string _DeleteDirectoryState;
 		std::string _DeleteAssetState;

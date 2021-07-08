@@ -12,6 +12,8 @@
 
 namespace Wyrd::Editor
 {
+	class WorkspaceService;
+
 	class ResourceService : public IService
 	{
 	public:
@@ -93,6 +95,7 @@ namespace Wyrd::Editor
 		std::shared_ptr<SceneRes> _defaultScene;
 
 	private:
+		std::shared_ptr<WorkspaceService> _WorkspaceService;
 		std::stack<Resource*> _loadableResources;
 	};
 }

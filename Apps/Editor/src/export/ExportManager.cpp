@@ -26,7 +26,7 @@ namespace Wyrd::Editor
 
 		std::ofstream commonBundle;
 		
-		std::string bundlesDir = Utils::GetBuildsFolder() + "/bundles/";
+		std::string bundlesDir = (workspaceService->GetBuildsDirectory() / "bundles").string();
 		Utils::CreateFolder(bundlesDir);
 
 		GenerateCoreFile();
@@ -43,8 +43,10 @@ namespace Wyrd::Editor
 
 	void ExportManager::GenerateCoreFile()
 	{
+		auto workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
+
 		std::ofstream core;
-		core.open(Utils::GetBuildsFolder() + "/Core.dat", std::ios::out | std::ios::binary);
+		core.open((workspaceService->GetBuildsDirectory() / "Core.data").string(), std::ios::out | std::ios::binary);
 
 		// Add core configuration settings
 
@@ -57,7 +59,7 @@ namespace Wyrd::Editor
 		std::shared_ptr<Project> project = workspaceService->GetCurrentProject();
 
 		std::ofstream game;
-		game.open(Utils::GetBuildsFolder() + "/Game.dat", std::ios::out | std::ios::binary);
+		game.open((workspaceService->GetBuildsDirectory() / "Game.data").string(), std::ios::out | std::ios::binary);
 
 		// Add game settings
 
@@ -72,7 +74,7 @@ namespace Wyrd::Editor
 
 		/* open the common bundle stream */
 		std::ofstream commonBundle;
-		commonBundle.open(Utils::GetBuildsFolder() + "/common.bundle", std::ios::out | std::ios::binary);
+		commonBundle.open((workspaceService->GetBuildsDirectory() / "common.bundle").string(), std::ios::out | std::ios::binary);
 
 		/* we need to get a map of just the texture resources */
 		std::map<UID, TextureRes*> textures;

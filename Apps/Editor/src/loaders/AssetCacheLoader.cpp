@@ -15,14 +15,16 @@
 namespace Wyrd::Editor
 {
 	std::shared_ptr<ResourceService> _ResourceService = nullptr;
+	std::shared_ptr<WorkspaceService> _WorkspaceService = nullptr;
 
 	AssetCacheLoader::Result AssetCacheLoader::Load(std::string path)
 	{
 		AssetCacheLoader::Result result = Success;
 		jsonxx::Object o;
 
-		/* cache the resource service */
+		/* cache the required services */
 		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
+		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
 
 		std::ifstream f(path);
 
@@ -38,23 +40,26 @@ namespace Wyrd::Editor
 				{
 					jsonxx::Object cacheEntry = resourcesArray.get<jsonxx::Object>(i);
 
-					jsonxx::String filePath = Utils::GetAssetFolder() + "\\" + cacheEntry.get<jsonxx::String>("filepath");
+					jsonxx::String filePath = cacheEntry.get<jsonxx::String>("filepath");
 					jsonxx::String name = cacheEntry.get<jsonxx::String>("name");
 					jsonxx::String uuid = cacheEntry.get<jsonxx::String>("uuid");
 					jsonxx::String hash = cacheEntry.get<jsonxx::String>("hash");
 
+					/* build the complete path include the assets directory */
+					std::string fullFilePath = (_WorkspaceService->GetAssetsDirectory() / filePath).string();
+
 					/* check the underlying file is present */
-					if (Utils::FileExists(filePath))
+					if (Utils::FileExists(fullFilePath))
 					{
 						/* load and add as a new resource */
-						_ResourceService->AddResource(filePath, UID(uuid));
+						_ResourceService->AddResource(fullFilePath, UID(uuid));
 					}
 					else
 					{
-						WYRD_TRACE("Missing File from cache: {0}", filePath);
+						WYRD_TRACE("Missing File from cache: {0}", fullFilePath);
 					}
 
-					_ResourceService->CachedFiles[filePath] = UID(uuid);
+					_ResourceService->CachedFiles[fullFilePath] = UID(uuid);
 				}
 			}
 			else
@@ -77,6 +82,7 @@ namespace Wyrd::Editor
 
 		/* cache the resource service */
 		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
+		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
 
 		jsonxx::Array resourceArray;
 		for (auto& resource : _ResourceService->GetResources())
@@ -86,7 +92,7 @@ namespace Wyrd::Editor
 			jsonxx::Object sceneObj;
 
 			sceneObj << "name" << res->GetName();
-			sceneObj << "filepath" << res->GetPath().substr((Utils::GetAssetFolder() + "\\").length());
+			sceneObj << "filepath" << res->GetPath().substr((_WorkspaceService->GetAssetsDirectory().string() + "\\").length());
 			sceneObj << "uuid" << res->GetResourceID().str();
 			sceneObj << "hash" << Utils::HashFile(res->GetPath());
 

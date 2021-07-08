@@ -59,7 +59,7 @@ namespace Wyrd::Editor
 		/* register from events */
 		_EventService->Subscribe(Events::EventType::ProjectLoaded, [this](Events::EventArgs& args)
 			{
-				// TODO
+				_SelectedDirectory = _workspaceService->GetAssetsDirectory();
 			});
 	}
 
@@ -75,7 +75,7 @@ namespace Wyrd::Editor
 			ImGui::BeginChildFrame(1, ImVec2(navigationPanelWidth, ImGui::GetContentRegionAvail().y));
 
 			ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, 6.0f);
-			DirectoryTreeViewRecursive(Utils::GetAssetFolder());
+			DirectoryTreeViewRecursive(_workspaceService->GetAssetsDirectory().string());
 			ImGui::PopStyleVar();
 
 			ImGui::EndChildFrame();
@@ -284,99 +284,105 @@ namespace Wyrd::Editor
 	{
 		uint32_t resIdx = 0;
 
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-		if (_SelectedDirectory.compare("") != 0)
+		if (ImGui::BeginTable("assetItemsTable", layoutSettings.itemColumnCnt, ImGuiTableFlags_SizingStretchProp))
 		{
-			if (ImGui::BeginTable("assetItemsTable", layoutSettings.itemColumnCnt, ImGuiTableFlags_SizingStretchProp))
+			uint32_t resIdx = 0;
+
+			for (const auto& entry : std::filesystem::directory_iterator(_SelectedDirectory))
 			{
-				uint32_t resIdx = 0;
+				uint32_t tableCursor = resIdx % layoutSettings.itemColumnCnt;
 
-				for (const auto& entry : std::filesystem::directory_iterator(_SelectedDirectory))
+				if (tableCursor == 0)
 				{
-					/* we only care about files */
-					if (std::filesystem::is_regular_file(entry.path().string()))
-					{
-						/* retrieve matching resource cache entry */
-						auto& resource = _resourcesService->GetResourceByFilePath(entry.path().string());
-
-						if (resource == nullptr)
-						{
-							WYRD_CORE_TRACE("Resource Not Found: {0}", entry.path().string());
-						}
-
-						/* create file name */
-						std::string fullName = entry.path().string();
-							auto lastSlash = fullName.find_last_of("/\\");
-							lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
-							std::string name = fullName.substr(lastSlash, fullName.size() - lastSlash);
-
-
-							uint32_t tableCursor = resIdx % layoutSettings.itemColumnCnt;
-
-							if (tableCursor == 0)
-							{
-								ImGui::TableNextRow();
-							}
-
-						ImGui::TableSetColumnIndex(tableCursor);
-
-						ImGui::BeginGroup();
-
-						ImGui::PushID(entry.path().string().c_str());
-
-						/* caculate the additional text size */
-						ImVec2 textSize = ImGui::CalcTextSize(name.c_str());
-
-						// DEBUG ONLY
-						//ImGuiWindow* window = ImGui::GetCurrentWindowRead();
-						//const ImVec2 p0 = window->DC.CursorPos;
-						//ImGui::GetWindowDrawList()->AddRect(p0, p0 + ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemColumnHeight), ImGui::GetColorU32(ImVec4(0.0f, 1.0f, 1.0f, 1.0f)));
-
-
-						/* selectable interface */
-						bool selected = _SelectedResource == resource.get();
-						if (ImGui::Selectable("##title", selected, ImGuiSelectableFlags_SelectOnClick, ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemGroupWidth + textSize.y)))
-						{
-							_SelectedResource = resource.get();
-						}
-
-						ImGui::SameLine();
-						ImGui::SetCursorPosX(ImGui::GetCursorPosX() - layoutSettings.itemColumnWidth);
-						ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ((layoutSettings.itemColumnWidth / 2.0f) - (layoutSettings.itemGroupWidth / 2.0f)));
-
-						if (resource != nullptr)
-						{
-							ResourceType resType = static_cast<ResourceType>(resource->GetType());
-
-							switch (resType)
-							{
-							case ResourceType::TEXTURE:
-								DrawTextureItem(resIdx, (TextureRes&)*resource.get());
-								break;
-							case ResourceType::SCENE:
-								DrawSceneItem(resIdx, (SceneRes&)*resource.get());
-								break;
-							case ResourceType::SCRIPT:
-								DrawScriptItem(resIdx, (ScriptRes&)*resource.get());
-								break;
-							case ResourceType::SHADER:break;
-							case ResourceType::NONE:
-							default:
-								break;
-							}
-						}
-
-						ImGui::PopID();
-						ImGui::EndGroup();
-
-						resIdx++;
-					}
+					ImGui::TableNextRow();
 				}
-				
-				ImGui::EndTable();
+
+				ImGui::TableSetColumnIndex(tableCursor);
+
+				if (!std::filesystem::is_regular_file(entry.path().string()))
+				{
+					ImGui::BeginGroup();
+
+					ImGui::PushID(entry.path().string().c_str());
+
+					ImGui::Button(entry.path().string().c_str());
+
+					ImGui::PopID();
+
+					ImGui::EndGroup();
+				}
+				else
+				{
+					/* retrieve matching resource cache entry */
+					auto& resource = _resourcesService->GetResourceByFilePath(entry.path().string());
+
+					if (resource == nullptr)
+					{
+						WYRD_CORE_TRACE("Resource Not Found: {0}", entry.path().string());
+					}
+
+					/* create file name */
+					std::string fullName = entry.path().string();
+					auto lastSlash = fullName.find_last_of("/\\");
+					lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+					std::string name = fullName.substr(lastSlash, fullName.size() - lastSlash);
+
+
+					ImGui::BeginGroup();
+
+					ImGui::PushID(entry.path().string().c_str());
+
+					/* caculate the additional text size */
+					ImVec2 textSize = ImGui::CalcTextSize(name.c_str());
+
+					// DEBUG ONLY
+					//ImGuiWindow* window = ImGui::GetCurrentWindowRead();
+					//const ImVec2 p0 = window->DC.CursorPos;
+					//ImGui::GetWindowDrawList()->AddRect(p0, p0 + ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemColumnHeight), ImGui::GetColorU32(ImVec4(0.0f, 1.0f, 1.0f, 1.0f)));
+
+
+					/* selectable interface */
+					bool selected = _SelectedResource == resource.get();
+					if (ImGui::Selectable("##title", selected, ImGuiSelectableFlags_SelectOnClick, ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemGroupWidth + textSize.y)))
+					{
+						_SelectedResource = resource.get();
+					}
+
+					ImGui::SameLine();
+					ImGui::SetCursorPosX(ImGui::GetCursorPosX() - layoutSettings.itemColumnWidth);
+					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ((layoutSettings.itemColumnWidth / 2.0f) - (layoutSettings.itemGroupWidth / 2.0f)));
+
+					if (resource != nullptr)
+					{
+						ResourceType resType = static_cast<ResourceType>(resource->GetType());
+
+						switch (resType)
+						{
+						case ResourceType::TEXTURE:
+							DrawTextureItem(resIdx, (TextureRes&)*resource.get());
+							break;
+						case ResourceType::SCENE:
+							DrawSceneItem(resIdx, (SceneRes&)*resource.get());
+							break;
+						case ResourceType::SCRIPT:
+							DrawScriptItem(resIdx, (ScriptRes&)*resource.get());
+							break;
+						case ResourceType::SHADER:break;
+						case ResourceType::NONE:
+						default:
+							break;
+						}
+					}
+
+					ImGui::PopID();
+					ImGui::EndGroup();
+
+					resIdx++;
+				}
 			}
+				
+			ImGui::EndTable();
 		}
-		ImGui::PopStyleVar();
 	}
 
 	void AssetViewer::DrawTextureItem(uint32_t resIdx, TextureRes& textureResource)

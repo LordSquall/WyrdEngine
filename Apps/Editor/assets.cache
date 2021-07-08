@@ -1,0 +1,160 @@
+{
+	"assets": [
+		{
+			"filepath": "testcases\\testcase_resources\\TexturePropTest.cs",
+			"hash": "",
+			"name": "TexturePropTest",
+			"uuid": "10e88b13-b4bd-44db-9bf3-074082191495" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\Vector2PropTest.cs",
+			"hash": "",
+			"name": "Vector2PropTest",
+			"uuid": "122bd0b2-d892-4a2f-9359-71bc543183ee" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\testscene.scene",
+			"hash": "",
+			"name": "testscene",
+			"uuid": "1ef25988-a472-4bb8-a0b7-7f60cd8b88fa" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\PropertiesTest.cs",
+			"hash": "",
+			"name": "PropertiesTest",
+			"uuid": "201c9028-f250-4c0f-ab2a-a0b854d61127" 
+		},
+		{
+			"filepath": "testcases\\fileimporttests\\character_zombie_attack0.png",
+			"hash": "",
+			"name": "character_zombie_attack0",
+			"uuid": "22e42f2f-eaaf-4fd9-a7da-ccf7f5bb886f" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\BoolPropTest.cs",
+			"hash": "",
+			"name": "BoolPropTest",
+			"uuid": "273049a6-a606-4aef-9d0f-ce9f89be95f9" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\character_maleAdventurer_sheet.png",
+			"hash": "",
+			"name": "character_maleAdventurer_sheet",
+			"uuid": "2b588477-7ce8-4e5c-a7ea-dd81894bbf9f" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\character_robot_idle.png",
+			"hash": "",
+			"name": "character_robot_idle",
+			"uuid": "301c72c8-2f4c-4e94-bf2c-45b6dbd3dd74" 
+		},
+		{
+			"filepath": "Characters.scene",
+			"hash": "",
+			"name": "Characters",
+			"uuid": "39dedafd-e024-4722-be20-6871128d4316" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\StringPropTest.cs",
+			"hash": "",
+			"name": "StringPropTest",
+			"uuid": "4f612bf5-2167-4708-af51-19810a06d4be" 
+		},
+		{
+			"filepath": "CameraTest.scene",
+			"hash": "",
+			"name": "CameraTest",
+			"uuid": "5095d3dd-9715-4e70-901c-9a593f24fd5e" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\character_maleAdventurer_idle.png",
+			"hash": "",
+			"name": "character_maleAdventurer_idle",
+			"uuid": "65fe91b2-9395-4f05-98c7-b9a4aa99fa1c" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\EntityPropTest.cs",
+			"hash": "",
+			"name": "EntityPropTest",
+			"uuid": "6744e86b-7b66-4df3-9aa5-bd7e4328cb5f" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\placeholder.png",
+			"hash": "",
+			"name": "placeholder",
+			"uuid": "6e10dcd1-7dc6-43c9-bec3-ca7ddac10fe2" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\EntityTest.cs",
+			"hash": "",
+			"name": "EntityTest",
+			"uuid": "83baeba8-4d6b-49d5-bc0a-88b846a9ca66" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\ColorPropTest.cs",
+			"hash": "",
+			"name": "ColorPropTest",
+			"uuid": "913d259d-9c3f-4a9e-9ba8-e7ba78f5d5a7" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\TimeOutput.cs",
+			"hash": "",
+			"name": "TimeOutput",
+			"uuid": "93e271c9-4a98-4bc6-b1de-bc036acde893" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\FloatPropTest.cs",
+			"hash": "",
+			"name": "FloatPropTest",
+			"uuid": "9bf24cf1-ab9e-41ad-a258-f717c804d541" 
+		},
+		{
+			"filepath": "testcases\\fileimporttests\\character_zombie_attack1.png",
+			"hash": "",
+			"name": "character_zombie_attack1",
+			"uuid": "9f4b5ce0-21d3-495a-a7b0-17fa75073801" 
+		},
+		{
+			"filepath": "testcases\\fileimporttests\\character_zombie_run0.png",
+			"hash": "",
+			"name": "character_zombie_run0",
+			"uuid": "a9d44d2a-899c-4b71-858c-a15ace8163b8" 
+		},
+		{
+			"filepath": "CopyScene.scene",
+			"hash": "",
+			"name": "CopyScene",
+			"uuid": "bc5b953a-9ba8-4d0d-a897-1126528da6f4" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\IntPropTest.cs",
+			"hash": "",
+			"name": "IntPropTest",
+			"uuid": "cb797e74-d550-47a4-8a2d-73c6476eaae2" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\platformPack_tile001.png",
+			"hash": "",
+			"name": "platformPack_tile001",
+			"uuid": "cc3c1896-949d-4fdf-997c-04f81a931b27" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\Vector3PropTest.cs",
+			"hash": "",
+			"name": "Vector3PropTest",
+			"uuid": "d1e3525e-48d1-46cd-855d-16f398f0c86a" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\character_femaleAdventurer_idle.png",
+			"hash": "",
+			"name": "character_femaleAdventurer_idle",
+			"uuid": "d7ab4397-eda3-4e9f-8a2a-9ed03105e416" 
+		},
+		{
+			"filepath": "testcases\\testcase_resources\\CameraMovementTest.cs",
+			"hash": "",
+			"name": "CameraMovementTest",
+			"uuid": "e2529082-564e-4059-9e6b-aad64a3a48eb" 
+		} 
+	] 
+} 

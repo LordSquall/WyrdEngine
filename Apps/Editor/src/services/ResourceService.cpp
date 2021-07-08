@@ -18,6 +18,9 @@ namespace Wyrd::Editor
 {
 	void ResourceService::OnCreate()
 	{
+		/* Cache the service pointers */
+		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
+
 		/* Register the ignored file extensions */
 		_ignoredExtensions.insert(".dll");
 		_ignoredExtensions.insert(".mdb");
@@ -216,7 +219,7 @@ namespace Wyrd::Editor
 			return true;
 		}
 
-		AssetCacheLoader::Load(Utils::GetCacheFolder() + "/assets.cache");
+		AssetCacheLoader::Load((_WorkspaceService->GetCacheDirectory() / "assets.cache").string());
 
 		return true;
 	}
@@ -226,9 +229,9 @@ namespace Wyrd::Editor
 		Events::ProjectLoadedArgs& a = (Events::ProjectLoadedArgs&)args;
 
 		/* load the asset cache */
-		LoadAssetCache(Utils::GetCacheFolder() + "/assets.cache");
+		LoadAssetCache((_WorkspaceService->GetCacheDirectory() / "assets.cache").string());
 
-		auto files = Utils::GetFileList(Utils::GetAssetFolder(), true, true);
+		auto files = Utils::GetFileList(_WorkspaceService->GetAssetsDirectory().string(), true, true);
 
 		for (auto t : files)
 		{
@@ -244,7 +247,7 @@ namespace Wyrd::Editor
 		}
 
 		/* Save the cache file */
-		AssetCacheLoader::Save(Utils::GetCacheFolder() + "/assets.cache");
+		AssetCacheLoader::Save((_WorkspaceService->GetCacheDirectory() / "assets.cache").string());
 
 		/* Once all the resources are loaded, now we can compile the all the scripts */
 		BuildScripts();
@@ -257,7 +260,7 @@ namespace Wyrd::Editor
 		AddResource(a.filepath, UIDUtils::Create());
 
 		/* Save the cache file */
-		AssetCacheLoader::Save(Utils::GetCacheFolder() + "/assets.cache");
+		AssetCacheLoader::Save((_WorkspaceService->GetCacheDirectory() / "assets.cache").string());
 	}
 
 	void ResourceService::OnDeleteFileEntryEvent(Events::EventArgs& args)
@@ -270,7 +273,7 @@ namespace Wyrd::Editor
 		}
 
 		/* Save the cache file */
-		AssetCacheLoader::Save(Utils::GetCacheFolder() + "/assets.cache");
+		AssetCacheLoader::Save((_WorkspaceService->GetCacheDirectory() / "assets.cache").string());
 	}
 
 	void ResourceService::OnReloadFileEntryEvent(Events::EventArgs& args)
@@ -300,7 +303,7 @@ namespace Wyrd::Editor
 		}
 		
 		/* Save the cache file */
-		AssetCacheLoader::Save(Utils::GetCacheFolder() + "/assets.cache");
+		AssetCacheLoader::Save((_WorkspaceService->GetCacheDirectory() / "assets.cache").string());
 	}
 
 
