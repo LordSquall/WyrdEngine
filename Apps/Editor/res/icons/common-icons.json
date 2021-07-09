@@ -33,17 +33,10 @@
       "y": 1024
     },
     {
-      "name": "layers_2d",
+      "name": "folder",
       "width": 128,
       "height": 128,
       "x": 512,
-      "y": 1024
-    },
-    {
-      "name": "gameobject",
-      "width": 128,
-      "height": 128,
-      "x": 640,
       "y": 1024
     },
     {

@@ -21,16 +21,10 @@ namespace Wyrd::Editor
 	private:
 		bool OnKeyPressedEvent(KeyPressedEvent& e);
 
-		bool DirectoryTreeViewRecursive(const std::string& path);
-		void DrawDirectoryContextMenu(const std::string& path);
-		bool DrawEditDirectoryNode();
-
-		void DrawAssetsItems();
-
-		void DrawTextureItem(uint32_t resIdx, TextureRes& textureResource);
-		void DrawSceneItem(uint32_t resIdx, SceneRes& sceneResource);
-		void DrawScriptItem(uint32_t resIdx, ScriptRes& scriptResource);
-		void DrawUnknownItem(uint32_t resIdx, std::string& unknownResourceName);
+		void DrawTextureItem(int resID, TextureRes& textureResource);
+		void DrawSceneItem(int resID, SceneRes& sceneResource);
+		void DrawScriptItem(int resID, ScriptRes& scriptResource);
+		void DrawUnknownItem(int resID, std::string& unknownResourceName);
 
 		/* Selection State(s) */
 		std::filesystem::path _SelectedDirectory;
@@ -47,8 +41,11 @@ namespace Wyrd::Editor
 
 		/* Icons */
 		std::shared_ptr<Icon> _UnknownIcon;
+		std::shared_ptr<Icon> _FolderIcon;
 		std::shared_ptr<Icon> _SceneIcon;
 		std::shared_ptr<Icon> _TextureIcon;
 		std::shared_ptr<Icon> _ScriptIcon;
+
+		std::string _SearchCriteria;
 	};
 }

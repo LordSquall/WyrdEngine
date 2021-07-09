@@ -115,18 +115,6 @@
 			"uuid": "9f4b5ce0-21d3-495a-a7b0-17fa75073801" 
 		},
 		{
-			"filepath": "testcases\\fileimporttests\\character_zombie_run0.png",
-			"hash": "",
-			"name": "character_zombie_run0",
-			"uuid": "a9d44d2a-899c-4b71-858c-a15ace8163b8" 
-		},
-		{
-			"filepath": "CopyScene.scene",
-			"hash": "",
-			"name": "CopyScene",
-			"uuid": "bc5b953a-9ba8-4d0d-a897-1126528da6f4" 
-		},
-		{
 			"filepath": "testcases\\testcase_resources\\IntPropTest.cs",
 			"hash": "",
 			"name": "IntPropTest",
