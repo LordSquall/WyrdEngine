@@ -38,7 +38,7 @@ namespace Wyrd::Editor
 		int itemLabelShortCharLimit = 9;
 	} layoutSettings;
 
-	AssetViewer::AssetViewer(EditorLayer* editorLayer) : EditorViewBase("Asset Viewer", editorLayer), _SelectedDirectory(""), _SelectedResource(nullptr), _DeleteDirectoryState(""), _DeleteAssetState("")
+	AssetViewer::AssetViewer(EditorLayer* editorLayer) : EditorViewBase("Asset Viewer", editorLayer), _SelectedDirectory(""), _SelectedResource(-1), _DeleteDirectoryState(""), _DeleteAssetState("")
 	{
 		/* cache the service(s) */
 		_resourcesService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
@@ -90,6 +90,7 @@ namespace Wyrd::Editor
 			if (ImGui::IconButton(_UnknownIcon, 2, _SelectedDirectory != _workspaceService->GetAssetsDirectory(), ImVec2(16.0f, 16.0f)))
 			{
 				_SelectedDirectory = _SelectedDirectory.parent_path();
+				_SelectedResource = -1;
 			}
 			ImGui::SameLine();
 			
@@ -102,100 +103,87 @@ namespace Wyrd::Editor
 
 			ImGui::BeginChildFrame(2, ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y));
 
+			/* Context Menu - No Selection */
+			if (ImGui::BeginPopupContextWindow())
+			{
+				if (ImGui::MenuItem("Import from file"))
+				{
+					std::optional<std::string> file = Utils::OpenFile({ { "All Files (*)", "*.*" } });
+					if (file)
+					{
+						/* copy the file into the project */
+						Utils::CopySingleFile(file.value(), _SelectedDirectory.string());
+					}
+				}
+				if (ImGui::BeginMenu("Create..."))
+				{
+					if (ImGui::MenuItem("Script"))
+					{
+						_dialogService->OpenDialog(std::make_shared<NewScriptDialog>(_EditorLayer, _SelectedDirectory.string()));
+					}
+					ImGui::EndMenu();
+				}
+				ImGui::Separator();
+				if (ImGui::Selectable("Add Folder"))
+				{
+					Utils::CreateFolder((_SelectedDirectory / "New Folder").string());
+				}
+				ImGui::EndPopup();
+			}
+
 			uint32_t resIdx = 0;
 
 			if (ImGui::BeginTable("assetItemsTable", layoutSettings.itemColumnCnt))
 			{
 				uint32_t resIdx = 0;
+				
+				std::vector<std::string> directories;
+				std::vector<std::string> files;
 
-				for (const auto& entry : std::filesystem::directory_iterator(_SelectedDirectory))
+				if (_SearchCriteria == "")
 				{
-					if (!std::filesystem::is_regular_file(entry.path().string()))
+					for (const auto& entry : std::filesystem::directory_iterator(_SelectedDirectory))
 					{
-						uint32_t tableCursor = resIdx % layoutSettings.itemColumnCnt;
-
-						if (tableCursor == 0)
+						if (!std::filesystem::is_regular_file(entry.path().string()))
 						{
-							ImGui::TableNextRow();
+							directories.push_back(entry.path().string());
 						}
+					}
 
-						ImGui::TableSetColumnIndex(tableCursor);
-
-						bool selected = false;
-
-						ImVec2 cursor = ImGui::GetCursorPos();
-						ImGui::PushID(resIdx);
-						ImGui::Selectable("##title", selected, ImGuiSelectableFlags_None, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize));
-						ImGui::PopID();
-						ImGui::SetCursorPos(cursor);
-
-						if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+					for (const auto& entry : std::filesystem::directory_iterator(_SelectedDirectory))
+					{
+						if (std::filesystem::is_regular_file(entry.path().string()))
 						{
-							WYRD_TRACE("Folder Double Clicked");
-							_SelectedDirectory /= entry.path().stem();
+							files.push_back(entry.path().string());
 						}
-
-						ImGui::Image(*_FolderIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
-
-						ImGui::TextClipped(entry.path().stem().string().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "..");
-
-						resIdx++;
 					}
 				}
-
-				for (const auto& entry : std::filesystem::directory_iterator(_SelectedDirectory))
+				else
 				{
-					if (std::filesystem::is_regular_file(entry.path().string()))
+					std::vector<std::filesystem::path> paths;
+					if (std::filesystem::exists(_SelectedDirectory) && std::filesystem::is_directory(_SelectedDirectory))
 					{
-						uint32_t tableCursor = resIdx % layoutSettings.itemColumnCnt;
+						std::filesystem::recursive_directory_iterator dirpos{ _SelectedDirectory };
 
-						if (tableCursor == 0)
-						{
-							ImGui::TableNextRow();
-						}
-
-						ImGui::TableSetColumnIndex(tableCursor);
-
-						bool selected = false;
-
-						ImVec2 cursor = ImGui::GetCursorPos();
-						ImGui::PushID(resIdx);
-						ImGui::Selectable("##title", selected, ImGuiSelectableFlags_None, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize));
-						ImGui::PopID();
-						ImGui::SetCursorPos(cursor);
-
-						/* retrieve matching resource cache entry */
-						auto& resource = _resourcesService->GetResourceByFilePath(entry.path().string());
-
-						if (resource != nullptr)
-						{
-							ResourceType resType = static_cast<ResourceType>(resource->GetType());
-
-							switch (resType)
-							{
-							case ResourceType::TEXTURE:
-								DrawTextureItem(resIdx, (TextureRes&)*resource.get());
-								break;
-							case ResourceType::SCENE:
-								DrawSceneItem(resIdx, (SceneRes&)*resource.get());
-								break;
-							case ResourceType::SCRIPT:
-								DrawScriptItem(resIdx, (ScriptRes&)*resource.get());
-								break;
-							case ResourceType::SHADER:
-							case ResourceType::NONE:
-							default:
-								break;
+						std::copy_if(begin(dirpos), end(dirpos), std::back_inserter(paths),
+							[](const std::filesystem::directory_entry& entry) {
+								return entry.is_regular_file();
 							}
-						}
-						else
-						{
-							DrawUnknownItem(resIdx, entry.path().string());
-						}
+						);
+					}
+					std::sort(paths.begin(), paths.end());
 
-						resIdx++;
+					for (auto& entry : paths)
+					{
+						const auto filename = entry.filename().string();
+						if (filename.find(_SearchCriteria) != std::string::npos)
+						{
+							files.push_back(entry.string());
+						}
 					}
 				}
+
+				DrawItemTable(directories, files);
 
 				ImGui::EndTable();
 			}
@@ -219,99 +207,121 @@ namespace Wyrd::Editor
 		return true;
 	}
 
-	//void AssetViewer::DrawAssetsItems()
-	//{
-	//	uint32_t resIdx = 0;
-	//
-	//	if (ImGui::BeginTable("assetItemsTable", layoutSettings.itemColumnCnt, 0))
-	//	{
-	//		uint32_t resIdx = 0;
-	//
-	//		//	if (!std::filesystem::is_regular_file(entry.path().string()))
-	//		//	{
-	//		//		ImGui::BeginGroup();
-	//
-	//		//		ImGui::PushID(entry.path().string().c_str());
-	//
-	//		//		ImGui::Button(entry.path().string().c_str());
-	//
-	//		//		ImGui::PopID();
-	//
-	//		//		ImGui::EndGroup();
-	//		//	}
-	//		//	else
-	//		//	{
-	//		//		/* retrieve matching resource cache entry */
-	//		//		auto& resource = _resourcesService->GetResourceByFilePath(entry.path().string());
-	//
-	//		//		if (resource == nullptr)
-	//		//		{
-	//		//			WYRD_CORE_TRACE("Resource Not Found: {0}", entry.path().string());
-	//		//		}
-	//
-	//		//		/* create file name */
-	//		//		std::string fullName = entry.path().string();
-	//		//		auto lastSlash = fullName.find_last_of("/\\");
-	//		//		lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
-	//		//		std::string name = fullName.substr(lastSlash, fullName.size() - lastSlash);
-	//
-	//
-	//		//		ImGui::BeginGroup();
-	//
-	//		//		ImGui::PushID(entry.path().string().c_str());
-	//
-	//		//		/* caculate the additional text size */
-	//		//		ImVec2 textSize = ImGui::CalcTextSize(name.c_str());
-	//
-	//		//		// DEBUG ONLY
-	//		//		//ImGuiWindow* window = ImGui::GetCurrentWindowRead();
-	//		//		//const ImVec2 p0 = window->DC.CursorPos;
-	//		//		//ImGui::GetWindowDrawList()->AddRect(p0, p0 + ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemColumnHeight), ImGui::GetColorU32(ImVec4(0.0f, 1.0f, 1.0f, 1.0f)));
-	//
-	//
-	//		//		/* selectable interface */
-	//		//		bool selected = _SelectedResource == resource.get();
-	//		//		if (ImGui::Selectable("##title", selected, ImGuiSelectableFlags_SelectOnClick, ImVec2(layoutSettings.itemColumnWidth, layoutSettings.itemGroupWidth + textSize.y)))
-	//		//		{
-	//		//			_SelectedResource = resource.get();
-	//		//		}
-	//
-	//		//		ImGui::SameLine();
-	//		//		ImGui::SetCursorPosX(ImGui::GetCursorPosX() - layoutSettings.itemColumnWidth);
-	//		//		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ((layoutSettings.itemColumnWidth / 2.0f) - (layoutSettings.itemGroupWidth / 2.0f)));
-	//
-	//		//		if (resource != nullptr)
-	//		//		{
-	//		//			ResourceType resType = static_cast<ResourceType>(resource->GetType());
-	//
-	//		//			switch (resType)
-	//		//			{
-	//		//			case ResourceType::TEXTURE:
-	//		//				DrawTextureItem(resIdx, (TextureRes&)*resource.get());
-	//		//				break;
-	//		//			case ResourceType::SCENE:
-	//		//				DrawSceneItem(resIdx, (SceneRes&)*resource.get());
-	//		//				break;
-	//		//			case ResourceType::SCRIPT:
-	//		//				DrawScriptItem(resIdx, (ScriptRes&)*resource.get());
-	//		//				break;
-	//		//			case ResourceType::SHADER:break;
-	//		//			case ResourceType::NONE:
-	//		//			default:
-	//		//				break;
-	//		//			}
-	//		//		}
-	//
-	//		//		ImGui::PopID();
-	//		//		ImGui::EndGroup();
-	//
-	//		//		resIdx++;
-	//		//	}
-	//		//}
-	//			
-	//		ImGui::EndTable();
-	//	}
-	//}
+	void AssetViewer::DrawItemTable(const std::vector<std::string>& directories, const std::vector<std::string>& files)
+	{
+		int resIdx = 0;
+
+		for (auto& directory : directories)
+		{
+			uint32_t tableCursor = resIdx % layoutSettings.itemColumnCnt;
+
+			if (tableCursor == 0)
+			{
+				ImGui::TableNextRow();
+			}
+
+			ImGui::TableSetColumnIndex(tableCursor);
+
+			ImVec2 cursor = ImGui::GetCursorPos();
+			ImGui::PushID(resIdx);
+			ImGui::Selectable("##title", _SelectedResource == resIdx, ImGuiSelectableFlags_None, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize));
+			ImGui::PopID();
+			ImGui::SetCursorPos(cursor);
+
+			DrawFolderItem(resIdx, directory.c_str());
+
+			resIdx++;
+		}
+
+		for (auto& file : files)
+		{
+			uint32_t tableCursor = resIdx % layoutSettings.itemColumnCnt;
+
+			if (tableCursor == 0)
+			{
+				ImGui::TableNextRow();
+			}
+
+			ImGui::TableSetColumnIndex(tableCursor);
+
+			ImVec2 cursor = ImGui::GetCursorPos();
+			ImGui::PushID(resIdx);
+			ImGui::Selectable("##title", _SelectedResource == resIdx, ImGuiSelectableFlags_None, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize));
+			ImGui::PopID();
+			ImGui::SetCursorPos(cursor);
+
+			/* retrieve matching resource cache entry */
+			auto& resource = _resourcesService->GetResourceByFilePath(file);
+
+			if (resource != nullptr)
+			{
+				ResourceType resType = static_cast<ResourceType>(resource->GetType());
+
+				switch (resType)
+				{
+				case ResourceType::TEXTURE:
+					DrawTextureItem(resIdx, (TextureRes&)*resource.get());
+					break;
+				case ResourceType::SCENE:
+					DrawSceneItem(resIdx, (SceneRes&)*resource.get());
+					break;
+				case ResourceType::SCRIPT:
+					DrawScriptItem(resIdx, (ScriptRes&)*resource.get());
+					break;
+				case ResourceType::SHADER:
+				case ResourceType::NONE:
+				default:
+					break;
+				}
+			}
+			else
+			{
+				DrawUnknownItem(resIdx, file);
+			}
+
+			resIdx++;
+		}
+	}
+
+	void AssetViewer::DrawFolderItem(int resID, const std::string& directoryEntry)
+	{
+		std::filesystem::path p(directoryEntry);
+
+		/* Drag and Drop */
+	
+		/* Tool Tip */
+		if (ImGui::IsItemHovered())
+		{
+			/* No tool tip on folders */
+		}
+
+		/* Context Menu */
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Delete"))
+			{
+				Utils::DeleteFolder(directoryEntry);
+			}
+			ImGui::EndPopup();
+		}
+
+		/* Input */
+		if (ImGui::IsItemHovered())
+		{
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+				_SelectedResource = resID;
+
+			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+			{
+				_SelectedDirectory /= p.stem();
+				_SelectedResource = -1;
+			}
+		}
+
+		/* Visuals */
+		ImGui::Image(*_FolderIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+		ImGui::TextClipped(p.stem().string().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "..");
+	}
 
 	void AssetViewer::DrawTextureItem(int resID, TextureRes& textureResource)
 	{
@@ -343,10 +353,9 @@ namespace Wyrd::Editor
 		/* Context Menu */
 		if (ImGui::BeginPopupContextItem())
 		{
-			ImGui::MenuItem(textureResource.GetName().c_str());
-			if (ImGui::MenuItem("Open with System"))
+			if (ImGui::MenuItem("Delete"))
 			{
-				Utils::OpenFileWithSystem(textureResource.GetPath());
+				Utils::RemoveFile(textureResource.GetPath());
 			}
 			ImGui::EndPopup();
 		}
@@ -355,7 +364,7 @@ namespace Wyrd::Editor
 		if (ImGui::IsItemHovered())
 		{
 			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-				WYRD_TRACE("Texture Clicked");
+				_SelectedResource = resID;
 		}
 
 		/* Visuals */
@@ -386,6 +395,11 @@ namespace Wyrd::Editor
 		/* Context Menu */
 		if (ImGui::BeginPopupContextItem())
 		{
+			if (ImGui::MenuItem("Delete"))
+			{
+				Utils::RemoveFile(sceneResource.GetPath().c_str());
+			}
+			ImGui::Separator();
 			if (ImGui::MenuItem("Properties"))
 			{
 				_EventService->Publish(Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&sceneResource));
@@ -396,8 +410,14 @@ namespace Wyrd::Editor
 		/* Input */
 		if (ImGui::IsItemHovered())
 		{
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+				_SelectedResource = resID;
+
 			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+			{
+				_SelectedResource = resID;
 				ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace)->LoadScene(sceneResource.GetPath());
+			}
 		}
 
 		/* Visuals */
@@ -429,6 +449,11 @@ namespace Wyrd::Editor
 		/* Context Menu */
 		if (ImGui::BeginPopupContextItem())
 		{
+			if (ImGui::MenuItem("Delete"))
+			{
+				Utils::RemoveFile(scriptResource.GetPath().c_str());
+			}
+			ImGui::Separator();
 			if (ImGui::MenuItem("Properties"))
 			{
 				_EventService->Publish(Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&scriptResource));
@@ -439,7 +464,8 @@ namespace Wyrd::Editor
 		/* Input */
 		if (ImGui::IsItemHovered())
 		{
-			// TODO
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+				_SelectedResource = resID;
 		}
 
 		/* Visuals */
@@ -447,7 +473,7 @@ namespace Wyrd::Editor
 		ImGui::TextClipped(scriptResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
 	}
 
-	void AssetViewer::DrawUnknownItem(int resID, std::string& unknownResourceName)
+	void AssetViewer::DrawUnknownItem(int resID, const std::string& unknownResourceName)
 	{
 		/* unknown items don's have any model, so we just want to extract the file name */
 		std::string filename = Utils::GetFilename(unknownResourceName, true);
@@ -464,12 +490,20 @@ namespace Wyrd::Editor
 		}
 
 		/* Context Menu */
-		// Not supported on unknown items
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Delete"))
+			{
+				Utils::RemoveFile(unknownResourceName);
+			}
+			ImGui::EndPopup();
+		}
 
 		/* Input */
 		if (ImGui::IsItemHovered())
 		{
-			// TODO
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+				_SelectedResource = resID;
 		}
 
 		Utils::GetFilename(unknownResourceName, true);

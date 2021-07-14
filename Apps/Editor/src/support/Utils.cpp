@@ -168,8 +168,22 @@ namespace Wyrd::Editor {
 	}
 
 
-	std::optional<std::string> Utils::SaveFile(const char* filter)
+	std::optional<std::string> Utils::SaveFile(const std::vector<std::pair<std::string, std::string>> filters)
 	{
+		/* build the filter string */
+		std::stringstream filterString;
+
+		for (auto& filter : filters)
+		{
+			filterString << filter.first.c_str();
+			filterString << '\0';
+			filterString << filter.second.c_str();
+			filterString << '\0';
+		}
+
+		const std::string tmp = filterString.str();
+		const char* cstr = tmp.c_str();
+
 		OPENFILENAMEA ofn;
 		CHAR szFile[260] = { 0 };
 		CHAR currentDir[256] = { 0 };
@@ -180,12 +194,12 @@ namespace Wyrd::Editor {
 		ofn.nMaxFile = sizeof(szFile);
 		if (GetCurrentDirectoryA(256, currentDir))
 			ofn.lpstrInitialDir = currentDir;
-		ofn.lpstrFilter = filter;
+		ofn.lpstrFilter = cstr;
 		ofn.nFilterIndex = 1;
 		ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
 
 		// Sets the default extension by extracting it from the filter
-		ofn.lpstrDefExt = strchr(filter, '\0') + 1;
+		ofn.lpstrDefExt = strchr(cstr, '\0') + 1;
 
 		if (GetSaveFileNameA(&ofn) == TRUE)
 			return ofn.lpstrFile;

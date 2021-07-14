@@ -134,7 +134,7 @@ namespace Wyrd::Editor
 		* First stage is to compile all the file into a loadable library.
 		* Note: we want to compile this into the temp directory, incase the compilation fails
 		*/
-		const std::string tempModelFileName = (_WorkspaceService->GetTempDirectory() / _WorkspaceService->GetCurrentProject()->name / ".dll").string();
+		const std::string tempModelFileName = (_WorkspaceService->GetTempDirectory() / (_WorkspaceService->GetCurrentProject()->name + ".dll")).string();
 		const std::string finalModelFileName = Utils::GetPath(_WorkspaceService->GetLoadedProjectPath()) + "\\" + _WorkspaceService->GetCurrentProject()->name + ".dll";
 
 		CompileResults results;

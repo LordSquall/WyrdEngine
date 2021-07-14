@@ -26,7 +26,7 @@ namespace Wyrd::Editor
 		static std::optional<std::string> OpenFile(const std::vector<std::pair<std::string, std::string>> filters);
 		static std::string OpenFileDialog(const std::string& filter);
 		static std::string OpenFolderDialog();
-		static std::optional<std::string> SaveFile(const char* filter);
+		static std::optional<std::string> SaveFile(const std::vector<std::pair<std::string, std::string>> filters);
 		static std::string SaveFileDialog(const std::string& name, const std::string& filter);
 		static std::string SaveAsFileDialog(const std::string& filter);
 

@@ -313,7 +313,7 @@ namespace Wyrd::Editor
 			bool fileOperationsFlag = _workspaceService->IsSceneLoaded() && _workspaceService->IsProjectLoaded();
 
 			if (ImGui::MenuItem("New Scene", nullptr, nullptr, _workspaceService->IsProjectLoaded())) {
-				std::optional<std::string> filepath = util.SaveFile("*.scene");
+				std::optional<std::string> filepath = util.SaveFile({ { "Scene", "*.scene" } });
 				if (filepath.has_value())
 				{
 					_workspaceService->SaveSceneAs(filepath.value());
@@ -329,10 +329,13 @@ namespace Wyrd::Editor
 			}
 
 			if (ImGui::MenuItem("Save Scene As..", nullptr, nullptr, _workspaceService->IsProjectLoaded() && _workspaceService->IsSceneLoaded())) {
-				std::string filepath = util.SaveFileDialog("Scene Json Files", "scene");
-				if (_workspaceService->SaveSceneAs(filepath) == true)
+				std::optional<std::string> filepath = Utils::SaveFile({ { "Scene", "*.scene" } });
+				if (filepath)
 				{
-					WYRD_CORE_INFO("Saved Scene As");
+					if (_workspaceService->SaveSceneAs(filepath.value()) == true)
+					{
+						WYRD_CORE_INFO("Saved Scene As");
+					}
 				}
 			}
 

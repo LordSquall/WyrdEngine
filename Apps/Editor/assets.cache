@@ -13,10 +13,10 @@
 			"uuid": "122bd0b2-d892-4a2f-9359-71bc543183ee" 
 		},
 		{
-			"filepath": "testcases\\testcase_resources\\testscene.scene",
+			"filepath": "testcases\\fileimporttests\\PlayerMovement.cs",
 			"hash": "",
-			"name": "testscene",
-			"uuid": "1ef25988-a472-4bb8-a0b7-7f60cd8b88fa" 
+			"name": "PlayerMovement",
+			"uuid": "1eb42bcf-bd55-4b64-8d72-2e958676e838" 
 		},
 		{
 			"filepath": "testcases\\testcase_resources\\PropertiesTest.cs",
@@ -55,16 +55,16 @@
 			"uuid": "39dedafd-e024-4722-be20-6871128d4316" 
 		},
 		{
+			"filepath": "testcases\\fileimporttests\\character_zombie_climb1.png",
+			"hash": "",
+			"name": "character_zombie_climb1",
+			"uuid": "3c9274fb-1bae-45d7-a683-3f4663a214fa" 
+		},
+		{
 			"filepath": "testcases\\testcase_resources\\StringPropTest.cs",
 			"hash": "",
 			"name": "StringPropTest",
 			"uuid": "4f612bf5-2167-4708-af51-19810a06d4be" 
-		},
-		{
-			"filepath": "CameraTest.scene",
-			"hash": "",
-			"name": "CameraTest",
-			"uuid": "5095d3dd-9715-4e70-901c-9a593f24fd5e" 
 		},
 		{
 			"filepath": "testcases\\testcase_resources\\character_maleAdventurer_idle.png",
@@ -91,6 +91,18 @@
 			"uuid": "83baeba8-4d6b-49d5-bc0a-88b846a9ca66" 
 		},
 		{
+			"filepath": "testcases\\fileimporttests\\character_zombie_cheer1.png",
+			"hash": "",
+			"name": "character_zombie_cheer1",
+			"uuid": "8435f8c2-d0ce-4466-b520-177bf6f90468" 
+		},
+		{
+			"filepath": "testcases\\fileimporttests\\character_zombie_cheer1.png",
+			"hash": "",
+			"name": "character_zombie_cheer1",
+			"uuid": "852c3af4-b115-4367-b8b9-e18f1fee366c" 
+		},
+		{
 			"filepath": "testcases\\testcase_resources\\ColorPropTest.cs",
 			"hash": "",
 			"name": "ColorPropTest",
@@ -109,12 +121,6 @@
 			"uuid": "9bf24cf1-ab9e-41ad-a258-f717c804d541" 
 		},
 		{
-			"filepath": "testcases\\fileimporttests\\character_zombie_attack1.png",
-			"hash": "",
-			"name": "character_zombie_attack1",
-			"uuid": "9f4b5ce0-21d3-495a-a7b0-17fa75073801" 
-		},
-		{
 			"filepath": "testcases\\testcase_resources\\IntPropTest.cs",
 			"hash": "",
 			"name": "IntPropTest",
@@ -125,6 +131,12 @@
 			"hash": "",
 			"name": "platformPack_tile001",
 			"uuid": "cc3c1896-949d-4fdf-997c-04f81a931b27" 
+		},
+		{
+			"filepath": "testcases\\fileimporttests\\character_zombie_behindBack.png",
+			"hash": "",
+			"name": "character_zombie_behindBack",
+			"uuid": "ccf41581-3361-4ebb-9b83-fa8b0f877b62" 
 		},
 		{
 			"filepath": "testcases\\testcase_resources\\Vector3PropTest.cs",
@@ -143,6 +155,12 @@
 			"hash": "",
 			"name": "CameraMovementTest",
 			"uuid": "e2529082-564e-4059-9e6b-aad64a3a48eb" 
+		},
+		{
+			"filepath": "Movement.scene",
+			"hash": "",
+			"name": "Movement",
+			"uuid": "e8d4df00-836c-4bca-963d-1159dcb7985a" 
 		} 
 	] 
 } 

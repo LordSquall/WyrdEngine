@@ -84,24 +84,24 @@ namespace Wyrd::Editor
 			renderer.Clear(0.1f, 0.1f, 0.1f);
 			if (_Scene != nullptr)
 			{
-				/*for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
-				{
-					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
-					SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
-
-					Wyrd::DrawSpriteCommand cmd{};
-					cmd.type = 1;
-					cmd.position = sprite->position + transform->position;
-					cmd.size = sprite->size;
-					cmd.vpMatrix = _Camera.GetViewProjectionMatrix();
-					cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
-					cmd.texture = Application::Get().GetResources().Textures[sprite->texture].get();
-					cmd.color = sprite->color;
-
-					renderer.Submit(cmd);
-				}
-
-				renderer.Flush();*/
+				//for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
+				//{
+				//	Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
+				//	SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
+				//
+				//	Wyrd::DrawSpriteCommand cmd{};
+				//	cmd.type = 1;
+				//	cmd.position = sprite->position + transform->position;
+				//	cmd.size = sprite->size;
+				//	cmd.vpMatrix = _Camera.GetViewProjectionMatrix();
+				//	cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
+				//	cmd.texture = Application::Get().GetResources().Textures[sprite->texture].get();
+				//	cmd.color = sprite->color;
+				//
+				//	renderer.Submit(cmd);
+				//}
+				//
+				//renderer.Flush();
 			}
 
 			_Framebuffer->Unbind();

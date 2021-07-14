@@ -44,7 +44,7 @@ namespace Wyrd::Editor
 			return nullptr;
 		}
 
-		std::shared_ptr<Resource> GetResourceByFilePath(std::string& path)
+		std::shared_ptr<Resource> GetResourceByFilePath(const std::string& path)
 		{
 			auto it = std::find_if(_resourceMap.begin(), _resourceMap.end(), [&](const auto& e) 
 				{ 

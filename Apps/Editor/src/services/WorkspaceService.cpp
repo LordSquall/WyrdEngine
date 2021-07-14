@@ -50,6 +50,9 @@ namespace Wyrd::Editor
 	{
 		_ProjectRootDirectory = rootDir;
 		_AssetsDirectory = rootDir / "Assets";
+		_BuildDirectory = rootDir / ".builds";
+		_CacheDirectory = rootDir / ".cache";
+		_TempDirectory = rootDir / ".temp";
 	}
 
 	void Wyrd::Editor::WorkspaceService::CreateNewProject(std::string location, std::string sceneName, std::string name)

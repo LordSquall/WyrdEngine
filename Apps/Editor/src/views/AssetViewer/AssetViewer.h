@@ -21,14 +21,16 @@ namespace Wyrd::Editor
 	private:
 		bool OnKeyPressedEvent(KeyPressedEvent& e);
 
+		void DrawItemTable(const std::vector<std::string>& directories, const std::vector<std::string>& files);
+		void DrawFolderItem(int resID, const std::string& directoryEntry);
 		void DrawTextureItem(int resID, TextureRes& textureResource);
 		void DrawSceneItem(int resID, SceneRes& sceneResource);
 		void DrawScriptItem(int resID, ScriptRes& scriptResource);
-		void DrawUnknownItem(int resID, std::string& unknownResourceName);
+		void DrawUnknownItem(int resID, const std::string& unknownResourceName);
 
 		/* Selection State(s) */
 		std::filesystem::path _SelectedDirectory;
-		Resource* _SelectedResource;
+		int _SelectedResource;
 		std::string _DeleteDirectoryState;
 		std::string _DeleteAssetState;
 
