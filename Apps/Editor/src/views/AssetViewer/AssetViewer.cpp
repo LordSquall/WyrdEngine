@@ -335,7 +335,7 @@ namespace Wyrd::Editor
 		/* Drag and Drop */
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 		{
-			ImGui::SetDragDropPayload("DND_TEXTURE", &textureResource.GetResourceID(), sizeof(UID));
+			ImGui::SetDragDropPayload(IMGUI_DND_TEXTURE, &textureResource.GetResourceID(), sizeof(UID));
 			ImGui::Image((ImTextureID)(INT_PTR)textureResource.GetTexture()->GetHandle(), ImVec2(32, 32));
 			ImGui::EndDragDropSource();
 		}
@@ -365,6 +365,9 @@ namespace Wyrd::Editor
 		{
 			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
 				_SelectedResource = resID;
+
+			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+				Utils::OpenFileWithSystem(textureResource.GetPath());
 		}
 
 		/* Visuals */
@@ -431,7 +434,7 @@ namespace Wyrd::Editor
 		/* Drag and Drop */
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 		{
-			ImGui::SetDragDropPayload("DND_SCRIPT", &scriptResource.GetResourceID(), sizeof(UID));
+			ImGui::SetDragDropPayload(IMGUI_DND_SCRIPT, &scriptResource.GetResourceID(), sizeof(UID));
 			ImGui::Image(*_ScriptIcon, ImVec2(32, 32));
 			ImGui::EndDragDropSource();
 		}
@@ -466,6 +469,9 @@ namespace Wyrd::Editor
 		{
 			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
 				_SelectedResource = resID;
+
+			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+				Utils::OpenFileWithSystem(scriptResource.GetPath());
 		}
 
 		/* Visuals */

@@ -24,6 +24,15 @@ namespace Wyrd::Editor
         return false;
     }
 
+    bool ComponentViewFactory::Contains(const std::string& name, Entity e)
+    {
+        auto functions = GetFunctions();
+        if (auto it = functions->find(name); it != functions->end())
+            return true;
+
+        return false;
+    }
+
     void ComponentViewFactory::Create(const std::string& name, Entity e, void* data)
     {
         auto functions = GetFunctions();

@@ -39,7 +39,7 @@ namespace Wyrd::Editor
 
 	void Wyrd::Editor::WorkspaceService::OnDestroy()
 	{
-		_FileWatcher.End();
+		EndFileWatcher();
 
 		/* TEMP if (_LoadedProject != nullptr) */ SaveProject();
 		if (_LoadedScene != nullptr) SaveScene();
@@ -109,6 +109,8 @@ namespace Wyrd::Editor
 			std::ofstream out(Utils::GetPath(_LoadedProjectPath.c_str()) + "/vs.code-workspace");
 			out << root.json();
 			out.close();
+
+			StartFileWatcher();
 
 			/* Send a Project Loaded Event */
 			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ProjectLoaded,
@@ -187,6 +189,8 @@ namespace Wyrd::Editor
 				CreateNewScene("Unknown");
 			}
 
+			StartFileWatcher();
+
 			result = true;
 		}
 		else
@@ -194,38 +198,6 @@ namespace Wyrd::Editor
 			_LoadedProject = nullptr;
 			result = false;
 		}
-
-		_FileWatcher.Initialise(GetAssetsDirectory().string(), std::chrono::milliseconds(500));
-		_FileWatcher.Start([](std::string path, FileStatus status) -> void {
-			if (!std::filesystem::is_regular_file(std::filesystem::path(path)) && status != FileStatus::erased)
-			{
-				return;
-			}
-
-			/* create filename name */
-			auto lastSlash = path.find_last_of("/\\");
-			lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
-			std::string name = path.substr(lastSlash, path.size() - lastSlash);
-
-			bool isDir = std::filesystem::is_directory(path);
-
-			switch (status)
-			{
-			case FileStatus::created:
-				std::cout << "File Created: " << path << std::endl;
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddFileEntry, std::make_unique<Events::AddFileEntryArgs>(path, path, isDir));
-				break;
-
-			case FileStatus::modified:
-				std::cout << "File Modified: " << path << std::endl;
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ModifiedFileEntry, std::make_unique<Events::ModifiedFileEntryArgs>(path, path, isDir));
-				break;
-
-			case FileStatus::erased:
-				std::cout << "File Erase: " << path << std::endl;
-				break;
-			}
-		});
 
 		return result;
 	}
@@ -353,4 +325,46 @@ namespace Wyrd::Editor
 			return true;
 		}
 	}
+
+	void WorkspaceService::StartFileWatcher()
+	{
+		_FileWatcher.Initialise(GetAssetsDirectory().string(), std::chrono::milliseconds(500));
+		_FileWatcher.Start([](std::string path, FileStatus status) -> void {
+			if (!std::filesystem::is_regular_file(std::filesystem::path(path)) && status != FileStatus::erased)
+			{
+				return;
+			}
+
+			/* create filename name */
+			auto lastSlash = path.find_last_of("/\\");
+			lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+			std::string name = path.substr(lastSlash, path.size() - lastSlash);
+
+			bool isDir = std::filesystem::is_directory(path);
+
+			switch (status)
+			{
+			case FileStatus::created:
+				std::cout << "File Created: " << path << std::endl;
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddFileEntry, std::make_unique<Events::AddFileEntryArgs>(path, path, isDir));
+				break;
+
+			case FileStatus::modified:
+				std::cout << "File Modified: " << path << std::endl;
+				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ModifiedFileEntry, std::make_unique<Events::ModifiedFileEntryArgs>(path, path, isDir));
+				break;
+
+			case FileStatus::erased:
+				std::cout << "File Erase: " << path << std::endl;
+				break;
+			}
+			});
+
+	}
+
+	void WorkspaceService::EndFileWatcher()
+	{
+		_FileWatcher.End();
+	}
+
 }

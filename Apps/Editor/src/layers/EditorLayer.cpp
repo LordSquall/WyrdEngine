@@ -286,18 +286,9 @@ namespace Wyrd::Editor
 
 		if (ImGui::BeginMenu("Project"))
 		{
-			if (ImGui::BeginMenu("Create New Project...")) {
-				if (ImGui::MenuItem("New")) 
-				{
-					_dialogService->OpenDialog(std::make_shared<NewProjectDialog>(this));
-				}
-				if (ImGui::MenuItem("Open File", "Ctrl+O")) {
-					WYRD_INFO(util.OpenFileDialog("*.scene"));
-				}
-				if (ImGui::MenuItem("Open Folder")) {
-					WYRD_INFO(util.OpenFolderDialog());
-				}
-				ImGui::EndMenu();
+			if (ImGui::MenuItem("Create New Project..."))
+			{
+				_dialogService->OpenDialog(std::make_shared<NewProjectDialog>(this));
 			}
 			if (ImGui::MenuItem("Open Project"))
 			{

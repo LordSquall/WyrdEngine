@@ -48,7 +48,6 @@ namespace Wyrd::Editor
 
 			std::string windowsBinPath = _SettingsService->GetSetting(CONFIG_WINDOWSPLAYER, CONFIG_WINDOWSPLAYER__BINPATH, std::string("..\\..\\bin\\Debug\\Player\\Player.exe"));
 
-
 			Utils::OpenFileWithSystem(windowsBinPath);
 		}
 
@@ -56,36 +55,78 @@ namespace Wyrd::Editor
 		{
 			if (project != nullptr)
 			{
-				for (auto& sceneUID : project->GetExportSettings().exportableScenes)
-				{
-					std::string name = sceneUID.second;
+				auto iter = project->GetExportSettings().exportableScenes.begin();
+				std::map<Wyrd::UID, std::string>::iterator toRemoveIter;
+				bool toRemove = false;
 
-					if (ImGui::Selectable(name.c_str(), sceneUID.first == _SelectedSceneUID))
+				while (iter != project->GetExportSettings().exportableScenes.end())
+				{
+					std::string name = iter->second;
+
+					if (project->GetExportSettings().initialScene == iter->first)
 					{
-						_SelectedSceneUID = sceneUID.first;
+						name += " (default)";
 					}
+
+					if (ImGui::Selectable(name.c_str(), iter->first == _SelectedSceneUID))
+					{
+						_SelectedSceneUID = iter->first;
+					}
+
+					/* Drag and Drop */
+					//if (ImGui::BeginDragDropSource())
+					//{
+					//	ImGui::SetDragDropPayload("DND_ENTITY", &e, sizeof(Entity));
+					//	ImGui::EndDragDropSource();
+					//}
+
+					if (ImGui::IsItemHovered())
+					{
+						// Tooltip
+					}
+
+					if (ImGui::BeginPopupContextItem())
+					{
+
+						if (ImGui::MenuItem("Remove"))
+						{
+							toRemoveIter = iter;
+							toRemove = true;
+						}
+						ImGui::EndPopup();
+					}
+
+					++iter;
+				}
+
+				if (toRemove == true)
+				{
+					project->GetExportSettings().exportableScenes.erase(toRemoveIter);
 				}
 			}
 			ImGui::EndListBox();
-		}
-		
-		if (project != nullptr)
-		{
-			ImGui::Text("Initial Scene: %s", project->GetExportSettings().initialScene.str().c_str());
-
-			//int size[2];
-			ImGui::InputInt2("Size", (int*)&project->GetExportSettings().width);
 
 			if (ImGui::BeginDragDropTarget())
 			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_SCENE"))
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_DND_SCENE))
 				{
 					UID* sceneUID = (UID*)payload->Data;
 					auto sceneResource = _ResourceService->GetResourceByID<SceneRes>(*sceneUID);
 					project->GetExportSettings().exportableScenes[*sceneUID] = sceneResource->GetName();
+
+					// if this is the only scene in the list we want to make the initial scene
+					if (project->GetExportSettings().exportableScenes.size() == 1)
+					{
+						project->GetExportSettings().initialScene = *sceneUID;
+					}
 				}
 				ImGui::EndDragDropTarget();
 			}
+		}
+		
+		if (project != nullptr)
+		{
+			ImGui::InputInt2("Size", (int*)&project->GetExportSettings().width);
 		}
 
 		if (ImGui::TextButton("Set as Default Scene", _SelectedSceneUID != UID()))

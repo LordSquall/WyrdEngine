@@ -37,7 +37,7 @@ bool ControlLayer::OnAttach()
 
 	auto& sceneManager = SceneManager::getInstance();
 
-	sceneManager.LoadScene(baseDirectory, UID("66bff5b7-e50c-4f30-945c-c880ca709d5a"));
+	sceneManager.LoadInitialScene(baseDirectory);
 
 	/* create a new framebuffer */
 	unsigned int width = Application::Get().GetWindow().GetWidth();
@@ -56,6 +56,8 @@ bool ControlLayer::OnAttach()
 	_Camera.SetPosition(glm::vec3(transformComponent->position,  0.0f));
 	_Camera.SetSize(cameraComponent->size);
 	_Camera.SetViewportSize(width, height);
+
+	Application::Get().GetRenderer().SetViewport(width, height);
 
 	Application::Get().GetBehaviour().Start(std::shared_ptr<Wyrd::Scene>(scene));
 
@@ -100,6 +102,7 @@ void ControlLayer::OnRender(Timestep ts, Renderer& renderer)
 		cmd.type = 1;
 		cmd.position = sprite->position + transform->position;
 		cmd.size = sprite->size;
+		cmd.tiling = sprite->tiling;
 		cmd.vpMatrix = _Camera.GetViewProjectionMatrix();
 		cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
 		cmd.texture = Application::Get().GetResources().Textures[sprite->texture].get();

@@ -67,9 +67,7 @@ namespace Wyrd::Editor
 
 						if (ImGui::IsItemHovered())
 						{
-							ImGui::BeginTooltip();
-							ImGui::Text("ID: %d Mask: %d", e, scene.entities[e - 1].mask);
-							ImGui::EndTooltip();
+							// Tooltip
 						}
 
 						if (ImGui::BeginPopupContextItem())

@@ -24,6 +24,9 @@ namespace Wyrd {
 		/* store the thread ID */
 		_MainThreadID = std::this_thread::get_id();
 
+		/* output dir and pid */
+		WYRD_CORE_INFO("cwd : {0} on PID : {1}", std::filesystem::current_path(), _MainThreadID);
+
 		/* call the pre init function */
 		OnPreAppCreation(this);
 

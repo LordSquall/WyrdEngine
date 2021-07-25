@@ -53,6 +53,10 @@ namespace Wyrd::Editor
 		inline const std::filesystem::path& GetTempDirectory() const { return _TempDirectory; }
 
 	private:
+		void StartFileWatcher();
+		void EndFileWatcher();
+
+	private:
 		bool _IsProjectLoaded = false;
 		std::string _LoadedProjectPath;
 		std::shared_ptr<Project> _LoadedProject;

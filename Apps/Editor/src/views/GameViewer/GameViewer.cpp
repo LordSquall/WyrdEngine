@@ -64,11 +64,15 @@ namespace Wyrd::Editor
 			switch (_SizeConfigID)
 			{
 			case 0:
-				_Camera.SetViewportSize(_Viewport.size.x, _Viewport.size.y);
+				_Camera.SetViewportSize(_WorkspaceService->GetCurrentProject()->GetExportSettings().width, _WorkspaceService->GetCurrentProject()->GetExportSettings().height);
 				break;
 			case 1:
+				_Camera.SetViewportSize(_Viewport.size.x, _Viewport.size.y);
+				break;
+			case 2:
 				_Camera.SetViewportSize(800.0f, 600.0f);
 				break;
+
 			}
 
 			_Camera.RecalulateViewProjection();
@@ -84,24 +88,25 @@ namespace Wyrd::Editor
 			renderer.Clear(0.1f, 0.1f, 0.1f);
 			if (_Scene != nullptr)
 			{
-				//for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
-				//{
-				//	Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
-				//	SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
-				//
-				//	Wyrd::DrawSpriteCommand cmd{};
-				//	cmd.type = 1;
-				//	cmd.position = sprite->position + transform->position;
-				//	cmd.size = sprite->size;
-				//	cmd.vpMatrix = _Camera.GetViewProjectionMatrix();
-				//	cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
-				//	cmd.texture = Application::Get().GetResources().Textures[sprite->texture].get();
-				//	cmd.color = sprite->color;
-				//
-				//	renderer.Submit(cmd);
-				//}
-				//
-				//renderer.Flush();
+				for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
+				{
+					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
+					SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
+				
+					Wyrd::DrawSpriteCommand cmd{};
+					cmd.type = 1;
+					cmd.position = sprite->position + transform->position;
+					cmd.size = sprite->size;
+					cmd.tiling = sprite->tiling;
+					cmd.vpMatrix = _Camera.GetViewProjectionMatrix();
+					cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
+					cmd.texture = Application::Get().GetResources().Textures[sprite->texture].get();
+					cmd.color = sprite->color;
+				
+					renderer.Submit(cmd);
+				}
+				
+				renderer.Flush();
 			}
 
 			_Framebuffer->Unbind();
@@ -117,17 +122,18 @@ namespace Wyrd::Editor
 		_Viewport = { { 0.0f, 0.0f }, { ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y - ImGui::GetCursorPos().y } };
 
 
-		const char* items[] = { "Window Size", "800x600" };
+		const char* items[] = { "Export Size", "Window Size", "800x600" };
 		if (ImGui::Combo("combo", &_SizeConfigID, items, IM_ARRAYSIZE(items)))
 		{
 			switch (_SizeConfigID)
 			{
 			case 0:
-				/* resize the underlying framebuffer */
-				_Framebuffer->Resize((uint32_t)_Viewport.size.x, (uint32_t)_Viewport.size.y);
+				_Framebuffer->Resize((uint32_t)_WorkspaceService->GetCurrentProject()->GetExportSettings().width, (uint32_t)_WorkspaceService->GetCurrentProject()->GetExportSettings().height);
 				break;
 			case 1:
-				/* resize the underlying framebuffer */
+				_Framebuffer->Resize((uint32_t)_Viewport.size.x, (uint32_t)_Viewport.size.y);
+				break;
+			case 2:
 				_Framebuffer->Resize(800, 600);
 				break;
 			}

@@ -23,10 +23,21 @@ namespace Wyrd::Editor
 		/* Cast to the correct component */
 		ScriptComponent* script = (ScriptComponent*)data;
 
-		ImGui::Text("Script: %s", script->script.str().c_str());
+		/* retrieve script class */
+		auto currentScriptClass = Application::Get().GetBehaviour().GetCustomClassByUID(script->script);
+
+		if (currentScriptClass != nullptr)
+		{
+			ImGui::Text("Script: %s", currentScriptClass->GetName().c_str());
+		}
+		else
+		{
+			ImGui::Text("Script: %s", script->script.str().c_str());
+		}
+
 		if (ImGui::BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_SCRIPT"))
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_DND_SCRIPT))
 			{
 				UID* scriptUID = (UID*)payload->Data;
 

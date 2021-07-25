@@ -44,11 +44,14 @@ namespace Wyrd::Editor
 	void ExportManager::GenerateCoreFile()
 	{
 		auto workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
+		std::shared_ptr<Project> project = workspaceService->GetCurrentProject();
 
 		std::ofstream core;
 		core.open((workspaceService->GetBuildsDirectory() / "Core.data").string(), std::ios::out | std::ios::binary);
 
 		// Add core configuration settings
+		core.write((char*)&project->GetExportSettings().width, sizeof(uint32_t));
+		core.write((char*)&project->GetExportSettings().height, sizeof(uint32_t));
 
 		core.close();
 	}
@@ -62,6 +65,10 @@ namespace Wyrd::Editor
 		game.open((workspaceService->GetBuildsDirectory() / "Game.data").string(), std::ios::out | std::ios::binary);
 
 		// Add game settings
+		char initialSceneUID[64];
+		strcpy(initialSceneUID, project->GetExportSettings().initialScene.str().c_str());
+
+		game.write(&initialSceneUID[0], sizeof(char) * 64);
 
 		game.close();
 	}
@@ -183,7 +190,7 @@ namespace Wyrd::Editor
 
 		/* open the scene file stream */
 		std::ofstream sceneBundle;
-		sceneBundle.open(dir + sceneUID.str() + ".bundle", std::ios::out | std::ios::binary);
+		sceneBundle.open(dir + "\\" + sceneUID.str() + ".bundle", std::ios::out | std::ios::binary);
 
 		/* load the scene */
 		Scene scene;

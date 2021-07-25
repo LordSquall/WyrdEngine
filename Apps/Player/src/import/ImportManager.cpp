@@ -16,12 +16,19 @@ void ImportManager::ImportCore(const std::string& root)
 {
 	/* open the meta data file */
 	std::ifstream core;
-	core.open(root + "Core.dat", std::ios::in | std::ios::binary);
+	core.open(root + "Core.data", std::ios::in | std::ios::binary);
 	if (core.good() == false)
 	{
 		WYRD_CORE_ERROR("Unable to find core.dat file");
 		return;
 	}
+
+	uint32_t windowWidth = 0;
+	uint32_t windowHeight = 0;
+	core.read((char*)&windowWidth, sizeof(uint32_t));
+	core.read((char*)&windowHeight, sizeof(uint32_t));
+
+	Application::Get().GetWindow().SetSize(windowWidth, windowHeight);
 
 	core.close();
 }
@@ -30,12 +37,17 @@ void ImportManager::ImportGame(const std::string& root)
 {
 	/* open the file */
 	std::ifstream game;
-	game.open(root + "Game.dat", std::ios::in | std::ios::binary);
+	game.open(root + "Game.data", std::ios::in | std::ios::binary);
 	if (game.good() == false)
 	{
 		WYRD_CORE_ERROR("Unable to find game.dat file");
 		return;
 	}
+
+	char initialSceneUID[64];
+	game.read((char*)&initialSceneUID[0], sizeof(char) * 64);
+
+	SceneManager::getInstance().SetInitialScene(UID(initialSceneUID));
 
 	/* close the file */
 	game.close();

@@ -13,6 +13,7 @@
 #include "services/ServiceManager.h"
 #include "services/ResourceService.h"
 #include "datamodels/EditorComponents.h"
+#include "events/EditorEvents.h"
 
 /* external includes */
 #include <glm/glm.hpp>
@@ -34,8 +35,8 @@ namespace Wyrd::Editor
 		_resourceService = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources);
 		_coreSystemService = ServiceManager::Get<CoreSystemsService>(ServiceManager::Service::CoreSystems);
 
+		/* perform the initial load of the JSON file */
 		std::ifstream f(path);
-
 		if (f.is_open() == true) {
 			std::ostringstream ss;
 			ss << f.rdbuf();
@@ -54,12 +55,31 @@ namespace Wyrd::Editor
 			result = FileNotFound;
 		}
 
+		/* add additional editor components */
 		if (includeEditorComponents)
 		{
 			for (auto& entity : scene.entities)
 			{
 				scene.AssignComponent<EditorComponent>(entity.id);
 			}
+		}
+
+		/* set the main camera */
+		if (scene.GetPrimaryCameraEntity() != ENTITY_INVALID)
+		{
+			CameraComponent* cameraComponent = scene.Get<CameraComponent>(scene.GetPrimaryCameraEntity());
+			if (cameraComponent != nullptr)
+			{
+				ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Editor::Events::EventType::SetSceneCamera, std::make_unique<Events::SetSceneCameraArgs>(scene.GetPrimaryCameraEntity(), cameraComponent));
+			}
+			else
+			{
+				WYRD_ERROR("Selected Camera Entity missing Camera component.");
+			}
+		}
+		else
+		{
+			WYRD_ERROR("Unable to find Selected Camera Entity.");
 		}
 
 		return result;

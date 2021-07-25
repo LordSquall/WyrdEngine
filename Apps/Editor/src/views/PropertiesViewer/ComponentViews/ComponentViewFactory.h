@@ -32,6 +32,8 @@ namespace Wyrd::Editor
 
 		static bool Register(const std::string name, ViewRenderFunc createFunc);
 
+		static bool Contains(const std::string& name, Entity e);
+
 		static void Create(const std::string& name, Entity e, void* data);
 	};
 }

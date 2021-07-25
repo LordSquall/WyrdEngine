@@ -54,6 +54,7 @@ void ComponentSerialiserFactory::Deserialise(std::ifstream& stream, Wyrd::Sprite
 {
 	stream.read((char*)&data->position, sizeof(glm::vec2));
 	stream.read((char*)&data->size, sizeof(glm::vec2));
+	stream.read((char*)&data->tiling, sizeof(glm::vec2));
 	stream.read((char*)&data->color, sizeof(Wyrd::Color));
 	stream.read((char*)&data->texture, sizeof(UID));
 }
@@ -87,5 +88,7 @@ void ComponentSerialiserFactory::Deserialise(std::ifstream& stream, Wyrd::Script
 
 void ComponentSerialiserFactory::Deserialise(std::ifstream& stream, Wyrd::CameraComponent* data)
 {
+	stream.read((char*)&data->viewport, sizeof(Rect));
+	stream.read((char*)&data->aspectRatio, sizeof(float));
 	stream.read((char*)&data->size, sizeof(float));
 }

@@ -73,25 +73,28 @@ namespace Wyrd::Editor
 			{
 				bool removed = false;
 
-				ImGui::PushID(i);
-				ImGui::Text(scene->componentPools[i]->scriptName.c_str());
-
-				/* we cant allow the metadata component to be deleted */
-				if (i != 0)
+				if (ComponentViewFactory::Contains(scene->componentPools[i]->name, _SelectedEntity))
 				{
-					ImGui::SameLine();
-					if (ImGui::SmallButton("x"))
-					{
-						scene->RemoveComponent(i, _SelectedEntity);
-						removed = true;
-					}
-				}
+					ImGui::PushID(i);
+					ImGui::Text(scene->componentPools[i]->scriptName.c_str());
 
-				if (removed == false)
-					ComponentViewFactory::Create(scene->componentPools[i]->name, _SelectedEntity, scene->Get(i, _SelectedEntity));
-				
-				ImGui::Separator();
-				ImGui::PopID();
+					/* we cant allow the metadata component to be deleted */
+					if (i != 0)
+					{
+						ImGui::SameLine();
+						if (ImGui::SmallButton("x"))
+						{
+							scene->RemoveComponent(i, _SelectedEntity);
+							removed = true;
+						}
+					}
+
+					if (removed == false)
+						ComponentViewFactory::Create(scene->componentPools[i]->name, _SelectedEntity, scene->Get(i, _SelectedEntity));
+
+					ImGui::Separator();
+					ImGui::PopID();
+				}
 			}
 		}
 	}

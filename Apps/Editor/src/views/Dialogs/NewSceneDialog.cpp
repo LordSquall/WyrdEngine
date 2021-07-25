@@ -26,11 +26,7 @@ namespace Wyrd::Editor
 
 		if (ImGui::Button("OK", ImVec2(120, 0)))
 		{
-			/* load the scene template */
-			std::string sceneTemplate = Utils::ReadFileToString(Utils::GetEditorResFolder() + "\\templates\\Scene.scene");
-
-			Utils::CreateRawFile(_Folder + "\\" + name_buffer + ".scene", sceneTemplate);
-
+			
 			ImGui::CloseCurrentPopup();
 			Close();
 		}

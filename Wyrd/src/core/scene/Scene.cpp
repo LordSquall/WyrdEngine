@@ -190,13 +190,16 @@ namespace Wyrd
 
 				int poolElementSize = pool->elementSize; 
 
-				jsonxx::Array compnentArray = poolObj.get<jsonxx::Array>("components");
-				for (size_t j = 0; j < compnentArray.size(); j++)
+				if (poolObj.has<jsonxx::Array>("components"))
 				{
-					jsonxx::Object component = compnentArray.get<jsonxx::Object>((unsigned int)j);
-		
-					ComponentSerialiserFactory::Deserialise(poolName, component, &(pool->data[j * poolElementSize]));
-					pool->count++;
+					jsonxx::Array compnentArray = poolObj.get<jsonxx::Array>("components");
+					for (size_t j = 0; j < compnentArray.size(); j++)
+					{
+						jsonxx::Object component = compnentArray.get<jsonxx::Object>((unsigned int)j);
+
+						ComponentSerialiserFactory::Deserialise(poolName, component, &(pool->data[j * poolElementSize]));
+						pool->count++;
+					}
 				}
 			}
 		}
