@@ -26,6 +26,12 @@ namespace WyrdAPI
             Scene_BuildComponentList(NativePtr);
         }
 
+        public static Entity FindEntityByName(String name)
+        {
+            var pair = EntityManager._Entities.FirstOrDefault(t => t.Value.Name == name);
+            return pair.Value;
+        }
+
         public static void AddPoolRegistration(string scriptName, int idx)
         {
             Console.WriteLine("AddPoolRegistration: {0} {1}", idx, scriptName);

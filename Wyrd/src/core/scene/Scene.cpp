@@ -20,6 +20,8 @@ namespace Wyrd
 		bgcolor.g = 0.2f;
 		bgcolor.b = 0.2f;
 		bgcolor.a = 1.0f;
+
+		_ScenePrimaryCameraEntity = ENTITY_INVALID;
 	}
 
 	Scene::Scene(std::string name) : name(name) 
@@ -28,6 +30,8 @@ namespace Wyrd
 		bgcolor.g = 0.2f;
 		bgcolor.b = 0.2f;
 		bgcolor.a = 1.0f;
+
+		_ScenePrimaryCameraEntity = ENTITY_INVALID;
 	}
 
 	bool Scene::Initialise()

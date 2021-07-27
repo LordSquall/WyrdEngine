@@ -63,6 +63,9 @@ namespace Wyrd::Editor
 		/* Create a new project shared pointer */
 		_LoadedProject = std::make_shared<Project>(name);
 
+		/* Clear any selection */
+		ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(ENTITY_INVALID));
+
 		/* Create the folder for the project */
 		Utils::CreateFolder(location + "\\" + name);
 
@@ -328,6 +331,9 @@ namespace Wyrd::Editor
 
 	void WorkspaceService::StartFileWatcher()
 	{
+		if (_FileWatcher.Running)
+			EndFileWatcher();
+
 		_FileWatcher.Initialise(GetAssetsDirectory().string(), std::chrono::milliseconds(500));
 		_FileWatcher.Start([](std::string path, FileStatus status) -> void {
 			if (!std::filesystem::is_regular_file(std::filesystem::path(path)) && status != FileStatus::erased)

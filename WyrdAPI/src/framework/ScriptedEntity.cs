@@ -15,7 +15,7 @@ namespace WyrdAPI
             Entity = EntityManager.FindEntityByIndex(entityID);
         }
 
-        public virtual void OnStart() { }
+        public virtual void OnStart() { Console.WriteLine("Parent Called!"); }
 
         public virtual void OnUpdate(float elapsedTime) { }
 

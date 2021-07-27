@@ -181,12 +181,22 @@ namespace Wyrd::Editor
 		/* check to see if the scene already has a camera component on the camera entity */
 		if (_Scene->GetPrimaryCameraEntity() != ENTITY_INVALID)
 		{
-			/*CameraComponent* cameraComponent = _Scene->Get<CameraComponent>(_Scene->GetPrimaryCameraEntity());
+			CameraComponent* cameraComponent = _Scene->Get<CameraComponent>(_Scene->GetPrimaryCameraEntity());
 			if (cameraComponent != nullptr)
 			{
 				_CameraEntity = _Scene->GetPrimaryCameraEntity();
 				_CameraComponent = cameraComponent;
-			}*/
+			}
+			else
+			{
+				_CameraEntity = ENTITY_INVALID;
+				_CameraComponent = nullptr;
+			}
+		}
+		else
+		{
+			_CameraEntity = ENTITY_INVALID;
+			_CameraComponent = nullptr;
 		}
 	}
 }

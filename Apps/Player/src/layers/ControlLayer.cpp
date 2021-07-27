@@ -14,7 +14,7 @@
 
 bool ControlLayer::OnAttach()
 {
-	baseDirectory = "C:/Projects/GameProjects/DemoProject/.builds/";
+	baseDirectory = "C:/Projects/GameProjects/RPG/.builds/";
 
 	
 	if (!LoadCoreFile())
