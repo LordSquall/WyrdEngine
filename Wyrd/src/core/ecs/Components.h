@@ -21,12 +21,16 @@ namespace Wyrd
 	struct WYRD_LIBRARY_API MetaDataComponent
 	{
 		char name[METADATA_COMP_NAME_LENGTH];
+
+		MetaDataComponent() : name("Entity") {}
 	};
 
 	struct WYRD_LIBRARY_API Transform2DComponent
 	{
 		glm::vec2 position;
 		float rotation;
+
+		Transform2DComponent() : position(0.0f, 0.0f), rotation(0.0f) {}
 	};
 
 	struct WYRD_LIBRARY_API SpriteComponent
@@ -36,6 +40,8 @@ namespace Wyrd
 		glm::vec2 tiling;
 		Color color;
 		UID texture;
+
+		SpriteComponent() : position(0.0f, 0.0f), size(0.0f, 0.0f), tiling(1.0f, 1.0f), color({ 1.0f, 1.0f, 1.0f, 1.0f }), texture(UID()) {}
 	};
 
 	/* Script Components */
@@ -61,6 +67,8 @@ namespace Wyrd
 		Rect viewport;
 		float aspectRatio;
 		float size;
+
+		CameraComponent() : viewport(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)), aspectRatio(0.0f), size(0.0f) {}
 	};
 
 	struct WYRD_LIBRARY_API TextComponent
