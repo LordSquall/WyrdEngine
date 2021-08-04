@@ -68,5 +68,7 @@ namespace Wyrd
 		char content[TEXT_COMP_MAX_LENGTH];
 		Color color;
 		char font[TEXT_COMP_FONT_NAME_MAX_LENGTH];
+
+		TextComponent() : content("Text"), color({ 1.0f, 1.0f, 1.0f, 1.0f }), font("ProggyClean") {}
 	};
 };

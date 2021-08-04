@@ -103,7 +103,7 @@ namespace Wyrd::Editor
 						Rect newRect;
 						newRect.position = sprite->position + transform->position;
 						newRect.size = sprite->size;
-						r.Merge(newRect);
+						r = newRect;
 					}
 
 					if (text)

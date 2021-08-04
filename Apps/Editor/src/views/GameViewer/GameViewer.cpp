@@ -118,7 +118,7 @@ namespace Wyrd::Editor
 					cmd.shader = Application::Get().GetResources().Shaders["Text"].get();
 					cmd.content = text->content;
 					cmd.scale = 1.0f;
-					cmd.font = Application::Get().GetResources().FontTypes["DroidSansMono"].get();
+					cmd.font = Application::Get().GetResources().FontTypes[text->font].get();
 					cmd.color = text->color;
 
 					renderer.Submit(cmd);
