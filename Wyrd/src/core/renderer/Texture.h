@@ -9,6 +9,27 @@
 
 namespace Wyrd
 {
+	enum TextureUVWrap
+	{
+		CLAMP_TO_EDGE,
+		CLAMP_TO_BORDER,
+		MIRRORED_REPEAT,
+		MIRRORED_CLAMP,
+		REPEAT
+	};
+
+	struct TextureDesc
+	{
+		unsigned char* data;
+		int width;
+		int height;
+		int channels;
+		TextureUVWrap uvWrapping;
+		std::string description;
+
+		TextureDesc() : data(nullptr), width(0), height(0), channels(0), uvWrapping(TextureUVWrap::REPEAT), description("") { }
+	};
+
 	class WYRD_LIBRARY_API Texture
 	{
 	public:
@@ -35,7 +56,7 @@ namespace Wyrd
 
 		inline const std::string& GetDescription() const { return _description; }
 
-		static std::shared_ptr<Texture> Create(unsigned char* data, int width, int height, int channels, const std::string& description);
+		static Texture* Create(const TextureDesc& desc);
 
 	protected:
 		UID _uid;

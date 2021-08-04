@@ -17,6 +17,7 @@ namespace Wyrd {
 	struct Vertex2D
 	{
 		float x, y;		/* 2D position		*/
+		float u, v;		/* UV               */
 	};
 
 	/* respresents a batch a sprint geometry */

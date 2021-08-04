@@ -109,7 +109,14 @@ void ImportManager::ImportCommonBundle(const std::string& root)
 		dataVector.resize(width * height * 4);
 		common.read((char*)&dataVector[0], sizeof(unsigned char) * (width * height * 4));
 
-		auto newTexture = std::shared_ptr<Wyrd::Texture>(Wyrd::Texture::Create(&dataVector[0], width, height, 4, "Loaded Texture"));
+		TextureDesc textureDesc;
+		textureDesc.data = &dataVector[0];
+		textureDesc.width = width;
+		textureDesc.height = height;
+		textureDesc.channels = 4;
+		textureDesc.description = "Loaded Texture";
+
+		auto newTexture = std::shared_ptr<Wyrd::Texture>(Wyrd::Texture::Create(textureDesc));
 		Application::Get().GetResources().Textures.insert({ UID(textureUID), newTexture});
 	}
 

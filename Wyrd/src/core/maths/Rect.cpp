@@ -66,4 +66,21 @@ namespace Wyrd {
 		// considered a hit, the resolver wont change anything.
 		return true;
 	}
+
+
+	void Rect::Merge(Rect& r)
+	{
+		if (r.position.x < position.x)
+			position.x = r.position.x;
+
+		if (r.position.y < position.y)
+			position.y = r.position.y;
+
+
+		if ((r.position.x + r.size.x) > (position.x + size.x))
+			size.x = r.size.x;
+
+		if ((r.position.y + r.size.y) > (position.y + size.y))
+			size.y = r.size.y;
+	}
 }

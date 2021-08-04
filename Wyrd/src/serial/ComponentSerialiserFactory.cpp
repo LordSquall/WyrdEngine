@@ -200,6 +200,13 @@ namespace Wyrd
 		obj << "size" << data->size;
 	}
 
+	void ComponentSerialiserFactory::Serialise(Object& obj, Wyrd::TextComponent* data)
+	{
+		obj << "content" << data->content;
+		obj << "color" << data->color;
+		obj << "font" << data->font;
+	}
+
 	/* deserialise */
 	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::MetaDataComponent* data)
 	{
@@ -242,5 +249,33 @@ namespace Wyrd
 	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::CameraComponent* data)
 	{
 		data->size = obj.get<Number>("size");
+	}
+
+	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::TextComponent* data)
+	{
+		std::string valStr = obj.get<jsonxx::String>("content");
+		std::strncpy(&data->content[0], valStr.c_str(), valStr.length());
+		data->content[valStr.length()] = '\0';
+
+
+		if (obj.has<Array>("color"))
+		{
+			data->color << obj.get<Array>("color");
+		}
+		else
+		{
+			data->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		}
+
+		if (obj.has<String>("font"))
+		{
+			std::string valStr = obj.get<jsonxx::String>("font");
+			std::strncpy(&data->font[0], valStr.c_str(), valStr.length());
+			data->font[valStr.length()] = '\0';
+		}
+		else
+		{
+			std::sprintf(data->font, "ConsolaMono");
+		}
 	}
 }

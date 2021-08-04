@@ -14,9 +14,23 @@ namespace Wyrd {
 	class WYRD_LIBRARY_API Rect
 	{
 	public:
+		Rect()
+		{
+			position = { 0.0f, 0.0f };
+			size = { 0.0f, 0.0f };
+		}
+
+		Rect(glm::vec2& pos, glm::vec2& size)
+		{
+			position = pos;
+			size = size;
+		}
+
 		bool ContainsPoint(glm::vec2 r);
 		bool ContainsRect(Rect r);
 		bool ContainsRay(Ray r, Ray::Hit& hit);
+
+		void Merge(Rect& r);
 
 	public:
 		glm::vec2 position;
@@ -34,6 +48,9 @@ namespace Wyrd {
 	{
 		glm::vec4 result = lhs * glm::vec4({ rhs.position, rhs.size });
 
-		return { { result.x, result.y }, {result.z, result.w } };
+		Rect r;
+		r.position = { result.x, result.y };
+		r.position = { result.z, result.w };
+		return r;
 	}
 }

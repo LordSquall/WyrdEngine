@@ -9,8 +9,15 @@
 #include <core/ecs/ECS.h>
 #include <core/ecs/EntitySet.h>
 #include <core/scene/Scene.h>
+#include <core/renderer/Texture.h>
+#include <core/renderer/FontType.h>
 
 #include <fstream>
+
+#include <ft2build.h>
+#include <freetype/freetype.h>
+
+std::shared_ptr<FontType> fonttype;
 
 bool ControlLayer::OnAttach()
 {
@@ -61,6 +68,8 @@ bool ControlLayer::OnAttach()
 
 	Application::Get().GetBehaviour().Start(std::shared_ptr<Wyrd::Scene>(scene));
 
+	fonttype = FontType::CreateFromTTFFile("fonts/droid-sans-mono/DroidSansMono.ttf");
+
 	return true;
 }
 
@@ -110,6 +119,22 @@ void ControlLayer::OnRender(Timestep ts, Renderer& renderer)
 
 		renderer.Submit(cmd);
 	}
+
+	{
+
+		Wyrd::DrawTextCommand cmd{};
+		cmd.type = 1;
+		cmd.position = { 0.0f, 0.0f };
+		cmd.vpMatrix = _Camera.GetViewProjectionMatrix();
+		cmd.shader = Application::Get().GetResources().Shaders["Text"].get();
+		cmd.content = "Hello World";
+		cmd.scale = 1.0f;
+		cmd.font = fonttype.get();
+		cmd.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		renderer.Submit(cmd);
+	}
+
 
 	renderer.Flush();
 }

@@ -15,6 +15,7 @@ namespace Wyrd {
 	class Shader;
 	class Texture;
 	class ScriptedClass;
+	class FontType;
 
 	/**
 	 * @brief Resource SubSystem
@@ -45,6 +46,11 @@ namespace Wyrd {
 		 * @brief Texture resource map
 		*/
 		std::map<UID, std::shared_ptr<Texture>> Textures;
+
+		/**
+		 * @brief FontType resource map
+		*/
+		std::map<std::string, std::shared_ptr<FontType>> FontTypes;
 
 	public:
 		static Resources* _Instance;

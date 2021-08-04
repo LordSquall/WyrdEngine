@@ -83,14 +83,40 @@ namespace Wyrd::Editor
 	{
 		if (_Scene != nullptr)
 		{
-			for (Entity e : EntitySet<Transform2DComponent, SpriteComponent, EditorComponent>(*_Scene.get()))
+			/* we want to process all the entities */
+			for (Entity e : EntitySet(*_Scene.get()))
 			{
-				Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
-				SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
 				EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
+				if (editorComponent)
+				{
 
-				editorComponent->inputArea.position = sprite->position + transform->position;
-				editorComponent->inputArea.size = sprite->size;
+					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
+					SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
+					TextComponent* text = _Scene->Get<TextComponent>(e);
+
+					Rect r;
+
+					if (sprite)
+					{
+						// calculate aabb sprite component render rect
+
+						Rect newRect;
+						newRect.position = sprite->position + transform->position;
+						newRect.size = sprite->size;
+						r.Merge(newRect);
+					}
+
+					if (text)
+					{
+						// calculate aabb text component render rect
+					}
+
+					if (editorComponent)
+					{
+						editorComponent->inputArea.position = r.position;
+						editorComponent->inputArea.size = r.size;
+					}
+				}
 			}
 		}
 	}
@@ -123,6 +149,25 @@ namespace Wyrd::Editor
 
 					renderer.Submit(cmd);
 				}
+
+				for (Entity e : EntitySet<Transform2DComponent, TextComponent>(*_Scene.get()))
+				{
+					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
+					TextComponent* text = _Scene->Get<TextComponent>(e);
+
+					Wyrd::DrawTextCommand cmd{};
+					cmd.type = 1;
+					cmd.position = transform->position;
+					cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
+					cmd.shader = Application::Get().GetResources().Shaders["Text"].get();
+					cmd.content = text->content;
+					cmd.scale = 1.0f;
+					cmd.font = Application::Get().GetResources().FontTypes[text->font].get();
+					cmd.color = text->color;
+
+					renderer.Submit(cmd);
+				}
+
 			}
 
 			/* Gizmos */
@@ -202,10 +247,16 @@ namespace Wyrd::Editor
 		_mouseOffset = { ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y };
 
 		/* calculate the viewport boundary */
-		_ViewportBoundary = { {_Boundary.position.x - (_Boundary.size.x - _Viewport.size.x), _Boundary.position.y + (_Boundary.size.y - _Viewport.size.y) }, { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y - ImGui::GetCursorPos().y } };
+		_ViewportBoundary.position.x = _Boundary.position.x - (_Boundary.size.x - _Viewport.size.x);
+		_ViewportBoundary.position.y = _Boundary.position.y + (_Boundary.size.y - _Viewport.size.y);
+		_ViewportBoundary.size.x = ImGui::GetWindowSize().x;
+		_ViewportBoundary.size.y = ImGui::GetWindowSize().y - ImGui::GetCursorPos().y;
 
 		/* calculate the viewport size */
-		_Viewport = { { 0.0f, 0.0f }, { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y - ImGui::GetCursorPos().y } };
+		_Viewport.position.x = 0.0f;
+		_Viewport.position.y = 0.0f;
+		_Viewport.size.x = ImGui::GetWindowSize().x;
+		_Viewport.size.y = ImGui::GetWindowSize().y - ImGui::GetCursorPos().y;
 
 		ImGui::Image((ImTextureID)(UINT_PTR)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport.size.x, _Viewport.size.y), ImVec2(0, 1), ImVec2(1, 0));
 

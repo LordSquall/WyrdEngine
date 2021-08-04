@@ -6,6 +6,7 @@
 #include <core/Application.h>
 #include <core/Resources.h>
 #include <core/renderer/Shader.h>
+#include <core/renderer/FontType.h>
 
 /* local includes */
 #include "ResourceService.h"
@@ -66,6 +67,29 @@ namespace Wyrd::Editor
 			shader->Build(vertexSrc, fragmentSrc);
 			shader->Bind();
 			Application::Get().GetResources().Shaders.insert(std::pair<std::string, std::shared_ptr<Shader>>("Vertex2D", shader));
+		}
+		{
+			/* default text shader */
+			std::ifstream vertexStream(Utils::GetEditorResFolder() + "shaders/text.vs");
+			std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
+
+			std::ifstream fragmentStream(Utils::GetEditorResFolder() + "shaders/text.fs");
+			std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
+
+			std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
+			shader->Build(vertexSrc, fragmentSrc);
+			shader->Bind();
+			Application::Get().GetResources().Shaders.insert(std::pair<std::string, std::shared_ptr<Shader>>("Text", shader));
+		}
+		{
+			/* default font(s) */
+			for (const auto& entry : std::filesystem::directory_iterator(Utils::GetEditorResFolder() + "fonts"))
+			{
+				if (entry.is_regular_file() && entry.path().extension() == ".ttf")
+				{
+					Application::Get().GetResources().FontTypes.insert(std::pair<std::string, std::shared_ptr<FontType>>(entry.path().filename().stem().string(), FontType::CreateFromTTFFile(entry.path().string())));
+				}
+			}
 		}
 
 		/* Load defaults from the editor resources */

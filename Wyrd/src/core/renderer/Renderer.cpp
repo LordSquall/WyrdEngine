@@ -32,6 +32,7 @@ namespace Wyrd
 	{
 		_vertex2DBatch.Initialise(this);
 		_spriteBatch.Initialise(this);
+		_textBatch.Initialise(this);
 	}
 
 	void Renderer::Submit(DrawRectCommand& cmd)
@@ -42,6 +43,11 @@ namespace Wyrd
 	void Renderer::Submit(DrawSpriteCommand& cmd)
 	{
 		_spriteBatch.Submit(cmd);
+	}
+
+	void Renderer::Submit(DrawTextCommand& cmd)
+	{
+		_textBatch.Submit(cmd);
 	}
 
 	void Renderer::Flush()

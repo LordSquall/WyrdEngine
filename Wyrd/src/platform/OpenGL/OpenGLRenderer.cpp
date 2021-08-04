@@ -22,6 +22,9 @@ namespace Wyrd
 		stringStream << glGetString(GL_RENDERER);
 		_vendorInfo.renderer = stringStream.str();
 		stringStream.str(std::string());
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	OpenGLRenderer::~OpenGLRenderer()

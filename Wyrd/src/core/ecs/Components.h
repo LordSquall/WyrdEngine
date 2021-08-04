@@ -13,6 +13,8 @@
 #define METADATA_COMP_NAME_LENGTH		32
 #define SCRIPT_COMP_PROP_MAX			32
 #define SCRIPT_COMP_PROP_DATA_LENGTH	1024
+#define TEXT_COMP_MAX_LENGTH			1024
+#define TEXT_COMP_FONT_NAME_MAX_LENGTH  64
 
 namespace Wyrd
 {
@@ -59,5 +61,12 @@ namespace Wyrd
 		Rect viewport;
 		float aspectRatio;
 		float size;
+	};
+
+	struct WYRD_LIBRARY_API TextComponent
+	{
+		char content[TEXT_COMP_MAX_LENGTH];
+		Color color;
+		char font[TEXT_COMP_FONT_NAME_MAX_LENGTH];
 	};
 };

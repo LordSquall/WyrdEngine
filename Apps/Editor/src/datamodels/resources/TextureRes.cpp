@@ -35,8 +35,16 @@ namespace Wyrd::Editor
 			/* load the data from file */
 			TextureLoader::Load(_path, *this);
 
+			/* build the texture description structure */
+			TextureDesc textureDesc;
+			textureDesc.data = _data;
+			textureDesc.width = _width;
+			textureDesc.height = _height;
+			textureDesc.channels = _channels;
+			textureDesc.description = Utils::GetFilename(_path, true) + "_Texture";
+
 			/* create the core renderer resource and load */
-			_texture = Wyrd::Texture::Create(_data, _width, _height, _channels, Utils::GetFilename(_path, true) + "_Texture");
+			_texture.reset(Wyrd::Texture::Create(textureDesc));
 
 			/* in the editor project, we want to the core assets uid to match the resource to allow easy decoupled linkage */
 			_texture->SetUID(_resourceID);

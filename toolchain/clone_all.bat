@@ -11,5 +11,6 @@ git clone https://github.com/mono/mono.git
 git clone https://github.com/graeme-hill/crossguid.git
 git clone https://github.com/Chocobo1/Hash.git
 git clone https://github.com/microsoft/GSL.git
+git clone https://gitlab.freedesktop.org/freetype/freetype.git
 
 setx WYRD_EXTERN_REPOS %CD%

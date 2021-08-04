@@ -8,6 +8,7 @@
 #include "core/renderer/commands/RendererCommands.h"
 #include "core/pipeline/Vertex2DBatch.h"
 #include "core/pipeline/SpriteBatch.h"
+#include "core/pipeline/TextBatch.h"
 
 namespace Wyrd
 {
@@ -41,6 +42,7 @@ namespace Wyrd
 		virtual void Initialise();
 		virtual void Submit(DrawRectCommand& cmd);
 		virtual void Submit(DrawSpriteCommand& cmd);
+		virtual void Submit(DrawTextCommand& cmd);
 		virtual void Flush();
 
 		inline struct RendererInfo& GetVendorInfo() { return _vendorInfo; }
@@ -51,6 +53,7 @@ namespace Wyrd
 	private:
 		Vertex2DBatch _vertex2DBatch;
 		SpriteBatch _spriteBatch;
+		TextBatch _textBatch;
 
 	private:
 		static RendererAPI s_RendererAPI;

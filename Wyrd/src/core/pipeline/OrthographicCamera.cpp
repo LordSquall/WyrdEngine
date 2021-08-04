@@ -8,12 +8,12 @@
 namespace Wyrd
 {
 	OrthographicCamera::OrthographicCamera()
-		: _ProjectionMatrix(1.0f), _ViewMatrix(1.0f), _ViewProjectionMatrix(1.0f), _Size(64.0), _NearPlane(-1.0f), _FarPlane(1.0f), _AspectRatio(1.0f), _Viewport({{ 0.0f, 0.0f }, {0.0f, 0.0f}})
+		: _ProjectionMatrix(1.0f), _ViewMatrix(1.0f), _ViewProjectionMatrix(1.0f), _Size(64.0), _NearPlane(-1.0f), _FarPlane(1.0f), _AspectRatio(1.0f), _Viewport(glm::vec2( 0.0f, 0.0f), glm::vec2(0.0f, 0.0f))
 	{
 	}
 
 	OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top)
-		: _ProjectionMatrix(glm::ortho(left, right, bottom, top, -1.0f, 1.0f)), _ViewMatrix(1.0f), _Size(1.0), _NearPlane(-1.0f), _FarPlane(1.0f), _AspectRatio(1.0f), _Viewport({ { 0.0f, 0.0f }, {0.0f, 0.0f} })
+		: _ProjectionMatrix(glm::ortho(left, right, bottom, top, -1.0f, 1.0f)), _ViewMatrix(1.0f), _Size(1.0), _NearPlane(-1.0f), _FarPlane(1.0f), _AspectRatio(1.0f), _Viewport(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f))
 	{
 		_ViewProjectionMatrix = _ProjectionMatrix * _ViewMatrix;
 	}

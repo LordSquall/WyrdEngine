@@ -7,7 +7,7 @@ namespace Wyrd
 	class OpenGLTexture : public Texture
 	{
 	public:
-		OpenGLTexture(unsigned char* data, int width, int height, int channels, const std::string& description);
+		OpenGLTexture(const TextureDesc& desc);
 		~OpenGLTexture();
 		virtual void Bind() const override;
 		virtual void Unbind() const override;

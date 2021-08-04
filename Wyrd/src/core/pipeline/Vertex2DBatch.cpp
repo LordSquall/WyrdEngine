@@ -31,6 +31,16 @@ namespace Wyrd
 
 	void Vertex2DBatch::Submit(DrawRectCommand& cmd)
 	{
+		bool flushRequired = false;
+
+		/* switching shaders requires a flush */
+		if ((_Shader != nullptr) && _Shader != cmd.shader)
+			flushRequired = true;
+
+		/* flush if required */
+		if (flushRequired == true)
+			Flush();
+
 		float t = cmd.thickness * 0.5f;
 
 		// top
@@ -65,7 +75,6 @@ namespace Wyrd
 		_Shader = cmd.shader;
 		_Color = cmd.color;
 	}
-
 
 	void Vertex2DBatch::Flush()
 	{

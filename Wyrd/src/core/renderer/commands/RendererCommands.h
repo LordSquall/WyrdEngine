@@ -13,6 +13,7 @@ namespace Wyrd
 {
 	class Shader;
 	class Texture;
+	class FontType;
 
 	struct WYRD_LIBRARY_API DrawCommand
 	{
@@ -35,6 +36,15 @@ namespace Wyrd
 		glm::vec2 position;
 		glm::vec2 size;
 		float thickness;
+		Color color;
+	};
+
+	struct WYRD_LIBRARY_API DrawTextCommand : public DrawCommand
+	{
+		glm::vec2 position;
+		float scale;
+		std::string content;
+		FontType* font;
 		Color color;
 	};
 }

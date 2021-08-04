@@ -106,6 +106,24 @@ namespace Wyrd::Editor
 					renderer.Submit(cmd);
 				}
 				
+				for (Entity e : EntitySet<Transform2DComponent, TextComponent>(*_Scene.get()))
+				{
+					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
+					TextComponent* text = _Scene->Get<TextComponent>(e);
+
+					Wyrd::DrawTextCommand cmd{};
+					cmd.type = 1;
+					cmd.position = transform->position;
+					cmd.vpMatrix = _Camera.GetViewProjectionMatrix();
+					cmd.shader = Application::Get().GetResources().Shaders["Text"].get();
+					cmd.content = text->content;
+					cmd.scale = 1.0f;
+					cmd.font = Application::Get().GetResources().FontTypes["DroidSansMono"].get();
+					cmd.color = text->color;
+
+					renderer.Submit(cmd);
+				}
+
 				renderer.Flush();
 			}
 
@@ -119,7 +137,10 @@ namespace Wyrd::Editor
 		static bool showGizmoSettings = false;
 
 		/* calculate the viewport size */
-		_Viewport = { { 0.0f, 0.0f }, { ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y - ImGui::GetCursorPos().y } };
+		_Viewport.position.x = 0.0f;
+		_Viewport.position.y = 0.0f;
+		_Viewport.size.x = ImGui::GetContentRegionAvail().x;
+		_Viewport.size.y = ImGui::GetContentRegionAvail().y - ImGui::GetCursorPos().y;
 
 
 		const char* items[] = { "Export Size", "Window Size", "800x600" };

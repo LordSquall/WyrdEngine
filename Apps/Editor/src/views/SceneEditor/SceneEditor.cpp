@@ -88,6 +88,12 @@ namespace Wyrd::Editor
 								c->color = { 1.0f, 1.0f, 1.0f, 1.0f };
 							}
 							ImGui::Separator();
+							if (ImGui::MenuItem("Add Text"))
+							{
+								TextComponent* c = scene.AssignComponent<TextComponent>(e);
+								sprintf(c->content, "Text");
+							}
+							ImGui::Separator();
 							if (ImGui::MenuItem("Add Script"))
 							{
 								ScriptComponent* c = scene.AssignComponent<ScriptComponent>(e);

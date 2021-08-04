@@ -47,7 +47,14 @@ namespace Wyrd {
 
 			data = SOIL_load_image("../../Wyrd/res/textures/box_01.png", &width, &height, &channels, 4);
 
-			std::shared_ptr<Texture> texture = std::shared_ptr<Texture>(Texture::Create(data, width, height, channels, "Default Sprite Texture"));
+			TextureDesc textureDesc;
+			textureDesc.data = data;
+			textureDesc.width = width;
+			textureDesc.height = height;
+			textureDesc.channels = channels;
+			textureDesc.description = "Default Sprite Texture";
+
+			std::shared_ptr<Texture> texture = std::shared_ptr<Texture>(Texture::Create(textureDesc));
 			texture->SetUID(UID(RESOURCE_DEFAULT_TEXTURE));
 			_Resources->Textures.insert(std::pair<std::string, std::shared_ptr<Texture>>(UID(RESOURCE_DEFAULT_TEXTURE), texture));
 		}
