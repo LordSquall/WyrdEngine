@@ -13,6 +13,7 @@ namespace Wyrd::Editor
 		SHADER = 3,
 		MODEL = 4,
 		SCENE = 5,
-		SCRIPT = 6
+		SCRIPT = 6,
+		FONT = 7
 	};
 }

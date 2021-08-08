@@ -40,6 +40,7 @@ namespace Wyrd {
 
 		glm::mat4						_VPMatrix;
 		Shader*							_Shader;
+		FontType*						_FontType;
 		Color							_Color;
 	};
 }

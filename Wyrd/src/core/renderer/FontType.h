@@ -15,17 +15,17 @@ namespace Wyrd
 	class WYRD_LIBRARY_API FontType
 	{
 	public:
-		struct Character {
-			std::shared_ptr<Texture>	Texture;	
+		struct Character {	
 			glm::ivec2					Size;       // Size of glyph
 			glm::ivec2					Bearing;    // Offset from baseline to left/top of glyph
 			unsigned int				Advance;    // Offset to advance to next glyph
+			glm::vec2					uv1;
+			glm::vec2					uv2;
+			std::vector<unsigned char>	data;
 		};
 
 	public:
 		virtual ~FontType() {}
-
-		static std::shared_ptr<FontType> CreateFromTTFFile(const std::string& filename);
 
 		inline std::map<char, Character>& GetCharacters() { return _Characters; }
 		inline int GetWidth() { return _width; }

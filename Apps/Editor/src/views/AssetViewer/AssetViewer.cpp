@@ -271,6 +271,7 @@ namespace Wyrd::Editor
 				case ResourceType::SHADER:
 				case ResourceType::NONE:
 				default:
+					DrawUnknownItem(resIdx, file);
 					break;
 				}
 			}
@@ -494,7 +495,7 @@ namespace Wyrd::Editor
 			ImGui::Text("Filename: %s", unknownResourceName.c_str());
 			ImGui::EndTooltip();
 		}
-
+		
 		/* Context Menu */
 		if (ImGui::BeginPopupContextItem())
 		{
@@ -504,16 +505,16 @@ namespace Wyrd::Editor
 			}
 			ImGui::EndPopup();
 		}
-
+		
 		/* Input */
 		if (ImGui::IsItemHovered())
 		{
 			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
 				_SelectedResource = resID;
 		}
-
+		
 		Utils::GetFilename(unknownResourceName, true);
-
+		
 		/* Visuals */
 		ImGui::Image(*_UnknownIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 		ImGui::TextClipped(filename.c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");

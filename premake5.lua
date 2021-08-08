@@ -120,14 +120,12 @@ group ""
 			"%{includedir.tinyobjloader}",
 			"%{includedir.mono}",
 			"%{includedir.spdlog}",
-			"%{includedir.uuid}",
-			"%{includedir.freetype}"
+			"%{includedir.uuid}"
 		}
 		
 		libdirs
 		{
 			monolibdir,
-			externallibsdir .. "/freetype/builds/Debug/"
 		}
 		
 		links
@@ -137,7 +135,6 @@ group ""
 			"SOIL",
 			"jsonxx",
 			"uuid",
-			"freetyped",
 			"mono-2.0-sgen",
 			"opengl32.dll"
 		}
@@ -307,6 +304,11 @@ project "Editor"
 		"%{includedir.freetype}",
 		iif(renderdocfound, includedir["renderdoc"], "")
 	}
+	
+	libdirs
+	{
+		externallibsdir .. "/freetype/builds/Debug/"
+	}
 
 	links
 	{
@@ -316,6 +318,7 @@ project "Editor"
 		"SOIL",
 		"jsonxx",
 		"imgui",
+		"freetyped",
 		"opengl32.dll"
 	}
 	
@@ -389,8 +392,7 @@ project "Player"
 		"%{includedir.spdlog}",
 		"%{includedir.glm}",
 		"%{includedir.uuid}",
-		"%{includedir.mono}",
-		"%{includedir.freetype}"
+		"%{includedir.mono}"
 	}
 	
 	links

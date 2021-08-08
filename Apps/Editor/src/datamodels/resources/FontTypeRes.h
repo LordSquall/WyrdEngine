@@ -21,7 +21,7 @@ namespace Wyrd::Editor
 
 		// Resource overrides
 		bool Load() override;
-		int GetType() override { return ResourceType::TEXTURE; }
+		int GetType() override { return ResourceType::FONT; }
 
 	private:
 		bool _loaded;

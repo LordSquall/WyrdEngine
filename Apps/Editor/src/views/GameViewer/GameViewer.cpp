@@ -22,7 +22,7 @@
 
 namespace Wyrd::Editor
 {
-	GameViewer::GameViewer(EditorLayer* editorLayer) : EditorViewBase("Game Viewer", editorLayer), _CameraEntity(ENTITY_INVALID), _CameraComponent(nullptr), _SizeConfigID(0)
+	GameViewer::GameViewer(EditorLayer* editorLayer) : EditorViewBase("Game Viewer", editorLayer), _CameraEntity(ENTITY_INVALID), _CameraComponent(nullptr), _SizeConfigID(1)
 	{
 		/* retrieve services */
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);

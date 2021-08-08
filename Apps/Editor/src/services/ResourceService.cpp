@@ -33,6 +33,7 @@ namespace Wyrd::Editor
 		_extensions.insert(std::pair<std::string, ResourceType>(".vs", ResourceType::SHADER));
 		_extensions.insert(std::pair<std::string, ResourceType>(".fs", ResourceType::SHADER));
 		_extensions.insert(std::pair<std::string, ResourceType>(".cs", ResourceType::SCRIPT));
+		_extensions.insert(std::pair<std::string, ResourceType>(".ttf", ResourceType::FONT));
 
 		/* Register the cache file extensions for each of the imported resource types */
 		_extensions.insert(std::pair<std::string, ResourceType>(".texture", ResourceType::TEXTURE));
@@ -87,7 +88,8 @@ namespace Wyrd::Editor
 			{
 				if (entry.is_regular_file() && entry.path().extension() == ".ttf")
 				{
-					Application::Get().GetResources().FontTypes.insert(std::pair<std::string, std::shared_ptr<FontType>>(entry.path().filename().stem().string(), FontType::CreateFromTTFFile(entry.path().string())));
+					AddResource(entry.path().string(), UID());
+					//Application::Get().GetResources().FontTypes.insert(std::pair<std::string, std::shared_ptr<FontType>>(entry.path().filename().stem().string(), FontType::CreateFromTTFFile(entry.path().string())));
 				}
 			}
 		}
