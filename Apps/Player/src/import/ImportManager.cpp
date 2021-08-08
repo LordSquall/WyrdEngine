@@ -5,6 +5,7 @@
 #include <core/Application.h>
 #include <core/renderer/Shader.h>
 #include <core/renderer/Texture.h>
+#include <core/renderer/FontType.h>
 #include <core/behaviour/ScriptedClass.h>
 
 #include "import/ImportManager.h"
@@ -118,6 +119,58 @@ void ImportManager::ImportCommonBundle(const std::string& root)
 
 		auto newTexture = std::shared_ptr<Wyrd::Texture>(Wyrd::Texture::Create(textureDesc));
 		Application::Get().GetResources().Textures.insert({ UID(textureUID), newTexture});
+	}
+
+	size_t fontCount;
+	common.read((char*)&fontCount, sizeof(size_t));
+
+	for (size_t i = 0; i < fontCount; i++)
+	{
+		char fontName[64];
+		common.read((char*)&fontName[0], sizeof(char) * 64);
+
+		auto newFontType = std::make_shared<Wyrd::FontType>();
+
+		uint32_t width;
+		uint32_t height;
+		uint32_t channels;
+
+		common.read((char*)&width, sizeof(uint32_t));
+		common.read((char*)&height, sizeof(uint32_t));
+		common.read((char*)&channels, sizeof(uint32_t));
+
+		std::vector<unsigned char> dataVector;
+		dataVector.resize(width * height * channels);
+		common.read((char*)&dataVector[0], sizeof(unsigned char) * (width * height * channels));
+
+		TextureDesc textureDesc;
+		textureDesc.data = &dataVector[0];
+		textureDesc.width = width;
+		textureDesc.height = height;
+		textureDesc.channels = 1;
+		textureDesc.uvWrapping = TextureUVWrap::CLAMP_TO_EDGE;
+		textureDesc.description = "Loaded Texture";
+
+		newFontType->Texture = std::shared_ptr<Wyrd::Texture>(Wyrd::Texture::Create(textureDesc));
+
+		size_t characterCount;
+		common.read((char*)&characterCount, sizeof(size_t));
+		for (size_t c = 0; c < characterCount; c++)
+		{
+			Wyrd::FontType::Character character;
+			character.Advance;
+
+			common.read((char*)&character.Advance, sizeof(unsigned int));
+			common.read((char*)&character.Bearing, sizeof(glm::ivec2));
+			common.read((char*)&character.Size, sizeof(glm::ivec2));
+			common.read((char*)&character.uv1, sizeof(glm::vec2));
+			common.read((char*)&character.uv2, sizeof(glm::vec2));
+
+			newFontType->GetCharacters().insert(std::pair<char, FontType::Character>(c, character));
+		}
+
+		Application::Get().GetResources().FontTypes.insert({ fontName, newFontType });
+		
 	}
 
 	{

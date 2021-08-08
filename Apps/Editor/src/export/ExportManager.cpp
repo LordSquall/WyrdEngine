@@ -132,6 +132,36 @@ namespace Wyrd::Editor
 			commonBundle.write((char*)data, sizeof(unsigned char) * (width * height * 4));
 		}
 
+		/* add the font resources */
+		size_t fontCount = Application::Get().GetResources().FontTypes.size();
+		commonBundle.write((char*)&fontCount, sizeof(size_t));
+		for (auto& f : Application::Get().GetResources().FontTypes)
+		{
+			char fontName[64];
+			strcpy(fontName, f.first.c_str());
+
+			uint32_t width = (uint32_t)f.second->Texture->GetWidth();
+			uint32_t height = (uint32_t)f.second->Texture->GetHeight();
+			uint32_t channels = (uint32_t)f.second->Texture->GetChannels();
+			unsigned char* data = f.second->Texture->GetData();
+
+			commonBundle.write((char*)fontName, sizeof(char) * 64);
+			commonBundle.write((char*)&width, sizeof(uint32_t));
+			commonBundle.write((char*)&height, sizeof(uint32_t));
+			commonBundle.write((char*)&channels, sizeof(uint32_t));
+			commonBundle.write((char*)data, sizeof(unsigned char) * (width * height * channels));
+
+			size_t characterCount = f.second->GetCharacters().size();
+			commonBundle.write((char*)&characterCount, sizeof(size_t));
+			for (auto& c : f.second->GetCharacters())
+			{
+				commonBundle.write((char*)&c.second.Advance, sizeof(unsigned int));
+				commonBundle.write((char*)&c.second.Bearing, sizeof(glm::ivec2));
+				commonBundle.write((char*)&c.second.Size, sizeof(glm::ivec2));
+				commonBundle.write((char*)&c.second.uv1, sizeof(glm::vec2));
+				commonBundle.write((char*)&c.second.uv2, sizeof(glm::vec2));
+			}
+		}
 
 		/* build a list of the script files */
 		std::map<UID, std::string> scriptFiles;

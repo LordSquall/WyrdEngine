@@ -24,10 +24,11 @@ namespace Wyrd
 		int width;
 		int height;
 		int channels;
+		bool maintainCPU;
 		TextureUVWrap uvWrapping;
 		std::string description;
 
-		TextureDesc() : data(nullptr), width(0), height(0), channels(0), uvWrapping(TextureUVWrap::REPEAT), description("") { }
+		TextureDesc() : data(nullptr), width(0), height(0), channels(0), maintainCPU(false), uvWrapping(TextureUVWrap::REPEAT), description("") { }
 	};
 
 	class WYRD_LIBRARY_API Texture
@@ -48,6 +49,7 @@ namespace Wyrd
 		inline void SetWidth(int width) { _width = width; }
 		inline int GetHeight() const { return _height; }
 		inline void SetHeight(int height) { _height = height; }
+		inline int GetChannels() const { return _channels; }
 
 		inline UID GetUID() { return _uid; }
 		inline void SetUID(UID uid) { _uid = uid; }
@@ -62,7 +64,9 @@ namespace Wyrd
 		UID _uid;
 		int _height;
 		int _width;
+		int _channels;
 		unsigned char* _data;
 		std::string _description;
+		bool _maintainCPU;
 	};
 }

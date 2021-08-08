@@ -36,6 +36,11 @@ void ComponentSerialiserFactory::Deserialise(const std::string& name, std::ifstr
 		CameraComponent* comp = new (buffer) CameraComponent();
 		Deserialise(stream, comp);
 	}
+	else if (strcmp(name.c_str(), "Text") == 0)
+	{
+		TextComponent* comp = new (buffer) TextComponent();
+		Deserialise(stream, comp);
+	}
 }
 
 /* deserialise */
@@ -91,4 +96,11 @@ void ComponentSerialiserFactory::Deserialise(std::ifstream& stream, Wyrd::Camera
 	stream.read((char*)&data->viewport, sizeof(Rect));
 	stream.read((char*)&data->aspectRatio, sizeof(float));
 	stream.read((char*)&data->size, sizeof(float));
+}
+
+void ComponentSerialiserFactory::Deserialise(std::ifstream& stream, Wyrd::TextComponent* data)
+{
+	stream.read(data->content, sizeof(char) * TEXT_COMP_MAX_LENGTH);
+	stream.read((char*)&data->color, sizeof(Wyrd::Color));
+	stream.read(data->font, sizeof(char) * TEXT_COMP_FONT_NAME_MAX_LENGTH);
 }

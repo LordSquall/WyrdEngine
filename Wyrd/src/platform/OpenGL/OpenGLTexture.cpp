@@ -13,8 +13,29 @@ namespace Wyrd
 		/* Store width, height and data */
 		_width = desc.width;
 		_height = desc.height;
-		_data = desc.data;
+		_channels = desc.channels;
 		_description = desc.description;
+		_maintainCPU = desc.maintainCPU;
+		
+		/* we have requested to maintain a CPU copy of the texture so we need to create the storage */
+		if (_maintainCPU)
+		{
+			size_t bufferSize = sizeof(unsigned char) * (_width * _height * _channels);
+			_data = (unsigned char*)malloc(bufferSize);
+			if (desc.data == 0)
+			{
+				memset(_data, 0, bufferSize);
+			}
+			else
+			{
+				memcpy_s(_data, bufferSize, desc.data, bufferSize);
+			}
+		}
+		else
+		{
+			_data = desc.data;
+		}
+		
 
 		glGenTextures(1, &_rendererID);
 		glBindTexture(GL_TEXTURE_2D, _rendererID);
@@ -48,7 +69,7 @@ namespace Wyrd
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
-		switch (desc.channels)
+		switch (_channels)
 		{
 		case 1:
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, _width, _height, 0, GL_RED, GL_UNSIGNED_BYTE, _data);
@@ -65,6 +86,12 @@ namespace Wyrd
 	OpenGLTexture::~OpenGLTexture()
 	{
 		glDeleteTextures(1, &_rendererID);
+
+		if (_maintainCPU)
+		{
+			free(_data);
+			_data = nullptr;
+		}
 	}
 
 	void OpenGLTexture::Bind() const
@@ -89,6 +116,16 @@ namespace Wyrd
 
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable byte-alignment restriction
 		glTexSubImage2D(GL_TEXTURE_2D, 0, xOffset, yOffset, width, height, GL_RED, GL_UNSIGNED_BYTE, data);
+
+		if (_maintainCPU)
+		{
+			int initialOffset = xOffset + (yOffset * _width * _channels);
+
+			for (int i = 0; i < height; i++)
+			{
+				memcpy(&_data[initialOffset + (i * (_width * _channels))], &data[i * (width * _channels)], sizeof(unsigned char) * (width * _channels));
+			}
+		}
 	}
 
 

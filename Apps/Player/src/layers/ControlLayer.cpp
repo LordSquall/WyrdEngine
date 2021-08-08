@@ -114,16 +114,20 @@ void ControlLayer::OnRender(Timestep ts, Renderer& renderer)
 		renderer.Submit(cmd);
 	}
 
+	for (Entity e : EntitySet<Wyrd::Transform2DComponent, Wyrd::TextComponent>(*scene))
 	{
+		Transform2DComponent* transform = scene->Get<Wyrd::Transform2DComponent>(e);
+		TextComponent* text = scene->Get<Wyrd::TextComponent>(e);
+
 		Wyrd::DrawTextCommand cmd{};
 		cmd.type = 1;
-		cmd.position = { 0.0f, 0.0f };
+		cmd.position = transform->position;
 		cmd.vpMatrix = _Camera.GetViewProjectionMatrix();
 		cmd.shader = Application::Get().GetResources().Shaders["Text"].get();
-		cmd.content = "Hello World";
+		cmd.content = text->content;
 		cmd.scale = 1.0f;
-		cmd.font = fonttype.get();
-		cmd.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		cmd.font = Application::Get().GetResources().FontTypes[text->font].get();
+		cmd.color = text->color;
 
 		renderer.Submit(cmd);
 	}

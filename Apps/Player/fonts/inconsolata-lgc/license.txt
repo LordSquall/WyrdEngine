@@ -1,3 +1,0 @@
-Copyright 2006 Raph Levien. Modifications Copyright 2014 Kirill Chernyshov.
-
-Released under the SIL Open Font License, http://scripts.sil.org/OFL.

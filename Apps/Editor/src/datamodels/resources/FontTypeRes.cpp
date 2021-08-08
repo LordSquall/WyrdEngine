@@ -66,6 +66,7 @@ namespace Wyrd::Editor
 			fontTextureDesc.height = config.size.y;
 			fontTextureDesc.channels = 1;
 			fontTextureDesc.uvWrapping = TextureUVWrap::CLAMP_TO_EDGE;
+			fontTextureDesc.maintainCPU = true;
 			fontTextureDesc.description = "Font - " + std::filesystem::path(_path).filename().stem().string();
 
 			_fontType->Texture.reset(Texture::Create(fontTextureDesc));

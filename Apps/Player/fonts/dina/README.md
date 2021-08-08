@@ -1,1 +1,0 @@
-Gallery image was rendered at a font size of 10 in Sublime Text (OS X) without antialiasing

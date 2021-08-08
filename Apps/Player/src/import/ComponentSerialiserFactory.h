@@ -17,4 +17,5 @@ public:
 	static void Deserialise(std::ifstream& obj, Wyrd::SpriteComponent* data);
 	static void Deserialise(std::ifstream& obj, Wyrd::ScriptComponent* data);
 	static void Deserialise(std::ifstream& obj, Wyrd::CameraComponent* data);
+	static void Deserialise(std::ifstream& obj, Wyrd::TextComponent* data);
 };

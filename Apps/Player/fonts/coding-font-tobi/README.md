@@ -1,1 +1,0 @@
-displayed at 16 pt without antialiasing
