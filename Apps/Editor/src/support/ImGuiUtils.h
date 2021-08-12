@@ -8,6 +8,7 @@
 #include <imgui_internal.h>
 #include <misc/cpp/imgui_stdlib.h>
 
+#define IMGUI_DND_ENTITY	"DND_ENTITY"
 #define IMGUI_DND_TEXTURE	"DND_TEXTURE"
 #define IMGUI_DND_SCENE		"DND_SCENE"
 #define IMGUI_DND_SCRIPT	"DND_SCRIPT"

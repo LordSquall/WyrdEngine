@@ -43,6 +43,10 @@ namespace Wyrd
 			{
 				Serialise(obj, (TextComponent*)data);
 			}
+			else if (strcmp(name.c_str(), "Relationship") == 0)
+			{
+				Serialise(obj, (RelationshipComponent*)data);
+			}
 
 			return obj;
 		}
@@ -79,6 +83,11 @@ namespace Wyrd
 				TextComponent* comp = new (buffer) TextComponent();
 				Deserialise(obj, comp);
 			}
+			else if (strcmp(name.c_str(), "Relationship") == 0)
+			{
+				RelationshipComponent* comp = new (buffer) RelationshipComponent();
+				Deserialise(obj, comp);
+			}
 		}
 
 		static void Serialise(Object& obj, Wyrd::MetaDataComponent* data);
@@ -87,6 +96,7 @@ namespace Wyrd
 		static void Serialise(Object& obj, Wyrd::ScriptComponent* data);
 		static void Serialise(Object& obj, Wyrd::CameraComponent* data);
 		static void Serialise(Object& obj, Wyrd::TextComponent* data);
+		static void Serialise(Object& obj, Wyrd::RelationshipComponent* data);
 
 		static void Deserialise(Object& obj, Wyrd::MetaDataComponent* data);
 		static void Deserialise(Object& obj, Wyrd::Transform2DComponent* data);
@@ -94,5 +104,6 @@ namespace Wyrd
 		static void Deserialise(Object& obj, Wyrd::ScriptComponent* data);
 		static void Deserialise(Object& obj, Wyrd::CameraComponent* data);
 		static void Deserialise(Object& obj, Wyrd::TextComponent* data);
+		static void Deserialise(Object& obj, Wyrd::RelationshipComponent* data);
 	};
 };

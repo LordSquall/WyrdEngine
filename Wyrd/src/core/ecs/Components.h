@@ -79,4 +79,16 @@ namespace Wyrd
 
 		TextComponent() : content("Text"), color({ 1.0f, 1.0f, 1.0f, 1.0f }), font("ProggyClean") {}
 	};
+
+	struct WYRD_LIBRARY_API RelationshipComponent
+	{
+		Entity first;
+		Entity previous;
+		Entity next;
+		Entity parent;
+		uint32_t childrenCnt;
+		int32_t depth;
+
+		RelationshipComponent() : first(ENTITY_INVALID), previous(ENTITY_INVALID), next(ENTITY_INVALID), parent(ENTITY_INVALID), depth(0) {}
+	};
 };

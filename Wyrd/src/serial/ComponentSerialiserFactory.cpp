@@ -12,6 +12,7 @@ using namespace jsonxx;
 
 namespace Wyrd
 {
+	
 	void ScriptComponentPropSerialise(jsonxx::Object& prop, const Wyrd::ScriptComponent* data, std::pair<std::string, std::shared_ptr<ScriptProperty>> classProp, int index)
 	{
 		if (strcmp(classProp.second->GetTypeName().c_str(), "Int32") == 0)
@@ -207,7 +208,28 @@ namespace Wyrd
 		obj << "font" << data->font;
 	}
 
+	void ComponentSerialiserFactory::Serialise(Object& obj, Wyrd::RelationshipComponent* data)
+	{
+		obj << "first" << data->first;
+		obj << "previous" << data->previous;
+		obj << "next" << data->next;
+		obj << "parent" << data->parent;
+		obj << "childrenCnt" << data->childrenCnt;
+		obj << "depth" << data->depth;
+	}
+
 	/* deserialise */
+	template <typename T>
+	T Get(Object& obj, const std::string& name, T defaultValue) {
+		if (obj.has<T>(name))
+		{
+			return obj.get<T>(name);
+		}
+
+		return defaultValue;
+	}
+
+
 	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::MetaDataComponent* data)
 	{
 		std::string name = obj.get<String>("name");
@@ -277,5 +299,15 @@ namespace Wyrd
 		{
 			std::sprintf(data->font, "ConsolaMono");
 		}
+	}
+
+	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::RelationshipComponent* data)
+	{
+		data->first = Get<Number>(obj, "first", ENTITY_INVALID);
+		data->previous = Get<Number>(obj, "previous", ENTITY_INVALID);
+		data->next = Get<Number>(obj, "next", ENTITY_INVALID);
+		data->parent = Get<Number>(obj, "parent", ENTITY_INVALID);
+		data->childrenCnt = Get<Number>(obj, "childrenCnt", ENTITY_INVALID);
+		data->depth = Get<Number>(obj, "depth", ENTITY_INVALID);
 	}
 }

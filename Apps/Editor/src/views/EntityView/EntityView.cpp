@@ -9,25 +9,25 @@
 #include <core/ecs/EntitySet.h>
 
 /* local includes */
-#include "SceneEditor.h"
+#include "EntityView.h"
 #include "support/ImGuiUtils.h"
 
 namespace Wyrd::Editor
 {
-	SceneEditor::SceneEditor(EditorLayer* editorLayer) : EditorViewBase("Scene Editor", editorLayer), _SelectedEntity(ENTITY_INVALID) { }
+	EntityView::EntityView(EditorLayer* editorLayer) : EditorViewBase("Entities", editorLayer), _SelectedEntity(ENTITY_INVALID) { }
 
-	SceneEditor::~SceneEditor() { }
+	EntityView::~EntityView() { }
 
-	void SceneEditor::OnInitialise()
+	void EntityView::OnInitialise()
 	{
 		_EventService = ServiceManager::Get<EventService>(ServiceManager::Service::Events);
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace);
 		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources);
 
-		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(SceneEditor::OnSelectedEntityChanged));
+		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(EntityView::OnSelectedEntityChanged));
 	}
 
-	void SceneEditor::OnEditorRender()
+	void EntityView::OnEditorRender()
 	{		
 		if (_WorkspaceService->IsSceneLoaded())
 		{
@@ -153,7 +153,7 @@ namespace Wyrd::Editor
 	}
 
 
-	void SceneEditor::OnSelectedEntityChanged(Events::EventArgs& args)
+	void EntityView::OnSelectedEntityChanged(Events::EventArgs& args)
 	{
 		Events::SelectedEntityChangedArgs& evtArgs = static_cast<Events::SelectedEntityChangedArgs&>(args);
 

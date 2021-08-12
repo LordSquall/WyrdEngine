@@ -126,6 +126,9 @@ namespace Wyrd {
 		template<typename Component>
 		Component* Get(Entity entity)
 		{
+			if (entity == ENTITY_INVALID)
+				return nullptr;
+
 			int componentID = GetID<Component>();
 			if (!entities[entity-1].mask.test(componentID))
 				return nullptr;

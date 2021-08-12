@@ -43,6 +43,7 @@ namespace Wyrd
 		RegisterComponent<ScriptComponent>("Script", "ScriptComponent", true);
 		RegisterComponent<CameraComponent>("Camera", "CameraComponent", true);
 		RegisterComponent<TextComponent>("Text", "TextComponent", true);
+		RegisterComponent<RelationshipComponent>("Relationship", "RelationshipComponent", true);
 		return true;
 	}
 

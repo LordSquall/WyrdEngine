@@ -6,11 +6,11 @@
 
 namespace Wyrd::Editor
 {
-	class SceneEditor : public EditorViewBase
+	class HierarchyView : public EditorViewBase
 	{
 	public:
-		SceneEditor(EditorLayer* editorLayer);
-		~SceneEditor();
+		HierarchyView(EditorLayer* editorLayer);
+		~HierarchyView();
 
 		void OnInitialise() override;
 		void OnEditorRender() override;
@@ -18,6 +18,10 @@ namespace Wyrd::Editor
 		void OnEvent(Event& event) override {} 
 
 	private:
+		void DisplayEntity(Entity entity);
+		void DisplayEntityContentMenu(Entity entity);
+		void DisplayEntityDragAndDrop(Entity entity);
+		void DisplayEntityTooltip(Entity entity);
 		void OnSelectedEntityChanged(Events::EventArgs& args);
 
 	private:
