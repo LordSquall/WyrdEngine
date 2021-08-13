@@ -11,10 +11,6 @@
 
 #include <mono/metadata/object-forward.h>
 
-#ifndef NATIVE_API_LIB_LOC
-#define NATIVE_API_LIB_LOC "C:/Projects/Wyrd/WyrdEngine/lib/Debug/"
-#endif
-
 namespace Wyrd
 {
 	/* Forward Declarations */
@@ -85,14 +81,6 @@ namespace Wyrd
 		 * @param state
 		*/
 		void SetMouseButtonState(int i, bool state);
-
-		/**
-		 * @brief Compiles all the supplied script files into a runnable behavioural model
-		 * @param files 
-		 * @param outputFile
-		 * @param results 
-		*/
-		void CompileAll(const std::vector<std::string>& files, const std::string& outputFile, CompileResults& results);
 
 		/**
 		 * @brief Load a new behavioural model from file locations

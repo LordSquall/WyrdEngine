@@ -25,6 +25,10 @@
 #define MONO_INSTALL_LOC "C:/PROGRA~1/Mono/"
 #endif
 
+#ifndef NATIVE_API_LIB_LOC
+#define NATIVE_API_LIB_LOC "C:/Projects/Wyrd/WyrdEngine/lib/Debug/"
+#endif
+
 namespace Wyrd
 {
 	Timestep _Timestep;
@@ -296,54 +300,6 @@ namespace Wyrd
 	void Behaviour::AddScriptedCustomObject(UID uid, std::shared_ptr<ScriptedCustomObject> customObject)
 	{
 		_ScriptedCustomObjects[uid] = customObject;
-	}
-
-	void Behaviour::CompileAll(const std::vector<std::string>& files, const std::string& outputFile, CompileResults& results)
-	{
-		// mono compiler script command
-		std::string command = "mcs ";
-
-		// add all the files in the project
-		for (auto& file : files)
-		{
-			command += file + " ";
-		}
-
-		std::string file_name = "error_output.txt";
-
-		// delete the error file 
-		std::remove(file_name.c_str());
-
-		// add library and wyrd runtime 
-		command += " -target:library -lib:" MONO_INSTALL_LOC  "lib/mono/4.5/Facades/," NATIVE_API_LIB_LOC "WyrdAPI/ -r:System.Runtime.InteropServices.dll,WyrdAPI.dll -debug ";
-
-		// set the putput file
-		command += "-out:" + outputFile;
-
-		// run the command to compile
-		std::system((command + " 2> " + file_name).c_str()); // redirect output to file
-
-		// get the size of the file to determine if there were any errors or warnings
-		if (std::filesystem::file_size(file_name) > 0)
-		{
-			// read all the lines into a vector
-			std::ifstream file(file_name);
-			std::string str;
-			std::vector<std::string> messages;
-
-			while (std::getline(file, str))
-			{
-				// Line contains string of length > 0 then save it in vector
-				if (str.size() > 0)
-					messages.push_back(str);
-			}
-			
-			// Mark the compiles as unsuccessful
-			results.success = false;
-			results.errors = messages;
-
-			return;
-		}
 	}
 
 	void Behaviour::LoadBehaviourModel(const std::vector<std::string>& files, const std::string& inputFile)
