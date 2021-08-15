@@ -94,6 +94,17 @@ namespace Wyrd {
 		}
 
 		/**
+		 * @brief Initialise the base memory of a component object to a respective entity
+		 * @param Entity to assigned to
+		*/
+		template<typename Component>
+		void InitialiseComponent(Entity entity)
+		{
+			int componentID = GetID<Component>();
+			(new (componentPools[componentID]->get(entity)) Component());
+		}
+
+		/**
 		 * @brief Remove a component object to a respective entity
 		 * @param Entity to remove from
 		*/
@@ -183,9 +194,11 @@ namespace Wyrd {
 
 	private:
 		Entity _ScenePrimaryCameraEntity;
+		std::vector<Entity> _AvailableEntities;
 
 	public:
 		std::vector<EntityDesc> entities;
 		std::vector<ComponentPool*> componentPools;
+
 	};
 }

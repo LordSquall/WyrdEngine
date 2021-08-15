@@ -15,7 +15,7 @@ namespace Wyrd::Editor
 		void OnInitialise() override;
 		void OnEditorRender() override;
 
-		void OnEvent(Event& event) override {} 
+		void OnEvent(Event& event) override;
 
 	private:
 		void DisplayEntity(Entity entity);
@@ -23,6 +23,8 @@ namespace Wyrd::Editor
 		void DisplayEntityDragAndDrop(Entity entity);
 		void DisplayEntityTooltip(Entity entity);
 		void OnSelectedEntityChanged(Events::EventArgs& args);
+
+		bool OnKeyPressedEvent(KeyPressedEvent& e);
 
 	private:
 		std::shared_ptr<EventService> _EventService;

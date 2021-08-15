@@ -89,6 +89,15 @@ namespace Wyrd
 		/* primary camera entity */
 		object << "primaryCameraEntity" << _ScenePrimaryCameraEntity;
 
+		/* available entities */
+		jsonxx::Array availableEntities;
+		for (auto& ae : _AvailableEntities)
+		{
+			availableEntities << ae;
+		}
+		object << "availableEntities" << availableEntities;
+
+
 		/* entity list */
 		jsonxx::Array entityArray;
 
@@ -153,6 +162,16 @@ namespace Wyrd
 		if (object.has<jsonxx::Number>("primaryCameraEntity"))
 			_ScenePrimaryCameraEntity = (Entity)object.get<jsonxx::Number>("primaryCameraEntity");
 
+		/* available entities */
+		if (object.has<jsonxx::Array>("availableEntities"))
+		{
+			jsonxx::Array availableEntities = object.get<jsonxx::Array>("availableEntities");
+			for (size_t i = 0; i < availableEntities.size(); i++)
+			{
+				_AvailableEntities.push_back(availableEntities.get<jsonxx::Number>(i));
+			}
+		}
+
 		/* entity list */
 		if (object.has<jsonxx::Array>("entities"))
 		{
@@ -215,26 +234,50 @@ namespace Wyrd
 
 	Entity Scene::CreateEntity()
 	{
-		entities.push_back({ entities.size() + 1, ComponentMask() });
-		return entities.back().id;
+		Entity ent = ENTITY_INVALID;
+		if (_AvailableEntities.empty() == false)
+		{
+			ent = *_AvailableEntities.begin();
+			_AvailableEntities.erase(_AvailableEntities.begin());
+		}
+		else
+		{
+			entities.push_back({ entities.size() + 1, ComponentMask() });
+			ent = entities.back().id;
+		}
+		
+		/* register all the inbuild components with the ECS */
+		InitialiseComponent<MetaDataComponent>(ent);
+		InitialiseComponent<Transform2DComponent>(ent);
+		InitialiseComponent<SpriteComponent>(ent);
+		InitialiseComponent<ScriptComponent>(ent);
+		InitialiseComponent<CameraComponent>(ent);
+		InitialiseComponent<TextComponent>(ent);
+		InitialiseComponent<RelationshipComponent>(ent);
+
+		return ent;
 	}
 
 	void Scene::DestroyEntity(Entity entity)
 	{
-		// remove the components from the pool
-		for (auto& p : componentPools)
-		{
-			memcpy(p->data + ((entity-1)*p->elementSize), p->data + (entity * p->elementSize), p->elementSize * (MAX_ENTITIES - entity));
-		}
-		
-		// remove entity from list
-		entities.erase(entities.begin() + (entity-1));
+		entities[entity - 1].mask.reset();
 
-		// update id in remaining entities
-		for (int i = (entity - 1); i < entities.size(); ++i)
-		{
-			entities[i].id--;
-		}
+		_AvailableEntities.push_back(entity);
+
+		//// remove the components from the pool
+		//for (auto& p : componentPools)
+		//{
+		//	memcpy(p->data + ((entity - 1) * p->elementSize), p->data + (entity * p->elementSize), p->elementSize * (MAX_ENTITIES - entity));
+		//}
+
+		//// remove entity from list
+		//entities.erase(entities.begin() + (entity - 1));
+
+		//// update id in remaining entities
+		//for (int i = (entity - 1); i < entities.size(); ++i)
+		//{
+		//	entities[i].id--;
+		//}
 	}
 
 	void Scene::SwapEntity(Entity entityA, Entity entityB)

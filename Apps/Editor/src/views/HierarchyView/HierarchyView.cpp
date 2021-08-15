@@ -10,7 +10,9 @@
 
 /* local includes */
 #include "HierarchyView.h"
+#include "datamodels/EditorComponents.h"
 #include "support/ImGuiUtils.h"
+#include "support/RelationshipHelperFuncs.h"
 
 namespace Wyrd::Editor
 {
@@ -52,8 +54,25 @@ namespace Wyrd::Editor
 						DisplayEntity(e);
 					}
 				}
-
 				ImGui::EndTable();
+			}
+
+			/*
+			* this will create a selectable area on the reset of the available area which is invisible on the display
+			* using this will allow the context menu to function when nothing is selected in the table
+			*/
+			ImGui::Selectable("##label", false, ImGuiSelectableFlags_Disabled, ImGui::GetContentRegionAvail());
+			DisplayEntityContentMenu(ENTITY_INVALID);
+
+			for (Entity e : EntitySet<RelationshipComponent>(scene))
+			{
+				RelationshipComponent* relationshipComponent = scene.Get<RelationshipComponent>(e);
+
+				if (relationshipComponent->remove == true)
+				{
+					scene.DestroyEntity(e);
+					relationshipComponent->remove = false;
+				}
 			}
 		}
 	}
@@ -72,6 +91,7 @@ namespace Wyrd::Editor
 
 		ImGui::TableNextRow();
 		ImGui::TableNextColumn();
+		ImGui::PushID(entity);
 		const bool isParent = (relationshipComponent->childrenCnt > 0);
 		if (isParent)
 		{
@@ -123,18 +143,59 @@ namespace Wyrd::Editor
 				_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(entity));
 			}
 		}
+		ImGui::PopID();
 	}
 
 	void HierarchyView::DisplayEntityContentMenu(Entity entity)
 	{
-		if (ImGui::BeginPopupContextItem())
+		if (ImGui::BeginPopupContextItem((const char*)&entity))
 		{
 			Scene& scene = *_WorkspaceService->GetLoadedScene();
 			MetaDataComponent* metaDataComponent = scene.Get<MetaDataComponent>(entity);
 
-			if (ImGui::MenuItem("Context Button"))
+			if (ImGui::MenuItem("Add Child"))
 			{
-				WYRD_TRACE("PRESSED!!! {0}", metaDataComponent->name);
+				/* build the base default entity */
+				Entity newEntity = scene.CreateEntity();
+				scene.AssignComponent<MetaDataComponent>(newEntity);
+				scene.AssignComponent<Transform2DComponent>(newEntity);
+				scene.AssignComponent<Editor::EditorComponent>(newEntity);
+				scene.AssignComponent<RelationshipComponent>(newEntity);
+
+				if (entity != ENTITY_INVALID)
+				{
+					RelationshipHelperFuncs::AddChild(&scene, entity, newEntity);
+				}
+				
+			}
+			if (ImGui::MenuItem("Delete"))
+			{
+				/* update the relationship component */
+				RelationshipHelperFuncs::Remove(&scene, entity);
+			}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Add Transform"))
+			{
+				Transform2DComponent* c = scene.AssignComponent<Transform2DComponent>(entity);
+			}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Add Sprite"))
+			{
+				SpriteComponent* c = scene.AssignComponent<SpriteComponent>(entity);
+			}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Add Text"))
+			{
+				TextComponent* c = scene.AssignComponent<TextComponent>(entity);
+			}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Add Script"))
+			{
+				ScriptComponent* c = scene.AssignComponent<ScriptComponent>(entity);
+			}
+			if (ImGui::MenuItem("Add Camera"))
+			{
+				CameraComponent* c = scene.AssignComponent<CameraComponent>(entity);
 			}
 			ImGui::EndPopup();
 		}
@@ -248,6 +309,21 @@ namespace Wyrd::Editor
 			ImGui::Text("previous: %lu", relationshipComp->previous);
 			ImGui::EndTooltip();
 		}
+	}
+
+	void HierarchyView::OnEvent(Event& event)
+	{
+		EventDispatcher dispatcher(event);
+		dispatcher.Dispatch<KeyPressedEvent>(WYRD_BIND_EVENT_FN(HierarchyView::OnKeyPressedEvent));
+	}
+
+	bool HierarchyView::OnKeyPressedEvent(KeyPressedEvent& e)
+	{
+		if (e.GetKeyCode() == OSR_KEY_F2)
+		{
+			WYRD_CORE_TRACE("Edit Entity Name");
+		}
+		return true;
 	}
 
 	void HierarchyView::OnSelectedEntityChanged(Events::EventArgs& args)

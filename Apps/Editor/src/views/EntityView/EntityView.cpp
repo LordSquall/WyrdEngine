@@ -122,19 +122,19 @@ namespace Wyrd::Editor
 					_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(_SelectedEntity - 1));
 				}
 				ImGui::SameLine();
-				if (ImGui::TextButton("v", (_SelectedEntity != ENTITY_INVALID) && (_SelectedEntity + 1 != (scene.entities.size()+1))))
+				if (ImGui::TextButton("v", (_SelectedEntity != ENTITY_INVALID) && (_SelectedEntity + 1 != (scene.entities.size() + 1))))
 				{
 					scene.SwapEntity(_SelectedEntity, _SelectedEntity + 1);
 					_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(_SelectedEntity + 1));
 				}
 				ImGui::SameLine();
-				if (ImGui::TextButton("R")) 
+				if (ImGui::TextButton("R"))
 				{
 					scene.DestroyEntity(_SelectedEntity);
 					_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(ENTITY_INVALID));
 				}
 				ImGui::SameLine();
-				if (ImGui::TextButton("A")) 
+				if (ImGui::TextButton("A"))
 				{
 					Entity e = scene.CreateEntity();
 					MetaDataComponent* dataComponent = scene.AssignComponent<MetaDataComponent>(e);

@@ -195,7 +195,7 @@ namespace Wyrd::Editor
 	void AssetViewer::OnEvent(Event& event)
 	{
 		EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<KeyPressedEvent>(OSR_BIND_EVENT_FN(AssetViewer::OnKeyPressedEvent));
+		dispatcher.Dispatch<KeyPressedEvent>(WYRD_BIND_EVENT_FN(AssetViewer::OnKeyPressedEvent));
 	}
 
 	bool AssetViewer::OnKeyPressedEvent(KeyPressedEvent& e)

@@ -60,7 +60,8 @@ namespace Wyrd::Editor
 		{
 			for (auto& entity : scene.entities)
 			{
-				scene.AssignComponent<EditorComponent>(entity.id);
+				if (entity.mask != 0)
+					scene.AssignComponent<EditorComponent>(entity.id);
 			}
 		}
 

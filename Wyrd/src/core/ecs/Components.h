@@ -4,6 +4,7 @@
 #include "core/export.h"
 #include "core/UID.h"
 #include "core/Structures.h"
+#include "core/ResourcesUIDs.h"
 #include "core/maths/Rect.h"
 #include "core/ecs/ECS.h"
 #include "core/behaviour/Properties/ScriptProperty.h"
@@ -41,7 +42,7 @@ namespace Wyrd
 		Color color;
 		UID texture;
 
-		SpriteComponent() : position(0.0f, 0.0f), size(0.0f, 0.0f), tiling(1.0f, 1.0f), color({ 1.0f, 1.0f, 1.0f, 1.0f }), texture(UID()) {}
+		SpriteComponent() : position(0.0f, 0.0f), size(64.0f, 64.0f), tiling(1.0f, 1.0f), color({ 1.0f, 1.0f, 1.0f, 1.0f }), texture(UID(RESOURCE_DEFAULT_TEXTURE)) {}
 	};
 
 	/* Script Components */
@@ -88,7 +89,8 @@ namespace Wyrd
 		Entity parent;
 		uint32_t childrenCnt;
 		int32_t depth;
+		bool remove;
 
-		RelationshipComponent() : first(ENTITY_INVALID), previous(ENTITY_INVALID), next(ENTITY_INVALID), parent(ENTITY_INVALID), depth(0) {}
+		RelationshipComponent() : first(ENTITY_INVALID), previous(ENTITY_INVALID), next(ENTITY_INVALID), parent(ENTITY_INVALID), childrenCnt(0), depth(0), remove(false) {}
 	};
 };
