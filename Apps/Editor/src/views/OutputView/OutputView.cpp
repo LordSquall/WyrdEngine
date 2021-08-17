@@ -61,9 +61,11 @@ namespace Wyrd::Editor
 		ImGui::SameLine();
 		ImGui::Checkbox("Debug", &_ShowDebug);
 
-		if (ImGui::BeginTable("outputLogTable", 2, ImGuiTableFlags_SizingFixedFit))
+		if (ImGui::BeginTable("outputLogTable", 4, ImGuiTableFlags_SizingFixedFit))
 		{
 			ImGui::TableSetupColumn("Type");
+			ImGui::TableSetupColumn("File");
+			ImGui::TableSetupColumn("Code");
 			ImGui::TableSetupColumn("Message");
 			ImGui::TableSetupScrollFreeze(0, 1);
 			ImGui::TableHeadersRow();
@@ -104,23 +106,50 @@ namespace Wyrd::Editor
 
 	void OutputView::DrawCodeLogItem(int idx, const LogItem& item)
 	{
-	//int assetsFolderLength = Utils::GetAssetFolder().length();
-	//std::string filename = item.message.substr(0, item.message.find('('));
-	//std::string p = item.message.substr(assetsFolderLength);
-	//
-	//if (ImGui::IconButton(_CodeIcon, idx, true, ImVec2(16, 16), -1, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 0.0f, 0.0f, 1.0f)))
-	//{
-	//	Utils::OpenFileWithSystem(filename);
-	//}
-	//
-	//ImGui::TableNextColumn();
-	//
-	//ImGui::Text(p.c_str());
+		ImVec4 textColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		/* Typically error message */
+		// C:\Projects\GameProjects\RPG\Assets\scripts\MenuCursor.cs(49,20): error CS1525: Unexpected symbol `_Transform2DComp'
+		//															^      ^       ^     ^
+		//															m1     m2      m3    m4
+		
+		size_t m1 = item.message.find('(');
+		size_t m2 = item.message.find(':', m1);
+		size_t m3 = item.message.find("CS", m2);
+		size_t m4 = item.message.find(':', m2 + 1);
+
+		/* extract the file name */
+		std::string filename = item.message.substr(0, m1);
+
+		/* extract the type */
+		std::string type = item.message.substr(m2 + 2, (m3 - m2) - 3);
+
+		/* extract the code */
+		std::string code = item.message.substr(m3, (m4 - m3));
+
+		/* extract the message */
+		std::string message = item.message.substr(m4 + 2, (item.message.length() - m4) - 2);
+
+		if (type == "warning")
+		{
+			textColor = { 1.0, 1.0, 0.0, 1.0f };
+		}
+		else if (type == "error")
+		{
+			textColor = { 1.0f, 0.0f, 0.0f, 1.0f };
+		}
+		
+		ImGui::TextColored(textColor, type.c_str());
+		ImGui::TableNextColumn();
+		ImGui::TextColored(textColor, std::filesystem::path(filename).filename().filename().string().c_str());
+		ImGui::TableNextColumn();
+		ImGui::TextColored(textColor, code.c_str());
+		ImGui::TableNextColumn();
+		ImGui::TextColored(textColor, message.c_str());
 	}
 
 	void OutputView::DrawUserLogItem(int idx, const LogItem& item)
 	{
 		ImGui::Selectable(item.message.c_str());
-
 	}
 }

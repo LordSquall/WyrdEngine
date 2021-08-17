@@ -391,12 +391,12 @@ namespace Wyrd::Editor
 		ImGui::SetCursorPosX((ImGui::GetWindowWidth() - 64.0f) * 0.5f);
 
 		/* primary control bar */
-		if (ImGui::IconButton(_playButtonIcon, 1, !_simulationService->IsRunning()) == true)
+		if (ImGui::IconButton(_playButtonIcon, 1, !_simulationService->IsRunning() && _simulationService->IsAvailable()) == true)
 		{
 			_simulationService->Start();
 		}
 		ImGui::SameLine();
-		if (ImGui::IconButton(_stopButtonIcon, 2, _simulationService->IsRunning()) == true)
+		if (ImGui::IconButton(_stopButtonIcon, 2, _simulationService->IsRunning() && _simulationService->IsAvailable()) == true)
 		{
 			_simulationService->Stop();
 		}

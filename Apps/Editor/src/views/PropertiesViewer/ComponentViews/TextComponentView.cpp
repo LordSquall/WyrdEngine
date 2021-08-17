@@ -48,5 +48,8 @@ namespace Wyrd::Editor
 			}
 			ImGui::EndCombo();
 		}
+
+
+		ImGui::DragFloat("Size", (float*)&textComp->size, 2.0f, 128.0f);
 	}
 }

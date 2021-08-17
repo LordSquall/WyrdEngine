@@ -103,4 +103,5 @@ void ComponentSerialiserFactory::Deserialise(std::ifstream& stream, Wyrd::TextCo
 	stream.read(data->content, sizeof(char) * TEXT_COMP_MAX_LENGTH);
 	stream.read((char*)&data->color, sizeof(Wyrd::Color));
 	stream.read(data->font, sizeof(char) * TEXT_COMP_FONT_NAME_MAX_LENGTH);
+	stream.read((char*)&data->size, sizeof(float));
 }

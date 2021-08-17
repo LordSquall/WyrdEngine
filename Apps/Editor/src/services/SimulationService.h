@@ -17,7 +17,7 @@ namespace Wyrd::Editor
 	class SimulationService : public IService
 	{
 	public:
-		SimulationService() : _IsRunning(false), _pendingRebuild(false){}
+		SimulationService() : _IsRunning(false), _IsAvailable(true), _pendingRebuild(false){}
 		~SimulationService() {}
 
 	public:
@@ -34,6 +34,7 @@ namespace Wyrd::Editor
 		void OnBuildBehaviourModelEvent(Events::EventArgs& args);
 
 		inline bool IsRunning() const { return _IsRunning; }
+		inline bool IsAvailable() const { return _IsAvailable; }
 
 		inline void SetSceneViewer(std::shared_ptr<EditorViewBase> sceneViewer) { _SceneViewer = sceneViewer; }
 		void SetInputState(int keyCode, int state);
@@ -46,6 +47,7 @@ namespace Wyrd::Editor
 
 	private:
 		bool _IsRunning;
+		bool _IsAvailable;
 		bool _pendingRebuild;
 
 		float _MousePos[2];

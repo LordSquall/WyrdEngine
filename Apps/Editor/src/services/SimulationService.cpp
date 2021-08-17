@@ -140,8 +140,6 @@ namespace Wyrd::Editor
 		const std::string tempModelFileName = (_WorkspaceService->GetTempDirectory() / (_WorkspaceService->GetCurrentProject()->name + ".dll")).string();
 		const std::string finalModelFileName = Utils::GetPath(_WorkspaceService->GetLoadedProjectPath()) + "\\" + _WorkspaceService->GetCurrentProject()->name + ".dll";
 
-		CompileResults results;
-
 		// mono compiler script command
 		std::string command = "mcs ";
 
@@ -170,36 +168,28 @@ namespace Wyrd::Editor
 		{
 			// read all the lines into a vector
 			std::ifstream file(file_name);
-			std::string str;
-			std::vector<std::string> messages;
+			std::string str;;
 
 			while (std::getline(file, str))
 			{
 				// Line contains string of length > 0 then save it in vector
 				if (str.size() > 0)
-					messages.push_back(str);
+				{
+					_EventService->Publish(Events::EventType::AddLogEntry, std::make_unique<Events::AddLogEntryArgs>(LogType::Code, Severity::Error, str));
+				}
 			}
+
 
 			// Mark the compiles as unsuccessful
-			results.success = false;
-			results.errors = messages;
-
-			return;
-		}
-
-		/* if we not successful we want to format some messages and send them to the editor */
-		if (!results.success)
-		{
-			for (auto& err : results.errors)
-			{
-				_EventService->Publish(Events::EventType::AddLogEntry, std::make_unique<Events::AddLogEntryArgs>(LogType::Code, Severity::Error, err));
-			}
+			_IsAvailable = false;
 		}
 		else
-		{ 
+		{
 			/* Second stage is to copy of the successfully compiled model to the execution director, only if the compilation was successful */
 			Utils::RemoveFile(finalModelFileName);
 			Utils::CopySingleFile(tempModelFileName, Utils::GetPath(_WorkspaceService->GetLoadedProjectPath()) + "\\");
+
+			_IsAvailable = true;
 		}
 
 		/* Third stage is to load the model into the scripting environment if we have valid model */

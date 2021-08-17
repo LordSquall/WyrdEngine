@@ -46,5 +46,6 @@ namespace Wyrd
 		std::string content;
 		FontType* font;
 		Color color;
+		float size;
 	};
 }

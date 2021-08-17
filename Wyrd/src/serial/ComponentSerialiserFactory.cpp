@@ -206,6 +206,7 @@ namespace Wyrd
 		obj << "content" << data->content;
 		obj << "color" << data->color;
 		obj << "font" << data->font;
+		obj << "size" << data->size;
 	}
 
 	void ComponentSerialiserFactory::Serialise(Object& obj, Wyrd::RelationshipComponent* data)
@@ -299,6 +300,8 @@ namespace Wyrd
 		{
 			std::sprintf(data->font, "ConsolaMono");
 		}
+
+		data->size = Get<Number>(obj, "size", 16.0f);
 	}
 
 	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::RelationshipComponent* data)

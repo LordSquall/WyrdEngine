@@ -41,11 +41,13 @@ namespace Wyrd
 		{
 			FontType::Character ch = cmd.font->GetCharacters()[(int)*c];
 
-			float xpos = x + ch.Bearing.x * cmd.scale;
-			float ypos = y - (ch.Size.y - ch.Bearing.y) * cmd.scale;
+			float scale = (1.0f / 12.0f);
 
-			float w = ch.Size.x * cmd.scale;
-			float h = ch.Size.y * cmd.scale;
+			float xpos = x + ch.Bearing.x * (cmd.scale * (cmd.size * scale));
+			float ypos = y - (ch.Size.y - ch.Bearing.y) * (cmd.scale * (cmd.size * scale));
+
+			float w = ch.Size.x * (cmd.scale * (cmd.size * scale));
+			float h = ch.Size.y * (cmd.scale * (cmd.size * scale));
 
 			_vertices.push_back({ xpos, ypos + h,		ch.uv1.x, ch.uv1.y });
 			_vertices.push_back({ xpos, ypos,			ch.uv1.x, ch.uv2.y });
@@ -55,7 +57,7 @@ namespace Wyrd
 			_vertices.push_back({ xpos + w, ypos,		ch.uv2.x, ch.uv2.y });
 			_vertices.push_back({ xpos + w, ypos + h,	ch.uv2.x, ch.uv1.y });
 			
-			x += (ch.Advance >> 6) * cmd.scale;
+			x += (ch.Advance >> 6) * (cmd.scale * (cmd.size * scale));
 
 			/* update both the vertex and index buffers */
 			_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(TextVertex2D) * (uint32_t)_vertices.size(), 0);

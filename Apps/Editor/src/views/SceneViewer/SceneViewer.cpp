@@ -162,6 +162,7 @@ namespace Wyrd::Editor
 					cmd.shader = Application::Get().GetResources().Shaders["Text"].get();
 					cmd.content = text->content;
 					cmd.scale = 1.0f;
+					cmd.size = text->size;
 					cmd.font = Application::Get().GetResources().FontTypes[text->font].get();
 					cmd.color = text->color;
 
