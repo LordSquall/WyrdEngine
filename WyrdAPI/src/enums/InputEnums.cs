@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace WyrdAPI
 {
+    /// <summary>
+    /// Key Code mappings. Basied on the GLFW Key Code definitions
+    /// </summary>
     public enum KeyCode
     {
         KEY_SPACE = 32,
@@ -128,9 +131,5 @@ namespace WyrdAPI
         KEY_RIGHT_ALT = 346,
         KEY_RIGHT_SUPER = 347,
         KEY_MENU = 348
-    }
-
-    class InputEnums
-    {
     }
 }
