@@ -53,6 +53,7 @@ namespace Wyrd::Editor
 
 		/* System operations */
 		static void OpenFileWithSystem(const std::string& file, const std::string& parameters = "");
+		static void SystemExecute(const std::string& command);
 
 		/* Hashing */
 		static std::string HashFile(const std::string& file);

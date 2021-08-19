@@ -433,6 +433,11 @@ namespace Wyrd::Editor {
 		ShellExecuteA(NULL, "open", path.c_str(), parameters.c_str(), NULL, SW_SHOW);
 	}
 
+	void Utils::SystemExecute(const std::string& command)
+	{
+		system(command.c_str());
+	}
+
 	/* Hashing */
 	std::string Utils::HashFile(const std::string& file)
 	{

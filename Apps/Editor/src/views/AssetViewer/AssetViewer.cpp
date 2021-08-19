@@ -469,10 +469,16 @@ namespace Wyrd::Editor
 		if (ImGui::IsItemHovered())
 		{
 			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+			{
 				_SelectedResource = resID;
+			}
 
 			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-				Utils::OpenFileWithSystem(scriptResource.GetPath());
+			{
+				/* build the full path to the project file */
+				std::string projectFile = _workspaceService->GetProjectRootDirectory().string() + "/vs.code-workspace";
+				Utils::SystemExecute("code " + projectFile + " " + scriptResource.GetPath());
+			}
 		}
 
 		/* Visuals */
