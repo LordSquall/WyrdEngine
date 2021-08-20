@@ -33,7 +33,7 @@ namespace Wyrd
 {
 	Timestep _Timestep;
 
-	Behaviour::Behaviour() : _IsRunning(false), _RootDomain(nullptr), _ClientDomain(nullptr), _CoreAssembly(nullptr), _ClientAssembly(nullptr), _CoreImage(nullptr), _ClientImage(nullptr)
+	Behaviour::Behaviour() : _IsRunning(false), _Restarted(false), _RootDomain(nullptr), _ClientDomain(nullptr), _CoreAssembly(nullptr), _ClientAssembly(nullptr), _CoreImage(nullptr), _ClientImage(nullptr)
 	{
 		std::string monoLibraryDirectory = MONO_INSTALL_LOC "lib";
 		std::string monoExtensionDirectory = MONO_INSTALL_LOC "etc";
@@ -74,9 +74,12 @@ namespace Wyrd
 		_PhysicsSubsystem = Application::Get().GetPhysicsPtr();
 		_ResourcesSubsystem = Application::Get().GetResourcesPtr();
 
-		/* pass in the subsystem pointers to the managed domain */
-		MonoClass* monoClass;
-		monoClass = mono_class_from_name((MonoImage*)_CoreImage, "WyrdAPI", "SubsystemManager");
+		/* setup the interface pointers for all external events */
+		if (MonoUtils::SetProperty((MonoImage*)_CoreImage, "WyrdAPI", "SceneManager", "NativePtr", nullptr, { &_SceneManager }) == false)
+		{
+			WYRD_ERROR("Failed to set SceneManager::NativePtr!");
+			return;
+		}
 
 		if (_CurrentScene != nullptr)
 		{
@@ -179,6 +182,15 @@ namespace Wyrd
 		_IsRunning = false;
 	}
 
+	void Behaviour::Restart(std::shared_ptr<Scene> scene)
+	{
+		Stop();
+
+		_Restarted = true;
+		
+		Start(scene);
+	}
+
 	void Behaviour::Update(Timestep ts)
 	{
 		/* we only action anything in the function if we are in running mode */
@@ -206,6 +218,10 @@ namespace Wyrd
 		}
 	}
 
+	void Behaviour::LoadScene()
+	{
+
+	}
 
 	ScriptedCustomObject* Behaviour::GetCustomObject(UID& uid, uint32_t instanceID)
 	{
@@ -230,6 +246,12 @@ namespace Wyrd
 						if (MonoUtils::InvokeMethod((MonoImage*)_ClientImage, "WyrdGame", obj->TypeName, _FunctionKeyStateMap[state], o, { &key }) == false)
 						{
 							WYRD_ERROR("Unable to invoke Key Event!");
+						}
+
+						if (_Restarted == true)
+						{
+							_Restarted = false;
+							return;
 						}
 					}
 				}

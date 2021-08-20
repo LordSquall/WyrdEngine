@@ -41,7 +41,7 @@ bool ControlLayer::OnAttach()
 
 	auto& sceneManager = SceneManager::getInstance();
 
-	sceneManager.LoadInitialScene(baseDirectory);
+	SceneManager::getInstance().LoadInitialScene(baseDirectory);
 
 	/* create a new framebuffer */
 	unsigned int width = Application::Get().GetWindow().GetWidth();
@@ -62,6 +62,8 @@ bool ControlLayer::OnAttach()
 	_Camera.SetViewportSize(width, height);
 
 	Application::Get().GetRenderer().SetViewport(width, height);
+
+	Application::Get().GetBehaviour().SetSceneManager(&sceneManager);
 
 	Application::Get().GetBehaviour().Start(std::shared_ptr<Wyrd::Scene>(scene));
 

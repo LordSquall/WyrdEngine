@@ -8,6 +8,7 @@
 #include "core/UID.h"
 #include "core/behaviour/BehaviourInput.h"
 #include "core/ecs/ECS.h"
+#include "core/behaviour/ISceneManager.h"
 
 #include <mono/metadata/object-forward.h>
 
@@ -55,11 +56,17 @@ namespace Wyrd
 		*/
 		void Stop();
 
+		// TODO
+		void Restart(std::shared_ptr<Scene> scene);
+
 		/**
 		 * @brief Update the current behaviour model
 		 * @param ts 
 		*/
 		void Update(Timestep ts);
+
+		// TODO
+		void LoadScene();
 
 		/**
 		 * @brief Set the current input key state of the simluation
@@ -138,6 +145,9 @@ namespace Wyrd
 		*/
 		void AddScriptedCustomObject(UID uid, std::shared_ptr<ScriptedCustomObject> customObject);
 
+
+		inline void SetSceneManager(ISceneManager* sceneManager) { _SceneManager = sceneManager; }
+
 	public:
 		std::map<Entity, MonoObject*> ScriptedEntities;
 		std::map<UID, MonoObject*> ScriptedTextures;
@@ -171,6 +181,7 @@ namespace Wyrd
 
 		std::shared_ptr<Scene>	_CurrentScene;
 		bool					_IsRunning;
+		bool					_Restarted;
 
 		Behaviour*		_BehaviourSubsystem;
 		Physics*		_PhysicsSubsystem;
@@ -179,6 +190,8 @@ namespace Wyrd
 		Scene* 			_Scene;
 
 		BehaviourInput	_Input;
+
+		ISceneManager*  _SceneManager;
 
 		void*			_RootDomain;
 		void*			_ClientDomain;

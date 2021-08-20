@@ -64,6 +64,21 @@ namespace Wyrd::Editor
 		std::ofstream game;
 		game.open((workspaceService->GetBuildsDirectory() / "Game.data").string(), std::ios::out | std::ios::binary);
 
+		/* Write the scene map */
+		size_t sceneCount = project->GetExportSettings().exportableScenes.size();
+		game.write((const char*)&sceneCount, sizeof(size_t));
+
+		for (auto& scene : project->GetExportSettings().exportableScenes)
+		{
+			char sceneName[128];
+			strcpy(sceneName, scene.second.c_str());
+			game.write((char*)&sceneName[0], sizeof(char) * 128);
+
+			char sceneUID[64];
+			strcpy(sceneUID, scene.first.str().c_str());
+			game.write((char*)&sceneUID[0], sizeof(char) * 64);
+		}
+
 		// Add game settings
 		char initialSceneUID[64];
 		strcpy(initialSceneUID, project->GetExportSettings().initialScene.str().c_str());

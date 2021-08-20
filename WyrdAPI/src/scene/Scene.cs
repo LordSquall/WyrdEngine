@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WyrdAPI
 {
@@ -12,7 +10,6 @@ namespace WyrdAPI
         public static IntPtr NativePtr { get; set; }
 
         private static Dictionary<Type, int> _ScriptClassMap = new Dictionary<Type, int>();
-
 
         public static void Reset()
         {

@@ -45,9 +45,23 @@ void ImportManager::ImportGame(const std::string& root)
 		return;
 	}
 
+	/* load the scene map */
+	size_t sceneCount;
+	game.read((char*)&sceneCount, sizeof(size_t));
+
+	for (int i = 0; i < sceneCount; ++i)
+	{
+		char sceneName[128];
+		game.read((char*)&sceneName[0], sizeof(char) * 128);
+
+		char sceneUID[64];
+		game.read((char*)&sceneUID[0], sizeof(char) * 64);
+
+		SceneManager::getInstance().AddScene(UID(sceneUID), std::string(sceneName));
+	}
+
 	char initialSceneUID[64];
 	game.read((char*)&initialSceneUID[0], sizeof(char) * 64);
-
 	SceneManager::getInstance().SetInitialScene(UID(initialSceneUID));
 
 	/* close the file */
