@@ -33,7 +33,7 @@ namespace Wyrd
 {
 	Timestep _Timestep;
 
-	Behaviour::Behaviour() : _IsRunning(false), _Restarted(false), _RootDomain(nullptr), _ClientDomain(nullptr), _CoreAssembly(nullptr), _ClientAssembly(nullptr), _CoreImage(nullptr), _ClientImage(nullptr)
+	Behaviour::Behaviour() : _IsRunning(false), _RunID(), _RootDomain(nullptr), _ClientDomain(nullptr), _CoreAssembly(nullptr), _ClientAssembly(nullptr), _CoreImage(nullptr), _ClientImage(nullptr)
 	{
 		std::string monoLibraryDirectory = MONO_INSTALL_LOC "lib";
 		std::string monoExtensionDirectory = MONO_INSTALL_LOC "etc";
@@ -69,6 +69,9 @@ namespace Wyrd
 		_CurrentScene = scene;
 		_IsRunning = true;
 
+		/* generate a new run ID */
+		_RunID = UIDUtils::Create();
+
 		/* store a pointer to the systems */
 		_BehaviourSubsystem = Application::Get().GetBehaviourPtr();
 		_PhysicsSubsystem = Application::Get().GetPhysicsPtr();
@@ -83,32 +86,43 @@ namespace Wyrd
 
 		if (_CurrentScene != nullptr)
 		{
+			/* store the raw scene pointer all ensure it's available at all times within in the VM */
 			_Scene = _CurrentScene.get();
 
+			/* link the native scene pointers */
 			if (MonoUtils::SetProperty((MonoImage*)_CoreImage, "WyrdAPI", "Scene", "NativePtr", nullptr, { &scene }) == false)
 			{
 				WYRD_ERROR("Failed to set Scene::NativePtr!");
 				return;
 			}
 
+			/** 
+			* We add each of the pools types to the Managed Scene. This will link the Managed classes to the unmanaged pool
+			 */
 			for (auto& pool : _Scene->componentPools)
 			{
-				WYRD_TRACE(pool->scriptName);
 				MonoUtils::InvokeMethod((MonoImage*)_CoreImage, "WyrdAPI", "Scene", "AddPoolRegistration", nullptr, 
 					{ 
 						mono_string_new((MonoDomain*)_RootDomain, pool->scriptName.c_str()), 
 						&pool->idx 
 					});
 			}
-
-
+			
+			/**
+			* We register the component pools for the scene. This is important to ensure the component IDs on the native
+			* are the same in the VM. This allows simple mapping between the components  in the ECS
+			*/
 			if (MonoUtils::InvokeMethod((MonoImage*)_CoreImage, "WyrdAPI", "Scene", "BuildComponentList", nullptr, {}) == false)
 			{
 				WYRD_ERROR("Failed to BuildComponentList!");
 				return;
 			}
 
-			/* create all the entity objects */
+			/**
+			* Create all the entity objects.
+			* The key idea here is to allow the VM to create the managed instance using the unmanged entity id
+			* We can then store the MonoObject to enable further actions
+			*/
 			for (auto& e : _CurrentScene->entities)
 			{
 				/* create a new entity object in mono */
@@ -122,7 +136,9 @@ namespace Wyrd
 				if (exc != nullptr) mono_print_unhandled_exception(exc);
 			}
 
-			/* create a managed object for each of the script components */
+			/**
+			* Create a managed object for each of the script components.
+			*/
 			for (Entity e : EntitySet<ScriptComponent>(*_CurrentScene.get()))
 			{
 				ScriptComponent* scriptComponent = _CurrentScene->Get<ScriptComponent>(e);
@@ -152,7 +168,9 @@ namespace Wyrd
 				}
 			}
 
-			/* call the initial start function on each of the managed objects */
+			/** 
+			* Call the initial start function on each of the managed objects 
+			*/
 			for (Entity e : EntitySet<ScriptComponent>(*_CurrentScene.get()))
 			{
 				ScriptComponent* scriptComponent = _CurrentScene->Get<ScriptComponent>(e);
@@ -170,9 +188,10 @@ namespace Wyrd
 
 	void Behaviour::Stop()
 	{
-		/* clear managed objects */
+		/* Clear managed objects */
 		_ScriptedCustomObjects.clear();
 
+		/* Call the managed scene to reset any state */
 		if (MonoUtils::InvokeMethod((MonoImage*)_CoreImage, "WyrdAPI", "Scene", "Reset", nullptr, {}) == false)
 		{
 			WYRD_ERROR("Failed to Reset Managed Scene!");
@@ -184,10 +203,10 @@ namespace Wyrd
 
 	void Behaviour::Restart(std::shared_ptr<Scene> scene)
 	{
+		/* Stop the behaviour model */
 		Stop();
 
-		_Restarted = true;
-		
+		/* Start the behaviour model */
 		Start(scene);
 	}
 
@@ -230,6 +249,8 @@ namespace Wyrd
 
 	void Behaviour::SetInputState(int key, int state)
 	{
+		UID currentRunID = _RunID;
+
 		if (_IsRunning == true)
 		{
 			if (_CurrentScene != nullptr)
@@ -248,9 +269,8 @@ namespace Wyrd
 							WYRD_ERROR("Unable to invoke Key Event!");
 						}
 
-						if (_Restarted == true)
+						if (currentRunID != _RunID)
 						{
-							_Restarted = false;
 							return;
 						}
 					}

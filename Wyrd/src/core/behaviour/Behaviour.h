@@ -181,7 +181,7 @@ namespace Wyrd
 
 		std::shared_ptr<Scene>	_CurrentScene;
 		bool					_IsRunning;
-		bool					_Restarted;
+		Wyrd::UID				_RunID;
 
 		Behaviour*		_BehaviourSubsystem;
 		Physics*		_PhysicsSubsystem;
