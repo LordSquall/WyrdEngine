@@ -133,10 +133,6 @@ namespace Wyrd
 
 		inline void SetSceneManager(ISceneManager* sceneManager) { _SceneManager = sceneManager; }
 
-	public:
-		std::map<Entity, MonoObject*> ScriptedEntities;
-		std::map<UID, MonoObject*> ScriptedTextures;
-
 	private:
 
 		ScriptedCustomObject* GetCustomObject(UID& uid, uint32_t instanceID);
@@ -147,36 +143,44 @@ namespace Wyrd
 
 		void LoadAssembly(void* domain, void** image, void** assembly, const std::string& ns, std::vector<char>& assemblyData);
 
+	public:
+		std::map<Entity, MonoObject*> ScriptedEntities;
+		std::map<UID, MonoObject*> ScriptedTextures;
+
+
 	private:
-		std::map<std::string, std::shared_ptr<ScriptedClass>> _ScriptedClasses;
-		std::map<std::string, std::shared_ptr<ScriptedClass>> _ScriptedCustomClasses;
 
-		std::map<UID, std::vector<std::shared_ptr<ScriptedCustomObject>>> _ECSScriptedCustomObjects;
-
-		std::map<int, std::string> _FunctionKeyStateMap;
-
-		void* _InputMousePos;
-		void* _InputMouseButtonState;
-
+		/* Managed class map */
 		std::map<std::string, MonoClass*>		_ManagedClasses;
 
+		/* Script Classed */
+		std::map<std::string, std::shared_ptr<ScriptedClass>>			  _ScriptedClasses;
+		std::map<std::string, std::shared_ptr<ScriptedClass>>			  _ScriptedCustomClasses;
+		std::map<UID, std::vector<std::shared_ptr<ScriptedCustomObject>>> _ECSScriptedCustomObjects;
+
+		/* Input state and maps*/
+		std::map<int, std::string>	_FunctionKeyStateMap;
+		void*						_InputMousePos;
+		void*						_InputMouseButtonState;
+		BehaviourInput				_Input;
+
+		/* State */
 		std::shared_ptr<Scene>	_CurrentScene;
 		bool					_IsRunning;
 		Wyrd::UID				_RunID;
+		Scene*					_Scene;
 
+		/* Subsystems */
 		Behaviour*		_BehaviourSubsystem;
 		Physics*		_PhysicsSubsystem;
 		Resources*		_ResourcesSubsystem;
 
-		Scene* 			_Scene;
-
-		BehaviourInput	_Input;
-
+		/* Interfaces */
 		ISceneManager*  _SceneManager;
 
+		/* Mono Assembly pointers */
 		void*			_RootDomain;
 		void*			_ClientDomain;
-
 		void*			_CoreAssembly;
 		void*			_ClientAssembly;
 		void*			_CoreImage;
