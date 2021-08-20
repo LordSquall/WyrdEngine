@@ -131,21 +131,6 @@ namespace Wyrd
 		*/
 		std::shared_ptr<ScriptedClass> GetCustomClassByUID(UID& uid);
 
-		/**
-		 * @brief Retreive an custom object instance from the behaviour model by UID
-		 * @param uid 
-		 * @return 
-		*/
-		std::shared_ptr<ScriptedCustomObject> GetCustomObject(UID uid);
-
-		/**
-		 * @brief Add a Scripted Custom Object to the bahaviour subsystem
-		 * @param uid 
-		 * @param customObject 
-		*/
-		void AddScriptedCustomObject(UID uid, std::shared_ptr<ScriptedCustomObject> customObject);
-
-
 		inline void SetSceneManager(ISceneManager* sceneManager) { _SceneManager = sceneManager; }
 
 	public:
@@ -163,14 +148,10 @@ namespace Wyrd
 		void LoadAssembly(void* domain, void** image, void** assembly, const std::string& ns, std::vector<char>& assemblyData);
 
 	private:
-		std::map<UID, std::shared_ptr<ScriptedResource>>	_ScriptedResourceObject;
+		std::map<std::string, std::shared_ptr<ScriptedClass>> _ScriptedClasses;
+		std::map<std::string, std::shared_ptr<ScriptedClass>> _ScriptedCustomClasses;
 
-		std::map<std::string, std::shared_ptr<ScriptedClass>>		_ScriptedClasses;
-		std::map<std::string, std::shared_ptr<ScriptedClass>>		_ScriptedCustomClasses;
-
-		std::map<UID, std::shared_ptr<ScriptedCustomObject>>	_ScriptedCustomObjects;
-
-		std::map<UID, std::vector<std::shared_ptr<ScriptedCustomObject>>>		_ECSScriptedCustomObjects;
+		std::map<UID, std::vector<std::shared_ptr<ScriptedCustomObject>>> _ECSScriptedCustomObjects;
 
 		std::map<int, std::string> _FunctionKeyStateMap;
 

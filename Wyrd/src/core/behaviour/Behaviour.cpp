@@ -188,9 +188,6 @@ namespace Wyrd
 
 	void Behaviour::Stop()
 	{
-		/* Clear managed objects */
-		_ScriptedCustomObjects.clear();
-
 		/* Call the managed scene to reset any state */
 		if (MonoUtils::InvokeMethod((MonoImage*)_CoreImage, "WyrdAPI", "Scene", "Reset", nullptr, {}) == false)
 		{
@@ -332,16 +329,6 @@ namespace Wyrd
 		}
 
 		return nullptr;
-	}
-
-	std::shared_ptr<ScriptedCustomObject> Behaviour::GetCustomObject(UID uid)
-	{ 
-		return _ScriptedCustomObjects[uid]; 
-	}
-
-	void Behaviour::AddScriptedCustomObject(UID uid, std::shared_ptr<ScriptedCustomObject> customObject)
-	{
-		_ScriptedCustomObjects[uid] = customObject;
 	}
 
 	void Behaviour::LoadBehaviourModel(const std::vector<std::string>& files, const std::string& inputFile)
