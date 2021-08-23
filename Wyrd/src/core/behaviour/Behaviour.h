@@ -8,7 +8,7 @@
 #include "core/UID.h"
 #include "core/behaviour/BehaviourInput.h"
 #include "core/ecs/ECS.h"
-#include "core/behaviour/ISceneManager.h"
+#include "core/interfaces/ISceneManager.h"
 
 #include <mono/metadata/object-forward.h>
 
@@ -56,7 +56,10 @@ namespace Wyrd
 		*/
 		void Stop();
 
-		// TODO
+		/**
+		 * @brief Restart the behaviour model of a Scene
+		 * @param scene
+		*/
 		void Restart(std::shared_ptr<Scene> scene);
 
 		/**
@@ -64,9 +67,6 @@ namespace Wyrd
 		 * @param ts 
 		*/
 		void Update(Timestep ts);
-
-		// TODO
-		void LoadScene();
 
 		/**
 		 * @brief Set the current input key state of the simluation

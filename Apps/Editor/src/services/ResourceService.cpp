@@ -183,7 +183,21 @@ namespace Wyrd::Editor
 		return result;
 	}
 
+	std::shared_ptr<Resource> ResourceService::GetSceneResourceByName(const std::string& name)
+	{
+		std::map<UID, std::shared_ptr<Resource>> result;
 
+		for (auto&& res : _resourceMap)
+		{
+			std::filesystem::path p(res.second->GetName());
+
+			if (res.second->GetName() == name)
+			{
+				return res.second;
+			}
+		}
+		return nullptr;
+	}
 
 	void ResourceService::BuildScripts()
 	{

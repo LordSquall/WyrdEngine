@@ -1,9 +1,15 @@
 #pragma once
 
+/* core engine includes */
 #include <core/UID.h>
 #include <core/scene/Scene.h>
-#include <core/behaviour/ISceneManager.h>
+#include <core/interfaces/ISceneManager.h>
 
+/**
+* @brief Scene Manager class
+*
+* Handles scene management functions for the player
+*/
 class SceneManager : public Wyrd::ISceneManager
 {
 public:

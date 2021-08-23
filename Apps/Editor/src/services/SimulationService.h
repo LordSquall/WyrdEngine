@@ -7,6 +7,7 @@
 /* local includes */
 #include "services/IService.h"
 #include "events/EditorEvents.h"
+#include "managers/EditorSceneManager.h"
 
 namespace Wyrd::Editor
 {
@@ -51,6 +52,8 @@ namespace Wyrd::Editor
 		bool _pendingRebuild;
 
 		float _MousePos[2];
+
+		EditorSceneManager _SceneManager;
 
 		std::shared_ptr<EditorViewBase>		_SceneViewer;
 		std::shared_ptr<Scene>				_CurrentScene;

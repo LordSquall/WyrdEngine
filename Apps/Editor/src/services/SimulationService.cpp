@@ -54,6 +54,10 @@ namespace Wyrd::Editor
 
 		_IsRunning = true;
 
+		_SceneManager.SetInitialScene(_WorkspaceService->GetLoadedScenePath());
+
+		Application::Get().GetBehaviour().SetSceneManager(&_SceneManager);
+
 		Application::Get().GetBehaviour().Start(_WorkspaceService->GetLoadedScene());
 		Application::Get().GetPhysics().Start(_WorkspaceService->GetLoadedScene());
 
@@ -64,7 +68,7 @@ namespace Wyrd::Editor
 		Application::Get().GetPhysics().Stop();
 		Application::Get().GetBehaviour().Stop();
 
-		_WorkspaceService->ReloadScene();
+		_SceneManager.ResetInitialScene();
 
 		WYRD_TRACE("Stopping Simulation Service");
 

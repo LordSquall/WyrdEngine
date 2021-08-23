@@ -60,11 +60,11 @@ namespace Wyrd::Editor
 
 		inline const std::map<UID, std::shared_ptr<Resource>> GetResources() { return _resourceMap; };
 
-		std::shared_ptr<ScriptRes> GetScriptResourceByName(const std::string& name);
-
 		inline const std::shared_ptr<TextureRes> GetDefaultTexture() { return _defaultTexture; };
 
 		std::map<UID, std::shared_ptr<Resource>> GetResourcesByDir(const std::string& dir);
+
+		std::shared_ptr<Resource> GetSceneResourceByName(const std::string& name);
 
 		/* Helper Functions */
 		bool CheckIgnored(const std::string& path);

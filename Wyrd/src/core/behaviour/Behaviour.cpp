@@ -234,11 +234,6 @@ namespace Wyrd
 		}
 	}
 
-	void Behaviour::LoadScene()
-	{
-
-	}
-
 	ScriptedCustomObject* Behaviour::GetCustomObject(UID& uid, uint32_t instanceID)
 	{
 		return _ECSScriptedCustomObjects[uid][instanceID].get();
