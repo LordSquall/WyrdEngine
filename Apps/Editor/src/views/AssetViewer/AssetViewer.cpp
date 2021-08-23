@@ -49,7 +49,7 @@ namespace Wyrd::Editor
 
 		/* cache the icon pointers */
 		_UnknownIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_unknown");
-		_FolderIcon = _resourcesService->GetIconLibrary().GetIcon("common", "folder");
+		_FolderIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_folder");
 		_SceneIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_scene");
 		_TextureIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_texture");
 		_ScriptIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_script");
