@@ -22,6 +22,7 @@ namespace Wyrd
 
 		_VertexArray.reset(VertexArray::Create());
 		_VertexArray->SetAttribute(0, 0, 2, sizeof(Vertex2D));
+		_VertexArray->SetAttribute(1, 2, 4, sizeof(Vertex2D));
 
 		_Shader = nullptr;
 
@@ -44,25 +45,25 @@ namespace Wyrd
 		float t = cmd.thickness * 0.5f;
 
 		// top
-		_vertices.push_back({cmd.position.x,					cmd.position.y + cmd.size.y + t});	// top right
-		_vertices.push_back({cmd.position.x,					cmd.position.y + cmd.size.y - t});	// bottom right
-		_vertices.push_back({cmd.position.x + cmd.size.x,		cmd.position.y + cmd.size.y - t});	// bottom left
-		_vertices.push_back({cmd.position.x + cmd.size.x,		cmd.position.y + cmd.size.y + t});	// top left 
+		_vertices.push_back({cmd.position.x,					cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top right
+		_vertices.push_back({cmd.position.x,					cmd.position.y + cmd.size.y - t,	1.0f, 1.0f, 1.0f, 1.0f });	// bottom right
+		_vertices.push_back({cmd.position.x + cmd.size.x,		cmd.position.y + cmd.size.y - t,	1.0f, 1.0f, 1.0f, 1.0f });	// bottom left
+		_vertices.push_back({cmd.position.x + cmd.size.x,		cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top left 
 		// bottom													 
-		_vertices.push_back({cmd.position.x,					cmd.position.y + t,			});		// top right
-		_vertices.push_back({cmd.position.x,					cmd.position.y - t,			});		// bottom right
-		_vertices.push_back({cmd.position.x + cmd.size.x,		cmd.position.y - t,			});		// bottom left
-		_vertices.push_back({cmd.position.x + cmd.size.x,		cmd.position.y + t,			});		// top left 
+		_vertices.push_back({cmd.position.x,					cmd.position.y + t,					1.0f, 1.0f, 1.0f, 1.0f });	// top right
+		_vertices.push_back({cmd.position.x,					cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom right
+		_vertices.push_back({cmd.position.x + cmd.size.x,		cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom left
+		_vertices.push_back({cmd.position.x + cmd.size.x,		cmd.position.y + t,					1.0f, 1.0f, 1.0f, 1.0f });	// top left 
 		// right													 
-		_vertices.push_back({cmd.position.x - t,				cmd.position.y + cmd.size.y + t});	// top right
-		_vertices.push_back({cmd.position.x - t,				cmd.position.y - t,			});		// bottom right
-		_vertices.push_back({cmd.position.x + t,				cmd.position.y - t,			});		// bottom left
-		_vertices.push_back({cmd.position.x + t,				cmd.position.y + cmd.size.y + t});	// top left 
+		_vertices.push_back({cmd.position.x - t,				cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top right
+		_vertices.push_back({cmd.position.x - t,				cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom right
+		_vertices.push_back({cmd.position.x + t,				cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom left
+		_vertices.push_back({cmd.position.x + t,				cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top left 
 		// left													 
-		_vertices.push_back({cmd.position.x + cmd.size.x - t,	cmd.position.y + cmd.size.y + t});	// top right
-		_vertices.push_back({cmd.position.x + cmd.size.x - t,	cmd.position.y - t,			});		// bottom right
-		_vertices.push_back({cmd.position.x + cmd.size.x + t,	cmd.position.y - t,			});		// bottom left
-		_vertices.push_back({cmd.position.x + cmd.size.x + t,	cmd.position.y + cmd.size.y + t});	// top left 
+		_vertices.push_back({cmd.position.x + cmd.size.x - t,	cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top right
+		_vertices.push_back({cmd.position.x + cmd.size.x - t,	cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom right
+		_vertices.push_back({cmd.position.x + cmd.size.x + t,	cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom left
+		_vertices.push_back({cmd.position.x + cmd.size.x + t,	cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top left 
 
 
 		/* bind the batch vertex array */

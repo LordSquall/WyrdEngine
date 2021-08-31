@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/renderer/commands/RendererCommands.h"
+#include "core/pipeline/Vertex2D.h"
 
 using namespace Wyrd;
 
@@ -12,13 +13,6 @@ namespace Wyrd {
 	class VertexBuffer;
 	class IndexBuffer;
 	class Shader;
-
-	/* represents a single sprite vertex */
-	struct Vertex2D
-	{
-		float x, y;		/* 2D position		*/
-		float u, v;		/* UV               */
-	};
 
 	/* respresents a batch a sprint geometry */
 	class Vertex2DBatch

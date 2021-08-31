@@ -192,20 +192,20 @@ namespace Wyrd::Editor
 				}
 				else
 				{
-						EditorComponent* editorComponent = _Scene->Get<EditorComponent>(_SelectedEntity);
-						if (editorComponent != nullptr)
-						{
-							Wyrd::DrawRectCommand cmd{};
-							cmd.type = 1;
-							cmd.position = editorComponent->inputArea.position;
-							cmd.size = editorComponent->inputArea.size;
-							cmd.thickness = 5.0f;
-							cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-							cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
-							cmd.color = { 1.0f, 1.0f, 0.0f, 1.0f };
+					EditorComponent* editorComponent = _Scene->Get<EditorComponent>(_SelectedEntity);
+					if (editorComponent != nullptr)
+					{
+						Wyrd::DrawRectCommand cmd{};
+						cmd.type = 1;
+						cmd.position = editorComponent->inputArea.position;
+						cmd.size = editorComponent->inputArea.size;
+						cmd.thickness = 5.0f;
+						cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
+						cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
+						cmd.color = { 1.0f, 1.0f, 0.0f, 1.0f };
 
-							renderer.Submit(cmd);
-						}
+						renderer.Submit(cmd);
+					}
 				}
 			}
 

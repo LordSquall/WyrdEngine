@@ -3,11 +3,11 @@
 
 layout(location = 0) out vec4 color;
 
-in vec2 v_Position;
+in vec4 v_Color;
 
 uniform vec4 blendColor;
 
 void main()
 {
-	color = blendColor;
+	color = v_Color * blendColor;
 }
