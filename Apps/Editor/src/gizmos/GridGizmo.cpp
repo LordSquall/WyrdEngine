@@ -17,7 +17,7 @@
 
 namespace Wyrd::Editor
 {
-	GridGizmo::GridGizmo(SceneViewer* sceneViewer, Shader* shader) : Gizmo(sceneViewer, shader)
+	GridGizmo::GridGizmo(SceneViewer* sceneViewer) : Gizmo(sceneViewer)
 	{
 		/* Store the camera controller */
 		_CameraController = sceneViewer->GetCamera();
@@ -49,21 +49,20 @@ namespace Wyrd::Editor
 
 	void GridGizmo::Render(Timestep ts, Renderer& renderer)
 	{
-		_VertexArray->Bind();
-		_Shader->Bind();
-		_VertexBuffer->Bind();
-		_IndexBuffer->Bind(); 
-				
-		_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
-		_Shader->SetMatrix("model", glm::mat4(1.0f));
-
-		/* set the blend color */
-		_Shader->SetUniformVec4("blendColor", glm::vec4{ _Color.r, _Color.g, _Color.b, _Color.a });
-
-		/* set the scale matrix for the gizmo */
-		_Shader->SetMatrix("scale", glm::scale(glm::vec3(1.0f, 1.0f, 1.0f)));
-
-		renderer.DrawElements(RendererDrawType::Triangles, _IndexBuffer->GetCount());
+		//_VertexArray->Bind();
+		//_VertexBuffer->Bind();
+		//_IndexBuffer->Bind(); 
+		//		
+		//_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
+		//_Shader->SetMatrix("model", glm::mat4(1.0f));
+		//
+		///* set the blend color */
+		//_Shader->SetUniformVec4("blendColor", glm::vec4{ _Color.r, _Color.g, _Color.b, _Color.a });
+		//
+		///* set the scale matrix for the gizmo */
+		//_Shader->SetMatrix("scale", glm::scale(glm::vec3(1.0f, 1.0f, 1.0f)));
+		//
+		//renderer.DrawElements(RendererDrawType::Triangles, _IndexBuffer->GetCount());
 	}
 
 	void GridGizmo::BuildGrid()
@@ -114,12 +113,12 @@ namespace Wyrd::Editor
 		}
 
 		/* Create a new Vertex and Index buffer on the GPU */
-		_VertexBuffer.reset(VertexBuffer::Create((float*)&_Vertices[0], _Vertices.size() * sizeof(GizmoVertex), "Test VBO"));
+		_VertexBuffer.reset(VertexBuffer::Create((float*)&_Vertices[0], _Vertices.size() * sizeof(Vertex2D), "Test VBO"));
 		_IndexBuffer.reset(IndexBuffer::Create(&_Indices[0], _Indices.size()));
 
 		/* Setup the Vertex array attribute data */
-		_VertexArray->SetAttribute(0, 0, 2, sizeof(GizmoVertex));
-		_VertexArray->SetAttribute(1, 2, 4, sizeof(GizmoVertex));
+		_VertexArray->SetAttribute(0, 0, 2, sizeof(Vertex2D));
+		_VertexArray->SetAttribute(1, 2, 4, sizeof(Vertex2D));
 
 		/* bind the shader */
 		//_Shader->Bind();

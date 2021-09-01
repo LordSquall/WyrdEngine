@@ -4,7 +4,6 @@
 #include <core/export.h>
 #include <core/Timestep.h>
 #include <core/renderer/Renderer.h>
-#include <core/renderer/Shader.h>
 #include <core/renderer/Buffer.h>
 #include <core/renderer/VertexArray.h>
 
@@ -14,7 +13,7 @@
 
 namespace Wyrd::Editor
 {
-	Gizmo::Gizmo(SceneViewer* sceneViewer, Shader* shader) : _SceneViewer(sceneViewer), _Shader(shader)
+	Gizmo::Gizmo(SceneViewer* sceneViewer) : _SceneViewer(sceneViewer)
 	{
 		_CameraController = sceneViewer->GetCamera();
 	}

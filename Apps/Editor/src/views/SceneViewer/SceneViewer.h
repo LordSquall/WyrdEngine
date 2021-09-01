@@ -36,6 +36,9 @@ namespace Wyrd::Editor
 		glm::vec2 GetWorldSpaceFromPoint(const glm::vec2& point); 
 		glm::vec2 GetScreenSpaceFromWorldPoint(const glm::vec2& point);
 
+
+		inline std::shared_ptr<Scene> GetScene() const { return _Scene; }
+
 	private:
 		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
 		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
@@ -55,7 +58,7 @@ namespace Wyrd::Editor
 		std::shared_ptr<DialogService>			_DialogService;
 		std::shared_ptr<SimulationService>		_SimulationService;
 		std::shared_ptr<CoreSystemsService>		_CoreSystemService;
-		std::unique_ptr<Wyrd::FrameBuffer>	_Framebuffer;
+		std::unique_ptr<Wyrd::FrameBuffer>		_Framebuffer;
 
 		std::shared_ptr<Scene>							_Scene;
 		std::shared_ptr<OrthographicCameraController>	_CameraController;

@@ -50,6 +50,12 @@ namespace Wyrd
 		_textBatch.Submit(cmd);
 	}
 
+
+	void Renderer::Submit(DrawVertex2DCommand& cmd)
+	{
+		_vertex2DBatch.Submit(cmd);
+	}
+
 	void Renderer::Flush()
 	{
 		_spriteBatch.Flush();

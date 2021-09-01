@@ -2,9 +2,7 @@
 
 /* core wyrd includes */
 #include <wyrdpch.h>
-
-/* local includes */
-#include "gizmos/GizmoVertex.h"
+#include <core/pipeline/Vertex2D.h>
 
 using namespace Wyrd;
 
@@ -20,6 +18,6 @@ namespace Wyrd::Editor {
 			DirectoryNotFound = 4, FileAlreadyExists = 5, InsufficientSpace = 6
 		};
 
-		static ObjLoader::Result Load(std::string path, std::vector<GizmoVertex>& vertices, std::vector<uint32_t>& indices, std::map<std::string, std::pair<uint32_t, uint32_t>>& vertexGroups, float scaleFactor);
+		static ObjLoader::Result Load(std::string path, std::vector<Vertex2D>& vertices, std::vector<uint32_t>& indices, std::map<std::string, std::pair<uint32_t, uint32_t>>& vertexGroups, float scaleFactor);
 	};
 }

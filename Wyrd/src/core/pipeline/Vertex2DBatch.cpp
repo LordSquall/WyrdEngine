@@ -77,6 +77,38 @@ namespace Wyrd
 		_Color = cmd.color;
 	}
 
+	void Vertex2DBatch::Submit(DrawVertex2DCommand& cmd)
+	{
+		bool flushRequired = false;
+
+		/* switching shaders requires a flush */
+		if ((_Shader != nullptr) && _Shader != cmd.shader)
+			flushRequired = true;
+
+		/* flush if required */
+		if (flushRequired == true)
+			Flush();
+
+		/* copy vertices in to batcher */
+		for (int i = 0; i < cmd.vertices->size(); ++i)
+		{
+			Vertex2D v = cmd.vertices->at(i);
+			v.x += cmd.position.x;
+			v.y += cmd.position.y;
+			_vertices.push_back(v);
+		}
+		
+		/* bind the batch vertex array */
+		_VertexArray->Bind();
+
+		/* update both the vertex and index buffers */
+		_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(Vertex2D) * (uint32_t)_vertices.size(), 0);
+
+		_VPMatrix = cmd.vpMatrix;
+		_Shader = cmd.shader;
+		_Color = cmd.color;
+	}
+
 	void Vertex2DBatch::Flush()
 	{
 		if (_Shader == nullptr)

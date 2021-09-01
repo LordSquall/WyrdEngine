@@ -42,29 +42,9 @@ namespace Wyrd::Editor
 		/* initialise camera */
 		_CameraController = std::make_shared<OrthographicCameraController>();
 
-		/* setup the gizmo shader */
-		std::ifstream vertexStream("res/shaders/gizmoGrid.vert");
-		std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
-
-		std::ifstream fragmentStream("res/shaders/gizmoGrid.frag");
-		std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
-
-		_GizmoShader.reset(Shader::Create());
-
-		/* Add shader to core */
-		Application::Get().GetResources().Shaders["Gizmo"] = _GizmoShader;
-
-		if (_GizmoShader->Build(vertexSrc, fragmentSrc) == false)
-		{
-			WYRD_ERROR("Unable to build shader.");
-		}
-		_GizmoShader->Bind();
-		_GizmoShader->SetUniformVec4("blendColor", glm::vec4{ 0.8f, 0.2f, 0.2f, 1.0f });
-		_GizmoShader->Unbind();
-
 		/* initialise each of the gizmos */
-		_GridGizmo = std::make_unique<GridGizmo>(this, _GizmoShader.get());
-		_TranslationGizmo = std::make_unique<TranslationGizmo>(this, _GizmoShader.get());
+		_GridGizmo = std::make_unique<GridGizmo>(this);
+		_TranslationGizmo = std::make_unique<TranslationGizmo>(this);
 
 		/* create a new framebuffer */
 		_Framebuffer.reset(Wyrd::FrameBuffer::Create(FrameBufferConfig()));
@@ -207,6 +187,8 @@ namespace Wyrd::Editor
 						renderer.Submit(cmd);
 					}
 				}
+
+				_TranslationGizmo->Render(ts, renderer);
 			}
 
 			renderer.Flush();

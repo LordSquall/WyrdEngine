@@ -2,7 +2,7 @@
 #include "core/scene/Scene.h"
 #include "core/ecs/ECS.h"
 #include "core/ecs/Components.h"
-#include "core/behaviour/ISceneManager.h"
+#include "core/interfaces/ISceneManager.h"
 
 
 void SceneManager_ChangeScene(void* sceneManagerPtr, const char* sceneName)

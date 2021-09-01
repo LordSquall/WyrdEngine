@@ -4,6 +4,7 @@
 #include "core/export.h"
 #include "core/UID.h"
 #include "core/Structures.h"
+#include "core/pipeline/Vertex2D.h"
 
 /* external includes */
 #include <string>
@@ -47,5 +48,12 @@ namespace Wyrd
 		FontType* font;
 		Color color;
 		float size;
+	};
+
+	struct WYRD_LIBRARY_API DrawVertex2DCommand : public DrawCommand
+	{
+		glm::vec2 position;
+		std::vector<Vertex2D>* vertices;
+		Color color;
 	};
 }

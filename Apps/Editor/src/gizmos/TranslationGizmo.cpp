@@ -14,6 +14,7 @@
 #include "services/EventsService.h"
 #include "events/EditorEvents.h"
 #include "loaders/ObjLoader.h"
+#include "datamodels/EditorComponents.h"
 
 /* external includes */
 #include <glm/glm.hpp>
@@ -42,13 +43,13 @@ namespace Wyrd::Editor
         float y;
     };
 
-    bool InsidePolygon(std::vector<GizmoVertex>& vertices, std::pair<uint32_t, uint32_t>& range, Point p)//Point* polygon, int N, Point p)
+    bool InsidePolygon(std::vector<Vertex2D>& vertices, std::pair<uint32_t, uint32_t>& range, Point p)//Point* polygon, int N, Point p)
     {
         float precision = 0.00001f;
         int counter = 0;
         int i;
         float xinters;
-        GizmoVertex p1, p2;
+        Vertex2D p1, p2;
         int n = range.second - range.first;
 
         p1 = vertices[range.first];
@@ -80,17 +81,13 @@ namespace Wyrd::Editor
             return true;
     }
 
-    TranslationGizmo::TranslationGizmo(SceneViewer* sceneViewer, Shader* shader) : Gizmo(sceneViewer, shader), _Entity(ENTITY_INVALID), _InputState(InputState::NONE), _AxisState(AxisState::XY), _MovementState(MovementState::LOCAL), _LastMouseWorldPos(0.0f, 0.0f)
+    TranslationGizmo::TranslationGizmo(SceneViewer* sceneViewer) : Gizmo(sceneViewer), _Entity(ENTITY_INVALID), _InputState(InputState::NONE), _AxisState(AxisState::XY), _MovementState(MovementState::LOCAL), _LastMouseWorldPos(0.0f, 0.0f)
 	{
 		/* retrieve the services */
 		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
 
 		/* setup event subscriptions */
 		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(TranslationGizmo::OnSelectedEntityChanged));
-
-		/* create and bind a default VAO */
-		_VertexArray.reset(VertexArray::Create());
-		_VertexArray->Bind();
 
         /* load the vertices from an external source file */
 		ObjLoader::Load(Utils::GetEditorResFolder() + "gizmos\\translation_gizmo.obj", _Vertices, _Indices, _VertexGroups, 0.4f);
@@ -99,51 +96,31 @@ namespace Wyrd::Editor
 		UpdateVertexGroupColor("XY_Handle", colorXYAxisNormal);
 		UpdateVertexGroupColor("Y_Handle", colorYAxisNormal);
 		UpdateVertexGroupColor("X_Handle", colorXAxisNormal);
-
-		/* create a new vertex and Index buffer on the GPU */
-		_VertexBuffer.reset(VertexBuffer::Create((float*)&_Vertices[0], _Vertices.size() * sizeof(GizmoVertex), "Translation VBO"));
-		_IndexBuffer.reset(IndexBuffer::Create(&_Indices[0], _Indices.size()));
-
-		/* setup the vertex array attribute data */
-		_VertexArray->SetAttribute(0, 0, 2, sizeof(GizmoVertex));
-		_VertexArray->SetAttribute(1, 2, 4, sizeof(GizmoVertex));
-
-		/* bind the shader */
-		_Shader->Bind();
-
-		/* set the vp matrix to a standard otho matrix */
-		_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
-
 	}
 
 	TranslationGizmo::~TranslationGizmo() {}
 
-
 	void TranslationGizmo::Render(Timestep ts, Renderer& renderer)
 	{
-        /* calculate the different between the camera viewport and the sceneviewer to set the scalling */
-        float diff = _CameraController->GetSize() / std::min(_SceneViewer->GetViewport().size.x, _SceneViewer->GetViewport().size.y);
-        
-        /* setup the pipeline objects */
-        _VertexArray->Bind();
-        _Shader->Bind();
-        _VertexBuffer->Bind();
-        _IndexBuffer->Bind();
-        
-        /* render using the cameras VP matrix */
-        _Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
-        
-        /* set the scale matrix for the gizmo */
-        _Shader->SetMatrix("scale", glm::scale(glm::vec3(diff, diff, diff)));
-                 
-        /* Set the model matrix of the entity, however we want to ammend the scale by the viewport difference */
-        //_Shader->SetMatrix("model", _Entity->transform->GetModelMatrix());
-        
-        /* set the default uniforms */
-        _Shader->SetUniformVec4("blendColor", glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
-        
-        /* perform the draw */
-        renderer.DrawElements(RendererDrawType::Triangles, _IndexBuffer->GetCount());
+        if (_Entity != ENTITY_INVALID)
+        {
+            /* calculate the different between the camera viewport and the sceneviewer to set the scalling */
+            float diff = _CameraController->GetSize() / std::min(_SceneViewer->GetViewport().size.x, _SceneViewer->GetViewport().size.y);
+
+            Transform2DComponent* transform2DComponent = _SceneViewer->GetScene()->Get<Transform2DComponent>(_Entity);
+
+            Wyrd::DrawVertex2DCommand cmd{};
+            cmd.type = 1;
+            cmd.position = transform2DComponent->position;
+            cmd.vertices = &_Vertices;
+            cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
+            cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
+            cmd.color = { 1.0f, 1.0f, 0.0f, 1.0f };
+
+            renderer.Submit(cmd);
+
+            renderer.Flush();
+        }
 	}
 
 
@@ -162,56 +139,58 @@ namespace Wyrd::Editor
     {
         float diff = _CameraController->GetSize() / std::min(_SceneViewer->GetViewport().size.x, _SceneViewer->GetViewport().size.y);
 
-        //vec4 worldSpace = glm::vec4(_SceneViewer->Convert2DToWorldSpace({ e.GetX(), e.GetY() }), -1.0f, 1.0f);
+        Transform2DComponent* transform2DComponent = _SceneViewer->GetScene()->Get<Transform2DComponent>(_Entity);
 
-        //vec4 modelSpace = glm::inverse(_Entity->transform->GetModelMatrix() * glm::scale(glm::vec3(diff, diff, diff))) * worldSpace;
+        glm::vec4 worldSpace = glm::vec4(_SceneViewer->Convert2DToWorldSpace({ e.GetX(), e.GetY() }), -1.0f, 1.0f);
 
-        //Point ptCoords = { modelSpace.x, modelSpace.y };
+        glm::vec4 modelSpace = glm::inverse(transform2DComponent->CalculateModelMatrix() * glm::scale(glm::vec3(diff, diff, diff))) * worldSpace;
+
+        Point ptCoords = { modelSpace.x, modelSpace.y };
 
         bool updateVertices = false;
 
         if (_InputState == InputState::NONE || _InputState == InputState::OVER)
         {
             /* test each of the handles to see if we have a mouse event */
-            //if (InsidePolygon(_Vertices, _VertexGroups["XY_Handle"], ptCoords))
-            //{
-            //    SetAxisState(AxisState::XY);
-            //    SetInputState(InputState::OVER);
-            //} 
-            //else if (InsidePolygon(_Vertices, _VertexGroups["X_Handle"], ptCoords))
-            //{
-            //    SetAxisState(AxisState::X);
-            //    SetInputState(InputState::OVER);
-            //} 
-            //else if (InsidePolygon(_Vertices, _VertexGroups["Y_Handle"], ptCoords))
-            //{
-            //    SetAxisState(AxisState::Y);
-            //    SetInputState(InputState::OVER);
-            //}
-            //else
-            //{
-            //    SetAxisState(AxisState::NONE);
-            //    SetInputState(InputState::NONE);
-            //}
+            if (InsidePolygon(_Vertices, _VertexGroups["XY_Handle"], ptCoords))
+            {
+                SetAxisState(AxisState::XY);
+                SetInputState(InputState::OVER);
+            } 
+            else if (InsidePolygon(_Vertices, _VertexGroups["X_Handle"], ptCoords))
+            {
+                SetAxisState(AxisState::X);
+                SetInputState(InputState::OVER);
+            } 
+            else if (InsidePolygon(_Vertices, _VertexGroups["Y_Handle"], ptCoords))
+            {
+                SetAxisState(AxisState::Y);
+                SetInputState(InputState::OVER);
+            }
+            else
+            {
+                SetAxisState(AxisState::NONE);
+                SetInputState(InputState::NONE);
+            }
         }else
         {
-            //Transform2DComponent* transform2D = dynamic_cast<Transform2DComponent*>(_Entity->transform.get());
-            //glm::vec2 worldSpaceDelta = _LastMouseWorldPos - _SceneViewer->GetMouseWorldPos();
-            //
-            //switch (_AxisState)
-            //{
-            //case AxisState::XY:
-            //    transform2D->Translate({ -worldSpaceDelta.x, -worldSpaceDelta.y });
-            //    break;
-            //case AxisState::X:
-            //    transform2D->Translate({ -worldSpaceDelta.x, 0.0f });
-            //    break;
-            //case AxisState::Y:
-            //    transform2D->Translate({ 0.0f, -worldSpaceDelta.y });
-            //    break;
-            //}
-            //
-            //_LastMouseWorldPos = _SceneViewer->GetMouseWorldPos();
+            glm::vec2 worldSpaceDelta = _LastMouseWorldPos - _SceneViewer->GetMouseWorldPos();
+            
+            switch (_AxisState)
+            {
+            case AxisState::XY:
+                transform2DComponent->position.x += -worldSpaceDelta.x;
+                transform2DComponent->position.y += -worldSpaceDelta.y;
+                break;
+            case AxisState::X:
+                transform2DComponent->position.x += -worldSpaceDelta.x;
+                break;
+            case AxisState::Y:
+                transform2DComponent->position.y += -worldSpaceDelta.y;
+                break;
+            }
+            
+            _LastMouseWorldPos = _SceneViewer->GetMouseWorldPos();
         }
                 
         return true;
@@ -244,18 +223,7 @@ namespace Wyrd::Editor
 	{
 		Events::SelectedEntityChangedArgs& evtArgs = static_cast<Events::SelectedEntityChangedArgs&>(args);
 
-        /*if (evtArgs.entity != nullptr)
-        {
-            Transform2DComponent* transform2D = dynamic_cast<Transform2DComponent*>(evtArgs.entity->transform.get());
-            if (transform2D != nullptr)
-            {
-                _Entity = evtArgs.entity;
-            }
-        }
-        else
-        {
-            _Entity = nullptr;
-        }*/
+        _Entity = evtArgs.entity;
 	}
 
 
@@ -296,7 +264,7 @@ namespace Wyrd::Editor
                 break;
             }
 
-            _VertexBuffer->Update((float*)&_Vertices[0], _Vertices.size() * sizeof(GizmoVertex), 0);
+            //_VertexBuffer->Update((float*)&_Vertices[0], _Vertices.size() * sizeof(Vertex2D), 0);
 
             _AxisState = state;
         }

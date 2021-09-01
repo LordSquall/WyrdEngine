@@ -23,6 +23,7 @@ namespace Wyrd {
 		bool Initialise(Renderer* renderer);
 
 		void Submit(DrawRectCommand& cmd);
+		void Submit(DrawVertex2DCommand& cmd);
 
 		void Flush();
 

@@ -44,6 +44,9 @@ namespace Wyrd
 		if (flushRequired == true)
 			Flush();
 
+		/* record initial offset */
+		size_t offset = sizeof(SpriteVertex) * (uint32_t)_vertices.size();
+
 		/* add vertices */
 		_vertices.push_back({ (float)cmd.position.x, (float)cmd.position.y, 0.0, 0.0f });
 		_vertices.push_back({ (float)cmd.position.x, (float)cmd.position.y + (float)cmd.size.y, 0.0f, -(cmd.tiling.y) });
@@ -56,7 +59,7 @@ namespace Wyrd
 		_VertexArray->Bind();
 
 		/* update both the vertex and index buffers */
-		_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(SpriteVertex) * (uint32_t)_vertices.size(), 0);
+		_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(SpriteVertex) * 6, offset);
 
 		_VPMatrix = cmd.vpMatrix;
 		_Shader = cmd.shader;

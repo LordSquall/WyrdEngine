@@ -4,7 +4,6 @@
 #include <core/export.h>
 #include <core/Timestep.h>
 #include <core/renderer/Renderer.h>
-#include <core/renderer/Shader.h>
 #include <core/renderer/Buffer.h>
 #include <core/renderer/VertexArray.h>
 
@@ -42,7 +41,7 @@ namespace Wyrd::Editor
 		};
 
 	public:
-		TranslationGizmo(SceneViewer* sceneViewer, Shader* shader);
+		TranslationGizmo(SceneViewer* sceneViewer);
 		~TranslationGizmo();
 
 		void Render(Timestep ts, Renderer& renderer) override;

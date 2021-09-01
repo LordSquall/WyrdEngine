@@ -32,6 +32,8 @@ namespace Wyrd
 		float rotation;
 
 		Transform2DComponent() : position(0.0f, 0.0f), rotation(0.0f) {}
+
+		glm::mat4 CalculateModelMatrix();
 	};
 
 	struct WYRD_LIBRARY_API SpriteComponent

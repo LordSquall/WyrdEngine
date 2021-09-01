@@ -4,13 +4,11 @@
 #include <core/Application.h>
 #include <core/Resources.h>
 #include <core/renderer/Renderer.h>
-#include <core/renderer/Shader.h>
 #include <core/renderer/Buffer.h>
 #include <core/renderer/VertexArray.h>
 
 /* local includes */
 #include "Gizmo.h"
-#include "gizmos/GizmoVertex.h"
 #include "services/ServiceManager.h"
 #include "datamodels/OrthographicCameraController.h"
 #include "support/IconLibrary.h"
@@ -21,7 +19,7 @@ namespace Wyrd::Editor
 	class GridGizmo : public Gizmo
 	{
 	public:
-		GridGizmo(SceneViewer* sceneViewer, Shader* shader);
+		GridGizmo(SceneViewer* sceneViewer);
 		~GridGizmo();
 
 		void Render(Timestep ts, Renderer& renderer);

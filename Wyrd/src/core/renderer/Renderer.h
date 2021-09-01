@@ -43,6 +43,7 @@ namespace Wyrd
 		virtual void Submit(DrawRectCommand& cmd);
 		virtual void Submit(DrawSpriteCommand& cmd);
 		virtual void Submit(DrawTextCommand& cmd);
+		virtual void Submit(DrawVertex2DCommand& cmd);
 		virtual void Flush();
 
 		inline struct RendererInfo& GetVendorInfo() { return _vendorInfo; }

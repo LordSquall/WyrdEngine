@@ -11,7 +11,7 @@
 
 namespace Wyrd::Editor
 {
-	ObjLoader::Result ObjLoader::Load(std::string path, std::vector<GizmoVertex>& vertices, std::vector<uint32_t>& indices, std::map<std::string, std::pair<uint32_t, uint32_t>>& vertexGroups, float scaleFactor)
+	ObjLoader::Result ObjLoader::Load(std::string path, std::vector<Vertex2D>& vertices, std::vector<uint32_t>& indices, std::map<std::string, std::pair<uint32_t, uint32_t>>& vertexGroups, float scaleFactor)
 	{
 		ObjLoader::Result result = Success;
 
