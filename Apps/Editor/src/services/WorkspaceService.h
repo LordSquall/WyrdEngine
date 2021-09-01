@@ -6,6 +6,7 @@
 
 /* local includes */
 #include "support/FileWatcher.h"
+#include "services/ServiceTypes.h"
 #include "IService.h"
 #include "datamodels/Project.h"
 
@@ -22,6 +23,8 @@ namespace Wyrd::Editor
 		// Inherited via IService
 		virtual void OnCreate() override;
 		virtual void OnDestroy() override;
+
+		static ServiceType GetTypeID() { return ServiceType::Workspace; }
 
 		void SetProjectRootDirectory(const std::filesystem::path& rootDir);
 

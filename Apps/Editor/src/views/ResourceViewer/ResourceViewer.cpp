@@ -21,10 +21,10 @@ namespace Wyrd::Editor
 	ResourceViewer::ResourceViewer(EditorLayer* editorLayer) : EditorViewBase("Resource Viewer", editorLayer)
 	{
 		/* cache the service(s) */
-		_resourcesService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
-		_workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
-		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
-		_dialogService = ServiceManager::Get<DialogService>(ServiceManager::Service::Dialog);
+		_resourcesService = ServiceManager::Get<ResourceService>();
+		_workspaceService = ServiceManager::Get<WorkspaceService>();
+		_EventService = ServiceManager::Get<EventService>();
+		_dialogService = ServiceManager::Get<DialogService>();
 	}
 
 	void ResourceViewer::OnEditorRender()

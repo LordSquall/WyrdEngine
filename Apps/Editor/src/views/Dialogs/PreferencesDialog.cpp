@@ -11,7 +11,7 @@ namespace Wyrd::Editor
 {
 	PreferencesDialog::PreferencesDialog(EditorLayer* editorLayer) : EditorViewDialogBase("Preferences Viewer", editorLayer)
 	{
-		_SettingsService = ServiceManager::Get<SettingsService>(ServiceManager::Service::Settings);
+		_SettingsService = ServiceManager::Get<SettingsService>();
 	}
 
 	PreferencesDialog::~PreferencesDialog() {}
@@ -56,7 +56,7 @@ namespace Wyrd::Editor
 		ImGui::SameLine();
 		if (ImGui::Button("OK"))
 		{
-			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
+			ServiceManager::Get<EventService>()->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
 			Close();
 		}
 	}
@@ -91,7 +91,7 @@ namespace Wyrd::Editor
 			_SettingsService->SetSetting(std::to_string(autoOpenOnCapture), CONFIG_RENDERDOC, CONFIG_RENDERDOC__AUTOOPEN);
 			_SettingsService->SetSetting(captureDir, CONFIG_RENDERDOC, CONFIG_RENDERDOC__CAPTUREDIR);
 
-			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
+			ServiceManager::Get<EventService>()->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
 
 		}
 #else
@@ -130,7 +130,7 @@ namespace Wyrd::Editor
 			_SettingsService->SetSetting(std::to_string(cols), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLS);
 			_SettingsService->SetSetting(Utils::ToString(color), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLOR);
 
-			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
+			ServiceManager::Get<EventService>()->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
 
 		}
 	}
@@ -143,7 +143,7 @@ namespace Wyrd::Editor
 		{
 			_SettingsService->SetSetting(binPath, CONFIG_WINDOWSPLAYER, CONFIG_WINDOWSPLAYER__BINPATH);
 
-			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
+			ServiceManager::Get<EventService>()->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
 		}
 	}
 
@@ -157,7 +157,7 @@ namespace Wyrd::Editor
 		{
 			_SettingsService->SetSetting(textureEditor, CONFIG_EXTERNALTOOLS, CONFIG_EXTERNALTOOLS_TEXTUREEDITOR);
 
-			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
+			ServiceManager::Get<EventService>()->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
 
 		}
 	}

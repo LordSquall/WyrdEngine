@@ -2,6 +2,7 @@
 
 #include "core/export.h"
 
+#include "services/ServiceTypes.h"
 #include "services/IService.h"
 
 #include "views/EditorViewDialogBase.h"
@@ -22,6 +23,8 @@ namespace Wyrd::Editor
 		virtual void OnCreate() override;
 		virtual void OnDestroy() override;
 		virtual void OnGUI() override;
+
+		static ServiceType GetTypeID() { return ServiceType::Dialog; }
 
 		void OpenDialog(std::shared_ptr<EditorViewDialogBase> dialog);
 

@@ -12,8 +12,8 @@ namespace Wyrd::Editor
 	OutputView::OutputView(EditorLayer* editorLayer) : EditorViewBase("Output", editorLayer)
 	{
 		/* cache the service(s) */
-		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
-		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
+		_ResourceService = ServiceManager::Get<ResourceService>();
+		_EventService = ServiceManager::Get<EventService>();
 
 		/* cache the icon pointers */
 		_CodeIcon = _ResourceService->GetIconLibrary().GetIcon("common", "code_error");

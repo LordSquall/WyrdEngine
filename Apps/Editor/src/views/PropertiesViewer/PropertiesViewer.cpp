@@ -21,8 +21,8 @@ namespace Wyrd::Editor
 {
 	PropertiesViewer::PropertiesViewer(EditorLayer* editorLayer) : EditorViewBase("Properties", editorLayer), _EventService(nullptr), _WorkspaceService(nullptr), _SelectedEntity(ENTITY_INVALID), _SelectedAsset(nullptr), _GUIFunc(nullptr)
 	{
-		_EventService = ServiceManager::Get<EventService>(ServiceManager::Service::Events);
-		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace);
+		_EventService = ServiceManager::Get<EventService>();
+		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
 
 		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(PropertiesViewer::OnSelectedEntityChanged));
 

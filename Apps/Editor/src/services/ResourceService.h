@@ -2,6 +2,7 @@
 
 #include "core/export.h"
 
+#include "services/ServiceTypes.h"
 #include "services/IService.h"
 #include "datamodels/resources/Resource.h"
 #include "datamodels/resources/ResourceFactory.h"
@@ -24,6 +25,8 @@ namespace Wyrd::Editor
 		virtual void OnCreate() override;
 		virtual void OnDestroy() override;
 		virtual void OnUpdate() override;
+
+		static ServiceType GetTypeID() { return ServiceType::Resources; }
 
 		void AddResource(std::string& resourcePath, const UID uid);
 		void ReloadResource(UID uid);

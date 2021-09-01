@@ -5,6 +5,7 @@
 #include <core/systems/ISystem.h>
 
 /* local includes */
+#include "services/ServiceTypes.h"
 #include "services/IService.h"
 #include "events/EditorEvents.h"
 
@@ -19,6 +20,8 @@ namespace Wyrd::Editor
 
 		template <class T>
 		T* GetSystem(const std::string& name) { return (T*)_Systems[name]; }
+
+		static ServiceType GetTypeID() { return ServiceType::CoreSystems; }
 
 	private:
 		// Inherited via IService

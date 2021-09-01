@@ -14,7 +14,7 @@ namespace Wyrd::Editor
 	{
 		_IniParser = std::make_shared<IniParser>("config.ini");
 
-		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Events::EventType::SettingsUpdated, [this](Events::EventArgs& args)
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::SettingsUpdated, [this](Events::EventArgs& args)
 			{
 				_IniParser->Save("config.ini");
 			});

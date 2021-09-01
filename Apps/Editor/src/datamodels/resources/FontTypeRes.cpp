@@ -26,7 +26,7 @@ namespace Wyrd::Editor
 		if (Application::Get().GetMainThreadID() != std::this_thread::get_id())
 		{
 			/* swap an event to trigger the load on the main thread */
-			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::LoadAsset, std::make_unique<Events::LoadAssetArgs>(this));
+			ServiceManager::Get<EventService>()->Publish(Events::EventType::LoadAsset, std::make_unique<Events::LoadAssetArgs>(this));
 		}
 		else
 		{

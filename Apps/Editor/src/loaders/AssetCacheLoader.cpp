@@ -23,8 +23,8 @@ namespace Wyrd::Editor
 		jsonxx::Object o;
 
 		/* cache the required services */
-		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
-		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
+		_ResourceService = ServiceManager::Get<ResourceService>();
+		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
 
 		std::ifstream f(path);
 
@@ -81,8 +81,8 @@ namespace Wyrd::Editor
 		jsonxx::Object o;
 
 		/* cache the resource service */
-		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
-		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
+		_ResourceService = ServiceManager::Get<ResourceService>();
+		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
 
 		jsonxx::Array resourceArray;
 		for (auto& resource : _ResourceService->GetResources())

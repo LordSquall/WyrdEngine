@@ -59,7 +59,7 @@ namespace Wyrd
 		_VertexArray->Bind();
 
 		/* update both the vertex and index buffers */
-		_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(SpriteVertex) * 6, offset);
+		_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(SpriteVertex) * _vertices.size(), offset);
 
 		_VPMatrix = cmd.vpMatrix;
 		_Shader = cmd.shader;

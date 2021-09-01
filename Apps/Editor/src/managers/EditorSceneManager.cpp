@@ -11,8 +11,8 @@ namespace Wyrd::Editor
 	bool EditorSceneManager::ChangeScene(std::string& sceneName)
 	{
 		/* retrieve the services */
-		auto workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
-		auto resourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
+		auto workspaceService = ServiceManager::Get<WorkspaceService>();
+		auto resourceService = ServiceManager::Get<ResourceService>();
 
 		/* find the scene name */
 		auto scene = resourceService->GetSceneResourceByName(sceneName);
@@ -40,7 +40,7 @@ namespace Wyrd::Editor
 
 	bool EditorSceneManager::ResetInitialScene()
 	{
-		auto workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
+		auto workspaceService = ServiceManager::Get<WorkspaceService>();
 
 		if (workspaceService->LoadScene(_InitialScenePath))
 		{

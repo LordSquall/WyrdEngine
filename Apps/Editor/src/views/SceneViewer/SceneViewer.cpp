@@ -27,13 +27,13 @@ namespace Wyrd::Editor
 	SceneViewer::SceneViewer(EditorLayer* editorLayer) : EditorViewBase("Scene Viewer", editorLayer), _SelectedEntity(ENTITY_INVALID)
 	{
 		/* retrieve services */
-		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
-		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
-		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
-		_DialogService = ServiceManager::Get<DialogService>(ServiceManager::Dialog);
-		_SettingsService = ServiceManager::Get<SettingsService>(ServiceManager::Settings);
-		_SimulationService = ServiceManager::Get<SimulationService>(ServiceManager::Simulation);
-		_CoreSystemService = ServiceManager::Get<CoreSystemsService>(ServiceManager::CoreSystems);
+		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
+		_EventService = ServiceManager::Get<EventService>();
+		_ResourceService = ServiceManager::Get<ResourceService>();
+		_DialogService = ServiceManager::Get<DialogService>();
+		_SettingsService = ServiceManager::Get<SettingsService>();
+		_SimulationService = ServiceManager::Get<SimulationService>();
+		_CoreSystemService = ServiceManager::Get<CoreSystemsService>();
 
 		/* setup event bindings */
 		_EventService->Subscribe(Events::EventType::SceneOpened, EVENT_FUNC(SceneViewer::OnSceneOpened));

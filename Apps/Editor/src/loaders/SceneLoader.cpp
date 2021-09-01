@@ -32,8 +32,8 @@ namespace Wyrd::Editor
 		SceneLoader::Result result = Success;
 		jsonxx::Object o;
 
-		_resourceService = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources);
-		_coreSystemService = ServiceManager::Get<CoreSystemsService>(ServiceManager::Service::CoreSystems);
+		_resourceService = ServiceManager::Get<ResourceService>();
+		_coreSystemService = ServiceManager::Get<CoreSystemsService>();
 
 		/* perform the initial load of the JSON file */
 		std::ifstream f(path);
@@ -71,7 +71,7 @@ namespace Wyrd::Editor
 			CameraComponent* cameraComponent = scene.Get<CameraComponent>(scene.GetPrimaryCameraEntity());
 			if (cameraComponent != nullptr)
 			{
-				ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Editor::Events::EventType::SetSceneCamera, std::make_unique<Events::SetSceneCameraArgs>(scene.GetPrimaryCameraEntity(), cameraComponent));
+				ServiceManager::Get<EventService>()->Publish(Editor::Events::EventType::SetSceneCamera, std::make_unique<Events::SetSceneCameraArgs>(scene.GetPrimaryCameraEntity(), cameraComponent));
 			}
 			else
 			{

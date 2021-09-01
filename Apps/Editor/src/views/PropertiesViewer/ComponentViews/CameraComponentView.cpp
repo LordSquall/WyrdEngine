@@ -25,7 +25,7 @@ namespace Wyrd::Editor
 		ImGui::DragFloat("Size     ", &cameraComponent->size);
 		if (ImGui::Button("Set As Main Camera"))
 		{
-			ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Publish(Editor::Events::EventType::SetSceneCamera, std::make_unique<Events::SetSceneCameraArgs>(e, cameraComponent));
+			ServiceManager::Get<EventService>()->Publish(Editor::Events::EventType::SetSceneCamera, std::make_unique<Events::SetSceneCameraArgs>(e, cameraComponent));
 		}
 	}
 }

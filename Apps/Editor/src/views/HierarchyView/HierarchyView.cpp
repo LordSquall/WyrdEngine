@@ -22,9 +22,9 @@ namespace Wyrd::Editor
 
 	void HierarchyView::OnInitialise()
 	{
-		_EventService = ServiceManager::Get<EventService>(ServiceManager::Service::Events);
-		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace);
-		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources);
+		_EventService = ServiceManager::Get<EventService>();
+		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
+		_ResourceService = ServiceManager::Get<ResourceService>();
 
 		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(HierarchyView::OnSelectedEntityChanged));
 	}

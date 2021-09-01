@@ -25,11 +25,11 @@ namespace Wyrd::Editor
 	GameViewer::GameViewer(EditorLayer* editorLayer) : EditorViewBase("Game Viewer", editorLayer), _CameraEntity(ENTITY_INVALID), _CameraComponent(nullptr), _SizeConfigID(1)
 	{
 		/* retrieve services */
-		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
-		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
-		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
-		_SettingsService = ServiceManager::Get<SettingsService>(ServiceManager::Settings);
-		_SimulationService = ServiceManager::Get<SimulationService>(ServiceManager::Simulation);
+		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
+		_EventService = ServiceManager::Get<EventService>();
+		_ResourceService = ServiceManager::Get<ResourceService>();
+		_SettingsService = ServiceManager::Get<SettingsService>();
+		_SimulationService = ServiceManager::Get<SimulationService>();
 
 		/* setup event bindings */
 		_EventService->Subscribe(Events::EventType::SceneOpened, EVENT_FUNC(GameViewer::OnSceneOpened));

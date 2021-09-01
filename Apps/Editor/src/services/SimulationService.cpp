@@ -22,9 +22,9 @@ namespace Wyrd::Editor
 	void SimulationService::OnCreate()
 	{
 		/* cache services */
-		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
-		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
-		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
+		_EventService = ServiceManager::Get<EventService>();
+		_ResourceService = ServiceManager::Get<ResourceService>();
+		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
 
 		/* Subscribe to project events */
 		_EventService->Subscribe(Events::EventType::BuildBehaviourModel, EVENT_FUNC(SimulationService::OnBuildBehaviourModelEvent));

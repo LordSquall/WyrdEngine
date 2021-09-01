@@ -60,12 +60,12 @@ namespace Wyrd::Editor
 		util = Utils();
 
 		/* cache services */
-		_eventService = ServiceManager::Get<EventService>(ServiceManager::Service::Events);
-		_workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Service::Workspace);
-		_settingsService = ServiceManager::Get<SettingsService>(ServiceManager::Service::Settings);
-		_resourceService = ServiceManager::Get<ResourceService>(ServiceManager::Service::Resources);
-		_simulationService = ServiceManager::Get<SimulationService>(ServiceManager::Service::Simulation);
-		_dialogService = ServiceManager::Get<DialogService>(ServiceManager::Service::Dialog);
+		_eventService = ServiceManager::Get<EventService>();
+		_workspaceService = ServiceManager::Get<WorkspaceService>();
+		_settingsService = ServiceManager::Get<SettingsService>();
+		_resourceService = ServiceManager::Get<ResourceService>();
+		_simulationService = ServiceManager::Get<SimulationService>();
+		_dialogService = ServiceManager::Get<DialogService>();
 
 		/* pass the scene viewer view to the simluation service */
 		_simulationService->SetSceneViewer(_views["Scene Viewer"]);
@@ -428,7 +428,7 @@ namespace Wyrd::Editor
 
 		ImGui::End();
 
-		ServiceManager::Get<DialogService>(ServiceManager::Service::Dialog)->OnGUI();
+		ServiceManager::Get<DialogService>()->OnGUI();
 
 		ImGui::PopFont();
 

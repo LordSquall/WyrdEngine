@@ -5,6 +5,7 @@
 #include <core/behaviour/Behaviour.h>
 
 /* local includes */
+#include "services/ServiceTypes.h"
 #include "services/IService.h"
 #include "events/EditorEvents.h"
 #include "managers/EditorSceneManager.h"
@@ -26,6 +27,8 @@ namespace Wyrd::Editor
 		virtual void OnCreate() override;
 		virtual void OnDestroy() override;
 		virtual void OnUpdate() override;
+
+		static ServiceType GetTypeID() { return ServiceType::Simulation; }
 
 	public:
 		void Start();

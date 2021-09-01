@@ -22,11 +22,11 @@ namespace Wyrd::Editor
 	ExportView::ExportView(EditorLayer* editorLayer) : EditorViewBase("Export View", editorLayer)
 	{
 		/* retrieve services */
-		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
-		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
-		_ResourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
-		_SettingsService = ServiceManager::Get<SettingsService>(ServiceManager::Settings);
-		_SimulationService = ServiceManager::Get<SimulationService>(ServiceManager::Simulation);
+		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
+		_EventService = ServiceManager::Get<EventService>();
+		_ResourceService = ServiceManager::Get<ResourceService>();
+		_SettingsService = ServiceManager::Get<SettingsService>();
+		_SimulationService = ServiceManager::Get<SimulationService>();
 	}
 
 	ExportView::~ExportView()

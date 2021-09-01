@@ -22,16 +22,16 @@ namespace Wyrd::Editor
 		IsProjectLoaded(false);
 
 		/* Subscribe to Project lifecycle events */
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::CreateNewProject, [this](Events::EventArgs& args) {
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::CreateNewProject, [this](Events::EventArgs& args) {
 			Events::CreateNewProjectArgs& a = (Events::CreateNewProjectArgs&)args;
 			CreateNewProject(a.location, a.sceneName, a.name);
 		});
 
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::OpenProject, [this](Events::EventArgs& args) {});
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::OpenProject, [this](Events::EventArgs& args) {});
 
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::CloseProject, [this](Events::EventArgs& args) {});
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::CloseProject, [this](Events::EventArgs& args) {});
 
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::SetSceneCamera, [this](Events::EventArgs& args) {
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::SetSceneCamera, [this](Events::EventArgs& args) {
 			Events::SetSceneCameraArgs& a = (Events::SetSceneCameraArgs&)args;
 				_LoadedScene->SetPrimaryCameraEntity(a.entity);
 			});
@@ -64,7 +64,7 @@ namespace Wyrd::Editor
 		_LoadedProject = std::make_shared<Project>(name);
 
 		/* Clear any selection */
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(ENTITY_INVALID));
+		ServiceManager::Get<EventService>()->Publish(Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(ENTITY_INVALID));
 
 		/* Create the folder for the project */
 		Utils::CreateFolder(location + "\\" + name);
@@ -78,7 +78,7 @@ namespace Wyrd::Editor
 			IsProjectLoaded(true);
 
 			/* Update the settings to ensure this project is loaded by default next time */
-			ServiceManager::Get<SettingsService>(ServiceManager::Settings)->SetSetting(_LoadedProjectPath, CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT);
+			ServiceManager::Get<SettingsService>()->SetSetting(_LoadedProjectPath, CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT);
 				
 			/* Set the base root folder */
 			SetProjectRootDirectory(Utils::GetPath(_LoadedProjectPath.c_str()));
@@ -116,7 +116,7 @@ namespace Wyrd::Editor
 			StartFileWatcher();
 
 			/* Send a Project Loaded Event */
-			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ProjectLoaded,
+			ServiceManager::Get<EventService>()->Publish(Events::EventType::ProjectLoaded,
 				std::make_unique<Events::ProjectLoadedArgs>(_LoadedProject->initialScene, _LoadedProject, Utils::GetPath(_LoadedProjectPath)));
 		}
 	}
@@ -173,13 +173,13 @@ namespace Wyrd::Editor
 			IsProjectLoaded(true);
 
 			/* Update the settings to ensure this project is loaded by default next time */
-			ServiceManager::Get<SettingsService>(ServiceManager::Settings)->SetSetting(_LoadedProjectPath, CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT);
+			ServiceManager::Get<SettingsService>()->SetSetting(_LoadedProjectPath, CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT);
 
 			/* Set the project root directory path */
 			SetProjectRootDirectory(Utils::GetPath(projectfile));
 
 			/* Send a Project Loaded Event */
-			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ProjectLoaded,
+			ServiceManager::Get<EventService>()->Publish(Events::EventType::ProjectLoaded,
 				std::make_unique<Events::ProjectLoadedArgs>(_LoadedProject->initialScene, _LoadedProject, Utils::GetPath(projectfile)));
 
 			if (Utils::FileExists(_LoadedProject->initialScene) == true)
@@ -216,7 +216,7 @@ namespace Wyrd::Editor
 		IsSceneLoaded(true);
 
 		/* fire scene loaded event on the editor system */
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Editor::Events::EventType::SceneOpened, std::make_unique<Events::SceneOpenedArgs>(_LoadedScene));
+		ServiceManager::Get<EventService>()->Publish(Editor::Events::EventType::SceneOpened, std::make_unique<Events::SceneOpenedArgs>(_LoadedScene));
 
 		return true;
 	}
@@ -253,7 +253,7 @@ namespace Wyrd::Editor
 			_LoadedScenePath = path;
 
 			/* fire scene loaded event on the editor system */
-			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Editor::Events::EventType::SceneOpened, std::make_unique<Events::SceneOpenedArgs>(_LoadedScene));
+			ServiceManager::Get<EventService>()->Publish(Editor::Events::EventType::SceneOpened, std::make_unique<Events::SceneOpenedArgs>(_LoadedScene));
 
 			return true;
 		}
@@ -267,7 +267,7 @@ namespace Wyrd::Editor
 	bool WorkspaceService::CloseScene()
 	{
 		/* Send a Scene Close Event */
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::SceneClosed, std::make_unique<Events::SceneClosedArgs>());
+		ServiceManager::Get<EventService>()->Publish(Events::EventType::SceneClosed, std::make_unique<Events::SceneClosedArgs>());
 
 		_LoadedScene = nullptr;
 
@@ -352,12 +352,12 @@ namespace Wyrd::Editor
 			{
 			case FileStatus::created:
 				std::cout << "File Created: " << path << std::endl;
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::AddFileEntry, std::make_unique<Events::AddFileEntryArgs>(path, path, isDir));
+				ServiceManager::Get<EventService>()->Publish(Events::EventType::AddFileEntry, std::make_unique<Events::AddFileEntryArgs>(path, path, isDir));
 				break;
 
 			case FileStatus::modified:
 				std::cout << "File Modified: " << path << std::endl;
-				ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::ModifiedFileEntry, std::make_unique<Events::ModifiedFileEntryArgs>(path, path, isDir));
+				ServiceManager::Get<EventService>()->Publish(Events::EventType::ModifiedFileEntry, std::make_unique<Events::ModifiedFileEntryArgs>(path, path, isDir));
 				break;
 
 			case FileStatus::erased:

@@ -84,7 +84,7 @@ namespace Wyrd::Editor
     TranslationGizmo::TranslationGizmo(SceneViewer* sceneViewer) : Gizmo(sceneViewer), _Entity(ENTITY_INVALID), _InputState(InputState::NONE), _AxisState(AxisState::XY), _MovementState(MovementState::LOCAL), _LastMouseWorldPos(0.0f, 0.0f)
 	{
 		/* retrieve the services */
-		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
+		_EventService = ServiceManager::Get<EventService>();
 
 		/* setup event subscriptions */
 		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(TranslationGizmo::OnSelectedEntityChanged));

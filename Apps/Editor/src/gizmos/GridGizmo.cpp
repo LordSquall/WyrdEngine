@@ -23,8 +23,8 @@ namespace Wyrd::Editor
 		_CameraController = sceneViewer->GetCamera();
 
 		/* Retrieve the services */
-		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
-		_SettingsService = ServiceManager::Get<SettingsService>(ServiceManager::Settings);
+		_EventService = ServiceManager::Get<EventService>();
+		_SettingsService = ServiceManager::Get<SettingsService>();
 
 		/* Retrieve settings */
 		_Enabled = Utils::ToBool(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__ENABLED, std::string("1")));

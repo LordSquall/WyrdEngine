@@ -48,11 +48,11 @@ namespace Wyrd::Editor
 
 	bool RenderDocLayer::OnAttach()
 	{
-		_SettingsService = ServiceManager::Get<SettingsService>(ServiceManager::Service::Settings);
+		_SettingsService = ServiceManager::Get<SettingsService>();
 
 		UpdateSettings();
 
-		ServiceManager::Get<EventService>(ServiceManager::Service::Events)->Subscribe(Events::EventType::SettingsUpdated, EVENT_FUNC(RenderDocLayer::OnSettingsUpdated));
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::SettingsUpdated, EVENT_FUNC(RenderDocLayer::OnSettingsUpdated));
 
 		return true;
 	}

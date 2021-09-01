@@ -41,11 +41,11 @@ namespace Wyrd::Editor
 	AssetViewer::AssetViewer(EditorLayer* editorLayer) : EditorViewBase("Asset Viewer", editorLayer), _SelectedDirectory(""), _SelectedResource(-1), _DeleteDirectoryState(""), _DeleteAssetState("")
 	{
 		/* cache the service(s) */
-		_resourcesService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
-		_workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
-		_settingsService = ServiceManager::Get<SettingsService>(ServiceManager::Settings);
-		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
-		_dialogService = ServiceManager::Get<DialogService>(ServiceManager::Service::Dialog);
+		_resourcesService = ServiceManager::Get<ResourceService>();
+		_workspaceService = ServiceManager::Get<WorkspaceService>();
+		_settingsService = ServiceManager::Get<SettingsService>();
+		_EventService = ServiceManager::Get<EventService>();
+		_dialogService = ServiceManager::Get<DialogService>();
 
 		/* cache the icon pointers */
 		_UnknownIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_unknown");
@@ -420,7 +420,7 @@ namespace Wyrd::Editor
 			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 			{
 				_SelectedResource = resID;
-				ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace)->LoadScene(sceneResource.GetPath());
+				ServiceManager::Get<WorkspaceService>()->LoadScene(sceneResource.GetPath());
 			}
 		}
 

@@ -20,7 +20,7 @@ namespace Wyrd::Editor
 {
 	void ExportManager::Export()
 	{
-		auto workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
+		auto workspaceService = ServiceManager::Get<WorkspaceService>();
 		std::shared_ptr<Project> project = workspaceService->GetCurrentProject();
 		std::shared_ptr<Scene> scene = workspaceService->GetLoadedScene();
 
@@ -43,7 +43,7 @@ namespace Wyrd::Editor
 
 	void ExportManager::GenerateCoreFile()
 	{
-		auto workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
+		auto workspaceService = ServiceManager::Get<WorkspaceService>();
 		std::shared_ptr<Project> project = workspaceService->GetCurrentProject();
 
 		std::ofstream core;
@@ -58,7 +58,7 @@ namespace Wyrd::Editor
 
 	void ExportManager::GenerateGameFile()
 	{
-		auto workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
+		auto workspaceService = ServiceManager::Get<WorkspaceService>();
 		std::shared_ptr<Project> project = workspaceService->GetCurrentProject();
 
 		std::ofstream game;
@@ -91,8 +91,8 @@ namespace Wyrd::Editor
 	void ExportManager::GenerateCommonBundleFile()
 	{
 		/* retrieve services */
-		auto resourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
-		auto workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
+		auto resourceService = ServiceManager::Get<ResourceService>();
+		auto workspaceService = ServiceManager::Get<WorkspaceService>();
 
 		/* open the common bundle stream */
 		std::ofstream commonBundle;
@@ -230,7 +230,7 @@ namespace Wyrd::Editor
 
 	void ExportManager::GenerateSceneBundleFile(const Wyrd::UID& sceneUID, const std::string& dir)
 	{
-		auto resourceService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
+		auto resourceService = ServiceManager::Get<ResourceService>();
 		auto sceneRes = resourceService->GetResourceByID<SceneRes>(sceneUID);
 
 		/* open the scene file stream */

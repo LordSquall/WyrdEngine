@@ -20,7 +20,7 @@ namespace Wyrd::Editor
 	void ResourceService::OnCreate()
 	{
 		/* Cache the service pointers */
-		_WorkspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
+		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
 
 		/* Register the ignored file extensions */
 		_ignoredExtensions.insert(".dll");
@@ -105,12 +105,12 @@ namespace Wyrd::Editor
 		_iconLibrary.AddIconsFromFile(Utils::GetEditorResFolder() + "icons/common-icons.json");
 
 		/* Subscribe to project events */
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::ProjectLoaded, EVENT_FUNC(ResourceService::OnProjectLoadedEvent));
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::AddFileEntry, EVENT_FUNC(ResourceService::OnAddFileEntryEvent));
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::DeleteFileEntry, EVENT_FUNC(ResourceService::OnDeleteFileEntryEvent));
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::RenameFileEntry, EVENT_FUNC(ResourceService::OnReloadFileEntryEvent));
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::ModifiedFileEntry, EVENT_FUNC(ResourceService::OnModifiedFileEntryEvent));
-		ServiceManager::Get<EventService>(ServiceManager::Events)->Subscribe(Events::EventType::LoadAsset, EVENT_FUNC(ResourceService::OnLoadAssetEvent));
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::ProjectLoaded, EVENT_FUNC(ResourceService::OnProjectLoadedEvent));
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::AddFileEntry, EVENT_FUNC(ResourceService::OnAddFileEntryEvent));
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::DeleteFileEntry, EVENT_FUNC(ResourceService::OnDeleteFileEntryEvent));
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::RenameFileEntry, EVENT_FUNC(ResourceService::OnReloadFileEntryEvent));
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::ModifiedFileEntry, EVENT_FUNC(ResourceService::OnModifiedFileEntryEvent));
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::LoadAsset, EVENT_FUNC(ResourceService::OnLoadAssetEvent));
 	}
 
 	void ResourceService::OnDestroy() {}
@@ -205,11 +205,11 @@ namespace Wyrd::Editor
 		if (Application::Get().GetMainThreadID() != std::this_thread::get_id())
 		{
 			/* swap an event to trigger the load on the main thread */
-			ServiceManager::Get<EventService>(ServiceManager::Events)->Publish(Events::EventType::BuildBehaviourModel, std::make_unique<Events::BuildBehaviourModelArgs>());
+			ServiceManager::Get<EventService>()->Publish(Events::EventType::BuildBehaviourModel, std::make_unique<Events::BuildBehaviourModelArgs>());
 		}
 		else
 		{
-			ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->CompileAll();
+			ServiceManager::Get<SimulationService>()->CompileAll();
 
 			// Resolve all the script resources to the scripted classes
 			for (auto& [key, value] : _resourceMap)
@@ -217,7 +217,7 @@ namespace Wyrd::Editor
 				auto downcastedPtr = std::dynamic_pointer_cast<ScriptRes>(value);
 				if (downcastedPtr)
 				{
-					auto scriptedClass = ServiceManager::Get<SimulationService>(ServiceManager::Simulation)->GetClass(value->GetName());
+					auto scriptedClass = ServiceManager::Get<SimulationService>()->GetClass(value->GetName());
 
 					/* set the uid of the scripted class to match the resource */
 					scriptedClass->SetUID(downcastedPtr->GetResourceID());

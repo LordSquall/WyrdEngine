@@ -24,10 +24,10 @@ namespace Wyrd::Editor
 	FileViewer::FileViewer(EditorLayer* editorLayer) : EditorViewBase("File Viewer", editorLayer)
 	{
 		/* cache the service(s) */
-		_resourcesService = ServiceManager::Get<ResourceService>(ServiceManager::Resources);
-		_workspaceService = ServiceManager::Get<WorkspaceService>(ServiceManager::Workspace);
-		_EventService = ServiceManager::Get<EventService>(ServiceManager::Events);
-		_dialogService = ServiceManager::Get<DialogService>(ServiceManager::Service::Dialog);
+		_resourcesService = ServiceManager::Get<ResourceService>();
+		_workspaceService = ServiceManager::Get<WorkspaceService>();
+		_EventService = ServiceManager::Get<EventService>();
+		_dialogService = ServiceManager::Get<DialogService>();
 	}
 
 	void FileViewer::OnEditorRender()

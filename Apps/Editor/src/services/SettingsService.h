@@ -4,6 +4,7 @@
 #include <core/export.h>
 
 /* local includes */
+#include "services/ServiceTypes.h"
 #include "services/IService.h"
 #include "events/EditorEvents.h"
 
@@ -52,6 +53,7 @@ namespace Wyrd::Editor
 		inline std::string GetSetting(std::string section, std::string name, std::string defaultValue) { return _IniParser->GetValue(section, name, defaultValue); }
 		inline void SetSetting(std::string value, std::string section, std::string name) { _IniParser->SetValue(value, section, name); }
 
+		static ServiceType GetTypeID() { return ServiceType::Settings; }
 	private:
 		// Inherited via IService
 		virtual void OnCreate() override;
