@@ -16,7 +16,7 @@ namespace Wyrd::Editor
 	class ResourceFactory
 	{
 	public:
-		static std::shared_ptr<Resource> Create(ResourceType t, const std::string& resourceFilePath)
+		static std::shared_ptr<Resource> Create(ResourceType t, const std::filesystem::path& resourceFilePath)
 		{
 			switch (t)
 			{

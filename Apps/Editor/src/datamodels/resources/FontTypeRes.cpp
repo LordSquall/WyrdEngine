@@ -17,7 +17,7 @@
 
 namespace Wyrd::Editor
 {
-	FontTypeRes::FontTypeRes(const std::string& filepath) : Resource(Utils::GetFilename(filepath), filepath) {}
+	FontTypeRes::FontTypeRes(const std::filesystem::path& filepath) : Resource(filepath.stem().string(), filepath) {}
 
 	
 	bool FontTypeRes::Load()
@@ -40,7 +40,7 @@ namespace Wyrd::Editor
 
 			/* load the ttf face from the file */
 			FT_Face face;
-			if (FT_New_Face(ft, _path.c_str(), 0, &face))
+			if (FT_New_Face(ft, _path.string().c_str(), 0, &face))
 			{
 				std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
 				return nullptr;
@@ -84,7 +84,7 @@ namespace Wyrd::Editor
 				FontType::Character character = {
 					glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
 					glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-					face->glyph->advance.x,
+					(unsigned int)face->glyph->advance.x,
 					{ 0.0f, 0.0f },
 					{ 0.0f, 0.0f }
 				};

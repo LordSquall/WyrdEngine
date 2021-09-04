@@ -326,7 +326,7 @@ namespace Wyrd
 		return nullptr;
 	}
 
-	void Behaviour::LoadBehaviourModel(const std::vector<std::string>& files, const std::string& inputFile)
+	void Behaviour::LoadBehaviourModel(const std::vector<std::filesystem::path>& files, const std::filesystem::path& inputFile)
 	{
 		std::string apiLibraryLocation = NATIVE_API_LIB_LOC "WyrdAPI/WyrdAPI.dll";
 
@@ -343,7 +343,7 @@ namespace Wyrd
 		LoadBehaviourModel(files, coreLibData, clientLibData);
 	}
 
-	void Behaviour::LoadBehaviourModel(const std::vector<std::string>& files, std::vector<char>& coreData, std::vector<char>& clientData)
+	void Behaviour::LoadBehaviourModel(const std::vector<std::filesystem::path>& files, std::vector<char>& coreData, std::vector<char>& clientData)
 	{
 		/* Unload the client domain */
 		if (_ClientDomain != nullptr)
@@ -394,8 +394,7 @@ namespace Wyrd
 		for (auto& file : files)
 		{
 			// Get the file name
-			std::filesystem::path filename = file;
-			std::string className = filename.stem().string();
+			std::string className = file.stem().string();
 
 			/* retrieve the managed class */
 			MonoClass* managedClass = mono_class_from_name((MonoImage*)_ClientImage, "WyrdGame", className.c_str());

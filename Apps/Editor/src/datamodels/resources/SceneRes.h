@@ -14,7 +14,7 @@ namespace Wyrd::Editor
 	class SceneRes : public Resource
 	{
 	public:
-		SceneRes(const std::string& path);
+		SceneRes(const std::filesystem::path& filepath);
 
 		~SceneRes() = default;
 

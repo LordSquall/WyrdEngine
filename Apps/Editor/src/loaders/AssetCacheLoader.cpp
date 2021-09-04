@@ -43,7 +43,6 @@ namespace Wyrd::Editor
 					jsonxx::String filePath = cacheEntry.get<jsonxx::String>("filepath");
 					jsonxx::String name = cacheEntry.get<jsonxx::String>("name");
 					jsonxx::String uuid = cacheEntry.get<jsonxx::String>("uuid");
-					jsonxx::String hash = cacheEntry.get<jsonxx::String>("hash");
 
 					/* build the complete path include the assets directory */
 					std::string fullFilePath = (_WorkspaceService->GetAssetsDirectory() / filePath).string();
@@ -92,9 +91,8 @@ namespace Wyrd::Editor
 			jsonxx::Object sceneObj;
 
 			sceneObj << "name" << res->GetName();
-			sceneObj << "filepath" << res->GetPath().substr((_WorkspaceService->GetAssetsDirectory().string() + "\\").length());
+			sceneObj << "filepath" << res->GetPath().string();
 			sceneObj << "uuid" << res->GetResourceID().str();
-			sceneObj << "hash" << Utils::HashFile(res->GetPath());
 
 			resourceArray << sceneObj;
 		}

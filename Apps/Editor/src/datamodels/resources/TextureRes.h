@@ -15,7 +15,7 @@ namespace Wyrd::Editor
 	class TextureRes : public Resource
 	{
 	public:
-		TextureRes(const std::string& filepath);
+		TextureRes(const std::filesystem::path& filepath);
 
 		~TextureRes() = default;
 

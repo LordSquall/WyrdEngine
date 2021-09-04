@@ -192,7 +192,7 @@ void ImportManager::ImportCommonBundle(const std::string& root)
 		common.read((char*)&fileCount, sizeof(size_t));
 
 		std::vector<UID> scriptFilesUID;
-		std::vector<std::string> scriptFilesNames;
+		std::vector<std::filesystem::path> scriptFilesNames;
 		for (size_t i = 0; i < fileCount; i++)
 		{
 			char fileNamebuffer[64];
@@ -223,7 +223,7 @@ void ImportManager::ImportCommonBundle(const std::string& root)
 
 		for (int i = 0; i < scriptFilesNames.size(); ++i)
 		{
-			Application::Get().GetBehaviour().GetCustomClass(scriptFilesNames[i])->SetUID(scriptFilesUID[i]);
+			Application::Get().GetBehaviour().GetCustomClass(scriptFilesNames[i].string())->SetUID(scriptFilesUID[i]);
 		}
 	}
 	common.close();

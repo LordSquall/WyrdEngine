@@ -279,9 +279,9 @@ namespace Wyrd::Editor {
 		return "not yet implemented";
 	}
 
-	bool Utils::FileExists(const std::string& filename)
+	bool Utils::FileExists(const std::filesystem::path& file)
 	{
-		return std::filesystem::exists(filename);
+		return std::filesystem::exists(file);
 	}
 
 	std::string Utils::GetPath(const std::string& filename)
@@ -324,20 +324,20 @@ namespace Wyrd::Editor {
 		return r;
 	}
 
-	std::vector<std::string> Utils::GetFileList(const std::string& directory, bool asFullPaths, bool recursive)
+	std::vector<std::filesystem::path> Utils::GetFileList(const std::string& directory, bool asFullPaths, bool recursive)
 	{
-		std::vector<std::string> r;
+		std::vector<std::filesystem::path> r;
 		if(recursive  == true)
 		{
 			for (auto& p : std::filesystem::recursive_directory_iterator(directory))
 				if (!p.is_directory())
 					if (asFullPaths == true)
 					{
-						r.push_back(p.path().string());
+						r.push_back(p.path());
 					}
 					else
 					{
-						r.push_back(p.path().filename().string());
+						r.push_back(p.path().filename());
 					}
 		}
 		else
@@ -346,11 +346,11 @@ namespace Wyrd::Editor {
 				if (!p.is_directory())
 					if (asFullPaths == true)
 					{
-						r.push_back(p.path().string());
+						r.push_back(p.path());
 					}
 					else
 					{
-						r.push_back(p.path().filename().string());
+						r.push_back(p.path().filename());
 					}
 		}
 		return r;
@@ -394,7 +394,7 @@ namespace Wyrd::Editor {
 		return std::filesystem::is_directory(std::filesystem::path(filename));
 	}
 
-	bool Utils::CreateRawFile(const std::string& filename, const std::string& content)
+	bool Utils::CreateRawFile(const std::filesystem::path& filename, const std::string& content)
 	{
 		std::ofstream file(filename);
 		file << content;
@@ -403,18 +403,18 @@ namespace Wyrd::Editor {
 		return true;
 	}
 
-	bool Utils::CopySingleFile(const std::string& filename, const std::string& directory)
+	bool Utils::CopySingleFile(const std::filesystem::path& filename, const std::filesystem::path& directory)
 	{
 		std::filesystem::copy(filename, directory);
 		return true;
 	}
 
-	void Utils::RenameFile(const std::string& filename, const std::string& newFilename)
+	void Utils::RenameFile(const std::filesystem::path& filename, const std::filesystem::path& newFilename)
 	{
 		std::filesystem::rename(filename, newFilename);
 	}
 
-	void Utils::RemoveFile(const std::string& filename)
+	void Utils::RemoveFile(const std::filesystem::path& filename)
 	{
 		std::filesystem::remove(filename);
 	}
@@ -428,9 +428,9 @@ namespace Wyrd::Editor {
 		return stream.str();
 	}
 
-	void Utils::OpenFileWithSystem(const std::string& path, const std::string& parameters)
+	void Utils::OpenFileWithSystem(const std::filesystem::path& file, const std::string& parameters)
 	{
-		ShellExecuteA(NULL, "open", path.c_str(), parameters.c_str(), NULL, SW_SHOW);
+		ShellExecuteA(NULL, "open", file.string().c_str(), parameters.c_str(), NULL, SW_SHOW);
 	}
 
 	void Utils::SystemExecute(const std::string& command)

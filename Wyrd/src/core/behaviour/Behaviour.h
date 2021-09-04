@@ -95,14 +95,14 @@ namespace Wyrd
 		 * @param inputFile
 		 * NOTE: To be moved into external application
 		*/
-		void LoadBehaviourModel(const std::vector<std::string>& files, const std::string& inputFile);
+		void LoadBehaviourModel(const std::vector<std::filesystem::path>& files, const std::filesystem::path& inputFile);
 
 		/**
 		 * @brief Load a new behavioural model from memory
 		 * @param files
 		 * @param inputFile
 		*/
-		void LoadBehaviourModel(const std::vector<std::string>& files, std::vector<char>& coreData, std::vector<char>& clientData);
+		void LoadBehaviourModel(const std::vector<std::filesystem::path>& files, std::vector<char>& coreData, std::vector<char>& clientData);
 
 		/**
 		 * @brief Get the domain context pointer

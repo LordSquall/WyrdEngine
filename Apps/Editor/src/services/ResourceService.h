@@ -28,7 +28,7 @@ namespace Wyrd::Editor
 
 		static ServiceType GetTypeID() { return ServiceType::Resources; }
 
-		void AddResource(std::string& resourcePath, const UID uid);
+		void AddResource(const std::filesystem::path& resourcePath, const UID uid);
 		void ReloadResource(UID uid);
 		void DeleteResource(UID uid);
 
@@ -70,12 +70,12 @@ namespace Wyrd::Editor
 		std::shared_ptr<Resource> GetSceneResourceByName(const std::string& name);
 
 		/* Helper Functions */
-		bool CheckIgnored(const std::string& path);
-		ResourceType DetermineType(const std::string& path);
+		bool CheckIgnored(const std::filesystem::path& path);
+		ResourceType DetermineType(const std::filesystem::path& path);
 		void BuildScripts();
 
 	public:
-		std::map<std::string, UID> CachedFiles;
+		std::map<std::filesystem::path, UID> CachedFiles;
 
 	private:
 		bool LoadAssetCache(const std::string& filePath);

@@ -11,7 +11,7 @@
 
 namespace Wyrd::Editor
 {
-	ScriptRes::ScriptRes(const std::string& path) : Resource(Utils::GetFilename(path), path)
+	ScriptRes::ScriptRes(const std::filesystem::path& filepath) : Resource(filepath.stem().string(), filepath)
 	{
 
 	}

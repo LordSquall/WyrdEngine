@@ -11,7 +11,7 @@
 
 namespace Wyrd::Editor
 {;
-	ProjectLoader::Result ProjectLoader::Load(std::string path, Project& project)
+	ProjectLoader::Result ProjectLoader::Load(const std::filesystem::path& path, Project& project)
 	{
 		ProjectLoader::Result result = FileNotFound;
 		jsonxx::Object o;
@@ -36,7 +36,7 @@ namespace Wyrd::Editor
 		return result;
 	}
 
-	ProjectLoader::Result ProjectLoader::Save(std::string path, Project& project)
+	ProjectLoader::Result ProjectLoader::Save(const std::filesystem::path& path, Project& project)
 	{
 		ProjectLoader::Result result = Success;
 		jsonxx::Object o = project.ToJson();

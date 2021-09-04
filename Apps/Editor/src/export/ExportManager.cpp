@@ -179,7 +179,7 @@ namespace Wyrd::Editor
 		}
 
 		/* build a list of the script files */
-		std::map<UID, std::string> scriptFiles;
+		std::map<UID, std::filesystem::path> scriptFiles;
 		for (auto& [key, value] : resourceService->GetResources())
 		{
 			auto downcastedPtr = std::dynamic_pointer_cast<ScriptRes>(value);
@@ -195,7 +195,7 @@ namespace Wyrd::Editor
 		for (auto& file : scriptFiles)
 		{
 			char fileNamebuffer[64];
-			strcpy(fileNamebuffer, Utils::GetFilename(file.second).c_str());
+			strcpy(fileNamebuffer, file.second.filename().string().c_str());
 			commonBundle.write((char*)&fileNamebuffer, sizeof(char) * 64);
 
 			char uuidBuffer[64];

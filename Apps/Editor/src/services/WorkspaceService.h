@@ -34,20 +34,20 @@ namespace Wyrd::Editor
 		inline void IsProjectLoaded(bool value) { _IsProjectLoaded = value; }
 
 		inline std::shared_ptr<Scene> GetLoadedScene() { return _LoadedScene; }
-		inline std::string& GetLoadedScenePath() { return _LoadedScenePath; }
+		inline const std::filesystem::path& GetLoadedScenePath() { return _LoadedScenePath; }
 		inline bool IsSceneLoaded() { return _IsSceneLoaded; }
 		inline void IsSceneLoaded(bool value) { _IsSceneLoaded = value; }
 
 		void CreateNewProject(std::string location, std::string sceneName, std::string name);
 		bool SaveProject();
-		bool LoadProject(std::string projectfile);
+		bool LoadProject(const std::filesystem::path& projectfile);
 		bool ReloadScene();
 
 		bool CreateNewScene(const std::string& name);
-		bool LoadScene(const std::string& path);
+		bool LoadScene(const std::filesystem::path& path);
 		bool CloseScene();
 		bool SaveScene();
-		bool SaveSceneAs(const std::string& path);
+		bool SaveSceneAs(const std::filesystem::path& path);
 
 		inline const std::filesystem::path& GetProjectRootDirectory() const { return _ProjectRootDirectory; }
 		inline const std::filesystem::path& GetAssetsDirectory() const { return _AssetsDirectory; }
@@ -65,7 +65,7 @@ namespace Wyrd::Editor
 		std::shared_ptr<Project> _LoadedProject;
 
 		bool _IsSceneLoaded = false;
-		std::string _LoadedScenePath;
+		std::filesystem::path _LoadedScenePath;
 		std::shared_ptr<Scene> _LoadedScene;
 
 		std::filesystem::path _ProjectRootDirectory;

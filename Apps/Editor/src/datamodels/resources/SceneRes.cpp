@@ -7,7 +7,7 @@
 
 namespace Wyrd::Editor
 {
-	SceneRes::SceneRes(const std::string& path) : Resource(Utils::GetFilename(path, false), path)
+	SceneRes::SceneRes(const std::filesystem::path& filepath) : Resource(filepath.stem().string(), filepath)
 	{
 	}
 

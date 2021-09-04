@@ -169,12 +169,12 @@ namespace Wyrd::Editor
 			auto pos = ImGui::GetCursorPos();
 			ImGui::Image((ImTextureID)(UINT_PTR)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport.size.x, _Viewport.size.y), ImVec2(0, 1), ImVec2(1, 0));
 
-			ImGui::SetCursorPos(pos);
-			ImGui::Text("X : %f", _Viewport.position.x);
-			ImGui::Text("Y : %f", _Viewport.position.y);
-			ImGui::Text("W : %f", _Viewport.size.x);
-			ImGui::Text("H : %f", _Viewport.size.y);
-			ImGui::Text("Aspect Ratio : %f", _CameraComponent->aspectRatio);
+			//ImGui::SetCursorPos(pos);
+			//ImGui::Text("X : %f", _Viewport.position.x);
+			//ImGui::Text("Y : %f", _Viewport.position.y);
+			//ImGui::Text("W : %f", _Viewport.size.x);
+			//ImGui::Text("H : %f", _Viewport.size.y);
+			//ImGui::Text("Aspect Ratio : %f", _CameraComponent->aspectRatio);
 		}
 		else
 		{

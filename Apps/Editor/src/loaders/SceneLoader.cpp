@@ -27,7 +27,7 @@ namespace Wyrd::Editor
 	static std::shared_ptr<CoreSystemsService> _coreSystemService;
 	static PropertyList_t _resolveProperties;
 
-	SceneLoader::Result SceneLoader::Load(std::string path, Scene& scene, bool includeEditorComponents)
+	SceneLoader::Result SceneLoader::Load(const std::filesystem::path& path, Scene& scene, bool includeEditorComponents)
 	{
 		SceneLoader::Result result = Success;
 		jsonxx::Object o;
@@ -86,7 +86,7 @@ namespace Wyrd::Editor
 		return result;
 	}
 
-	SceneLoader::Result SceneLoader::Save(std::string path, Scene& scene)
+	SceneLoader::Result SceneLoader::Save(const std::filesystem::path& path, Scene& scene)
 	{
 		SceneLoader::Result result = Success;
 

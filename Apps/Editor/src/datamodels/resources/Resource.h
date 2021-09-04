@@ -12,7 +12,7 @@ namespace Wyrd::Editor
 	class Resource
 	{
 	public:
-		Resource(const std::string& name, const std::string& path) : _name(name), _path(path)
+		Resource(const std::string& name, const std::filesystem::path& path) : _name(name), _path(path)
 		{
 		}
 
@@ -25,7 +25,7 @@ namespace Wyrd::Editor
 		// Getters and Setters
 		inline const std::string& GetName() { return _name; }
 		inline void SetName(const std::string& name) { _name = name; }
-		inline const std::string& GetPath() { return _path; }
+		inline const std::filesystem::path& GetPath() { return _path; }
 		inline void SetPath(const std::string& path) {_path = path; }
 		inline const UID GetResourceID() { return _resourceID; }
 		inline void SetResourceID(const UID uuid) { _resourceID = uuid; }
@@ -33,7 +33,7 @@ namespace Wyrd::Editor
 
 	protected:
 		std::string _name;
-		std::string _path;
+		std::filesystem::path _path;
 		UID _resourceID;
 	};
 }

@@ -54,7 +54,7 @@ namespace Wyrd::Editor
 
 		_IsRunning = true;
 
-		_SceneManager.SetInitialScene(_WorkspaceService->GetLoadedScenePath());
+		_SceneManager.SetInitialScene(_WorkspaceService->GetLoadedScenePath().string());
 
 		Application::Get().GetBehaviour().SetSceneManager(&_SceneManager);
 
@@ -127,7 +127,7 @@ namespace Wyrd::Editor
 		/* clear all the code logs from the output */
 		_EventService->Publish(Events::EventType::ClearLogEntry, std::make_unique<Events::ClearLogEntryArgs>(LogType::Code));
 
-		std::vector<std::string> scriptFiles;
+		std::vector<std::filesystem::path> scriptFiles;
 		for (auto& [key, value] : _ResourceService->GetResources())
 		{
 			auto downcastedPtr = std::dynamic_pointer_cast<ScriptRes>(value);
@@ -141,8 +141,8 @@ namespace Wyrd::Editor
 		* First stage is to compile all the file into a loadable library.
 		* Note: we want to compile this into the temp directory, incase the compilation fails
 		*/
-		const std::string tempModelFileName = (_WorkspaceService->GetTempDirectory() / (_WorkspaceService->GetCurrentProject()->name + ".dll")).string();
-		const std::string finalModelFileName = Utils::GetPath(_WorkspaceService->GetLoadedProjectPath()) + "\\" + _WorkspaceService->GetCurrentProject()->name + ".dll";
+		const std::filesystem::path tempModelFileName = (_WorkspaceService->GetTempDirectory() / (_WorkspaceService->GetCurrentProject()->name + ".dll")).string();
+		const std::filesystem::path finalModelFileName = Utils::GetPath(_WorkspaceService->GetLoadedProjectPath()) + "\\" + _WorkspaceService->GetCurrentProject()->name + ".dll";
 
 		// mono compiler script command
 		std::string command = "mcs ";
@@ -150,7 +150,7 @@ namespace Wyrd::Editor
 		// add all the files in the project
 		for (auto& file : scriptFiles)
 		{
-			command += file + " ";
+			command += file.string() + " ";
 		}
 
 		std::string file_name = "error_output.txt";
@@ -162,7 +162,7 @@ namespace Wyrd::Editor
 		command += " -target:library -lib:" MONO_INSTALL_LOC  "lib/mono/4.5/Facades/," NATIVE_API_LIB_LOC "WyrdAPI/ -r:System.Runtime.InteropServices.dll,WyrdAPI.dll -debug ";
 
 		// set the putput file
-		command += "-out:" + tempModelFileName;
+		command += "-out:" + tempModelFileName.string();
 
 		// run the command to compile
 		std::system((command + " 2> " + file_name).c_str()); // redirect output to file

@@ -17,8 +17,8 @@ namespace Wyrd::Editor {
 			DirectoryNotFound = 4, FileAlreadyExists = 5, InsufficientSpace = 6
 		};
 
-		static SceneLoader::Result Load(std::string path, Scene& scene, bool includeEditorComponents);
+		static SceneLoader::Result Load(const std::filesystem::path& path, Scene& scene, bool includeEditorComponents);
 
-		static SceneLoader::Result Save(std::string path, Scene& scene);
+		static SceneLoader::Result Save(const std::filesystem::path& path, Scene& scene);
 	};
 }

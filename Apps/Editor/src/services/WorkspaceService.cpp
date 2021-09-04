@@ -126,7 +126,7 @@ namespace Wyrd::Editor
 		ProjectLoader::Result result = ProjectLoader::Result::Success;
 		
 		/* If a scene is loaded we want it to be set as the initial scene in the project model to ensure it gets loaded on restart */
-		if (_LoadedScene != nullptr) _LoadedProject->initialScene = _LoadedScenePath;
+		if (_LoadedScene != nullptr) _LoadedProject->initialScene = _LoadedScenePath.string();
 		
 		if (_LoadedProject != nullptr)
 		{
@@ -154,18 +154,18 @@ namespace Wyrd::Editor
 		return false;
 	}
 
-	bool Wyrd::Editor::WorkspaceService::LoadProject(std::string projectfile)
+	bool Wyrd::Editor::WorkspaceService::LoadProject(const std::filesystem::path& projectfile)
 	{
 		bool result = false;
 
 		/* Store the loaded project path */
-		_LoadedProjectPath = projectfile;
+		_LoadedProjectPath = projectfile.string();
 
 		/* Create a new project shared pointer */
 		_LoadedProject = std::make_shared<Project>();
 
 		/* Load the project object */
-		ProjectLoader::Result r = ProjectLoader::Load(projectfile.c_str(), *_LoadedProject);
+		ProjectLoader::Result r = ProjectLoader::Load(projectfile, *_LoadedProject);
 
 		if (r == ProjectLoader::Result::Success)
 		{
@@ -176,11 +176,11 @@ namespace Wyrd::Editor
 			ServiceManager::Get<SettingsService>()->SetSetting(_LoadedProjectPath, CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT);
 
 			/* Set the project root directory path */
-			SetProjectRootDirectory(Utils::GetPath(projectfile));
+			SetProjectRootDirectory(projectfile.parent_path().string());
 
 			/* Send a Project Loaded Event */
 			ServiceManager::Get<EventService>()->Publish(Events::EventType::ProjectLoaded,
-				std::make_unique<Events::ProjectLoadedArgs>(_LoadedProject->initialScene, _LoadedProject, Utils::GetPath(projectfile)));
+				std::make_unique<Events::ProjectLoadedArgs>(_LoadedProject->initialScene, _LoadedProject, projectfile.parent_path().string()));
 
 			if (Utils::FileExists(_LoadedProject->initialScene) == true)
 			{
@@ -221,7 +221,7 @@ namespace Wyrd::Editor
 		return true;
 	}
 
-	bool WorkspaceService::LoadScene(const std::string& path)
+	bool WorkspaceService::LoadScene(const std::filesystem::path& path)
 	{
 		_LoadedScene = std::make_shared<Scene>();
 		_LoadedScene->Initialise();
@@ -276,7 +276,7 @@ namespace Wyrd::Editor
 
 	bool WorkspaceService::SaveScene()
 	{
-		std::string tempSaveFile = _LoadedScenePath;
+		std::filesystem::path tempSaveFile = _LoadedScenePath;
 		SceneLoader::Result result = SceneLoader::Save(tempSaveFile, *_LoadedScene);
 
 		if (result != SceneLoader::Result::Success)
@@ -295,14 +295,14 @@ namespace Wyrd::Editor
 		}
 		else
 		{
-			_LoadedProject->initialScene = _LoadedScenePath;
+			_LoadedProject->initialScene = _LoadedScenePath.string();
 			SaveProject();
 
 			return true;
 		}
 	}
 
-	bool WorkspaceService::SaveSceneAs(const std::string& path)
+	bool WorkspaceService::SaveSceneAs(const std::filesystem::path& path)
 	{
 		SceneLoader::Result result = SceneLoader::Save(path, *_LoadedScene);
 
@@ -322,7 +322,7 @@ namespace Wyrd::Editor
 		}
 		else
 		{
-			_LoadedProject->initialScene = _LoadedScenePath;
+			_LoadedProject->initialScene = _LoadedScenePath.string();
 			SaveProject();
 
 			return true;

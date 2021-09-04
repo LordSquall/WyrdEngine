@@ -19,8 +19,8 @@ namespace Wyrd::Editor {
 			DirectoryNotFound = 4, FileAlreadyExists = 5, InsufficientSpace = 6
 		};
 
-		static ProjectLoader::Result Load(std::string path, Project& project);
+		static ProjectLoader::Result Load(const std::filesystem::path& path, Project& project);
 																			
-		static ProjectLoader::Result Save(std::string path, Project& project);
+		static ProjectLoader::Result Save(const std::filesystem::path& path, Project& project);
 	};
 }

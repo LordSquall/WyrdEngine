@@ -31,7 +31,7 @@ namespace Wyrd::Editor
 		static std::string SaveAsFileDialog(const std::string& filter);
 
 		/* File Path Functions */
-		static bool FileExists(const std::string& filename);
+		static bool FileExists(const std::filesystem::path& file);
 		static std::string GetPath(const std::string& filename);
 		static std::string GetFilename(const std::string& path, bool addExtension = false);
 		static std::string GetFileExtension(const std::string& path);
@@ -41,18 +41,18 @@ namespace Wyrd::Editor
 		static bool FolderExists(const std::string& filename);
 
 		/* File Functions */
-		static bool CreateRawFile(const std::string& filename, const std::string& content);
-		static bool CopySingleFile(const std::string& filename, const std::string& directory);
-		static void RenameFile(const std::string& filename, const std::string& newFilename);
-		static void RemoveFile(const std::string& filename);
+		static bool CreateRawFile(const std::filesystem::path& filename, const std::string& content);
+		static bool CopySingleFile(const std::filesystem::path& filename, const std::filesystem::path& directory);
+		static void RenameFile(const std::filesystem::path& filename, const std::filesystem::path& newFilename);
+		static void RemoveFile(const std::filesystem::path& filename);
 		static const std::string Utils::BuildPath(std::initializer_list<std::reference_wrapper<std::string>> args);
 		static std::vector<std::string> GetFolderList(const std::string& directory, bool asFullPaths);
-		static std::vector<std::string> Utils::GetFileList(const std::string& directory, bool asFullPaths = false, bool recursive = false);
+		static std::vector<std::filesystem::path> Utils::GetFileList(const std::string& directory, bool asFullPaths = false, bool recursive = false);
 		static uint32_t CountSubDirectories(const std::string& directory);
 		static std::string ReadFileToString(const std::string& filename);
 
 		/* System operations */
-		static void OpenFileWithSystem(const std::string& file, const std::string& parameters = "");
+		static void OpenFileWithSystem(const std::filesystem::path& file, const std::string& parameters = "");
 		static void SystemExecute(const std::string& command);
 
 		/* Hashing */

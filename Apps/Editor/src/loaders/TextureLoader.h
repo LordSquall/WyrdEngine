@@ -17,6 +17,6 @@ namespace Wyrd::Editor {
 			DirectoryNotFound = 4, FileAlreadyExists = 5, InsufficientSpace = 6
 		};
 
-		static TextureLoader::Result Load(std::string path, TextureRes& texture);
+		static TextureLoader::Result Load(const std::filesystem::path& filepath, TextureRes& texture);
 	};
 }

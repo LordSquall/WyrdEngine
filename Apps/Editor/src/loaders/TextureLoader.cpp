@@ -7,20 +7,20 @@
 
 namespace Wyrd::Editor
 {
-	TextureLoader::Result TextureLoader::Load(std::string path, TextureRes& texture)
+	TextureLoader::Result TextureLoader::Load(const std::filesystem::path& filepath, TextureRes& texture)
 	{
 		int width, height, channels;
 		unsigned char* data;
 
 		/* check the file exsits */
-		if (!Utils::FileExists(path))
+		if (!Utils::FileExists(filepath))
 		{
 			texture.SetLoaded(false);
 			return Result::FileNotFound;
 		}
 
 		/* perform the actual load operation */
-		data = SOIL_load_image(path.c_str(), &width, &height, &channels, 4);
+		data = SOIL_load_image(filepath.string().c_str(), &width, &height, &channels, 4);
 
 		if (data == nullptr)
 		{

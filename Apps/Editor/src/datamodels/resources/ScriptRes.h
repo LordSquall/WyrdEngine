@@ -16,7 +16,7 @@ namespace Wyrd::Editor
 	class ScriptRes : public Resource
 	{
 	public:
-		ScriptRes(const std::string& path);
+		ScriptRes(const std::filesystem::path& filepath);
 
 		~ScriptRes() = default;
 

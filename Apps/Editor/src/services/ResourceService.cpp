@@ -89,7 +89,6 @@ namespace Wyrd::Editor
 				if (entry.is_regular_file() && entry.path().extension() == ".ttf")
 				{
 					AddResource(entry.path().string(), UID());
-					//Application::Get().GetResources().FontTypes.insert(std::pair<std::string, std::shared_ptr<FontType>>(entry.path().filename().stem().string(), FontType::CreateFromTTFFile(entry.path().string())));
 				}
 			}
 		}
@@ -124,7 +123,7 @@ namespace Wyrd::Editor
 		}
 	}
 
-	void ResourceService::AddResource(std::string& resourcePath, const UID uid)
+	void ResourceService::AddResource(const std::filesystem::path& resourcePath, const UID uid)
 	{
 		if (CheckIgnored(resourcePath) == false)
 		{
@@ -227,18 +226,14 @@ namespace Wyrd::Editor
 		}
 	}
 
-	bool ResourceService::CheckIgnored(const std::string& path)
+	bool ResourceService::CheckIgnored(const std::filesystem::path& path)
 	{
-		std::string fileExtension = Utils::GetFileExtension(path);
-
-		return (_ignoredExtensions.find(Utils::GetFileExtension(path)) != _ignoredExtensions.end());
+		return (_ignoredExtensions.find(path.extension().string()) != _ignoredExtensions.end());
 	}
 
-	ResourceType ResourceService::DetermineType(const std::string& path)
+	ResourceType ResourceService::DetermineType(const std::filesystem::path& path)
 	{
-		std::string& extension = Utils::GetFileExtension(path);
-
-		std::map<std::string, ResourceType>::iterator it = _extensions.find(extension);
+		std::map<std::string, ResourceType>::iterator it = _extensions.find(path.extension().string());
 
 		if (it != _extensions.end())
 		{
@@ -279,10 +274,6 @@ namespace Wyrd::Editor
 			if (CachedFiles.find(t) == CachedFiles.end())
 			{
 				AddResource(t, UIDUtils::Create());
-			}
-			else
-			{
-				Utils::HashFile(t);
 			}
 		}
 
@@ -327,18 +318,18 @@ namespace Wyrd::Editor
 			{
 				std::string oldPath = a.dir + a.previousName;
 
-				if (res.second->GetPath().rfind(oldPath, 0) == 0)
-				{
-					/* remove from the cached file list */
-					CachedFiles.erase(res.second->GetPath());
-
-					/* update the path */
-					std::string newPath = a.filepath + res.second->GetPath().substr(oldPath.length());
-					res.second->SetPath(newPath);
-
-					/* remove from the cached file list */
-					CachedFiles[newPath] = res.second->GetResourceID();
-				}
+				//if (res.second->GetPath().rfind(oldPath, 0) == 0)
+				//{
+				//	/* remove from the cached file list */
+				//	CachedFiles.erase(res.second->GetPath());
+				//
+				//	/* update the path */
+				//	std::string newPath = a.filepath + res.second->GetPath().substr(oldPath.length());
+				//	res.second->SetPath(newPath);
+				//
+				//	/* remove from the cached file list */
+				//	CachedFiles[newPath] = res.second->GetResourceID();
+				//}
 			}
 		}
 		

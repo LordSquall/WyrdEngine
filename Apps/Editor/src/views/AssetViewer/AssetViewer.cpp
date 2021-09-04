@@ -13,6 +13,7 @@
 #include "datamodels/resources/TextureRes.h"
 #include "views/Dialogs/NewScriptDialog.h"
 #include "views/Dialogs/NewSceneDialog.h"
+#include "views/Dialogs/SpriteSheetImporterDialog.h"
 #include "services/ServiceManager.h"
 #include "support/ImGuiUtils.h"
 
@@ -358,6 +359,11 @@ namespace Wyrd::Editor
 			{
 				Utils::RemoveFile(textureResource.GetPath());
 			}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Convert To Sprite Sheet"))
+			{
+				_dialogService->OpenDialog(std::make_shared<SpriteSheetImporterDialog>(_EditorLayer, &textureResource));
+			}
 			ImGui::EndPopup();
 		}
 
@@ -476,8 +482,8 @@ namespace Wyrd::Editor
 			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 			{
 				/* build the full path to the project file */
-				std::string projectFile = _workspaceService->GetProjectRootDirectory().string() + "/vs.code-workspace";
-				Utils::SystemExecute("code " + projectFile + " " + scriptResource.GetPath());
+				std::filesystem::path projectFile = _workspaceService->GetProjectRootDirectory() / "/vs.code-workspace";
+				Utils::SystemExecute("code " + projectFile.string() + " " + scriptResource.GetPath().string());
 			}
 		}
 

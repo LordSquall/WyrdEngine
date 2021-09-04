@@ -14,7 +14,7 @@
 
 namespace Wyrd::Editor
 {
-	TextureRes::TextureRes(const std::string& filepath) : Resource(Utils::GetFilename(filepath), filepath), _loaded(false), _width(0u), _height(0u), _channels(0u), _data(0)
+	TextureRes::TextureRes(const std::filesystem::path& filepath) : Resource(filepath.stem().string(), filepath), _loaded(false), _width(0u), _height(0u), _channels(0u), _data(0)
 	{
 
 	}
@@ -41,7 +41,7 @@ namespace Wyrd::Editor
 			textureDesc.width = _width;
 			textureDesc.height = _height;
 			textureDesc.channels = _channels;
-			textureDesc.description = Utils::GetFilename(_path, true) + "_Texture";
+			textureDesc.description = _path.stem().string() + "_Texture";
 
 			/* create the core renderer resource and load */
 			_texture.reset(Wyrd::Texture::Create(textureDesc));

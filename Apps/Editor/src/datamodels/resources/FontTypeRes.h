@@ -15,7 +15,7 @@ namespace Wyrd::Editor
 	class FontTypeRes : public Resource
 	{
 	public:
-		FontTypeRes(const std::string& filepath);
+		FontTypeRes(const std::filesystem::path& filepath);
 
 		~FontTypeRes() = default;
 
