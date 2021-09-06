@@ -39,7 +39,7 @@ namespace Wyrd::Editor
 				if (!ImGui::IsPopupOpen(name))
 					ImGui::OpenPopup(name);
 
-				if (ImGui::BeginPopupModal(name))
+				if (ImGui::BeginPopupModal(name, nullptr))
 				{
 					dialog->OnDialogRender();
 					ImGui::EndPopup();

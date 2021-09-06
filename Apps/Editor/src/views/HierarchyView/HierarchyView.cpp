@@ -171,6 +171,7 @@ namespace Wyrd::Editor
 			if (ImGui::MenuItem("Delete"))
 			{
 				/* update the relationship component */
+				_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(ENTITY_INVALID));
 				RelationshipHelperFuncs::Remove(&scene, entity);
 			}
 			ImGui::Separator();

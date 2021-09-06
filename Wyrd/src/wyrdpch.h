@@ -4,6 +4,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
+/* System Headers */
 #include <iostream>
 #include <fstream>
 #include <filesystem>
@@ -27,6 +28,9 @@
 #include <unordered_set>
 #include <stack>
 #include <iterator>
+
+/* Wyrd Common Headers */
+#include "core/Structures.h"
 
 #ifdef WYRD_PLATFORM_WINDOWS	
 	#include <Windows.h>

@@ -153,9 +153,13 @@ namespace Wyrd::Editor
 
 					for (const auto& entry : std::filesystem::directory_iterator(_SelectedDirectory))
 					{
-						if (std::filesystem::is_regular_file(entry.path().string()))
+						/* check if the file extension shouldn't be ignored */
+						if (!_resourcesService->CheckIgnored(entry.path()))
 						{
-							files.push_back(entry.path().string());
+							if (std::filesystem::is_regular_file(entry.path().string()))
+							{
+								files.push_back(entry.path().string());
+							}
 						}
 					}
 				}

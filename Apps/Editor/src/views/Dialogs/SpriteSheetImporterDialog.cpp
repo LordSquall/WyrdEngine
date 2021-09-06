@@ -6,12 +6,20 @@
 /* local includes */
 #include "SpriteSheetImporterDialog.h"
 #include "support/ImGuiUtils.h"
+#include "loaders/SpriteSheetLoader.h"
 
 namespace Wyrd::Editor
 {
 	SpriteSheetImporterDialog::SpriteSheetImporterDialog(EditorLayer* editorLayer, TextureRes* textureResource) : EditorViewDialogBase("Sprite Sheet Importer Dialog", editorLayer), _SelectedImageAreaID(-1)
 	{
 		_TextureResource = textureResource;
+
+		/* check if there is a sprite data file present */
+		std::filesystem::path spriteDataFile = _TextureResource->GetPath().parent_path() / (_TextureResource->GetPath().stem().string() + ".spritedata");
+		if (Utils::FileExists(spriteDataFile))
+		{
+			SpriteSheetLoader::Load(spriteDataFile, _SubImageData);
+		}
 	}
 
 	SpriteSheetImporterDialog::~SpriteSheetImporterDialog() {}
@@ -19,10 +27,11 @@ namespace Wyrd::Editor
 	void SpriteSheetImporterDialog::OnDialogRender()
 	{
 		static ImVec2 rawUnitSize = { 128, 128 };
-		static std::vector<ImageArea> tempData;
 
 		ImVec2 imageRegionSize			= { ImGui::GetContentRegionAvail().x * 0.80f, ImGui::GetContentRegionAvail().y - ImGui::GetItemRectSize().y };
-		ImVec2 dataRegionSize			= { ImGui::GetContentRegionAvail().x * 0.20f, ImGui::GetContentRegionAvail().y - ImGui::GetItemRectSize().y };
+		ImVec2 controlRegionSize		= { ImGui::GetContentRegionAvail().x * 0.20f, ImGui::GetContentRegionAvail().y - ImGui::GetItemRectSize().y };
+		ImVec2 controlDataRegionSize	= { ImGui::GetContentRegionAvail().x * 0.20f, imageRegionSize.y - 200.0f };
+		ImVec2 controlAutoGenRegionSize = { ImGui::GetContentRegionAvail().x * 0.20f, 200.0f };
 		ImVec2 dialogControlsRegionSize = { ImGui::GetContentRegionAvail().x, ImGui::GetItemRectSize().y };
 
 		ImVec2 rawImageSize = { (float)_TextureResource->GetWidth(), (float)_TextureResource->GetHeight() };
@@ -40,7 +49,7 @@ namespace Wyrd::Editor
 
 		ImDrawList* drawList = ImGui::GetWindowDrawList();
 
-		for (auto& imageArea : tempData)
+		for (auto& imageArea : _SubImageData)
 		{
 			/* calculate absolute pixel positions from UV */
 			ImVec2 pt1 = { rawImageSize.x * imageArea.uv1.x, rawImageSize.y * imageArea.uv1.y };
@@ -62,16 +71,17 @@ namespace Wyrd::Editor
 		ImGui::EndChild();
 
 		ImGui::SameLine();
-
-		ImGui::BeginChild("DataRegion", dataRegionSize);
-
+		
+		ImGui::BeginChild("ControlRegion", controlRegionSize);
 
 		ImGui::Text("Image Areas");
+
+		ImGui::BeginChild("ControlDataRegion", controlDataRegionSize);
 		if (ImGui::BeginTable("dataTable", 1, ImGuiTableFlags_SizingFixedFit))
 		{
 			ImGui::TableSetupColumn("Name");
 
-			for (auto& img : tempData)
+			for (auto& img : _SubImageData)
 			{
 				ImGui::PushID(img.id);
 				ImGui::TableNextRow(ImGuiTableRowFlags_None, ImGui::GetTextLineHeightWithSpacing() * 1.2f);
@@ -87,7 +97,9 @@ namespace Wyrd::Editor
 
 			ImGui::EndTable();
 		}
+		ImGui::EndChild();
 
+		ImGui::BeginChild("AutoGenChild", controlAutoGenRegionSize);
 		if (ImGui::BeginTabBar("AutoGenTabBar", 0))
 		{
 			if (ImGui::BeginTabItem("Grid"))
@@ -96,7 +108,7 @@ namespace Wyrd::Editor
 				if (ImGui::Button("Generate"))
 				{
 					/* remove all old image areas */
-					tempData.clear();
+					_SubImageData.clear();
 
 					int id = 0;
 
@@ -111,7 +123,7 @@ namespace Wyrd::Editor
 
 							Vector2 uv2 = { (float)(scaledUnitSize.x * (c + 1)) / (float)_TextureResource->GetWidth(), (float)(scaledUnitSize.y * (r + 1)) / (float)_TextureResource->GetHeight() };
 
-							tempData.push_back({ id, std::to_string(r) + "-" + std::to_string(c), uv1, uv2 });
+							_SubImageData.push_back({ id, std::to_string(r) + "-" + std::to_string(c), uv1, uv2 });
 							id++;
 						}
 					}
@@ -120,6 +132,7 @@ namespace Wyrd::Editor
 			}
 			ImGui::EndTabBar();
 		}
+		ImGui::EndChild();
 		ImGui::EndChild();
 
 		ImGui::BeginChild("DialogControlsRegion", dialogControlsRegionSize);
@@ -131,7 +144,12 @@ namespace Wyrd::Editor
 		ImGui::SameLine();
 		if (ImGui::Button("OK"))
 		{
-			Utils::CreateRawFile(_TextureResource->GetPath(), "SpriteData");
+			/* build file name */
+			std::filesystem::path spriteDataPath = _TextureResource->GetPath().parent_path() / (_TextureResource->GetPath().stem().string() + ".spritedata");
+
+			/* save the new sprite sheet data file  */
+			SpriteSheetLoader::Save(spriteDataPath, _SubImageData);
+
 			Close();
 		}
 		ImGui::EndChild();

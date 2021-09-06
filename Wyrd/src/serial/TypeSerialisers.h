@@ -2,6 +2,7 @@
 
 /* local includes  */
 #include "core/Structures.h"
+#include "core/UID.h"
 
 /* external includes */
 #include <glm/glm.hpp>

@@ -25,6 +25,7 @@ namespace Wyrd::Editor
 		/* Register the ignored file extensions */
 		_ignoredExtensions.insert(".dll");
 		_ignoredExtensions.insert(".mdb");
+		_ignoredExtensions.insert(".spritedata");
 
 		/* Register the raw file extensions. These will be directly importable to the editor and create a new resource cache file */
 		_extensions.insert(std::pair<std::string, ResourceType>(".png", ResourceType::TEXTURE));

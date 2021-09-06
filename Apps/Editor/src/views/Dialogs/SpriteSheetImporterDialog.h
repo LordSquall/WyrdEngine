@@ -7,24 +7,6 @@
 
 namespace Wyrd::Editor
 {
-	//** TEMP */
-	/*
-	**********uv2
-	*		  *
-	*		  *
-	*		  *
-	*		  *
-	*		  *
-	uv1********
-	*/
-	struct ImageArea
-	{
-		int32_t id;
-		std::string name;
-		Vector2 uv1;
-		Vector2 uv2;
-	};
-
 	class SpriteSheetImporterDialog : public EditorViewDialogBase
 	{
 	public:
@@ -37,5 +19,6 @@ namespace Wyrd::Editor
 
 	public:
 		int32_t _SelectedImageAreaID;
+		std::vector<ImageArea> _SubImageData;
 	};
 }
