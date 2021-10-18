@@ -20,6 +20,6 @@ namespace Wyrd::Editor {
 			DirectoryNotFound = 4, FileAlreadyExists = 5, InsufficientSpace = 6
 		};
 
-		static IconSetLoader::Result Load(std::string path, std::shared_ptr<IconSet> iconSet);
+		static IconSetLoader::Result Load(const std::filesystem::path& path, std::shared_ptr<IconSet> iconSet);
 	};
 }

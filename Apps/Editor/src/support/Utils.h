@@ -13,16 +13,25 @@
 
 namespace Wyrd::Editor
 {
+	/**
+	 * @brief Utils class
+	 *
+	 * Provides a number of static functions which handle mulitple utility operations
+	*/
 	class Utils 
 	{
 	public:
-		Utils();
-		~Utils();
+		Utils() = delete;
+		~Utils() = default;
 
-		/* Asset Folder Functions */
+		/**
+		 * @brief Get the absolute folder location of the editor resources folder 
+		 * @return string - editor resource folder
+		*/
 		static std::string GetEditorResFolder();
 
 		/* Dialog Functions */
+		// TODO to move to the dialog service
 		static std::optional<std::string> OpenFile(const std::vector<std::pair<std::string, std::string>> filters);
 		static std::string OpenFileDialog(const std::string& filter);
 		static std::string OpenFolderDialog();
@@ -30,13 +39,28 @@ namespace Wyrd::Editor
 		static std::string SaveFileDialog(const std::string& name, const std::string& filter);
 		static std::string SaveAsFileDialog(const std::string& filter);
 
-		/* File Path Functions */
+		/**
+		 * @brief Check if the file exists
+		 * @param file - file to check
+		 * @return bool - true if file exists
+		*/
 		static bool FileExists(const std::filesystem::path& file);
-		static std::string GetPath(const std::string& filename);
-		static std::string GetFilename(const std::string& path, bool addExtension = false);
-		static std::string GetFileExtension(const std::string& path);
-		static void CreateFolder(const std::string& path);
-		static void DeleteFolder(const std::string& path);
+
+		/**
+		 * @brief Create a new folder at the supplied path
+		 * @param path -  path to create
+		 * @return bool - true if folder was created
+		*/
+		static bool CreateFolder(const std::filesystem::path& path);
+
+		/**
+		 * @brief Delete a folder add all it's contents from the supplied path
+		 * @param path -  path to delete
+		 * @return bool - true if folder was deleted
+		*/
+		static bool DeleteFolder(const std::filesystem::path& path);
+
+
 		static void RenameFolder(const std::string& path, const std::string& newPath);
 		static bool FolderExists(const std::string& filename);
 

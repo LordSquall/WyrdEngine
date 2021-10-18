@@ -12,7 +12,7 @@
 
 namespace Wyrd::Editor
 {
-	IconSetLoader::Result IconSetLoader::Load(std::string path, std::shared_ptr<IconSet> iconSet)
+	IconSetLoader::Result IconSetLoader::Load(const std::filesystem::path& path, std::shared_ptr<IconSet> iconSet)
 	{
 		IconSetLoader::Result result = Success;
 		jsonxx::Object o;
@@ -29,7 +29,7 @@ namespace Wyrd::Editor
 				iconSet->imagePath = o.get<jsonxx::String>("texture-path");
 				iconSet->width = (int)o.get<jsonxx::Number>("texture-width");
 				iconSet->height = (int)o.get<jsonxx::Number>("texture-height");
-				iconSet->Texture = std::make_shared<TextureRes>(Utils::GetPath(path) + "\\" + iconSet->imagePath);
+				iconSet->Texture = std::make_shared<TextureRes>(path.parent_path() / iconSet->imagePath);
 				iconSet->Texture->Load();
 
 				jsonxx::Array icons = o.get<jsonxx::Array>("icons");

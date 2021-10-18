@@ -141,8 +141,8 @@ namespace Wyrd::Editor
 		* First stage is to compile all the file into a loadable library.
 		* Note: we want to compile this into the temp directory, incase the compilation fails
 		*/
-		const std::filesystem::path tempModelFileName = (_WorkspaceService->GetTempDirectory() / (_WorkspaceService->GetCurrentProject()->name + ".dll")).string();
-		const std::filesystem::path finalModelFileName = Utils::GetPath(_WorkspaceService->GetLoadedProjectPath()) + "\\" + _WorkspaceService->GetCurrentProject()->name + ".dll";
+		const std::filesystem::path tempModelFileName = _WorkspaceService->GetTempDirectory() / (_WorkspaceService->GetCurrentProject()->name + ".dll");
+		const std::filesystem::path finalModelFileName = _WorkspaceService->GetLoadedProjectPath().parent_path() / (_WorkspaceService->GetCurrentProject()->name + ".dll");
 
 		// mono compiler script command
 		std::string command = "mcs ";
@@ -191,7 +191,7 @@ namespace Wyrd::Editor
 		{
 			/* Second stage is to copy of the successfully compiled model to the execution director, only if the compilation was successful */
 			Utils::RemoveFile(finalModelFileName);
-			Utils::CopySingleFile(tempModelFileName, Utils::GetPath(_WorkspaceService->GetLoadedProjectPath()) + "\\");
+			Utils::CopySingleFile(tempModelFileName, _WorkspaceService->GetLoadedProjectPath().parent_path());
 
 			_IsAvailable = true;
 		}

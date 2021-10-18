@@ -42,13 +42,14 @@ namespace Wyrd::Editor
 		{
 			_WorkspaceService->SaveScene();
 
-			ExportManager::Export();
+			if (ExportManager::Export())
+			{
+				auto p = std::filesystem::current_path();
 
-			auto p = std::filesystem::current_path();
+				std::string windowsBinPath = _SettingsService->GetSetting(CONFIG_WINDOWSPLAYER, CONFIG_WINDOWSPLAYER__BINPATH, std::string("..\\..\\bin\\Debug\\Player\\Player.exe"));
 
-			std::string windowsBinPath = _SettingsService->GetSetting(CONFIG_WINDOWSPLAYER, CONFIG_WINDOWSPLAYER__BINPATH, std::string("..\\..\\bin\\Debug\\Player\\Player.exe"));
-
-			Utils::OpenFileWithSystem(windowsBinPath);
+				Utils::OpenFileWithSystem(windowsBinPath);
+			}
 		}
 
 		if (ImGui::BeginListBox("Scenes"))

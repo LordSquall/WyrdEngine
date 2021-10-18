@@ -18,7 +18,7 @@
 
 namespace Wyrd::Editor
 {
-	void ExportManager::Export()
+	bool ExportManager::Export()
 	{
 		auto workspaceService = ServiceManager::Get<WorkspaceService>();
 		std::shared_ptr<Project> project = workspaceService->GetCurrentProject();
@@ -26,8 +26,11 @@ namespace Wyrd::Editor
 
 		std::ofstream commonBundle;
 		
-		std::string bundlesDir = (workspaceService->GetBuildsDirectory() / "bundles").string();
-		Utils::CreateFolder(bundlesDir);
+		std::filesystem::path bundlesDir = workspaceService->GetBuildsDirectory() / "bundles";
+		if (Utils::CreateFolder(bundlesDir))
+		{
+			return false;
+		}
 
 		GenerateCoreFile();
 		GenerateGameFile();
@@ -39,6 +42,7 @@ namespace Wyrd::Editor
 		}
 
 		WYRD_CORE_TRACE("Exported Game Files");
+		return true;
 	}
 
 	void ExportManager::GenerateCoreFile()
@@ -205,8 +209,8 @@ namespace Wyrd::Editor
 
 		/* TODO: Remove hardcoded path */
 		/* load the client and core library and add to the file stream */
-		std::string coreLibraryLocation = "C:/Projects/Wyrd/WyrdEngine/lib/Debug/WyrdAPI/WyrdAPI.dll";
-		std::string clientLibraryLocation = Utils::GetPath(workspaceService->GetLoadedProjectPath()) + "\\" + workspaceService->GetCurrentProject()->name + ".dll";
+		std::filesystem::path coreLibraryLocation = "C:/Projects/Wyrd/WyrdEngine/lib/Debug/WyrdAPI/WyrdAPI.dll";
+		std::filesystem::path clientLibraryLocation = workspaceService->GetLoadedProjectPath().parent_path() / (workspaceService->GetCurrentProject()->name + ".dll");
 
 		std::ifstream coreLibFileStream(coreLibraryLocation.c_str(), std::ios::binary);
 		std::vector<char> coreLibData((std::istreambuf_iterator<char>(coreLibFileStream)), (std::istreambuf_iterator<char>()));
@@ -228,14 +232,14 @@ namespace Wyrd::Editor
 		commonBundle.close();
 	}
 
-	void ExportManager::GenerateSceneBundleFile(const Wyrd::UID& sceneUID, const std::string& dir)
+	void ExportManager::GenerateSceneBundleFile(const Wyrd::UID& sceneUID, const std::filesystem::path& dir)
 	{
 		auto resourceService = ServiceManager::Get<ResourceService>();
 		auto sceneRes = resourceService->GetResourceByID<SceneRes>(sceneUID);
 
 		/* open the scene file stream */
 		std::ofstream sceneBundle;
-		sceneBundle.open(dir + "\\" + sceneUID.str() + ".bundle", std::ios::out | std::ios::binary);
+		sceneBundle.open(dir / (sceneUID.str() + ".bundle"), std::ios::out | std::ios::binary);
 
 		/* load the scene */
 		Scene scene;

@@ -138,8 +138,8 @@ namespace Wyrd::Editor
 			{
 				uint32_t resIdx = 0;
 				
-				std::vector<std::string> directories;
-				std::vector<std::string> files;
+				std::vector<std::filesystem::path> directories;
+				std::vector<std::filesystem::path> files;
 
 				if (_SearchCriteria == "")
 				{
@@ -147,7 +147,7 @@ namespace Wyrd::Editor
 					{
 						if (!std::filesystem::is_regular_file(entry.path().string()))
 						{
-							directories.push_back(entry.path().string());
+							directories.push_back(entry);
 						}
 					}
 
@@ -158,7 +158,7 @@ namespace Wyrd::Editor
 						{
 							if (std::filesystem::is_regular_file(entry.path().string()))
 							{
-								files.push_back(entry.path().string());
+								files.push_back(entry);
 							}
 						}
 					}
@@ -212,7 +212,7 @@ namespace Wyrd::Editor
 		return true;
 	}
 
-	void AssetViewer::DrawItemTable(const std::vector<std::string>& directories, const std::vector<std::string>& files)
+	void AssetViewer::DrawItemTable(const std::vector<std::filesystem::path>& directories, const std::vector<std::filesystem::path>& files)
 	{
 		int resIdx = 0;
 
@@ -276,20 +276,20 @@ namespace Wyrd::Editor
 				case ResourceType::SHADER:
 				case ResourceType::NONE:
 				default:
-					DrawUnknownItem(resIdx, file);
+					DrawUnknownItem(resIdx, file.stem().string());
 					break;
 				}
 			}
 			else
 			{
-				DrawUnknownItem(resIdx, file);
+				DrawUnknownItem(resIdx, file.stem().string());
 			}
 
 			resIdx++;
 		}
 	}
 
-	void AssetViewer::DrawFolderItem(int resID, const std::string& directoryEntry)
+	void AssetViewer::DrawFolderItem(int resID, const std::filesystem::path& directoryEntry)
 	{
 		std::filesystem::path p(directoryEntry);
 
@@ -306,7 +306,10 @@ namespace Wyrd::Editor
 		{
 			if (ImGui::MenuItem("Delete"))
 			{
-				Utils::DeleteFolder(directoryEntry);
+				if (!Utils::DeleteFolder(directoryEntry))
+				{
+					WYRD_ERROR("Unable to delete folder at {0}", directoryEntry);
+				}
 			}
 			ImGui::EndPopup();
 		}
@@ -498,9 +501,6 @@ namespace Wyrd::Editor
 
 	void AssetViewer::DrawUnknownItem(int resID, const std::string& unknownResourceName)
 	{
-		/* unknown items don's have any model, so we just want to extract the file name */
-		std::string filename = Utils::GetFilename(unknownResourceName, true);
-
 		/* Drag and Drop */
 		// Not supported on unknown items
 
@@ -529,10 +529,8 @@ namespace Wyrd::Editor
 				_SelectedResource = resID;
 		}
 		
-		Utils::GetFilename(unknownResourceName, true);
-		
 		/* Visuals */
 		ImGui::Image(*_UnknownIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
-		ImGui::TextClipped(filename.c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
+		ImGui::TextClipped(unknownResourceName.c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
 	}
 }

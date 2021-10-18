@@ -8,11 +8,11 @@ namespace Wyrd::Editor
 		ExportManager() {}
 		~ExportManager() = default;
 
-		static void Export();
+		static bool Export();
 
 		static void GenerateCoreFile();
 		static void GenerateGameFile();
 		static void GenerateCommonBundleFile();
-		static void GenerateSceneBundleFile(const Wyrd::UID& sceneUID, const std::string& dir);
+		static void GenerateSceneBundleFile(const Wyrd::UID& sceneUID, const std::filesystem::path& dir);
 	};
 }

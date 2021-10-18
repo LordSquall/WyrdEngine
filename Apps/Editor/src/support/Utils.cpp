@@ -21,15 +21,6 @@
 
 namespace Wyrd::Editor {
 
-	Utils::Utils()
-	{
-
-	}	
-	Utils::~Utils()
-	{
-
-	}
-
 	std::string Utils::GetEditorResFolder()
 	{
 		return std::filesystem::current_path().string() + "/res/";
@@ -279,34 +270,30 @@ namespace Wyrd::Editor {
 		return "not yet implemented";
 	}
 
+
+
+
+
 	bool Utils::FileExists(const std::filesystem::path& file)
 	{
 		return std::filesystem::exists(file);
 	}
 
-	std::string Utils::GetPath(const std::string& filename)
+	bool Utils::CreateFolder(const std::filesystem::path& path)
 	{
-		std::filesystem::path path(filename);
-		return path.parent_path().string();
+		return std::filesystem::create_directory(path);
 	}
 
-	std::string Utils::GetFilename(const std::string& path, bool addExtension)
+	bool Utils::DeleteFolder(const std::filesystem::path& path)
 	{
-		if (addExtension == true)
+		uintmax_t deletedCount = std::filesystem::remove_all(path);
+		if (deletedCount == 0)
 		{
-			return std::filesystem::path(path).filename().string();
+			return false;
 		}
-		else
-		{
-			return std::filesystem::path(path).stem().string();
-		}
-	}
 
-	std::string Utils::GetFileExtension(const std::string& path)
-	{
-		return std::filesystem::path(path).extension().string();
+		return true;
 	}
-
 
 	std::vector<std::string> Utils::GetFolderList(const std::string& directory, bool asFullPaths)
 	{
@@ -371,16 +358,6 @@ namespace Wyrd::Editor {
 			std::istreambuf_iterator<char>());
 
 		return str;
-	}
-
-	void Utils::CreateFolder(const std::string& path)
-	{
-		std::filesystem::create_directory(path);
-	}
-
-	void Utils::DeleteFolder(const std::string& path)
-	{
-		std::filesystem::remove_all(path);
 	}
 
 	void Utils::RenameFolder(const std::string& path, const std::string& newPath)

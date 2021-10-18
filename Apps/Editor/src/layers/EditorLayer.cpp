@@ -40,7 +40,6 @@ namespace Wyrd::Editor
 	static bool			s_MouseJustPressed[5]					= { false, false, false, false, false };
 	static GLFWcursor*  s_MouseCursors[ImGuiMouseCursor_COUNT]	= { 0 };
 	static ImFont*		s_defaultFont							= nullptr;
-	Utils util;
 
 	EditorLayer::EditorLayer()
 		: Layer("EditorLayer")
@@ -56,8 +55,6 @@ namespace Wyrd::Editor
 		_views["Asset Viewer"] = std::make_shared<AssetViewer>(this);
 		_views["Output"] = std::make_shared<OutputView>(this);
 		_views["Export View"] = std::make_shared<ExportView>(this);
-
-		util = Utils();
 
 		/* cache services */
 		_eventService = ServiceManager::Get<EventService>();
@@ -294,7 +291,7 @@ namespace Wyrd::Editor
 			}
 			if (ImGui::MenuItem("Open Project"))
 			{
-				_workspaceService->LoadProject(util.OpenFileDialog(".oproj"));
+				_workspaceService->LoadProject(Utils::OpenFileDialog(".oproj"));
 			}
 			if (ImGui::MenuItem("Open Project In Explorer", nullptr, nullptr, _workspaceService->IsProjectLoaded()))
 			{
@@ -306,7 +303,7 @@ namespace Wyrd::Editor
 			bool fileOperationsFlag = _workspaceService->IsSceneLoaded() && _workspaceService->IsProjectLoaded();
 
 			if (ImGui::MenuItem("New Scene", nullptr, nullptr, _workspaceService->IsProjectLoaded())) {
-				std::optional<std::string> filepath = util.SaveFile({ { "Scene", "*.scene" } });
+				std::optional<std::string> filepath = Utils::SaveFile({ { "Scene", "*.scene" } });
 				if (filepath.has_value())
 				{
 					_workspaceService->SaveSceneAs(filepath.value());
@@ -333,7 +330,7 @@ namespace Wyrd::Editor
 			}
 
 			if (ImGui::MenuItem("Open Scene", nullptr, nullptr, _workspaceService->IsProjectLoaded())) {
-				std::string filepath = util.OpenFileDialog(".scene");
+				std::string filepath = Utils::OpenFileDialog(".scene");
 				if (_workspaceService->LoadScene(filepath) == true)
 				{
 					WYRD_CORE_INFO("Opened Scene");
@@ -364,7 +361,7 @@ namespace Wyrd::Editor
 			{
 				if (ImGui::MenuItem("Load..."))
 				{
-					std::string file = util.OpenFileDialog(".ini");
+					std::string file = Utils::OpenFileDialog(".ini");
 					ImGui::LoadIniSettingsFromDisk(file.c_str());
 				}
 				ImGui::EndMenu();

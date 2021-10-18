@@ -140,11 +140,11 @@ namespace Wyrd::Editor::Events
 	class CreateNewProjectArgs : public EventArgs
 	{
 	public:
-		CreateNewProjectArgs(std::string name, std::string scene, std::string location) : name(name), sceneName(scene), location(location) {}
+		CreateNewProjectArgs(std::string name, std::string scene, const std::filesystem::path& location) : name(name), sceneName(scene), location(location) {}
 
 		const std::string name;
 		const std::string sceneName;
-		const std::string location;
+		const std::filesystem::path location;
 
 		EVENT_ARGS_CLONE(CreateNewProjectArgs)
 	};
@@ -204,11 +204,11 @@ namespace Wyrd::Editor::Events
 	class ProjectLoadedArgs : public EventArgs
 	{
 	public:
-		ProjectLoadedArgs(std::string initialScene, std::shared_ptr<Project> project, std::string projectPath) : initialScene(initialScene), project(project), projectPath(projectPath) {}
+		ProjectLoadedArgs(std::string initialScene, std::shared_ptr<Project> project, const std::filesystem::path& projectPath) : initialScene(initialScene), project(project), projectPath(projectPath) {}
 
 		const std::string initialScene;
 		std::shared_ptr<Project> project;
-		const std::string projectPath;
+		const std::filesystem::path projectPath;
 
 		EVENT_ARGS_CLONE(ProjectLoadedArgs)
 	};

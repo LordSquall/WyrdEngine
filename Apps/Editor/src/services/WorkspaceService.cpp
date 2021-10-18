@@ -24,7 +24,14 @@ namespace Wyrd::Editor
 		/* Subscribe to Project lifecycle events */
 		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::CreateNewProject, [this](Events::EventArgs& args) {
 			Events::CreateNewProjectArgs& a = (Events::CreateNewProjectArgs&)args;
-			CreateNewProject(a.location, a.sceneName, a.name);
+			if (CreateNewProject(a.location, a.sceneName, a.name))
+			{
+				WYRD_INFO("Project Created!");
+			}
+			else
+			{
+				WYRD_ERROR("Unable to create Project!");
+			}
 		});
 
 		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::OpenProject, [this](Events::EventArgs& args) {});
@@ -55,19 +62,23 @@ namespace Wyrd::Editor
 		_TempDirectory = rootDir / ".temp";
 	}
 
-	void Wyrd::Editor::WorkspaceService::CreateNewProject(std::string location, std::string sceneName, std::string name)
+	bool Wyrd::Editor::WorkspaceService::CreateNewProject(const std::filesystem::path& path, std::string sceneName, std::string name)
 	{
+		/* Create the folder for the project */
+		if (!Utils::CreateFolder(path / name))
+		{
+			WYRD_ERROR("Unable to create folder at {0}", path / name);
+			return false;
+		}
+
 		/* Build project file name */
-		_LoadedProjectPath = location + "\\" + name + "\\" + name + ".oproj";
+		_LoadedProjectPath = path / name / (name + ".oproj");
 
 		/* Create a new project shared pointer */
 		_LoadedProject = std::make_shared<Project>(name);
 
 		/* Clear any selection */
 		ServiceManager::Get<EventService>()->Publish(Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(ENTITY_INVALID));
-
-		/* Create the folder for the project */
-		Utils::CreateFolder(location + "\\" + name);
 
 		/* Save the project object to disk */
 		ProjectLoader::Result result = ProjectLoader::Save(_LoadedProjectPath, *_LoadedProject);
@@ -78,16 +89,35 @@ namespace Wyrd::Editor
 			IsProjectLoaded(true);
 
 			/* Update the settings to ensure this project is loaded by default next time */
-			ServiceManager::Get<SettingsService>()->SetSetting(_LoadedProjectPath, CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT);
+			ServiceManager::Get<SettingsService>()->SetSetting(_LoadedProjectPath.string(), CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT);
 				
 			/* Set the base root folder */
-			SetProjectRootDirectory(Utils::GetPath(_LoadedProjectPath.c_str()));
+			SetProjectRootDirectory(_LoadedProjectPath.parent_path());
 			
 			/* Create default folders and files */
-			Utils::CreateFolder(_AssetsDirectory.string());
-			Utils::CreateFolder(_BuildDirectory.string());
-			Utils::CreateFolder(_CacheDirectory.string());
-			Utils::CreateFolder(_TempDirectory.string());
+			if (!Utils::CreateFolder(_AssetsDirectory))
+			{
+				WYRD_ERROR("Unable to create folder at {0}", _AssetsDirectory);
+				return false;
+			}
+
+			if (!Utils::CreateFolder(_BuildDirectory))
+			{
+				WYRD_ERROR("Unable to create folder at {0}", _BuildDirectory);
+				return false;
+			}
+
+			if (!Utils::CreateFolder(_CacheDirectory))
+			{
+				WYRD_ERROR("Unable to create folder at {0}", _CacheDirectory);
+				return false;
+			}
+
+			if (!Utils::CreateFolder(_TempDirectory))
+			{
+				WYRD_ERROR("Unable to create folder at {0}", _TempDirectory);
+				return false;
+			}
 
 			/* Create a new default scene */
 			CreateNewScene(sceneName);
@@ -109,7 +139,7 @@ namespace Wyrd::Editor
 			folders << assetsFolder;
 
 			root << "folders" << folders;
-			std::ofstream out(Utils::GetPath(_LoadedProjectPath.c_str()) + "/vs.code-workspace");
+			std::ofstream out(_LoadedProjectPath.parent_path() / "/vs.code-workspace");
 			out << root.json();
 			out.close();
 
@@ -117,7 +147,7 @@ namespace Wyrd::Editor
 
 			/* Send a Project Loaded Event */
 			ServiceManager::Get<EventService>()->Publish(Events::EventType::ProjectLoaded,
-				std::make_unique<Events::ProjectLoadedArgs>(_LoadedProject->initialScene, _LoadedProject, Utils::GetPath(_LoadedProjectPath)));
+				std::make_unique<Events::ProjectLoadedArgs>(_LoadedProject->initialScene, _LoadedProject, _LoadedProjectPath.parent_path()));
 		}
 	}
 
@@ -173,7 +203,7 @@ namespace Wyrd::Editor
 			IsProjectLoaded(true);
 
 			/* Update the settings to ensure this project is loaded by default next time */
-			ServiceManager::Get<SettingsService>()->SetSetting(_LoadedProjectPath, CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT);
+			ServiceManager::Get<SettingsService>()->SetSetting(_LoadedProjectPath.string(), CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT);
 
 			/* Set the project root directory path */
 			SetProjectRootDirectory(projectfile.parent_path().string());

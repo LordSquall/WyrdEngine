@@ -42,8 +42,7 @@ namespace Wyrd::Editor
 
 		if (ImGui::Button("..."))
 		{
-			Utils util;
-			strcpy(folder_buffer, util.OpenFolderDialog().c_str());
+			strcpy(folder_buffer, Utils::OpenFolderDialog().c_str());
 			printf("Folder: %s\n", folder_buffer);
 		}
 
