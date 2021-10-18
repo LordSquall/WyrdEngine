@@ -21,11 +21,16 @@ project "glfw"
         srcdir .. "include/GLFW/glfw3native.h",
         srcdir .. "src/glfw_config.h",
         srcdir .. "src/context.c",
+        srcdir .. "src/platform.c",
         srcdir .. "src/init.c",
         srcdir .. "src/input.c",
         srcdir .. "src/monitor.c",
         srcdir .. "src/vulkan.c",
-        srcdir .. "src/window.c"
+        srcdir .. "src/window.c",
+        srcdir .. "src/null_init.c",
+        srcdir .. "src/null_monitor.c",
+        srcdir .. "src/null_joystick.c",
+        srcdir .. "src/null_window.c"
     }
     
 	filter "system:linux"
@@ -60,6 +65,7 @@ project "glfw"
             srcdir .. "src/win32_time.c",
             srcdir .. "src/win32_thread.c",
             srcdir .. "src/win32_window.c",
+            srcdir .. "src/win32_module.c",
             srcdir .. "src/wgl_context.c",
             srcdir .. "src/egl_context.c",
             srcdir .. "src/osmesa_context.c"
