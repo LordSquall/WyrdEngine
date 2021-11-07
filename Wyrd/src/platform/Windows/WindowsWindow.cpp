@@ -61,8 +61,6 @@ namespace Wyrd {
 		m_Context = new OpenGLContext(m_Window);
 		m_Context->Init();
 
-		auto cwd = std::filesystem::current_path();
-
 		GLFWimage icons[1];
 		icons[0].pixels = SOIL_load_image("../../Wyrd/res/icons/icon.png", &icons[0].width, &icons[0].height, 0, SOIL_LOAD_RGBA);
 		glfwSetWindowIcon(m_Window, 1, icons);
@@ -180,8 +178,6 @@ namespace Wyrd {
 			MouseMovedEvent e((float)xPos, (float)yPos);
 			data.EventCallback(e);
 		});
-
-		glfwSetWindowSize(m_Window, m_Data.Width, m_Data.Height);
 	}
 
 	void WindowsWindow::Shutdown()

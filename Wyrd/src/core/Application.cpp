@@ -34,6 +34,8 @@ namespace Wyrd {
 		_Window = std::unique_ptr<Window>(Window::Create(props.windowProps));
 		_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
+		_Window->SetSize(props.windowProps.Width, props.windowProps.Height);
+		
 		/* create a renderer */
 		_Renderer.reset(Renderer::Create());
 
