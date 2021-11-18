@@ -48,7 +48,7 @@ namespace Wyrd::Editor
 	{
 		EndFileWatcher();
 
-		/* TEMP if (_LoadedProject != nullptr) */ SaveProject();
+		if (_LoadedProject != nullptr) SaveProject();
 		if (_LoadedScene != nullptr) SaveScene();
 	}
 
@@ -103,7 +103,7 @@ namespace Wyrd::Editor
 
 			if (!Utils::CreateFolder(_BuildDirectory))
 			{
-				WYRD_ERROR("Unable to create folder at {0}", _BuildDirectory);
+				WYRD_ERROR("Unable to create folder at {0}", _BuildDirectory); 
 				return false;
 			}
 

@@ -27,7 +27,6 @@ namespace Wyrd::Editor
 	void FileWatcher::Start(const std::function<void(std::string, FileStatus)>& action)
 	{
 		WYRD_CORE_INFO("Starting File Watcher on {0}", Path);
-		Running = true;
 		Action = action;
 
 		Thread = std::thread{
@@ -91,11 +90,15 @@ namespace Wyrd::Editor
 			}
 		};
 
+		Running = true;
 	}
 
 	void FileWatcher::End()
 	{
-		Running = false;
-		Thread.join();
+		if (Running == true)
+		{
+			Running = false;
+			Thread.join();
+		}
 	}
 }
