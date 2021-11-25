@@ -136,6 +136,14 @@ namespace Wyrd::Editor
 				scriptFiles.push_back(value->GetPath());
 			}
 		}
+
+		// If we have no script files to compile, we can exit early
+		if (scriptFiles.empty())
+		{
+			WYRD_CORE_INFO("Unable to compile simluation library. No Script files found!");
+			_IsAvailable = false;
+			return;
+		}
 		
 		/**
 		* First stage is to compile all the file into a loadable library.
