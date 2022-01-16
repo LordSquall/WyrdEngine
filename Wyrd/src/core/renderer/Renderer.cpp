@@ -61,4 +61,9 @@ namespace Wyrd
 		_spriteBatch.Flush();
 		_vertex2DBatch.Flush();
 	}
+
+#ifdef WYRD_INCLUDE_DEBUG_TAGS
+	void Renderer::StartNamedSection(const char* name) const {}
+	void Renderer::EndNamedSection() const {}
+#endif
 }

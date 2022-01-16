@@ -24,6 +24,7 @@
     <DefineConstants>WYRD_PLATFORM_WINDOWS;WYRD_EDITOR_ENABLED;GLFW_INCLUDE_NONE;GLM_ENABLE_EXPERIMENTAL;WYRD_DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <PlatformTarget>x64</PlatformTarget>

@@ -96,7 +96,7 @@ namespace Wyrd::Editor
 
 		/* Load defaults from the editor resources */
 		_defaultTexture = std::make_shared<TextureRes>(Utils::GetEditorResFolder() + "textures\\default.png");
-		if (_defaultTexture->Load())
+		if (!_defaultTexture->Load())
 		{
 			WYRD_CORE_ERROR("Unable to load default texture!");
 		}

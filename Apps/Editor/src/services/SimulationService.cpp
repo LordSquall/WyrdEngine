@@ -127,7 +127,22 @@ namespace Wyrd::Editor
 		/* clear all the code logs from the output */
 		_EventService->Publish(Events::EventType::ClearLogEntry, std::make_unique<Events::ClearLogEntryArgs>(LogType::Code));
 
+		/* construct the version info script */
+		std::string assemblyInfoTemplate = Utils::ReadFileToString(Utils::GetEditorResFolder() + "\\templates\\AssemblyInfo.cs");
+
+		/* replace the name */
+		std::string assemblyInfoContent = Utils::ReplaceAll(assemblyInfoTemplate, "<<GAME_NAME>>", "TEMPGAMENAME");
+
+		const std::filesystem::path tempAssemblyInfoFilePath = _WorkspaceService->GetTempDirectory() / "AssemblyInfo.cs";
+
+		Utils::CreateRawFile(tempAssemblyInfoFilePath, assemblyInfoContent);
+
+
+
 		std::vector<std::filesystem::path> scriptFiles;
+
+		scriptFiles.push_back(tempAssemblyInfoFilePath);
+
 		for (auto& [key, value] : _ResourceService->GetResources())
 		{
 			auto downcastedPtr = std::dynamic_pointer_cast<ScriptRes>(value);
@@ -137,12 +152,11 @@ namespace Wyrd::Editor
 			}
 		}
 
-		// If we have no script files to compile, we can exit early
-		if (scriptFiles.empty())
+		// If we have 1 script file to compile, we mark it not to load on completion
+		if (scriptFiles.size() == 1)
 		{
 			WYRD_CORE_INFO("Unable to compile simluation library. No Script files found!");
 			_IsAvailable = false;
-			return;
 		}
 		
 		/**
@@ -200,12 +214,10 @@ namespace Wyrd::Editor
 			/* Second stage is to copy of the successfully compiled model to the execution director, only if the compilation was successful */
 			Utils::RemoveFile(finalModelFileName);
 			Utils::CopySingleFile(tempModelFileName, _WorkspaceService->GetLoadedProjectPath().parent_path());
-
-			_IsAvailable = true;
 		}
 
 		/* Third stage is to load the model into the scripting environment if we have valid model */
-		if (Utils::FileExists(finalModelFileName) == true)
+		if (Utils::FileExists(finalModelFileName) == true && _IsAvailable)
 		{
 			Application::Get().GetBehaviour().LoadBehaviourModel(scriptFiles, finalModelFileName);
 		}

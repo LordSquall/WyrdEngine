@@ -5,18 +5,18 @@
 
 namespace Wyrd {
 
-	bool Rect::ContainsPoint(glm::vec2 p)
+	bool const Rect::ContainsPoint(glm::vec2 p)
 	{
-		return (p.x >= position.x && p.y >= position.y && p.x < position.x + size.x && p.y < position.y + size.y);
+		return (p.x >= _position.x && p.y >= _position.y && p.x < _position.x + _size.x && p.y < _position.y + _size.y);
 	}
 
-	bool Rect::ContainsRect(Rect r)
+	bool const Rect::ContainsRect(Rect r)
 	{
-		return (position.x < r.position.x + r.size.x && position.x + size.x > r.position.x) &&
-			(position.y < r.position.y + r.size.y && position.y + size.y > r.position.y);
+		return (_position.x < r._position.x + r._size.x && _position.x + _size.x > r._position.x) &&
+			(_position.y < r._position.y + r._size.y && _position.y + _size.y > r._position.y);
 	}
 
-	bool Rect::ContainsRay(Ray r, Ray::Hit& hit)
+	bool const Rect::ContainsRay(Ray r, Ray::Hit& hit)
 	{
 		// Cache division
 		glm::vec2 invdir = 1.0f / r.dir;
@@ -24,8 +24,8 @@ namespace Wyrd {
 		//WYRD_TRACE("Ray: {0},{1},{2},{3}", r.origin.x, r.origin.y, invdir.x, invdir.y);
 
 		// Calculate intersections with rectangle bounding axes
-		glm::vec2 t_near = (position - r.origin) * invdir;
-		glm::vec2 t_far = (position + size - r.origin) * invdir;
+		glm::vec2 t_near = (_position - r.origin) * invdir;
+		glm::vec2 t_far = (_position + _size - r.origin) * invdir;
 
 		if (std::isnan(t_far.y) || std::isnan(t_far.x)) return false;
 		if (std::isnan(t_near.y) || std::isnan(t_near.x)) return false;
@@ -70,17 +70,17 @@ namespace Wyrd {
 
 	void Rect::Merge(Rect& r)
 	{
-		if (r.position.x < position.x)
-			position.x = r.position.x;
+		if (r._position.x < _position.x)
+			_position.x = r._position.x;
 
-		if (r.position.y < position.y)
-			position.y = r.position.y;
+		if (r._position.y < _position.y)
+			_position.y = r._position.y;
 
 
-		if ((r.position.x + r.size.x) > (position.x + size.x))
-			size.x = r.size.x;
+		if ((r._position.x + r._size.x) > (_position.x + _size.x))
+			_size.x = r._size.x;
 
-		if ((r.position.y + r.size.y) > (position.y + size.y))
-			size.y = r.size.y;
+		if ((r._position.y + r._size.y) > (_position.y + _size.y))
+			_size.y = r._size.y;
 	}
 }

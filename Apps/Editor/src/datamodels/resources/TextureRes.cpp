@@ -51,9 +51,10 @@ namespace Wyrd::Editor
 
 			/* register the texture with the core resource manager */
 			Application::Get().GetResources().Textures[_resourceID] = _texture;
+		
+			_loaded = true;
 		}
 
-		_loaded = true;
 
 		return _loaded;
 	}

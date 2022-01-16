@@ -20,6 +20,7 @@
 namespace Wyrd::Editor
 {
 	std::string lastFileCreatedName;
+	bool startFrameCapture;
 
 	RenderDocLayer::RenderDocLayer()
 		: Layer("RenderDocLayer")
@@ -54,6 +55,8 @@ namespace Wyrd::Editor
 
 		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::SettingsUpdated, EVENT_FUNC(RenderDocLayer::OnSettingsUpdated));
 
+		startFrameCapture = false;
+
 		return true;
 	}
 
@@ -68,12 +71,47 @@ namespace Wyrd::Editor
 
 	void RenderDocLayer::OnUpdate(Timestep ts)
 	{
-		if (_CaptureRunning == true)
+		if (_CaptureRunning == false)
 		{
+			if (startFrameCapture == true)
+			{
+				if (_RDOCAPI != NULL)
+				{
+					if (Utils::ToBool(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__ENABLED, "0")))
+					{
+						time_t rawtime;
+						struct tm* timeinfo;
+						char buffer[80];
+
+						time(&rawtime);
+						timeinfo = localtime(&rawtime);
+
+						strftime(buffer, sizeof(buffer), "%d-%m-%Y_%H-%M-%S", timeinfo);
+						std::string datetime(buffer);
+						lastFileCreatedName = _SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__CAPTUREDIR, "my_captures/example") + datetime;
+
+						_RDOCAPI->SetCaptureFilePathTemplate(lastFileCreatedName.c_str());
+						_RDOCAPI->StartFrameCapture(NULL, NULL);
+
+						int ret = _RDOCAPI->IsFrameCapturing();
+
+						_FrameCounter = 0;
+						_CaptureRunning = true;
+
+						WYRD_INFO("Renderdoc Capture Started");
+					}
+				}
+			}
+		} 
+		else
+		{
+
 			if (_FrameCounter == _FrameCaptureCount)
 			{
 				if (_RDOCAPI != NULL)
 				{
+					startFrameCapture = false;
+
 					int result = _RDOCAPI->EndFrameCapture(NULL, NULL);
 					if (result == 0)
 					{
@@ -111,7 +149,7 @@ namespace Wyrd::Editor
 	void RenderDocLayer::OnEvent(Event& event)
 	{
 		EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<KeyPressedEvent>(OSR_BIND_EVENT_FN(RenderDocLayer::OnKeyPressedEvent));
+		dispatcher.Dispatch<KeyPressedEvent>(WYRD_BIND_EVENT_FN(RenderDocLayer::OnKeyPressedEvent), nullptr);
 	}
 
 	void RenderDocLayer::UpdateSettings()
@@ -135,37 +173,11 @@ namespace Wyrd::Editor
 		UpdateSettings();
 	}
 
-	bool RenderDocLayer::OnKeyPressedEvent(KeyPressedEvent& e)
+	bool RenderDocLayer::OnKeyPressedEvent(KeyPressedEvent& e, void* data)
 	{
 		if (e.GetKeyCode() == OSR_KEY_F4)
 		{
-			if (_RDOCAPI != NULL)
-			{
-				if (Utils::ToBool(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__ENABLED, "0")))
-				{
-					time_t rawtime;
-					struct tm* timeinfo;
-					char buffer[80];
-
-					time(&rawtime);
-					timeinfo = localtime(&rawtime);
-
-					strftime(buffer, sizeof(buffer), "%d-%m-%Y_%H-%M-%S", timeinfo);
-					std::string datetime(buffer);
-					lastFileCreatedName = _SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__CAPTUREDIR, "my_captures/example") + datetime;
-
-					_RDOCAPI->SetCaptureFilePathTemplate(lastFileCreatedName.c_str());
-					_RDOCAPI->StartFrameCapture(NULL, NULL);
-
-					int ret = _RDOCAPI->IsFrameCapturing();
-
-					_FrameCounter = 0;
-					_CaptureRunning = true;
-
-					WYRD_INFO("Renderdoc Capture Started");
-					return true;
-				}
-			}
+			startFrameCapture = true;
 		}
 
 		return false;

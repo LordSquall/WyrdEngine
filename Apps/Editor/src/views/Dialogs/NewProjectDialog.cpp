@@ -2,8 +2,9 @@
 
 #include "wyrdpch.h"
 
+#include "core\Log.h"
 #include "NewProjectDialog.h"
-#include "imgui.h"
+#include "support\ImGuiUtils.h"
 
 namespace Wyrd::Editor
 {
@@ -14,41 +15,57 @@ namespace Wyrd::Editor
 
 	void NewProjectDialog::OnDialogRender()
 	{
-		static char name_buffer[255];
-		static char scenename_buffer[255] = "default";
-		static char folder_buffer[255];
+		static std::string projectName;
+		static std::string initialSceneName = "default";
+		static std::string folderName;
+		static bool setupValid = false;
+
+		/* create final directory */
+		std::string projectDir = (std::filesystem::path(folderName) / std::filesystem::path(projectName)).string();
+
+		if (projectName != "" &&
+			initialSceneName != "" &&
+			folderName != "" && 
+			projectDir != "" && 
+			!Utils::FolderExists(projectDir))
+		{
+			setupValid = true;
+		}
+		else
+		{
+			setupValid = false;
+		}
 
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Name:");
 		ImGui::SameLine();
 		ImGui::PushID(0);
-		ImGui::InputText("##hidelabel", name_buffer, 255);
+		ImGui::InputText("##hidelabel", &projectName);
 		ImGui::PopID();
 
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Default Scene Name:");
 		ImGui::SameLine();
 		ImGui::PushID(1);
-		ImGui::InputText("##hidelabel", scenename_buffer, 255);
+		ImGui::InputText("##hidelabel", &initialSceneName);
 		ImGui::PopID();
 
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Folder:");
 		ImGui::SameLine();
 		ImGui::PushID(2);
-		ImGui::InputText("##hidelabel", folder_buffer, 255);
+		ImGui::InputText("##hidelabel", &folderName);
 		ImGui::PopID();
 		ImGui::SameLine();
 
 		if (ImGui::Button("..."))
 		{
-			strcpy(folder_buffer, Utils::OpenFolderDialog().c_str());
-			printf("Folder: %s\n", folder_buffer);
+			folderName = Utils::OpenFolderDialog();
 		}
 
-		if (ImGui::Button("OK", ImVec2(120, 0)))
+		if (ImGui::TextButton("OK", setupValid, ImVec2(120, 0)))
 		{
-			ServiceManager::Get<EventService>()->Publish(Events::EventType::CreateNewProject, std::make_unique<Events::CreateNewProjectArgs>(std::string(name_buffer), std::string(scenename_buffer), std::string(folder_buffer)));
+			ServiceManager::Get<EventService>()->Publish(Events::EventType::CreateNewProject, std::make_unique<Events::CreateNewProjectArgs>(projectName, initialSceneName, folderName));
 			ImGui::CloseCurrentPopup();
 			Close();
 		}
@@ -57,6 +74,7 @@ namespace Wyrd::Editor
 		ImGui::SameLine();
 		if (ImGui::Button("Cancel", ImVec2(120, 0)))
 		{
+			ServiceManager::Get<EventService>()->Publish(Events::EventType::CloseEditor, std::make_unique<Events::CloseEditorArgs>());
 			ImGui::CloseCurrentPopup();
 			Close();
 		}

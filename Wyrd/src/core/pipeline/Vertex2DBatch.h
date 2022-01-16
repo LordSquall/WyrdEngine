@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/renderer/commands/RendererCommands.h"
+#include "core/renderer/RendererDrawTypes.h"
 #include "core/pipeline/Vertex2D.h"
 
 using namespace Wyrd;
@@ -36,5 +37,6 @@ namespace Wyrd {
 		glm::mat4						_VPMatrix;
 		Shader*							_Shader;
 		Color							_Color;
+		RendererDrawType				_DrawType;
 	};
 }

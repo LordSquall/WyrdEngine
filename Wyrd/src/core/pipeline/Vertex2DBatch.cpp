@@ -25,6 +25,7 @@ namespace Wyrd
 		_VertexArray->SetAttribute(1, 2, 4, sizeof(Vertex2D));
 
 		_Shader = nullptr;
+		_DrawType = RendererDrawType::Uknown;
 
 		return true;
 	}
@@ -38,9 +39,15 @@ namespace Wyrd
 		if ((_Shader != nullptr) && _Shader != cmd.shader)
 			flushRequired = true;
 
+		/* switching primitive type requires a flush */
+		if (_DrawType != RendererDrawType::Quads)
+			flushRequired = true;
+
 		/* flush if required */
 		if (flushRequired == true)
 			Flush();
+
+		_DrawType = RendererDrawType::Quads;
 
 		float t = cmd.thickness * 0.5f;
 
@@ -65,6 +72,15 @@ namespace Wyrd
 		_vertices.push_back({cmd.position.x + cmd.size.x + t,	cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom left
 		_vertices.push_back({cmd.position.x + cmd.size.x + t,	cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top left 
 
+		Vector2 pivot = { cmd.position.x + cmd.rotationOrigin.x, cmd.position.y + cmd.rotationOrigin.y };
+
+		for (int i = 0; i < 16; i++)
+		{
+			Vertex2D* v = &_vertices[i];
+			Vector2 pt1 = Vector2::RotateAtPoint({ v->x, v->y }, -cmd.rotation, pivot);
+			v->x = pt1.x;
+			v->y = pt1.y;
+		}
 
 		/* bind the batch vertex array */
 		_VertexArray->Bind();
@@ -85,9 +101,15 @@ namespace Wyrd
 		if ((_Shader != nullptr) && _Shader != cmd.shader)
 			flushRequired = true;
 
+		/* switching primitive type requires a flush */
+		if (_DrawType != cmd.drawType)
+			flushRequired = true;
+
 		/* flush if required */
 		if (flushRequired == true)
 			Flush();
+
+		_DrawType = cmd.drawType;
 
 		/* copy vertices in to batcher */
 		for (int i = 0; i < cmd.vertices->size(); ++i)
@@ -111,6 +133,9 @@ namespace Wyrd
 
 	void Vertex2DBatch::Flush()
 	{
+		if (_vertices.size() == 0)
+			return;
+
 		if (_Shader == nullptr)
 		{
 			return;
@@ -126,8 +151,15 @@ namespace Wyrd
 		_VertexArray->Bind();
 		_VertexBuffer->Bind();
 
-		_Renderer->DrawArray(RendererDrawType::Quads, 0, _vertices.size());
+#ifdef WYRD_INCLUDE_DEBUG_TAGS
+		_Renderer->StartNamedSection("Vertex2D Batch Render");
+#endif
 
+		_Renderer->DrawArray(_DrawType, 0, _vertices.size());
+
+#ifdef WYRD_INCLUDE_DEBUG_TAGS
+		_Renderer->EndNamedSection();
+#endif
 		_vertices.clear();
 	}
 }

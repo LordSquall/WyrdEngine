@@ -28,14 +28,14 @@ namespace Wyrd::Editor
 		void OnEvent(Event& event) override;
 		
 	private:
-		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
-		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
-		bool OnMouseMovedEvent(MouseMovedEvent& e);
-		bool OnMouseScrolledEvent(MouseScrolledEvent& e);
-		bool OnKeyReleasedEvent(KeyReleasedEvent& e);
-		bool OnKeyPressedEvent(KeyPressedEvent& e);
-		bool OnKeyTypedEvent(KeyTypedEvent& e);
-		bool OnWindowResizeEvent(WindowResizeEvent& e);
+		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data);
+		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e, void* data);
+		bool OnMouseMovedEvent(MouseMovedEvent& e, void* data);
+		bool OnMouseScrolledEvent(MouseScrolledEvent& e, void* data);
+		bool OnKeyReleasedEvent(KeyReleasedEvent& e, void* data);
+		bool OnKeyPressedEvent(KeyPressedEvent& e, void* data);
+		bool OnKeyTypedEvent(KeyTypedEvent& e, void* data);
+		bool OnWindowResizeEvent(WindowResizeEvent& e, void* data);
 
 		void OnSceneOpened(Events::EventArgs& args);
 		

@@ -67,7 +67,7 @@ namespace Wyrd::Editor
 				_Camera.SetViewportSize(_WorkspaceService->GetCurrentProject()->GetExportSettings().width, _WorkspaceService->GetCurrentProject()->GetExportSettings().height);
 				break;
 			case 1:
-				_Camera.SetViewportSize(_Viewport.size.x, _Viewport.size.y);
+				_Camera.SetViewportSize(_Viewport._size.x, _Viewport._size.y);
 				break;
 			case 2:
 				_Camera.SetViewportSize(800.0f, 600.0f);
@@ -81,6 +81,10 @@ namespace Wyrd::Editor
 
 	void GameViewer::OnRender(Timestep ts, Renderer& renderer)
 	{
+#ifdef WYRD_INCLUDE_DEBUG_TAGS
+		renderer.StartNamedSection("GameViewer.Scene");
+#endif
+
 		if (_Framebuffer->GetConfig().height > 0 && _Framebuffer->GetConfig().width > 0)
 		{
 			_Framebuffer->Bind();
@@ -130,6 +134,10 @@ namespace Wyrd::Editor
 
 			_Framebuffer->Unbind();
 		}
+
+#ifdef WYRD_INCLUDE_DEBUG_TAGS
+		renderer.EndNamedSection();
+#endif
 	}
 
 	void GameViewer::OnEditorRender()
@@ -138,10 +146,10 @@ namespace Wyrd::Editor
 		static bool showGizmoSettings = false;
 
 		/* calculate the viewport size */
-		_Viewport.position.x = 0.0f;
-		_Viewport.position.y = 0.0f;
-		_Viewport.size.x = ImGui::GetContentRegionAvail().x;
-		_Viewport.size.y = ImGui::GetContentRegionAvail().y - ImGui::GetCursorPos().y;
+		_Viewport._position.x = 0.0f;
+		_Viewport._position.y = 0.0f;
+		_Viewport._size.x = ImGui::GetContentRegionAvail().x;
+		_Viewport._size.y = ImGui::GetContentRegionAvail().y - ImGui::GetCursorPos().y;
 
 
 		const char* items[] = { "Export Size", "Window Size", "800x600" };
@@ -153,7 +161,7 @@ namespace Wyrd::Editor
 				_Framebuffer->Resize((uint32_t)_WorkspaceService->GetCurrentProject()->GetExportSettings().width, (uint32_t)_WorkspaceService->GetCurrentProject()->GetExportSettings().height);
 				break;
 			case 1:
-				_Framebuffer->Resize((uint32_t)_Viewport.size.x, (uint32_t)_Viewport.size.y);
+				_Framebuffer->Resize((uint32_t)_Viewport._size.x, (uint32_t)_Viewport._size.y);
 				break;
 			case 2:
 				_Framebuffer->Resize(800, 600);
@@ -167,7 +175,7 @@ namespace Wyrd::Editor
 			_CameraComponent->aspectRatio = _Camera.GetAspectRatio();
 
 			auto pos = ImGui::GetCursorPos();
-			ImGui::Image((ImTextureID)(UINT_PTR)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport.size.x, _Viewport.size.y), ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::Image((ImTextureID)(UINT_PTR)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport._size.x, _Viewport._size.y), ImVec2(0, 1), ImVec2(1, 0));
 
 			//ImGui::SetCursorPos(pos);
 			//ImGui::Text("X : %f", _Viewport.position.x);
@@ -185,13 +193,13 @@ namespace Wyrd::Editor
 	void GameViewer::OnResize()
 	{
 		/* resize the underlying framebuffer */
-		_Framebuffer->Resize((uint32_t)_Viewport.size.x, (uint32_t)_Viewport.size.y);
+		_Framebuffer->Resize((uint32_t)_Viewport._size.x, (uint32_t)_Viewport._size.y);
 
 		if (_CameraComponent != nullptr)
 		{
 			/* Set the camera viewport */
 			_Camera.SetSize(_CameraComponent->size);
-			_Camera.SetViewportSize(_Viewport.size.x, _Viewport.size.y);
+			_Camera.SetViewportSize(_Viewport._size.x, _Viewport._size.y);
 		}
 	}
 

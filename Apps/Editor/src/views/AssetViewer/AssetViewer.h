@@ -19,7 +19,6 @@ namespace Wyrd::Editor
 		void OnEvent(Event& event) override;
 
 	private:
-		bool OnKeyPressedEvent(KeyPressedEvent& e);
 
 		void DrawItemTable(const std::vector<std::filesystem::path>& directories, const std::vector<std::filesystem::path>& files);
 		void DrawFolderItem(int resID, const std::filesystem::path& directoryEntry);

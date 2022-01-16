@@ -49,8 +49,7 @@ namespace Wyrd {
 		void* GetNativeGFXContextPointer() const override;
 		
 	private:
-		bool OnWindowResizeEvent(WindowResizeEvent& e);
-		bool OnWindowCloseEvent(WindowCloseEvent& e);
+		bool OnWindowCloseEvent(WindowCloseEvent& e, void* data);
 
 	private:
 		virtual void Init(const WindowProps& props);

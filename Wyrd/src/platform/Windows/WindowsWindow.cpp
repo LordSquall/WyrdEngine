@@ -210,17 +210,10 @@ namespace Wyrd {
 	void WindowsWindow::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<WindowResizeEvent>(OSR_BIND_EVENT_FN(WindowsWindow::OnWindowResizeEvent));
-		dispatcher.Dispatch<WindowCloseEvent>(OSR_BIND_EVENT_FN(WindowsWindow::OnWindowCloseEvent));
+		dispatcher.Dispatch<WindowCloseEvent>(WYRD_BIND_EVENT_FN(WindowsWindow::OnWindowCloseEvent), nullptr);
 	}
 
-	bool WindowsWindow::OnWindowResizeEvent(WindowResizeEvent& e)
-	{
-
-		return true;
-	}
-
-	bool WindowsWindow::OnWindowCloseEvent(WindowCloseEvent& e)
+	bool WindowsWindow::OnWindowCloseEvent(WindowCloseEvent& e, void* data)
 	{
 		SetCloseRequested(true);
 

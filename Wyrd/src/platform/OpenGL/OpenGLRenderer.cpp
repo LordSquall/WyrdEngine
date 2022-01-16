@@ -87,4 +87,19 @@ namespace Wyrd
 
 		glDrawArrays(primitiveType, offset, count);
 	}
+
+
+#ifdef WYRD_INCLUDE_DEBUG_TAGS
+
+	void OpenGLRenderer::StartNamedSection(const char* name) const
+	{
+		glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1, name);
+	}
+
+	void OpenGLRenderer::EndNamedSection() const
+	{
+		glPopDebugGroup();
+	}
+
+#endif
 }

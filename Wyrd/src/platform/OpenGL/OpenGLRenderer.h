@@ -14,5 +14,10 @@ namespace Wyrd
 		virtual void Clear(float r, float g, float b) const override;
 		virtual void DrawElements(RendererDrawType type, uint32_t count) const override;
 		virtual void DrawArray(RendererDrawType type, uint32_t offset, uint32_t count) const override;
+
+#ifdef WYRD_INCLUDE_DEBUG_TAGS
+		virtual void StartNamedSection(const char* name) const override;
+		virtual void EndNamedSection() const override;
+#endif
 	};
 }

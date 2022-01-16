@@ -315,10 +315,10 @@ namespace Wyrd::Editor
 	void HierarchyView::OnEvent(Event& event)
 	{
 		EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<KeyPressedEvent>(WYRD_BIND_EVENT_FN(HierarchyView::OnKeyPressedEvent));
+		dispatcher.Dispatch<KeyPressedEvent>(WYRD_BIND_EVENT_FN(HierarchyView::OnKeyPressedEvent), nullptr);
 	}
 
-	bool HierarchyView::OnKeyPressedEvent(KeyPressedEvent& e)
+	bool HierarchyView::OnKeyPressedEvent(KeyPressedEvent& e, void* data)
 	{
 		if (e.GetKeyCode() == OSR_KEY_F2)
 		{

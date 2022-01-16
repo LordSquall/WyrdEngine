@@ -53,6 +53,7 @@ void ComponentSerialiserFactory::Deserialise(std::ifstream& stream, Wyrd::Transf
 {
 	stream.read((char*)&data->position, sizeof(glm::vec2));
 	stream.read((char*)&data->rotation, sizeof(float));
+	stream.read((char*)&data->rotationOrigin, sizeof(glm::vec2));
 }
 
 void ComponentSerialiserFactory::Deserialise(std::ifstream& stream, Wyrd::SpriteComponent* data)

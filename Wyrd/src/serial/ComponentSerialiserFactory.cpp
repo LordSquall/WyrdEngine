@@ -160,6 +160,7 @@ namespace Wyrd
 	{
 		obj << "position" << data->position;
 		obj << "rotation" << data->rotation;
+		obj << "rotationOrigin" << data->rotationOrigin;
 	}
 
 	void ComponentSerialiserFactory::Serialise(Object& obj, Wyrd::SpriteComponent* data)
@@ -241,6 +242,7 @@ namespace Wyrd
 	{
 		data->position << obj.get<Array>("position");
 		data->rotation = (float)obj.get<Number>("rotation");
+		data->rotationOrigin << obj.get<Array>("rotationOrigin");
 	}
 
 	void ComponentSerialiserFactory::Deserialise(Object& obj, Wyrd::SpriteComponent* data)

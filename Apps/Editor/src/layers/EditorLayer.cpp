@@ -70,9 +70,6 @@ namespace Wyrd::Editor
 		/* cache icon resources */
 		_playButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "sim_play");
 		_stopButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "sim_stop");
-
-		/* setup event bindings */
-		_eventService->Subscribe(Editor::Events::EventType::SceneOpened, EVENT_FUNC(EditorLayer::OnSceneOpened));
 	}
 
 	EditorLayer::~EditorLayer()
@@ -222,6 +219,12 @@ namespace Wyrd::Editor
 		{
 			_dialogService->OpenDialog(std::make_shared<NewProjectDialog>(this));
 		}
+
+		/* register for events */
+		_eventService->Subscribe(Events::EventType::CloseEditor, [this](Events::EventArgs& args)
+			{
+				Application::Get().Terminate();
+			});
 
 		return true;
 	}
@@ -429,22 +432,24 @@ namespace Wyrd::Editor
 
 		ImGui::PopFont();
 
+		renderer.StartNamedSection("ImGui Editor");
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		renderer.EndNamedSection();
 		
 	}
 
 	void EditorLayer::OnEvent(Event& event)
 	{
 		EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<MouseButtonPressedEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressedEvent));
-		dispatcher.Dispatch<MouseButtonReleasedEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnMouseButtonReleasedEvent));
-		dispatcher.Dispatch<MouseMovedEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnMouseMovedEvent));
-		dispatcher.Dispatch<MouseScrolledEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnMouseScrolledEvent));
-		dispatcher.Dispatch<KeyReleasedEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnKeyReleasedEvent));
-		dispatcher.Dispatch<KeyPressedEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnKeyPressedEvent));
-		dispatcher.Dispatch<KeyTypedEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnKeyTypedEvent));
-		dispatcher.Dispatch<WindowResizeEvent>(OSR_BIND_EVENT_FN(EditorLayer::OnWindowResizeEvent));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(WYRD_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressedEvent), nullptr);
+		dispatcher.Dispatch<MouseButtonReleasedEvent>(WYRD_BIND_EVENT_FN(EditorLayer::OnMouseButtonReleasedEvent), nullptr);
+		dispatcher.Dispatch<MouseMovedEvent>(WYRD_BIND_EVENT_FN(EditorLayer::OnMouseMovedEvent), nullptr);
+		dispatcher.Dispatch<MouseScrolledEvent>(WYRD_BIND_EVENT_FN(EditorLayer::OnMouseScrolledEvent), nullptr);
+		dispatcher.Dispatch<KeyReleasedEvent>(WYRD_BIND_EVENT_FN(EditorLayer::OnKeyReleasedEvent), nullptr);
+		dispatcher.Dispatch<KeyPressedEvent>(WYRD_BIND_EVENT_FN(EditorLayer::OnKeyPressedEvent), nullptr);
+		dispatcher.Dispatch<KeyTypedEvent>(WYRD_BIND_EVENT_FN(EditorLayer::OnKeyTypedEvent), nullptr);
+		dispatcher.Dispatch<WindowResizeEvent>(WYRD_BIND_EVENT_FN(EditorLayer::OnWindowResizeEvent), nullptr);
 	}
 
 	void EditorLayer::OnSceneOpened(Events::EventArgs& args)
@@ -465,7 +470,7 @@ namespace Wyrd::Editor
 		Application::Get().color.b = evtArgs.scene->bgcolor.b;
 	}
 
-	bool EditorLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
+	bool EditorLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.MouseDown[e.GetMouseButton()] = true;
@@ -487,7 +492,7 @@ namespace Wyrd::Editor
 		return false;
 	}
 
-	bool EditorLayer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e)
+	bool EditorLayer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e, void* data)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.MouseDown[e.GetMouseButton()] = false;
@@ -505,7 +510,7 @@ namespace Wyrd::Editor
 		return false;
 	}
 
-	bool EditorLayer::OnMouseMovedEvent(MouseMovedEvent& e)
+	bool EditorLayer::OnMouseMovedEvent(MouseMovedEvent& e, void* data)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.MousePos = ImVec2(e.GetX(), e.GetY());
@@ -523,7 +528,7 @@ namespace Wyrd::Editor
 		return false;
 	}
 
-	bool EditorLayer::OnMouseScrolledEvent(MouseScrolledEvent& e)
+	bool EditorLayer::OnMouseScrolledEvent(MouseScrolledEvent& e, void* data)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.MouseWheel += e.GetYOffset();
@@ -542,7 +547,7 @@ namespace Wyrd::Editor
 		return false;
 	}
 
-	bool EditorLayer::OnKeyReleasedEvent(KeyReleasedEvent& e)
+	bool EditorLayer::OnKeyReleasedEvent(KeyReleasedEvent& e, void* data)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.KeysDown[e.GetKeyCode()] = false;
@@ -553,7 +558,7 @@ namespace Wyrd::Editor
 		return false;
 	}
 
-	bool EditorLayer::OnKeyPressedEvent(KeyPressedEvent& e)
+	bool EditorLayer::OnKeyPressedEvent(KeyPressedEvent& e, void* data)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.KeysDown[e.GetKeyCode()] = true;
@@ -576,7 +581,7 @@ namespace Wyrd::Editor
 		return false;
 	}
 
-	bool EditorLayer::OnKeyTypedEvent(KeyTypedEvent& e)
+	bool EditorLayer::OnKeyTypedEvent(KeyTypedEvent& e, void* data)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		if (e.GetKeyCode() > 0 && e.GetKeyCode() < 0x10000)
@@ -585,7 +590,7 @@ namespace Wyrd::Editor
 		return io.WantCaptureKeyboard;
 	}
 
-	bool EditorLayer::OnWindowResizeEvent(WindowResizeEvent& e)
+	bool EditorLayer::OnWindowResizeEvent(WindowResizeEvent& e, void* data)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.DisplaySize = ImVec2((float)e.GetWidth(), (float)e.GetHeight());

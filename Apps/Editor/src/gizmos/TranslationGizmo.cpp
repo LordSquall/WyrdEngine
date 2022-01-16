@@ -81,7 +81,7 @@ namespace Wyrd::Editor
             return true;
     }
 
-    TranslationGizmo::TranslationGizmo(SceneViewer* sceneViewer) : Gizmo(sceneViewer), _Entity(ENTITY_INVALID), _InputState(InputState::NONE), _AxisState(AxisState::XY), _MovementState(MovementState::LOCAL), _LastMouseWorldPos(0.0f, 0.0f)
+    TranslationGizmo::TranslationGizmo(SceneViewer* sceneViewer) : Gizmo(sceneViewer, ENTITY_INVALID), _InputState(InputState::NONE), _AxisState(AxisState::XY), _MovementState(MovementState::LOCAL), _LastMouseWorldPos(0.0f, 0.0f)
 	{
 		/* retrieve the services */
 		_EventService = ServiceManager::Get<EventService>();
@@ -105,7 +105,7 @@ namespace Wyrd::Editor
         if (_Entity != ENTITY_INVALID)
         {
             /* calculate the different between the camera viewport and the sceneviewer to set the scalling */
-            float diff = _CameraController->GetSize() / std::min(_SceneViewer->GetViewport().size.x, _SceneViewer->GetViewport().size.y);
+            float diff = _CameraController->GetSize() / std::min(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
 
             Transform2DComponent* transform2DComponent = _SceneViewer->GetScene()->Get<Transform2DComponent>(_Entity);
 
@@ -129,15 +129,15 @@ namespace Wyrd::Editor
         if (_Entity != ENTITY_INVALID)
         {
             EventDispatcher dispatcher(event);
-            dispatcher.Dispatch<MouseMovedEvent>(OSR_BIND_EVENT_FN(TranslationGizmo::OnMouseMovedEvent));
-            dispatcher.Dispatch<MouseButtonPressedEvent>(OSR_BIND_EVENT_FN(TranslationGizmo::OnMouseButtonPressedEvent));
-            dispatcher.Dispatch<MouseButtonReleasedEvent>(OSR_BIND_EVENT_FN(TranslationGizmo::OnMouseButtonReleasedEvent));
+            dispatcher.Dispatch<MouseMovedEvent>(WYRD_BIND_EVENT_FN(TranslationGizmo::OnMouseMovedEvent), nullptr);
+            dispatcher.Dispatch<MouseButtonPressedEvent>(WYRD_BIND_EVENT_FN(TranslationGizmo::OnMouseButtonPressedEvent), nullptr);
+            dispatcher.Dispatch<MouseButtonReleasedEvent>(WYRD_BIND_EVENT_FN(TranslationGizmo::OnMouseButtonReleasedEvent), nullptr);
         }
     }
 
-    bool TranslationGizmo::OnMouseMovedEvent(MouseMovedEvent& e)
+    bool TranslationGizmo::OnMouseMovedEvent(MouseMovedEvent& e, void* data)
     {
-        float diff = _CameraController->GetSize() / std::min(_SceneViewer->GetViewport().size.x, _SceneViewer->GetViewport().size.y);
+        float diff = _CameraController->GetSize() / std::min(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
 
         Transform2DComponent* transform2DComponent = _SceneViewer->GetScene()->Get<Transform2DComponent>(_Entity);
 
@@ -197,7 +197,7 @@ namespace Wyrd::Editor
     }
 
 
-    bool TranslationGizmo::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
+    bool TranslationGizmo::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data)
     {
         _SceneViewer->Convert2DToWorldSpace({ e.GetPositionX(), e.GetPositionY() });
 
@@ -213,7 +213,7 @@ namespace Wyrd::Editor
         return true;
     }
 
-    bool TranslationGizmo::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e)
+    bool TranslationGizmo::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e, void* data)
     {
         SetInputState(InputState::NONE);
         return true;

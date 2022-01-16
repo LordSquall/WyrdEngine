@@ -28,11 +28,11 @@ public:
 	void OnEvent(Event& event) override;
 
 private:
-	bool OnKeyReleasedEvent(KeyReleasedEvent& e);
-	bool OnKeyPressedEvent(KeyPressedEvent& e);
-	bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
-	bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
-	bool OnMouseMovedEvent(MouseMovedEvent& e);
+	bool OnKeyReleasedEvent(KeyReleasedEvent& e, void* data);
+	bool OnKeyPressedEvent(KeyPressedEvent& e, void* data);
+	bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data);
+	bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e, void* data);
+	bool OnMouseMovedEvent(MouseMovedEvent& e, void* data);
 
 public:
 	std::string baseDirectory;

@@ -29,9 +29,10 @@ namespace Wyrd
 	struct WYRD_LIBRARY_API Transform2DComponent
 	{
 		glm::vec2 position;
+		glm::vec2 rotationOrigin;
 		float rotation;
 
-		Transform2DComponent() : position(0.0f, 0.0f), rotation(0.0f) {}
+		Transform2DComponent() : position(0.0f, 0.0f), rotationOrigin(0.0f, 0.0f), rotation(0.0f) {}
 
 		glm::mat4 CalculateModelMatrix();
 	};

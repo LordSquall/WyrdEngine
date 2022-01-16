@@ -13,7 +13,7 @@
 
 /* local include */
 #include "SceneViewer.h"
-#include "gizmos/TranslationGizmo.h"
+#include "gizmos/2D/Translation2DGizmo.h"
 #include "gizmos/GridGizmo.h"
 #include "support/ImGuiUtils.h"
 #include "datamodels/EditorComponents.h"
@@ -44,7 +44,7 @@ namespace Wyrd::Editor
 
 		/* initialise each of the gizmos */
 		_GridGizmo = std::make_unique<GridGizmo>(this);
-		_TranslationGizmo = std::make_unique<TranslationGizmo>(this);
+		_Translation2DGizmo = std::make_unique<Translation2DGizmo>(this);
 
 		/* create a new framebuffer */
 		_Framebuffer.reset(Wyrd::FrameBuffer::Create(FrameBufferConfig()));
@@ -81,8 +81,8 @@ namespace Wyrd::Editor
 						// calculate aabb sprite component render rect
 
 						Rect newRect;
-						newRect.position = sprite->position + transform->position;
-						newRect.size = sprite->size;
+						newRect._position = sprite->position + transform->position;
+						newRect._size = sprite->size;
 						r = newRect;
 					}
 
@@ -93,8 +93,8 @@ namespace Wyrd::Editor
 
 					if (editorComponent)
 					{
-						editorComponent->inputArea.position = r.position;
-						editorComponent->inputArea.size = r.size;
+						editorComponent->inputArea._position = r._position;
+						editorComponent->inputArea._size = r._size;
 					}
 				}
 			}
@@ -103,6 +103,10 @@ namespace Wyrd::Editor
 
 	void SceneViewer::OnRender(Timestep ts, Renderer& renderer)
 	{
+#ifdef WYRD_INCLUDE_DEBUG_TAGS
+		renderer.StartNamedSection("SceneViewer.Scene");
+#endif
+
 		if (_Framebuffer->GetConfig().height > 0 && _Framebuffer->GetConfig().width > 0)
 		{
 			_CameraController->OnUpdate(ts);
@@ -110,6 +114,9 @@ namespace Wyrd::Editor
 			_Framebuffer->Bind();
 
 			renderer.Clear(0.1f, 0.1f, 0.1f);
+
+			_GridGizmo->Render(ts, renderer);
+
 			if (_Scene != nullptr)
 			{
 				for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
@@ -118,9 +125,10 @@ namespace Wyrd::Editor
 					SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
 
 					Wyrd::DrawSpriteCommand cmd{};
-					cmd.type = 1;
 					cmd.position = sprite->position + transform->position;
 					cmd.size = sprite->size;
+					cmd.rotation = transform->rotation;
+					cmd.rotationOrigin = transform->rotationOrigin;
 					cmd.tiling = sprite->tiling;
 					cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
 					cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
@@ -136,7 +144,6 @@ namespace Wyrd::Editor
 					TextComponent* text = _Scene->Get<TextComponent>(e);
 
 					Wyrd::DrawTextCommand cmd{};
-					cmd.type = 1;
 					cmd.position = transform->position;
 					cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
 					cmd.shader = Application::Get().GetResources().Shaders["Text"].get();
@@ -160,55 +167,40 @@ namespace Wyrd::Editor
 					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(_SelectedEntity);
 
 					Wyrd::DrawRectCommand cmd{};
-					cmd.type = 1;
 					cmd.position = { transform->position.x + (-((cameraComp->size * cameraComp->aspectRatio) / 2.0f)), transform->position.y + (-(cameraComp->size) / 2.0f) };
 					cmd.size = { cameraComp->size * cameraComp->aspectRatio, cameraComp->size };
-					cmd.thickness = 5.0f;
+					cmd.thickness = 2.0f;
 					cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
 					cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
 					cmd.color = { 1.0f, 0.0f, 0.0f, 1.0f };
 
 					renderer.Submit(cmd);
 				}
-				else
-				{
-					EditorComponent* editorComponent = _Scene->Get<EditorComponent>(_SelectedEntity);
-					if (editorComponent != nullptr)
-					{
-						Wyrd::DrawRectCommand cmd{};
-						cmd.type = 1;
-						cmd.position = editorComponent->inputArea.position;
-						cmd.size = editorComponent->inputArea.size;
-						cmd.thickness = 5.0f;
-						cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-						cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
-						cmd.color = { 1.0f, 1.0f, 0.0f, 1.0f };
 
-						renderer.Submit(cmd);
-					}
-				}
-
-				_TranslationGizmo->Render(ts, renderer);
+				_Translation2DGizmo->Render(ts, renderer);
 			}
 
 			renderer.Flush();
 
 			_Framebuffer->Unbind();
 		}
+
+#ifdef WYRD_INCLUDE_DEBUG_TAGS
+		renderer.EndNamedSection();
+#endif
 	}
 
 	void SceneViewer::OnEvent(Event& event)
 	{
 		EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<MouseButtonPressedEvent>(OSR_BIND_EVENT_FN(SceneViewer::OnMouseButtonPressedEvent));
-		dispatcher.Dispatch<MouseButtonReleasedEvent>(OSR_BIND_EVENT_FN(SceneViewer::OnMouseButtonReleasedEvent));
-		dispatcher.Dispatch<MouseScrolledEvent>(OSR_BIND_EVENT_FN(SceneViewer::OnMouseScrolledEvent));
-		dispatcher.Dispatch<MouseMovedEvent>(OSR_BIND_EVENT_FN(SceneViewer::OnMouseMovedEvent));
-		dispatcher.Dispatch<KeyPressedEvent>(OSR_BIND_EVENT_FN(SceneViewer::OnKeyPressedEvent));
-		dispatcher.Dispatch<KeyReleasedEvent>(OSR_BIND_EVENT_FN(SceneViewer::OnKeyReleasedEvent));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(WYRD_BIND_EVENT_FN(SceneViewer::OnMouseButtonPressedEvent), nullptr);
+		dispatcher.Dispatch<MouseButtonReleasedEvent>(WYRD_BIND_EVENT_FN(SceneViewer::OnMouseButtonReleasedEvent), nullptr);
+		dispatcher.Dispatch<MouseScrolledEvent>(WYRD_BIND_EVENT_FN(SceneViewer::OnMouseScrolledEvent), nullptr);
+		dispatcher.Dispatch<MouseMovedEvent>(WYRD_BIND_EVENT_FN(SceneViewer::OnMouseMovedEvent), nullptr);
+		dispatcher.Dispatch<KeyPressedEvent>(WYRD_BIND_EVENT_FN(SceneViewer::OnKeyPressedEvent), nullptr);
+		dispatcher.Dispatch<KeyReleasedEvent>(WYRD_BIND_EVENT_FN(SceneViewer::OnKeyReleasedEvent), nullptr);
 
-
-		_TranslationGizmo->OnEvent(event);
+		_Translation2DGizmo->OnEvent(event);
 
 		/* Set camera settings */
 		if (_Scene != nullptr)
@@ -230,18 +222,18 @@ namespace Wyrd::Editor
 		_mouseOffset = { ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y };
 
 		/* calculate the viewport boundary */
-		_ViewportBoundary.position.x = _Boundary.position.x - (_Boundary.size.x - _Viewport.size.x);
-		_ViewportBoundary.position.y = _Boundary.position.y + (_Boundary.size.y - _Viewport.size.y);
-		_ViewportBoundary.size.x = ImGui::GetWindowSize().x;
-		_ViewportBoundary.size.y = ImGui::GetWindowSize().y - ImGui::GetCursorPos().y;
+		_ViewportBoundary._position.x = _Boundary._position.x - (_Boundary._size.x - _Viewport._size.x);
+		_ViewportBoundary._position.y = _Boundary._position.y + (_Boundary._size.y - _Viewport._size.y);
+		_ViewportBoundary._size.x = ImGui::GetWindowSize().x;
+		_ViewportBoundary._size.y = ImGui::GetWindowSize().y - ImGui::GetCursorPos().y;
 
 		/* calculate the viewport size */
-		_Viewport.position.x = 0.0f;
-		_Viewport.position.y = 0.0f;
-		_Viewport.size.x = ImGui::GetWindowSize().x;
-		_Viewport.size.y = ImGui::GetWindowSize().y - ImGui::GetCursorPos().y;
+		_Viewport._position.x = 0.0f;
+		_Viewport._position.y = 0.0f;
+		_Viewport._size.x = ImGui::GetWindowSize().x;
+		_Viewport._size.y = ImGui::GetWindowSize().y - ImGui::GetCursorPos().y;
 
-		ImGui::Image((ImTextureID)(UINT_PTR)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport.size.x, _Viewport.size.y), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((ImTextureID)(UINT_PTR)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport._size.x, _Viewport._size.y), ImVec2(0, 1), ImVec2(1, 0));
 
 		if (showStats == true)
 		{
@@ -250,7 +242,7 @@ namespace Wyrd::Editor
 			ImGui::Text("\tPosition		[%f, %f, %f]", _CameraController->GetPosition().x, _CameraController->GetPosition().y, _CameraController->GetPosition().z);
 
 			ImGui::Text("Window:");
-			ImGui::Text("\tAspect Ratio [%f]", _ViewportBoundary.size.x / _ViewportBoundary.size.y);
+			ImGui::Text("\tAspect Ratio [%f]", _ViewportBoundary._size.x / _ViewportBoundary._size.y);
 
 			ImGui::Text("FrameBuffer:");
 			ImGui::Text("Width [%d]", _Framebuffer->GetConfig().width);
@@ -266,10 +258,10 @@ namespace Wyrd::Editor
 	void SceneViewer::OnResize()
 	{
 		/* resize the underlying framebuffer */
-		_Framebuffer->Resize((uint32_t)_Viewport.size.x, (uint32_t)_Viewport.size.y);
+		_Framebuffer->Resize((uint32_t)_Viewport._size.x, (uint32_t)_Viewport._size.y);
 
 		/* Set the camera viewport */
-		_CameraController->SetViewportSize(_Viewport.size.x, _Viewport.size.y);
+		_CameraController->SetViewportSize(_Viewport._size.x, _Viewport._size.y);
 	}
 
 	glm::vec2 SceneViewer::Convert2DToWorldSpace(const glm::vec2& point)
@@ -287,24 +279,24 @@ namespace Wyrd::Editor
 
 	glm::vec2 SceneViewer::GetViewportSpaceFromPoint(const glm::vec2& point)
 	{
-		return point - _ViewportBoundary.position;
+		return point - _ViewportBoundary._position;
 	}
 
 	glm::vec2 SceneViewer::GetWorldSpaceFromPoint(const glm::vec2& point)
 	{
-		glm::vec2 viewportMouseCoords = point - _ViewportBoundary.position;
+		glm::vec2 viewportMouseCoords = point - _ViewportBoundary._position;
 
 		return _CameraController->GetCamera().GetWorldSpaceFromPoint(viewportMouseCoords, _ViewportBoundary);
 	}
 
 	glm::vec2 SceneViewer::GetScreenSpaceFromWorldPoint(const glm::vec2& point)
 	{
-		glm::vec2 viewportMouseCoords = point - _ViewportBoundary.position;
+		glm::vec2 viewportMouseCoords = point - _ViewportBoundary._position;
 
 		return _CameraController->GetCamera().GetNDCFromPoint(viewportMouseCoords, _ViewportBoundary);
 	}
 
-	bool SceneViewer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
+	bool SceneViewer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data)
 	{
 		_SimulationService->SetMouseButtonState(e.GetMouseButton(), true);
 
@@ -336,21 +328,21 @@ namespace Wyrd::Editor
 		return true;
 	}
 
-	bool SceneViewer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e)
+	bool SceneViewer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e, void* data)
 	{
 
 		_SimulationService->SetMouseButtonState(e.GetMouseButton(), false);
 		return true;
 	}
 
-	bool SceneViewer::OnMouseScrolledEvent(MouseScrolledEvent& e)
+	bool SceneViewer::OnMouseScrolledEvent(MouseScrolledEvent& e, void* data)
 	{
 		_CameraController->OnEvent(e);
 
 		return true;
 	}
 
-	bool SceneViewer::OnMouseMovedEvent(MouseMovedEvent& e)
+	bool SceneViewer::OnMouseMovedEvent(MouseMovedEvent& e, void* data)
 	{ 
 		glm::vec2 viewportMouseCoords = glm::vec2(e.GetX(), e.GetY()) - _mouseOffset;
 
@@ -371,7 +363,7 @@ namespace Wyrd::Editor
 		return true;
 	}
 
-	bool SceneViewer::OnKeyPressedEvent(KeyPressedEvent& e)
+	bool SceneViewer::OnKeyPressedEvent(KeyPressedEvent& e, void* data)
 	{
 		_CameraController->OnEvent(e);
 
@@ -387,7 +379,7 @@ namespace Wyrd::Editor
 		return true;
 	}
 
-	bool SceneViewer::OnKeyReleasedEvent(KeyReleasedEvent& e)
+	bool SceneViewer::OnKeyReleasedEvent(KeyReleasedEvent& e, void* data)
 	{
 		_CameraController->OnEvent(e);
 

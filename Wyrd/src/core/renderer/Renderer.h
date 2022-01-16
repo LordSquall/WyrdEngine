@@ -6,6 +6,7 @@
 #include "core/maths/Rect.h"
 #include "events/Event.h"
 #include "core/renderer/commands/RendererCommands.h"
+#include "core/renderer/RendererDrawTypes.h"
 #include "core/pipeline/Vertex2DBatch.h"
 #include "core/pipeline/SpriteBatch.h"
 #include "core/pipeline/TextBatch.h"
@@ -15,11 +16,6 @@ namespace Wyrd
 	enum class RendererAPI
 	{
 		None = 0, OpenGL =1
-	};
-
-	enum class RendererDrawType
-	{
-		Triangles = 0, TriangleStrip = 1, TriangleFan = 3, Quads = 4
 	};
 
 	struct RendererInfo
@@ -49,6 +45,11 @@ namespace Wyrd
 		inline struct RendererInfo& GetVendorInfo() { return _vendorInfo; }
 
 		inline static RendererAPI GetAPI() { return s_RendererAPI; }
+
+#ifdef WYRD_INCLUDE_DEBUG_TAGS
+		virtual void StartNamedSection(const char* name) const;
+		virtual void EndNamedSection() const;
+#endif
 
 		static Renderer* Create();
 	private:

@@ -50,18 +50,21 @@ namespace Wyrd {
 	class EventDispatcher
 	{
 		template<typename T>
-		using EventFn = std::function<bool(T&)>;
+		using EventFn = std::function<bool(T&, void*)>;
 	public:
 		EventDispatcher(Event& event)
 			: m_Event(event) {}
 
 		template<typename T>
-		bool Dispatch(EventFn<T> func)
+		bool Dispatch(EventFn<T> func, void* data)
 		{
-			if (m_Event.GetEventType() == T::GetStaticType())
+			if (func != nullptr)
 			{
-				m_Event.Handled = func(*(T*)&m_Event);
-				return true;
+				if (m_Event.GetEventType() == T::GetStaticType())
+				{
+					m_Event.Handled = func(*(T*)&m_Event, data);
+					return true;
+				}
 			}
 			return false;
 		}

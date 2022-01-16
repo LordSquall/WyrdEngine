@@ -28,8 +28,8 @@ namespace Wyrd::Editor
 	void EditorViewBase::OnPostEditorRender()
 	{
 		/* calculate the boundary for the window, this is reqiured to help route mouse events*/
-		_Boundary.position = { ImGui::GetWindowPos().x, ImGui::GetWindowPos().y };
-		_Boundary.size = { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y };
+		_Boundary._position = { ImGui::GetWindowPos().x, ImGui::GetWindowPos().y };
+		_Boundary._size = { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y };
 
 		/* end the window */
 		ImGui::End();

@@ -37,13 +37,13 @@ namespace Wyrd::Editor
 
 		void OnSettingsUpdated(Events::EventArgs& args);
 
-		bool OnKeyPressedEvent(KeyPressedEvent& e);
+		bool OnKeyPressedEvent(KeyPressedEvent& e, void* data);
 		
 
 		RENDERDOC_API_1_1_2* _RDOCAPI = NULL;
 		bool _CaptureRunning = false;
 		unsigned int _FrameCounter = 0;
-		unsigned int _FrameCaptureCount = 1;
+		unsigned int _FrameCaptureCount = 0;
 
 		std::shared_ptr<SettingsService> _SettingsService;
 	};

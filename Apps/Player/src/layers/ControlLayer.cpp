@@ -18,7 +18,7 @@ std::shared_ptr<FontType> fonttype;
 
 bool ControlLayer::OnAttach()
 {
-	baseDirectory = "C:/Projects/GameProjects/RPG/.builds/";
+	baseDirectory = "C:/Projects/GameProjects/Demo/.builds/";
 
 	
 	if (!LoadCoreFile())
@@ -87,11 +87,11 @@ void ControlLayer::OnUpdate(Timestep ts)
 void ControlLayer::OnEvent(Event& event)
 {
 	EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<KeyReleasedEvent>(WYRD_BIND_EVENT_FN(ControlLayer::OnKeyReleasedEvent));
-	dispatcher.Dispatch<KeyPressedEvent>(WYRD_BIND_EVENT_FN(ControlLayer::OnKeyPressedEvent));
-	dispatcher.Dispatch<MouseButtonPressedEvent>(WYRD_BIND_EVENT_FN(ControlLayer::OnMouseButtonPressedEvent));
-	dispatcher.Dispatch<MouseButtonReleasedEvent>(WYRD_BIND_EVENT_FN(ControlLayer::OnMouseButtonReleasedEvent));
-	dispatcher.Dispatch<MouseMovedEvent>(WYRD_BIND_EVENT_FN(ControlLayer::OnMouseMovedEvent));
+	dispatcher.Dispatch<KeyReleasedEvent>(WYRD_BIND_EVENT_FN(ControlLayer::OnKeyReleasedEvent), nullptr);
+	dispatcher.Dispatch<KeyPressedEvent>(WYRD_BIND_EVENT_FN(ControlLayer::OnKeyPressedEvent), nullptr);
+	dispatcher.Dispatch<MouseButtonPressedEvent>(WYRD_BIND_EVENT_FN(ControlLayer::OnMouseButtonPressedEvent), nullptr);
+	dispatcher.Dispatch<MouseButtonReleasedEvent>(WYRD_BIND_EVENT_FN(ControlLayer::OnMouseButtonReleasedEvent), nullptr);
+	dispatcher.Dispatch<MouseMovedEvent>(WYRD_BIND_EVENT_FN(ControlLayer::OnMouseMovedEvent), nullptr);
 }
 
 void ControlLayer::OnRender(Timestep ts, Renderer& renderer)
@@ -157,13 +157,13 @@ bool ControlLayer::LoadCommonBundleFile()
 	return true;
 }
 
-bool ControlLayer::OnKeyReleasedEvent(KeyReleasedEvent& e)
+bool ControlLayer::OnKeyReleasedEvent(KeyReleasedEvent& e, void* data)
 {
 	Application::Get().GetBehaviour().SetInputState(e.GetKeyCode(), 2);
 	return false;
 }
 
-bool ControlLayer::OnKeyPressedEvent(KeyPressedEvent& e)
+bool ControlLayer::OnKeyPressedEvent(KeyPressedEvent& e, void* data)
 {
 	if (e.GetRepeatCount() == 1)
 	{
@@ -177,19 +177,19 @@ bool ControlLayer::OnKeyPressedEvent(KeyPressedEvent& e)
 }
 
 
-bool ControlLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
+bool ControlLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data)
 {
 	Application::Get().GetBehaviour().SetMouseButtonState(e.GetMouseButton(), true);
 	return false;
 }
 
-bool ControlLayer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e)
+bool ControlLayer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e, void* data)
 {
 	Application::Get().GetBehaviour().SetMouseButtonState(e.GetMouseButton(), false);
 	return false;
 }
 
-bool ControlLayer::OnMouseMovedEvent(MouseMovedEvent& e)
+bool ControlLayer::OnMouseMovedEvent(MouseMovedEvent& e, void* data)
 {
 	Application::Get().GetBehaviour().SetMouseState(e.GetX(), e.GetY());
 	return false;

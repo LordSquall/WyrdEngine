@@ -28,7 +28,8 @@ namespace Wyrd::Editor::Events
 		AddFileEntry, DeleteFileEntry, ModifiedFileEntry, RenameFileEntry,
 		AddResource, DeleteResource, ReloadResource, RenameResource,
 		LoadAsset, BuildBehaviourModel,
-		SetSceneCamera
+		SetSceneCamera,
+		CloseEditor
 	};
 
 	class Event
@@ -547,6 +548,24 @@ namespace Wyrd::Editor::Events
 	{
 	public:
 		SetSceneCameraEvent() : Event(EventType::SetSceneCamera) { }
+	};
+
+#pragma endregion
+
+#pragma region CloseEditor
+
+	class CloseEditorArgs : public EventArgs
+	{
+	public:
+		CloseEditorArgs() {}
+
+		EVENT_ARGS_CLONE(CloseEditorArgs)
+	};
+
+	class CloseEditorEvent : public Event
+	{
+	public:
+		CloseEditorEvent() : Event(EventType::CloseEditor) { }
 	};
 
 #pragma endregion

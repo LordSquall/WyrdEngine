@@ -9,8 +9,8 @@
 
 namespace Wyrd::Editor
 {
-	class TranslationGizmo;
 	class GridGizmo;
+	class Translation2DGizmo;
 
 	class SceneViewer : public EditorViewBase
 	{
@@ -40,12 +40,12 @@ namespace Wyrd::Editor
 		inline std::shared_ptr<Scene> GetScene() const { return _Scene; }
 
 	private:
-		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
-		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
-		bool OnMouseScrolledEvent(MouseScrolledEvent& e);
-		bool OnMouseMovedEvent(MouseMovedEvent& e);
-		bool OnKeyPressedEvent(KeyPressedEvent& e);
-		bool OnKeyReleasedEvent(KeyReleasedEvent& e);
+		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data);
+		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e, void* data);
+		bool OnMouseScrolledEvent(MouseScrolledEvent& e, void* data);
+		bool OnMouseMovedEvent(MouseMovedEvent& e, void* data);
+		bool OnKeyPressedEvent(KeyPressedEvent& e, void* data);
+		bool OnKeyReleasedEvent(KeyReleasedEvent& e, void* data);
 
 		void OnSceneOpened(Events::EventArgs& args);
 		void OnSelectedEntityChanged(Events::EventArgs& args);
@@ -66,7 +66,7 @@ namespace Wyrd::Editor
 
 
 		std::unique_ptr<GridGizmo>						_GridGizmo;
-		std::unique_ptr<TranslationGizmo>				_TranslationGizmo;
+		std::unique_ptr<Translation2DGizmo>				_Translation2DGizmo;
 		std::shared_ptr<Shader>							_GizmoShader;
 
 		Entity	_SelectedEntity;

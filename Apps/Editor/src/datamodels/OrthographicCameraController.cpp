@@ -27,10 +27,10 @@ namespace Wyrd::Editor {
 	void OrthographicCameraController::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<MouseScrolledEvent>(OSR_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
-		dispatcher.Dispatch<WindowResizeEvent>(OSR_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
-		dispatcher.Dispatch<KeyPressedEvent>(OSR_BIND_EVENT_FN(OrthographicCameraController::OnKeyPressed));
-		dispatcher.Dispatch<KeyReleasedEvent>(OSR_BIND_EVENT_FN(OrthographicCameraController::OnKeyReleased));
+		dispatcher.Dispatch<MouseScrolledEvent>(WYRD_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled), nullptr);
+		dispatcher.Dispatch<WindowResizeEvent>(WYRD_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized), nullptr);
+		dispatcher.Dispatch<KeyPressedEvent>(WYRD_BIND_EVENT_FN(OrthographicCameraController::OnKeyPressed), nullptr);
+		dispatcher.Dispatch<KeyReleasedEvent>(WYRD_BIND_EVENT_FN(OrthographicCameraController::OnKeyReleased), nullptr);
 	}
 
 
@@ -39,14 +39,14 @@ namespace Wyrd::Editor {
 		_Camera.SetPosition(_Camera.GetPosition() + (glm::vec3(delta, 0.0f)));
 	}
 
-	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
+	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e, void* data)
 	{
 		_Camera.SetSize(_Camera.GetSize() + (e.GetYOffset() * _CameraZoomSpeed));
 
 		return false;
 	}
 
-	bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& e)
+	bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& e, void* data)
 	{
 		//_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
 		//_Camera.SetProjection(-_AspectRatio * _ZoomLevel, _AspectRatio * _ZoomLevel, -_ZoomLevel, _ZoomLevel);
@@ -55,7 +55,7 @@ namespace Wyrd::Editor {
 	}
 
 
-	bool OrthographicCameraController::OnKeyPressed(KeyPressedEvent& e)
+	bool OrthographicCameraController::OnKeyPressed(KeyPressedEvent& e, void* data)
 	{
 		float translationSpeed = _CameraTranslationSpeed;
 
@@ -93,7 +93,7 @@ namespace Wyrd::Editor {
 		return true;
 	}
 
-	bool OrthographicCameraController::OnKeyReleased(KeyReleasedEvent& e)
+	bool OrthographicCameraController::OnKeyReleased(KeyReleasedEvent& e, void* data)
 	{
 		switch (e.GetKeyCode())
 		{

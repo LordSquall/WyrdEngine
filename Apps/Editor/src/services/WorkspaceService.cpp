@@ -242,6 +242,9 @@ namespace Wyrd::Editor
 		_LoadedScene->Initialise();
 		_LoadedScene->RegisterComponent<EditorComponent>("Editor", "EditorComponent", false);
 
+		/* Setup initial scene settings */
+		_LoadedScene->cameraZoom = 500.0f;
+
 		/* Mark scene loaded */
 		IsSceneLoaded(true);
 

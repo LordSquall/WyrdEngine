@@ -24,7 +24,7 @@ namespace Wyrd::Editor
 		void DisplayEntityTooltip(Entity entity);
 		void OnSelectedEntityChanged(Events::EventArgs& args);
 
-		bool OnKeyPressedEvent(KeyPressedEvent& e);
+		bool OnKeyPressedEvent(KeyPressedEvent& e, void* data);
 
 	private:
 		std::shared_ptr<EventService> _EventService;

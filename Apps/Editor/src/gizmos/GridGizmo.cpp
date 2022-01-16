@@ -17,7 +17,7 @@
 
 namespace Wyrd::Editor
 {
-	GridGizmo::GridGizmo(SceneViewer* sceneViewer) : Gizmo(sceneViewer)
+	GridGizmo::GridGizmo(SceneViewer* sceneViewer) : Gizmo(sceneViewer, ENTITY_INVALID)
 	{
 		/* Store the camera controller */
 		_CameraController = sceneViewer->GetCamera();
@@ -49,82 +49,66 @@ namespace Wyrd::Editor
 
 	void GridGizmo::Render(Timestep ts, Renderer& renderer)
 	{
-		//_VertexArray->Bind();
-		//_VertexBuffer->Bind();
-		//_IndexBuffer->Bind(); 
-		//		
-		//_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
-		//_Shader->SetMatrix("model", glm::mat4(1.0f));
-		//
-		///* set the blend color */
-		//_Shader->SetUniformVec4("blendColor", glm::vec4{ _Color.r, _Color.g, _Color.b, _Color.a });
-		//
-		///* set the scale matrix for the gizmo */
-		//_Shader->SetMatrix("scale", glm::scale(glm::vec3(1.0f, 1.0f, 1.0f)));
-		//
-		//renderer.DrawElements(RendererDrawType::Triangles, _IndexBuffer->GetCount());
+		/* calculate the different between the camera viewport and the sceneviewer to set the scalling */
+		float diff = _CameraController->GetSize() / std::min(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
+
+		Wyrd::DrawVertex2DCommand cmd{};
+		cmd.type = 1;
+		cmd.position = { 0.0f, 0.0f };
+		cmd.vertices = &_Vertices;
+		cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
+		cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
+		cmd.color = { 0.2f, 0.2f, 0.2f, 1.0f };
+		cmd.drawType = RendererDrawType::Triangles;
+
+		renderer.Submit(cmd);
+
+		renderer.Flush();
 	}
 
 	void GridGizmo::BuildGrid()
 	{
 		float gap = 100.0f;
-
-		float xSpacing = Utils::ToFloat(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__XSPACING, std::string("128")));
-		float ySpacing = Utils::ToFloat(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__YSPACING, std::string("128")));
+		float thickness = 0.5f;
+		
+		float xSpacing = Utils::ToFloat(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__XSPACING, std::string("64")));
+		float ySpacing = Utils::ToFloat(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__YSPACING, std::string("64")));
 		float columnCnt = Utils::ToFloat(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLS, std::string("128")));
 		float rowCnt = Utils::ToFloat(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__ROWS, std::string("128")));
-		
+
 		float width = columnCnt * xSpacing;
 		float height = rowCnt * ySpacing;
-
+		
 		_Vertices.clear();
-		_Indices.clear();
-
+		
 		for (int i = 0; i <= columnCnt; i++)
 		{
-			_Vertices.push_back({ (xSpacing * i) + -2.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f });
-			_Vertices.push_back({ (xSpacing * i) + -2.0f, width, 1.0f, 1.0f, 1.0f, 1.0f });
-			_Vertices.push_back({ (xSpacing * i) + 2.0f,  width, 1.0f, 1.0f, 1.0f, 1.0f });
-			_Vertices.push_back({ (xSpacing * i) + 2.0f,  -1.0f, 1.0f, 1.0f, 1.0f, 1.0f });
-
-			_Indices.push_back((i * 4) + 0);
-			_Indices.push_back((i * 4) + 1);
-			_Indices.push_back((i * 4) + 2);
-			_Indices.push_back((i * 4) + 2);
-			_Indices.push_back((i * 4) + 3);
-			_Indices.push_back((i * 4) + 0);
+			_Vertices.push_back({ (xSpacing * i) + -thickness, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f });
+			_Vertices.push_back({ (xSpacing * i) + -thickness, width, 1.0f, 1.0f, 1.0f, 1.0f });
+			_Vertices.push_back({ (xSpacing * i) + thickness,  width, 1.0f, 1.0f, 1.0f, 1.0f });
+			_Vertices.push_back({ (xSpacing * i) + thickness,  width, 1.0f, 1.0f, 1.0f, 1.0f });
+			_Vertices.push_back({ (xSpacing * i) + thickness,  0.0f, 1.0f, 1.0f, 1.0f, 1.0f });
+			_Vertices.push_back({ (xSpacing * i) + -thickness, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f });
 		}
-
+		
 		int offset = (columnCnt+1) * 4;
-
+		
 		for (int i = 0; i <= rowCnt; i++)
 		{
-			_Vertices.push_back({ -2.0f, (ySpacing * i) + -1.0f,	1.0f, 1.0f, 1.0f, 1.0f });
-			_Vertices.push_back({ -2.0f, (ySpacing * i) + 1.0f,		1.0f, 1.0f, 1.0f, 1.0f });
-			_Vertices.push_back({ height,  (ySpacing * i) + 1.0f,	1.0f, 1.0f, 1.0f, 1.0f });
-			_Vertices.push_back({ height,  (ySpacing * i) + -1.0f,	1.0f, 1.0f, 1.0f, 1.0f });
-
-			_Indices.push_back(offset + (i * 4) + 0);
-			_Indices.push_back(offset + (i * 4) + 1);
-			_Indices.push_back(offset + (i * 4) + 2);
-			_Indices.push_back(offset + (i * 4) + 2);
-			_Indices.push_back(offset + (i * 4) + 3);
-			_Indices.push_back(offset + (i * 4) + 0);
+			_Vertices.push_back({ 0.0f, (ySpacing * i) + -thickness,	1.0f, 1.0f, 1.0f, 1.0f });
+			_Vertices.push_back({ 0.0f, (ySpacing * i) + thickness,	1.0f, 1.0f, 1.0f, 1.0f });
+			_Vertices.push_back({ height,  (ySpacing * i) + thickness,	1.0f, 1.0f, 1.0f, 1.0f });
+			_Vertices.push_back({ height,  (ySpacing * i) + thickness,	1.0f, 1.0f, 1.0f, 1.0f });
+			_Vertices.push_back({ height,  (ySpacing * i) + -thickness,	1.0f, 1.0f, 1.0f, 1.0f });
+			_Vertices.push_back({ 0.0f, (ySpacing * i) + -thickness,	1.0f, 1.0f, 1.0f, 1.0f });
 		}
-
+		
 		/* Create a new Vertex and Index buffer on the GPU */
 		_VertexBuffer.reset(VertexBuffer::Create((float*)&_Vertices[0], _Vertices.size() * sizeof(Vertex2D), "Test VBO"));
-		_IndexBuffer.reset(IndexBuffer::Create(&_Indices[0], _Indices.size()));
-
+		
 		/* Setup the Vertex array attribute data */
 		_VertexArray->SetAttribute(0, 0, 2, sizeof(Vertex2D));
 		_VertexArray->SetAttribute(1, 2, 4, sizeof(Vertex2D));
-
-		/* bind the shader */
-		//_Shader->Bind();
-
-		/* set the vp matrix to a standard otho matrix */
-		//_Shader->SetVPMatrix(_CameraController->GetCamera().GetViewProjectionMatrix());
 	}
 
 

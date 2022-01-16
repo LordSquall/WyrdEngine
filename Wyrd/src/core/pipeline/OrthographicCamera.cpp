@@ -34,8 +34,8 @@ namespace Wyrd
 		float b = -_Size * 0.5f;
 		float t = _Size * 0.5f;
 
-		_Viewport.position = { l, b };
-		_Viewport.size = { (r * 2.0f), (t * 2.0f) };
+		_Viewport._position = { l, b };
+		_Viewport._size = { (r * 2.0f), (t * 2.0f) };
 
 		_ProjectionMatrix = glm::ortho(l, r, b, t, _NearPlane, _FarPlane);
 	}
@@ -52,7 +52,7 @@ namespace Wyrd
 
 	glm::vec2 OrthographicCamera::GetNDCFromPoint(const glm::vec2& point, const Wyrd::Rect& boundary)
 	{
-		return { -(1.0 - (point.x * (1.0f / (boundary.size.x * 0.5f)))), 1.0f - (point.y * (1.0f / (boundary.size.y * 0.5f))) };
+		return { -(1.0 - (point.x * (1.0f / (boundary._size.x * 0.5f)))), 1.0f - (point.y * (1.0f / (boundary._size.y * 0.5f))) };
 	}
 
 	glm::vec2 OrthographicCamera::GetWorldSpaceFromPoint(const glm::vec2& point, const Wyrd::Rect& boundary)

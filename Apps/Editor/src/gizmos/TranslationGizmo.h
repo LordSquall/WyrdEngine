@@ -47,9 +47,9 @@ namespace Wyrd::Editor
 		void Render(Timestep ts, Renderer& renderer) override;
 
 		void OnEvent(Event& event);
-		bool OnMouseMovedEvent(MouseMovedEvent& e);
-		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
-		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
+		bool OnMouseMovedEvent(MouseMovedEvent& e, void* data);
+		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data);
+		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e, void* data);
 
 		void OnSelectedEntityChanged(Events::EventArgs& args);
 

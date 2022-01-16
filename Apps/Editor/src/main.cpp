@@ -32,12 +32,12 @@ public:
 			Utils::RenameFile("default_imgui.ini", "imgui.ini");
 		}
 
+		PushOverlay(new Wyrd::Editor::EditorLayer());
 		/* if we are building with renderdoc installed then we can add the layer in */
 #ifdef WYRD_RENDERDOC_ENABLED
-		PushLayer(RenderDocLayer);
+		PushOverlay(RenderDocLayer);
 #endif
 
-		PushOverlay(new Wyrd::Editor::EditorLayer());
 	}
 
 	~ClientApplication()

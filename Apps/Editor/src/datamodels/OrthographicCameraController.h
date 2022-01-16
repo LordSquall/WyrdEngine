@@ -37,10 +37,10 @@ namespace Wyrd::Editor
 		void Translate(glm::vec2 delta);
 		
 	private:
-		bool OnMouseScrolled(MouseScrolledEvent& e);
-		bool OnWindowResized(WindowResizeEvent& e);
-		bool OnKeyPressed(KeyPressedEvent& e);
-		bool OnKeyReleased(KeyReleasedEvent& e);
+		bool OnMouseScrolled(MouseScrolledEvent& e, void* data);
+		bool OnWindowResized(WindowResizeEvent& e, void* data);
+		bool OnKeyPressed(KeyPressedEvent& e, void* data);
+		bool OnKeyReleased(KeyReleasedEvent& e, void* data);
 
 	private:
 		OrthographicCamera _Camera;
@@ -48,7 +48,7 @@ namespace Wyrd::Editor
 		Timestep _timestep;
 		
 		glm::vec2 _CameraPositionVelocity = { 0.0f, 0.0f };
-		float _InitialCameraTranslationSpeed = 5.0f, _InitialCameraRotationSpeed = 180.0f, _InitialCameraZoomSpeed = 0.75f;
+		float _InitialCameraTranslationSpeed = 5.0f, _InitialCameraRotationSpeed = 180.0f, _InitialCameraZoomSpeed = 1.0f;
 		float _CameraTranslationSpeed = _InitialCameraTranslationSpeed;
 		float _CameraZoomSpeed = _InitialCameraZoomSpeed;
 	};

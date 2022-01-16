@@ -199,18 +199,8 @@ namespace Wyrd::Editor
 
 	void AssetViewer::OnEvent(Event& event)
 	{
-		EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<KeyPressedEvent>(WYRD_BIND_EVENT_FN(AssetViewer::OnKeyPressedEvent));
 	}
 
-	bool AssetViewer::OnKeyPressedEvent(KeyPressedEvent& e)
-	{
-		if (e.GetKeyCode() == OSR_KEY_F2)
-		{
-			
-		}
-		return true;
-	}
 
 	void AssetViewer::DrawItemTable(const std::vector<std::filesystem::path>& directories, const std::vector<std::filesystem::path>& files)
 	{

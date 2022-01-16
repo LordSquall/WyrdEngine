@@ -38,7 +38,7 @@ namespace Wyrd::Editor
 	{
 		std::shared_ptr<Project> project = _WorkspaceService->GetCurrentProject();
 
-		if (ImGui::Button("Export"))
+		if (ImGui::TextButton("Export", true))
 		{
 			_WorkspaceService->SaveScene();
 
