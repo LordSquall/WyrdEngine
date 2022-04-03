@@ -60,6 +60,7 @@ includedir["SOIL"] = externallibsdir .. "/Simple-OpenGL-Image-Library/src"
 includedir["glm"] = externallibsdir .. "/glm"
 includedir["jsonxx"] = externallibsdir .. "/jsonxx"
 includedir["imgui"] = externallibsdir .. "/imgui"
+includedir["imguizmo"] = externallibsdir .. "/imguizmo"
 includedir["spdlog"] = externallibsdir .. "/spdlog/include/"
 includedir["uuid"] = externallibsdir .. "/crossguid/include/"
 includedir["hash"] = externallibsdir .. "/Hash/include/"
@@ -81,6 +82,7 @@ include "externalbuild/premake5-glad.lua"
 include "externalbuild/premake5-jsonxx.lua"
 include "externalbuild/premake5-soil.lua"
 include "externalbuild/premake5-imgui.lua"
+include "externalbuild/premake5-imguizmo.lua"
 include "externalbuild/premake5-spdlog.lua"
 include "externalbuild/premake5-uuid.lua"
 include "externalbuild/premake5-hash.lua"
@@ -88,7 +90,7 @@ include "externalbuild/premake5-hash.lua"
 group ""
 	project "Wyrd"
 		location "Wyrd"
-		kind "StaticLib"
+		kind "SharedLib"
 		language "C++"
 		cppdialect "C++17"
 		staticruntime "off"
@@ -295,6 +297,7 @@ project "Editor"
 		"%{includedir.jsonxx}",
 		"%{includedir.SOIL}",
 		"%{includedir.imgui}",
+		"%{includedir.imguizmo}",
 		"%{includedir.glm}",
 		"%{includedir.tinyobjloader}",
 		"%{includedir.mono}",
@@ -318,6 +321,7 @@ project "Editor"
 		"SOIL",
 		"jsonxx",
 		"imgui",
+		"imguizmo",
 		"freetyped",
 		"opengl32.dll"
 	}

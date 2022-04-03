@@ -2,15 +2,70 @@
 
 /* local includes */
 #include "export.h"
-#include "core/LayerStack.h"
 #include "core/Timestep.h"
-#include "core/Window.h"
-#include "core/renderer/Renderer.h"
-#include "core/Resources.h"
-#include "core/behaviour/Behaviour.h"
-#include "core/physics/Physics.h"
+#include "events/Event.h"
+#include "Layer.h"
 
 namespace Wyrd {
+
+	class Window;
+	class Renderer;
+	class Resources;
+	class Behaviour;
+	class Physics;
+	class LayerStack;
+
+
+	/**
+	 * @brief Window Properties
+	*/
+	struct WindowProps
+	{
+		/**
+		 * @brief Primary window Title
+		*/
+		std::string Title;
+
+		/**
+		 * @brief Window width in pixels
+		*/
+		int Width;
+
+		/**
+		 * @brief Window height in pixels
+		*/
+		int Height;
+
+		/**
+		 * @brief Window x position in pixels
+		*/
+		int X;
+
+		/**
+		 * @brief Window y position in pixels
+		*/
+		int Y;
+
+		bool isHidden;
+
+		/**
+		 * @brief Constructor
+		 * @param title
+		 * @param width
+		 * @param height
+		 * @param x
+		 * @param y
+		*/
+		WindowProps(const std::string& title = "Wyrd Engine",
+			int width = 1280,
+			int height = 720,
+			int x = 50,
+			int y = 75,
+			bool isHidden = false)
+			: Title(title), Width(width), Height(height), X(x), Y(y), isHidden(isHidden)
+		{
+		}
+	};
 
 	struct AppProps
 	{
@@ -38,6 +93,15 @@ namespace Wyrd {
 		 * Blocking Function
 		*/
 		void Run();
+
+		/**
+		 * @brief Perform a single frame
+		 * Blocking Function
+		*/
+		void Frame(char* outputBuffer, float r, float g, float b);
+
+
+		void Resize(int width, int height);
 
 		/**
 		 * @brief Called when an event is recieved
@@ -118,7 +182,7 @@ namespace Wyrd {
 		 * @brief Get LayerStack Subsystem
 		 * @return - layerstack subsystem object
 		*/
-		inline LayerStack* GetLayerStack() { return &_LayerStack; }
+		inline LayerStack* GetLayerStack() { return _LayerStack.get(); }
 
 		/**
 		 * @brief Close the application. 
@@ -137,7 +201,7 @@ namespace Wyrd {
 		*/
 		const std::thread::id& GetMainThreadID() { return _MainThreadID; }
 
-		glm::vec3 color;
+		float color[3];
 
 	protected:
 		std::unique_ptr<Window>		_Window;
@@ -148,7 +212,7 @@ namespace Wyrd {
 
 		float		_LastFrameTime = 0.0f;
 		bool		_Running = true;
-		LayerStack	_LayerStack;
+		std::unique_ptr<LayerStack>	_LayerStack;
 
 		std::thread::id _MainThreadID;
 	private:
@@ -161,12 +225,12 @@ namespace Wyrd {
 	 * @brief External Create Application function. This should be supplied by the Client application
 	 * @return new client application pointer
 	*/
-	Application* CreateApplication();
+	//Application* CreateApplication();
 
 	/**
 	 * @brief Called after subsystem are created, but before intialisation
 	 * This should be supplied by the Client application
 	 * @param app - client application pointer
 	*/
-	void OnPreAppCreation(Application* app);
+	//void OnPreAppCreation(Application* app);
 }

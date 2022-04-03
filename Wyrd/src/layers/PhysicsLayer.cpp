@@ -4,6 +4,7 @@
 
 #include "layers/PhysicsLayer.h"
 #include "core/Application.h"
+#include "core/physics/Physics.h"
 
 namespace Wyrd
 {

@@ -4,6 +4,7 @@
 #include "wyrdpch.h"
 #include "core/Log.h"
 #include "core/Application.h"
+#include "core/Resources.h"
 #include "core/behaviour/Behaviour.h"
 #include "core/behaviour/ScriptedClass.h"
 #include "core/behaviour/Properties/TextureProperty.h"

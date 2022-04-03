@@ -1,7 +1,7 @@
 #pragma once
 
-#ifdef OSR_SHARED_LIB
-#ifdef OSR_LIBRARY_EXPORT
+#ifdef WYRD_SHARED_LIB
+#ifdef WYRD_LIBRARY_EXPORT
 #define WYRD_LIBRARY_API __declspec(dllexport)
 #else
 #define WYRD_LIBRARY_API __declspec(dllimport)

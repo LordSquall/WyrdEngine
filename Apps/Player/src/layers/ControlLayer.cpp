@@ -18,7 +18,7 @@ std::shared_ptr<FontType> fonttype;
 
 bool ControlLayer::OnAttach()
 {
-	baseDirectory = "C:/Projects/GameProjects/Demo/.builds/";
+	baseDirectory = "C:/Projects/GameProjects/SampleProject/.builds/";
 
 	
 	if (!LoadCoreFile())

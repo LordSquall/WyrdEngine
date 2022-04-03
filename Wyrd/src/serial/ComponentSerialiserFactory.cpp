@@ -7,6 +7,7 @@
 #include "core/behaviour/ScriptedClass.h"
 #include "serial/TypeSerialisers.h"
 #include "serial/ComponentSerialiserFactory.h"
+#include "core/behaviour/Behaviour.h"
 
 using namespace jsonxx;
 

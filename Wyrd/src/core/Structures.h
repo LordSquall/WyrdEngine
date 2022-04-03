@@ -32,8 +32,8 @@ namespace Wyrd {
 
 		static Vector2 RotateAtPoint(Vector2 pt, float angle, Vector2 pivot)
 		{
-			float s = sin(WYRD_DEG_TO_RAD(angle));
-			float c = cos(WYRD_DEG_TO_RAD(angle));
+			float s = sinf(WYRD_DEG_TO_RAD(angle));
+			float c = cosf(WYRD_DEG_TO_RAD(angle));
 
 			pt.x -= pivot.x;
 			pt.y -= pivot.y;

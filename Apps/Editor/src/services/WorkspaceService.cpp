@@ -245,6 +245,16 @@ namespace Wyrd::Editor
 		/* Setup initial scene settings */
 		_LoadedScene->cameraZoom = 500.0f;
 
+		/* Add initial Entity with Camera component */
+		Entity ent = _LoadedScene->CreateEntity();
+		auto metaDataComp = _LoadedScene->AssignComponent<MetaDataComponent>(ent);
+		auto transform2DComp = _LoadedScene->AssignComponent<Transform2DComponent>(ent);
+		auto relationshipComp = _LoadedScene->AssignComponent<RelationshipComponent>(ent);
+		auto editorComp = _LoadedScene->AssignComponent<EditorComponent>(ent);
+		auto cameraComp = _LoadedScene->AssignComponent<CameraComponent>(ent);
+
+		strcpy_s(metaDataComp->name, "camera");
+
 		/* Mark scene loaded */
 		IsSceneLoaded(true);
 

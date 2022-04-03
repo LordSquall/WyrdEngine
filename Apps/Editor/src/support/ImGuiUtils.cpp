@@ -16,7 +16,6 @@ namespace ImGui
 		ImGui::Image((ImTextureID)(INT_PTR)texture->GetTexture()->GetHandle(), size, ImVec2(icon->uv[0].x, icon->uv[0].y), ImVec2(icon->uv[2].x, icon->uv[2].y), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 	}
 
-
     /* Buttons */
 	bool ImGui::IconButton(std::shared_ptr<Wyrd::Editor::Icon> icon, ImGuiID id, bool enabled, ImVec2& size, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
 	{
@@ -125,12 +124,16 @@ namespace ImGui
         ImVec2 textSize = ImGui::CalcTextSize(text);
         ImVec2 clippedTextSize = ImVec2(clipLength, textSize.y);
 
-        int textLength = strlen(text);
         int suffixLength = strlen(suffix);
-        if (suffixLength > 0 && textLength > suffixLength)
+        if (textSize.x > clipLength)
         {
             textContent.replace(textContent.end() - suffixLength, textContent.end(), suffix);
         }
+
+        //int textLength = strlen(text);
+        //if (suffixLength > 0 && textLength > suffixLength)
+        //{
+        //}
 
         ImGui::PushClipRect(textPosition, ImVec2(p1.x, p1.y + textSize.y), true);
         draw_list->AddText(textPosition, GetColorU32(text_col), textContent.c_str());

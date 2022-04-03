@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include "core/Log.h"
 #include "core/Application.h"
+#include "core/behaviour/Behaviour.h"
 #include "core/behaviour/ScriptedClass.h"
 #include "core/ecs/Components.h"
 #include "serial/ComponentSerialiserFactory.h"

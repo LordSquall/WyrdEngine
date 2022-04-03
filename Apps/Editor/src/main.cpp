@@ -43,11 +43,11 @@ public:
 	~ClientApplication()
 	{
 
-		std::shared_ptr<SettingsService> settingsService = ServiceManager::Get<SettingsService>();
-		settingsService->SetSetting(std::to_string(_Window->GetWidth()), CONFIG_WINDOW, CONFIG_WINDOW__WIDTH);
-		settingsService->SetSetting(std::to_string(_Window->GetHeight()), CONFIG_WINDOW, CONFIG_WINDOW__HEIGHT);
-		settingsService->SetSetting(std::to_string(_Window->GetX()), CONFIG_WINDOW, CONFIG_WINDOW__X);
-		settingsService->SetSetting(std::to_string(_Window->GetY()), CONFIG_WINDOW, CONFIG_WINDOW__Y);
+		//std::shared_ptr<SettingsService> settingsService = ServiceManager::Get<SettingsService>();
+		//settingsService->SetSetting(std::to_string(_Window->GetWidth()), CONFIG_WINDOW, CONFIG_WINDOW__WIDTH);
+		//settingsService->SetSetting(std::to_string(_Window->GetHeight()), CONFIG_WINDOW, CONFIG_WINDOW__HEIGHT);
+		//settingsService->SetSetting(std::to_string(_Window->GetX()), CONFIG_WINDOW, CONFIG_WINDOW__X);
+		//settingsService->SetSetting(std::to_string(_Window->GetY()), CONFIG_WINDOW, CONFIG_WINDOW__Y);
 
 
 		/* initialise editor services */
@@ -61,27 +61,27 @@ public:
 
 };
 
-Wyrd::Application* Wyrd::CreateApplication()
-{
-	AppProps properties = AppProps();
+//Wyrd::Application* Wyrd::CreateApplication()
+//{
+//	AppProps properties = AppProps();
+//
+//	IniParser iniParser = IniParser("config.ini");
+//
+//	if (iniParser.IsLoaded())
+//	{
+//		properties.windowProps.Width = std::stoul(iniParser.GetValue("Window", "width", "800"), NULL, 10);
+//		properties.windowProps.Height = std::stoul(iniParser.GetValue("Window", "height", "600"), NULL, 10);
+//		properties.windowProps.X = std::stol(iniParser.GetValue("Window", "x", "25"), NULL, 10);
+//		properties.windowProps.Y = std::stol(iniParser.GetValue("Window", "y", "25"), NULL, 10);
+//	}
+//
+//	return new ClientApplication(properties);
+//}
 
-	IniParser iniParser = IniParser("config.ini");
-
-	if (iniParser.IsLoaded())
-	{
-		properties.windowProps.Width = std::stoul(iniParser.GetValue("Window", "width", "800"), NULL, 10);
-		properties.windowProps.Height = std::stoul(iniParser.GetValue("Window", "height", "600"), NULL, 10);
-		properties.windowProps.X = std::stol(iniParser.GetValue("Window", "x", "25"), NULL, 10);
-		properties.windowProps.Y = std::stol(iniParser.GetValue("Window", "y", "25"), NULL, 10);
-	}
-
-	return new ClientApplication(properties);
-}
-
-void Wyrd::OnPreAppCreation(Wyrd::Application* application)
-{
-#ifdef WYRD_RENDERDOC_ENABLED
-	ClientApplication* clientApplication = (ClientApplication*)application;
-	clientApplication->RenderDocLayer = new Wyrd::Editor::RenderDocLayer();
-#endif
-}
+//void Wyrd::OnPreAppCreation(Wyrd::Application* application)
+//{
+//#ifdef WYRD_RENDERDOC_ENABLED
+//	ClientApplication* clientApplication = (ClientApplication*)application;
+//	clientApplication->RenderDocLayer = new Wyrd::Editor::RenderDocLayer();
+//#endif
+//}

@@ -2,6 +2,12 @@
 #include "wyrdpch.h"
 #include "Application.h"
 #include "core/Log.h"
+#include "core/Window.h"
+#include "core/Resources.h"
+#include "core/behaviour/Behaviour.h"
+#include "core/renderer/Renderer.h"
+#include "core/physics/Physics.h"
+#include "core/LayerStack.h"
 #include "events/ApplicationEvent.h"
 #include "layers/BehaviourLayer.h"
 #include "layers/PhysicsLayer.h"
@@ -28,7 +34,9 @@ namespace Wyrd {
 		WYRD_CORE_INFO("cwd : {0} on PID : {1}", std::filesystem::current_path(), _MainThreadID);
 
 		/* call the pre init function */
-		OnPreAppCreation(this);
+		//OnPreAppCreation(this);
+
+		_LayerStack = std::make_unique<LayerStack>();
 
 		/* create a windows and bind the event callback */
 		_Window = std::unique_ptr<Window>(Window::Create(props.windowProps));
@@ -74,9 +82,9 @@ namespace Wyrd {
 		PushLayer(new PhysicsLayer());
 
 		/* set a default back buffer color */
-		color.r = 0.1f;
-		color.g = 0.1f;
-		color.b = 0.1f;
+		color[0] = 1.0f;
+		color[1] = 0.2f;
+		color[2] = 0.2f;
 	}
 
 	Application::~Application()
@@ -86,12 +94,12 @@ namespace Wyrd {
 
 	bool Application::PushLayer(Layer* layer)
 	{
-		return _LayerStack.PushLayer(layer);
+		return _LayerStack->PushLayer(layer);
 	}
 
 	bool Application::PushOverlay(Layer* overlay)
 	{	
-		return _LayerStack.PushOverlay(overlay);
+		return _LayerStack->PushOverlay(overlay);
 	}
 
 
@@ -114,7 +122,7 @@ namespace Wyrd {
 
 		if (e.Handled == false)
 		{
-			for (auto it = _LayerStack.end(); it != _LayerStack.begin(); )
+			for (auto it = _LayerStack->end(); it != _LayerStack->begin(); )
 			{
 				(*--it)->OnEvent(e);
 				if (e.Handled)
@@ -127,40 +135,52 @@ namespace Wyrd {
 	{
 		while (_Running)
 		{
-			float time = (float)glfwGetTime();			// should make this platform independant
-			Timestep timestep = time - _LastFrameTime;
-			_LastFrameTime = time;
-
-			_Window->OnUpdate();
-
-			/* run the layer and window lifecycle */
-			for (Layer* layer : _LayerStack)
-			{
-				if (layer->IsEnabled())
-					layer->OnUpdate(timestep);
-			}
-
-			/* clear the back buffer */
-			_Renderer->Clear(color.r, color.g, color.b);
-
-			_Window->OnPreRender();
-			_Window->OnRender();
-
-			for (Layer* layer : _LayerStack)
-			{
-				if (layer->IsEnabled())
-					layer->OnRender(timestep , *_Renderer);
-			}
-
-			_Window->OnPostRender();
-
+			Frame(nullptr, 0.0f, 0.0f, 0.0f);
 			_Running = !_Window->GetCloseRequested();
 		}
 
 		/* detach each of the layers */
-		for (Layer* layer : _LayerStack)
+		for (Layer* layer : *_LayerStack)
 		{
 			layer->OnDetach();
 		}
+	}
+
+	void Application::Frame(char* outputBuffer, float r, float g, float b)
+	{
+		float time = (float)glfwGetTime();			// should make this platform independant
+		Timestep timestep = time - _LastFrameTime;
+		_LastFrameTime = time;
+
+		_Window->OnUpdate();
+
+		/* run the layer and window lifecycle */
+		for (Layer* layer : *_LayerStack)
+		{
+			if (layer->IsEnabled())
+				layer->OnUpdate(timestep);
+		}
+
+		/* clear the back buffer */
+		_Renderer->Clear(r, g, b);
+
+		_Window->OnPreRender();
+		_Window->OnRender();
+
+		for (Layer* layer : *_LayerStack)
+		{
+			if (layer->IsEnabled())
+				layer->OnRender(timestep, *_Renderer);
+		}
+
+		_Window->OnPostRender();
+
+		if (outputBuffer != nullptr)
+			_Renderer->CopyPixels(0, 0, _Window->GetWidth(), _Window->GetHeight(), (BYTE*)outputBuffer);
+	}
+
+	void Application::Resize(int width, int height)
+	{
+		_Window->SetSize(width, height);
 	}
 }

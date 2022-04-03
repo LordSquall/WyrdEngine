@@ -3,57 +3,10 @@
 #include "wyrdpch.h"
 #include "export.h"
 #include "events/Event.h"
+#include "core/Application.h"
 
 namespace Wyrd
 {
-	/**
-	 * @brief Window Properties
-	*/
-	struct WindowProps
-	{
-		/**
-		 * @brief Primary window Title
-		*/
-		std::string Title;
-
-		/**
-		 * @brief Window width in pixels
-		*/
-		int Width;
-
-		/**
-		 * @brief Window height in pixels
-		*/
-		int Height;
-
-		/**
-		 * @brief Window x position in pixels
-		*/
-		int X;
-
-		/**
-		 * @brief Window y position in pixels
-		*/
-		int Y;
-
-		/**
-		 * @brief Constructor
-		 * @param title 
-		 * @param width 
-		 * @param height 
-		 * @param x 
-		 * @param y 
-		*/
-		WindowProps(const std::string& title = "Wyrd Engine",
-			int width  = 1280,
-			int height = 720,
-			int x = 50,
-			int y = 75)
-			: Title(title), Width(width), Height(height), X(x), Y(y)
-		{
-		}
-	};
-
 	/**
 	 * @brief Window SubSystem
 	 * This class provides a abstract interface for a Operating system window.

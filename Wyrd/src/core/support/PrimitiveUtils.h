@@ -4,6 +4,7 @@
 #include <wyrdpch.h>
 #include <core/export.h>
 #include <core/Structures.h>
+#include <core/pipeline/Vertex2D.h>
 
 #include <glm/glm.hpp>
 

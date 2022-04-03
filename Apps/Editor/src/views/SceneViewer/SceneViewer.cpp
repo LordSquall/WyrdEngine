@@ -26,6 +26,9 @@ namespace Wyrd::Editor
 {
 	SceneViewer::SceneViewer(EditorLayer* editorLayer) : EditorViewBase("Scene Viewer", editorLayer), _SelectedEntity(ENTITY_INVALID)
 	{
+		/* update config Note: Toolbar is built using the menu bar */
+		config.allowMenuBar = true;
+
 		/* retrieve services */
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
 		_EventService = ServiceManager::Get<EventService>();
@@ -38,6 +41,9 @@ namespace Wyrd::Editor
 		/* setup event bindings */
 		_EventService->Subscribe(Events::EventType::SceneOpened, EVENT_FUNC(SceneViewer::OnSceneOpened));
 		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(SceneViewer::OnSelectedEntityChanged));
+
+		/* cache icons */
+		_UnknownIcon = _ResourceService->GetIconLibrary().GetIcon("common", "assets_unknown");
 
 		/* initialise camera */
 		_CameraController = std::make_shared<OrthographicCameraController>();
@@ -212,11 +218,7 @@ namespace Wyrd::Editor
 
 	void SceneViewer::OnEditorRender()
 	{
-		static bool showStats = false;
 		static bool showGizmoSettings = false;
-
-		/* build the top toolbar */
-		ImGui::Checkbox("show stats", &showStats);
 
 		/* calculate the mouse offset for events */
 		_mouseOffset = { ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y };
@@ -235,24 +237,8 @@ namespace Wyrd::Editor
 
 		ImGui::Image((ImTextureID)(UINT_PTR)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport._size.x, _Viewport._size.y), ImVec2(0, 1), ImVec2(1, 0));
 
-		if (showStats == true)
-		{
-			ImGui::SetCursorPosY(42.0f);
-			ImGui::Text("Camera:");
-			ImGui::Text("\tPosition		[%f, %f, %f]", _CameraController->GetPosition().x, _CameraController->GetPosition().y, _CameraController->GetPosition().z);
-
-			ImGui::Text("Window:");
-			ImGui::Text("\tAspect Ratio [%f]", _ViewportBoundary._size.x / _ViewportBoundary._size.y);
-
-			ImGui::Text("FrameBuffer:");
-			ImGui::Text("Width [%d]", _Framebuffer->GetConfig().width);
-			ImGui::Text("Height [%d]", _Framebuffer->GetConfig().height);
-
-			ImGui::Text("Cursor:");
-			ImGui::Text("Screen Position: [%d, %d]", (int32_t)_mouseOffset.x, (int32_t)_mouseOffset.y);
-			ImGui::Text("Viewport Offset Coords:   [%d, %d]", (int32_t)_mouseOffset.x, (int32_t)_mouseOffset.y);
-			ImGui::Text("Evt Start Coords: [%d, %d]", (int32_t)_LastMousePos.x, (int32_t)_LastMousePos.y);
-		}
+		ImGui::SetCursorPosY(_Viewport._size.y + 28.0f);
+		ImGui::Text("Hello World");
 	}
 
 	void SceneViewer::OnResize()

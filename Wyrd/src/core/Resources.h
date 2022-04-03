@@ -53,4 +53,4 @@ namespace Wyrd {
 	public:
 		static Resources* _Instance;
 	};
-}
+}  

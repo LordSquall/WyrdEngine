@@ -2,6 +2,7 @@
 #include "WindowsInput.h"
 
 #include "core/Application.h"
+#include "core/Window.h"
 #include <GLFW/glfw3.h>
 
 namespace Wyrd

@@ -58,6 +58,8 @@ namespace Wyrd {
 		m_Window = glfwCreateWindow(props.Width, props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		glfwSetWindowPos(m_Window, m_Data.X, m_Data.Y);
 
+		glfwHideWindow(m_Window);
+
 		m_Context = new OpenGLContext(m_Window);
 		m_Context->Init();
 

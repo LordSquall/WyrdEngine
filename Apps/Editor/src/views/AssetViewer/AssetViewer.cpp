@@ -124,11 +124,6 @@ namespace Wyrd::Editor
 					}
 					ImGui::EndMenu();
 				}
-				ImGui::Separator();
-				if (ImGui::Selectable("Add Folder"))
-				{
-					Utils::CreateFolder((_SelectedDirectory / "New Folder").string());
-				}
 				ImGui::EndPopup();
 			}
 
@@ -376,7 +371,7 @@ namespace Wyrd::Editor
 
 		/* Visuals */
 		ImGui::Image(thumbnailTexture, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec2(0,0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
-		ImGui::TextClipped(textureResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1, 1, 1, 1), "..");
+		ImGui::TextClipped(textureResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1, 1, 1, 1), ".");
 	}
 
 	void AssetViewer::DrawSceneItem(int resID, SceneRes& sceneResource)
@@ -429,7 +424,7 @@ namespace Wyrd::Editor
 
 		/* Visuals */
 		ImGui::Image(*_SceneIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
-		ImGui::TextClipped(sceneResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
+		ImGui::TextClipped(sceneResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ".");
 
 	}
 

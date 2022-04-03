@@ -42,6 +42,8 @@ namespace Wyrd
 		virtual void Submit(DrawVertex2DCommand& cmd);
 		virtual void Flush();
 
+		virtual void CopyPixels(int x, int y, int width, int height, BYTE* buffer) = 0;
+
 		inline struct RendererInfo& GetVendorInfo() { return _vendorInfo; }
 
 		inline static RendererAPI GetAPI() { return s_RendererAPI; }

@@ -69,6 +69,9 @@ namespace Wyrd::Editor
 		std::unique_ptr<Translation2DGizmo>				_Translation2DGizmo;
 		std::shared_ptr<Shader>							_GizmoShader;
 
+		/* Icons */
+		std::shared_ptr<Icon> _UnknownIcon;
+
 		Entity	_SelectedEntity;
 
 		glm::vec2 _LastMousePos;

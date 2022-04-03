@@ -4,6 +4,7 @@
 
 #include "BehaviourLayer.h"
 #include "core/Application.h"
+#include "core/behaviour/Behaviour.h"
 
 namespace Wyrd
 {

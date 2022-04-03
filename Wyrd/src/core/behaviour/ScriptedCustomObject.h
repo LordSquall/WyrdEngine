@@ -3,6 +3,7 @@
 /* local includes */
 #include "wyrdpch.h"
 #include "core/export.h"
+#include "core/ecs/ECS.h"
 
 /* external includes */
 #include <mono/metadata/object-forward.h>

@@ -5,6 +5,7 @@
 #include "core/Log.h"
 #include "core/Application.h"
 #include "core/ecs/ECS.h"
+#include "core/behaviour/Behaviour.h"
 #include "core/behaviour/Properties/EntityProperty.h"
 #include "core/behaviour/Properties/ScriptPropertyFactory.h"
 

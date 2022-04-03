@@ -9,7 +9,7 @@
 #include <core/support/PrimitiveUtils.h>
 
 /* local includes */
-#include "Translation2DGizmo.h"
+#include "Rotation2DGizmo.h"
 #include "views/SceneViewer/SceneViewer.h"
 #include "services/ServiceManager.h"
 #include "services/EventsService.h"
@@ -22,18 +22,18 @@
 
 namespace Wyrd::Editor
 {
-    Translation2DGizmo::Translation2DGizmo(SceneViewer* sceneViewer) : Gizmo(sceneViewer, ENTITY_INVALID), _XYMoveActive(false)
+    Rotation2DGizmo::Rotation2DGizmo(SceneViewer* sceneViewer) : Gizmo(sceneViewer, ENTITY_INVALID), _XYMoveActive(false)
 	{
 		/* retrieve the services */
 		_EventService = ServiceManager::Get<EventService>();
 
 		/* setup event subscriptions */
-		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(Translation2DGizmo::OnSelectedEntityChanged));
+		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(Rotation2DGizmo::OnSelectedEntityChanged));
 	}
 
-    Translation2DGizmo::~Translation2DGizmo() {}
+    Rotation2DGizmo::~Rotation2DGizmo() {}
 
-	void Translation2DGizmo::Render(Timestep ts, Renderer& renderer)
+	void Rotation2DGizmo::Render(Timestep ts, Renderer& renderer)
 	{
         if (_Entity != ENTITY_INVALID)
         {
@@ -57,7 +57,7 @@ namespace Wyrd::Editor
         }
 	}
 
-	void Translation2DGizmo::OnSelectedEntityChanged(Events::EventArgs& args)
+	void Rotation2DGizmo::OnSelectedEntityChanged(Events::EventArgs& args)
 	{
 		Events::SelectedEntityChangedArgs& evtArgs = static_cast<Events::SelectedEntityChangedArgs&>(args);
 
@@ -66,7 +66,7 @@ namespace Wyrd::Editor
         Build();
 	}
 
-    void Translation2DGizmo::Build()
+    void Rotation2DGizmo::Build()
     {
         EditorComponent* editorComponent = _SceneViewer->GetScene()->Get<EditorComponent>(_Entity);
         Transform2DComponent* transform2DComponent = _SceneViewer->GetScene()->Get<Transform2DComponent>(_Entity);
@@ -82,6 +82,13 @@ namespace Wyrd::Editor
 
             /* entity outline */
             offset = PrimitiveUtils::GenerateRect(_Vertices, offset, { 0.0f, 0.0f }, editorComponent->inputArea._size, _XYMoveActive ? Color::MAGENTA : Color::CYAN, 2.0f, transform2DComponent->rotation, pivot);
+
+            /* center */
+            offset = PrimitiveUtils::GenerateRect(_Vertices, offset, editorComponent->inputArea._size / 2.0f, { -10.0f, -10.0f }, Color::BLUE, 2.0f, 0.0f, pivot);
+
+            /* rotation pivot */
+            //offset = PrimitiveUtils::GenerateCircle(_Vertices, offset, transform2DComponent->rotationOrigin, 5.0f, 8.0f, Color::YELLOW, 2.0f);
+            //offset = PrimitiveUtils::GenerateVector2D(_Vertices, offset, transform2DComponent->rotationOrigin, transform2DComponent->rotation, 20.0f, Color::YELLOW, 2.0f);
         }
     }
 }

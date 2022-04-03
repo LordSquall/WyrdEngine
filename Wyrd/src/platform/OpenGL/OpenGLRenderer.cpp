@@ -88,6 +88,10 @@ namespace Wyrd
 		glDrawArrays(primitiveType, offset, count);
 	}
 
+	void OpenGLRenderer::CopyPixels(int x, int y, int width, int height, BYTE* buffer)
+	{
+		glReadPixels(x, y, width, height, GL_BGRA, GL_UNSIGNED_BYTE, buffer);
+	}
 
 #ifdef WYRD_INCLUDE_DEBUG_TAGS
 

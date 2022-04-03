@@ -432,10 +432,10 @@ namespace Wyrd::Editor
 
 		ImGui::PopFont();
 
-		renderer.StartNamedSection("ImGui Editor");
+		//renderer.StartNamedSection("ImGui Editor");
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		renderer.EndNamedSection();
+		//renderer.EndNamedSection();
 		
 	}
 
