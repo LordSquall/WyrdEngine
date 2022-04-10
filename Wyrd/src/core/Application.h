@@ -89,6 +89,17 @@ namespace Wyrd {
 		virtual ~Application();
 
 		/**
+		 * @brief Create a new window and registers it with the application
+		 * @param props - window properties
+		*/
+		Window* CreateNewWindow(const WindowProps& props);
+
+		/**
+		 * @brief Create a new renderer and registers it with the application
+		*/
+		Renderer* CreateNewRenderer();
+
+		/**
 		 * @brief Enters into the application main loop.
 		 * Blocking Function
 		*/

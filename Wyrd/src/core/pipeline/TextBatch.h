@@ -38,7 +38,7 @@ namespace Wyrd {
 		std::shared_ptr<VertexArray>	_VertexArray;
 		std::shared_ptr<VertexBuffer>	_VertexBuffer;
 
-		glm::mat4						_VPMatrix;
+		//glm::mat4						_VPMatrix;
 		Shader*							_Shader;
 		FontType*						_FontType;
 		Color							_Color;

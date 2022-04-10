@@ -52,45 +52,45 @@ namespace Wyrd
 		float t = cmd.thickness * 0.5f;
 
 		// top
-		_vertices.push_back({cmd.position.x,					cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top right
-		_vertices.push_back({cmd.position.x,					cmd.position.y + cmd.size.y - t,	1.0f, 1.0f, 1.0f, 1.0f });	// bottom right
-		_vertices.push_back({cmd.position.x + cmd.size.x,		cmd.position.y + cmd.size.y - t,	1.0f, 1.0f, 1.0f, 1.0f });	// bottom left
-		_vertices.push_back({cmd.position.x + cmd.size.x,		cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top left 
-		// bottom													 
-		_vertices.push_back({cmd.position.x,					cmd.position.y + t,					1.0f, 1.0f, 1.0f, 1.0f });	// top right
-		_vertices.push_back({cmd.position.x,					cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom right
-		_vertices.push_back({cmd.position.x + cmd.size.x,		cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom left
-		_vertices.push_back({cmd.position.x + cmd.size.x,		cmd.position.y + t,					1.0f, 1.0f, 1.0f, 1.0f });	// top left 
-		// right													 
-		_vertices.push_back({cmd.position.x - t,				cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top right
-		_vertices.push_back({cmd.position.x - t,				cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom right
-		_vertices.push_back({cmd.position.x + t,				cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom left
-		_vertices.push_back({cmd.position.x + t,				cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top left 
-		// left													 
-		_vertices.push_back({cmd.position.x + cmd.size.x - t,	cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top right
-		_vertices.push_back({cmd.position.x + cmd.size.x - t,	cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom right
-		_vertices.push_back({cmd.position.x + cmd.size.x + t,	cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom left
-		_vertices.push_back({cmd.position.x + cmd.size.x + t,	cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top left 
+		//_vertices.push_back({cmd.position.x,					cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top right
+		//_vertices.push_back({cmd.position.x,					cmd.position.y + cmd.size.y - t,	1.0f, 1.0f, 1.0f, 1.0f });	// bottom right
+		//_vertices.push_back({cmd.position.x + cmd.size.x,		cmd.position.y + cmd.size.y - t,	1.0f, 1.0f, 1.0f, 1.0f });	// bottom left
+		//_vertices.push_back({cmd.position.x + cmd.size.x,		cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top left 
+		//// bottom													 
+		//_vertices.push_back({cmd.position.x,					cmd.position.y + t,					1.0f, 1.0f, 1.0f, 1.0f });	// top right
+		//_vertices.push_back({cmd.position.x,					cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom right
+		//_vertices.push_back({cmd.position.x + cmd.size.x,		cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom left
+		//_vertices.push_back({cmd.position.x + cmd.size.x,		cmd.position.y + t,					1.0f, 1.0f, 1.0f, 1.0f });	// top left 
+		//// right													 
+		//_vertices.push_back({cmd.position.x - t,				cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top right
+		//_vertices.push_back({cmd.position.x - t,				cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom right
+		//_vertices.push_back({cmd.position.x + t,				cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom left
+		//_vertices.push_back({cmd.position.x + t,				cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top left 
+		//// left													 
+		//_vertices.push_back({cmd.position.x + cmd.size.x - t,	cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top right
+		//_vertices.push_back({cmd.position.x + cmd.size.x - t,	cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom right
+		//_vertices.push_back({cmd.position.x + cmd.size.x + t,	cmd.position.y - t,					1.0f, 1.0f, 1.0f, 1.0f });	// bottom left
+		//_vertices.push_back({cmd.position.x + cmd.size.x + t,	cmd.position.y + cmd.size.y + t,	1.0f, 1.0f, 1.0f, 1.0f });	// top left 
 
-		Vector2 pivot = { cmd.position.x + cmd.rotationOrigin.x, cmd.position.y + cmd.rotationOrigin.y };
+		//Vector2 pivot = { cmd.position.x + cmd.rotationOrigin.x, cmd.position.y + cmd.rotationOrigin.y };
 
-		for (int i = 0; i < 16; i++)
-		{
-			Vertex2D* v = &_vertices[i];
-			Vector2 pt1 = Vector2::RotateAtPoint({ v->x, v->y }, -cmd.rotation, pivot);
-			v->x = pt1.x;
-			v->y = pt1.y;
-		}
-
-		/* bind the batch vertex array */
-		_VertexArray->Bind();
-
-		/* update both the vertex and index buffers */
-		_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(Vertex2D) * (uint32_t)_vertices.size(), 0);
-
-		_VPMatrix = cmd.vpMatrix;
-		_Shader = cmd.shader;
-		_Color = cmd.color;
+		//for (int i = 0; i < 16; i++)
+		//{
+		//	Vertex2D* v = &_vertices[i];
+		//	Vector2 pt1 = Vector2::RotateAtPoint({ v->x, v->y }, -cmd.rotation, pivot);
+		//	v->x = pt1.x;
+		//	v->y = pt1.y;
+		//}
+		//
+		///* bind the batch vertex array */
+		//_VertexArray->Bind();
+		//
+		///* update both the vertex and index buffers */
+		//_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(Vertex2D) * (uint32_t)_vertices.size(), 0);
+		//
+		//_VPMatrix = cmd.vpMatrix;
+		//_Shader = cmd.shader;
+		//_Color = cmd.color;
 	}
 
 	void Vertex2DBatch::Submit(DrawVertex2DCommand& cmd)
@@ -115,8 +115,8 @@ namespace Wyrd
 		for (int i = 0; i < cmd.vertices->size(); ++i)
 		{
 			Vertex2D v = cmd.vertices->at(i);
-			v.x += cmd.position.x;
-			v.y += cmd.position.y;
+			//v.x += cmd.position.x;
+			//v.y += cmd.position.y;
 			_vertices.push_back(v);
 		}
 		
@@ -126,7 +126,7 @@ namespace Wyrd
 		/* update both the vertex and index buffers */
 		_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(Vertex2D) * (uint32_t)_vertices.size(), 0);
 
-		_VPMatrix = cmd.vpMatrix;
+		//_VPMatrix = cmd.vpMatrix;
 		_Shader = cmd.shader;
 		_Color = cmd.color;
 	}
@@ -143,7 +143,7 @@ namespace Wyrd
 
 		_Shader->Bind();
 
-		_Shader->SetVPMatrix(_VPMatrix);
+		///_Shader->SetVPMatrix(_VPMatrix);
 
 		_Shader->SetModelMatrix(glm::mat4(1.0f));
 		_Shader->SetUniformColor("blendColor", _Color);

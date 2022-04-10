@@ -42,7 +42,7 @@ namespace Wyrd {
 		std::shared_ptr<VertexBuffer>	_VertexBuffer;
 
 		uint32_t						_SpriteCount;
-		glm::mat4						_VPMatrix;
+		//glm::mat4						_VPMatrix;
 		Shader*							_Shader;
 		Texture*						_Texture;
 		Color							_Color;

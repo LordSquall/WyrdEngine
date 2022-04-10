@@ -8,7 +8,6 @@
 
 /* external includes */
 #include <mono/jit/jit.h>
-#include <jsonxx.h>
 
 namespace Wyrd
 {
@@ -19,19 +18,6 @@ namespace Wyrd
 		args.push_back(data);
 
 		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
-	}
-
-	bool FloatProperty::ToJson(jsonxx::Object& object, void* data)
-	{
-		object << "value" << (float*)data;
-		return true;
-	}
-
-	bool FloatProperty::FromJson(jsonxx::Object& object, void** data)
-	{
-		float val = (float)object.get<jsonxx::Number>("value", 0.0f);
-		memcpy(*data, &val, sizeof(float));
-		return true;
 	}
 
 	SCRIPT_PROPERTY_FACTORY_REGISTER(FloatProperty);

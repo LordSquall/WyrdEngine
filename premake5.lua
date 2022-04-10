@@ -1,6 +1,6 @@
 workspace "Wyrd"
 	architecture "x64"
-	startproject "ESCTestApp"
+	startproject "Wyrd"
 
 	configurations
 	{
@@ -56,14 +56,9 @@ outputdir = "%{cfg.buildcfg}"
 includedir = {}
 includedir["GLFW"] = externallibsdir .. "/GLFW/include"
 includedir["GLAD"] = "Wyrd/vendor/GLAD/include"
-includedir["SOIL"] = externallibsdir .. "/Simple-OpenGL-Image-Library/src"
 includedir["glm"] = externallibsdir .. "/glm"
-includedir["jsonxx"] = externallibsdir .. "/jsonxx"
-includedir["imgui"] = externallibsdir .. "/imgui"
-includedir["imguizmo"] = externallibsdir .. "/imguizmo"
 includedir["spdlog"] = externallibsdir .. "/spdlog/include/"
 includedir["uuid"] = externallibsdir .. "/crossguid/include/"
-includedir["hash"] = externallibsdir .. "/Hash/include/"
 includedir["freetype"] = externallibsdir .. "/freetype/include/"
 
 -- if mono was found, the add the in application to the include directories
@@ -79,13 +74,8 @@ end
 group "Third Party"
 include "externalbuild/premake5-glfw.lua"
 include "externalbuild/premake5-glad.lua"
-include "externalbuild/premake5-jsonxx.lua"
-include "externalbuild/premake5-soil.lua"
-include "externalbuild/premake5-imgui.lua"
-include "externalbuild/premake5-imguizmo.lua"
 include "externalbuild/premake5-spdlog.lua"
 include "externalbuild/premake5-uuid.lua"
-include "externalbuild/premake5-hash.lua"
 
 group ""
 	project "Wyrd"
@@ -116,8 +106,6 @@ group ""
 			"%{prj.name}/src/",
 			"%{includedir.GLFW}",
 			"%{includedir.GLAD}",
-			"%{includedir.jsonxx}",
-			"%{includedir.SOIL}",
 			"%{includedir.glm}",
 			"%{includedir.tinyobjloader}",
 			"%{includedir.mono}",
@@ -134,8 +122,6 @@ group ""
 		{
 			"GLFW",
 			"GLAD",
-			"SOIL",
-			"jsonxx",
 			"uuid",
 			"mono-2.0-sgen",
 			"opengl32.dll"
@@ -148,6 +134,7 @@ group ""
 			{
 				"WYRD_PLATFORM_WINDOWS",
 				"WYRD_LIBRARY_EXPORT",
+				"WYRD_SHARED_LIB",
 				"GLFW_INCLUDE_NONE",
 				"GLM_ENABLE_EXPERIMENTAL"
 			}
@@ -190,8 +177,7 @@ project "WyrdCAPI"
 			"Wyrd/src",
 			"%{includedir.glm}",
 			"%{includedir.uuid}",
-			"%{includedir.mono}",
-			"%{includedir.jsonxx}"
+			"%{includedir.mono}"
 		}
 		
         links { 
@@ -264,175 +250,3 @@ project "WyrdAPI"
 			defines "WYRD_DISTRIBUTION"
 			runtime "Release"
 			symbols "on"
-
-group "Applications"
-project "Editor"
-	location "Apps/Editor"
-	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "off"
-
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("obj/" .. outputdir .. "/%{prj.name}")
-
-	files
-	{
-		"Apps/%{prj.name}/src/**.h",
-		"Apps/%{prj.name}/src/**.cpp",
-		"Apps/%{prj.name}/res/**.vs",
-		"Apps/%{prj.name}/res/**.fs"
-	}
-
-	includedirs
-	{
-		"Apps/%{prj.name}/src",
-		"Apps/Players/Player/src",
-		"codegen/src/Common/include",
-		"codegen/src/PlayerAPI/include",
-		"Wyrd/src",
-		"%{includedir.glm}",
-		"%{includedir.GLFW}",
-		"%{includedir.GLAD}",
-		"%{includedir.jsonxx}",
-		"%{includedir.SOIL}",
-		"%{includedir.imgui}",
-		"%{includedir.imguizmo}",
-		"%{includedir.glm}",
-		"%{includedir.tinyobjloader}",
-		"%{includedir.mono}",
-		"%{includedir.spdlog}",
-		"%{includedir.uuid}",
-		"%{includedir.hash}",
-		"%{includedir.freetype}",
-		iif(renderdocfound, includedir["renderdoc"], "")
-	}
-	
-	libdirs
-	{
-		externallibsdir .. "/freetype/builds/Debug/"
-	}
-
-	links
-	{
-		"Wyrd",
-		"GLFW",
-		"GLAD",
-		"SOIL",
-		"jsonxx",
-		"imgui",
-		"imguizmo",
-		"freetyped",
-		"opengl32.dll"
-	}
-	
-	dependson 
-	{ 
-		"WyrdAPI", 
-		"WyrdCAPI",
-		"Player"
-	}
-
-	filter "system:windows"
-		systemversion "latest"
-
-		defines
-		{
-			"WYRD_PLATFORM_WINDOWS",
-			"WYRD_EDITOR_ENABLED",
-			"GLM_ENABLE_EXPERIMENTAL",
-			"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
-			"MONO_INSTALL_LOC=" .. monodir,
-			iif(renderdocfound, "WYRD_RENDERDOC_ENABLED", "")
-
-		}
-		
-		linkoptions { "/WHOLEARCHIVE:Wyrd" }
-		
-		debugenvs { "PATH=" .. monobindir .. ";" .. renderdocdir .. ";../../lib/Debug/WyrdCAPI/;%PATH%" }
-		
-		
-
-	filter "configurations:Debug"
-		defines "WYRD_DEBUG"
-		runtime "Debug"
-		symbols "on"
-
-	filter "configurations:Release"
-		defines "WYRD_RELEASE"
-		runtime "Debug"
-		symbols "on"
-
-	filter "configurations:Distribution"
-		defines "WYRD_DISTRIBUTION"
-		runtime "Debug"
-		symbols "on"
-
-
-project "Player"
-	location "Apps/Player"
-	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "off"
-
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("obj/" .. outputdir .. "/%{prj.name}")
-
-	files
-	{
-		"Apps/%{prj.name}/src/**.h",
-		"Apps/%{prj.name}/src/**.cpp",
-		"Apps/%{prj.name}/res/**.vs",
-		"Apps/%{prj.name}/res/**.fs"
-	}
-
-	includedirs
-	{
-		"Apps/%{prj.name}/src",
-		"Wyrd/src",
-		"codegen/src/Common/include",
-		"codegen/src/PlayerAPI/include",
-		"%{includedir.spdlog}",
-		"%{includedir.glm}",
-		"%{includedir.uuid}",
-		"%{includedir.mono}"
-	}
-	
-	links
-	{
-		"Wyrd"
-	}
-	
-	filter "system:windows"
-		systemversion "latest"
-
-		defines
-		{
-			"WYRD_PLATFORM_WINDOWS",
-			"WYRD_EDITOR_ENABLED",
-			"GLM_ENABLE_EXPERIMENTAL",
-			"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
-			"MONO_INSTALL_LOC=" .. monodir,
-			iif(renderdocfound, "WYRD_RENDERDOC_ENABLED", "")
-
-		}
-		
-		linkoptions { "/WHOLEARCHIVE:Wyrd" }
-		
-		debugenvs { "PATH=" .. monobindir .. ";" .. renderdocdir .. ";../../lib/Debug/WyrdCAPI/;%PATH%" }
-		
-	filter "configurations:Debug"
-		defines "WYRD_DEBUG"
-		runtime "Debug"
-		symbols "on"
-
-	filter "configurations:Release"
-		defines "WYRD_RELEASE"
-		runtime "Debug"
-		symbols "on"
-
-	filter "configurations:Distribution"
-		defines "WYRD_DISTRIBUTION"
-		runtime "Debug"
-		symbols "on"

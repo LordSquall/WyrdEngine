@@ -8,8 +8,6 @@
 #include "platform/OpenGL/OpenGLContext.h"
 #include "platform/OpenGL/OpenGLError.h"
 
-#include <SOIL.h>
-
 namespace Wyrd {
 
 	static bool s_GLFWInitialised = false;
@@ -63,10 +61,10 @@ namespace Wyrd {
 		m_Context = new OpenGLContext(m_Window);
 		m_Context->Init();
 
-		GLFWimage icons[1];
-		icons[0].pixels = SOIL_load_image("../../Wyrd/res/icons/icon.png", &icons[0].width, &icons[0].height, 0, SOIL_LOAD_RGBA);
-		glfwSetWindowIcon(m_Window, 1, icons);
-		SOIL_free_image_data(icons[0].pixels);
+		//GLFWimage icons[1];
+		//icons[0].pixels = SOIL_load_image("../../Wyrd/res/icons/icon.png", &icons[0].width, &icons[0].height, 0, SOIL_LOAD_RGBA);
+		//glfwSetWindowIcon(m_Window, 1, icons);
+		//SOIL_free_image_data(icons[0].pixels);
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(false);

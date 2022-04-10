@@ -1,6 +1,10 @@
 #include "wyrdpch.h"
 #include "core/renderer/Renderer.h"
 
+#include "core/pipeline/Vertex2DBatch.h"
+#include "core/pipeline/SpriteBatch.h"
+#include "core/pipeline/TextBatch.h"
+
 #include "platform/OpenGL/OpenGLRenderer.h"
 
 namespace Wyrd
@@ -30,36 +34,40 @@ namespace Wyrd
 
 	void Renderer::Initialise() 
 	{
-		_vertex2DBatch.Initialise(this);
-		_spriteBatch.Initialise(this);
-		_textBatch.Initialise(this);
+		//_vertex2DBatch = std::make_unique<Vertex2DBatch>();
+		//_spriteBatch = std::make_unique<SpriteBatch>();
+		//_textBatch = std::make_unique<TextBatch>();
+		//
+		//_vertex2DBatch->Initialise(this);
+		//_spriteBatch->Initialise(this);
+		//_textBatch->Initialise(this);
 	}
 
 	void Renderer::Submit(DrawRectCommand& cmd)
 	{
-		_vertex2DBatch.Submit(cmd);
+		//_vertex2DBatch->Submit(cmd);
 	}
 
 	void Renderer::Submit(DrawSpriteCommand& cmd)
 	{
-		_spriteBatch.Submit(cmd);
+		//_spriteBatch->Submit(cmd);
 	}
 
 	void Renderer::Submit(DrawTextCommand& cmd)
 	{
-		_textBatch.Submit(cmd);
+		//_textBatch->Submit(cmd);
 	}
 
 
 	void Renderer::Submit(DrawVertex2DCommand& cmd)
 	{
-		_vertex2DBatch.Submit(cmd);
+		//_vertex2DBatch->Submit(cmd);
 	}
 
 	void Renderer::Flush()
 	{
-		_spriteBatch.Flush();
-		_vertex2DBatch.Flush();
+		//_spriteBatch->Flush();
+		//_vertex2DBatch->Flush();
 	}
 
 #ifdef WYRD_INCLUDE_DEBUG_TAGS

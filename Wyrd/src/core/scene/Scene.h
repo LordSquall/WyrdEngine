@@ -171,20 +171,6 @@ namespace Wyrd {
 			return entities[entity - 1].mask;
 		}
 
-		/**
-		 * @brief Serialise the scene into a json object
-		 * @param object json object
-		 * @return true is successful
-		*/
-		bool ToJson(jsonxx::Object& object);
-
-		/**
-		 * @brief Deserialise a json object into a scene
-		 * @param object json object
-		 * @return true is successful
-		*/
-		bool FromJson(jsonxx::Object& object);
-
 	public:
 		std::string name;
 		Color bgcolor;

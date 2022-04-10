@@ -3,13 +3,9 @@
 /* local includes */
 #include "wyrdpch.h"
 #include "core/export.h"
-#include "core/maths/Rect.h"
 #include "events/Event.h"
-#include "core/renderer/commands/RendererCommands.h"
 #include "core/renderer/RendererDrawTypes.h"
-#include "core/pipeline/Vertex2DBatch.h"
-#include "core/pipeline/SpriteBatch.h"
-#include "core/pipeline/TextBatch.h"
+#include "core/renderer/commands/RendererCommands.h"
 
 namespace Wyrd
 {
@@ -42,7 +38,7 @@ namespace Wyrd
 		virtual void Submit(DrawVertex2DCommand& cmd);
 		virtual void Flush();
 
-		virtual void CopyPixels(int x, int y, int width, int height, BYTE* buffer) = 0;
+		virtual void CopyPixels(int x, int y, int width, int height, unsigned char* buffer) = 0;
 
 		inline struct RendererInfo& GetVendorInfo() { return _vendorInfo; }
 
@@ -55,9 +51,9 @@ namespace Wyrd
 
 		static Renderer* Create();
 	private:
-		Vertex2DBatch _vertex2DBatch;
-		SpriteBatch _spriteBatch;
-		TextBatch _textBatch;
+		//std::unique_ptr<Vertex2DBatch> _vertex2DBatch;
+		//std::unique_ptr<SpriteBatch> _spriteBatch;
+		//std::unique_ptr<TextBatch> _textBatch;
 
 	private:
 		static RendererAPI s_RendererAPI;

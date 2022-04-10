@@ -13,7 +13,6 @@
 
 /* external includes */
 #include <mono/jit/jit.h>
-#include <jsonxx.h>
 
 namespace Wyrd
 {
@@ -54,34 +53,6 @@ namespace Wyrd
 		args.push_back(colorObject);
 
 		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
-	}
-
-	bool ColorProperty::ToJson(jsonxx::Object& object, void* data)
-	{
-		/* cast data to color structure */
-		Color* color = (Color*)data;
-		jsonxx::Array colorArray;
-
-		colorArray << color->r << color->g << color->b << color->a;
-		object << "channels" << colorArray;
-		return true;
-	}
-
-	bool ColorProperty::FromJson(jsonxx::Object& object, void** data)
-	{
-		Color color;
-		jsonxx::Array defaultColor;
-		defaultColor << 1.0f << 1.0f << 1.0f << 1.0f;
-
-		jsonxx::Array colorArray = object.get<jsonxx::Array>("channels", defaultColor);
-		color.r = (float)colorArray.get<jsonxx::Number>(0);
-		color.g = (float)colorArray.get<jsonxx::Number>(1);
-		color.b = (float)colorArray.get<jsonxx::Number>(2);
-		color.a = (float)colorArray.get<jsonxx::Number>(3);
-
-		memcpy(*data, &color, sizeof(Color));
-
-		return true;
 	}
 
 	SCRIPT_PROPERTY_FACTORY_REGISTER(ColorProperty);

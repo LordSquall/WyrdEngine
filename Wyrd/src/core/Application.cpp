@@ -16,7 +16,6 @@
 
 /* external includes */
 #include <GLFW/glfw3.h>
-#include <SOIL.h>
 
 namespace Wyrd {
 
@@ -39,57 +38,73 @@ namespace Wyrd {
 		_LayerStack = std::make_unique<LayerStack>();
 
 		/* create a windows and bind the event callback */
-		_Window = std::unique_ptr<Window>(Window::Create(props.windowProps));
-		_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
-
-		_Window->SetSize(props.windowProps.Width, props.windowProps.Height);
-		
-		/* create a renderer */
-		_Renderer.reset(Renderer::Create());
-
-		/* create the resource subsystem */
-		_Resources = std::make_unique<Resources>();
-
-		{
-			/* default sprite texture */
-			int width, height, channels;
-			unsigned char* data;
-
-			data = SOIL_load_image("../../Wyrd/res/textures/box_01.png", &width, &height, &channels, 4);
-
-			TextureDesc textureDesc;
-			textureDesc.data = data;
-			textureDesc.width = width;
-			textureDesc.height = height;
-			textureDesc.channels = channels;
-			textureDesc.description = "Default Sprite Texture";
-
-			std::shared_ptr<Texture> texture = std::shared_ptr<Texture>(Texture::Create(textureDesc));
-			texture->SetUID(UID(RESOURCE_DEFAULT_TEXTURE));
-			_Resources->Textures.insert(std::pair<std::string, std::shared_ptr<Texture>>(UID(RESOURCE_DEFAULT_TEXTURE), texture));
-		}
-		
-		/* create behaviour subsystem */
-		_Behaviour = std::make_unique<Behaviour>();
-
-		/* add engine layers */
-		PushLayer(new BehaviourLayer());
-
-		/* create physics subsystem */
-		_Physics = std::make_unique<Physics>();
-
-		/* add engine layers */
-		PushLayer(new PhysicsLayer());
-
-		/* set a default back buffer color */
-		color[0] = 1.0f;
-		color[1] = 0.2f;
-		color[2] = 0.2f;
+		//_Window = std::unique_ptr<Window>(Window::Create(props.windowProps));
+		//_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+		//
+		//_Window->SetSize(props.windowProps.Width, props.windowProps.Height);
+		//
+		///* create a renderer */
+		//_Renderer.reset(Renderer::Create());
+		//
+		///* create the resource subsystem */
+		//_Resources = std::make_unique<Resources>();
+		//
+		//{
+		//	/* default sprite texture */
+		//	int width, height, channels;
+		//	unsigned char* data;
+		//
+		//	data = SOIL_load_image("../../Wyrd/res/textures/box_01.png", &width, &height, &channels, 4);
+		//
+		//	TextureDesc textureDesc;
+		//	textureDesc.data = data;
+		//	textureDesc.width = width;
+		//	textureDesc.height = height;
+		//	textureDesc.channels = channels;
+		//	textureDesc.description = "Default Sprite Texture";
+		//
+		//	std::shared_ptr<Texture> texture = std::shared_ptr<Texture>(Texture::Create(textureDesc));
+		//	texture->SetUID(UID(RESOURCE_DEFAULT_TEXTURE));
+		//	_Resources->Textures.insert(std::pair<std::string, std::shared_ptr<Texture>>(UID(RESOURCE_DEFAULT_TEXTURE), texture));
+		//}
+		//
+		///* create behaviour subsystem */
+		//_Behaviour = std::make_unique<Behaviour>();
+		//
+		///* add engine layers */
+		//PushLayer(new BehaviourLayer());
+		//
+		///* create physics subsystem */
+		//_Physics = std::make_unique<Physics>();
+		//
+		///* add engine layers */
+		//PushLayer(new PhysicsLayer());
+		//
+		///* set a default back buffer color */
+		//color[0] = 1.0f;
+		//color[1] = 0.2f;
+		//color[2] = 0.2f;
 	}
 
 	Application::~Application()
 	{
 		WYRD_TRACE("Application::Close()");
+	}
+
+	Window* Application::CreateNewWindow(const WindowProps& props)
+	{
+		Window* newWindow = Window::Create(props);
+		newWindow->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+		newWindow->SetSize(props.Width, props.Height);
+
+		return newWindow;
+	}
+
+
+	Renderer* Application::CreateNewRenderer()
+	{
+		Renderer* newRenderer = Renderer::Create();
+		return newRenderer;
 	}
 
 	bool Application::PushLayer(Layer* layer)
@@ -152,31 +167,31 @@ namespace Wyrd {
 		Timestep timestep = time - _LastFrameTime;
 		_LastFrameTime = time;
 
-		_Window->OnUpdate();
-
-		/* run the layer and window lifecycle */
-		for (Layer* layer : *_LayerStack)
-		{
-			if (layer->IsEnabled())
-				layer->OnUpdate(timestep);
-		}
-
-		/* clear the back buffer */
-		_Renderer->Clear(r, g, b);
-
-		_Window->OnPreRender();
-		_Window->OnRender();
-
-		for (Layer* layer : *_LayerStack)
-		{
-			if (layer->IsEnabled())
-				layer->OnRender(timestep, *_Renderer);
-		}
-
-		_Window->OnPostRender();
-
-		if (outputBuffer != nullptr)
-			_Renderer->CopyPixels(0, 0, _Window->GetWidth(), _Window->GetHeight(), (BYTE*)outputBuffer);
+		//_Window->OnUpdate();
+		//
+		///* run the layer and window lifecycle */
+		//for (Layer* layer : *_LayerStack)
+		//{
+		//	if (layer->IsEnabled())
+		//		layer->OnUpdate(timestep);
+		//}
+		//
+		///* clear the back buffer */
+		//_Renderer->Clear(r, g, b);
+		//
+		//_Window->OnPreRender();
+		//_Window->OnRender();
+		//
+		//for (Layer* layer : *_LayerStack)
+		//{
+		//	if (layer->IsEnabled())
+		//		layer->OnRender(timestep, *_Renderer);
+		//}
+		//
+		//_Window->OnPostRender();
+		//
+		//if (outputBuffer != nullptr)
+		//	_Renderer->CopyPixels(0, 0, _Window->GetWidth(), _Window->GetHeight(), (BYTE*)outputBuffer);
 	}
 
 	void Application::Resize(int width, int height)

@@ -13,8 +13,6 @@ namespace Wyrd
 	public:
 		virtual void Set(void* object, void* data) override;
 
-		virtual bool ToJson(jsonxx::Object& object, void* data) override;
-		virtual bool FromJson(jsonxx::Object& object, void** data) override;
 		inline Vector3* GetValue() { return &_Value; }
 
 	private:

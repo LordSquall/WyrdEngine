@@ -33,44 +33,44 @@ namespace Wyrd
 
 	void TextBatch::Submit(DrawTextCommand& cmd)
 	{
-		float x = cmd.position.x;
-		float y = cmd.position.y;
+		//float x = cmd.position.x;
+		//float y = cmd.position.y;
 
-		std::string::const_iterator c;
-		for (c = cmd.content.begin(); c != cmd.content.end(); c++)
-		{
-			FontType::Character ch = cmd.font->GetCharacters()[(int)*c];
-
-			float scale = (1.0f / 12.0f);
-
-			float xpos = x + ch.Bearing.x * (cmd.scale * (cmd.size * scale));
-			float ypos = y - (ch.Size.y - ch.Bearing.y) * (cmd.scale * (cmd.size * scale));
-
-			float w = ch.Size.x * (cmd.scale * (cmd.size * scale));
-			float h = ch.Size.y * (cmd.scale * (cmd.size * scale));
-
-			_vertices.push_back({ xpos, ypos + h,		ch.uv1.x, ch.uv1.y });
-			_vertices.push_back({ xpos, ypos,			ch.uv1.x, ch.uv2.y });
-			_vertices.push_back({ xpos + w, ypos,		ch.uv2.x, ch.uv2.y });
-
-			_vertices.push_back({ xpos, ypos + h,		ch.uv1.x, ch.uv1.y });
-			_vertices.push_back({ xpos + w, ypos,		ch.uv2.x, ch.uv2.y });
-			_vertices.push_back({ xpos + w, ypos + h,	ch.uv2.x, ch.uv1.y });
-			
-			x += (ch.Advance >> 6) * (cmd.scale * (cmd.size * scale));
-
-			/* update both the vertex and index buffers */
-			_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(TextVertex2D) * (uint32_t)_vertices.size(), 0);
-
-
-			_VPMatrix = cmd.vpMatrix;
-			_Shader = cmd.shader;
-			_FontType = cmd.font;
-			_Color = cmd.color;
-
-			cmd.font->Texture->Bind();
-			
-		}
+		//std::string::const_iterator c;
+		//for (c = cmd.content.begin(); c != cmd.content.end(); c++)
+		//{
+		//	FontType::Character ch = cmd.font->GetCharacters()[(int)*c];
+		//
+		//	float scale = (1.0f / 12.0f);
+		//
+		//	float xpos = x + ch.Bearing.x * (cmd.scale * (cmd.size * scale));
+		//	float ypos = y - (ch.Size.y - ch.Bearing.y) * (cmd.scale * (cmd.size * scale));
+		//
+		//	float w = ch.Size.x * (cmd.scale * (cmd.size * scale));
+		//	float h = ch.Size.y * (cmd.scale * (cmd.size * scale));
+		//
+		//	_vertices.push_back({ xpos, ypos + h,		ch.uv1.x, ch.uv1.y });
+		//	_vertices.push_back({ xpos, ypos,			ch.uv1.x, ch.uv2.y });
+		//	_vertices.push_back({ xpos + w, ypos,		ch.uv2.x, ch.uv2.y });
+		//
+		//	_vertices.push_back({ xpos, ypos + h,		ch.uv1.x, ch.uv1.y });
+		//	_vertices.push_back({ xpos + w, ypos,		ch.uv2.x, ch.uv2.y });
+		//	_vertices.push_back({ xpos + w, ypos + h,	ch.uv2.x, ch.uv1.y });
+		//	
+		//	x += (ch.Advance >> 6) * (cmd.scale * (cmd.size * scale));
+		//
+		//	/* update both the vertex and index buffers */
+		//	_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(TextVertex2D) * (uint32_t)_vertices.size(), 0);
+		//
+		//
+		//	_VPMatrix = cmd.vpMatrix;
+		//	_Shader = cmd.shader;
+		//	_FontType = cmd.font;
+		//	_Color = cmd.color;
+		//
+		//	cmd.font->Texture->Bind();
+		//	
+		//}
 
 		Flush();
 	}
@@ -85,7 +85,7 @@ namespace Wyrd
 
 		_Shader->Bind();
 
-		_Shader->SetVPMatrix(_VPMatrix);
+		//_Shader->SetVPMatrix(_VPMatrix);
 
 		_Shader->SetUniformColor("blendColor", _Color);
 
