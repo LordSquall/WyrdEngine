@@ -13,9 +13,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: install libs
-      run: sudo apt install uuid-dev
-    - name: pull premake
-      run: git clone https://github.com/premake/premake-core.git
-    - name: build premake
-      run: cd premake-core && make -f Bootstrap.mak linux
+    - name: install toolchain
+      run: ./buildsystem/build-toolchain.sh
+    - name: install dependencies
+      run: ./buildsystem/build-dependencies.sh
+    - name: build wyrd
+      run: ./buildsystem/build-wyrd.sh
+   
