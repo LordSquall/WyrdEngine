@@ -1,1 +1,1 @@
-sudo rm -rf dependencies/uuid
+sudo rm -rf dependencies

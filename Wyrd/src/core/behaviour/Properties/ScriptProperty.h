@@ -4,11 +4,6 @@
 #include "wyrdpch.h"
 #include "core/export.h"
 
-namespace jsonxx
-{
-	class Object;
-};
-
 namespace Wyrd
 {
 	class Scene;
@@ -29,21 +24,7 @@ namespace Wyrd
 		 * @param data - data
 		*/
 		virtual void Set(void* object, void* data) = 0;
-
-		/**
-		 * @brief Serialise the Property to json object
-		 * @param object json object
-		 * @return 
-		*/
-		virtual bool ToJson(jsonxx::Object& object, void* data) = 0;
-
-		/**
-		 * @brief Deserialise a json object
-		 * @param object 
-		 * @return 
-		*/
-		virtual bool FromJson(jsonxx::Object& object, void** data) = 0;
-
+ 
 		/**
 		 * @brief Copy internal value between properties
 		 * @param prop

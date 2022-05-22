@@ -31,7 +31,7 @@ namespace Wyrd
 		inline int GetWidth() { return _width; }
 		inline int GetHeight() { return _height; }
 
-		std::shared_ptr<Texture>	Texture;
+		std::shared_ptr<Wyrd::Texture>	Texture;
 	
 	protected:
 		std::map<char, Character>	_Characters;

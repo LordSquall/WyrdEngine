@@ -12,7 +12,6 @@
 
 /* external includes */
 #include <mono/jit/jit.h>
-#include <jsonxx.h>
 
 namespace Wyrd
 {
@@ -44,27 +43,6 @@ namespace Wyrd
 
 		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
 	}	
-
-
-	bool TextureProperty::ToJson(jsonxx::Object& object, void* data)
-	{
-		if (_Value != nullptr)
-		{
-			object << "value" << _Value->GetUID().str();
-		}
-		else
-		{
-			object << "value" << RESOURCE_DEFAULT_TEXTURE;
-		}
-
-		return true;
-	}
-
-	bool TextureProperty::FromJson(jsonxx::Object& object, void** data)
-	{
-		_ValueUID = UID(object.get<jsonxx::String>("value", ""));
-		return true;
-	}
 
 	void TextureProperty::Resolve(Scene& scene)
 	{

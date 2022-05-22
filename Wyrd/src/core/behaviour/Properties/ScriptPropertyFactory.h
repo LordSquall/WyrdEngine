@@ -24,11 +24,11 @@ clsname::CreateProperty)
 public:\
 clsname() : _Value(defaultValue) {}\
 virtual std::shared_ptr<ScriptProperty> CreateClone();\
-inline virtual const std::string GetFactoryName() { return  ##factoryname; };\
+inline virtual const std::string GetFactoryName() { return  #factoryname; };\
 static std::unique_ptr<ScriptProperty> CreateProperty() {\
 	return std::make_unique<clsname>();\
 }\
-static std::string GetManagedType() { return  ##factoryname; };\
+static std::string GetManagedType() { return  #factoryname; };\
 public:\
 inline virtual void CopyValue(std::shared_ptr<ScriptProperty> prop) { _Value = std::dynamic_pointer_cast<clsname>(prop)->_Value; };\
 private:\

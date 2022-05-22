@@ -8,7 +8,6 @@
 
 /* external includes */
 #include <mono/jit/jit.h>
-#include <jsonxx.h>
 
 namespace Wyrd
 {
@@ -17,17 +16,17 @@ namespace Wyrd
 		//TODO
 	}
 
-	bool BoolArrayProperty::ToJson(jsonxx::Object& object, void* data)
-	{
-		//TODO
-		return true;
-	}
-
-	bool BoolArrayProperty::FromJson(jsonxx::Object& object, void** data)
-	{
-		//TODO
-		return true;
-	}
+	//bool BoolArrayProperty::ToJson(jsonxx::Object& object, void* data)
+	//{
+	//	//TODO
+	//	return true;
+	//}
+//
+	//bool BoolArrayProperty::FromJson(jsonxx::Object& object, void** data)
+	//{
+	//	//TODO
+	//	return true;
+	//}
 
 	SCRIPT_PROPERTY_FACTORY_REGISTER(BoolArrayProperty);
 }

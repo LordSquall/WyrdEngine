@@ -8,7 +8,6 @@
 
 /* external includes */
 #include <mono/jit/jit.h>
-#include <jsonxx.h>
 
 namespace Wyrd
 {
@@ -19,20 +18,6 @@ namespace Wyrd
 		args.push_back(data);
 
 		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
-	}
-
-	bool BoolProperty::ToJson(jsonxx::Object& object, void* data)
-	{
-		object << "name" << _Name;
-		object << "value" << _Value;
-		return true;
-	}
-
-	bool BoolProperty::FromJson(jsonxx::Object& object, void** data)
-	{
-		_Value = object.get<jsonxx::Boolean>("value");
-
-		return true;
 	}
 
 	SCRIPT_PROPERTY_FACTORY_REGISTER(BoolProperty);

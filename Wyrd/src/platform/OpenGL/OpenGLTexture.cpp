@@ -28,7 +28,7 @@ namespace Wyrd
 			}
 			else
 			{
-				memcpy_s(_data, bufferSize, desc.data, bufferSize);
+				memcpy(_data, desc.data, bufferSize);
 			}
 		}
 		else

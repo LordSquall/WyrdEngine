@@ -13,7 +13,6 @@
 
 /* external includes */
 #include <mono/jit/jit.h>
-#include <jsonxx.h>
 
 namespace Wyrd
 {
@@ -47,18 +46,6 @@ namespace Wyrd
 		args.push_back(vector3Object);
 
 		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
-	}
-
-	bool Vector3Property::ToJson(jsonxx::Object& object, void* data)
-	{
-		object << "value" << _Value;
-		return true;
-	}
-
-	bool Vector3Property::FromJson(jsonxx::Object& object, void** data)
-	{
-		_Value << object.get<jsonxx::Array>("value");
-		return true;
 	}
 
 	SCRIPT_PROPERTY_FACTORY_REGISTER(Vector3Property);

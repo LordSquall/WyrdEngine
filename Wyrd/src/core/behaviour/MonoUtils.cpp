@@ -82,7 +82,7 @@ namespace Wyrd
 		if (clsPtr == nullptr)
 		{
 			WYRD_ERROR("class not found: {0}", ns + "::" + cls);
-			return false;
+			return nullptr;
 		}
 
 		/* retrieve the method */
@@ -90,7 +90,7 @@ namespace Wyrd
 		if (methodPtr == nullptr)
 		{
 			WYRD_ERROR("method not found: {0}", ns + "::" + cls + "::" + method);
-			return false;
+			return nullptr;
 		}
 
 		return methodPtr;

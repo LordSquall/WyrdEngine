@@ -20,7 +20,7 @@ namespace Wyrd {
 			_size = { 0.0f, 0.0f };
 		}
 
-		Rect(glm::vec2& pos, glm::vec2& size)
+		Rect(const glm::vec2& pos, const glm::vec2& size)
 		{
 			_position = pos;
 			_size = size;

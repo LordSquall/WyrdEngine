@@ -10,7 +10,7 @@
 
 /* external includes */
 #include <GLFW/glfw3.h>
-#include <SOIL.h>
+#include <SOIL/SOIL.h>
 
 namespace Wyrd {
 

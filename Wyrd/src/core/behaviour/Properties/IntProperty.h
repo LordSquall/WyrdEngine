@@ -5,18 +5,12 @@
 #include "core/export.h"
 #include "core/behaviour/Properties/ScriptPropertyFactory.h"
 
-
-
 namespace Wyrd
 {
 	class WYRD_LIBRARY_API IntProperty : public ScriptProperty
 	{
 	public:
 		virtual void Set(void* object, void* data) override;
-
-		virtual bool ToJson(jsonxx::Object& object, void* data) override;
-		virtual bool FromJson(jsonxx::Object& object, void** data) override;
-
 
 		inline int* GetValue() { return &_Value; }
 

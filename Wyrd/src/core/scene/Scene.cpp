@@ -10,8 +10,6 @@
 #include "serial/ComponentSerialiserFactory.h"
 #include "serial/TypeSerialisers.h"
 
-#include <jsonxx.h>
-
 namespace Wyrd
 {
 	Scene::Scene() : name("Untitled Scene") 
@@ -72,165 +70,165 @@ namespace Wyrd
 		}
 	}
 	
-	bool Scene::ToJson(jsonxx::Object& object)
-	{
-		/* background color */
-		object << "bgcolor" << bgcolor;
-
-		/* camera position */
-		object << "cameraPosition" << cameraPosition;
-
-		/* camera zoom */
-		object << "cameraZoom" << cameraZoom;
-
-		/* scene name */
-		object << "name" << name;
-
-		/* primary camera entity */
-		object << "primaryCameraEntity" << _ScenePrimaryCameraEntity;
-
-		/* available entities */
-		jsonxx::Array availableEntities;
-		for (auto& ae : _AvailableEntities)
-		{
-			availableEntities << ae;
-		}
-		object << "availableEntities" << availableEntities;
-
-
-		/* entity list */
-		jsonxx::Array entityArray;
-
-		for (auto& e : entities)
-		{
-			jsonxx::Object entity;
-			entity << "id" << e.id;
-			entity << "mask" << e.mask.to_ullong();
-			entityArray << entity;
-		}
-
-		object << "entities" << entityArray;
-
-
-		/* component pools */
-		jsonxx::Array poolArray;
-		for (auto& p : componentPools)
-		{
-			if (p->serialise)
-			{
-				jsonxx::Object pool;
-
-				pool << "name" << p->name;
-				pool << "elementSize" << p->elementSize;
-
-				jsonxx::Array components;
-
-				for (size_t i = 0; i < entities.size(); i++)
-				{
-					components << ComponentSerialiserFactory::Serialise(p->name, &p->data[i * p->elementSize]);
-					pool << "components" << components;
-				}
-
-				poolArray << pool;
-			}
-		}
-
-		object << "componentPools" << poolArray;
-
-		return true;
-	}
-
-	bool Scene::FromJson(jsonxx::Object& object)
-	{
-		/* background color */
-		if (object.has<jsonxx::Array>("bgcolor"))
-			bgcolor << object.get<jsonxx::Array>("bgcolor");
-
-		/* camera position */
-		if (object.has<jsonxx::Array>("cameraPosition"))
-			cameraPosition << object.get<jsonxx::Array>("cameraPosition");
-
-		/* camera zoom */
-		if (object.has<jsonxx::Number>("cameraZoom"))
-			cameraZoom = (float)object.get<jsonxx::Number>("cameraZoom");
-
-		/* scene name */
-		if (object.has<jsonxx::String>("name"))
-			name = object.get<jsonxx::String>("name");
-
-		/* primary camera uid*/
-		if (object.has<jsonxx::Number>("primaryCameraEntity"))
-			_ScenePrimaryCameraEntity = (Entity)object.get<jsonxx::Number>("primaryCameraEntity");
-
-		/* available entities */
-		if (object.has<jsonxx::Array>("availableEntities"))
-		{
-			jsonxx::Array availableEntities = object.get<jsonxx::Array>("availableEntities");
-			for (size_t i = 0; i < availableEntities.size(); i++)
-			{
-				_AvailableEntities.push_back(availableEntities.get<jsonxx::Number>(i));
-			}
-		}
-
-		/* entity list */
-		if (object.has<jsonxx::Array>("entities"))
-		{
-			jsonxx::Array entityArray = object.get<jsonxx::Array>("entities");
-		
-			for (size_t i = 0; i < entityArray.size(); i++)
-			{
-				jsonxx::Object entity = entityArray.get<jsonxx::Object>((unsigned int)i);
-				Entity id = (Entity)entity.get<jsonxx::Number>("id");
-				ComponentMask mask = (ComponentMask)entity.get<jsonxx::Number>("mask");
-				
-				/* check to make sure there is space to store this entity */
-				if (id > entities.size())
-					entities.resize(id);
-		
-				entities[id - 1] = { id, mask };
-			}
-		}
-		
-		/* component pools */
-		if (object.has<jsonxx::Array>("componentPools"))
-		{
-			jsonxx::Array componentPoolsArray = object.get<jsonxx::Array>("componentPools");
-			for (size_t i = 0; i < componentPoolsArray.size(); i++)
-			{
-				jsonxx::Object poolObj = componentPoolsArray.get<jsonxx::Object>((unsigned int)i);
-		
-				std::string poolName = poolObj.get<String>("name");
-
-				/* find the component pool */
-				auto foundPoolIt = std::find_if(componentPools.begin(), componentPools.end(),
-					[&poolName](const ComponentPool* p) { return p->name.compare(poolName) == 0; }
-				);
-
-				if (foundPoolIt == componentPools.end())
-				{
-					return false;
-				}
-
-				ComponentPool* pool = *foundPoolIt;
-
-				int poolElementSize = pool->elementSize; 
-
-				if (poolObj.has<jsonxx::Array>("components"))
-				{
-					jsonxx::Array compnentArray = poolObj.get<jsonxx::Array>("components");
-					for (size_t j = 0; j < compnentArray.size(); j++)
-					{
-						jsonxx::Object component = compnentArray.get<jsonxx::Object>((unsigned int)j);
-
-						ComponentSerialiserFactory::Deserialise(poolName, component, &(pool->data[j * poolElementSize]));
-						pool->count++;
-					}
-				}
-			}
-		}
-
-		return true;
-	}
+	// bool Scene::ToJson(jsonxx::Object& object)
+	// {
+		// /* background color */
+		// object << "bgcolor" << bgcolor;
+// 
+		// /* camera position */
+		// object << "cameraPosition" << cameraPosition;
+// 
+		// /* camera zoom */
+		// object << "cameraZoom" << cameraZoom;
+// 
+		// /* scene name */
+		// object << "name" << name;
+// 
+		// /* primary camera entity */
+		// object << "primaryCameraEntity" << _ScenePrimaryCameraEntity;
+// 
+		// /* available entities */
+		// jsonxx::Array availableEntities;
+		// for (auto& ae : _AvailableEntities)
+		// {
+			// availableEntities << ae;
+		// }
+		// object << "availableEntities" << availableEntities;
+// 
+// 
+		// /* entity list */
+		// jsonxx::Array entityArray;
+// 
+		// for (auto& e : entities)
+		// {
+			// jsonxx::Object entity;
+			// entity << "id" << e.id;
+			// entity << "mask" << e.mask.to_ullong();
+			// entityArray << entity;
+		// }
+// 
+		// object << "entities" << entityArray;
+// 
+// 
+		// /* component pools */
+		// jsonxx::Array poolArray;
+		// for (auto& p : componentPools)
+		// {
+			// if (p->serialise)
+			// {
+				// jsonxx::Object pool;
+// 
+				// pool << "name" << p->name;
+				// pool << "elementSize" << p->elementSize;
+// 
+				// jsonxx::Array components;
+// 
+				// for (size_t i = 0; i < entities.size(); i++)
+				// {
+					// components << ComponentSerialiserFactory::Serialise(p->name, &p->data[i * p->elementSize]);
+					// pool << "components" << components;
+				// }
+// 
+				// poolArray << pool;
+			// }
+		// }
+// 
+		// object << "componentPools" << poolArray;
+// 
+		// return true;
+	// }
+// 
+	// bool Scene::FromJson(jsonxx::Object& object)
+	// {
+		// /* background color */
+		// if (object.has<jsonxx::Array>("bgcolor"))
+			// bgcolor << object.get<jsonxx::Array>("bgcolor");
+// 
+		// /* camera position */
+		// if (object.has<jsonxx::Array>("cameraPosition"))
+			// cameraPosition << object.get<jsonxx::Array>("cameraPosition");
+// 
+		// /* camera zoom */
+		// if (object.has<jsonxx::Number>("cameraZoom"))
+			// cameraZoom = (float)object.get<jsonxx::Number>("cameraZoom");
+// 
+		// /* scene name */
+		// if (object.has<jsonxx::String>("name"))
+			// name = object.get<jsonxx::String>("name");
+// 
+		// /* primary camera uid*/
+		// if (object.has<jsonxx::Number>("primaryCameraEntity"))
+			// _ScenePrimaryCameraEntity = (Entity)object.get<jsonxx::Number>("primaryCameraEntity");
+// 
+		// /* available entities */
+		// if (object.has<jsonxx::Array>("availableEntities"))
+		// {
+			// jsonxx::Array availableEntities = object.get<jsonxx::Array>("availableEntities");
+			// for (size_t i = 0; i < availableEntities.size(); i++)
+			// {
+				// _AvailableEntities.push_back(availableEntities.get<jsonxx::Number>(i));
+			// }
+		// }
+// 
+		// /* entity list */
+		// if (object.has<jsonxx::Array>("entities"))
+		// {
+			// jsonxx::Array entityArray = object.get<jsonxx::Array>("entities");
+		// 
+			// for (size_t i = 0; i < entityArray.size(); i++)
+			// {
+				// jsonxx::Object entity = entityArray.get<jsonxx::Object>((unsigned int)i);
+				// Entity id = (Entity)entity.get<jsonxx::Number>("id");
+				// ComponentMask mask = (ComponentMask)entity.get<jsonxx::Number>("mask");
+				// 
+				// /* check to make sure there is space to store this entity */
+				// if (id > entities.size())
+					// entities.resize(id);
+		// 
+				// entities[id - 1] = { id, mask };
+			// }
+		// }
+		// 
+		// /* component pools */
+		// if (object.has<jsonxx::Array>("componentPools"))
+		// {
+			// jsonxx::Array componentPoolsArray = object.get<jsonxx::Array>("componentPools");
+			// for (size_t i = 0; i < componentPoolsArray.size(); i++)
+			// {
+				// jsonxx::Object poolObj = componentPoolsArray.get<jsonxx::Object>((unsigned int)i);
+		// 
+				// std::string poolName = poolObj.get<String>("name");
+// 
+				// /* find the component pool */
+				// auto foundPoolIt = std::find_if(componentPools.begin(), componentPools.end(),
+					// [&poolName](const ComponentPool* p) { return p->name.compare(poolName) == 0; }
+				// );
+// 
+				// if (foundPoolIt == componentPools.end())
+				// {
+					// return false;
+				// }
+// 
+				// ComponentPool* pool = *foundPoolIt;
+// 
+				// int poolElementSize = pool->elementSize; 
+// 
+				// if (poolObj.has<jsonxx::Array>("components"))
+				// {
+					// jsonxx::Array compnentArray = poolObj.get<jsonxx::Array>("components");
+					// for (size_t j = 0; j < compnentArray.size(); j++)
+					// {
+						// jsonxx::Object component = compnentArray.get<jsonxx::Object>((unsigned int)j);
+// 
+						// ComponentSerialiserFactory::Deserialise(poolName, component, &(pool->data[j * poolElementSize]));
+						// pool->count++;
+					// }
+				// }
+			// }
+		// }
+// 
+		// return true;
+	// }
 
 	Entity Scene::CreateEntity()
 	{

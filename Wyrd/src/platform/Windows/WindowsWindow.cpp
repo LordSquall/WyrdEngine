@@ -3,10 +3,10 @@
 #include "wyrdpch.h"
 #include "WindowsWindow.h"
 
+#include "core/Log.h"
 #include "events/MouseEvent.h"
 #include "events/KeyEvent.h"
 #include "platform/OpenGL/OpenGLContext.h"
-#include "platform/OpenGL/OpenGLError.h"
 
 #include <SOIL.h>
 
@@ -266,6 +266,6 @@ namespace Wyrd {
 
 	void* WindowsWindow::GetNativeGFXContextPointer() const
 	{
-		return (void*)glfwGetWGLContext(m_Window);
+		return nullptr;//(void*)glfwGetWGLContext(m_Window);
 	}
 }
