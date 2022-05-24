@@ -6,7 +6,7 @@
 #include "events/KeyEvent.h"
 #include "platform/OpenGL/OpenGLContext.h"
 
-#include <SOIL.h>
+#include <SOIL/SOIL.h>
 
 namespace Wyrd {
 

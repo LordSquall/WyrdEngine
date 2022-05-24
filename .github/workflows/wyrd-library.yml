@@ -13,8 +13,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: install toolchain
-      run: ./buildsystem/build-toolchain.sh
     - name: install dependencies
       run: ./buildsystem/build-dependencies.sh
     - name: build wyrd
