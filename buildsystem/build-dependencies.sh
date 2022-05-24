@@ -4,15 +4,15 @@ mkdir dependencies/bin
 mkdir dependencies/lib
 
 ###### GLM ######
-mkdir dependencies/glfw
-git clone https://github.com/glfw/glfw.git dependencies/glfw
-cd dependencies/glfw
+mkdir dependencies/glm
+git clone https://github.com/g-truc/glm.git dependencies/glm
+cd dependencies/glm
 mkdir cmakedir
 cd cmakedir
 sudo cmake ../
-sudo make
+sudo make -j 4
+sudo make install
 cd ../../..
-ln -s dependencies/uuid/cmakedir/src/libglfw3.a  dependencies/lib/libglfw3.a 
 
 ###### SOIL ######
 mkdir dependencies/soil
@@ -21,9 +21,9 @@ cd dependencies/soil
 mkdir cmakedir
 cd cmakedir
 sudo cmake ../
-sudo make
+sudo make -j 4
+sudo make install
 cd ../../..
-ln -s dependencies/soil/cmakedir/libSOIL.a  dependencies/lib/libSOIL.a 
 
 ###### Crossguid ######
 mkdir dependencies/uuid
@@ -32,7 +32,7 @@ cd dependencies/uuid
 mkdir cmakedir
 cd cmakedir
 sudo cmake ../
-sudo make
+sudo make -j 4
 sudo make install
 cd ../../..
 
@@ -40,7 +40,7 @@ cd ../../..
 mkdir dependencies/jsonxx
 git clone https://github.com/hjiang/jsonxx.git dependencies/jsonxx
 cd dependencies/jsonxx
-sudo make
+sudo make -j 4
 sudo make install
 cd ../..
 
@@ -51,6 +51,6 @@ cd dependencies/spdlog
 mkdir cmakedir
 cd cmakedir
 sudo cmake ../
-sudo make
+sudo make -j 4
 sudo make install
 cd ../../..
