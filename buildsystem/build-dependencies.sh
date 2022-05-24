@@ -3,16 +3,6 @@ mkdir dependencies
 mkdir dependencies/bin
 mkdir dependencies/lib
 
-###### GLFW ######
-mkdir dependencies/glfw
-git clone https://github.com/glfw/glfw.git dependencies/glfw
-mkdir cmakedir
-cd cmakedir
-sudo cmake ../
-sudo make
-cd ../../..
-ln -s dependencies/uuid/cmakedir/src/libglfw3.a  dependencies/lib/libglfw3.a 
-
 ###### GLM ######
 mkdir dependencies/glfw
 git clone https://github.com/glfw/glfw.git dependencies/glfw
