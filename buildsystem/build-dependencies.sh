@@ -21,6 +21,17 @@ sudo make -j 4
 sudo make install
 cd ../../..
 
+##### SpdLog ######
+mkdir dependencies/spdlog
+git clone https://github.com/gabime/spdlog dependencies/spdlog
+cd dependencies/spdlog
+mkdir cmakedir
+cd cmakedir
+sudo cmake ../
+sudo make
+sudo make install
+cd ../../.. 
+
 ###### jsonxx ######
 mkdir dependencies/jsonxx
 git clone https://github.com/hjiang/jsonxx.git dependencies/jsonxx
