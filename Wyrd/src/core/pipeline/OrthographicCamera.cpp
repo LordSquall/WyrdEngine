@@ -1,4 +1,3 @@
-#pragma once
 #include "wyrdpch.h"
 
 #include "OrthographicCamera.h"

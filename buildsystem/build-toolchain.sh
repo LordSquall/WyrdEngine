@@ -6,6 +6,7 @@ sudo apt install uuid-dev
 sudo apt install libglm-dev
 sudo apt-get install libglfw3
 sudo apt-get install libglfw3-dev
+sudo apt-get install libsoil-dev
 
 # Mono needs to be installed from a different repo
 sudo apt install dirmngr gnupg apt-transport-https ca-certificates software-properties-common

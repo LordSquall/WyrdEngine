@@ -1,5 +1,3 @@
-#pragma once
-
 /* local includes */
 #include "wyrdpch.h"
 #include "Vertex2DBatch.h"

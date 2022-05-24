@@ -1,5 +1,3 @@
-#pragma once
-
 #include "wyrdpch.h"
 
 #include "core/renderer/Renderer.h"

@@ -1,5 +1,3 @@
-#pragma once
-
 #include "wyrdpch.h"
 #include "WindowsWindow.h"
 

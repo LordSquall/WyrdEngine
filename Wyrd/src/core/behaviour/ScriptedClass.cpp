@@ -1,5 +1,3 @@
-#pragma once
-
 /* Local includes */
 #include "wyrdpch.h"
 #include "core/Log.h"

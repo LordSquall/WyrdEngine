@@ -1,5 +1,3 @@
-#pragma once
-
 #ifdef WYRD_PLATFORM_WINDOWS
 #define _CRT_SECURE_NO_WARNINGS
 #endif
