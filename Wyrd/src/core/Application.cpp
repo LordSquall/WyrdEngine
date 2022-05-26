@@ -10,7 +10,12 @@
 
 /* external includes */
 #include <GLFW/glfw3.h>
+
+#ifdef WYRD_PLATFORM_WINDOWS
+#include <SOIL.h>
+#elif WYRD_PLATFORM_LINUX
 #include <SOIL/SOIL.h>
+#endif
 
 namespace Wyrd {
 

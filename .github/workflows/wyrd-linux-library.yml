@@ -14,15 +14,15 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Install dependencies
-      run: ./buildsystem/install-dependencies.sh
+      run: ./buildsystem/linux/install-dependencies.sh
     - name: Install mono
-      run: ./buildsystem/install-mono.sh
+      run: ./buildsystem/linux/install-mono.sh
     - name: Build premake5
-      run: ./buildsystem/build-premake5.sh
+      run: ./buildsystem/linux/build-premake5.sh
     - name: Build spdlog
-      run: ./buildsystem/build-spdlog.sh
+      run: ./buildsystem/linux/build-spdlog.sh
     - name: Build uuid
-      run: ./buildsystem/build-uuid.sh
+      run: ./buildsystem/linux/build-uuid.sh
     - name: Build wyrd
-      run: ./buildsystem/build-wyrd.sh
+      run: ./buildsystem/linux/build-wyrd.sh
    
