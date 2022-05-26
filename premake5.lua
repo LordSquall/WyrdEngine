@@ -143,7 +143,7 @@ group ""
 
 			defines
 			{
-				"WYRD_LINUX",
+				"WYRD_PLATFORM_LINUX",
 				"WYRD_LIBRARY_EXPORT",
 				"GLFW_INCLUDE_NONE",
 				"GLM_ENABLE_EXPERIMENTAL"
