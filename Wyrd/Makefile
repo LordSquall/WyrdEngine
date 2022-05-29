@@ -17,7 +17,7 @@ ifeq ($(config),debug)
   OBJDIR = ../obj/Debug/Wyrd
   PCH = src/wyrdpch.h
   GCH = $(OBJDIR)/$(notdir $(PCH)).gch
-  DEFINES += -DWYRD_LINUX -DWYRD_LIBRARY_EXPORT -DGLFW_INCLUDE_NONE -DGLM_ENABLE_EXPERIMENTAL -DWYRD_DEBUG
+  DEFINES += -DWYRD_PLATFORM_LINUX -DWYRD_LIBRARY_EXPORT -DGLFW_INCLUDE_NONE -DGLM_ENABLE_EXPERIMENTAL -DWYRD_DEBUG
   INCLUDES += -Isrc -Ivendor/glad/include -I../dependencies/soil/src
   FORCE_INCLUDE += -include $(OBJDIR)/$(notdir $(PCH))
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
@@ -26,7 +26,7 @@ ifeq ($(config),debug)
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   LIBS += -lGLFW -lGLAD -lSOIL -ljsonxx -luuid -lmono-2.0-sgen
   LDDEPS +=
-  ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib64 -m64
+  ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib -L/usr/lib64 -m64
   LINKCMD = $(AR) -rcs "$@" $(OBJECTS)
   define PREBUILDCMDS
   endef
@@ -46,7 +46,7 @@ ifeq ($(config),release)
   OBJDIR = ../obj/Release/Wyrd
   PCH = src/wyrdpch.h
   GCH = $(OBJDIR)/$(notdir $(PCH)).gch
-  DEFINES += -DWYRD_LINUX -DWYRD_LIBRARY_EXPORT -DGLFW_INCLUDE_NONE -DGLM_ENABLE_EXPERIMENTAL -DWYRD_RELEASE
+  DEFINES += -DWYRD_PLATFORM_LINUX -DWYRD_LIBRARY_EXPORT -DGLFW_INCLUDE_NONE -DGLM_ENABLE_EXPERIMENTAL -DWYRD_RELEASE
   INCLUDES += -Isrc -Ivendor/glad/include -I../dependencies/soil/src
   FORCE_INCLUDE += -include $(OBJDIR)/$(notdir $(PCH))
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
@@ -55,7 +55,7 @@ ifeq ($(config),release)
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   LIBS += -lGLFW -lGLAD -lSOIL -ljsonxx -luuid -lmono-2.0-sgen
   LDDEPS +=
-  ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib64 -m64
+  ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib -L/usr/lib64 -m64
   LINKCMD = $(AR) -rcs "$@" $(OBJECTS)
   define PREBUILDCMDS
   endef
@@ -75,7 +75,7 @@ ifeq ($(config),distribution)
   OBJDIR = ../obj/Distribution/Wyrd
   PCH = src/wyrdpch.h
   GCH = $(OBJDIR)/$(notdir $(PCH)).gch
-  DEFINES += -DWYRD_LINUX -DWYRD_LIBRARY_EXPORT -DGLFW_INCLUDE_NONE -DGLM_ENABLE_EXPERIMENTAL -DWYRD_DISTRIBUTION
+  DEFINES += -DWYRD_PLATFORM_LINUX -DWYRD_LIBRARY_EXPORT -DGLFW_INCLUDE_NONE -DGLM_ENABLE_EXPERIMENTAL -DWYRD_DISTRIBUTION
   INCLUDES += -Isrc -Ivendor/glad/include -I../dependencies/soil/src
   FORCE_INCLUDE += -include $(OBJDIR)/$(notdir $(PCH))
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
@@ -84,7 +84,7 @@ ifeq ($(config),distribution)
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   LIBS += -lGLFW -lGLAD -lSOIL -ljsonxx -luuid -lmono-2.0-sgen
   LDDEPS +=
-  ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib64 -m64
+  ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib -L/usr/lib64 -m64
   LINKCMD = $(AR) -rcs "$@" $(OBJECTS)
   define PREBUILDCMDS
   endef
