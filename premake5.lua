@@ -1,6 +1,6 @@
 workspace "Wyrd"
 	architecture "x64"
-	startproject "ESCTestApp"
+	startproject "Editor"
 
 	configurations
 	{
@@ -51,6 +51,8 @@ includedir["spdlog"] = dependenciesdir .. "/spdlog/include/"
 includedir["uuid"] = dependenciesdir .. "/uuid/include/"
 includedir["hash"] = dependenciesdir .. "/Hash/include/"
 includedir["freetype"] = dependenciesdir .. "/freetype/include/"
+includedir["jsonxx"] = dependenciesdir .. "/jsonxx/"
+includedir["GLAD"] = "Wyrd/vendor/glad/include"
 
 -- if mono was found, the add the in application to the include directories
 if monofound then
@@ -67,6 +69,7 @@ group "Third Party"
 	include "buildsystem/windows/premake5-spdlog.lua"
 	include "buildsystem/windows/premake5-uuid.lua"
 	include "buildsystem/windows/premake5-hash.lua"
+	include "buildsystem/windows/premake5-freetype.lua"
 end
 
 group ""
@@ -163,3 +166,190 @@ group ""
 			defines "WYRD_DISTRIBUTION"
 			runtime "Release"
 			symbols "on"
+			
+group "Applications"
+project "TestPlayer"
+	location "Apps/TestPlayer"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "off"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("obj/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"Apps/%{prj.name}/src/**.h",
+		"Apps/%{prj.name}/src/**.cpp",
+		"Apps/%{prj.name}/res/**.vs",
+		"Apps/%{prj.name}/res/**.fs"
+	}
+
+	includedirs
+	{
+		"Apps/%{prj.name}/src/",
+		"%{prj.name}/vendor/glad/include",
+		"Wyrd/src",
+		"%{includedir.GLFW}",
+		"%{includedir.GLAD}",
+		"%{includedir.jsonxx}",
+		"%{includedir.SOIL}",
+		"%{includedir.glm}",
+		"%{includedir.mono}",
+		"%{includedir.spdlog}",
+		"%{includedir.uuid}"
+	}
+	
+	libdirs
+	{
+		externallibsdir .. "/freetype/builds/Debug/"
+	}
+
+	links
+	{
+		"Wyrd",
+		"GLFW",
+		"GLAD",
+		"SOIL",
+		"jsonxx",
+		"imgui",
+		"freetyped",
+		"opengl32.dll"
+	}
+	
+	dependson 
+	{ 
+		"WyrdAPI", 
+		"WyrdCAPI"
+	}
+
+	filter "system:windows"
+		systemversion "latest"
+
+		defines
+		{
+			"WYRD_PLATFORM_WINDOWS",
+			"WYRD_EDITOR_ENABLED",
+			"GLM_ENABLE_EXPERIMENTAL",
+			"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
+			"MONO_INSTALL_LOC=" .. monodir
+		}
+		
+		linkoptions { "/WHOLEARCHIVE:Wyrd" }
+		
+		debugenvs { "PATH=" .. monobindir .. ";../../lib/Debug/WyrdCAPI/;%PATH%" }
+		
+
+	filter "configurations:Debug"
+		defines "WYRD_DEBUG"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		defines "WYRD_RELEASE"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Distribution"
+		defines "WYRD_DISTRIBUTION"
+		runtime "Debug"
+		symbols "on"
+		
+project "Editor"
+	location "Apps/Editor"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "off"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("obj/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"Apps/%{prj.name}/src/**.h",
+		"Apps/%{prj.name}/src/**.cpp",
+		"Apps/%{prj.name}/res/**.vs",
+		"Apps/%{prj.name}/res/**.fs"
+	}
+
+	includedirs
+	{
+		"Apps/%{prj.name}/src",
+		"Apps/Players/Player/src",
+		"codegen/src/Common/include",
+		"codegen/src/PlayerAPI/include",
+		"Wyrd/src",
+		"%{includedir.glm}",
+		"%{includedir.GLFW}",
+		"%{includedir.GLAD}",
+		"%{includedir.jsonxx}",
+		"%{includedir.SOIL}",
+		"%{includedir.imgui}",
+		"%{includedir.glm}",
+		"%{includedir.tinyobjloader}",
+		"%{includedir.mono}",
+		"%{includedir.spdlog}",
+		"%{includedir.uuid}",
+		"%{includedir.hash}",
+		"%{includedir.freetype}"
+	}
+	
+	libdirs
+	{
+		externallibsdir .. "/freetype/builds/Debug/"
+	}
+
+	links
+	{
+		"Wyrd",
+		"GLFW",
+		"GLAD",
+		"SOIL",
+		"jsonxx",
+		"imgui",
+		"freetyped",
+		"opengl32.dll"
+	}
+	
+	dependson 
+	{ 
+		"WyrdAPI", 
+		"WyrdCAPI",
+		"Player"
+	}
+
+	filter "system:windows"
+		systemversion "latest"
+
+		defines
+		{
+			"WYRD_PLATFORM_WINDOWS",
+			"WYRD_EDITOR_ENABLED",
+			"GLM_ENABLE_EXPERIMENTAL",
+			"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
+			"MONO_INSTALL_LOC=" .. monodir
+
+		}
+		
+		linkoptions { "/WHOLEARCHIVE:Wyrd" }
+		
+		debugenvs { "PATH=" .. monobindir .. ";../../lib/Debug/WyrdCAPI/;%PATH%" }
+		
+		
+
+	filter "configurations:Debug"
+		defines "WYRD_DEBUG"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		defines "WYRD_RELEASE"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Distribution"
+		defines "WYRD_DISTRIBUTION"
+		runtime "Debug"
+		symbols "on"

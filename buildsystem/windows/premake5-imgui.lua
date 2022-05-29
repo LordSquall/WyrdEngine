@@ -1,13 +1,11 @@
-externallibsdir = os.getenv("WYRD_EXTERN_REPOS")
-
 project "imgui"
     kind "StaticLib"
     language "C++"
 	cppdialect "C++17"
 	staticruntime "off"
     
-	srcdir = externallibsdir .. "/imgui/"
-	include_dir = externallibsdir .. "/imgui/"
+	srcdir = "../../dependencies/imgui/"
+	include_dir = "../../dependencies/imgui/"
 	
 	basedir("../")
 	

@@ -1,13 +1,11 @@
-externallibsdir = os.getenv("WYRD_EXTERN_REPOS")
-
 project "jsonxx"
     kind "StaticLib"
     language "C++"
 	cppdialect "C++17"
 	staticruntime "off"
     
-	src_dir = externallibsdir .. "/jsonxx/"
-	include_dir = externallibsdir .. "/jsonxx/"
+	src_dir = "../../dependencies/jsonxx/"
+	include_dir = "../../dependencies/jsonxx/"
 	
 	basedir("../")
 	

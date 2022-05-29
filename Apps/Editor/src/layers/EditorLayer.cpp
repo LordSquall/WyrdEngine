@@ -272,7 +272,7 @@ namespace Wyrd::Editor
 		ImGuiViewport* viewport = ImGui::GetMainViewport();
 		ImGui::SetNextWindowPos(viewport->Pos);
 		ImGui::SetNextWindowSize(viewport->Size);
-		ImGui::SetNextWindowViewport(viewport->ID);
+		//ImGui::SetNextWindowViewport(viewport->ID);
 
 		/* setup the root window flags */
 		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
@@ -432,10 +432,10 @@ namespace Wyrd::Editor
 
 		ImGui::PopFont();
 
-		renderer.StartNamedSection("ImGui Editor");
+		//renderer.StartNamedSection("ImGui Editor");
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		renderer.EndNamedSection();
+		//renderer.EndNamedSection();
 		
 	}
 

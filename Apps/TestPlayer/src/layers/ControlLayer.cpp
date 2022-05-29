@@ -141,20 +141,17 @@ void ControlLayer::OnRender(Timestep ts, Renderer& renderer)
 
 bool ControlLayer::LoadCoreFile()
 {
-	ImportManager::ImportCore(baseDirectory);
-	return true;
+	return ImportManager::ImportCore(baseDirectory);
 }
 
 bool ControlLayer::LoadGameFile()
 {
-	ImportManager::ImportGame(baseDirectory);
-	return true;
+	return ImportManager::ImportGame(baseDirectory);
 }
 
 bool ControlLayer::LoadCommonBundleFile()
 {
-	ImportManager::ImportCommonBundle(baseDirectory);
-	return true;
+	return ImportManager::ImportCommonBundle(baseDirectory);
 }
 
 bool ControlLayer::OnKeyReleasedEvent(KeyReleasedEvent& e, void* data)

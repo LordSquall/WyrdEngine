@@ -43,7 +43,7 @@ namespace Wyrd::Editor
 
 			if (o.parse(ss.str()) == true)
 			{
-				scene.FromJson(o);
+				//scene.FromJson(o);
 			}
 			else
 			{
@@ -92,7 +92,7 @@ namespace Wyrd::Editor
 
 		/* construct the scene into a json file */
 		jsonxx::Object o;
-		scene.ToJson(o);
+		//scene.ToJson(o);
 
 		std::ofstream out(path);
 		out << o.json();

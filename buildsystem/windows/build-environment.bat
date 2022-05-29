@@ -20,5 +20,9 @@ git clone https://github.com/graeme-hill/crossguid.git dependencies/uuid
 ::###### SpdLog ######
 git clone https://github.com/gabime/spdlog dependencies/spdlog
 
+::###### ImGui ######
+git clone -b Docking https://github.com/ocornut/imgui.git dependencies/imgui
 
-call buildsystem\windows\externaltools\premake5.exe vs2019
+
+::###### FreeType ######
+git clone https://github.com/freetype/freetype.git dependencies/freetype

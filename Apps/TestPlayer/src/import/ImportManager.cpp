@@ -13,7 +13,7 @@
 #include "managers/SceneManager.h"
 
 
-void ImportManager::ImportCore(const std::string& root)
+bool ImportManager::ImportCore(const std::string& root)
 {
 	/* open the meta data file */
 	std::ifstream core;
@@ -21,7 +21,7 @@ void ImportManager::ImportCore(const std::string& root)
 	if (core.good() == false)
 	{
 		WYRD_CORE_ERROR("Unable to find core.dat file");
-		return;
+		return false;
 	}
 
 	uint32_t windowWidth = 0;
@@ -32,9 +32,11 @@ void ImportManager::ImportCore(const std::string& root)
 	Application::Get().GetWindow().SetSize(windowWidth, windowHeight);
 
 	core.close();
+
+	return true;
 }
 
-void ImportManager::ImportGame(const std::string& root)
+bool ImportManager::ImportGame(const std::string& root)
 {
 	/* open the file */
 	std::ifstream game;
@@ -42,7 +44,7 @@ void ImportManager::ImportGame(const std::string& root)
 	if (game.good() == false)
 	{
 		WYRD_CORE_ERROR("Unable to find game.dat file");
-		return;
+		return false;
 	}
 
 	/* load the scene map */
@@ -66,9 +68,11 @@ void ImportManager::ImportGame(const std::string& root)
 
 	/* close the file */
 	game.close();
+
+	return true;
 }
 
-void ImportManager::ImportCommonBundle(const std::string& root)
+bool ImportManager::ImportCommonBundle(const std::string& root)
 {
 	/* open the meta data file */
 	std::ifstream common;
@@ -76,7 +80,7 @@ void ImportManager::ImportCommonBundle(const std::string& root)
 	if (common.good() == false)
 	{
 		WYRD_CORE_ERROR("Unable to find common.bundle file");
-		return;
+		return false;
 	}
 
 	size_t shaderCount;
@@ -227,6 +231,8 @@ void ImportManager::ImportCommonBundle(const std::string& root)
 		}
 	}
 	common.close();
+
+	return true;
 }
 
 std::unique_ptr<Wyrd::Scene> ImportManager::ImportScene(const std::string& root, const Wyrd::UID& sceneUID)

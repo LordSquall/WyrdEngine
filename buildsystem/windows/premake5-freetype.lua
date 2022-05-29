@@ -1,13 +1,11 @@
-externallibsdir = os.getenv("WYRD_EXTERN_REPOS")
-
 project "freetype"
     kind "StaticLib"
     language "C++"
 	cppdialect "C++17"
 	staticruntime "off"
     
-	srcdir = externallibsdir .. "/freetype/src/"
-	include_dir = externallibsdir .. "/freetype/include/"
+	srcdir = "../../dependencies/freetype/src/"
+	include_dir = "../../dependencies/freetype/include/"
 	
 	basedir("../")
 	

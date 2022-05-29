@@ -36,10 +36,10 @@ namespace Wyrd::Editor
 					std::string name = subImageAreaObj.get<jsonxx::String>("name");
 
 					Vector2 uv1;
-					uv1 << subImageAreaObj.get<jsonxx::Array>("uv1");
+					//uv1 << subImageAreaObj.get<jsonxx::Array>("uv1");
 
 					Vector2 uv2;
-					uv2 << subImageAreaObj.get<jsonxx::Array>("uv2");
+					//uv2 << subImageAreaObj.get<jsonxx::Array>("uv2");
 
 					imageAreas.push_back({ id, name,  uv1, uv2 });
 				}

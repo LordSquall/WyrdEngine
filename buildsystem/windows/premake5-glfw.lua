@@ -1,5 +1,3 @@
-externallibsdir = os.getenv("WYRD_EXTERN_REPOS")
-
 print("GLFW Premake build started")
 
 project "glfw"
@@ -8,7 +6,7 @@ project "glfw"
 	cppdialect "C++17"
 	staticruntime "off"
     
-	srcdir = externallibsdir .. "/glfw/"
+	srcdir = "../../dependencies/glfw/"
 	
 	basedir("../")
 	
