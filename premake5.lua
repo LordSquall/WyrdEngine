@@ -48,7 +48,7 @@ includedir["SOIL"] = dependenciesdir .. "/soil/src"
 includedir["glm"] = dependenciesdir .. "/glm"
 includedir["imgui"] = dependenciesdir .. "/imgui"
 includedir["spdlog"] = dependenciesdir .. "/spdlog/include/"
-includedir["uuid"] = dependenciesdir .. "/uuid/include/"
+includedir["crossguid"] = dependenciesdir .. "/crossguid/include/"
 includedir["hash"] = dependenciesdir .. "/Hash/include/"
 includedir["freetype"] = dependenciesdir .. "/freetype/include/"
 includedir["jsonxx"] = dependenciesdir .. "/jsonxx/"
@@ -61,22 +61,21 @@ end
 
 if os.istarget("windows") then
 group "Third Party"
-	include "buildsystem/windows/premake5-glfw.lua"
-	include "buildsystem/windows/premake5-glad.lua"
-	include "buildsystem/windows/premake5-jsonxx.lua"
-	include "buildsystem/windows/premake5-soil.lua"
-	include "buildsystem/windows/premake5-imgui.lua"
-	include "buildsystem/windows/premake5-spdlog.lua"
-	include "buildsystem/windows/premake5-uuid.lua"
-	include "buildsystem/windows/premake5-hash.lua"
-	include "buildsystem/windows/premake5-freetype.lua"
+	include "buildsystem/common/premake/glfw.lua"
+	include "buildsystem/common/premake/glad.lua"
+	include "buildsystem/common/premake/jsonxx.lua"
+	include "buildsystem/common/premake/soil.lua"
+	include "buildsystem/common/premake/imgui.lua"
+	include "buildsystem/common/premake/spdlog.lua"
+	include "buildsystem/common/premake/crossguid.lua"
+	include "buildsystem/common/premake/freetype.lua"
 end
 
 if os.istarget("linux") then
 group "Third Party"
-	include "buildsystem/linux/premake5-glad.lua"
-	include "buildsystem/linux/premake5-jsonxx.lua"
-	include "buildsystem/linux/premake5-imgui.lua"
+	include "buildsystem/common/premake/glad.lua"
+	include "buildsystem/common/premake/jsonxx.lua"
+	include "buildsystem/common/premake/imgui.lua"
 end
 
 group ""
@@ -119,7 +118,7 @@ group ""
 			"GLAD",
 			"SOIL",
 			"jsonxx",
-			"uuid",
+			"crossguid",
 			"mono-2.0-sgen",
 			"opengl32.dll"
 		}
@@ -137,7 +136,7 @@ group ""
 				"%{includedir.glm}",
 				"%{includedir.mono}",
 				"%{includedir.spdlog}",
-				"%{includedir.uuid}"
+				"%{includedir.crossguid}"
 			}
 			
 			defines
@@ -205,7 +204,7 @@ project "TestPlayer"
 		"%{includedir.glm}",
 		"%{includedir.mono}",
 		"%{includedir.spdlog}",
-		"%{includedir.uuid}"
+		"%{includedir.crossguid}"
 	}
 
 	dependson 
@@ -318,7 +317,7 @@ project "Editor"
 		"%{includedir.tinyobjloader}",
 		"%{includedir.mono}",
 		"%{includedir.spdlog}",
-		"%{includedir.uuid}",
+		"%{includedir.crossguid}",
 		"%{includedir.hash}",
 		"%{includedir.freetype}"
 	}
