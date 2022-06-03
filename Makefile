@@ -48,19 +48,19 @@ Third Party: glad imgui jsonxx
 glad:
 ifneq (,$(glad_config))
 	@echo "==== Building glad ($(glad_config)) ===="
-	@${MAKE} --no-print-directory -C buildsystem -f glad.make config=$(glad_config)
+	@${MAKE} --no-print-directory -C dependencies/glad/premakedir -f Makefile config=$(glad_config)
 endif
 
 jsonxx:
 ifneq (,$(jsonxx_config))
 	@echo "==== Building jsonxx ($(jsonxx_config)) ===="
-	@${MAKE} --no-print-directory -C buildsystem -f jsonxx.make config=$(jsonxx_config)
+	@${MAKE} --no-print-directory -C dependencies/jsonxx/premakedir -f Makefile config=$(jsonxx_config)
 endif
 
 imgui:
 ifneq (,$(imgui_config))
 	@echo "==== Building imgui ($(imgui_config)) ===="
-	@${MAKE} --no-print-directory -C buildsystem -f imgui.make config=$(imgui_config)
+	@${MAKE} --no-print-directory -C dependencies/imgui/premakedir -f Makefile config=$(imgui_config)
 endif
 
 Wyrd: glad jsonxx
@@ -82,9 +82,9 @@ ifneq (,$(Editor_config))
 endif
 
 clean:
-	@${MAKE} --no-print-directory -C buildsystem -f glad.make clean
-	@${MAKE} --no-print-directory -C buildsystem -f jsonxx.make clean
-	@${MAKE} --no-print-directory -C buildsystem -f imgui.make clean
+	@${MAKE} --no-print-directory -C dependencies/glad/premakedir -f Makefile clean
+	@${MAKE} --no-print-directory -C dependencies/jsonxx/premakedir -f Makefile clean
+	@${MAKE} --no-print-directory -C dependencies/imgui/premakedir -f Makefile clean
 	@${MAKE} --no-print-directory -C Wyrd -f Makefile clean
 	@${MAKE} --no-print-directory -C Apps/TestPlayer -f Makefile clean
 	@${MAKE} --no-print-directory -C Apps/Editor -f Makefile clean

@@ -15,16 +15,12 @@ sh ./buildsystem/common/setup-imgui.sh
 sh ./buildsystem/common/setup-jsonxx.sh
 sh ./buildsystem/common/setup-spdlog.sh
 sh ./buildsystem/common/setup-crossguid.sh
+sh ./buildsystem/common/setup-premake5.sh
 
 # run the install operation on all cmake dependencies
 cd dependencies/
 
 cd freetype/cmakedir
-sudo make -j 4
-sudo make install
-cd ../..
-
-cd imgui/cmakedir
 sudo make -j 4
 sudo make install
 cd ../..

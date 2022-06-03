@@ -24,8 +24,8 @@ ifeq ($(config),debug)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++17
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += ../buildsystem/linux/bin/Debug/glad/libglad.a ../buildsystem/linux/bin/Debug/jsonxx/libjsonxx.a -lGLFW -lSOIL -luuid -lmono-2.0-sgen
-  LDDEPS += ../buildsystem/linux/bin/Debug/glad/libglad.a ../buildsystem/linux/bin/Debug/jsonxx/libjsonxx.a
+  LIBS += ../dependencies/glad/premakedir/bin/Debug/glad/libglad.a ../dependencies/jsonxx/premakedir/bin/Debug/jsonxx/libjsonxx.a -lGLFW -lSOIL -lcrossguid -lmono-2.0-sgen
+  LDDEPS += ../dependencies/glad/premakedir/bin/Debug/glad/libglad.a ../dependencies/jsonxx/premakedir/bin/Debug/jsonxx/libjsonxx.a
   ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib -L/usr/lib64 -m64
   LINKCMD = $(AR) -rcs "$@" $(OBJECTS)
   define PREBUILDCMDS
@@ -53,8 +53,8 @@ ifeq ($(config),release)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++17
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += ../buildsystem/linux/bin/Release/glad/libglad.a ../buildsystem/linux/bin/Release/jsonxx/libjsonxx.a -lGLFW -lSOIL -luuid -lmono-2.0-sgen
-  LDDEPS += ../buildsystem/linux/bin/Release/glad/libglad.a ../buildsystem/linux/bin/Release/jsonxx/libjsonxx.a
+  LIBS += ../dependencies/glad/premakedir/bin/Release/glad/libglad.a ../dependencies/jsonxx/premakedir/bin/Release/jsonxx/libjsonxx.a -lGLFW -lSOIL -lcrossguid -lmono-2.0-sgen
+  LDDEPS += ../dependencies/glad/premakedir/bin/Release/glad/libglad.a ../dependencies/jsonxx/premakedir/bin/Release/jsonxx/libjsonxx.a
   ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib -L/usr/lib64 -m64
   LINKCMD = $(AR) -rcs "$@" $(OBJECTS)
   define PREBUILDCMDS
@@ -82,8 +82,8 @@ ifeq ($(config),distribution)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++17
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += ../buildsystem/linux/bin/Distribution/glad/libglad.a ../buildsystem/linux/bin/Distribution/jsonxx/libjsonxx.a -lGLFW -lSOIL -luuid -lmono-2.0-sgen
-  LDDEPS += ../buildsystem/linux/bin/Distribution/glad/libglad.a ../buildsystem/linux/bin/Distribution/jsonxx/libjsonxx.a
+  LIBS += ../dependencies/glad/premakedir/bin/Distribution/glad/libglad.a ../dependencies/jsonxx/premakedir/bin/Distribution/jsonxx/libjsonxx.a -lGLFW -lSOIL -lcrossguid -lmono-2.0-sgen
+  LDDEPS += ../dependencies/glad/premakedir/bin/Distribution/glad/libglad.a ../dependencies/jsonxx/premakedir/bin/Distribution/jsonxx/libjsonxx.a
   ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib -L/usr/lib64 -m64
   LINKCMD = $(AR) -rcs "$@" $(OBJECTS)
   define PREBUILDCMDS

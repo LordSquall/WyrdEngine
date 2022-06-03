@@ -7,7 +7,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # There is NO WARRANTY, to the extent permitted by law.
  
 
-# Make data base, printed on Wed Jun  1 16:46:20 2022
+# Make data base, printed on Fri Jun  3 21:06:15 2022
 
 # Variables
 
@@ -64,7 +64,7 @@ PATH = /home/paul/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bi
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-c5c4deb3-7d4d-4967-97bc-d442000120e5.sock
+VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-f34d21c7-feed-466d-950d-daf744a19370.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -215,6 +215,7 @@ Makefile:
 #  Implicit rule search has been done.
 #  Last modified 2022-06-01 15:55:27.9721337
 #  File has been updated.
+ 
 #  Successfully updated.
 
 Third: glad imgui jsonxx
@@ -364,6 +365,6 @@ Wyrd: glad jsonxx
 # strcache performance: lookups = 89 / hit rate = 58%
 # hash-table stats:
 # Load=37/8192=0%, Rehash=0, Collisions=1/89=1%
-# Finished Make data base on Wed Jun  1 16:46:20 2022
+# Finished Make data base on Fri Jun  3 21:06:15 2022
 
  

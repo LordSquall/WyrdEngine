@@ -16,14 +16,14 @@ ifeq ($(config),debug)
   TARGET = $(TARGETDIR)/TestPlayer
   OBJDIR = ../../obj/Debug/TestPlayer
   DEFINES += -DWYRD_DEBUG
-  INCLUDES += -Isrc -I../../TestPlayer/vendor/glad/include -I../../Wyrd/src -I../../dependencies/GLFW/include -I../../Wyrd/vendor/glad/include -I../../dependencies/jsonxx -I../../dependencies/soil/src -I../../dependencies/glm -I/usr/include/mono-2.0 -I../../dependencies/spdlog/include -I../../dependencies/uuid/include
+  INCLUDES += -Isrc -I../../TestPlayer/vendor/glad/include -I../../Wyrd/src -I../../dependencies/GLFW/include -I../../Wyrd/vendor/glad/include -I../../dependencies/jsonxx -I../../dependencies/soil/src -I../../dependencies/glm -I/usr/include/mono-2.0 -I../../dependencies/spdlog/include -I../../dependencies/crossguid/include
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++17
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += ../../lib/Debug/Wyrd/libWyrd.a ../../buildsystem/linux/bin/Debug/glad/libglad.a -lglfw3 -ldl -lSOIL -lcrossguid -luuid -lspdlog -lmono-2.0 -lpthread
-  LDDEPS += ../../lib/Debug/Wyrd/libWyrd.a ../../buildsystem/linux/bin/Debug/glad/libglad.a
+  LIBS += ../../lib/Debug/Wyrd/libWyrd.a ../../dependencies/glad/premakedir/bin/Debug/glad/libglad.a -lglfw3 -ldl -lSOIL -lcrossguid -luuid -lspdlog -lmono-2.0 -lpthread
+  LDDEPS += ../../lib/Debug/Wyrd/libWyrd.a ../../dependencies/glad/premakedir/bin/Debug/glad/libglad.a
   ALL_LDFLAGS += $(LDFLAGS) -L../../buildsystem/linux/bin/Debug/glad -L../../buildsystem/linux/bin/Debug/jsonxx -L/usr/lib64 -m64
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
@@ -43,14 +43,14 @@ ifeq ($(config),release)
   TARGET = $(TARGETDIR)/TestPlayer
   OBJDIR = ../../obj/Release/TestPlayer
   DEFINES += -DWYRD_RELEASE
-  INCLUDES += -Isrc -I../../TestPlayer/vendor/glad/include -I../../Wyrd/src -I../../dependencies/GLFW/include -I../../Wyrd/vendor/glad/include -I../../dependencies/jsonxx -I../../dependencies/soil/src -I../../dependencies/glm -I/usr/include/mono-2.0 -I../../dependencies/spdlog/include -I../../dependencies/uuid/include
+  INCLUDES += -Isrc -I../../TestPlayer/vendor/glad/include -I../../Wyrd/src -I../../dependencies/GLFW/include -I../../Wyrd/vendor/glad/include -I../../dependencies/jsonxx -I../../dependencies/soil/src -I../../dependencies/glm -I/usr/include/mono-2.0 -I../../dependencies/spdlog/include -I../../dependencies/crossguid/include
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++17
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += ../../lib/Release/Wyrd/libWyrd.a ../../buildsystem/linux/bin/Release/glad/libglad.a -lglfw3 -ldl -lSOIL -lcrossguid -luuid -lspdlog -lmono-2.0 -lpthread
-  LDDEPS += ../../lib/Release/Wyrd/libWyrd.a ../../buildsystem/linux/bin/Release/glad/libglad.a
+  LIBS += ../../lib/Release/Wyrd/libWyrd.a ../../dependencies/glad/premakedir/bin/Release/glad/libglad.a -lglfw3 -ldl -lSOIL -lcrossguid -luuid -lspdlog -lmono-2.0 -lpthread
+  LDDEPS += ../../lib/Release/Wyrd/libWyrd.a ../../dependencies/glad/premakedir/bin/Release/glad/libglad.a
   ALL_LDFLAGS += $(LDFLAGS) -L../../buildsystem/linux/bin/Debug/glad -L../../buildsystem/linux/bin/Debug/jsonxx -L/usr/lib64 -m64
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
@@ -70,14 +70,14 @@ ifeq ($(config),distribution)
   TARGET = $(TARGETDIR)/TestPlayer
   OBJDIR = ../../obj/Distribution/TestPlayer
   DEFINES += -DWYRD_DISTRIBUTION
-  INCLUDES += -Isrc -I../../TestPlayer/vendor/glad/include -I../../Wyrd/src -I../../dependencies/GLFW/include -I../../Wyrd/vendor/glad/include -I../../dependencies/jsonxx -I../../dependencies/soil/src -I../../dependencies/glm -I/usr/include/mono-2.0 -I../../dependencies/spdlog/include -I../../dependencies/uuid/include
+  INCLUDES += -Isrc -I../../TestPlayer/vendor/glad/include -I../../Wyrd/src -I../../dependencies/GLFW/include -I../../Wyrd/vendor/glad/include -I../../dependencies/jsonxx -I../../dependencies/soil/src -I../../dependencies/glm -I/usr/include/mono-2.0 -I../../dependencies/spdlog/include -I../../dependencies/crossguid/include
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++17
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += ../../lib/Distribution/Wyrd/libWyrd.a ../../buildsystem/linux/bin/Distribution/glad/libglad.a -lglfw3 -ldl -lSOIL -lcrossguid -luuid -lspdlog -lmono-2.0 -lpthread
-  LDDEPS += ../../lib/Distribution/Wyrd/libWyrd.a ../../buildsystem/linux/bin/Distribution/glad/libglad.a
+  LIBS += ../../lib/Distribution/Wyrd/libWyrd.a ../../dependencies/glad/premakedir/bin/Distribution/glad/libglad.a -lglfw3 -ldl -lSOIL -lcrossguid -luuid -lspdlog -lmono-2.0 -lpthread
+  LDDEPS += ../../lib/Distribution/Wyrd/libWyrd.a ../../dependencies/glad/premakedir/bin/Distribution/glad/libglad.a
   ALL_LDFLAGS += $(LDFLAGS) -L../../buildsystem/linux/bin/Debug/glad -L../../buildsystem/linux/bin/Debug/jsonxx -L/usr/lib64 -m64
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS

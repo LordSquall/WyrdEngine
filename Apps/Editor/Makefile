@@ -16,14 +16,14 @@ ifeq ($(config),debug)
   TARGET = $(TARGETDIR)/Editor
   OBJDIR = ../../obj/Debug/Editor
   DEFINES += -DWYRD_PLATFORM_LINUX -DWYRD_EDITOR_ENABLED -DGLM_ENABLE_EXPERIMENTAL -DNATIVE_API_LIB_LOC=/home/paul/projects/wyrd/WyrdEngine/lib/Debug/ -DMONO_INSTALL_LOC=/usr/ -DWYRD_DEBUG
-  INCLUDES += -Isrc -I../Players/Player/src -I../../codegen/src/Common/include -I../../codegen/src/PlayerAPI/include -I../../Wyrd/src -I../../dependencies/GLFW/include -I../../Wyrd/vendor/glad/include -I../../dependencies/jsonxx -I../../dependencies/soil/src -I../../dependencies/imgui -I../../dependencies/glm -I../.. -I/usr/include/mono-2.0 -I../../dependencies/spdlog/include -I../../dependencies/uuid/include -I../../dependencies/Hash/include -I../../dependencies/freetype/include
+  INCLUDES += -Isrc -I../Players/Player/src -I../../codegen/src/Common/include -I../../codegen/src/PlayerAPI/include -I../../Wyrd/src -I../../dependencies/GLFW/include -I../../Wyrd/vendor/glad/include -I../../dependencies/jsonxx -I../../dependencies/soil/src -I../../dependencies/imgui -I../../dependencies/glm -I../.. -I/usr/include/mono-2.0 -I../../dependencies/spdlog/include -I../../dependencies/crossguid/include -I../../dependencies/Hash/include -I../../dependencies/freetype/include
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++17
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += ../../lib/Debug/Wyrd/libWyrd.a ../../buildsystem/linux/bin/Debug/glad/libglad.a ../../buildsystem/linux/bin/Debug/imgui/libimgui.a ../../buildsystem/linux/bin/Debug/jsonxx/libjsonxx.a -lglfw3 -lSOIL -lcrossguid -luuid -lfreetype -lmono-2.0 -ldl -lpthread
-  LDDEPS += ../../lib/Debug/Wyrd/libWyrd.a ../../buildsystem/linux/bin/Debug/glad/libglad.a ../../buildsystem/linux/bin/Debug/imgui/libimgui.a ../../buildsystem/linux/bin/Debug/jsonxx/libjsonxx.a
+  LIBS += ../../lib/Debug/Wyrd/libWyrd.a ../../dependencies/glad/premakedir/bin/Debug/glad/libglad.a ../../dependencies/imgui/premakedir/bin/Debug/imgui/libimgui.a ../../dependencies/jsonxx/premakedir/bin/Debug/jsonxx/libjsonxx.a -lglfw3 -lSOIL -lcrossguid -luuid -lfreetype -lmono-2.0 -ldl -lpthread
+  LDDEPS += ../../lib/Debug/Wyrd/libWyrd.a ../../dependencies/glad/premakedir/bin/Debug/glad/libglad.a ../../dependencies/imgui/premakedir/bin/Debug/imgui/libimgui.a ../../dependencies/jsonxx/premakedir/bin/Debug/jsonxx/libjsonxx.a
   ALL_LDFLAGS += $(LDFLAGS) -L../../buildsystem/linux/bin/Debug/glad -L../../buildsystem/linux/bin/Debug/jsonxx -L/usr/lib64 -m64
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
@@ -43,14 +43,14 @@ ifeq ($(config),release)
   TARGET = $(TARGETDIR)/Editor
   OBJDIR = ../../obj/Release/Editor
   DEFINES += -DWYRD_PLATFORM_LINUX -DWYRD_EDITOR_ENABLED -DGLM_ENABLE_EXPERIMENTAL -DNATIVE_API_LIB_LOC=/home/paul/projects/wyrd/WyrdEngine/lib/Debug/ -DMONO_INSTALL_LOC=/usr/ -DWYRD_RELEASE
-  INCLUDES += -Isrc -I../Players/Player/src -I../../codegen/src/Common/include -I../../codegen/src/PlayerAPI/include -I../../Wyrd/src -I../../dependencies/GLFW/include -I../../Wyrd/vendor/glad/include -I../../dependencies/jsonxx -I../../dependencies/soil/src -I../../dependencies/imgui -I../../dependencies/glm -I../.. -I/usr/include/mono-2.0 -I../../dependencies/spdlog/include -I../../dependencies/uuid/include -I../../dependencies/Hash/include -I../../dependencies/freetype/include
+  INCLUDES += -Isrc -I../Players/Player/src -I../../codegen/src/Common/include -I../../codegen/src/PlayerAPI/include -I../../Wyrd/src -I../../dependencies/GLFW/include -I../../Wyrd/vendor/glad/include -I../../dependencies/jsonxx -I../../dependencies/soil/src -I../../dependencies/imgui -I../../dependencies/glm -I../.. -I/usr/include/mono-2.0 -I../../dependencies/spdlog/include -I../../dependencies/crossguid/include -I../../dependencies/Hash/include -I../../dependencies/freetype/include
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++17
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += ../../lib/Release/Wyrd/libWyrd.a ../../buildsystem/linux/bin/Release/glad/libglad.a ../../buildsystem/linux/bin/Release/imgui/libimgui.a ../../buildsystem/linux/bin/Release/jsonxx/libjsonxx.a -lglfw3 -lSOIL -lcrossguid -luuid -lfreetype -lmono-2.0 -ldl -lpthread
-  LDDEPS += ../../lib/Release/Wyrd/libWyrd.a ../../buildsystem/linux/bin/Release/glad/libglad.a ../../buildsystem/linux/bin/Release/imgui/libimgui.a ../../buildsystem/linux/bin/Release/jsonxx/libjsonxx.a
+  LIBS += ../../lib/Release/Wyrd/libWyrd.a ../../dependencies/glad/premakedir/bin/Release/glad/libglad.a ../../dependencies/imgui/premakedir/bin/Release/imgui/libimgui.a ../../dependencies/jsonxx/premakedir/bin/Release/jsonxx/libjsonxx.a -lglfw3 -lSOIL -lcrossguid -luuid -lfreetype -lmono-2.0 -ldl -lpthread
+  LDDEPS += ../../lib/Release/Wyrd/libWyrd.a ../../dependencies/glad/premakedir/bin/Release/glad/libglad.a ../../dependencies/imgui/premakedir/bin/Release/imgui/libimgui.a ../../dependencies/jsonxx/premakedir/bin/Release/jsonxx/libjsonxx.a
   ALL_LDFLAGS += $(LDFLAGS) -L../../buildsystem/linux/bin/Debug/glad -L../../buildsystem/linux/bin/Debug/jsonxx -L/usr/lib64 -m64
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
@@ -70,14 +70,14 @@ ifeq ($(config),distribution)
   TARGET = $(TARGETDIR)/Editor
   OBJDIR = ../../obj/Distribution/Editor
   DEFINES += -DWYRD_PLATFORM_LINUX -DWYRD_EDITOR_ENABLED -DGLM_ENABLE_EXPERIMENTAL -DNATIVE_API_LIB_LOC=/home/paul/projects/wyrd/WyrdEngine/lib/Debug/ -DMONO_INSTALL_LOC=/usr/ -DWYRD_DISTRIBUTION
-  INCLUDES += -Isrc -I../Players/Player/src -I../../codegen/src/Common/include -I../../codegen/src/PlayerAPI/include -I../../Wyrd/src -I../../dependencies/GLFW/include -I../../Wyrd/vendor/glad/include -I../../dependencies/jsonxx -I../../dependencies/soil/src -I../../dependencies/imgui -I../../dependencies/glm -I../.. -I/usr/include/mono-2.0 -I../../dependencies/spdlog/include -I../../dependencies/uuid/include -I../../dependencies/Hash/include -I../../dependencies/freetype/include
+  INCLUDES += -Isrc -I../Players/Player/src -I../../codegen/src/Common/include -I../../codegen/src/PlayerAPI/include -I../../Wyrd/src -I../../dependencies/GLFW/include -I../../Wyrd/vendor/glad/include -I../../dependencies/jsonxx -I../../dependencies/soil/src -I../../dependencies/imgui -I../../dependencies/glm -I../.. -I/usr/include/mono-2.0 -I../../dependencies/spdlog/include -I../../dependencies/crossguid/include -I../../dependencies/Hash/include -I../../dependencies/freetype/include
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++17
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += ../../lib/Distribution/Wyrd/libWyrd.a ../../buildsystem/linux/bin/Distribution/glad/libglad.a ../../buildsystem/linux/bin/Distribution/imgui/libimgui.a ../../buildsystem/linux/bin/Distribution/jsonxx/libjsonxx.a -lglfw3 -lSOIL -lcrossguid -luuid -lfreetype -lmono-2.0 -ldl -lpthread
-  LDDEPS += ../../lib/Distribution/Wyrd/libWyrd.a ../../buildsystem/linux/bin/Distribution/glad/libglad.a ../../buildsystem/linux/bin/Distribution/imgui/libimgui.a ../../buildsystem/linux/bin/Distribution/jsonxx/libjsonxx.a
+  LIBS += ../../lib/Distribution/Wyrd/libWyrd.a ../../dependencies/glad/premakedir/bin/Distribution/glad/libglad.a ../../dependencies/imgui/premakedir/bin/Distribution/imgui/libimgui.a ../../dependencies/jsonxx/premakedir/bin/Distribution/jsonxx/libjsonxx.a -lglfw3 -lSOIL -lcrossguid -luuid -lfreetype -lmono-2.0 -ldl -lpthread
+  LDDEPS += ../../lib/Distribution/Wyrd/libWyrd.a ../../dependencies/glad/premakedir/bin/Distribution/glad/libglad.a ../../dependencies/imgui/premakedir/bin/Distribution/imgui/libimgui.a ../../dependencies/jsonxx/premakedir/bin/Distribution/jsonxx/libjsonxx.a
   ALL_LDFLAGS += $(LDFLAGS) -L../../buildsystem/linux/bin/Debug/glad -L../../buildsystem/linux/bin/Debug/jsonxx -L/usr/lib64 -m64
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
