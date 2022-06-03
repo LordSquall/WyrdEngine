@@ -72,6 +72,13 @@ group "Third Party"
 	include "buildsystem/windows/premake5-freetype.lua"
 end
 
+if os.istarget("linux") then
+group "Third Party"
+	include "buildsystem/linux/premake5-glad.lua"
+	include "buildsystem/linux/premake5-jsonxx.lua"
+	include "buildsystem/linux/premake5-imgui.lua"
+end
+
 group ""
 	project "Wyrd"
 		location "Wyrd"
@@ -200,24 +207,7 @@ project "TestPlayer"
 		"%{includedir.spdlog}",
 		"%{includedir.uuid}"
 	}
-	
-	libdirs
-	{
-		externallibsdir .. "/freetype/builds/Debug/"
-	}
 
-	links
-	{
-		"Wyrd",
-		"GLFW",
-		"GLAD",
-		"SOIL",
-		"jsonxx",
-		"imgui",
-		"freetyped",
-		"opengl32.dll"
-	}
-	
 	dependson 
 	{ 
 		"WyrdAPI", 
@@ -235,11 +225,48 @@ project "TestPlayer"
 			"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
 			"MONO_INSTALL_LOC=" .. monodir
 		}
+
+		links
+		{
+			"Wyrd",
+			"GLFW",
+			"GLAD",
+			"SOIL",
+			"jsonxx",
+			"imgui",
+			"freetyped",
+			"opengl32.dll"
+		}
 		
 		linkoptions { "/WHOLEARCHIVE:Wyrd" }
-		
-		debugenvs { "PATH=" .. monobindir .. ";../../lib/Debug/WyrdCAPI/;%PATH%" }
-		
+	
+	filter "system:linux"
+
+		files
+		{
+			"Wyrd/vendor/glad/include/**.h",
+			"Wyrd/vendor/glad/src/**.c",
+		}
+
+		libdirs
+		{
+			"buildsystem/linux/bin/Debug/glad/",
+			"buildsystem/linux/bin/Debug/jsonxx/"
+		}
+
+		links
+		{
+			"Wyrd",
+			"glfw3",
+			"GLAD",
+			"dl",
+			"SOIL",
+			"crossguid",
+			"uuid",
+			"spdlog",
+			"mono-2.0",
+			"pthread"
+		}
 
 	filter "configurations:Debug"
 		defines "WYRD_DEBUG"
@@ -295,24 +322,7 @@ project "Editor"
 		"%{includedir.hash}",
 		"%{includedir.freetype}"
 	}
-	
-	libdirs
-	{
-		externallibsdir .. "/freetype/builds/Debug/"
-	}
 
-	links
-	{
-		"Wyrd",
-		"GLFW",
-		"GLAD",
-		"SOIL",
-		"jsonxx",
-		"imgui",
-		"freetyped",
-		"opengl32.dll"
-	}
-	
 	dependson 
 	{ 
 		"WyrdAPI", 
@@ -329,15 +339,54 @@ project "Editor"
 			"WYRD_EDITOR_ENABLED",
 			"GLM_ENABLE_EXPERIMENTAL",
 			"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
-			"MONO_INSTALL_LOC=" .. monodir
+			"MONO_INSTALL_LOC=" .. monodir		
+		}
 
+		links
+		{
+			"Wyrd",
+			"GLFW",
+			"GLAD",
+			"SOIL",
+			"jsonxx",
+			"imgui",
+			"freetyped",
+			"opengl32.dll"
 		}
 		
 		linkoptions { "/WHOLEARCHIVE:Wyrd" }
 		
-		debugenvs { "PATH=" .. monobindir .. ";../../lib/Debug/WyrdCAPI/;%PATH%" }
-		
-		
+	filter  "system:linux"
+		defines
+		{
+			"WYRD_PLATFORM_LINUX",
+			"WYRD_EDITOR_ENABLED",
+			"GLM_ENABLE_EXPERIMENTAL",
+			"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
+			"MONO_INSTALL_LOC=" .. monodir
+		}
+
+		libdirs
+		{
+			"buildsystem/linux/bin/Debug/glad/",
+			"buildsystem/linux/bin/Debug/jsonxx/"
+		}
+
+		links
+		{
+			"Wyrd",
+			"glfw3",
+			"SOIL",
+			"crossguid",
+			"uuid",
+			"glad",
+			"imgui",
+			"jsonxx",
+			"freetype",
+			"mono-2.0",
+			"dl",
+			"pthread"
+		}
 
 	filter "configurations:Debug"
 		defines "WYRD_DEBUG"

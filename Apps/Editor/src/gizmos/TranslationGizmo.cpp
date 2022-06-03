@@ -1,5 +1,3 @@
-#pragma once
-
 /* core wyrd includes */
 #include <wyrdpch.h>
 #include <core/Log.h>
@@ -87,7 +85,7 @@ namespace Wyrd::Editor
 		_EventService = ServiceManager::Get<EventService>();
 
 		/* setup event subscriptions */
-		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(TranslationGizmo::OnSelectedEntityChanged));
+		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, WYRD_BIND_FN(TranslationGizmo::OnSelectedEntityChanged));
 
         /* load the vertices from an external source file */
 		ObjLoader::Load(Utils::GetEditorResFolder() + "gizmos\\translation_gizmo.obj", _Vertices, _Indices, _VertexGroups, 0.4f);

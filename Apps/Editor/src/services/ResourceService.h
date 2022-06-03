@@ -4,11 +4,7 @@
 
 #include "services/ServiceTypes.h"
 #include "services/IService.h"
-#include "datamodels/resources/Resource.h"
 #include "datamodels/resources/ResourceFactory.h"
-#include "datamodels/resources/TextureRes.h"
-#include "datamodels/resources/SceneRes.h"
-#include "datamodels/resources/ScriptRes.h"
 #include "events/EditorEvents.h"
 
 namespace Wyrd::Editor

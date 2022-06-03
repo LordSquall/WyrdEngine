@@ -1,5 +1,3 @@
-#pragma once
-
 /* core wyrd includes */
 #include <wyrdpch.h>
 #include <core/Log.h>
@@ -105,12 +103,12 @@ namespace Wyrd::Editor
 		_iconLibrary.AddIconsFromFile(Utils::GetEditorResFolder() + "icons/common-icons.json");
 
 		/* Subscribe to project events */
-		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::ProjectLoaded, EVENT_FUNC(ResourceService::OnProjectLoadedEvent));
-		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::AddFileEntry, EVENT_FUNC(ResourceService::OnAddFileEntryEvent));
-		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::DeleteFileEntry, EVENT_FUNC(ResourceService::OnDeleteFileEntryEvent));
-		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::RenameFileEntry, EVENT_FUNC(ResourceService::OnReloadFileEntryEvent));
-		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::ModifiedFileEntry, EVENT_FUNC(ResourceService::OnModifiedFileEntryEvent));
-		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::LoadAsset, EVENT_FUNC(ResourceService::OnLoadAssetEvent));
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::ProjectLoaded, WYRD_BIND_FN(ResourceService::OnProjectLoadedEvent));
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::AddFileEntry, WYRD_BIND_FN(ResourceService::OnAddFileEntryEvent));
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::DeleteFileEntry, WYRD_BIND_FN(ResourceService::OnDeleteFileEntryEvent));
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::RenameFileEntry, WYRD_BIND_FN(ResourceService::OnReloadFileEntryEvent));
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::ModifiedFileEntry, WYRD_BIND_FN(ResourceService::OnModifiedFileEntryEvent));
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::LoadAsset, WYRD_BIND_FN(ResourceService::OnLoadAssetEvent));
 	}
 
 	void ResourceService::OnDestroy() {}

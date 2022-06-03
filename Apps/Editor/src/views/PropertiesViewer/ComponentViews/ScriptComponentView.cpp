@@ -1,14 +1,12 @@
-#pragma once
-
 /* core wyrd includes */
 #include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/ecs/Components.h>
 #include <core/Application.h>
+#include <core/behaviour/ScriptedClass.h>
 
 /* local includes */
 #include "ScriptComponentView.h"
-
 #include "support/ImGuiUtils.h"
 
 /* external includes */
@@ -24,7 +22,7 @@ namespace Wyrd::Editor
 		ScriptComponent* script = (ScriptComponent*)data;
 
 		/* retrieve script class */
-		auto currentScriptClass = Application::Get().GetBehaviour().GetCustomClassByUID(script->script);
+		std::shared_ptr<ScriptedClass> currentScriptClass = Application::Get().GetBehaviour().GetCustomClassByUID(script->script);
 
 		if (currentScriptClass != nullptr)
 		{
@@ -42,7 +40,7 @@ namespace Wyrd::Editor
 				UID* scriptUID = (UID*)payload->Data;
 
 				/* retrieve script class */
-				auto scriptClass = Application::Get().GetBehaviour().GetCustomClassByUID(*scriptUID);
+				std::shared_ptr<ScriptedClass> scriptClass = Application::Get().GetBehaviour().GetCustomClassByUID(*scriptUID);
 
 				if (scriptClass != nullptr)
 				{

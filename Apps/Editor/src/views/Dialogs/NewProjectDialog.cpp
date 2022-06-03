@@ -1,10 +1,8 @@
-#pragma once
-
 #include "wyrdpch.h"
 
-#include "core\Log.h"
+#include <core/Log.h>
 #include "NewProjectDialog.h"
-#include "support\ImGuiUtils.h"
+#include "support/ImGuiUtils.h"
 
 namespace Wyrd::Editor
 {

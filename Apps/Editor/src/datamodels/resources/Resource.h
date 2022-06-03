@@ -7,6 +7,10 @@
 
 /* local includes */
 
+#ifndef WYRD_PLATFORM_LINUX
+typedef unsigned char BYTE;
+#endif
+
 namespace Wyrd::Editor
 {
 	class Resource
@@ -27,7 +31,7 @@ namespace Wyrd::Editor
 		inline void SetName(const std::string& name) { _name = name; }
 		inline const std::filesystem::path& GetPath() { return _path; }
 		inline void SetPath(const std::string& path) {_path = path; }
-		inline const UID GetResourceID() { return _resourceID; }
+		inline UID GetResourceID() { return _resourceID; }
 		inline void SetResourceID(const UID uuid) { _resourceID = uuid; }
 
 

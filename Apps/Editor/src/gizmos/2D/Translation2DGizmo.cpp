@@ -1,5 +1,3 @@
-#pragma once
-
 /* core wyrd includes */
 #include <wyrdpch.h>
 #include <core/Log.h>
@@ -28,7 +26,7 @@ namespace Wyrd::Editor
 		_EventService = ServiceManager::Get<EventService>();
 
 		/* setup event subscriptions */
-		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(Translation2DGizmo::OnSelectedEntityChanged));
+		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, WYRD_BIND_FN(Translation2DGizmo::OnSelectedEntityChanged));
 	}
 
     Translation2DGizmo::~Translation2DGizmo() {}

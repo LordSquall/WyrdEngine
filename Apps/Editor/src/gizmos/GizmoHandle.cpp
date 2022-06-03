@@ -1,5 +1,3 @@
-#pragma once
-
 /* local includes */
 #include "GizmoHandle.h"
 

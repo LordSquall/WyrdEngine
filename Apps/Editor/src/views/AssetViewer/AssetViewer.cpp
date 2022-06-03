@@ -1,5 +1,3 @@
-#pragma once
-
 /* core wyrd includes */
 #include <wyrdpch.h>
 #include <core/Log.h>
@@ -88,16 +86,17 @@ namespace Wyrd::Editor
 			}
 			ImGui::SameLine();
 			
-			if (ImGui::IconButton(_UnknownIcon, 2, _SelectedDirectory != _workspaceService->GetAssetsDirectory(), ImVec2(16.0f, 16.0f)))
+			ImVec2 buttonSize = ImVec2(16.0f, 16.0f);
+			if (ImGui::IconButton(_UnknownIcon, 2, _SelectedDirectory != _workspaceService->GetAssetsDirectory(), buttonSize))
 			{
 				_SelectedDirectory = _SelectedDirectory.parent_path();
 				_SelectedResource = -1;
 			}
 			ImGui::SameLine();
 			
-			if (ImGui::IconButton(_UnknownIcon, 3, true, ImVec2(16.0f, 16.0f)))
+			if (ImGui::IconButton(_UnknownIcon, 3, true, buttonSize))
 			{
-				ShellExecuteA(NULL, "open", _SelectedDirectory.string().c_str(), NULL, NULL, SW_SHOWDEFAULT);
+				//ShellExecuteA(NULL, "open", _SelectedDirectory.string().c_str(), NULL, NULL, SW_SHOWDEFAULT);
 			}
 
 			//ImGui::SliderFloat("Size", &layoutSettings.itemGroupSize, 16.0f, 512.0f);
@@ -246,7 +245,7 @@ namespace Wyrd::Editor
 			ImGui::SetCursorPos(cursor);
 
 			/* retrieve matching resource cache entry */
-			auto& resource = _resourcesService->GetResourceByFilePath(file);
+			auto resource = _resourcesService->GetResourceByFilePath(file);
 
 			if (resource != nullptr)
 			{
@@ -332,12 +331,12 @@ namespace Wyrd::Editor
 			thumbnailTexture = (ImTextureID)(INT_PTR)textureResource.GetTexture()->GetHandle();
 
 		/* Drag and Drop */
-		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-		{
-			ImGui::SetDragDropPayload(IMGUI_DND_TEXTURE, &textureResource.GetResourceID(), sizeof(UID));
-			ImGui::Image((ImTextureID)(INT_PTR)textureResource.GetTexture()->GetHandle(), ImVec2(32, 32));
-			ImGui::EndDragDropSource();
-		}
+		//if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+		//{
+		//	ImGui::SetDragDropPayload(IMGUI_DND_TEXTURE, &textureResource.GetResourceID(), sizeof(UID));
+		//	ImGui::Image((ImTextureID)(INT_PTR)textureResource.GetTexture()->GetHandle(), ImVec2(32, 32));
+		//	ImGui::EndDragDropSource();
+		//}
 
 		/* Tool Tip */
 		if (ImGui::IsItemHovered())
@@ -382,12 +381,12 @@ namespace Wyrd::Editor
 	void AssetViewer::DrawSceneItem(int resID, SceneRes& sceneResource)
 	{
 		/* Drag and Drop */
-		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-		{
-			ImGui::SetDragDropPayload("DND_SCENE", &sceneResource.GetResourceID(), sizeof(UID));
-			ImGui::Image(*_SceneIcon, ImVec2(32, 32));
-			ImGui::EndDragDropSource();
-		}
+		//if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+		//{
+		//	ImGui::SetDragDropPayload("DND_SCENE", &sceneResource.GetResourceID(), sizeof(UID));
+		//	ImGui::Image(*_SceneIcon, ImVec2(32, 32));
+		//	ImGui::EndDragDropSource();
+		//}
 
 		/* Tool Tip */
 		if (ImGui::IsItemHovered())
@@ -436,12 +435,12 @@ namespace Wyrd::Editor
 	void AssetViewer::DrawScriptItem(int resID, ScriptRes& scriptResource)
 	{
 		/* Drag and Drop */
-		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-		{
-			ImGui::SetDragDropPayload(IMGUI_DND_SCRIPT, &scriptResource.GetResourceID(), sizeof(UID));
-			ImGui::Image(*_ScriptIcon, ImVec2(32, 32));
-			ImGui::EndDragDropSource();
-		}
+		//if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+		//{
+		//	ImGui::SetDragDropPayload(IMGUI_DND_SCRIPT, &scriptResource.GetResourceID(), sizeof(UID));
+		//	ImGui::Image(*_ScriptIcon, ImVec2(32, 32));
+		//	ImGui::EndDragDropSource();
+		//}
 
 		/* Tool Tip */
 		if (ImGui::IsItemHovered())

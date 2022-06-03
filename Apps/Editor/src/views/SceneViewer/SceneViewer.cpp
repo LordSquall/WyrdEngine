@@ -1,5 +1,3 @@
-#pragma once
-
 /* core wyrd includes */
 #include <wyrdpch.h>
 #include <core/Log.h>
@@ -36,8 +34,8 @@ namespace Wyrd::Editor
 		_CoreSystemService = ServiceManager::Get<CoreSystemsService>();
 
 		/* setup event bindings */
-		_EventService->Subscribe(Events::EventType::SceneOpened, EVENT_FUNC(SceneViewer::OnSceneOpened));
-		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(SceneViewer::OnSelectedEntityChanged));
+		_EventService->Subscribe(Events::EventType::SceneOpened, WYRD_BIND_FN(SceneViewer::OnSceneOpened));
+		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, WYRD_BIND_FN(SceneViewer::OnSelectedEntityChanged));
 
 		/* initialise camera */
 		_CameraController = std::make_shared<OrthographicCameraController>();

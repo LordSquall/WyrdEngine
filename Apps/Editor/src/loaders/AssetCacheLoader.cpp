@@ -1,5 +1,3 @@
-#pragma once
-
 /* core wyrd includes */
 #include <core/Log.h>
 

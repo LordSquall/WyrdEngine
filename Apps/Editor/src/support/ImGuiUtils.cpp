@@ -1,5 +1,3 @@
-#pragma once
-
 /* core wyrd includes */
 #include <wyrdpch.h>
 #include <core/renderer/Texture.h>
@@ -10,7 +8,7 @@
 namespace ImGui 
 {
     /* Icon extensions */
-	void ImGui::Icon(std::shared_ptr<Wyrd::Editor::Icon> icon, ImVec2& size)
+	void Icon(const std::shared_ptr<Wyrd::Editor::Icon> icon, const ImVec2& size)
 	{
 		std::shared_ptr<Wyrd::Editor::TextureRes> texture = icon->iconSet->Texture;
 		ImGui::Image((ImTextureID)(INT_PTR)texture->GetTexture()->GetHandle(), size, ImVec2(icon->uv[0].x, icon->uv[0].y), ImVec2(icon->uv[2].x, icon->uv[2].y), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
@@ -18,7 +16,7 @@ namespace ImGui
 
 
     /* Buttons */
-	bool ImGui::IconButton(std::shared_ptr<Wyrd::Editor::Icon> icon, ImGuiID id, bool enabled, ImVec2& size, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
+	bool IconButton(std::shared_ptr<Wyrd::Editor::Icon> icon, ImGuiID id, bool enabled, const ImVec2& size, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
 	{
 		std::shared_ptr<Wyrd::Editor::TextureRes> texture = icon->iconSet->Texture;
 
@@ -70,7 +68,7 @@ namespace ImGui
 		return pressed;
 	}
 
-	bool ImGui::TextButton(const char* label, bool enabled, const ImVec2& size_arg, ImGuiButtonFlags flags)
+	bool TextButton(const char* label, bool enabled, const ImVec2& size_arg, ImGuiButtonFlags flags)
 	{
 		//ImGuiWindow* window = GetCurrentWindow();
 		//if (window->SkipItems)
@@ -115,7 +113,7 @@ namespace ImGui
 	}
 
     /* Text */
-    void ImGui::TextClipped(const char* text, float clipLength, const ImVec4& text_col, const char* suffix = "")
+    void TextClipped(const char* text, float clipLength, const ImVec4& text_col, const char* suffix = "")
     {
         std::string textContent = text;
         const ImVec2 p0 = ImGui::GetItemRectMin();
@@ -143,7 +141,7 @@ namespace ImGui
     }
 
     /* Image */
-	void ImGui::Image(const Wyrd::Editor::Icon& icon, const ImVec2& size, const ImVec4& tint_col, const ImVec4& border_col)
+	void Image(const Wyrd::Editor::Icon& icon, const ImVec2& size, const ImVec4& tint_col, const ImVec4& border_col)
 	{
 		std::shared_ptr<Wyrd::Editor::TextureRes> texture = icon.iconSet->Texture;
 
@@ -173,7 +171,7 @@ namespace ImGui
 	}
 
 	/* Misc */
-	bool ImGui::CollapsingHeader(const Wyrd::Editor::Icon& icon, const char* label, ImGuiTreeNodeFlags flags, const char* label_end)
+	bool CollapsingHeader(const Wyrd::Editor::Icon& icon, const char* label, ImGuiTreeNodeFlags flags, const char* label_end)
 	{
 	    //ImGuiWindow* window = GetCurrentWindow();
         //if (window->SkipItems)
@@ -379,7 +377,7 @@ namespace ImGui
 	}
 
 	/* Vector Outputs */
-	void ImGui::LabelVec2(const char* label, glm::vec2& vector, const std::string& xcompLabel, const std::string& ycompLabel)
+	void LabelVec2(const char* label, glm::vec2& vector, const std::string& xcompLabel, const std::string& ycompLabel)
 	{
 		ImGui::PushItemWidth(-1);
 		ImGui::LabelText("##label", "%s \t%s:%.4f\t%s:%.4f", label, xcompLabel.c_str(), vector.x, ycompLabel.c_str(), vector.y);
@@ -387,7 +385,7 @@ namespace ImGui
 	}
 
 	/* Callbacks */
-	int ImGui::InputTextCallback(ImGuiInputTextCallbackData* data)
+	int InputTextCallback(ImGuiInputTextCallbackData* data)
 	{
 		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize)
 		{

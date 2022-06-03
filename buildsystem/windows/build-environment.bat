@@ -23,6 +23,8 @@ git clone https://github.com/gabime/spdlog dependencies/spdlog
 ::###### ImGui ######
 git clone -b Docking https://github.com/ocornut/imgui.git dependencies/imgui
 
+::###### jsonxx ######
+git clone https://github.com/hjiang/jsonxx.git dependencies/jsonxx
 
 ::###### FreeType ######
 git clone https://github.com/freetype/freetype.git dependencies/freetype

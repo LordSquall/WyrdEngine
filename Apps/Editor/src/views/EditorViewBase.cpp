@@ -1,5 +1,3 @@
-#pragma once
-
 #include "EditorViewBase.h"
 
 #include "support/ImGuiUtils.h"

@@ -1,5 +1,3 @@
-#pragma once
-
 // This layer should be able enabled if the rendererdoc symbol is defined
 #ifdef WYRD_RENDERDOC_ENABLED
 

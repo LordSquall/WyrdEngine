@@ -69,9 +69,9 @@ namespace Wyrd::Editor
 		static bool CopySingleFile(const std::filesystem::path& filename, const std::filesystem::path& directory);
 		static void RenameFile(const std::filesystem::path& filename, const std::filesystem::path& newFilename);
 		static void RemoveFile(const std::filesystem::path& filename);
-		static const std::string Utils::BuildPath(std::initializer_list<std::reference_wrapper<std::string>> args);
+		static const std::string BuildPath(std::initializer_list<std::reference_wrapper<std::string>> args);
 		static std::vector<std::string> GetFolderList(const std::string& directory, bool asFullPaths);
-		static std::vector<std::filesystem::path> Utils::GetFileList(const std::string& directory, bool asFullPaths = false, bool recursive = false);
+		static std::vector<std::filesystem::path> GetFileList(const std::string& directory, bool asFullPaths = false, bool recursive = false);
 		static uint32_t CountSubDirectories(const std::string& directory);
 		static std::string ReadFileToString(const std::string& filename);
 

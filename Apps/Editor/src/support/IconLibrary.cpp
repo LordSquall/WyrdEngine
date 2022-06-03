@@ -1,5 +1,3 @@
-#pragma once
-
 /* core wyrd includes */
 #include <wyrdpch.h>
 #include <core/Log.h>
@@ -9,7 +7,11 @@
 #include "loaders/IconSetLoader.h"
 
 /* external includes */
+#ifdef WYRD_PLATFORM_WINDOWS
 #include <SOIL.h>
+#elif WYRD_PLATFORM_LINUX
+#include <SOIL/SOIL.h>
+#endif
 
 namespace Wyrd::Editor
 {
@@ -64,7 +66,7 @@ namespace Wyrd::Editor
 	}
 
 
-	bool IconLibrary::AddIconsFromFile(std::string& filepath)
+	bool IconLibrary::AddIconsFromFile(const std::string& filepath)
 	{
 		std::shared_ptr<IconSet> iconSet = std::make_shared<IconSet>();
 

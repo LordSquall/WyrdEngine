@@ -10,6 +10,8 @@
 
 namespace Wyrd::Editor
 {
+	class EntityPropertyView;
+
 	class EntityPropertyView
 	{
 	public:

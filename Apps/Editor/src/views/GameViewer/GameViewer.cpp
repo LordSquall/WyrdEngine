@@ -1,5 +1,3 @@
-#pragma once
-
 /* core wyrd includes */
 #include <wyrdpch.h>
 #include <core/Log.h>
@@ -32,7 +30,7 @@ namespace Wyrd::Editor
 		_SimulationService = ServiceManager::Get<SimulationService>();
 
 		/* setup event bindings */
-		_EventService->Subscribe(Events::EventType::SceneOpened, EVENT_FUNC(GameViewer::OnSceneOpened));
+		_EventService->Subscribe(Events::EventType::SceneOpened, WYRD_BIND_FN(GameViewer::OnSceneOpened));
 		_EventService->Subscribe(Events::EventType::SetSceneCamera, [this](Events::EventArgs& args) {
 			Events::SetSceneCameraArgs& a = (Events::SetSceneCameraArgs&)args;
 			_CameraEntity = a.entity;

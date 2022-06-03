@@ -10,6 +10,8 @@
 
 namespace Wyrd::Editor
 {
+	class FloatPropertyView;
+
 	class FloatPropertyView
 	{
 	public:

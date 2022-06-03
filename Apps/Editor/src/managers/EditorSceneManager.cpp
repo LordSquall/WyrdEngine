@@ -1,5 +1,3 @@
-#pragma once
-
 #include <core/Log.h>
 
 #include "services/ServiceManager.h"

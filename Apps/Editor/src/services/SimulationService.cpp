@@ -1,5 +1,3 @@
-#pragma once
-
 /* core wyrd includes */
 #include <wyrdpch.h>
 #include <core/Log.h>
@@ -27,7 +25,7 @@ namespace Wyrd::Editor
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
 
 		/* Subscribe to project events */
-		_EventService->Subscribe(Events::EventType::BuildBehaviourModel, EVENT_FUNC(SimulationService::OnBuildBehaviourModelEvent));
+		_EventService->Subscribe(Events::EventType::BuildBehaviourModel, WYRD_BIND_FN(SimulationService::OnBuildBehaviourModelEvent));
 
 		_IsRunning = false;
 	}

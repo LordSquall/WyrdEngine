@@ -8,6 +8,7 @@
 #define BIT(x) (1 << x)
 
 /* Wrapper for the Event binding function */
+#define WYRD_BIND_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 #define WYRD_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1, std::placeholders::_2)
 
 /* Converters */

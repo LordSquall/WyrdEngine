@@ -1,5 +1,3 @@
-#pragma once
-
 /* local includes */
 #include "EditorLayer.h"
 #include "events/Event.h"
@@ -32,8 +30,13 @@
 /* external includes */
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#ifdef WYRD_PLATFORM_WINDOWS
 #include <SOIL.h>
 #include <shellapi.h>
+#elif WYRD_PLATFORM_LINUX
+#include <SOIL/SOIL.h>
+#endif
 
 namespace Wyrd::Editor
 {
@@ -80,7 +83,8 @@ namespace Wyrd::Editor
 	bool EditorLayer::OnAttach()
 	{
 		/* load in icons sets */
-		_resourceService->GetIconLibrary().AddIconsFromFile(std::string("res/icons/filesystem_icons.json"));
+		const std::string filepath = "res/icons/filesystem_icons.json";
+		_resourceService->GetIconLibrary().AddIconsFromFile(filepath);
 
 		/* set the style and icons library for each of the plugins */
 		for (std::map<std::string, std::shared_ptr<EditorViewBase>>::iterator it = _views.begin(); it != _views.end(); it++)
@@ -391,12 +395,14 @@ namespace Wyrd::Editor
 		ImGui::SetCursorPosX((ImGui::GetWindowWidth() - 64.0f) * 0.5f);
 
 		/* primary control bar */
-		if (ImGui::IconButton(_playButtonIcon, 1, !_simulationService->IsRunning() && _simulationService->IsAvailable()) == true)
+		const ImVec2 size(16.0f, 16.0f);
+
+		if (ImGui::IconButton(_playButtonIcon, 1, !_simulationService->IsRunning() && _simulationService->IsAvailable(), size) == true)
 		{
 			_simulationService->Start();
 		}
 		ImGui::SameLine();
-		if (ImGui::IconButton(_stopButtonIcon, 2, _simulationService->IsRunning() && _simulationService->IsAvailable()) == true)
+		if (ImGui::IconButton(_stopButtonIcon, 2, _simulationService->IsRunning() && _simulationService->IsAvailable(), size) == true)
 		{
 			_simulationService->Stop();
 		}
@@ -476,16 +482,16 @@ namespace Wyrd::Editor
 		io.MouseDown[e.GetMouseButton()] = true;
 
 		/* mouse button pressed events should be routed to the correct view */
-		for (auto& it = _views.begin(); it != _views.end(); it++)
+		for (const auto& view : _views)
 		{
 			glm::vec2 mousePos = { e.GetPositionX(), e.GetPositionY() };
 
-			if ((it->second)->GetBoundary().ContainsPoint(mousePos) == true)
+			if ((view.second)->GetBoundary().ContainsPoint(mousePos) == true)
 			{
 				/* store the view as the event owner */
-				_mouseEventOwner = (it->second);
+				_mouseEventOwner = (view.second);
 
-				(it->second)->OnEvent(e);
+				(view.second)->OnEvent(e);
 			}
 		}
 
@@ -497,13 +503,13 @@ namespace Wyrd::Editor
 		ImGuiIO& io = ImGui::GetIO();
 		io.MouseDown[e.GetMouseButton()] = false;
 
-		for (auto& it = _views.begin(); it != _views.end(); it++)
+		for (const auto& view : _views)
 		{
 			glm::vec2 mousePos = { e.GetPositionX(), e.GetPositionY() };
 
-			if ((it->second)->GetBoundary().ContainsPoint(mousePos) == true)
+			if ((view.second)->GetBoundary().ContainsPoint(mousePos) == true)
 			{
-				(it->second)->OnEvent(e);
+				(view.second)->OnEvent(e);
 			}
 		}
 
@@ -517,11 +523,11 @@ namespace Wyrd::Editor
 		
 		_simulationService->SetMousePosition(e.GetX(), e.GetY());
 
-		for (auto& it = _views.begin(); it != _views.end(); it++)
+		for (const auto& view : _views)
 		{
-			if ((it->second)->GetBoundary().ContainsPoint({ e.GetX(), e.GetY() }) == true)
+			if ((view.second)->GetBoundary().ContainsPoint({ e.GetX(), e.GetY() }) == true)
 			{
-				(it->second)->OnEvent(e);
+				(view.second)->OnEvent(e);
 			}
 		}
 
@@ -534,13 +540,13 @@ namespace Wyrd::Editor
 		io.MouseWheel += e.GetYOffset();
 		io.MouseWheelH += e.GetXOffset();
 
-		for (auto& it = _views.begin(); it != _views.end(); it++)
+		for (const auto& view : _views)
 		{
 			glm::vec2 mousePos = { io.MousePos.x, io.MousePos.y };
 
-			if ((it->second)->GetBoundary().ContainsPoint(mousePos) == true)
+			if ((view.second)->GetBoundary().ContainsPoint(mousePos) == true)
 			{
-				(it->second)->OnEvent(e);
+				(view.second)->OnEvent(e);
 			}
 		}
 

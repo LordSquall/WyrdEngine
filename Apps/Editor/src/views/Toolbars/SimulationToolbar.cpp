@@ -1,5 +1,3 @@
-#pragma once
-
 #include "SimulationToolbar.h"
 
 #include "support/ImGuiUtils.h"
@@ -26,12 +24,12 @@ namespace Wyrd::Editor
 		bool isAvailable = ServiceManager::Get<SimulationService>()->IsAvailable();
 		bool isRunning = ServiceManager::Get<SimulationService>()->IsRunning();
 		
-		if (ImGui::IconButton(_playButtonIcon, 4, !isRunning && isAvailable) == true)
+		if (ImGui::IconButton(_playButtonIcon, 4, !isRunning && isAvailable, ImVec2(16.0f, 16.0f)) == true)
 		{
 			ServiceManager::Get<SimulationService>()->Start();
 		}
 		ImGui::SameLine();
-		if (ImGui::IconButton(_stopButtonIcon, 5, isRunning && isAvailable) == true)
+		if (ImGui::IconButton(_stopButtonIcon, 5, isRunning && isAvailable, ImVec2(16.0f, 16.0f)) == true)
 		{
 			ServiceManager::Get<SimulationService>()->Stop();
 		}

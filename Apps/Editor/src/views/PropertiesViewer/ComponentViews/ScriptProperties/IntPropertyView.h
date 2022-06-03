@@ -10,6 +10,8 @@
 
 namespace Wyrd::Editor
 {
+	class IntPropertyView;
+
 	class IntPropertyView
 	{
 	public:

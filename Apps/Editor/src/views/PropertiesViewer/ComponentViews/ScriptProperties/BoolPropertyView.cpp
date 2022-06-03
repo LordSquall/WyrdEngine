@@ -1,5 +1,3 @@
-#pragma once
-
 /* core wyrd includes */
 #include <wyrdpch.h>
 #include <core/Log.h>
@@ -15,5 +13,7 @@ namespace Wyrd::Editor
 		ImGui::Checkbox(prop->GetName().c_str(), (bool*)value);
 	}
 
-	SCRIPT_PROPERTY_VIEW_FACTORY_REGISTER(BoolPropertyView);
+	bool BoolPropertyView::s_registered = ScriptPropertyViewFactory::Register(
+		BoolPropertyView::GetFactoryName(),
+		BoolPropertyView::OnEditorRender);
 }

@@ -10,6 +10,8 @@
 
 namespace Wyrd::Editor
 {
+	class ColorPropertyView;
+
 	class ColorPropertyView
 	{
 	public:

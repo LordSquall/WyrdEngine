@@ -1,5 +1,3 @@
-#pragma once
-
 /* core wyrd includes */
 #include <wyrdpch.h>
 #include <core/renderer/FontType.h>
@@ -14,6 +12,8 @@
 #include <core/Application.h>
 #include <ft2build.h>
 #include <freetype/freetype.h>
+
+typedef unsigned char BYTE;
 
 namespace Wyrd::Editor
 {
@@ -35,7 +35,7 @@ namespace Wyrd::Editor
 			if (FT_Init_FreeType(&ft))
 			{
 				std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
-				return nullptr;
+				return false;
 			}
 
 			/* load the ttf face from the file */
@@ -43,7 +43,7 @@ namespace Wyrd::Editor
 			if (FT_New_Face(ft, _path.string().c_str(), 0, &face))
 			{
 				std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
-				return nullptr;
+				return false;
 			}
 
 			FT_Set_Pixel_Sizes(face, 0, 48);

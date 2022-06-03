@@ -10,6 +10,8 @@
 #include "support/Utils.h"
 #include "datamodels/resources/ResourceTypes.h"
 
+typedef unsigned char BYTE;
+
 namespace Wyrd::Editor
 {
 	class TextureRes : public Resource

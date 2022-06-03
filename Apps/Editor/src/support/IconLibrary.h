@@ -52,7 +52,7 @@ namespace Wyrd::Editor
 		IconLibrary();
 		~IconLibrary();
 
-		bool AddIconsFromFile(std::string& filepath);
+		bool AddIconsFromFile(const std::string& filepath);
 
 		std::shared_ptr<Icon> GetIcon(std::string setName, std::string name);
 		

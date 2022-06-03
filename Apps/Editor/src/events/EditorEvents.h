@@ -11,8 +11,6 @@
 #include "support/IconLibrary.h"
 #include "support/Utils.h"
 #include "datamodels/Project.h"
-#include "datamodels/resources/Resource.h"
-#include "datamodels/resources/ResourceFactory.h"
 #include "datamodels/logging/LogMessage.h"
 
 #define EVENT_ARGS_CLONE(type)	public:  std::shared_ptr<EventArgs> Clone() { return std::make_shared<type>(*this); } 

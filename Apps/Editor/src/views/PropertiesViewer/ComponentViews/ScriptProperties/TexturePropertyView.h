@@ -10,6 +10,8 @@
 
 namespace Wyrd::Editor
 {
+	class TexturePropertyView;
+
 	class TexturePropertyView
 	{
 	public:

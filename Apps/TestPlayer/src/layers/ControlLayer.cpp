@@ -1,5 +1,3 @@
-#pragma once
-
 #include "ControlLayer.h"
 #include "import/ImportManager.h"
 #include "managers/SceneManager.h"

@@ -1,5 +1,3 @@
-#pragma once
-
 /* core wyrd includes */
 #include <wyrdpch.h>
 #include <core/Log.h>
@@ -24,9 +22,9 @@ namespace Wyrd::Editor
 		_EventService = ServiceManager::Get<EventService>();
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
 
-		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(PropertiesViewer::OnSelectedEntityChanged));
+		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, WYRD_BIND_FN(PropertiesViewer::OnSelectedEntityChanged));
 
-		_EventService->Subscribe(Events::EventType::SelectedAssetChanged, EVENT_FUNC(PropertiesViewer::OnSelectedResourceChanged));
+		_EventService->Subscribe(Events::EventType::SelectedAssetChanged, WYRD_BIND_FN(PropertiesViewer::OnSelectedResourceChanged));
 	}
 
 	PropertiesViewer::~PropertiesViewer() {}

@@ -10,6 +10,8 @@
 
 namespace Wyrd::Editor
 {
+	class StringPropertyView;
+
 	class StringPropertyView
 	{
 	public:

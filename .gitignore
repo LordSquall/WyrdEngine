@@ -18,6 +18,8 @@ buildsystem/bin/
 buildsystem/bin-int/
 buildsystem/windows/bin/
 buildsystem/windows/bin-int/
+buildsystem/linux/bin/
+buildsystem/linux/bin-int/
 lib/
 sub_modules/
 codegen/models/obj/

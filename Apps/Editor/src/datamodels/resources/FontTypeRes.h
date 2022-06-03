@@ -27,7 +27,7 @@ namespace Wyrd::Editor
 		bool _loaded;
 		std::string _name;
 		uint32_t _channels;
-		BYTE* _data;
+		unsigned char* _data;
 
 		int32_t _width;
 		int32_t _height;

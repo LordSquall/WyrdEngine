@@ -23,6 +23,8 @@ jobs:
       run: ./buildsystem/linux/build-spdlog.sh
     - name: Build uuid
       run: ./buildsystem/linux/build-uuid.sh
+    - name: Build jsonxx
+      run: ./buildsystem/linux/build-jsonxx.sh
     - name: Build wyrd
       run: ./buildsystem/linux/build-wyrd.sh
    

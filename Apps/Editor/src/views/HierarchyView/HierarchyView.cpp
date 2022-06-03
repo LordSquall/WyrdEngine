@@ -1,5 +1,3 @@
-#pragma once
-
 /* core wyrd includes */
 #include <wyrdpch.h>
 #include <core/Log.h>
@@ -26,7 +24,7 @@ namespace Wyrd::Editor
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
 		_ResourceService = ServiceManager::Get<ResourceService>();
 
-		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, EVENT_FUNC(HierarchyView::OnSelectedEntityChanged));
+		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, WYRD_BIND_FN(HierarchyView::OnSelectedEntityChanged));
 	}
 
 	void HierarchyView::OnEditorRender()

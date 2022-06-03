@@ -1,4 +1,3 @@
-#pragma once
 #include "wyrdpch.h"
 
 /* core wyrd includes */

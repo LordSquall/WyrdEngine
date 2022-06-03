@@ -1,5 +1,3 @@
-#pragma once
-
 #include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/Application.h>
@@ -59,7 +57,7 @@ bool ImportManager::ImportGame(const std::string& root)
 		char sceneUID[64];
 		game.read((char*)&sceneUID[0], sizeof(char) * 64);
 
-		SceneManager::getInstance().AddScene(UID(sceneUID), std::string(sceneName));
+		//SceneManager::getInstance().AddScene(UID(sceneUID), std::string(sceneName));
 	}
 
 	char initialSceneUID[64];

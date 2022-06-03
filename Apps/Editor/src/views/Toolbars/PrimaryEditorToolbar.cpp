@@ -1,5 +1,3 @@
-#pragma once
-
 #include "PrimaryEditorToolbar.h"
 
 #include "support/ImGuiUtils.h"

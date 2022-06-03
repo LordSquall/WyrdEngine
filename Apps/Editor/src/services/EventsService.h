@@ -7,8 +7,6 @@
 
 #include "events/EditorEvents.h"
 
-#define EVENT_FUNC(f)	std::bind(&##f, this, std::placeholders::_1)
-
 namespace Wyrd::Editor
 {
 	class EventService : public IService

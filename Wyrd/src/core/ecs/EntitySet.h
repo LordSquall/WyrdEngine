@@ -35,7 +35,6 @@ namespace Wyrd
 				return scene->entities[index].id;
 			}
 
-			Entity operator+() const {}
 			bool operator==(const Iterator& other) const
 			{
 				return index == other.index || index == scene->entities.size();

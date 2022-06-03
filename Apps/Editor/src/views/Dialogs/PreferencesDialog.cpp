@@ -1,5 +1,3 @@
-#pragma once
-
 /* core wyrd includes */
 #include <wyrdpch.h>
 
@@ -103,62 +101,62 @@ namespace Wyrd::Editor
 
 	void PreferencesDialog::OnEditorRender_SceneViewer()
 	{
-		static bool enableGridWidget = Utils::ToBool(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__ENABLED, std::string("0")));
-		static int spacing[] = {
-			Utils::ToInt(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__XSPACING, std::string("128"))),
-			Utils::ToInt(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__YSPACING, std::string("128")))
-		};
-		static int rows = Utils::ToInt(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__ROWS, std::string("12")));
-		static int cols = Utils::ToInt(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLS, std::string("12")));
-		static Color color = Utils::ToColor(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLOR, std::string("0.2,0.2,0.2,1.0")));
-
-		if (ImGui::CollapsingHeader("Grid Widget", ImGuiTreeNodeFlags_None))
-		{
-			ImGui::Checkbox("Enabled", &enableGridWidget);
-			ImGui::InputInt2("Spacing", &spacing[0]);
-			ImGui::InputInt("Row Count", &rows);
-			ImGui::InputInt("Column Count", &cols);
-			ImGui::ColorEdit4("Color", (float*)&color);
-		}
-
-		if (ImGui::Button("Apply") == true)
-		{
-			_SettingsService->SetSetting(std::to_string(enableGridWidget), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__ENABLED);
-			_SettingsService->SetSetting(std::to_string(spacing[0]), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__XSPACING);
-			_SettingsService->SetSetting(std::to_string(spacing[1]), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__YSPACING);
-			_SettingsService->SetSetting(std::to_string(rows), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__ROWS);
-			_SettingsService->SetSetting(std::to_string(cols), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLS);
-			_SettingsService->SetSetting(Utils::ToString(color), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLOR);
-
-			ServiceManager::Get<EventService>()->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
-
-		}
+		//static bool enableGridWidget = Utils::ToBool(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__ENABLED, std::string("0")));
+		//static int spacing[] = {
+		//	Utils::ToInt(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__XSPACING, std::string("128"))),
+		//	Utils::ToInt(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__YSPACING, std::string("128")))
+		//};
+		//static int rows = Utils::ToInt(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__ROWS, std::string("12")));
+		//static int cols = Utils::ToInt(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLS, std::string("12")));
+		//static Color color = Utils::ToColor(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLOR, std::string("0.2,0.2,0.2,1.0")));
+//
+		//if (ImGui::CollapsingHeader("Grid Widget", ImGuiTreeNodeFlags_None))
+		//{
+		//	ImGui::Checkbox("Enabled", &enableGridWidget);
+		//	ImGui::InputInt2("Spacing", &spacing[0]);
+		//	ImGui::InputInt("Row Count", &rows);
+		//	ImGui::InputInt("Column Count", &cols);
+		//	ImGui::ColorEdit4("Color", (float*)&color);
+		//}
+//
+		//if (ImGui::Button("Apply") == true)
+		//{
+		//	_SettingsService->SetSetting(std::to_string(enableGridWidget), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__ENABLED);
+		//	_SettingsService->SetSetting(std::to_string(spacing[0]), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__XSPACING);
+		//	_SettingsService->SetSetting(std::to_string(spacing[1]), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__YSPACING);
+		//	_SettingsService->SetSetting(std::to_string(rows), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__ROWS);
+		//	_SettingsService->SetSetting(std::to_string(cols), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLS);
+		//	_SettingsService->SetSetting(Utils::ToString(color), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLOR);
+//
+		//	ServiceManager::Get<EventService>()->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
+//
+		//}
 	}
 
 	void PreferencesDialog::OnEditorRender_WindowsPlayer()
 	{
-		static std::string binPath = _SettingsService->GetSetting(CONFIG_WINDOWSPLAYER, CONFIG_WINDOWSPLAYER__BINPATH, std::string("../../bin/Debug/WindowsPlayer/WindowsPlayer.exe"));
-
-		if (ImGui::Button("Apply") == true)
-		{
-			_SettingsService->SetSetting(binPath, CONFIG_WINDOWSPLAYER, CONFIG_WINDOWSPLAYER__BINPATH);
-
-			ServiceManager::Get<EventService>()->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
-		}
+		//static std::string binPath = _SettingsService->GetSetting(CONFIG_WINDOWSPLAYER, CONFIG_WINDOWSPLAYER__BINPATH, std::string("../../bin/Debug/WindowsPlayer/WindowsPlayer.exe"));
+//
+		//if (ImGui::Button("Apply") == true)
+		//{
+		//	_SettingsService->SetSetting(binPath, CONFIG_WINDOWSPLAYER, CONFIG_WINDOWSPLAYER__BINPATH);
+//
+		//	ServiceManager::Get<EventService>()->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
+		//}
 	}
 
 	void PreferencesDialog::OnEditorRender_ExternalTools()
 	{
-		static std::string textureEditor = _SettingsService->GetSetting(CONFIG_EXTERNALTOOLS, CONFIG_EXTERNALTOOLS_TEXTUREEDITOR, std::string("my_captures/example"));
-
-		ImGui::InputText("Texture Editor", &textureEditor);
-
-		if (ImGui::Button("Apply") == true)
-		{
-			_SettingsService->SetSetting(textureEditor, CONFIG_EXTERNALTOOLS, CONFIG_EXTERNALTOOLS_TEXTUREEDITOR);
-
-			ServiceManager::Get<EventService>()->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
-
-		}
+		//static std::string textureEditor = _SettingsService->GetSetting(CONFIG_EXTERNALTOOLS, CONFIG_EXTERNALTOOLS_TEXTUREEDITOR, std::string("my_captures/example"));
+//
+		//ImGui::InputText("Texture Editor", &textureEditor);
+//
+		//if (ImGui::Button("Apply") == true)
+		//{
+		//	_SettingsService->SetSetting(textureEditor, CONFIG_EXTERNALTOOLS, CONFIG_EXTERNALTOOLS_TEXTUREEDITOR);
+//
+		//	ServiceManager::Get<EventService>()->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
+//
+		//}
 	}
 }

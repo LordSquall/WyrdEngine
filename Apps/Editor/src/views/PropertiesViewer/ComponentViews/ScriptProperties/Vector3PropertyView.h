@@ -10,6 +10,8 @@
 
 namespace Wyrd::Editor
 {
+	class Vector3PropertyView;
+
 	class Vector3PropertyView
 	{
 	public:

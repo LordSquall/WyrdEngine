@@ -1,5 +1,3 @@
-#pragma once
-
 /* core wyrd includes */
 #include <wyrdpch.h>
 #include <core/Application.h>
@@ -9,15 +7,21 @@
 #include "Utils.h"
 
 /* external includes */
+#include <GLFW/glfw3.h>
+
+#ifdef WYRD_PLATFORM_WINDOWS
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
+#endif
+
+
+#ifdef WYRD_PLATFORM_WINDOWS
 #include <shobjidl.h>
 #include <shtypes.h>
 #include <shellapi.h>
 #include <corecrt_wstring.h>
 #include <commdlg.h>
-#include <GLFW/glfw3.h>
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include <GLFW/glfw3native.h>
-
+#endif
 
 namespace Wyrd::Editor {
 
@@ -28,6 +32,7 @@ namespace Wyrd::Editor {
 
 	std::optional<std::string> Utils::OpenFile(const std::vector<std::pair<std::string, std::string>> filters)
 	{
+#ifdef WYRD_PLATFORM_WINDOWS
 		/* build the filter string */
 		std::stringstream filterString;
 
@@ -59,10 +64,15 @@ namespace Wyrd::Editor {
 		if (GetOpenFileNameA(&ofn) == TRUE)
 			return ofn.lpstrFile;
 		return std::nullopt;
+#else
+
+		return std::nullopt;
+#endif
 	}
 
 	std::string Utils::OpenFileDialog(const std::string& filter) {
 
+#ifdef WYRD_PLATFORM_WINDOWS
 		// Template modified from https://docs.microsoft.com/en-us/windows/desktop/learnwin32/example--the-open-dialog-box
 		HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
 			COINIT_DISABLE_OLE1DDE);
@@ -107,9 +117,14 @@ namespace Wyrd::Editor {
 			CoUninitialize();
 		}
 		return result;
+#else
+		return "";
+#endif
 	}
 
 	std::string Utils::OpenFolderDialog() {
+		
+#ifdef WYRD_PLATFORM_WINDOWS
 		// Template modified from https://docs.microsoft.com/en-us/windows/desktop/learnwin32/example--the-open-dialog-box
 		HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
 			COINIT_DISABLE_OLE1DDE);
@@ -156,11 +171,15 @@ namespace Wyrd::Editor {
 			CoUninitialize();
 		}
 		return result;
+#else
+		return "";
+#endif
 	}
 
 
 	std::optional<std::string> Utils::SaveFile(const std::vector<std::pair<std::string, std::string>> filters)
 	{
+#ifdef WYRD_PLATFORM_WINDOWS
 		/* build the filter string */
 		std::stringstream filterString;
 
@@ -195,10 +214,15 @@ namespace Wyrd::Editor {
 		if (GetSaveFileNameA(&ofn) == TRUE)
 			return ofn.lpstrFile;
 		return std::nullopt;
+#else
+		return std::nullopt;
+#endif
 	}
 
 	std::string Utils::SaveFileDialog(const std::string& name, const std::string& filter)
 	{
+		
+#ifdef WYRD_PLATFORM_WINDOWS
 		// Template modified from https://docs.microsoft.com/en-us/windows/desktop/learnwin32/example--the-open-dialog-box
 		HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
 			COINIT_DISABLE_OLE1DDE);
@@ -263,16 +287,15 @@ namespace Wyrd::Editor {
 			CoUninitialize();
 		}
 		return result;
+#else
+		return "";
+#endif
 	}
 
 	std::string Utils::SaveAsFileDialog(const std::string& filter)
 	{
 		return "not yet implemented";
 	}
-
-
-
-
 
 	bool Utils::FileExists(const std::filesystem::path& file)
 	{
@@ -407,7 +430,9 @@ namespace Wyrd::Editor {
 
 	void Utils::OpenFileWithSystem(const std::filesystem::path& file, const std::string& parameters)
 	{
+#ifdef WYRD_PLATFORM_WINDOWS
 		ShellExecuteA(NULL, "open", file.string().c_str(), parameters.c_str(), NULL, SW_SHOW);
+#endif
 	}
 
 	void Utils::SystemExecute(const std::string& command)
