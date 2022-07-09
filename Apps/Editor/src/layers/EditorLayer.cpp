@@ -219,16 +219,17 @@ namespace Wyrd::Editor
 		ImGui_ImplOpenGL3_Init("#version 410");
 
 		/* attempt to load the default project otherwise asked the user to create a new one */
-		if (_workspaceService->LoadProject(_settingsService->GetSetting(CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT, "")) == false)
-		{
-			_dialogService->OpenDialog(std::make_shared<NewProjectDialog>(this));
-		}
+		//if (_workspaceService->LoadProject(_settingsService->GetSetting(CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT, "")) == false)
+		//{
+		_dialogService->OpenDialog(std::make_shared<NewProjectDialog>(this));
+		//}
 
 		/* register for events */
 		_eventService->Subscribe(Events::EventType::CloseEditor, [this](Events::EventArgs& args)
 			{
 				Application::Get().Terminate();
 			});
+		_eventService->Subscribe(Events::EventType::SceneOpened, WYRD_BIND_FN(EditorLayer::OnSceneOpened));
 
 		return true;
 	}

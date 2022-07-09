@@ -11,7 +11,6 @@ sudo apt install mono-complete
 sudo ln -s /usr/include/mono-2.0/mono /usr/include/mono
 
 # Start by setting up each of the dependency projects
-sh ./buildsystem/common/setup-freetype.sh
 sh ./buildsystem/common/setup-imgui.sh
 sh ./buildsystem/common/setup-jsonxx.sh
 sh ./buildsystem/common/setup-spdlog.sh
@@ -20,11 +19,6 @@ sh ./buildsystem/common/setup-premake5.sh
 
 # run the install operation on all cmake dependencies
 cd dependencies/
-
-cd freetype/cmakedir
-sudo make -j 4
-sudo make install
-cd ../..
 
 cd spdlog/cmakedir
 sudo make -j 4

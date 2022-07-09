@@ -20,7 +20,7 @@
 
 namespace Wyrd::Editor
 {
-	GameViewer::GameViewer(EditorLayer* editorLayer) : EditorViewBase("Game Viewer", editorLayer), _CameraEntity(ENTITY_INVALID), _CameraComponent(nullptr), _SizeConfigID(1)
+	GameViewer::GameViewer(EditorLayer* editorLayer) : EditorViewBase("Game Viewer", editorLayer), _CameraEntity(ENTITY_INVALID), /*_CameraComponent(nullptr),*/ _SizeConfigID(1)
 	{
 		/* retrieve services */
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
@@ -31,11 +31,11 @@ namespace Wyrd::Editor
 
 		/* setup event bindings */
 		_EventService->Subscribe(Events::EventType::SceneOpened, WYRD_BIND_FN(GameViewer::OnSceneOpened));
-		_EventService->Subscribe(Events::EventType::SetSceneCamera, [this](Events::EventArgs& args) {
-			Events::SetSceneCameraArgs& a = (Events::SetSceneCameraArgs&)args;
-			_CameraEntity = a.entity;
-			_CameraComponent = a.cameraComponent;
-		});
+		//_EventService->Subscribe(Events::EventType::SetSceneCamera, [this](Events::EventArgs& args) {
+		//	Events::SetSceneCameraArgs& a = (Events::SetSceneCameraArgs&)args;
+		//	_CameraEntity = a.entity;
+		//	_CameraComponent = a.cameraComponent;
+		//});
 
 		/* create a new framebuffer */
 		_Framebuffer.reset(Wyrd::FrameBuffer::Create(FrameBufferConfig()));
@@ -54,26 +54,26 @@ namespace Wyrd::Editor
 	{
 		if (_CameraEntity != ENTITY_INVALID)
 		{
-			Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(_CameraEntity);
-
-			_Camera.SetPosition({ transform->position, 0.0f });
-			_Camera.SetSize(_CameraComponent->size);
-
-			switch (_SizeConfigID)
-			{
-			case 0:
-				_Camera.SetViewportSize(_WorkspaceService->GetCurrentProject()->GetExportSettings().width, _WorkspaceService->GetCurrentProject()->GetExportSettings().height);
-				break;
-			case 1:
-				_Camera.SetViewportSize(_Viewport._size.x, _Viewport._size.y);
-				break;
-			case 2:
-				_Camera.SetViewportSize(800.0f, 600.0f);
-				break;
-
-			}
-
-			_Camera.RecalulateViewProjection();
+			//Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(_CameraEntity);
+			//
+			//_Camera.SetPosition({ transform->position, 0.0f });
+			//_Camera.SetSize(_CameraComponent->size);
+			//
+			//switch (_SizeConfigID)
+			//{
+			//case 0:
+			//	_Camera.SetViewportSize(_WorkspaceService->GetCurrentProject()->GetExportSettings().width, _WorkspaceService->GetCurrentProject()->GetExportSettings().height);
+			//	break;
+			//case 1:
+			//	_Camera.SetViewportSize(_Viewport._size.x, _Viewport._size.y);
+			//	break;
+			//case 2:
+			//	_Camera.SetViewportSize(800.0f, 600.0f);
+			//	break;
+			//
+			//}
+			//
+			//_Camera.RecalulateViewProjection();
 		}
 	}
 
@@ -90,44 +90,44 @@ namespace Wyrd::Editor
 			renderer.Clear(0.1f, 0.1f, 0.1f);
 			if (_Scene != nullptr)
 			{
-				for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
-				{
-					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
-					SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
-				
-					Wyrd::DrawSpriteCommand cmd{};
-					cmd.type = 1;
-					cmd.position = sprite->position + transform->position;
-					cmd.size = sprite->size;
-					cmd.tiling = sprite->tiling;
-					cmd.vpMatrix = _Camera.GetViewProjectionMatrix();
-					cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
-					cmd.texture = Application::Get().GetResources().Textures[sprite->texture].get();
-					cmd.color = sprite->color;
-				
-					renderer.Submit(cmd);
-				}
-				
-				for (Entity e : EntitySet<Transform2DComponent, TextComponent>(*_Scene.get()))
-				{
-					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
-					TextComponent* text = _Scene->Get<TextComponent>(e);
-
-					Wyrd::DrawTextCommand cmd{};
-					cmd.type = 1;
-					cmd.position = transform->position;
-					cmd.vpMatrix = _Camera.GetViewProjectionMatrix();
-					cmd.shader = Application::Get().GetResources().Shaders["Text"].get();
-					cmd.content = text->content;
-					cmd.scale = 1.0f;
-					cmd.size = text->size;
-					cmd.font = Application::Get().GetResources().FontTypes[text->font].get();
-					cmd.color = text->color;
-
-					renderer.Submit(cmd);
-				}
-
-				renderer.Flush();
+				//for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
+				//{
+				//	Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
+				//	SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
+				//
+				//	Wyrd::DrawSpriteCommand cmd{};
+				//	cmd.type = 1;
+				//	cmd.position = sprite->position + transform->position;
+				//	cmd.size = sprite->size;
+				//	cmd.tiling = sprite->tiling;
+				//	cmd.vpMatrix = _Camera.GetViewProjectionMatrix();
+				//	cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
+				//	cmd.texture = Application::Get().GetResources().Textures[sprite->texture].get();
+				//	cmd.color = sprite->color;
+				//
+				//	renderer.Submit(cmd);
+				//}
+				//
+				//for (Entity e : EntitySet<Transform2DComponent, TextComponent>(*_Scene.get()))
+				//{
+				//	Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
+				//	TextComponent* text = _Scene->Get<TextComponent>(e);
+				//
+				//	Wyrd::DrawTextCommand cmd{};
+				//	cmd.type = 1;
+				//	cmd.position = transform->position;
+				//	cmd.vpMatrix = _Camera.GetViewProjectionMatrix();
+				//	cmd.shader = Application::Get().GetResources().Shaders["Text"].get();
+				//	cmd.content = text->content;
+				//	cmd.scale = 1.0f;
+				//	cmd.size = text->size;
+				//	cmd.font = Application::Get().GetResources().FontTypes[text->font].get();
+				//	cmd.color = text->color;
+				//
+				//	renderer.Submit(cmd);
+				//}
+				//
+				//renderer.Flush();
 			}
 
 			_Framebuffer->Unbind();
@@ -167,25 +167,25 @@ namespace Wyrd::Editor
 			}
 		}
 
-		if (_CameraComponent != nullptr)
-		{
-			_CameraComponent->viewport = _Viewport;
-			_CameraComponent->aspectRatio = _Camera.GetAspectRatio();
-
-			auto pos = ImGui::GetCursorPos();
-			ImGui::Image((ImTextureID)(UINT_PTR)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport._size.x, _Viewport._size.y), ImVec2(0, 1), ImVec2(1, 0));
-
-			//ImGui::SetCursorPos(pos);
-			//ImGui::Text("X : %f", _Viewport.position.x);
-			//ImGui::Text("Y : %f", _Viewport.position.y);
-			//ImGui::Text("W : %f", _Viewport.size.x);
-			//ImGui::Text("H : %f", _Viewport.size.y);
-			//ImGui::Text("Aspect Ratio : %f", _CameraComponent->aspectRatio);
-		}
-		else
-		{
-			ImGui::Text("No Scene Primary Camera Selected");
-		}
+		//if (_CameraComponent != nullptr)
+		//{
+		//	_CameraComponent->viewport = _Viewport;
+		//	_CameraComponent->aspectRatio = _Camera.GetAspectRatio();
+		//
+		//	auto pos = ImGui::GetCursorPos();
+		//	ImGui::Image((ImTextureID)(UINT_PTR)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport._size.x, _Viewport._size.y), ImVec2(0, 1), ImVec2(1, 0));
+		//
+		//	//ImGui::SetCursorPos(pos);
+		//	//ImGui::Text("X : %f", _Viewport.position.x);
+		//	//ImGui::Text("Y : %f", _Viewport.position.y);
+		//	//ImGui::Text("W : %f", _Viewport.size.x);
+		//	//ImGui::Text("H : %f", _Viewport.size.y);
+		//	//ImGui::Text("Aspect Ratio : %f", _CameraComponent->aspectRatio);
+		//}
+		//else
+		//{
+		//	ImGui::Text("No Scene Primary Camera Selected");
+		//}
 	}
 
 	void GameViewer::OnResize()
@@ -193,12 +193,12 @@ namespace Wyrd::Editor
 		/* resize the underlying framebuffer */
 		_Framebuffer->Resize((uint32_t)_Viewport._size.x, (uint32_t)_Viewport._size.y);
 
-		if (_CameraComponent != nullptr)
-		{
-			/* Set the camera viewport */
-			_Camera.SetSize(_CameraComponent->size);
-			_Camera.SetViewportSize(_Viewport._size.x, _Viewport._size.y);
-		}
+		//if (_CameraComponent != nullptr)
+		//{
+		//	/* Set the camera viewport */
+		//	_Camera.SetSize(_CameraComponent->size);
+		//	_Camera.SetViewportSize(_Viewport._size.x, _Viewport._size.y);
+		//}
 	}
 
 	void GameViewer::OnSceneOpened(Events::EventArgs& args)
@@ -209,22 +209,22 @@ namespace Wyrd::Editor
 		/* check to see if the scene already has a camera component on the camera entity */
 		if (_Scene->GetPrimaryCameraEntity() != ENTITY_INVALID)
 		{
-			CameraComponent* cameraComponent = _Scene->Get<CameraComponent>(_Scene->GetPrimaryCameraEntity());
-			if (cameraComponent != nullptr)
-			{
-				_CameraEntity = _Scene->GetPrimaryCameraEntity();
-				_CameraComponent = cameraComponent;
-			}
-			else
-			{
-				_CameraEntity = ENTITY_INVALID;
-				_CameraComponent = nullptr;
-			}
+			//CameraComponent* cameraComponent = _Scene->Get<CameraComponent>(_Scene->GetPrimaryCameraEntity());
+			//if (cameraComponent != nullptr)
+			//{
+			//	_CameraEntity = _Scene->GetPrimaryCameraEntity();
+			//	_CameraComponent = cameraComponent;
+			//}
+			//else
+			//{
+			//	_CameraEntity = ENTITY_INVALID;
+			//	_CameraComponent = nullptr;
+			//}
 		}
 		else
 		{
 			_CameraEntity = ENTITY_INVALID;
-			_CameraComponent = nullptr;
+			//_CameraComponent = nullptr;
 		}
 	}
 }

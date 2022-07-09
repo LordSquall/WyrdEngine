@@ -35,38 +35,38 @@ namespace Wyrd
 	{
 		/* register all the inbuild components with the ECS */
 		RegisterComponent<MetaDataComponent>("MetaData", "MetaDataComponent", true);
-		RegisterComponent<Transform2DComponent>("Transform2D", "Transform2DComponent", true);
-		RegisterComponent<SpriteComponent>("Sprite", "SpriteComponent", true);
-		RegisterComponent<ScriptComponent>("Script", "ScriptComponent", true);
-		RegisterComponent<CameraComponent>("Camera", "CameraComponent", true);
-		RegisterComponent<TextComponent>("Text", "TextComponent", true);
-		RegisterComponent<RelationshipComponent>("Relationship", "RelationshipComponent", true);
+		//RegisterComponent<Transform2DComponent>("Transform2D", "Transform2DComponent", true);
+		//RegisterComponent<SpriteComponent>("Sprite", "SpriteComponent", true);
+		//RegisterComponent<ScriptComponent>("Script", "ScriptComponent", true);
+		//RegisterComponent<CameraComponent>("Camera", "CameraComponent", true);
+		//RegisterComponent<TextComponent>("Text", "TextComponent", true);
+		//RegisterComponent<RelationshipComponent>("Relationship", "RelationshipComponent", true);
 		return true;
 	}
 
 	void Scene::AssignScripts(const Entity entity)
 	{
-		ScriptComponent* scriptComponent = Get<ScriptComponent>(entity);
-		if (scriptComponent != nullptr)
-		{
-			auto scriptedClass = Application::Get().GetBehaviour().GetCustomClassByUID(scriptComponent->script);
-
-			if (scriptedClass != nullptr)
-			{
-				scriptComponent->propertyMap.clear();
-
-				int i = 0;
-				for (auto& o : scriptedClass->Properties)
-				{
-					scriptComponent->propertyMap.insert({ o.second->GetName(),  (scriptComponent->properties + (i * SCRIPT_COMP_PROP_DATA_LENGTH)) });
-					i++;
-				}
-			}
-			else
-			{
-				WYRD_CORE_ERROR("Unable to find matching class!");
-			}
-		}
+		//ScriptComponent* scriptComponent = Get<ScriptComponent>(entity);
+		//if (scriptComponent != nullptr)
+		//{
+		//	auto scriptedClass = Application::Get().GetBehaviour().GetCustomClassByUID(scriptComponent->script);
+		//
+		//	if (scriptedClass != nullptr)
+		//	{
+		//		scriptComponent->propertyMap.clear();
+		//
+		//		int i = 0;
+		//		for (auto& o : scriptedClass->Properties)
+		//		{
+		//			scriptComponent->propertyMap.insert({ o.second->GetName(),  (scriptComponent->properties + (i * SCRIPT_COMP_PROP_DATA_LENGTH)) });
+		//			i++;
+		//		}
+		//	}
+		//	else
+		//	{
+		//		WYRD_CORE_ERROR("Unable to find matching class!");
+		//	}
+		//}
 	}
 	
 	// bool Scene::ToJson(jsonxx::Object& object)
@@ -245,12 +245,12 @@ namespace Wyrd
 		
 		/* register all the inbuild components with the ECS */
 		InitialiseComponent<MetaDataComponent>(ent);
-		InitialiseComponent<Transform2DComponent>(ent);
-		InitialiseComponent<SpriteComponent>(ent);
-		InitialiseComponent<ScriptComponent>(ent);
-		InitialiseComponent<CameraComponent>(ent);
-		InitialiseComponent<TextComponent>(ent);
-		InitialiseComponent<RelationshipComponent>(ent);
+		//InitialiseComponent<Transform2DComponent>(ent);
+		//InitialiseComponent<SpriteComponent>(ent);
+		//InitialiseComponent<ScriptComponent>(ent);
+		//InitialiseComponent<CameraComponent>(ent);
+		//InitialiseComponent<TextComponent>(ent);
+		//InitialiseComponent<RelationshipComponent>(ent);
 
 		return ent;
 	}

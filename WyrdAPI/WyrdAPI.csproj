@@ -15,8 +15,8 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <PlatformTarget>x64</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\lib\Debug\WyrdAPI\</OutputPath>
     <BaseIntermediateOutputPath>..\obj\Debug\WyrdAPI\</BaseIntermediateOutputPath>
@@ -24,12 +24,11 @@
     <DefineConstants>WYRD_PLATFORM_WINDOWS;WYRD_EDITOR_ENABLED;GLFW_INCLUDE_NONE;GLM_ENABLE_EXPERIMENTAL;WYRD_DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <PlatformTarget>x64</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\lib\Release\WyrdAPI\</OutputPath>
     <BaseIntermediateOutputPath>..\obj\Release\WyrdAPI\</BaseIntermediateOutputPath>
@@ -40,8 +39,8 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Distribution|x64' ">
     <PlatformTarget>x64</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\lib\Distribution\WyrdAPI\</OutputPath>
     <BaseIntermediateOutputPath>..\obj\Distribution\WyrdAPI\</BaseIntermediateOutputPath>
@@ -50,7 +49,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Distribution|x64' ">
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\enums\InputEnums.cs" />

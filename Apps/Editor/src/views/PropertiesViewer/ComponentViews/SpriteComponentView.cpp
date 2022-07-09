@@ -19,46 +19,46 @@ namespace Wyrd::Editor
 	void SpriteComponentView::OnEditorRender(Entity e, void* data)
 	{
 		/* Cast to the correct component */
-		SpriteComponent* sprite = (SpriteComponent*)data;
-
-		ImGui::InputFloat2("Pos ", (float*)&sprite->position);
-		ImGui::InputFloat2("Size", (float*)&sprite->size);
-		ImGui::InputFloat2("Tiling", (float*)&sprite->tiling);
-
-		//TODO - need to move to util function
-		ImGui::Text("Texture");
-		ImGui::PushID("texture");
-		ImGui::SameLine();
-
-		auto texture = Application::Get().GetResources().Textures[sprite->texture];
-
-		if (texture == nullptr)
-			texture = Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)];
-
-		ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2((float)texture->GetWidth(), (float)texture->GetHeight()));
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_DND_TEXTURE))
-			{
-				UID* textureUID = (UID*)payload->Data;
-
-				/* retrieve the new texture */
-				auto newTexture = Application::Get().GetResources().Textures[*textureUID];
-
-				if (newTexture)
-				{
-					sprite->texture = *textureUID;
-					sprite->size = { (float)newTexture->GetWidth(), (float)newTexture->GetHeight() };
-				}
-				else
-				{
-					WYRD_ERROR("Unable to find source Texture from Drag and Drop Payload!");
-				}
-			}
-			ImGui::EndDragDropTarget();
-		}
-		ImGui::PopID();
-
-		ImGui::ColorEdit3("Color", (float*)&sprite->color);
+		//SpriteComponent* sprite = (SpriteComponent*)data;
+		//
+		//ImGui::InputFloat2("Pos ", (float*)&sprite->position);
+		//ImGui::InputFloat2("Size", (float*)&sprite->size);
+		//ImGui::InputFloat2("Tiling", (float*)&sprite->tiling);
+		//
+		////TODO - need to move to util function
+		//ImGui::Text("Texture");
+		//ImGui::PushID("texture");
+		//ImGui::SameLine();
+		//
+		//auto texture = Application::Get().GetResources().Textures[sprite->texture];
+		//
+		//if (texture == nullptr)
+		//	texture = Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)];
+		//
+		//ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2((float)texture->GetWidth(), (float)texture->GetHeight()));
+		//if (ImGui::BeginDragDropTarget())
+		//{
+		//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_DND_TEXTURE))
+		//	{
+		//		UID* textureUID = (UID*)payload->Data;
+		//
+		//		/* retrieve the new texture */
+		//		auto newTexture = Application::Get().GetResources().Textures[*textureUID];
+		//
+		//		if (newTexture)
+		//		{
+		//			sprite->texture = *textureUID;
+		//			sprite->size = { (float)newTexture->GetWidth(), (float)newTexture->GetHeight() };
+		//		}
+		//		else
+		//		{
+		//			WYRD_ERROR("Unable to find source Texture from Drag and Drop Payload!");
+		//		}
+		//	}
+		//	ImGui::EndDragDropTarget();
+		//}
+		//ImGui::PopID();
+		//
+		//ImGui::ColorEdit3("Color", (float*)&sprite->color);
 	}
 }

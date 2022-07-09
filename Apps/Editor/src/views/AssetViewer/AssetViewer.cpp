@@ -406,6 +406,13 @@ namespace Wyrd::Editor
 				Utils::RemoveFile(sceneResource.GetPath().c_str());
 			}
 			ImGui::Separator();
+			if (ImGui::MenuItem("Show in Explorer"))
+			{
+				std::ostringstream os;
+				os << "explorer.exe " << sceneResource.GetPath();
+				Utils::SystemExecute(os.str());
+			}
+			ImGui::Separator();
 			if (ImGui::MenuItem("Properties"))
 			{
 				_EventService->Publish(Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&sceneResource));

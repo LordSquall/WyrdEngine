@@ -203,7 +203,6 @@ namespace Wyrd::Editor
 				}
 			}
 
-
 			// Mark the compiles as unsuccessful
 			_IsAvailable = false;
 		}

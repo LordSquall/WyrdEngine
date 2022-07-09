@@ -3,7 +3,7 @@
 #include "events/EditorEvents.h"
 #include "services/ServiceManager.h"
 
-class Wyrd::CameraComponent;
+//class Wyrd::CameraComponent;
 
 namespace Wyrd::Editor
 {

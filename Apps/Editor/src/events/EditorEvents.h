@@ -161,10 +161,9 @@ namespace Wyrd::Editor::Events
 	class OpenProjectArgs : public EventArgs
 	{
 	public:
-		OpenProjectArgs(std::string name, std::string location) : name(name), location(location) {}
+		OpenProjectArgs(std::string name) : name(name) {}
 
 		const std::string name;
-		const std::string location;
 
 		EVENT_ARGS_CLONE(OpenProjectArgs)
 	};
@@ -531,22 +530,22 @@ namespace Wyrd::Editor::Events
 
 #pragma region SetSceneCamera
 
-	class SetSceneCameraArgs : public EventArgs
-	{
-	public:
-		SetSceneCameraArgs(Entity e, CameraComponent* cc) : entity(e), cameraComponent(cc) {}
-
-		Entity entity;
-		CameraComponent* cameraComponent;
-
-		EVENT_ARGS_CLONE(SetSceneCameraArgs)
-	};
-
-	class SetSceneCameraEvent : public Event
-	{
-	public:
-		SetSceneCameraEvent() : Event(EventType::SetSceneCamera) { }
-	};
+	//class SetSceneCameraArgs : public EventArgs
+	//{
+	//public:
+	//	SetSceneCameraArgs(Entity e, CameraComponent* cc) : entity(e), cameraComponent(cc) {}
+	//
+	//	Entity entity;
+	//	CameraComponent* cameraComponent;
+	//
+	//	EVENT_ARGS_CLONE(SetSceneCameraArgs)
+	//};
+	//
+	//class SetSceneCameraEvent : public Event
+	//{
+	//public:
+	//	SetSceneCameraEvent() : Event(EventType::SetSceneCamera) { }
+	//};
 
 #pragma endregion
 

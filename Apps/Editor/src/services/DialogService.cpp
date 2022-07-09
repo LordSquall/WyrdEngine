@@ -5,6 +5,9 @@
 #include "support/Utils.h"
 #include "platform/OpenGL/imgui_opengl_renderer.h"
 
+#include <core/Application.h>
+#include <core/Window.h>
+
 namespace Wyrd::Editor
 {
 	std::shared_ptr<EditorViewDialogBase> DialogService::_activeDialog = nullptr;
@@ -33,9 +36,24 @@ namespace Wyrd::Editor
 		{
 			if (dialog != nullptr)
 			{
+				EditorDialogConfig dialogConfig = dialog->GetConfig();
+
 				const char* name = dialog->GetName().c_str();
 				if (!ImGui::IsPopupOpen(name))
+				{
+					if (dialogConfig.alwaysCenter)
+					{
+						unsigned int currentWinWidth = Application::Get().GetWindow().GetWidth();
+						unsigned int currentWinHeight = Application::Get().GetWindow().GetHeight();
+
+						float xPos = (((float)currentWinWidth) * 0.5f) - ((float)dialogConfig.width * 0.5f);
+						float yPos = (((float)currentWinHeight) * 0.5f) - ((float)dialogConfig.height * 0.5f);
+
+						ImGui::SetNextWindowPos(ImVec2(xPos, yPos));
+						ImGui::SetNextWindowSize(ImVec2(dialogConfig.width, dialogConfig.height));
+					}
 					ImGui::OpenPopup(name);
+				}
 
 				if (ImGui::BeginPopupModal(name, nullptr))
 				{

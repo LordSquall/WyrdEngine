@@ -7,7 +7,7 @@
 #include <core/renderer/Buffer.h>
 #include <core/renderer/Shader.h>
 
-struct Wyrd::CameraComponent;
+//struct Wyrd::CameraComponent;
 
 namespace Wyrd::Editor
 {
@@ -43,7 +43,7 @@ namespace Wyrd::Editor
 		OrthographicCamera _Camera;
 
 		Entity _CameraEntity;
-		CameraComponent* _CameraComponent;
+		//CameraComponent* _CameraComponent;
 		bool _OpenContextMenu;
 
 		bool _mouseEventStarted;

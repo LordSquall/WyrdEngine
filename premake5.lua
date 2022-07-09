@@ -50,7 +50,6 @@ includedir["imgui"] = dependenciesdir .. "/imgui"
 includedir["spdlog"] = dependenciesdir .. "/spdlog/include/"
 includedir["crossguid"] = dependenciesdir .. "/crossguid/include/"
 includedir["hash"] = dependenciesdir .. "/Hash/include/"
-includedir["freetype"] = dependenciesdir .. "/freetype/include/"
 includedir["jsonxx"] = dependenciesdir .. "/jsonxx/"
 includedir["GLAD"] = "Wyrd/vendor/glad/include"
 
@@ -63,12 +62,12 @@ if os.istarget("windows") then
 group "Third Party"
 	include "buildsystem/common/premake/glfw.lua"
 	include "buildsystem/common/premake/glad.lua"
+	include "buildsystem/common/premake/glm.lua"
 	include "buildsystem/common/premake/jsonxx.lua"
 	include "buildsystem/common/premake/soil.lua"
 	include "buildsystem/common/premake/imgui.lua"
 	include "buildsystem/common/premake/spdlog.lua"
 	include "buildsystem/common/premake/crossguid.lua"
-	include "buildsystem/common/premake/freetype.lua"
 end
 
 if os.istarget("linux") then
@@ -172,6 +171,105 @@ group ""
 			defines "WYRD_DISTRIBUTION"
 			runtime "Release"
 			symbols "on"
+
+group "Scripting"
+project "WyrdCAPI"
+		location "WyrdCAPI"
+		kind "SharedLib"
+		language "C++"
+		cppdialect "C++17"
+		staticruntime "off"
+
+		targetdir ("lib/" .. outputdir .. "/%{prj.name}")
+		objdir ("obj/" .. outputdir .. "/%{prj.name}")
+		
+		files
+		{
+			"%{prj.name}/**.cpp",
+			"%{prj.name}/**.h"
+		}
+		
+		includedirs
+		{
+			"Wyrd/src",
+			"%{includedir.glm}",
+			"%{includedir.uuid}",
+			"%{includedir.mono}",
+			"%{includedir.jsonxx}",
+			"%{includedir.crossguid}"
+		}
+		
+        links { 
+			"uuid",
+			"Wyrd",
+			"crossguid"
+		}
+
+		filter "system:windows"
+			systemversion "latest"
+
+			defines
+			{
+				"WYRD_PLATFORM_WINDOWS",
+				"WYRD_EDITOR_ENABLED",
+				"GLFW_INCLUDE_NONE",
+				"GLM_ENABLE_EXPERIMENTAL",
+				"LIBRARY_EXPORT"
+			}
+
+		filter "configurations:Debug"
+			defines "WYRD_DEBUG"
+			runtime "Debug"
+			symbols "on"
+
+		filter "configurations:Release"
+			defines "WYRD_RELEASE"
+			runtime "Release"
+			symbols "on"
+
+		filter "configurations:Distribution"
+			defines "WYRD_DISTRIBUTION"
+			runtime "Release"
+			symbols "on"
+			
+project "WyrdAPI"
+		location "WyrdAPI"
+		kind "SharedLib"
+		language "C#"
+
+		targetdir ("lib/" .. outputdir .. "/%{prj.name}")
+		objdir ("obj/" .. outputdir .. "/%{prj.name}")
+		
+		files
+		{
+			"%{prj.name}/**.cs"
+		}
+
+		filter "system:windows"
+			systemversion "latest"
+
+			defines
+			{
+				"WYRD_PLATFORM_WINDOWS",
+				"WYRD_EDITOR_ENABLED",
+				"GLFW_INCLUDE_NONE",
+				"GLM_ENABLE_EXPERIMENTAL"
+			}
+
+		filter "configurations:Debug"
+			defines "WYRD_DEBUG"
+			runtime "Debug"
+			symbols "on"
+
+		filter "configurations:Release"
+			defines "WYRD_RELEASE"
+			runtime "Release"
+			symbols "on"
+
+		filter "configurations:Distribution"
+			defines "WYRD_DISTRIBUTION"
+			runtime "Release"
+			symbols "on"
 			
 group "Applications"
 project "TestPlayer"
@@ -233,7 +331,6 @@ project "TestPlayer"
 			"SOIL",
 			"jsonxx",
 			"imgui",
-			"freetyped",
 			"opengl32.dll"
 		}
 		
@@ -318,8 +415,7 @@ project "Editor"
 		"%{includedir.mono}",
 		"%{includedir.spdlog}",
 		"%{includedir.crossguid}",
-		"%{includedir.hash}",
-		"%{includedir.freetype}"
+		"%{includedir.hash}"
 	}
 
 	dependson 
@@ -349,7 +445,6 @@ project "Editor"
 			"SOIL",
 			"jsonxx",
 			"imgui",
-			"freetyped",
 			"opengl32.dll"
 		}
 		
@@ -381,7 +476,6 @@ project "Editor"
 			"glad",
 			"imgui",
 			"jsonxx",
-			"freetype",
 			"mono-2.0",
 			"dl",
 			"pthread"

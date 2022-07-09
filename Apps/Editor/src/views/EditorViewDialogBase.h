@@ -13,6 +13,17 @@
 namespace Wyrd::Editor
 {
 	/**
+	 * @brief Configuration structure of the editor dialog.
+	 * This structure is used to control the common properties of a editor dialog.
+	*/
+	struct EditorDialogConfig
+	{
+		bool alwaysCenter = false;
+		unsigned int width = 800;
+		unsigned int height = 600;
+	};
+
+	/**
 	 * @brief Base class for all Editor Dialog Views
 	*/
 	class EditorViewDialogBase : EditorViewBase
@@ -38,8 +49,19 @@ namespace Wyrd::Editor
 		*/
 		inline const std::string& GetName() { return _name; }
 
+		/**
+		 * @brief Retrieve the dialog settings used for this dialog
+		*/
+		inline const EditorDialogConfig& GetConfig() const { return _dialogConfig; }
+
+		/**
+		 * @brief Provide a dialog configuration structure
+		*/
+		inline void SetConfig(const EditorDialogConfig& config) { _dialogConfig = config; }
+
 	protected:
 		void* result;
+		EditorDialogConfig _dialogConfig;
 
 	private:
 		std::string _name;

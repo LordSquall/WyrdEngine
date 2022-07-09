@@ -9,16 +9,16 @@ void Scene_BuildComponentList(void* scenePtr)
 	Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
 
 	int metaDataComponentID			= Wyrd::GetID<Wyrd::MetaDataComponent>();
-	int transform2DComponenttID		= Wyrd::GetID<Wyrd::Transform2DComponent>();
-	int spriteComponentID			= Wyrd::GetID<Wyrd::SpriteComponent>();
-	int scriptComponentID			= Wyrd::GetID<Wyrd::ScriptComponent>();
-	int cameraComponentID			= Wyrd::GetID<Wyrd::CameraComponent>();
+	//int transform2DComponenttID		= Wyrd::GetID<Wyrd::Transform2DComponent>();
+	//int spriteComponentID			= Wyrd::GetID<Wyrd::SpriteComponent>();
+	//int scriptComponentID			= Wyrd::GetID<Wyrd::ScriptComponent>();
+	//int cameraComponentID			= Wyrd::GetID<Wyrd::CameraComponent>();
 
 	std::cout << "MetaDataComponent Type ID "			<< std::to_string(metaDataComponentID) << std::endl;
-	std::cout << "ECSTransform2DComponent Type ID "		<< std::to_string(transform2DComponenttID) << std::endl;
-	std::cout << "ECSSpriteComponent Type ID "			<< std::to_string(spriteComponentID) << std::endl;
-	std::cout << "ECSScriptComponent Type ID "			<< std::to_string(scriptComponentID) << std::endl;
-	std::cout << "ECSCameraComponent Type ID "			<< std::to_string(cameraComponentID) << std::endl;
+	//std::cout << "ECSTransform2DComponent Type ID "		<< std::to_string(transform2DComponenttID) << std::endl;
+	//std::cout << "ECSSpriteComponent Type ID "			<< std::to_string(spriteComponentID) << std::endl;
+	//std::cout << "ECSScriptComponent Type ID "			<< std::to_string(scriptComponentID) << std::endl;
+	//std::cout << "ECSCameraComponent Type ID "			<< std::to_string(cameraComponentID) << std::endl;
 }
 
 void* Scene_GetComponent(void* scenePtr, uint32_t componentPoolIndex, Wyrd::Entity entity)

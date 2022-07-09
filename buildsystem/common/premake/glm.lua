@@ -1,16 +1,16 @@
-project "freetype"
+project "glm"
     kind "StaticLib"
     language "C++"
 	cppdialect "C++17"
 	staticruntime "off"
     
-	project_dir_name = "freetype"
+	project_dir_name = "glm"
 	project_dependices_root = "../../../dependencies/"
 
 	base_dir = project_dependices_root .. project_dir_name .. "/premakedir/"
 
-	src_dir = project_dependices_root .. project_dir_name .. "/src/"
-	include_dir = project_dependices_root .. project_dir_name .. "/include/"
+	src_dir = project_dependices_root .. project_dir_name .. "/"
+	include_dir = project_dependices_root .. project_dir_name .. "/"
 	
 	basedir(project_dependices_root .. project_dir_name .. "/premakedir/")
 	
@@ -19,33 +19,16 @@ project "freetype"
 
 	files
 	{
-        include_dir .. "**.h",
-        src_dir .. "**.c",
+        src_dir .. "**.hpp"
     }
-	
-	includedirs	
-	{
-		include_dir
-	}
 
-	defines
-	{
-		"FT2_BUILD_LIBRARY"
-	}
-	
     
 	filter "system:windows"
 		systemversion "latest"
 
-		defines
-		{
-			"WIN32",
-			"_WINDOWS"
-		}
-	
 	filter "system:linux"
 		systemversion "latest"
-				
+
 	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "on"
@@ -53,4 +36,3 @@ project "freetype"
 	filter "configurations:Release"
 		runtime "Debug"
 		symbols "on"
-		

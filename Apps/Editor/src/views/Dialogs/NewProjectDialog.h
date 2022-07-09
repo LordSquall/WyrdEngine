@@ -5,6 +5,8 @@
 
 #include "views/EditorViewDialogBase.h"
 
+#include "datamodels/RecentProjects.h"
+
 namespace Wyrd::Editor
 {
 	class NewProjectDialog : public EditorViewDialogBase
@@ -14,5 +16,8 @@ namespace Wyrd::Editor
 		virtual ~NewProjectDialog() = default;
 
 		virtual void OnDialogRender();
+
+	private:
+		RecentProjects _RecentProjects;
 	};
 }

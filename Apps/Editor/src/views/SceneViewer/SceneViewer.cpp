@@ -68,32 +68,32 @@ namespace Wyrd::Editor
 				if (editorComponent)
 				{
 
-					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
-					SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
-					TextComponent* text = _Scene->Get<TextComponent>(e);
-
-					Rect r;
-
-					if (sprite)
-					{
-						// calculate aabb sprite component render rect
-
-						Rect newRect;
-						newRect._position = sprite->position + transform->position;
-						newRect._size = sprite->size;
-						r = newRect;
-					}
-
-					if (text)
-					{
-						// calculate aabb text component render rect
-					}
-
-					if (editorComponent)
-					{
-						editorComponent->inputArea._position = r._position;
-						editorComponent->inputArea._size = r._size;
-					}
+					//Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
+					//SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
+					//TextComponent* text = _Scene->Get<TextComponent>(e);
+					//
+					//Rect r;
+					//
+					//if (sprite)
+					//{
+					//	// calculate aabb sprite component render rect
+					//
+					//	Rect newRect;
+					//	newRect._position = sprite->position + transform->position;
+					//	newRect._size = sprite->size;
+					//	r = newRect;
+					//}
+					//
+					//if (text)
+					//{
+					//	// calculate aabb text component render rect
+					//}
+					//
+					//if (editorComponent)
+					//{
+					//	editorComponent->inputArea._position = r._position;
+					//	editorComponent->inputArea._size = r._size;
+					//}
 				}
 			}
 		}
@@ -113,69 +113,69 @@ namespace Wyrd::Editor
 
 			renderer.Clear(0.1f, 0.1f, 0.1f);
 
-			_GridGizmo->Render(ts, renderer);
+			//_GridGizmo->Render(ts, renderer);
 
 			if (_Scene != nullptr)
 			{
-				for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
-				{
-					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
-					SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
-
-					Wyrd::DrawSpriteCommand cmd{};
-					cmd.position = sprite->position + transform->position;
-					cmd.size = sprite->size;
-					cmd.rotation = transform->rotation;
-					cmd.rotationOrigin = transform->rotationOrigin;
-					cmd.tiling = sprite->tiling;
-					cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-					cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
-					cmd.texture = Application::Get().GetResources().Textures[sprite->texture].get();
-					cmd.color = sprite->color;
-
-					renderer.Submit(cmd);
-				}
-
-				for (Entity e : EntitySet<Transform2DComponent, TextComponent>(*_Scene.get()))
-				{
-					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
-					TextComponent* text = _Scene->Get<TextComponent>(e);
-
-					Wyrd::DrawTextCommand cmd{};
-					cmd.position = transform->position;
-					cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-					cmd.shader = Application::Get().GetResources().Shaders["Text"].get();
-					cmd.content = text->content;
-					cmd.scale = 1.0f;
-					cmd.size = text->size;
-					cmd.font = Application::Get().GetResources().FontTypes[text->font].get();
-					cmd.color = text->color;
-
-					renderer.Submit(cmd);
-				}
+				//for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
+				//{
+				//	Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
+				//	SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
+				//
+				//	Wyrd::DrawSpriteCommand cmd{};
+				//	cmd.position = sprite->position + transform->position;
+				//	cmd.size = sprite->size;
+				//	cmd.rotation = transform->rotation;
+				//	cmd.rotationOrigin = transform->rotationOrigin;
+				//	cmd.tiling = sprite->tiling;
+				//	cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
+				//	cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
+				//	cmd.texture = Application::Get().GetResources().Textures[sprite->texture].get();
+				//	cmd.color = sprite->color;
+				//
+				//	renderer.Submit(cmd);
+				//}
+				//
+				//for (Entity e : EntitySet<Transform2DComponent, TextComponent>(*_Scene.get()))
+				//{
+				//	Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
+				//	TextComponent* text = _Scene->Get<TextComponent>(e);
+				//
+				//	Wyrd::DrawTextCommand cmd{};
+				//	cmd.position = transform->position;
+				//	cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
+				//	cmd.shader = Application::Get().GetResources().Shaders["Text"].get();
+				//	cmd.content = text->content;
+				//	cmd.scale = 1.0f;
+				//	cmd.size = text->size;
+				//	cmd.font = Application::Get().GetResources().FontTypes[text->font].get();
+				//	cmd.color = text->color;
+				//
+				//	renderer.Submit(cmd);
+				//}
 
 			}
 
 			/* Gizmos */
 			if (_SelectedEntity != ENTITY_INVALID)
 			{
-				CameraComponent* cameraComp = _Scene->Get<CameraComponent>(_SelectedEntity);
-				if (cameraComp != nullptr)
-				{
-					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(_SelectedEntity);
-
-					Wyrd::DrawRectCommand cmd{};
-					cmd.position = { transform->position.x + (-((cameraComp->size * cameraComp->aspectRatio) / 2.0f)), transform->position.y + (-(cameraComp->size) / 2.0f) };
-					cmd.size = { cameraComp->size * cameraComp->aspectRatio, cameraComp->size };
-					cmd.thickness = 2.0f;
-					cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-					cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
-					cmd.color = { 1.0f, 0.0f, 0.0f, 1.0f };
-
-					renderer.Submit(cmd);
-				}
-
-				_Translation2DGizmo->Render(ts, renderer);
+				//CameraComponent* cameraComp = _Scene->Get<CameraComponent>(_SelectedEntity);
+				//if (cameraComp != nullptr)
+				//{
+				//	Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(_SelectedEntity);
+				//
+				//	Wyrd::DrawRectCommand cmd{};
+				//	cmd.position = { transform->position.x + (-((cameraComp->size * cameraComp->aspectRatio) / 2.0f)), transform->position.y + (-(cameraComp->size) / 2.0f) };
+				//	cmd.size = { cameraComp->size * cameraComp->aspectRatio, cameraComp->size };
+				//	cmd.thickness = 2.0f;
+				//	cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
+				//	cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
+				//	cmd.color = { 1.0f, 0.0f, 0.0f, 1.0f };
+				//
+				//	renderer.Submit(cmd);
+				//}
+				//
+				//_Translation2DGizmo->Render(ts, renderer);
 			}
 
 			renderer.Flush();

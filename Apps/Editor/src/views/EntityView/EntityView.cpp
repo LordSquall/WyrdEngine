@@ -70,38 +70,38 @@ namespace Wyrd::Editor
 
 						if (ImGui::BeginPopupContextItem())
 						{
-							if (ImGui::MenuItem("Add Transform"))
-							{
-								Transform2DComponent* c = scene.AssignComponent<Transform2DComponent>(e);
-								c->position = { 0.0f, 0.0f };
-								c->rotation = 0.0f;
-							}
-							ImGui::Separator();
-							if (ImGui::MenuItem("Add Sprite"))
-							{
-								SpriteComponent* c = scene.AssignComponent<SpriteComponent>(e);
-								c->position = { 0.0f, 0.0f };
-								c->size = { 32.0f, 32.0f };
-								c->texture = UID(RESOURCE_DEFAULT_TEXTURE);
-								c->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-							}
-							ImGui::Separator();
-							if (ImGui::MenuItem("Add Text"))
-							{
-								TextComponent* c = scene.AssignComponent<TextComponent>(e);
-								sprintf(c->content, "Text");
-							}
-							ImGui::Separator();
-							if (ImGui::MenuItem("Add Script"))
-							{
-								ScriptComponent* c = scene.AssignComponent<ScriptComponent>(e);
-								c->script = UID();
-							}
-							if (ImGui::MenuItem("Add Camera"))
-							{
-								CameraComponent* c = scene.AssignComponent<CameraComponent>(e);
-								c->size = 10.0f;
-							}
+							//if (ImGui::MenuItem("Add Transform"))
+							//{
+							//	Transform2DComponent* c = scene.AssignComponent<Transform2DComponent>(e);
+							//	c->position = { 0.0f, 0.0f };
+							//	c->rotation = 0.0f;
+							//}
+							//ImGui::Separator();
+							//if (ImGui::MenuItem("Add Sprite"))
+							//{
+							//	SpriteComponent* c = scene.AssignComponent<SpriteComponent>(e);
+							//	c->position = { 0.0f, 0.0f };
+							//	c->size = { 32.0f, 32.0f };
+							//	c->texture = UID(RESOURCE_DEFAULT_TEXTURE);
+							//	c->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+							//}
+							//ImGui::Separator();
+							//if (ImGui::MenuItem("Add Text"))
+							//{
+							//	TextComponent* c = scene.AssignComponent<TextComponent>(e);
+							//	sprintf(c->content, "Text");
+							//}
+							//ImGui::Separator();
+							//if (ImGui::MenuItem("Add Script"))
+							//{
+							//	ScriptComponent* c = scene.AssignComponent<ScriptComponent>(e);
+							//	c->script = UID();
+							//}
+							//if (ImGui::MenuItem("Add Camera"))
+							//{
+							//	CameraComponent* c = scene.AssignComponent<CameraComponent>(e);
+							//	c->size = 10.0f;
+							//}
 							ImGui::EndPopup();
 						}
 
@@ -138,11 +138,11 @@ namespace Wyrd::Editor
 					MetaDataComponent* dataComponent = scene.AssignComponent<MetaDataComponent>(e);
 					strcpy(dataComponent->name, "New Entity");
 
-					Transform2DComponent* transformComponent = scene.AssignComponent<Transform2DComponent>(e);
-					SpriteComponent* cs = scene.AssignComponent<SpriteComponent>(e);
-					cs->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-					cs->size = { 32.0f, 32.0f };
-					cs->texture = UID(RESOURCE_DEFAULT_TEXTURE);
+					//Transform2DComponent* transformComponent = scene.AssignComponent<Transform2DComponent>(e);
+					//SpriteComponent* cs = scene.AssignComponent<SpriteComponent>(e);
+					//cs->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+					//cs->size = { 32.0f, 32.0f };
+					//cs->texture = UID(RESOURCE_DEFAULT_TEXTURE);
 
 					//ECSEditorComponent* editorComponent = scene.AssignComponent<ECSEditorComponent>(e);
 				}

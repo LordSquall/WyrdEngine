@@ -111,6 +111,20 @@ namespace Wyrd::Editor
 		//															^      ^       ^     ^
 		//															m1     m2      m3    m4
 		
+		if (item.message.find(".dll"))
+		{
+			textColor = { 1.0f, 0.0f, 0.0f, 1.0f };
+
+			ImGui::TextColored(textColor, "ERROR");
+			ImGui::TableNextColumn();
+			ImGui::TextColored(textColor, "DLL");
+			ImGui::TableNextColumn();
+			ImGui::TextColored(textColor, "FATAL");
+			ImGui::TableNextColumn();
+			ImGui::TextColored(textColor, item.message.c_str());
+			return;
+		}
+
 		size_t m1 = item.message.find('(');
 		size_t m2 = item.message.find(':', m1);
 		size_t m3 = item.message.find("CS", m2);

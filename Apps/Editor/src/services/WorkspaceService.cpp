@@ -8,6 +8,7 @@
 #include "loaders/SceneLoader.h"
 #include "loaders/ProjectLoader.h"
 #include "datamodels/EditorComponents.h"
+#include "datamodels/RecentProjects.h"
 
 /* external includes */
 #include <jsonxx.h>
@@ -32,14 +33,18 @@ namespace Wyrd::Editor
 			}
 		});
 
-		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::OpenProject, [this](Events::EventArgs& args) {});
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::OpenProject, [this](Events::EventArgs& args) 
+			{
+				Events::OpenProjectArgs& a = (Events::OpenProjectArgs&)args;
+				LoadProject(a.name);
+			});
 
 		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::CloseProject, [this](Events::EventArgs& args) {});
 
-		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::SetSceneCamera, [this](Events::EventArgs& args) {
-			Events::SetSceneCameraArgs& a = (Events::SetSceneCameraArgs&)args;
-				_LoadedScene->SetPrimaryCameraEntity(a.entity);
-			});
+		//ServiceManager::Get<EventService>()->Subscribe(Events::EventType::SetSceneCamera, [this](Events::EventArgs& args) {
+		//	Events::SetSceneCameraArgs& a = (Events::SetSceneCameraArgs&)args;
+		//		_LoadedScene->SetPrimaryCameraEntity(a.entity);
+		//	});
 	}
 
 	void Wyrd::Editor::WorkspaceService::OnDestroy()
@@ -199,6 +204,9 @@ namespace Wyrd::Editor
 		{
 			/* Mark project as loaded */
 			IsProjectLoaded(true);
+
+			/* Add to recents list */
+			AddToRecentProjects(_LoadedProject->name, _LoadedProjectPath);
 
 			/* Update the settings to ensure this project is loaded by default next time */
 			ServiceManager::Get<SettingsService>()->SetSetting(_LoadedProjectPath.string(), CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT);
@@ -404,4 +412,10 @@ namespace Wyrd::Editor
 		_FileWatcher.End();
 	}
 
+	void WorkspaceService::AddToRecentProjects(const std::string& name, const std::filesystem::path& path)
+	{
+		RecentProjects recentProjects;
+		recentProjects.AddProject(name, path.string());
+		recentProjects.Save();
+	}
 }

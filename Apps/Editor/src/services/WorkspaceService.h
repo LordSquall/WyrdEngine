@@ -59,6 +59,8 @@ namespace Wyrd::Editor
 		void StartFileWatcher();
 		void EndFileWatcher();
 
+		void AddToRecentProjects(const std::string& name, const std::filesystem::path& path);
+
 	private:
 		bool _IsProjectLoaded = false;
 		std::filesystem::path _LoadedProjectPath;

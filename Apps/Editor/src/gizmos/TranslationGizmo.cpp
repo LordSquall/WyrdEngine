@@ -105,19 +105,19 @@ namespace Wyrd::Editor
             /* calculate the different between the camera viewport and the sceneviewer to set the scalling */
             float diff = _CameraController->GetSize() / std::min(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
 
-            Transform2DComponent* transform2DComponent = _SceneViewer->GetScene()->Get<Transform2DComponent>(_Entity);
-
-            Wyrd::DrawVertex2DCommand cmd{};
-            cmd.type = 1;
-            cmd.position = transform2DComponent->position;
-            cmd.vertices = &_Vertices;
-            cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-            cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
-            cmd.color = { 1.0f, 1.0f, 0.0f, 1.0f };
-
-            renderer.Submit(cmd);
-
-            renderer.Flush();
+            //Transform2DComponent* transform2DComponent = _SceneViewer->GetScene()->Get<Transform2DComponent>(_Entity);
+            //
+            //Wyrd::DrawVertex2DCommand cmd{};
+            //cmd.type = 1;
+            //cmd.position = transform2DComponent->position;
+            //cmd.vertices = &_Vertices;
+            //cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
+            //cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
+            //cmd.color = { 1.0f, 1.0f, 0.0f, 1.0f };
+            //
+            //renderer.Submit(cmd);
+            //
+            //renderer.Flush();
         }
 	}
 
@@ -137,59 +137,59 @@ namespace Wyrd::Editor
     {
         float diff = _CameraController->GetSize() / std::min(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
 
-        Transform2DComponent* transform2DComponent = _SceneViewer->GetScene()->Get<Transform2DComponent>(_Entity);
-
-        glm::vec4 worldSpace = glm::vec4(_SceneViewer->Convert2DToWorldSpace({ e.GetX(), e.GetY() }), -1.0f, 1.0f);
-
-        glm::vec4 modelSpace = glm::inverse(transform2DComponent->CalculateModelMatrix() * glm::scale(glm::vec3(diff, diff, diff))) * worldSpace;
-
-        Point ptCoords = { modelSpace.x, modelSpace.y };
-
-        bool updateVertices = false;
-
-        if (_InputState == InputState::NONE || _InputState == InputState::OVER)
-        {
-            /* test each of the handles to see if we have a mouse event */
-            if (InsidePolygon(_Vertices, _VertexGroups["XY_Handle"], ptCoords))
-            {
-                SetAxisState(AxisState::XY);
-                SetInputState(InputState::OVER);
-            } 
-            else if (InsidePolygon(_Vertices, _VertexGroups["X_Handle"], ptCoords))
-            {
-                SetAxisState(AxisState::X);
-                SetInputState(InputState::OVER);
-            } 
-            else if (InsidePolygon(_Vertices, _VertexGroups["Y_Handle"], ptCoords))
-            {
-                SetAxisState(AxisState::Y);
-                SetInputState(InputState::OVER);
-            }
-            else
-            {
-                SetAxisState(AxisState::NONE);
-                SetInputState(InputState::NONE);
-            }
-        }else
-        {
-            glm::vec2 worldSpaceDelta = _LastMouseWorldPos - _SceneViewer->GetMouseWorldPos();
-            
-            switch (_AxisState)
-            {
-            case AxisState::XY:
-                transform2DComponent->position.x += -worldSpaceDelta.x;
-                transform2DComponent->position.y += -worldSpaceDelta.y;
-                break;
-            case AxisState::X:
-                transform2DComponent->position.x += -worldSpaceDelta.x;
-                break;
-            case AxisState::Y:
-                transform2DComponent->position.y += -worldSpaceDelta.y;
-                break;
-            }
-            
-            _LastMouseWorldPos = _SceneViewer->GetMouseWorldPos();
-        }
+        //Transform2DComponent* transform2DComponent = _SceneViewer->GetScene()->Get<Transform2DComponent>(_Entity);
+        //
+        //glm::vec4 worldSpace = glm::vec4(_SceneViewer->Convert2DToWorldSpace({ e.GetX(), e.GetY() }), -1.0f, 1.0f);
+        //
+        //glm::vec4 modelSpace = glm::inverse(transform2DComponent->CalculateModelMatrix() * glm::scale(glm::vec3(diff, diff, diff))) * worldSpace;
+        //
+        //Point ptCoords = { modelSpace.x, modelSpace.y };
+        //
+        //bool updateVertices = false;
+        //
+        //if (_InputState == InputState::NONE || _InputState == InputState::OVER)
+        //{
+        //    /* test each of the handles to see if we have a mouse event */
+        //    if (InsidePolygon(_Vertices, _VertexGroups["XY_Handle"], ptCoords))
+        //    {
+        //        SetAxisState(AxisState::XY);
+        //        SetInputState(InputState::OVER);
+        //    } 
+        //    else if (InsidePolygon(_Vertices, _VertexGroups["X_Handle"], ptCoords))
+        //    {
+        //        SetAxisState(AxisState::X);
+        //        SetInputState(InputState::OVER);
+        //    } 
+        //    else if (InsidePolygon(_Vertices, _VertexGroups["Y_Handle"], ptCoords))
+        //    {
+        //        SetAxisState(AxisState::Y);
+        //        SetInputState(InputState::OVER);
+        //    }
+        //    else
+        //    {
+        //        SetAxisState(AxisState::NONE);
+        //        SetInputState(InputState::NONE);
+        //    }
+        //}else
+        //{
+        //    glm::vec2 worldSpaceDelta = _LastMouseWorldPos - _SceneViewer->GetMouseWorldPos();
+        //    
+        //    switch (_AxisState)
+        //    {
+        //    case AxisState::XY:
+        //        transform2DComponent->position.x += -worldSpaceDelta.x;
+        //        transform2DComponent->position.y += -worldSpaceDelta.y;
+        //        break;
+        //    case AxisState::X:
+        //        transform2DComponent->position.x += -worldSpaceDelta.x;
+        //        break;
+        //    case AxisState::Y:
+        //        transform2DComponent->position.y += -worldSpaceDelta.y;
+        //        break;
+        //    }
+        //    
+        //    _LastMouseWorldPos = _SceneViewer->GetMouseWorldPos();
+        //}
                 
         return true;
     }

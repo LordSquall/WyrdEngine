@@ -137,50 +137,50 @@ namespace Wyrd
 			/**
 			* Create a managed object for each of the script components.
 			*/
-			for (Entity e : EntitySet<ScriptComponent>(*_CurrentScene.get()))
-			{
-				ScriptComponent* scriptComponent = _CurrentScene->Get<ScriptComponent>(e);
-
-				/* retrieve script class */
-				auto scriptClass = GetCustomClassByUID(scriptComponent->script);
-
-				if (scriptClass != nullptr)
-				{
-					/* create the actual object*/
-					auto scriptObject = std::make_shared<ScriptedCustomObject>((MonoDomain*)_ClientDomain, _ClientImage, GetCustomClassByUID(scriptComponent->script).get(), _ScriptedClasses["ScriptedEntity"].get(), e);
-					
-					/* add to the custom object list */
-					_ECSScriptedCustomObjects[scriptComponent->script].push_back(scriptObject);
-
-					/* map the instance Id to the location in the map vector */
-					scriptComponent->instanceID = (uint32_t)_ECSScriptedCustomObjects[scriptComponent->script].size() - 1;
-
-					for (auto& prop : scriptClass->Properties)
-					{
-						prop.second->Set(scriptObject->Object, scriptComponent->propertyMap[prop.first]);
-					}
-				}
-				else
-				{
-					scriptComponent->instanceID = -1;
-				}
-			}
+			//for (Entity e : EntitySet<ScriptComponent>(*_CurrentScene.get()))
+			//{
+			//	ScriptComponent* scriptComponent = _CurrentScene->Get<ScriptComponent>(e);
+			//
+			//	/* retrieve script class */
+			//	auto scriptClass = GetCustomClassByUID(scriptComponent->script);
+			//
+			//	if (scriptClass != nullptr)
+			//	{
+			//		/* create the actual object*/
+			//		auto scriptObject = std::make_shared<ScriptedCustomObject>((MonoDomain*)_ClientDomain, _ClientImage, GetCustomClassByUID(scriptComponent->script).get(), _ScriptedClasses["ScriptedEntity"].get(), e);
+			//		
+			//		/* add to the custom object list */
+			//		_ECSScriptedCustomObjects[scriptComponent->script].push_back(scriptObject);
+			//
+			//		/* map the instance Id to the location in the map vector */
+			//		scriptComponent->instanceID = (uint32_t)_ECSScriptedCustomObjects[scriptComponent->script].size() - 1;
+			//
+			//		for (auto& prop : scriptClass->Properties)
+			//		{
+			//			prop.second->Set(scriptObject->Object, scriptComponent->propertyMap[prop.first]);
+			//		}
+			//	}
+			//	else
+			//	{
+			//		scriptComponent->instanceID = -1;
+			//	}
+			//}
 
 			/** 
 			* Call the initial start function on each of the managed objects 
 			*/
-			for (Entity e : EntitySet<ScriptComponent>(*_CurrentScene.get()))
-			{
-				ScriptComponent* scriptComponent = _CurrentScene->Get<ScriptComponent>(e);
-
-				if (scriptComponent->instanceID != -1)
-				{
-					ScriptedCustomObject* obj = GetCustomObject(scriptComponent->script, scriptComponent->instanceID);
-					MonoMethod* m = &*obj->GetMethod("OnStart");
-					MonoObject* o = &*obj->Object;
-					mono_runtime_invoke(m, o, nullptr, nullptr);
-				}
-			}
+			//for (Entity e : EntitySet<ScriptComponent>(*_CurrentScene.get()))
+			//{
+			//	ScriptComponent* scriptComponent = _CurrentScene->Get<ScriptComponent>(e);
+			//
+			//	if (scriptComponent->instanceID != -1)
+			//	{
+			//		ScriptedCustomObject* obj = GetCustomObject(scriptComponent->script, scriptComponent->instanceID);
+			//		MonoMethod* m = &*obj->GetMethod("OnStart");
+			//		MonoObject* o = &*obj->Object;
+			//		mono_runtime_invoke(m, o, nullptr, nullptr);
+			//	}
+			//}
 		}
 	}
 
@@ -212,23 +212,23 @@ namespace Wyrd
 		{
 			std::vector<void*> updateArgs = std::vector<void*>({ &ts });
 
-			for (Entity e : EntitySet<ScriptComponent>(*_CurrentScene.get()))
-			{
-				ScriptComponent* scriptComponent = _CurrentScene->Get<ScriptComponent>(e);
-
-				if (scriptComponent->instanceID != -1)
-				{
-					// TODO rework mapping
-					MonoObject* ecx = nullptr;
-					ScriptedCustomObject* obj = GetCustomObject(scriptComponent->script, scriptComponent->instanceID);
-					MonoMethod* m = &*obj->GetMethod("OnUpdate");
-					MonoObject* o = &*obj->Object;
-					mono_runtime_invoke(m, o, &updateArgs[0], &ecx);
-
-					if (ecx != nullptr)
-						mono_print_unhandled_exception(ecx);
-				}
-			}
+			//for (Entity e : EntitySet<ScriptComponent>(*_CurrentScene.get()))
+			//{
+			//	ScriptComponent* scriptComponent = _CurrentScene->Get<ScriptComponent>(e);
+			//
+			//	if (scriptComponent->instanceID != -1)
+			//	{
+			//		// TODO rework mapping
+			//		MonoObject* ecx = nullptr;
+			//		ScriptedCustomObject* obj = GetCustomObject(scriptComponent->script, scriptComponent->instanceID);
+			//		MonoMethod* m = &*obj->GetMethod("OnUpdate");
+			//		MonoObject* o = &*obj->Object;
+			//		mono_runtime_invoke(m, o, &updateArgs[0], &ecx);
+			//
+			//		if (ecx != nullptr)
+			//			mono_print_unhandled_exception(ecx);
+			//	}
+			//}
 		}
 	}
 
@@ -245,26 +245,26 @@ namespace Wyrd
 		{
 			if (_CurrentScene != nullptr)
 			{
-				for (Entity e : EntitySet<ScriptComponent>(*_CurrentScene.get()))
-				{
-					ScriptComponent* scriptComponent = _CurrentScene->Get<ScriptComponent>(e);
-
-					if (scriptComponent->instanceID != -1)
-					{
-						ScriptedCustomObject* obj = GetCustomObject(scriptComponent->script, scriptComponent->instanceID);
-						MonoObject* o = &*obj->Object;
-
-						if (MonoUtils::InvokeMethod((MonoImage*)_ClientImage, "WyrdGame", obj->TypeName, _FunctionKeyStateMap[state], o, { &key }) == false)
-						{
-							WYRD_ERROR("Unable to invoke Key Event!");
-						}
-
-						if (currentRunID != _RunID)
-						{
-							return;
-						}
-					}
-				}
+				//for (Entity e : EntitySet<ScriptComponent>(*_CurrentScene.get()))
+				//{
+				//	ScriptComponent* scriptComponent = _CurrentScene->Get<ScriptComponent>(e);
+				//
+				//	if (scriptComponent->instanceID != -1)
+				//	{
+				//		ScriptedCustomObject* obj = GetCustomObject(scriptComponent->script, scriptComponent->instanceID);
+				//		MonoObject* o = &*obj->Object;
+				//
+				//		if (MonoUtils::InvokeMethod((MonoImage*)_ClientImage, "WyrdGame", obj->TypeName, _FunctionKeyStateMap[state], o, { &key }) == false)
+				//		{
+				//			WYRD_ERROR("Unable to invoke Key Event!");
+				//		}
+				//
+				//		if (currentRunID != _RunID)
+				//		{
+				//			return;
+				//		}
+				//	}
+				//}
 			}
 		}
 	}
