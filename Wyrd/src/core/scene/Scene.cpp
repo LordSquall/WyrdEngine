@@ -34,11 +34,15 @@ namespace Wyrd
 	bool Scene::Initialise()
 	{
 		/* register all the inbuild components with the ECS */
+		/** TODO: This should really be handled during the code generate for the engine.
+		*	However to do that we would need to indentify Core and gameplay components
+		*/
 		RegisterComponent<MetaDataComponent>("MetaData", "MetaDataComponent", true);
 		RegisterComponent<Transform2DComponent>("Transform2D", "Transform2DComponent", true);
 		RegisterComponent<RelationshipComponent>("Relationship", "RelationshipComponent", true);
 		RegisterComponent<SpriteComponent>("Sprite", "SpriteComponent", true);
 		RegisterComponent<ScriptComponent>("Script", "ScriptComponent", true);
+		RegisterComponent<CameraComponent>("Camera", "CameraComponent", true);
 
 		return true;
 	}

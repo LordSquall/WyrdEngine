@@ -95,10 +95,6 @@ namespace Wyrd
 					WYRD_TRACE("- Property: {0}", name);
 					Properties[name] = std::move(scriptProp);
 				}
-				else
-				{
-					WYRD_WARN("Unable to parse C# property '{0}'. Missing Factory Implementation!", qualifiedType);
-				}
 			}
 			else
 			{

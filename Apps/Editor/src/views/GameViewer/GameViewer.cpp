@@ -190,15 +190,18 @@ namespace Wyrd::Editor
 
 	void GameViewer::OnResize()
 	{
-		/* resize the underlying framebuffer */
-		_Framebuffer->Resize((uint32_t)_Viewport._size.x, (uint32_t)_Viewport._size.y);
+		if (_Viewport._size.x > 0.1f && _Viewport._size.y > 0.1f)
+		{
+			/* resize the underlying framebuffer */
+			_Framebuffer->Resize((uint32_t)_Viewport._size.x, (uint32_t)_Viewport._size.y);
 
-		//if (_CameraComponent != nullptr)
-		//{
-		//	/* Set the camera viewport */
-		//	_Camera.SetSize(_CameraComponent->size);
-		//	_Camera.SetViewportSize(_Viewport._size.x, _Viewport._size.y);
-		//}
+			//if (_CameraComponent != nullptr)
+			//{
+			//	/* Set the camera viewport */
+			//	_Camera.SetSize(_CameraComponent->size);
+			//	_Camera.SetViewportSize(_Viewport._size.x, _Viewport._size.y);
+			//}
+		}
 	}
 
 	void GameViewer::OnSceneOpened(Events::EventArgs& args)

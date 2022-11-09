@@ -192,10 +192,10 @@ namespace Wyrd::Editor
 			//{
 			//	TextComponent* c = scene.AssignComponent<TextComponent>(entity);
 			//}
-			//if (ImGui::MenuItem("Add Camera"))
-			//{
-			//	CameraComponent* c = scene.AssignComponent<CameraComponent>(entity);
-			//}
+			if (ImGui::MenuItem("Add Camera"))
+			{
+				CameraComponent* c = scene.AssignComponent<CameraComponent>(entity);
+			}
 			ImGui::EndPopup();
 		}
 	}

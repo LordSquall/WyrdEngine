@@ -60,6 +60,13 @@ namespace Wyrd
         obj << "remove" << data->remove;
     }
 
+    void ComponentSerialiserFactory::Serialise(jsonxx::Object & obj, Wyrd::CameraComponent* data)
+    {
+        obj << "enabled" << data->enabled;
+        obj << "scriptId" << data->scriptId;
+        obj << "instanceId" << data->instanceId;
+    }
+
 
 
 
@@ -101,6 +108,13 @@ namespace Wyrd
         data->childrenCnt = obj.get<jsonxx::Number>("childrenCnt", 0);
         data->depth = obj.get<jsonxx::Number>("depth", 0);
         data->remove = obj.get<jsonxx::Boolean>("remove", false);
+    }
+
+    void ComponentSerialiserFactory::Deserialise(jsonxx::Object & obj, Wyrd::CameraComponent* data)
+    {
+        data->enabled = obj.get<jsonxx::Boolean>("enabled", true);
+        data->scriptId << obj.get<jsonxx::String>("scriptId", UID());
+        data->instanceId = obj.get<jsonxx::Number>("instanceId", 0);
     }
 
 

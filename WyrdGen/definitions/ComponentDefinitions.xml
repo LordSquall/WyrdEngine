@@ -34,5 +34,11 @@
     <Data name="depth" type="Int32" default="0"/>
     <Data name="remove" type="Boolean" default="false"/>
   </Component>
+
+  <Component name="CameraComponent" shortName="Camera">
+    <Data name="enabled" type="Boolean" default="true" />
+    <Data name="scriptId" type="UID" default="UID()"/>
+    <Data name="instanceId" type="Int32" default="0" />
+  </Component>
   
 </ComponentDefinitions>

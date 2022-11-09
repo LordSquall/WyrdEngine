@@ -74,4 +74,14 @@ namespace Wyrd
         RelationshipComponent() : first(ENTITY_INVALID), previous(ENTITY_INVALID), next(ENTITY_INVALID), parent(ENTITY_INVALID), childrenCnt(0), depth(0), remove(false) {} 
     };
 
+
+    struct WYRD_LIBRARY_API CameraComponent
+    {
+        bool enabled;
+        Wyrd::UID scriptId;
+        int32_t instanceId;
+
+        CameraComponent() : enabled(false), scriptId(), instanceId(0) {} 
+    };
+
 };

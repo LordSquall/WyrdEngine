@@ -7,7 +7,14 @@ namespace Wyrd
 {
     std::map<std::string, ScriptPropertyFactory::CreatePropertyFunc>* GetProperties()
     {
-        static std::map<std::string, ScriptPropertyFactory::CreatePropertyFunc> properties;
+        static std::map<std::string, ScriptPropertyFactory::CreatePropertyFunc> properties{
+            { "System.IntPtr", nullptr},
+            { "System.UInt32", nullptr},
+            { "System.UInt64", nullptr},
+            { "WyrdAPI.UID", nullptr},
+            { "System.IntPtr", nullptr},
+        };
+
         return &properties;
     }
 
@@ -28,10 +35,17 @@ namespace Wyrd
     {
         auto properties = GetProperties();
         if (auto it = properties->find(name); it != properties->end())
-            return it->second(); // call the createFunc
-
-        WYRD_CORE_ERROR("Unable to create script property of type {0}", name);
-
-        return nullptr;
+        {
+            if (it->second != nullptr)
+            {
+                return it->second(); // call the createFunc
+            }
+            return nullptr;
+        }
+        else
+        {
+            WYRD_CORE_ERROR("Unable to create script property of type {0}", name);
+            return nullptr;
+        }
     }
 }
