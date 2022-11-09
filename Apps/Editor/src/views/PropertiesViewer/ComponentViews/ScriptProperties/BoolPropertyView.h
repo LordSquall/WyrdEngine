@@ -13,6 +13,6 @@ namespace Wyrd::Editor
 	class BoolPropertyView
 	{
 	public:
-		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(BoolPropertyView, Wyrd::BoolProperty, "System.Boolean");
+		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(BoolPropertyView, Wyrd::BoolProperty, System.Boolean);
 	};
 }

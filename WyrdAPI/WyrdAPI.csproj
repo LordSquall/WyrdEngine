@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\enums\InputEnums.cs" />
+    <Compile Include="src\framework\UID.cs" />
     <Compile Include="src\framework\Color.cs" />
     <Compile Include="src\framework\Input.cs" />
     <Compile Include="src\framework\MathUtils.cs" />
@@ -65,6 +66,8 @@
     <Compile Include="src\framework\Vector2.cs" />
     <Compile Include="src\framework\Vector3.cs" />
     <Compile Include="src\framework\interfaces\SceneManager.cs" />
+    <Compile Include="src\scene\ecs\components\RelationshipComponent.cs" />
+    <Compile Include="src\scene\ecs\components\ScriptComponent.cs" />
     <Compile Include="src\scene\Scene.cs" />
     <Compile Include="src\scene\ecs\Component.cs" />
     <Compile Include="src\scene\ecs\Entity.cs" />

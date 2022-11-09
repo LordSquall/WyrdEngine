@@ -11,11 +11,12 @@ namespace Wyrd
 	class WYRD_LIBRARY_API Vector2Property : public ScriptProperty
 	{
 	public:
+		virtual void Set(void* data) override;
 		virtual void Set(void* object, void* data) override;
 
 		inline Vector2* GetValue() { return &_Value; }
 
 	private:
-		SCRIPT_PROPERTY_FACTORY_SETUP(Vector2Property, Vector2, Vector2(), "WyrdAPI.Vector2");
+		SCRIPT_PROPERTY_FACTORY_SETUP(Vector2Property, Vector2, Vector2(), WyrdAPI.Vector2);
 	};
 }

@@ -10,9 +10,10 @@ namespace Wyrd
 	class WYRD_LIBRARY_API EntityProperty : public ScriptProperty
 	{
 	public:
+		virtual void Set(void* data) override;
 		virtual void Set(void* object, void* data) override;
 
 	private:
-		SCRIPT_PROPERTY_FACTORY_SETUP(EntityProperty, void*, 0, "WyrdAPI.Entity");
+		SCRIPT_PROPERTY_FACTORY_SETUP(EntityProperty, void*, 0, WyrdAPI.Entity);
 	};
 }

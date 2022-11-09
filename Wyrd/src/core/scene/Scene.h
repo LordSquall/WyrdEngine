@@ -170,7 +170,7 @@ namespace Wyrd {
 		std::string name;
 		Color bgcolor;
 
-		glm::vec3 cameraPosition = { 0.0f, 0.0f, 0.0f };
+		Wyrd::Vector3 cameraPosition = { 0.0f, 0.0f, 0.0f };
 		float cameraZoom = 0.0f;
 
 	private:
@@ -180,6 +180,5 @@ namespace Wyrd {
 	public:
 		std::vector<EntityDesc> entities;
 		std::vector<ComponentPool*> componentPools;
-
 	};
 }

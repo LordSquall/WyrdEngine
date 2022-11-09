@@ -117,24 +117,24 @@ namespace Wyrd::Editor
 
 			if (_Scene != nullptr)
 			{
-				//for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
-				//{
-				//	Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
-				//	SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
-				//
-				//	Wyrd::DrawSpriteCommand cmd{};
-				//	cmd.position = sprite->position + transform->position;
-				//	cmd.size = sprite->size;
-				//	cmd.rotation = transform->rotation;
-				//	cmd.rotationOrigin = transform->rotationOrigin;
-				//	cmd.tiling = sprite->tiling;
-				//	cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-				//	cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
-				//	cmd.texture = Application::Get().GetResources().Textures[sprite->texture].get();
-				//	cmd.color = sprite->color;
-				//
-				//	renderer.Submit(cmd);
-				//}
+				for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
+				{
+					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
+					SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
+				
+					Wyrd::DrawSpriteCommand cmd{};
+					cmd.position = transform->position;
+					cmd.size = sprite->size;
+					cmd.rotation = transform->rotation;
+					cmd.rotationOrigin = { 0, 0 };// transform->rotationOrigin;
+					cmd.tiling = { 1, 1 };// sprite->tiling;
+					cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
+					cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
+					cmd.texture = Application::Get().GetResources().Textures[sprite->sprite].get();
+					cmd.color = sprite->tint;
+				
+					renderer.Submit(cmd);
+				}
 				//
 				//for (Entity e : EntitySet<Transform2DComponent, TextComponent>(*_Scene.get()))
 				//{
@@ -405,7 +405,7 @@ namespace Wyrd::Editor
 
 		/* Set camera settings */
 		_CameraController->SetSize(_Scene->cameraZoom);
-		_CameraController->SetPosition(_Scene->cameraPosition);
+		_CameraController->SetPosition(glm::vec3(_Scene->cameraPosition.x, _Scene->cameraPosition.y, _Scene->cameraPosition.z));
 	}
 
 	void SceneViewer::OnSelectedEntityChanged(Events::EventArgs& args)

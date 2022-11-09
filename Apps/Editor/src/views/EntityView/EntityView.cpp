@@ -135,8 +135,6 @@ namespace Wyrd::Editor
 				if (ImGui::TextButton("A"))
 				{
 					Entity e = scene.CreateEntity();
-					MetaDataComponent* dataComponent = scene.AssignComponent<MetaDataComponent>(e);
-					strcpy(dataComponent->name, "New Entity");
 
 					//Transform2DComponent* transformComponent = scene.AssignComponent<Transform2DComponent>(e);
 					//SpriteComponent* cs = scene.AssignComponent<SpriteComponent>(e);

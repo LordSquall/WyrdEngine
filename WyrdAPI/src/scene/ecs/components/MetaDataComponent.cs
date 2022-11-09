@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -7,20 +7,39 @@ using System.Threading.Tasks;
 
 namespace WyrdAPI
 {
-    [StructLayout(LayoutKind.Sequential, Size=32, Pack=1)]
+    [StructLayout(LayoutKind.Sequential)]
     public class MetaDataComponent : Component
     {
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-        private string _name;
 
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                _name = value;
-            }
-        }
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst=255)]
+      private String _name;
+
+      [MarshalAs(UnmanagedType.Struct)]
+      private UID _uid;
+
+
+
+      public String Name
+      {
+         get { return _name; }
+         set 
+         {
+             _name = value;
+             MetaDataComponent_SetName(Scene.NativePtr, Entity, _name);
+         }
+      }
+
+      public UID Uid
+      {
+         get { return _uid; }
+         set 
+         {
+             _uid = value;
+             MetaDataComponent_SetUid(Scene.NativePtr, Entity, _uid);
+         }
+      }
+
+
 
         public ulong Entity { get; set; }
 
@@ -29,9 +48,14 @@ namespace WyrdAPI
             Entity = entity;
         }
 
-        public override string ToString()
-        {
-            return String.Format("[MetaDataComponent] Name: {0}", Name);
-        }
+        #region P/Invoke functions
+
+         [DllImport("WyrdCAPI")]
+         public static extern IntPtr MetaDataComponent_SetName(IntPtr scenePtr, UInt64 entity, String name);
+         [DllImport("WyrdCAPI")]
+         public static extern IntPtr MetaDataComponent_SetUid(IntPtr scenePtr, UInt64 entity, UID uid);
+
+
+        #endregion
     }
 }

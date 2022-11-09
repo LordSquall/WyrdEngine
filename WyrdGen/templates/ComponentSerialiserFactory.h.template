@@ -1,0 +1,41 @@
+﻿#pragma once
+
+/* local includes  */
+#include "core/Structures.h"
+#include "core/ecs/Components.h"
+
+/* external includes */
+#include <glm/glm.hpp>
+#include <jsonxx.h>
+
+namespace Wyrd
+{
+	class WYRD_LIBRARY_API ComponentSerialiserFactory
+	{
+	public:
+		static jsonxx::Object Serialise(const std::string& name, const char* data)
+		{
+			jsonxx::Object obj;
+
+			if (strcmp(name.c_str(), "Unknown") == 0)
+			{
+				//TODO: Throw Assert
+			}
+<!CONTENT_SERIALISE>
+	
+			return obj;
+		}
+
+		static void Deserialise(const std::string& name, jsonxx::Object& obj, char* buffer)
+		{
+			if (strcmp(name.c_str(), "Uknown") == 0)
+			{
+				//TODO: Throw Assert
+			}
+<!CONTENT_DESERIALISE>
+
+		}
+
+<!CONTENT_DECLARATIONS>
+	};
+};

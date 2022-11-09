@@ -1,0 +1,27 @@
+﻿#include "wyrdpch.h"
+
+/* local includes  */
+#include "core/Application.h"
+#include "core/ecs/Components.h"
+#include "core/behaviour/ScriptedClass.h"
+#include "serial/TypeSerialisers.h"
+#include "serial/ComponentSerialiserFactory.h"
+#include "serial/CustomComponentSerialisationFunctions.h"
+
+namespace Wyrd
+{
+    template <typename T>
+    T Get(jsonxx::Object& obj, const std::string& name, T defaultValue) {
+        if (obj.has<T>(name))
+        {
+            return obj.get<T>(name);
+        }
+
+        return defaultValue;
+    }
+
+<!CONTENT_SERIALISE>
+
+
+<!CONTENT_DESERIALISE>
+}

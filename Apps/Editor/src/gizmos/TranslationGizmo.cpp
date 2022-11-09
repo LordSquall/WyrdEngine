@@ -58,9 +58,9 @@ namespace Wyrd::Editor
                 next = range.first;
 
             p2 = vertices[next];
-            if (p.y > std::min(p1.y, p2.y)) {
-                if (p.y <= std::max(p1.y, p2.y)) {
-                    if (p.x <= std::max(p1.x, p2.x)) {
+            if (p.y > std::min<float>(p1.y, p2.y)) {
+                if (p.y <= std::max<float>(p1.y, p2.y)) {
+                    if (p.x <= std::max<float>(p1.x, p2.x)) {
                         if (p1.y != p2.y) {
                             xinters = (p.y - p1.y) * (p2.x - p1.x) / (p2.y - p1.y) + p1.x;
                             if ((fabs(p1.x - p2.x) < precision) || p.x <= xinters)
@@ -103,7 +103,7 @@ namespace Wyrd::Editor
         if (_Entity != ENTITY_INVALID)
         {
             /* calculate the different between the camera viewport and the sceneviewer to set the scalling */
-            float diff = _CameraController->GetSize() / std::min(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
+            float diff = _CameraController->GetSize() / std::min<float>(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
 
             //Transform2DComponent* transform2DComponent = _SceneViewer->GetScene()->Get<Transform2DComponent>(_Entity);
             //
@@ -135,7 +135,7 @@ namespace Wyrd::Editor
 
     bool TranslationGizmo::OnMouseMovedEvent(MouseMovedEvent& e, void* data)
     {
-        float diff = _CameraController->GetSize() / std::min(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
+        float diff = _CameraController->GetSize() / std::min<float>(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
 
         //Transform2DComponent* transform2DComponent = _SceneViewer->GetScene()->Get<Transform2DComponent>(_Entity);
         //

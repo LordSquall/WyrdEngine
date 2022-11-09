@@ -35,12 +35,11 @@ namespace Wyrd
 	{
 		/* register all the inbuild components with the ECS */
 		RegisterComponent<MetaDataComponent>("MetaData", "MetaDataComponent", true);
-		//RegisterComponent<Transform2DComponent>("Transform2D", "Transform2DComponent", true);
-		//RegisterComponent<SpriteComponent>("Sprite", "SpriteComponent", true);
-		//RegisterComponent<ScriptComponent>("Script", "ScriptComponent", true);
-		//RegisterComponent<CameraComponent>("Camera", "CameraComponent", true);
-		//RegisterComponent<TextComponent>("Text", "TextComponent", true);
-		//RegisterComponent<RelationshipComponent>("Relationship", "RelationshipComponent", true);
+		RegisterComponent<Transform2DComponent>("Transform2D", "Transform2DComponent", true);
+		RegisterComponent<RelationshipComponent>("Relationship", "RelationshipComponent", true);
+		RegisterComponent<SpriteComponent>("Sprite", "SpriteComponent", true);
+		RegisterComponent<ScriptComponent>("Script", "ScriptComponent", true);
+
 		return true;
 	}
 
@@ -245,12 +244,19 @@ namespace Wyrd
 		
 		/* register all the inbuild components with the ECS */
 		InitialiseComponent<MetaDataComponent>(ent);
-		//InitialiseComponent<Transform2DComponent>(ent);
+		InitialiseComponent<RelationshipComponent>(ent);
+		InitialiseComponent<Transform2DComponent>(ent);
 		//InitialiseComponent<SpriteComponent>(ent);
 		//InitialiseComponent<ScriptComponent>(ent);
 		//InitialiseComponent<CameraComponent>(ent);
 		//InitialiseComponent<TextComponent>(ent);
-		//InitialiseComponent<RelationshipComponent>(ent);
+
+		// Assign all initial components
+		MetaDataComponent* metaDataComponent = AssignComponent<MetaDataComponent>(ent);
+		RelationshipComponent* relationshipComponent = AssignComponent<RelationshipComponent>(ent);
+		Transform2DComponent* transform2DComponent = AssignComponent<Transform2DComponent>(ent);
+
+		strcpy(metaDataComponent->name, "New Entity");
 
 		return ent;
 	}
@@ -267,14 +273,8 @@ namespace Wyrd
 		//	memcpy(p->data + ((entity - 1) * p->elementSize), p->data + (entity * p->elementSize), p->elementSize * (MAX_ENTITIES - entity));
 		//}
 
-		//// remove entity from list
-		//entities.erase(entities.begin() + (entity - 1));
-
-		//// update id in remaining entities
-		//for (int i = (entity - 1); i < entities.size(); ++i)
-		//{
-		//	entities[i].id--;
-		//}
+		// remove entity from list
+		entities.erase(entities.begin() + (entity - 1));
 	}
 
 	void Scene::SwapEntity(Entity entityA, Entity entityB)

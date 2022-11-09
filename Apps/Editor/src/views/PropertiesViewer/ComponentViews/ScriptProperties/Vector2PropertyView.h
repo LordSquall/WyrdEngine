@@ -15,6 +15,6 @@ namespace Wyrd::Editor
 	class Vector2PropertyView
 	{
 	public:
-		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(Vector2PropertyView, Wyrd::Vector2Property, "WyrdAPI.Vector2");
+		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(Vector2PropertyView, Wyrd::Vector2Property, WyrdAPI.Vector2);
 	};
 }

@@ -15,6 +15,6 @@ namespace Wyrd::Editor
 	class TexturePropertyView
 	{
 	public:
-		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(TexturePropertyView, Wyrd::TextureProperty, "WyrdAPI.Texture");
+		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(TexturePropertyView, Wyrd::TextureProperty, WyrdAPI.Texture);
 	};
 }

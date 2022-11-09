@@ -30,7 +30,7 @@ namespace Wyrd::Editor
         auto factoryName = prop->GetFactoryName();
         if (auto it = views->find(prop->GetFactoryName()); it != views->end())
         {
-            it->second(prop, data);
+            it->second(prop, prop->GetRawDataPtr());
             return true;
         }
         return false;

@@ -9,10 +9,13 @@ workspace "Wyrd"
 		"Distribution"
 	}
 
--- On windows, check for the installation of mono
+-- check for the installation of mono
 monofound = false
 monolibdir = ""
 monodir = ""
+
+renderdocfound = false
+renderdocdir = ""
 
 if os.istarget("windows") then
 	if os.isfile("C:/PROGRA~1/Mono/etc/mono/config") == true then
@@ -24,6 +27,14 @@ if os.istarget("windows") then
 	else
 		print("Unable to find Mono installation. Please install before continuing")
 		os.exit()
+	end
+	
+	if os.isfile("C:/PROGRA~1/RenderDoc/renderdoc_app.h") == true then
+		print("Render Doc header found")
+		renderdocfound = true
+		renderdocdir = "C:/Program Files/RenderDoc/"
+	else
+		print("Unable to find RenderDoc installation")
 	end
 elseif os.istarget("linux") then
 	if os.isfile("/bin/mono") == true then
@@ -56,6 +67,11 @@ includedir["GLAD"] = "Wyrd/vendor/glad/include"
 -- if mono was found, the add the in application to the include directories
 if monofound then
 	includedir["mono"] = monodir .. "include/mono-2.0/"
+end
+
+-- if renderdoc was found, the add the in application to the include directories
+if renderdocfound then
+	includedir["renderdoc"] = renderdocdir
 end
 
 if os.istarget("windows") then
@@ -172,6 +188,49 @@ group ""
 			runtime "Release"
 			symbols "on"
 
+group "Tools"
+project "WyrdGen"
+		location "WyrdGen"
+		kind "ConsoleApp"
+		language "C#"
+
+		targetdir ("lib/" .. outputdir .. "/%{prj.name}")
+		objdir ("obj/" .. outputdir .. "/%{prj.name}")
+		
+		files
+		{
+			"%{prj.name}/**.cs",
+			"%{prj.name}/**.xml"
+		}
+		
+		links { "System.Xml" }
+
+		filter "system:windows"
+			systemversion "latest"
+
+			defines
+			{
+				"WYRD_PLATFORM_WINDOWS",
+				"WYRD_EDITOR_ENABLED",
+				"GLFW_INCLUDE_NONE",
+				"GLM_ENABLE_EXPERIMENTAL"
+			}
+
+		filter "configurations:Debug"
+			defines "WYRD_DEBUG"
+			runtime "Debug"
+			symbols "on"
+
+		filter "configurations:Release"
+			defines "WYRD_RELEASE"
+			runtime "Release"
+			symbols "on"
+
+		filter "configurations:Distribution"
+			defines "WYRD_DISTRIBUTION"
+			runtime "Release"
+			symbols "on"
+			
 group "Scripting"
 project "WyrdCAPI"
 		location "WyrdCAPI"
@@ -415,7 +474,8 @@ project "Editor"
 		"%{includedir.mono}",
 		"%{includedir.spdlog}",
 		"%{includedir.crossguid}",
-		"%{includedir.hash}"
+		"%{includedir.hash}",
+		iif(renderdocfound, includedir["renderdoc"], "")
 	}
 
 	dependson 
@@ -434,7 +494,8 @@ project "Editor"
 			"WYRD_EDITOR_ENABLED",
 			"GLM_ENABLE_EXPERIMENTAL",
 			"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
-			"MONO_INSTALL_LOC=" .. monodir		
+			"MONO_INSTALL_LOC=" .. monodir,
+			iif(renderdocfound, "WYRD_RENDERDOC_ENABLED", "")
 		}
 
 		links

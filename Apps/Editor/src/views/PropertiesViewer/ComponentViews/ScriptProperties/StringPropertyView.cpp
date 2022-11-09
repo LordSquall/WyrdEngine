@@ -11,7 +11,7 @@ namespace Wyrd::Editor
 {
 	void StringPropertyView::OnEditorRender(const std::shared_ptr<ScriptProperty>& prop, void* value)
 	{
-		ImGui::InputText(prop->GetName().c_str(), (char*)value, SCRIPT_COMP_PROP_DATA_LENGTH);
+		ImGui::InputText(prop->GetName().c_str(), (std::string*)value);
 	}
 
 	SCRIPT_PROPERTY_VIEW_FACTORY_REGISTER(StringPropertyView);

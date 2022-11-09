@@ -38,10 +38,10 @@ namespace Wyrd {
 		if (t_near.x > t_far.y || t_near.y > t_far.x) return false;
 
 		// Closest 'time' will be the first contact
-		hit.distance = std::max(t_near.x, t_near.y);
+		hit.distance = std::max<float>(t_near.x, t_near.y);
 
 		// Furthest 'time' is contact on opposite side of target
-		float t_hit_far = std::min(t_far.x, t_far.y);
+		float t_hit_far = std::min<float>(t_far.x, t_far.y);
 
 		// Reject if ray direction is pointing away from object
 		if (t_hit_far < 0)

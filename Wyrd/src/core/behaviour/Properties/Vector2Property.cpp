@@ -14,6 +14,12 @@
 
 namespace Wyrd
 {
+	void Vector2Property::Set(void* data)
+	{
+		_Value.x = ((Vector2*)data)->x;
+		_Value.y = ((Vector2*)data)->y;
+	}
+
 	void Vector2Property::Set(void* object, void* data)
 	{
 		Vector2* vector2 = (Vector2*)data;

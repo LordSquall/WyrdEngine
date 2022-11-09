@@ -2,38 +2,41 @@
 #include <core/renderer/Texture.h>
 #include <core/scene/Scene.h>
 #include <core/ecs/Components.h>
-
 #include <platform/OpenGL/OpenGLTexture.h>
 
 /* local includes */
 #include "C_SpriteComponent.h" 
 
-
-void SpriteComponent_SetPosition(void* scenePtr, Wyrd::Entity entity, Wyrd::Vector2* position)
+void SpriteComponent_SetEnabled(void* scenePtr, Wyrd::Entity entity, bool enabled)
 {
-	Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
-	//Wyrd::SpriteComponent* component = scene->Get<Wyrd::SpriteComponent>(entity);
-	//
-	//component->position.x = position->x;
-	//component->position.y = position->y;
+   Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
+   Wyrd::SpriteComponent* component = scene->Get<Wyrd::SpriteComponent>(entity);
+
+   component->enabled = enabled;
+}
+
+void SpriteComponent_SetSprite(void* scenePtr, Wyrd::Entity entity, Wyrd::UID* sprite)
+{
+   Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
+   Wyrd::SpriteComponent* component = scene->Get<Wyrd::SpriteComponent>(entity);
+
+   component->sprite = *sprite;
 }
 
 void SpriteComponent_SetSize(void* scenePtr, Wyrd::Entity entity, Wyrd::Vector2* size)
 {
-	Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
-	//Wyrd::SpriteComponent* component = scene->Get< Wyrd::SpriteComponent>(entity);
-	//
-	//component->size.x = size->x;
-	//component->size.y = size->y;
+   Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
+   Wyrd::SpriteComponent* component = scene->Get<Wyrd::SpriteComponent>(entity);
+
+   component->size = *size;
 }
 
-void SpriteComponent_SetColor(void* scenePtr, Wyrd::Entity entity, Wyrd::Color* color)
+void SpriteComponent_SetTint(void* scenePtr, Wyrd::Entity entity, Wyrd::Color* tint)
 {
-	Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
-	//Wyrd::SpriteComponent* component = scene->Get<Wyrd::SpriteComponent>(entity);
-	//
-	//component->color.r = color->r;
-	//component->color.g = color->g;
-	//component->color.b = color->b;
-	//component->color.a = color->a;
+   Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
+   Wyrd::SpriteComponent* component = scene->Get<Wyrd::SpriteComponent>(entity);
+
+   component->tint = *tint;
 }
+
+

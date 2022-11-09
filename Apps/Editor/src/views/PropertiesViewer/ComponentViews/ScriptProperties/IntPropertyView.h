@@ -15,6 +15,6 @@ namespace Wyrd::Editor
 	class IntPropertyView
 	{
 	public:
-		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(IntPropertyView, Wyrd::IntProperty, "System.Int32");
+		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(IntPropertyView, Wyrd::IntProperty, System.Int32);
 	};
 }

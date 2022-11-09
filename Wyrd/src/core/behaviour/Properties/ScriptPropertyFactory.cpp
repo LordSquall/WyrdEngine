@@ -1,5 +1,6 @@
 /* Local includes */
 #include "wyrdpch.h"
+#include "core/Log.h"
 #include "core/behaviour/Properties/ScriptPropertyFactory.h"
 
 namespace Wyrd
@@ -28,6 +29,8 @@ namespace Wyrd
         auto properties = GetProperties();
         if (auto it = properties->find(name); it != properties->end())
             return it->second(); // call the createFunc
+
+        WYRD_CORE_ERROR("Unable to create script property of type {0}", name);
 
         return nullptr;
     }

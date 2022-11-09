@@ -15,6 +15,6 @@ namespace Wyrd::Editor
 	class StringPropertyView
 	{
 	public:
-		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(StringPropertyView, Wyrd::StringProperty, "System.String");
+		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(StringPropertyView, Wyrd::StringProperty, System.String);
 	};
 }

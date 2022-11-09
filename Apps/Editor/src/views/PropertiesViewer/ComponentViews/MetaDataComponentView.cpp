@@ -22,6 +22,6 @@ namespace Wyrd::Editor
 
 		ImGui::Text("Name:");
 		ImGui::SameLine();
-		ImGui::InputText("##label", metaData->name, METADATA_COMP_NAME_LENGTH);
+		ImGui::InputText("##label", metaData->name, METADATACOMPONENT_NAME_LENGTH);
 	}
 }

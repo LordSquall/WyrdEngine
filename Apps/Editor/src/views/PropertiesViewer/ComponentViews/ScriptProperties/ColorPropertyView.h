@@ -15,6 +15,6 @@ namespace Wyrd::Editor
 	class ColorPropertyView
 	{
 	public:
-		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(ColorPropertyView, Wyrd::ColorProperty, "WyrdAPI.Color");
+		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(ColorPropertyView, Wyrd::ColorProperty, WyrdAPI.Color);
 	};
 }

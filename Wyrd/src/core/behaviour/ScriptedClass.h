@@ -16,6 +16,7 @@ namespace Wyrd
 
 	typedef std::map<std::string, std::shared_ptr<ScriptProperty>> PropertyList_t;
 	typedef std::map<std::string, std::shared_ptr<ScriptedMethod>> MethodList_t;
+	typedef std::map<std::string, std::shared_ptr<void>> DataList_t;
 
 	/**
 	 * @brief Scripted Class
@@ -60,6 +61,8 @@ namespace Wyrd
 		inline void SetName(const std::string& name) { _Name = name; }
 
 		std::shared_ptr<PropertyList_t> GetPropertiesCopy() const;
+
+		std::shared_ptr<DataList_t> GetPropertiesDataCopy() const;
 
 	public:
 		PropertyList_t	Properties;

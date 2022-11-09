@@ -28,10 +28,10 @@ namespace Wyrd
 
 	void OrthographicCamera::RecalulateProjection()
 	{
-		float l = -_Size * _AspectRatio * 0.5f;
-		float r = _Size * _AspectRatio * 0.5f;
-		float b = -_Size * 0.5f;
-		float t = _Size * 0.5f;
+		float l = _Size * _AspectRatio * 0.5f;
+		float r = -_Size * _AspectRatio * 0.5f;
+		float b = _Size * 0.5f;
+		float t = -_Size * 0.5f;
 
 		_Viewport._position = { l, b };
 		_Viewport._size = { (r * 2.0f), (t * 2.0f) };

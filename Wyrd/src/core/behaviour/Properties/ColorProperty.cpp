@@ -8,12 +8,21 @@
 #include "core/behaviour/Properties/ColorProperty.h"
 #include "core/behaviour/Properties/ScriptPropertyFactory.h"
 #include "core/behaviour/MonoUtils.h"
+#include "serial/TypeSerialisers.h"
 
 /* external includes */
 #include <mono/jit/jit.h>
 
 namespace Wyrd
 {
+	void ColorProperty::Set(void* data)
+	{
+		_Value.r = ((Color*)data)->r;
+		_Value.g = ((Color*)data)->g;
+		_Value.b = ((Color*)data)->b;
+		_Value.a = ((Color*)data)->a;
+	}
+
 	void ColorProperty::Set(void* object, void* data)
 	{
 		/* cast data to color structure */
@@ -22,7 +31,7 @@ namespace Wyrd
 
 		std::shared_ptr<ScriptedClass> colorClass = Application::Get().GetBehaviour().GetClass("Color");
 		MonoObject* colorObject = mono_object_new((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), *colorClass->ManagedClass);
-		
+
 		mono_object_new((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), *colorClass->ManagedClass);
 
 		/* Call the object default constructor */
@@ -53,5 +62,22 @@ namespace Wyrd
 		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
 	}
 
-	SCRIPT_PROPERTY_FACTORY_REGISTER(ColorProperty);
+
+	std::shared_ptr<ScriptProperty> ColorProperty::CreateClone() {
+		std::shared_ptr<ColorProperty> clone = std::make_shared<ColorProperty>();
+		clone->SetName(_Name);
+		clone->SetSetter(_Setter);
+		clone->SetGetter(_Getter);
+		clone->SetNameSpace(_NameSpace);
+		clone->SetTypeName(_TypeName);
+		return clone;
+	}
+
+	void ColorProperty::Serialise(jsonxx::Object& object) {
+		object << _Name << _Value;
+	}
+
+	bool ColorProperty::s_Registered = ScriptPropertyFactory::Register(ColorProperty::GetManagedType(), ColorProperty::CreateProperty);
+
+	//SCRIPT_PROPERTY_FACTORY_REGISTER(ColorProperty);
 }

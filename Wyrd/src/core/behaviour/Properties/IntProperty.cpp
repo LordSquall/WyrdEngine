@@ -9,6 +9,11 @@
 
 namespace Wyrd
 {
+	void IntProperty::Set(void* data)
+	{
+		_Value = *(int*)data;
+	}
+
 	void IntProperty::Set(void* object, void* data)
 	{
 		std::vector<void*> args;

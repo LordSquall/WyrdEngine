@@ -13,6 +13,11 @@
 
 namespace Wyrd
 {
+	void TextureProperty::Set(void* data)
+	{
+		//TODO
+	}
+
 	void TextureProperty::Set(void* object, void* data)
 	{
 		/* cast the texture UID */

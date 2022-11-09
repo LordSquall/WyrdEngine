@@ -26,28 +26,28 @@ namespace Wyrd
 
 	struct WYRD_LIBRARY_API DrawSpriteCommand : public DrawCommand
 	{
-		glm::vec2 position;
-		glm::vec2 rotationOrigin;
+		Wyrd::Vector2 position;
+		Wyrd::Vector2 rotationOrigin;
 		float rotation;
-		glm::vec2 size;
-		glm::vec2 tiling;
+		Wyrd::Vector2 size;
+		Wyrd::Vector2 tiling;
 		Texture* texture;
 		Color color;
 	};
 
 	struct WYRD_LIBRARY_API DrawRectCommand : public DrawCommand
 	{
-		glm::vec2 position;
-		glm::vec2 rotationOrigin;
+		Wyrd::Vector2 position;
+		Wyrd::Vector2 rotationOrigin;
 		float rotation;
-		glm::vec2 size;
+		Wyrd::Vector2 size;
 		float thickness;
 		Color color;
 	};
 
 	struct WYRD_LIBRARY_API DrawTextCommand : public DrawCommand
 	{
-		glm::vec2 position;
+		Wyrd::Vector2 position;
 		float scale;
 		std::string content;
 		FontType* font;
@@ -57,7 +57,7 @@ namespace Wyrd
 
 	struct WYRD_LIBRARY_API DrawVertex2DCommand : public DrawCommand
 	{
-		glm::vec2 position;
+		Wyrd::Vector2 position;
 		std::vector<Vertex2D>* vertices;
 		Color color;
 		RendererDrawType drawType;

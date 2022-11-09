@@ -33,7 +33,7 @@ namespace Wyrd::Editor
 		ImVec2 dialogControlsRegionSize = { ImGui::GetContentRegionAvail().x, ImGui::GetItemRectSize().y };
 
 		ImVec2 rawImageSize = { (float)_TextureResource->GetWidth(), (float)_TextureResource->GetHeight() };
-		float scaleFactor = std::min(imageRegionSize.x / rawImageSize.x, imageRegionSize.y / rawImageSize.y);
+		float scaleFactor = std::min<float>(imageRegionSize.x / rawImageSize.x, imageRegionSize.y / rawImageSize.y);
 
 		ImVec2 scaledImageSize = rawImageSize * scaleFactor;
 		ImVec2 scaledUnitSize = rawUnitSize * scaleFactor;

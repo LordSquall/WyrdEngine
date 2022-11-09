@@ -15,6 +15,6 @@ namespace Wyrd::Editor
 	class EntityPropertyView
 	{
 	public:
-		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(EntityPropertyView, Wyrd::EntityProperty, "WyrdAPI.Entity");
+		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(EntityPropertyView, Wyrd::EntityProperty, WyrdAPI.Entity);
 	};
 }

@@ -15,6 +15,6 @@ namespace Wyrd::Editor
 	class FloatPropertyView
 	{
 	public:
-		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(FloatPropertyView, Wyrd::FloatProperty, "System.Single");
+		SCRIPT_PROPERTY_VIEW_FACTORY_SETUP(FloatPropertyView, Wyrd::FloatProperty, System.Single);
 	};
 }

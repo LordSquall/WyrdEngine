@@ -118,4 +118,16 @@ namespace Wyrd
 
 		return newPropertyList;
 	}
+
+	std::shared_ptr<DataList_t> ScriptedClass::GetPropertiesDataCopy() const
+	{
+		std::shared_ptr<DataList_t> newPropertyDataList = std::make_shared<DataList_t>();
+
+		for (auto& prop : Properties)
+		{
+			(*newPropertyDataList)[prop.first] = prop.second->AllocateData();
+		}
+
+		return newPropertyDataList;
+	}
 }

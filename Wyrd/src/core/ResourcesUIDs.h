@@ -1,3 +1,4 @@
+
 #pragma once
 
 /* default resource UID */

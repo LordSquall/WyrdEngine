@@ -36,7 +36,7 @@ namespace Wyrd::Editor
         if (_Entity != ENTITY_INVALID)
         {
             /* calculate the different between the camera viewport and the sceneviewer to set the scalling */
-            float diff = _CameraController->GetSize() / std::min(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
+            float diff = _CameraController->GetSize() / std::min<float>(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
 
             //Transform2DComponent* transform2DComponent = _SceneViewer->GetScene()->Get<Transform2DComponent>(_Entity);
             //

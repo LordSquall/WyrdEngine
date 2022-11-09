@@ -5,6 +5,8 @@
 #include <core/scene/Scene.h>
 #include <core/renderer/Texture.h>
 #include <core/ecs/Components.h>
+#include <core/ecs/EntitySet.h>
+#include <serial/TypeSerialisers.h>
 
 /* local includes */
 #include "SceneLoader.h"
@@ -13,7 +15,6 @@
 #include "serial/ComponentSerialiserFactory.h"
 #include "datamodels/EditorComponents.h"
 #include "events/EditorEvents.h"
-#include "support/TypeSerialisers.h"
 
 /* external includes */
 #include <glm/glm.hpp>
@@ -44,12 +45,12 @@ namespace Wyrd::Editor
 			if (o.parse(ss.str()) == true)
 			{
 				/* background color */
-				if (o.has<jsonxx::Array>("bgcolor"))
-					scene.bgcolor << o.get<jsonxx::Array>("bgcolor");
+				if (o.has<jsonxx::Object>("bgcolor"))
+					scene.bgcolor << o.get<jsonxx::Object>("bgcolor");
 
 				/* camera position */
-				if (o.has<jsonxx::Array>("cameraPosition"))
-					scene.cameraPosition << o.get<jsonxx::Array>("cameraPosition");
+				if (o.has<jsonxx::Object>("cameraPosition"))
+					scene.cameraPosition << o.get<jsonxx::Object>("cameraPosition");
 
 				/* camera zoom */
 				if (o.has<jsonxx::Number>("cameraZoom"))
@@ -63,70 +64,51 @@ namespace Wyrd::Editor
 				if (o.has<jsonxx::Number>("primaryCameraEntity"))
 					scene.SetPrimaryCameraEntity((Entity)o.get<jsonxx::Number>("primaryCameraEntity"));
 
-				/* available entities */
-				//if (o.has<jsonxx::Array>("availableEntities"))
-				//{
-				//	jsonxx::Array availableEntities = o.get<jsonxx::Array>("availableEntities");
-				//	for (size_t i = 0; i < availableEntities.size(); i++)
-				//	{
-				//		scene._AvailableEntities.push_back(availableEntities.get<jsonxx::Number>(i));
-				//	}
-				//}
-
 				/* entity list */
 				if (o.has<jsonxx::Array>("entities"))
 				{
-					jsonxx::Array entityArray = o.get<jsonxx::Array>("entities");
+					jsonxx::Array entitiesArray = o.get<jsonxx::Array>("entities");
 
-					for (size_t i = 0; i < entityArray.size(); i++)
+					// resize the scene entities array to fit all descriptions
+					scene.entities.resize(entitiesArray.size());
+
+					for (size_t i = 0; i < entitiesArray.size(); i++)
 					{
-						jsonxx::Object entity = entityArray.get<jsonxx::Object>((unsigned int)i);
-						Entity id = (Entity)entity.get<jsonxx::Number>("id");
-						ComponentMask mask = (ComponentMask)entity.get<jsonxx::Number>("mask");
+						jsonxx::Object entityObj = entitiesArray.get<jsonxx::Object>(i);
 
-						/* check to make sure there is space to store this entity */
-						if (id > scene.entities.size())
-							scene.entities.resize(id);
+						Wyrd::UID entityUID = UID(entityObj.get<jsonxx::String>("uid"));
+						jsonxx::Array componentsArray = entityObj.get<jsonxx::Array>("components");
 
-						scene.entities[id - 1] = { id, mask };
-					}
-				}
+						ComponentMask mask;
 
-				/* component pools */
-				if (o.has<jsonxx::Array>("componentPools"))
-				{
-					jsonxx::Array componentPoolsArray = o.get<jsonxx::Array>("componentPools");
-					for (size_t i = 0; i < componentPoolsArray.size(); i++)
-					{
-						jsonxx::Object poolObj = componentPoolsArray.get<jsonxx::Object>((unsigned int)i);
-				
-						std::string poolName = poolObj.get<jsonxx::String>("name");
-				
-						/* find the component pool */
-						auto foundPoolIt = std::find_if(scene.componentPools.begin(), scene.componentPools.end(),
-							[&poolName](const ComponentPool* p) { return p->name.compare(poolName) == 0; }
-						);
-				
-						if (foundPoolIt == scene.componentPools.end())
+						for (size_t ci = 0; ci < componentsArray.size(); ci++)
 						{
-							continue;
-						}
-				
-						ComponentPool* pool = *foundPoolIt;
-				
-						int poolElementSize = pool->elementSize;
-				
-						if (poolObj.has<jsonxx::Array>("components"))
-						{
-							jsonxx::Array compnentArray = poolObj.get<jsonxx::Array>("components");
-							for (size_t j = 0; j < compnentArray.size(); j++)
+							jsonxx::Object componentObject = componentsArray.get<jsonxx::Object>(ci);
+
+							std::string name = componentObject.get<jsonxx::String>("name");
+							jsonxx::Object data = componentObject.get<jsonxx::Object>("data");
+
+							/* find the component pool */
+							auto foundPoolIt = std::find_if(scene.componentPools.begin(), scene.componentPools.end(),
+								[&name](const ComponentPool* p) { return p->name.compare(name) == 0; }
+							);
+
+							if (foundPoolIt == scene.componentPools.end())
 							{
-								jsonxx::Object component = compnentArray.get<jsonxx::Object>((unsigned int)j);
-				
-								ComponentSerialiserFactory::Deserialise(poolName, component, &(pool->data[j * poolElementSize]));
-								pool->count++;
+								continue;
 							}
+
+							ComponentPool* pool = *foundPoolIt;
+
+							int poolElementSize = pool->elementSize;
+
+							ComponentSerialiserFactory::Deserialise(name, data, &(pool->data[i * poolElementSize]));
+							pool->count++;
+
+							mask.set(pool->idx);
 						}
+
+						scene.entities[i] = { i + 1, mask };
 					}
 				}
 			}
@@ -149,6 +131,26 @@ namespace Wyrd::Editor
 					scene.AssignComponent<EditorComponent>(entity.id);
 			}
 		}
+
+		/* we need to allocate the data maps on each of the script components to store the property data */
+		//for (Entity e : EntitySet<ScriptComponent>(scene))
+		//{
+		//	ScriptComponent* scriptComponent = scene.Get<ScriptComponent>(e);
+		//	if (scriptComponent)
+		//	{
+		//		// Initial all the data required for the assigned script
+		//		auto scriptClass = Application::Get().GetBehaviour().GetCustomClassByUID(scriptComponent->scriptId);
+		//
+		//		if (scriptClass != nullptr)
+		//		{
+		//			scriptComponent->properties = scriptClass->GetPropertiesCopy();
+		//		}
+		//		else
+		//		{
+		//			// TODO: Error Case: Script no longer exists
+		//		}
+		//	}
+		//}
 
 		/* set the main camera */
 		if (scene.GetPrimaryCameraEntity() != ENTITY_INVALID)
@@ -193,52 +195,40 @@ namespace Wyrd::Editor
 		/* primary camera entity */
 		o << "primaryCameraEntity" << scene.GetPrimaryCameraEntity();
 
-		/* available entities */
-		//jsonxx::Array availableEntities;
-		//for (auto& ae : scene._AvailableEntities)
-		//{
-		//	availableEntities << ae;
-		//}
-		//o << "availableEntities" << availableEntities;
-
-
 		/* entity list */
 		jsonxx::Array entityArray;
 
 		for (auto& e : scene.entities)
 		{
 			jsonxx::Object entity;
-			entity << "id" << e.id;
-			entity << "mask" << e.mask.to_ullong();
+
+			MetaDataComponent* metaDataComponent = scene.Get<MetaDataComponent>(e.id);
+			entity << "uid" << metaDataComponent->uid;
+
+			jsonxx::Array components;
+
+			for (auto& cp : scene.componentPools)
+			{
+				if (e.mask.test(cp->idx))
+				{
+					const char* componentData = (const char*)scene.Get(cp->idx, e.id);
+
+					jsonxx::Object componentObj = ComponentSerialiserFactory::Serialise(cp->name, componentData);
+
+					jsonxx::Object componentsDescObj;
+					componentsDescObj << "name" << cp->name;
+					componentsDescObj << "data" << componentObj;
+
+					components << componentsDescObj;
+				}
+			}
+
+			entity << "components" << components;
+
 			entityArray << entity;
 		}
 
 		o << "entities" << entityArray;
-
-		/* component pools */
-		jsonxx::Array poolArray;
-		for (auto& p : scene.componentPools)
-		{
-			if (p->serialise)
-			{
-				jsonxx::Object pool;
-		
-				pool << "name" << p->name;
-				pool << "elementSize" << p->elementSize;
-		
-				jsonxx::Array components;
-		
-				for (size_t i = 0; i < scene.entities.size(); i++)
-				{
-					components << ComponentSerialiserFactory::Serialise(p->name, &p->data[i * p->elementSize]);
-					pool << "components" << components;
-				}
-		
-				poolArray << pool;
-			}
-		}
-		
-		o << "componentPools" << poolArray;
 
 		std::ofstream out(path);
 		out << o.json();

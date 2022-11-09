@@ -51,7 +51,7 @@ namespace Wyrd::Editor
 
 		UpdateSettings();
 
-		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::SettingsUpdated, EVENT_FUNC(RenderDocLayer::OnSettingsUpdated));
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::SettingsUpdated, WYRD_BIND_FN(RenderDocLayer::OnSettingsUpdated));
 
 		startFrameCapture = false;
 

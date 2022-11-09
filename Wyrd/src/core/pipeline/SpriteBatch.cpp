@@ -53,7 +53,7 @@ namespace Wyrd
 		Vector2 pt2 = Vector2::RotateAtPoint({ (float)cmd.position.x, (float)cmd.position.y + (float)cmd.size.y }, -cmd.rotation, pivot);
 		Vector2 pt3 = Vector2::RotateAtPoint({ (float)cmd.position.x + (float)cmd.size.x, (float)cmd.position.y + (float)cmd.size.y }, -cmd.rotation, pivot);
 		Vector2 pt4 = Vector2::RotateAtPoint({ (float)cmd.position.x + (float)cmd.size.x, (float)cmd.position.y }, -cmd.rotation, pivot);
-
+		
 		/* add vertices */
 		_vertices.push_back({ pt1.x, pt1.y, 0.0, 0.0f });
 		_vertices.push_back({ pt2.x, pt2.y, 0.0f, -(cmd.tiling.y) });

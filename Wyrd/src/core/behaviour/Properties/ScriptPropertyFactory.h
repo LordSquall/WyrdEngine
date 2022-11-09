@@ -15,6 +15,9 @@ std::shared_ptr<ScriptProperty> clsname::CreateClone() {\
 	clone->SetTypeName(_TypeName);\
 	return clone;\
 }\
+void clsname::Serialise(jsonxx::Object& object){\
+	object << _Name << _Value;\
+}\
 bool clsname::s_Registered = ScriptPropertyFactory::Register(\
 clsname::GetManagedType(),\
 clsname::CreateProperty)
@@ -24,6 +27,9 @@ clsname::CreateProperty)
 public:\
 clsname() : _Value(defaultValue) {}\
 virtual std::shared_ptr<ScriptProperty> CreateClone();\
+virtual std::shared_ptr<void> AllocateData() { return std::shared_ptr<valuetype>(); } \
+virtual void Serialise(jsonxx::Object& object);\
+virtual void* GetRawDataPtr() { return &_Value; } \
 inline virtual const std::string GetFactoryName() { return  #factoryname; };\
 static std::unique_ptr<ScriptProperty> CreateProperty() {\
 	return std::make_unique<clsname>();\

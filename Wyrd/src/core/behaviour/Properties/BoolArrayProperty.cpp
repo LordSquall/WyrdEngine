@@ -9,6 +9,11 @@
 
 namespace Wyrd
 {
+	void BoolArrayProperty::Set(void* data)
+	{
+		//TODO
+	}
+
 	void BoolArrayProperty::Set(void* object, void* data)
 	{
 		//TODO

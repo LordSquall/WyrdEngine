@@ -1,0 +1,20 @@
+﻿#pragma once
+
+#include "wyrdpch.h"
+#include "core/export.h"
+#include "core/UID.h"
+#include "core/Structures.h"
+#include "core/TypeDefs.h"
+#include "core/ResourcesUIDs.h"
+#include "core/maths/Rect.h"
+#include "core/ecs/ECS.h"
+#include "core/behaviour/Properties/ScriptProperty.h"
+
+#include <glm/glm.hpp>
+
+<!CONTENT_DEFINES>
+
+namespace Wyrd
+{
+	<!CONTENT>
+};

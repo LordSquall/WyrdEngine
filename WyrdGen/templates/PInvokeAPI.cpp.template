@@ -1,0 +1,10 @@
+﻿/* core wyrd includes */
+#include <core/renderer/Texture.h>
+#include <core/scene/Scene.h>
+#include <core/ecs/Components.h>
+#include <platform/OpenGL/OpenGLTexture.h>
+
+/* local includes */
+#include "C_<!COMPONENT_NAME>.h" 
+
+<!FUNCTIONS>

@@ -11,11 +11,12 @@ namespace Wyrd
 	class WYRD_LIBRARY_API ColorProperty : public ScriptProperty
 	{
 	public:
+		virtual void Set(void* data) override;
 		virtual void Set(void* object, void* data) override;
 
 		inline Color* GetValue() { return &_Value; }
 
 	private:
-		SCRIPT_PROPERTY_FACTORY_SETUP(ColorProperty, Color, Color(), "WyrdAPI.Color");
+		SCRIPT_PROPERTY_FACTORY_SETUP(ColorProperty, Color, Color(), WyrdAPI.Color);
 	};
 }

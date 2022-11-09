@@ -3,6 +3,7 @@
 /* local includes */
 #include "wyrdpch.h"
 #include "core/export.h"
+#include "jsonxx.h"
 
 namespace Wyrd
 {
@@ -24,6 +25,13 @@ namespace Wyrd
 		 * @param data - data
 		*/
 		virtual void Set(void* object, void* data) = 0;
+
+		/**
+		 * @brief Setter function to set the internal value without passing to scripting domain
+		 * @param object - managed object
+		 * @param data - data
+		*/
+		virtual void Set(void* data) = 0;
  
 		/**
 		 * @brief Copy internal value between properties
@@ -38,6 +46,12 @@ namespace Wyrd
 		virtual void Resolve(Scene& scene) { }
 
 		/**
+		 * @brief Get a raw pointer to the uderlying data
+		 * @return
+		*/
+		virtual void* GetRawDataPtr() = 0;
+
+		/**
 		 * @brief Get the mapped factory type name
 		 * @return 
 		*/
@@ -48,6 +62,18 @@ namespace Wyrd
 		 * @return 
 		*/
 		virtual std::shared_ptr<ScriptProperty> CreateClone() = 0;
+
+		/**
+		 * @brief Allocate memory for the underlying data type
+		 * @return
+		*/
+		virtual std::shared_ptr<void> AllocateData() = 0;
+
+		/**
+		 * @brief Seralise the property into a json object
+		 * @param setter
+		*/
+		virtual void Serialise(jsonxx::Object& object) = 0;
 
 		/**
 		 * @brief Get Property Name

@@ -48,7 +48,7 @@ namespace Wyrd::Editor
 	void GridGizmo::Render(Timestep ts, Renderer& renderer)
 	{
 		/* calculate the different between the camera viewport and the sceneviewer to set the scalling */
-		float diff = _CameraController->GetSize() / std::min(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
+		float diff = _CameraController->GetSize() / std::min<float>(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
 
 		Wyrd::DrawVertex2DCommand cmd{};
 		cmd.type = 1;

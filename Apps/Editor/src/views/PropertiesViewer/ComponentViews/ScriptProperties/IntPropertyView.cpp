@@ -10,7 +10,15 @@ namespace Wyrd::Editor
 {
 	void IntPropertyView::OnEditorRender(const std::shared_ptr<ScriptProperty>& prop, void* value)
 	{
-		ImGui::DragInt(prop->GetName().c_str(), (int*)value);
+		if (value != nullptr)
+		{
+			ImGui::DragInt(prop->GetName().c_str(), (int*)value);
+		}
+		else
+		{
+			int val = 0;
+			ImGui::DragInt(prop->GetName().c_str(), &val);
+		}
 	}
 
 	SCRIPT_PROPERTY_VIEW_FACTORY_REGISTER(IntPropertyView);

@@ -1,19 +1,71 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace WyrdAPI
 {
     [StructLayout(LayoutKind.Sequential)]
     public class SpriteComponent : Component
     {
-        [MarshalAs(UnmanagedType.Struct)]
-        public Vector2 _position;
 
-        [MarshalAs(UnmanagedType.Struct)]
-        public Vector2 _size;
-        
-        [MarshalAs(UnmanagedType.Struct)]
-        public Color _color;
+      [MarshalAs(UnmanagedType.Bool)]
+      private bool _enabled;
+
+      [MarshalAs(UnmanagedType.Struct)]
+      private UID _sprite;
+
+      [MarshalAs(UnmanagedType.Struct)]
+      private Vector2 _size;
+
+      [MarshalAs(UnmanagedType.Struct)]
+      private Color _tint;
+
+
+
+      public bool Enabled
+      {
+         get { return _enabled; }
+         set 
+         {
+             _enabled = value;
+             SpriteComponent_SetEnabled(Scene.NativePtr, Entity, _enabled);
+         }
+      }
+
+      public UID Sprite
+      {
+         get { return _sprite; }
+         set 
+         {
+             _sprite = value;
+             SpriteComponent_SetSprite(Scene.NativePtr, Entity, _sprite);
+         }
+      }
+
+      public Vector2 Size
+      {
+         get { return _size; }
+         set 
+         {
+             _size = value;
+             SpriteComponent_SetSize(Scene.NativePtr, Entity, _size);
+         }
+      }
+
+      public Color Tint
+      {
+         get { return _tint; }
+         set 
+         {
+             _tint = value;
+             SpriteComponent_SetTint(Scene.NativePtr, Entity, _tint);
+         }
+      }
+
+
 
         public ulong Entity { get; set; }
 
@@ -22,50 +74,17 @@ namespace WyrdAPI
             Entity = entity;
         }
 
-        public Vector2 Position
-        {
-            get { return _position; }
-            set {
-                _position = value;
-                SpriteComponent_SetPosition(Scene.NativePtr, Entity, _position);
-            }
-        }
-
-        public Vector2 Size
-        {
-            get { return _size; }
-            set
-            {
-                _size = value;
-                SpriteComponent_SetSize(Scene.NativePtr, Entity, _size);
-            }
-        }
-
-        public Color Color
-        {
-            get { return _color; }
-            set
-            {
-                _color = value;
-                SpriteComponent_SetColor(Scene.NativePtr, Entity, _color);
-            }
-        }
-
-        public override string ToString()
-        {
-            return String.Format("[SpriteComponent] Position: {0},{1} Size: {2},{3} Color: {4},{5},{6},{7}", _position.X, _position.Y, _size.X, _size.Y, _color.R, _color.G, _color.B, _color.A);
-        }
-
         #region P/Invoke functions
 
-        [DllImport("WyrdCAPI")]
-        public static extern IntPtr SpriteComponent_SetPosition(IntPtr scenePtr, UInt64 entity, Vector2 position);
+         [DllImport("WyrdCAPI")]
+         public static extern IntPtr SpriteComponent_SetEnabled(IntPtr scenePtr, UInt64 entity, bool enabled);
+         [DllImport("WyrdCAPI")]
+         public static extern IntPtr SpriteComponent_SetSprite(IntPtr scenePtr, UInt64 entity, UID sprite);
+         [DllImport("WyrdCAPI")]
+         public static extern IntPtr SpriteComponent_SetSize(IntPtr scenePtr, UInt64 entity, Vector2 size);
+         [DllImport("WyrdCAPI")]
+         public static extern IntPtr SpriteComponent_SetTint(IntPtr scenePtr, UInt64 entity, Color tint);
 
-        [DllImport("WyrdCAPI")]
-        public static extern IntPtr SpriteComponent_SetSize(IntPtr scenePtr, UInt64 entity, Vector2 size);
-
-        [DllImport("WyrdCAPI")]
-        public static extern IntPtr SpriteComponent_SetColor(IntPtr scenePtr, UInt64 entity, Color color);
 
         #endregion
     }

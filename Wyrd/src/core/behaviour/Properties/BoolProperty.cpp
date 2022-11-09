@@ -9,6 +9,11 @@
 
 namespace Wyrd
 {
+	void BoolProperty::Set(void* data)
+	{
+		_Value = *(bool*)data;
+	}
+
 	void BoolProperty::Set(void* object, void* data)
 	{
 		std::vector<void*> args;

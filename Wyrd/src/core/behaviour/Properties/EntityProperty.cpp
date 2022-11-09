@@ -11,6 +11,11 @@
 
 namespace Wyrd
 {
+	void EntityProperty::Set(void* data)
+	{
+		//TODO
+	}
+
 	void EntityProperty::Set(void* object, void* data)
 	{
 		Entity* entity = (Entity*)data;
