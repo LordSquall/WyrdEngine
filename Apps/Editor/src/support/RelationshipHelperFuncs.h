@@ -13,7 +13,16 @@ namespace Wyrd::Editor
 	class RelationshipHelperFuncs
 	{
 	public:
-		static void AddChild(Wyrd::Scene* scene, Entity parent, Entity child);
+		enum class AddOp
+		{
+			Before, After, On
+		};
+
+	public:
+
+		static bool CanAddChild(Wyrd::Scene* scene, Entity parent, Entity child, AddOp addOp);
+
+		static void AddChild(Wyrd::Scene* scene, Entity parent, Entity child, AddOp addOp);
 
 		static void Remove(Wyrd::Scene* scene, Entity entity);
 	};

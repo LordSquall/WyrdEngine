@@ -59,6 +59,6 @@ namespace Wyrd::Editor
 		}
 		ImGui::PopID();
 		
-		ImGui::ColorEdit3("Color", (float*)&sprite->tint);
+		ImGui::ColorEdit3("Color", (float*)&sprite->color);
 	}
 }

@@ -26,6 +26,14 @@ namespace Wyrd {
 			_size = size;
 		}
 
+		Rect(float x, float y, float w, float h)
+		{
+			_position.x = x;
+			_position.y = y;
+			_size.x = w;
+			_size.y = h;
+		}
+
 		bool const ContainsPoint(glm::vec2 r);
 		bool const ContainsRect(Rect r);
 		bool const ContainsRay(Ray r, Ray::Hit& hit);

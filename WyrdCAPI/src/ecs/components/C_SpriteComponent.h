@@ -15,9 +15,13 @@ LIBRARY_API void SpriteComponent_SetEnabled(void* obj, Wyrd::Entity entity, bool
 
 LIBRARY_API void SpriteComponent_SetSprite(void* obj, Wyrd::Entity entity, Wyrd::UID* position);
 
+LIBRARY_API void SpriteComponent_SetPosition(void* obj, Wyrd::Entity entity, Wyrd::Vector2* position);
+
 LIBRARY_API void SpriteComponent_SetSize(void* obj, Wyrd::Entity entity, Wyrd::Vector2* position);
 
-LIBRARY_API void SpriteComponent_SetTint(void* obj, Wyrd::Entity entity, Wyrd::Color* position);
+LIBRARY_API void SpriteComponent_SetTiling(void* obj, Wyrd::Entity entity, Wyrd::Vector2* position);
+
+LIBRARY_API void SpriteComponent_SetColor(void* obj, Wyrd::Entity entity, Wyrd::Color* position);
 
 
 

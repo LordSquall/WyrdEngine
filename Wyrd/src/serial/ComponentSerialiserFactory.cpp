@@ -37,8 +37,10 @@ namespace Wyrd
     {
         obj << "enabled" << data->enabled;
         obj << "sprite" << data->sprite;
+        obj << "position" << data->position;
         obj << "size" << data->size;
-        obj << "tint" << data->tint;
+        obj << "tiling" << data->tiling;
+        obj << "color" << data->color;
     }
 
     void ComponentSerialiserFactory::Serialise(jsonxx::Object & obj, Wyrd::ScriptComponent* data)
@@ -62,9 +64,9 @@ namespace Wyrd
 
     void ComponentSerialiserFactory::Serialise(jsonxx::Object & obj, Wyrd::CameraComponent* data)
     {
-        obj << "enabled" << data->enabled;
-        obj << "scriptId" << data->scriptId;
-        obj << "instanceId" << data->instanceId;
+        obj << "viewport" << data->viewport;
+        obj << "aspectRatio" << data->aspectRatio;
+        obj << "size" << data->size;
     }
 
 
@@ -87,8 +89,10 @@ namespace Wyrd
     {
         data->enabled = obj.get<jsonxx::Boolean>("enabled", true);
         data->sprite << obj.get<jsonxx::String>("sprite", UID());
+        data->position << obj.get<jsonxx::Object>("position", DecodeVec2("0,0"));
         data->size << obj.get<jsonxx::Object>("size", DecodeVec2("64,64"));
-        data->tint << obj.get<jsonxx::Object>("tint", DecodeColor("1,1,1,1"));
+        data->tiling << obj.get<jsonxx::Object>("tiling", DecodeVec2("1,1"));
+        data->color << obj.get<jsonxx::Object>("color", DecodeColor("1,1,1,1"));
     }
 
     void ComponentSerialiserFactory::Deserialise(jsonxx::Object & obj, Wyrd::ScriptComponent* data)
@@ -112,9 +116,9 @@ namespace Wyrd
 
     void ComponentSerialiserFactory::Deserialise(jsonxx::Object & obj, Wyrd::CameraComponent* data)
     {
-        data->enabled = obj.get<jsonxx::Boolean>("enabled", true);
-        data->scriptId << obj.get<jsonxx::String>("scriptId", UID());
-        data->instanceId = obj.get<jsonxx::Number>("instanceId", 0);
+        data->viewport << obj.get<jsonxx::Object>("viewport", DecodeRect("0,0,0,0"));
+        data->aspectRatio = obj.get<jsonxx::Number>("aspectRatio", 1.0f);
+        data->size << obj.get<jsonxx::Object>("size", DecodeVec2("0,0"));
     }
 
 

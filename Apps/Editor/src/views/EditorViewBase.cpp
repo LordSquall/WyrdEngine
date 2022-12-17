@@ -17,20 +17,22 @@ namespace Wyrd::Editor
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { config.windowPaddingX, config.windowPaddingY });
 
 		/* configure any required flags */
-		if (config.allowMenuBar == true) windowFlags |= ImGuiWindowFlags_MenuBar;
+		if (config.allowMenuBar == true) windowFlags = ImGuiWindowFlags_MenuBar;
 
 		/* begin the new window  */
-		ImGui::Begin(_Name.c_str(), 0, windowFlags);
+		ImGui::Begin(_Name.c_str());
+		ImGui::BeginChild(std::string(_Name + "_child").c_str());
 	}
 
 	void EditorViewBase::OnPostEditorRender()
 	{
+		/* end the window */
+		ImGui::EndChild();
+		ImGui::End();
+
 		/* calculate the boundary for the window, this is reqiured to help route mouse events*/
 		_Boundary._position = { ImGui::GetWindowPos().x, ImGui::GetWindowPos().y };
 		_Boundary._size = { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y };
-
-		/* end the window */
-		ImGui::End();
 
 		/* pop each of the stack flags */
 		ImGui::PopStyleVar();

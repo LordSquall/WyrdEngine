@@ -40,6 +40,16 @@ namespace Wyrd {
 		{
 			return Vector2(o.x, o.y);
 		}
+
+		Vector2& operator+ (const Vector2& o)
+		{
+			return Vector2(this->x + o.x, this->y + o.y);
+		}
+
+		Vector2& operator- (const Vector2& o)
+		{
+			return Vector2(this->x - o.x, this->y - o.y);
+		}
 	
 		static Vector2 RotateAtPoint(Vector2 pt, float angle, Vector2 pivot)
 		{

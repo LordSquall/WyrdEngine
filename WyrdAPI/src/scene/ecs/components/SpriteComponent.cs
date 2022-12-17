@@ -18,10 +18,16 @@ namespace WyrdAPI
       private UID _sprite;
 
       [MarshalAs(UnmanagedType.Struct)]
+      private Vector2 _position;
+
+      [MarshalAs(UnmanagedType.Struct)]
       private Vector2 _size;
 
       [MarshalAs(UnmanagedType.Struct)]
-      private Color _tint;
+      private Vector2 _tiling;
+
+      [MarshalAs(UnmanagedType.Struct)]
+      private Color _color;
 
 
 
@@ -45,6 +51,16 @@ namespace WyrdAPI
          }
       }
 
+      public Vector2 Position
+      {
+         get { return _position; }
+         set 
+         {
+             _position = value;
+             SpriteComponent_SetPosition(Scene.NativePtr, Entity, _position);
+         }
+      }
+
       public Vector2 Size
       {
          get { return _size; }
@@ -55,13 +71,23 @@ namespace WyrdAPI
          }
       }
 
-      public Color Tint
+      public Vector2 Tiling
       {
-         get { return _tint; }
+         get { return _tiling; }
          set 
          {
-             _tint = value;
-             SpriteComponent_SetTint(Scene.NativePtr, Entity, _tint);
+             _tiling = value;
+             SpriteComponent_SetTiling(Scene.NativePtr, Entity, _tiling);
+         }
+      }
+
+      public Color Color
+      {
+         get { return _color; }
+         set 
+         {
+             _color = value;
+             SpriteComponent_SetColor(Scene.NativePtr, Entity, _color);
          }
       }
 
@@ -81,9 +107,13 @@ namespace WyrdAPI
          [DllImport("WyrdCAPI")]
          public static extern IntPtr SpriteComponent_SetSprite(IntPtr scenePtr, UInt64 entity, UID sprite);
          [DllImport("WyrdCAPI")]
+         public static extern IntPtr SpriteComponent_SetPosition(IntPtr scenePtr, UInt64 entity, Vector2 position);
+         [DllImport("WyrdCAPI")]
          public static extern IntPtr SpriteComponent_SetSize(IntPtr scenePtr, UInt64 entity, Vector2 size);
          [DllImport("WyrdCAPI")]
-         public static extern IntPtr SpriteComponent_SetTint(IntPtr scenePtr, UInt64 entity, Color tint);
+         public static extern IntPtr SpriteComponent_SetTiling(IntPtr scenePtr, UInt64 entity, Vector2 tiling);
+         [DllImport("WyrdCAPI")]
+         public static extern IntPtr SpriteComponent_SetColor(IntPtr scenePtr, UInt64 entity, Color color);
 
 
         #endregion

@@ -119,6 +119,29 @@ namespace Wyrd
 		return obj;
 	}
 
+	jsonxx::Object DecodeRect(const std::string& encodedData /* = "" */)
+	{
+		jsonxx::Object obj;
+
+		if (encodedData != "")
+		{
+			std::vector<float> channels = ExplodeToFloats(encodedData);
+
+			obj << "x" << channels[0];
+			obj << "y" << channels[1];
+			obj << "w" << channels[2];
+			obj << "h" << channels[3];
+		}
+		else
+		{
+			obj << "x" << 0.0f;
+			obj << "y" << 0.0f;
+			obj << "w" << 0.0f;
+			obj << "h" << 0.0f;
+		}
+		return obj;
+	}
+
 	char* operator<<(char* data, const jsonxx::String val)
 	{
 		strcpy(data, val.c_str());
@@ -157,6 +180,16 @@ namespace Wyrd
 		return data;
 	}
 
+	jsonxx::Object& operator<<(jsonxx::Object& data, const Wyrd::Rect& val) {
+		jsonxx::Object o;
+		o << "x" << val._position.x;
+		o << "y" << val._position.y;
+		o << "w" << val._size.x;
+		o << "h" << val._size.y;
+		data << o;
+		return data;
+	}
+
 	Wyrd::Vector2& operator<<(Wyrd::Vector2& data, const jsonxx::Object& val) {
 		data.x = (float)val.get<jsonxx::Number>("x");
 		data.y = (float)val.get<jsonxx::Number>("y");
@@ -180,6 +213,14 @@ namespace Wyrd
 
 	Wyrd::UID& operator<<(Wyrd::UID& data, const jsonxx::String val){
 		data = UID(val.c_str());
+		return data;
+	}
+
+	Wyrd::Rect& operator<<(Wyrd::Rect& data, const jsonxx::Object& val) {
+		data._position.x = (float)val.get<jsonxx::Number>("x");
+		data._position.y = (float)val.get<jsonxx::Number>("y");
+		data._size.x = (float)val.get<jsonxx::Number>("w");
+		data._size.y = (float)val.get<jsonxx::Number>("h");
 		return data;
 	}
 }

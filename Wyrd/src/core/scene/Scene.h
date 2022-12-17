@@ -32,10 +32,17 @@ namespace Wyrd {
 		inline void SetPrimaryCameraEntity(const Entity entity) { _ScenePrimaryCameraEntity = entity; }
 
 		/**
-		 * @brief Create a new entity within the scene
+		 * @brief Create a new entity within the scene with no components
 		 * @return Entity
 		*/
 		Entity CreateEntity();
+
+		/**
+		 * @brief Create a new entity within the scene with all basic components
+		 * @param name - name for the entity to pass to the metadata component
+		 * @return Entity
+		*/
+		Entity CreateEntity(const std::string& name);
 
 		/**
 		 * @brief Create a new entity within the scene

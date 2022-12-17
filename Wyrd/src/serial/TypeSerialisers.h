@@ -3,6 +3,7 @@
 /* local includes  */
 #include "core/Structures.h"
 #include "core/UID.h"
+#include "core/maths/Rect.h"
 
 /* external includes */
 #include <glm/glm.hpp>
@@ -25,6 +26,7 @@ namespace Wyrd
 	jsonxx::Object DecodeVec2(const std::string& encodedData = "");
 	jsonxx::Object DecodeVec3(const std::string& encodedData = "");
 	jsonxx::Object DecodeColor(const std::string& encodedData = "");
+	jsonxx::Object DecodeRect(const std::string& encodedData = "");
 
 	char* operator<<(char* data, const jsonxx::String val);
 
@@ -32,9 +34,11 @@ namespace Wyrd
 	jsonxx::Object& operator<<(jsonxx::Object& data, const Wyrd::Vector3& val);
 	jsonxx::Object& operator<<(jsonxx::Object& data, const Wyrd::Color& val);
 	jsonxx::Object& operator<<(jsonxx::Object& data, const Wyrd::UID& val);
+	jsonxx::Object& operator<<(jsonxx::Object& data, const Wyrd::Rect& val);
 
 	Wyrd::Vector2& operator<<(Wyrd::Vector2& data, const jsonxx::Object& val);
 	Wyrd::Vector3& operator<<(Wyrd::Vector3& data, const jsonxx::Object& val);
 	Wyrd::Color& operator<<(Wyrd::Color& data, const jsonxx::Object& val);
 	Wyrd::UID& operator<<(Wyrd::UID& data, const jsonxx::String val);
+	Wyrd::Rect& operator<<(Wyrd::Rect& data, const jsonxx::Object& val);
 }

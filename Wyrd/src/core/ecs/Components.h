@@ -43,10 +43,12 @@ namespace Wyrd
     {
         bool enabled;
         Wyrd::UID sprite;
+        Wyrd::Vector2 position;
         Wyrd::Vector2 size;
-        Wyrd::Color tint;
+        Wyrd::Vector2 tiling;
+        Wyrd::Color color;
 
-        SpriteComponent() : enabled(false), sprite(), size(0.0,0.0), tint(1,1,1,1) {} 
+        SpriteComponent() : enabled(false), sprite(), position(0.0,0.0), size(0.0,0.0), tiling(0.0,0.0), color(1,1,1,1) {} 
     };
 
 
@@ -77,11 +79,11 @@ namespace Wyrd
 
     struct WYRD_LIBRARY_API CameraComponent
     {
-        bool enabled;
-        Wyrd::UID scriptId;
-        int32_t instanceId;
+        Wyrd::Rect viewport;
+        float aspectRatio;
+        Wyrd::Vector2 size;
 
-        CameraComponent() : enabled(false), scriptId(), instanceId(0) {} 
+        CameraComponent() : viewport(0,0,0,0), aspectRatio(0.0f), size(0.0,0.0) {} 
     };
 
 };

@@ -45,6 +45,9 @@ namespace ImGui
 	/* Vector Outputs */
 	void LabelVec2(const char* label, glm::vec2& vector, const std::string& xcompLabel = XCOMP_LABEL, const std::string& ycompLabel = YCOMP_LABEL);
 
+	/* Hierarchy Objects */
+	void TreeSeperator(const int depth);
+
 	/* Callbacks */
 	int InputTextCallback(ImGuiInputTextCallbackData* data);
 }

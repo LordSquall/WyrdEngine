@@ -14,8 +14,10 @@
   <Component name="SpriteComponent" shortName="Sprite" >
     <Data name="enabled" type="Boolean" default="true" />
     <Data name="sprite" type="UID" default="UID()"/>
+    <Data name="position" type="Vec2" default="0,0"/>
     <Data name="size" type="Vec2" default="64,64"/>
-    <Data name="tint" type="Color" default="1,1,1,1"/>
+    <Data name="tiling" type="Vec2" default="1,1"/>
+    <Data name="color" type="Color" default="1,1,1,1"/>
   </Component>
 
   <Component name="ScriptComponent" shortName="Script" customSerialisation="true">
@@ -36,9 +38,9 @@
   </Component>
 
   <Component name="CameraComponent" shortName="Camera">
-    <Data name="enabled" type="Boolean" default="true" />
-    <Data name="scriptId" type="UID" default="UID()"/>
-    <Data name="instanceId" type="Int32" default="0" />
+    <Data name="viewport" type="Rect" default="0,0,0,0"/>
+    <Data name="aspectRatio" type="Float" default="1.0f"/>
+    <Data name="size" type="Vec2" default="0,0"/>
   </Component>
   
 </ComponentDefinitions>

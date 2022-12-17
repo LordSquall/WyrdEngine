@@ -53,7 +53,7 @@ namespace Wyrd::Editor
 		_views["Scene Viewer"] = std::make_shared<SceneViewer>(this);
 		_views["Game Viewer"] = std::make_shared<GameViewer>(this);
 		_views["Properties"] = std::make_shared<PropertiesViewer>(this);
-		_views["Entities"] = std::make_shared<EntityView>(this);
+		/*_views["Entities"] = std::make_shared<EntityView>(this);*/
 		_views["Hierarchy"] = std::make_shared<HierarchyView>(this);
 		_views["Asset Viewer"] = std::make_shared<AssetViewer>(this);
 		_views["Output"] = std::make_shared<OutputView>(this);

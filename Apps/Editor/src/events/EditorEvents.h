@@ -530,22 +530,22 @@ namespace Wyrd::Editor::Events
 
 #pragma region SetSceneCamera
 
-	//class SetSceneCameraArgs : public EventArgs
-	//{
-	//public:
-	//	SetSceneCameraArgs(Entity e, CameraComponent* cc) : entity(e), cameraComponent(cc) {}
-	//
-	//	Entity entity;
-	//	CameraComponent* cameraComponent;
-	//
-	//	EVENT_ARGS_CLONE(SetSceneCameraArgs)
-	//};
-	//
-	//class SetSceneCameraEvent : public Event
-	//{
-	//public:
-	//	SetSceneCameraEvent() : Event(EventType::SetSceneCamera) { }
-	//};
+	class SetSceneCameraArgs : public EventArgs
+	{
+	public:
+		SetSceneCameraArgs(Entity e, CameraComponent* cc) : entity(e), cameraComponent(cc) {}
+	
+		Entity entity;
+		CameraComponent* cameraComponent;
+	
+		EVENT_ARGS_CLONE(SetSceneCameraArgs)
+	};
+	
+	class SetSceneCameraEvent : public Event
+	{
+	public:
+		SetSceneCameraEvent() : Event(EventType::SetSceneCamera) { }
+	};
 
 #pragma endregion
 

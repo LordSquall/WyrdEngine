@@ -265,17 +265,36 @@ namespace Wyrd
 		return ent;
 	}
 
+	Entity Scene::CreateEntity(const std::string& name)
+	{
+		Entity ent = CreateEntity();
+
+		/* register all the inbuild components with the ECS */
+		InitialiseComponent<MetaDataComponent>(ent);
+		InitialiseComponent<RelationshipComponent>(ent);
+		InitialiseComponent<Transform2DComponent>(ent);
+		
+		// Assign all initial components
+		MetaDataComponent* metaDataComponent = AssignComponent<MetaDataComponent>(ent);
+		RelationshipComponent* relationshipComponent = AssignComponent<RelationshipComponent>(ent);
+		Transform2DComponent* transform2DComponent = AssignComponent<Transform2DComponent>(ent);
+
+		strcpy(metaDataComponent->name, name.c_str());
+
+		return ent;
+	}
+
 	void Scene::DestroyEntity(Entity entity)
 	{
 		entities[entity - 1].mask.reset();
 
 		_AvailableEntities.push_back(entity);
 
-		//// remove the components from the pool
-		//for (auto& p : componentPools)
-		//{
-		//	memcpy(p->data + ((entity - 1) * p->elementSize), p->data + (entity * p->elementSize), p->elementSize * (MAX_ENTITIES - entity));
-		//}
+		// remove the components from the pool
+		for (auto& p : componentPools)
+		{
+			memcpy(p->data + ((entity - 1) * p->elementSize), p->data + (entity * p->elementSize), p->elementSize * (MAX_ENTITIES - entity));
+		}
 
 		// remove entity from list
 		entities.erase(entities.begin() + (entity - 1));

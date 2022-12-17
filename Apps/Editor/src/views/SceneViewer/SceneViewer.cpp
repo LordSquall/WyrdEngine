@@ -62,7 +62,7 @@ namespace Wyrd::Editor
 		if (_Scene != nullptr)
 		{
 			/* we want to process all the entities */
-			for (Entity e : EntitySet(*_Scene.get()))
+			for (Entity e : EntitySet<EditorComponent>(*_Scene.get()))
 			{
 				EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
 				if (editorComponent)
@@ -131,7 +131,7 @@ namespace Wyrd::Editor
 					cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
 					cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
 					cmd.texture = Application::Get().GetResources().Textures[sprite->sprite].get();
-					cmd.color = sprite->tint;
+					cmd.color = sprite->color;
 				
 					renderer.Submit(cmd);
 				}

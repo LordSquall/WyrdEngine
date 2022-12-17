@@ -18,13 +18,17 @@ namespace Wyrd::Editor
 		void OnEvent(Event& event) override;
 
 	private:
-		void DisplayEntity(Entity entity);
+		void DisplayEntity(Entity entity, int depth);
 		void DisplayEntityContentMenu(Entity entity);
 		void DisplayEntityDragAndDrop(Entity entity);
 		void DisplayEntityTooltip(Entity entity);
+		void DisplayContentMenu();
 		void OnSelectedEntityChanged(Events::EventArgs& args);
 
 		bool OnKeyPressedEvent(KeyPressedEvent& e, void* data);
+
+		void DisplayAboveDragTarget(Entity entity, int depth);
+		void DisplayBelowDragTarget(Entity entity, int depth);
 
 	private:
 		std::shared_ptr<EventService> _EventService;

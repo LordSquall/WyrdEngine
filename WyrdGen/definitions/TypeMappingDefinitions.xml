@@ -90,6 +90,12 @@
     <JsonType type="String" isStreamable="true" isPrimitive="true"/>
   </TypeMap>
 
+  <TypeMap name="Rect">
+    <UnmanagedType type="Wyrd::Rect" default="0,0,0,0" isPrimitive="false"/>
+    <ManagedType type="Rect" marshalType="Struct" default="0"/>
+    <JsonType type="Object" isStreamable="true" isPrimitive="false"/>
+  </TypeMap>
+
   <TypeMap name="Entity">
     <UnmanagedType type="Wyrd::Entity" default="ENTITY_INVALID"/>
     <ManagedType type="Entity" marshalType="Struct" default="0"/>

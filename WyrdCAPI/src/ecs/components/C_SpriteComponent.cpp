@@ -23,6 +23,14 @@ void SpriteComponent_SetSprite(void* scenePtr, Wyrd::Entity entity, Wyrd::UID* s
    component->sprite = *sprite;
 }
 
+void SpriteComponent_SetPosition(void* scenePtr, Wyrd::Entity entity, Wyrd::Vector2* position)
+{
+   Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
+   Wyrd::SpriteComponent* component = scene->Get<Wyrd::SpriteComponent>(entity);
+
+   component->position = *position;
+}
+
 void SpriteComponent_SetSize(void* scenePtr, Wyrd::Entity entity, Wyrd::Vector2* size)
 {
    Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
@@ -31,12 +39,20 @@ void SpriteComponent_SetSize(void* scenePtr, Wyrd::Entity entity, Wyrd::Vector2*
    component->size = *size;
 }
 
-void SpriteComponent_SetTint(void* scenePtr, Wyrd::Entity entity, Wyrd::Color* tint)
+void SpriteComponent_SetTiling(void* scenePtr, Wyrd::Entity entity, Wyrd::Vector2* tiling)
 {
    Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
    Wyrd::SpriteComponent* component = scene->Get<Wyrd::SpriteComponent>(entity);
 
-   component->tint = *tint;
+   component->tiling = *tiling;
+}
+
+void SpriteComponent_SetColor(void* scenePtr, Wyrd::Entity entity, Wyrd::Color* color)
+{
+   Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
+   Wyrd::SpriteComponent* component = scene->Get<Wyrd::SpriteComponent>(entity);
+
+   component->color = *color;
 }
 
 

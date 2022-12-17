@@ -11,11 +11,11 @@
 extern "C" {
 #endif
 
-LIBRARY_API void CameraComponent_SetEnabled(void* obj, Wyrd::Entity entity, bool* position);
+LIBRARY_API void CameraComponent_SetViewport(void* obj, Wyrd::Entity entity, Wyrd::Rect* position);
 
-LIBRARY_API void CameraComponent_SetScriptid(void* obj, Wyrd::Entity entity, Wyrd::UID* position);
+LIBRARY_API void CameraComponent_SetAspectratio(void* obj, Wyrd::Entity entity, float* position);
 
-LIBRARY_API void CameraComponent_SetInstanceid(void* obj, Wyrd::Entity entity, int32_t* position);
+LIBRARY_API void CameraComponent_SetSize(void* obj, Wyrd::Entity entity, Wyrd::Vector2* position);
 
 
 

@@ -11,44 +11,44 @@ namespace WyrdAPI
     public class CameraComponent : Component
     {
 
-      [MarshalAs(UnmanagedType.Bool)]
-      private bool _enabled;
+      [MarshalAs(UnmanagedType.Struct)]
+      private Rect _viewport;
+
+      [MarshalAs(UnmanagedType.R4)]
+      private float _aspectratio;
 
       [MarshalAs(UnmanagedType.Struct)]
-      private UID _scriptid;
-
-      [MarshalAs(UnmanagedType.I4)]
-      private Int32 _instanceid;
+      private Vector2 _size;
 
 
 
-      public bool Enabled
+      public Rect Viewport
       {
-         get { return _enabled; }
+         get { return _viewport; }
          set 
          {
-             _enabled = value;
-             CameraComponent_SetEnabled(Scene.NativePtr, Entity, _enabled);
+             _viewport = value;
+             CameraComponent_SetViewport(Scene.NativePtr, Entity, _viewport);
          }
       }
 
-      public UID Scriptid
+      public float Aspectratio
       {
-         get { return _scriptid; }
+         get { return _aspectratio; }
          set 
          {
-             _scriptid = value;
-             CameraComponent_SetScriptid(Scene.NativePtr, Entity, _scriptid);
+             _aspectratio = value;
+             CameraComponent_SetAspectratio(Scene.NativePtr, Entity, _aspectratio);
          }
       }
 
-      public Int32 Instanceid
+      public Vector2 Size
       {
-         get { return _instanceid; }
+         get { return _size; }
          set 
          {
-             _instanceid = value;
-             CameraComponent_SetInstanceid(Scene.NativePtr, Entity, _instanceid);
+             _size = value;
+             CameraComponent_SetSize(Scene.NativePtr, Entity, _size);
          }
       }
 
@@ -64,11 +64,11 @@ namespace WyrdAPI
         #region P/Invoke functions
 
          [DllImport("WyrdCAPI")]
-         public static extern IntPtr CameraComponent_SetEnabled(IntPtr scenePtr, UInt64 entity, bool enabled);
+         public static extern IntPtr CameraComponent_SetViewport(IntPtr scenePtr, UInt64 entity, Rect viewport);
          [DllImport("WyrdCAPI")]
-         public static extern IntPtr CameraComponent_SetScriptid(IntPtr scenePtr, UInt64 entity, UID scriptid);
+         public static extern IntPtr CameraComponent_SetAspectratio(IntPtr scenePtr, UInt64 entity, float aspectratio);
          [DllImport("WyrdCAPI")]
-         public static extern IntPtr CameraComponent_SetInstanceid(IntPtr scenePtr, UInt64 entity, Int32 instanceid);
+         public static extern IntPtr CameraComponent_SetSize(IntPtr scenePtr, UInt64 entity, Vector2 size);
 
 
         #endregion
