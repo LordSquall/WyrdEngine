@@ -62,7 +62,9 @@ namespace WyrdAPI
 
         public static Entity CreateEntity(String name)
         {
-            return new Entity();
+            Entity newEntity = new Entity();
+            newEntity.NativeID = Scene_CreateEntity(NativePtr, name);
+            return newEntity;
         }
 
         #region P/Invoke functions
@@ -74,7 +76,7 @@ namespace WyrdAPI
         public static extern IntPtr Scene_BuildComponentList(IntPtr scenePtr);
 
         [DllImport("WyrdCAPI")]
-        public static extern IntPtr Scene_CreateEntity(IntPtr scenePtr, Int32 componentPoolIndex, UInt64 entity);
+        public static extern ulong Scene_CreateEntity(IntPtr scenePtr, String name);
 
         #endregion
 

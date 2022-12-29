@@ -30,3 +30,10 @@ void* Scene_GetComponent(void* scenePtr, uint32_t componentPoolIndex, Wyrd::Enti
 
 	return rawPtr;
 }
+
+
+Wyrd::Entity Scene_CreateEntity(void* scenePtr, const char* name)
+{
+	Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
+	return scene->CreateEntity(name);
+}

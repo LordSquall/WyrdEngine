@@ -26,5 +26,6 @@ namespace Wyrd::Editor
 
 	public:
 		std::shared_ptr<Wyrd::ScriptedClass> Script;
+		bool PendingReload;
 	};
 }

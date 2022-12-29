@@ -2,6 +2,8 @@
 #include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/Application.h>
+#include <core/ecs/EntitySet.h>
+#include <core/ecs/Components.h>
 
 /* local includes */
 #include "SimulationService.h"
@@ -25,7 +27,10 @@ namespace Wyrd::Editor
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
 
 		/* Subscribe to project events */
+		_EventService->Subscribe(Events::EventType::SceneOpened, WYRD_BIND_FN(SimulationService::OnSceneOpenedEvent));
 		_EventService->Subscribe(Events::EventType::BuildBehaviourModel, WYRD_BIND_FN(SimulationService::OnBuildBehaviourModelEvent));
+		_EventService->Subscribe(Events::EventType::BehaviourModelBuilt, WYRD_BIND_FN(SimulationService::OnBuildBehaviourBuiltEvent));
+
 
 		_IsRunning = false;
 	}
@@ -88,10 +93,35 @@ namespace Wyrd::Editor
 		}
 	}
 
+	void SimulationService::OnSceneOpenedEvent(Events::EventArgs& args)
+	{
+		Events::SceneOpenedArgs& evtArgs = static_cast<Events::SceneOpenedArgs&>(args);
+		_CurrentScene = evtArgs.scene;
+	}
 
 	void SimulationService::OnBuildBehaviourModelEvent(Events::EventArgs& args)
 	{
 		_pendingRebuild = true;
+	}
+
+	void SimulationService::OnBuildBehaviourBuiltEvent(Events::EventArgs& args)
+	{
+		if (_CurrentScene != nullptr)
+		{
+			for (Entity e : EntitySet<ScriptComponent>(*_CurrentScene))
+			{
+				ScriptComponent* scriptComponent = _CurrentScene->Get<ScriptComponent>(e);
+				MetaDataComponent* metaDataComponent = _CurrentScene->Get<MetaDataComponent>(e);
+				std::shared_ptr<ScriptRes> scriptResource = _ResourceService->GetResourceByID<ScriptRes>(scriptComponent->scriptId);
+
+				if (scriptResource != nullptr && scriptResource->PendingReload == true)
+				{
+					std::shared_ptr<ScriptedClass> scriptClass = Application::Get().GetBehaviour().GetCustomClassByUID(scriptComponent->scriptId);
+
+					scriptComponent->properties = scriptClass->GetPropertiesCopy();
+				}
+			}
+		}
 	}
 
 	void SimulationService::SetInputState(int keyCode, int state)
@@ -127,21 +157,7 @@ namespace Wyrd::Editor
 		/* clear all the code logs from the output */
 		_EventService->Publish(Events::EventType::ClearLogEntry, std::make_unique<Events::ClearLogEntryArgs>(LogType::Code));
 
-		///* construct the version info script */
-		//std::string assemblyInfoTemplate = Utils::ReadFileToString(Utils::GetEditorResFolder() + "\\templates\\AssemblyInfo.cs");
-		//
-		///* replace the name */
-		//std::string assemblyInfoContent = Utils::ReplaceAll(assemblyInfoTemplate, "<<GAME_NAME>>", "TEMPGAMENAME");
-		//
-		//const std::filesystem::path tempAssemblyInfoFilePath = _WorkspaceService->GetTempDirectory() / "AssemblyInfo.cs";
-		//
-		//Utils::CreateRawFile(tempAssemblyInfoFilePath, assemblyInfoContent);
-
-
-
 		std::vector<std::filesystem::path> scriptFiles;
-
-		//scriptFiles.push_back(tempAssemblyInfoFilePath);
 
 		for (auto& [key, value] : _ResourceService->GetResources())
 		{
@@ -154,7 +170,7 @@ namespace Wyrd::Editor
 		
 		/**
 		* First stage is to compile all the file into a loadable library.
-		* Note: we want to compile this into the temp directory, incase the compilation fails
+		* Note: we want to compile this into the temp directory, in case the compilation fails
 		*/
 		const std::filesystem::path tempModelFileName = _WorkspaceService->GetTempDirectory() / (_WorkspaceService->GetCurrentProject()->name + ".dll");
 		const std::filesystem::path tempModelDebugFileName = _WorkspaceService->GetTempDirectory() / (_WorkspaceService->GetCurrentProject()->name + ".dll.mdb");

@@ -85,7 +85,14 @@ namespace WyrdGen
                                 content.AppendLine($"   Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;");
                                 content.AppendLine($"   Wyrd::{component.Name}* component = scene->Get<Wyrd::{component.Name}>(entity);");
                                 content.AppendLine();
-                                content.AppendLine($"   component->{data.Name} = {pointerValue}{data.Name};");
+                                if (typeMap.IsArray)
+                                {
+                                    content.AppendLine($"   memcpy(component->{data.Name}, {data.Name}, {data.Length});");
+                                }
+                                else
+                                {
+                                    content.AppendLine($"   component->{data.Name} = {pointerValue}{data.Name};");
+                                }
                                 content.AppendLine("}");
                                 content.AppendLine();
                             }

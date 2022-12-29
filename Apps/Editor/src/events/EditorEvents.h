@@ -25,7 +25,7 @@ namespace Wyrd::Editor::Events
 		AddLogEntry, ClearLogEntry,
 		AddFileEntry, DeleteFileEntry, ModifiedFileEntry, RenameFileEntry,
 		AddResource, DeleteResource, ReloadResource, RenameResource,
-		LoadAsset, BuildBehaviourModel,
+		LoadAsset, BuildBehaviourModel, BehaviourModelBuilt,
 		SetSceneCamera,
 		CloseEditor
 	};
@@ -524,6 +524,24 @@ namespace Wyrd::Editor::Events
 	{
 	public:
 		BuildBehaviourModelEvent() : Event(EventType::BuildBehaviourModel) { }
+	};
+
+#pragma endregion
+
+#pragma region BehaviourModelBuilt
+
+	class BehaviourModelBuiltArgs : public EventArgs
+	{
+	public:
+		BehaviourModelBuiltArgs() {}
+
+		EVENT_ARGS_CLONE(BehaviourModelBuiltArgs)
+	};
+
+	class BehaviourModelBuiltEvent : public Event
+	{
+	public:
+		BehaviourModelBuiltEvent() : Event(EventType::BehaviourModelBuilt) { }
 	};
 
 #pragma endregion

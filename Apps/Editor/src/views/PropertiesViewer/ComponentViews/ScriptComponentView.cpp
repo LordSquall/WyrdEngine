@@ -52,14 +52,19 @@ namespace Wyrd::Editor
 			}
 			ImGui::EndDragDropTarget();
 		}
-		
+
 		if (currentScriptClass != nullptr)
 		{
 			for (auto& prop : *script->properties)
 			{
-				if (ScriptPropertyViewFactory::Create(prop.second, nullptr) == false)
-				{
-					ImGui::TextColored({ 1.0f, 0.0f, 0.0f, 1.0f }, "Unabled to create view for property: %s", prop.first.c_str());
+				// if this is empty this implied the script failure to parse the property, however the entity component is still expecting it.
+				// this will clean up on the next save operation. See output for more details on which is prop is failing
+				if (prop.second != nullptr)
+				{ 
+					if (ScriptPropertyViewFactory::Create(prop.second, nullptr) == false)
+					{
+						ImGui::TextColored({ 1.0f, 0.0f, 0.0f, 1.0f }, "Unabled to create view for property: %s", prop.first.c_str());
+					}
 				}
 			}
 		}

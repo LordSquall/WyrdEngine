@@ -222,8 +222,12 @@ namespace Wyrd::Editor
 						/* set the uid of the scripted class to match the resource */
 						scriptedClass->SetUID(downcastedPtr->GetResourceID());
 						downcastedPtr->Script = scriptedClass;
+						downcastedPtr->PendingReload = true;
 					}
 				}
+
+				/* trigger an event to alert the script components to refresh there property maps  */
+				ServiceManager::Get<EventService>()->Publish(Events::EventType::BehaviourModelBuilt, std::make_unique<Events::BehaviourModelBuiltArgs>());
 			}
 		}
 	}

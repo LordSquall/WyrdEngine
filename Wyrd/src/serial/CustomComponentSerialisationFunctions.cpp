@@ -4,6 +4,7 @@
 #include "core/Application.h"
 #include "core/ecs/Components.h"
 #include "core/behaviour/ScriptedClass.h"
+#include "core/Log.h"
 #include "serial/TypeSerialisers.h"
 #include "serial/ComponentSerialiserFactory.h"
 
@@ -41,57 +42,64 @@ namespace Wyrd
                 {
                     // retrieve the script property
                     std::shared_ptr<ScriptProperty> scriptProp = (*data->properties)[prop.first];
-                    auto type = scriptProp->GetTypeName();
-                    if (type == "Single")
+                    if (scriptProp != nullptr)
                     {
-                        const jsonxx::Number& v = prop.second->get<jsonxx::Number>();
-                        float d = (float)v;
-                        scriptProp->Set(&d);
-                    }
-                    else if (type == "Int32")
-                    {
-                        const jsonxx::Number& v = prop.second->get<jsonxx::Number>();
-                        INT32 d = (INT32)v;
-                        scriptProp->Set(&d);
-                    }
-                    else if (type == "String")
-                    {
-                        const jsonxx::String& v = prop.second->get<jsonxx::String>();
-                        std::string d = (std::string)v;
-                        scriptProp->Set(&d);
-                    }
-                    else if (type == "Boolean")
-                    {
-                        const jsonxx::Boolean& v = prop.second->get<jsonxx::Boolean>();
-                        bool d = (bool)v;
-                        scriptProp->Set(&d);
-                    }
-                    else if (type == "Color")
-                    {
-                        if (!prop.second->is<jsonxx::Null>())
+                        auto type = scriptProp->GetTypeName();
+                        if (type == "Single")
+                        {
+                            const jsonxx::Number& v = prop.second->get<jsonxx::Number>();
+                            float d = (float)v;
+                            scriptProp->Set(&d);
+                        }
+                        else if (type == "Int32")
+                        {
+                            const jsonxx::Number& v = prop.second->get<jsonxx::Number>();
+                            INT32 d = (INT32)v;
+                            scriptProp->Set(&d);
+                        }
+                        else if (type == "String")
+                        {
+                            const jsonxx::String& v = prop.second->get<jsonxx::String>();
+                            std::string d = (std::string)v;
+                            scriptProp->Set(&d);
+                        }
+                        else if (type == "Boolean")
+                        {
+                            const jsonxx::Boolean& v = prop.second->get<jsonxx::Boolean>();
+                            bool d = (bool)v;
+                            scriptProp->Set(&d);
+                        }
+                        else if (type == "Color")
+                        {
+                            if (!prop.second->is<jsonxx::Null>())
+                            {
+                                const jsonxx::Object& v = prop.second->get<jsonxx::Object>();
+                                Color d;
+                                d << v;
+                                scriptProp->Set(&d);
+                            }
+                            else
+                            {
+                                Color d(1.0f, 1.0f, 1.0f);
+                                scriptProp->Set(&d);
+                            }
+                        }
+                        else if (type == "Vector2")
                         {
                             const jsonxx::Object& v = prop.second->get<jsonxx::Object>();
-                            Color d;
-                            d << v;
+                            Vector2 d(v.get<jsonxx::Number>("x"), v.get<jsonxx::Number>("y"));
                             scriptProp->Set(&d);
                         }
-                        else
+                        else if (type == "Vector3")
                         {
-                            Color d(1.0f, 1.0f, 1.0f);
+                            const jsonxx::Object& v = prop.second->get<jsonxx::Object>();
+                            Vector3 d(v.get<jsonxx::Number>("x"), v.get<jsonxx::Number>("y"), v.get<jsonxx::Number>("z"));
                             scriptProp->Set(&d);
                         }
                     }
-                    else if (type == "Vector2")
+                    else
                     {
-                        const jsonxx::Object& v = prop.second->get<jsonxx::Object>();
-                        Vector2 d(v.get<jsonxx::Number>("x"), v.get<jsonxx::Number>("y"));
-                        scriptProp->Set(&d);
-                    }
-                    else if (type == "Vector3")
-                    {
-                        const jsonxx::Object& v = prop.second->get<jsonxx::Object>();
-                        Vector3 d(v.get<jsonxx::Number>("x"), v.get<jsonxx::Number>("y"), v.get<jsonxx::Number>("z"));
-                        scriptProp->Set(&d);
+                        WYRD_CORE_WARN("Unable to serialise script prop {0}. Indicates the script has been modified outside of the Editor!", prop.first);
                     }
                 }
             }

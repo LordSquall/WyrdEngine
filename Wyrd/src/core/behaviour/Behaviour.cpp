@@ -31,7 +31,23 @@ namespace Wyrd
 {
 	Timestep _Timestep;
 
-	Behaviour::Behaviour() : _IsRunning(false), _RunID(), _RootDomain(nullptr), _ClientDomain(nullptr), _CoreAssembly(nullptr), _ClientAssembly(nullptr), _CoreImage(nullptr), _ClientImage(nullptr)
+	Behaviour::Behaviour() :
+		_InputMousePos(nullptr),
+		_InputMouseButtonState(nullptr),
+		_CurrentScene(nullptr),
+		_IsRunning(false),
+		_RunID(),
+		_Scene(nullptr),
+		_BehaviourSubsystem(nullptr),
+		_PhysicsSubsystem(nullptr),
+		_ResourcesSubsystem(nullptr),
+		_SceneManager(nullptr),
+		_RootDomain(nullptr), 
+		_ClientDomain(nullptr), 
+		_CoreAssembly(nullptr), 
+		_ClientAssembly(nullptr), 
+		_CoreImage(nullptr), 
+		_ClientImage(nullptr)
 	{
 		std::string monoLibraryDirectory = MONO_INSTALL_LOC "lib";
 		std::string monoExtensionDirectory = MONO_INSTALL_LOC "etc";
@@ -43,7 +59,7 @@ namespace Wyrd
 		_RootDomain = mono_jit_init("Wyrd_Root_Domain");
 		if (!_RootDomain)
 		{
-			std::cout << "mono_jit_init failed" << std::endl;
+			WYRD_CORE_ERROR("mono_jit_init failed");
 			system("pause");
 		}
 
@@ -176,9 +192,11 @@ namespace Wyrd
 				if (scriptComponent->instanceId != -1)
 				{
 					ScriptedCustomObject* obj = GetCustomObject(scriptComponent->scriptId, scriptComponent->instanceId);
-					MonoMethod* m = &*obj->GetMethod("OnStart");
-					MonoObject* o = &*obj->Object;
-					mono_runtime_invoke(m, o, nullptr, nullptr);
+
+					if (MonoUtils::InvokeMethod((MonoImage*)_ClientImage, "WyrdGame", obj->TypeName, "OnStart", obj->Object, { }) == false)
+					{
+						WYRD_ERROR("Unable to invoke Key Event!");
+					}
 				}
 			}
 		}
@@ -356,12 +374,8 @@ namespace Wyrd
 		/* Switch to the client domain */
 		mono_domain_set((MonoDomain*)_ClientDomain, true);
 
-		//std::string apiLibraryLocation = NATIVE_API_LIB_LOC "WyrdAPI/WyrdAPI.dll";
-		//std::string assemblyPath = inputFile.c_str();
-
 		LoadAssembly(_ClientDomain, &_CoreImage, &_CoreAssembly, "WyrdAPI", coreData);
 		LoadAssembly(_ClientDomain, &_ClientImage, &_ClientAssembly, "WyrdGame", clientData);
-
 
 		/* Search for all valid classes in the DLL and add build the scripted classes */
 		const MonoTableInfo* table_info = mono_image_get_table_info((MonoImage*)_CoreImage, MONO_TABLE_TYPEDEF);

@@ -89,7 +89,7 @@ namespace Wyrd::Editor
 			_Vertices.push_back({ (xSpacing * i) + -thickness, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f });
 		}
 		
-		int offset = (columnCnt+1) * 4;
+		int offset = ((int)columnCnt+1) * 4;
 		
 		for (int i = 0; i <= rowCnt; i++)
 		{

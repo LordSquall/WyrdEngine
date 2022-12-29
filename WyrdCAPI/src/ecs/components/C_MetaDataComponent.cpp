@@ -12,7 +12,7 @@ void MetaDataComponent_SetName(void* scenePtr, Wyrd::Entity entity, char* name)
    Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
    Wyrd::MetaDataComponent* component = scene->Get<Wyrd::MetaDataComponent>(entity);
 
-   component->name = *name;
+   memcpy(component->name, name, 255);
 }
 
 void MetaDataComponent_SetUid(void* scenePtr, Wyrd::Entity entity, Wyrd::UID* uid)

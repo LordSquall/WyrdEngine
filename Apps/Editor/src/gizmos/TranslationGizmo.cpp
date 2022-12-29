@@ -275,7 +275,7 @@ namespace Wyrd::Editor
 
 	void TranslationGizmo::UpdateVertexGroupColor(const std::string& groupName, const Color& color)
 	{
-		for (int i = _VertexGroups[groupName].first; i <= _VertexGroups[groupName].second; i++)
+		for (int i = _VertexGroups[groupName].first; i <= (int)_VertexGroups[groupName].second; i++)
 		{
 			_Vertices[i].r = color.r;
 			_Vertices[i].g = color.g;

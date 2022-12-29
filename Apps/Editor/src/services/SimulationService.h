@@ -35,7 +35,9 @@ namespace Wyrd::Editor
 		void Stop();
 		void Update(Timestep ts);
 
+		void OnSceneOpenedEvent(Events::EventArgs& args);
 		void OnBuildBehaviourModelEvent(Events::EventArgs& args);
+		void OnBuildBehaviourBuiltEvent(Events::EventArgs& args);
 
 		inline bool IsRunning() const { return _IsRunning; }
 		inline bool IsAvailable() const { return _IsAvailable; }

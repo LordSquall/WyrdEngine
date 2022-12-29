@@ -461,8 +461,7 @@ namespace Wyrd::Editor
 
 	void EditorLayer::OnSceneOpened(Events::EventArgs& args)
 	{
-		/* cast the event args to cor
-		type */
+		/* cast the event args to core type */
 		Events::SceneOpenedArgs& evtArgs = static_cast<Events::SceneOpenedArgs&>(args);
 
 		/* get the current loaded project name */
