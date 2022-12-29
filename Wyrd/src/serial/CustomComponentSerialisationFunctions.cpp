@@ -31,65 +31,68 @@ namespace Wyrd
             // retrieve a copy of the default properties from the assigned script
             std::shared_ptr<ScriptedClass> scriptClass = Application::Get().GetBehaviour().GetCustomClassByUID(data->scriptId);
 
-            data->properties = scriptClass->GetPropertiesCopy();
-
-            jsonxx::Object propertiesSet = obj.get<jsonxx::Object>("properties");
-
-            for (auto& prop : propertiesSet.kv_map())
+            if (scriptClass != nullptr)
             {
-                // retrieve the script property
-                std::shared_ptr<ScriptProperty> scriptProp = (*data->properties)[prop.first];
-                auto type = scriptProp->GetTypeName();
-                if (type == "Single")
+                data->properties = scriptClass->GetPropertiesCopy();
+
+                jsonxx::Object propertiesSet = obj.get<jsonxx::Object>("properties");
+
+                for (auto& prop : propertiesSet.kv_map())
                 {
-                    const jsonxx::Number& v = prop.second->get<jsonxx::Number>();
-                    float d = (float)v;
-                    scriptProp->Set(&d);
-                }
-                else if (type == "Int32")
-                {
-                    const jsonxx::Number& v = prop.second->get<jsonxx::Number>();
-                    INT32 d = (INT32)v;
-                    scriptProp->Set(&d);
-                }
-                else if (type == "String")
-                {
-                    const jsonxx::String& v = prop.second->get<jsonxx::String>();
-                    std::string d = (std::string)v;
-                    scriptProp->Set(&d);
-                }
-                else if (type == "Boolean")
-                {
-                    const jsonxx::Boolean& v = prop.second->get<jsonxx::Boolean>();
-                    bool d = (bool)v;
-                    scriptProp->Set(&d);
-                }
-                else if (type == "Color")
-                {
-                    if (!prop.second->is<jsonxx::Null>())
+                    // retrieve the script property
+                    std::shared_ptr<ScriptProperty> scriptProp = (*data->properties)[prop.first];
+                    auto type = scriptProp->GetTypeName();
+                    if (type == "Single")
+                    {
+                        const jsonxx::Number& v = prop.second->get<jsonxx::Number>();
+                        float d = (float)v;
+                        scriptProp->Set(&d);
+                    }
+                    else if (type == "Int32")
+                    {
+                        const jsonxx::Number& v = prop.second->get<jsonxx::Number>();
+                        INT32 d = (INT32)v;
+                        scriptProp->Set(&d);
+                    }
+                    else if (type == "String")
+                    {
+                        const jsonxx::String& v = prop.second->get<jsonxx::String>();
+                        std::string d = (std::string)v;
+                        scriptProp->Set(&d);
+                    }
+                    else if (type == "Boolean")
+                    {
+                        const jsonxx::Boolean& v = prop.second->get<jsonxx::Boolean>();
+                        bool d = (bool)v;
+                        scriptProp->Set(&d);
+                    }
+                    else if (type == "Color")
+                    {
+                        if (!prop.second->is<jsonxx::Null>())
+                        {
+                            const jsonxx::Object& v = prop.second->get<jsonxx::Object>();
+                            Color d;
+                            d << v;
+                            scriptProp->Set(&d);
+                        }
+                        else
+                        {
+                            Color d(1.0f, 1.0f, 1.0f);
+                            scriptProp->Set(&d);
+                        }
+                    }
+                    else if (type == "Vector2")
                     {
                         const jsonxx::Object& v = prop.second->get<jsonxx::Object>();
-                        Color d;
-                        d << v;
+                        Vector2 d(v.get<jsonxx::Number>("x"), v.get<jsonxx::Number>("y"));
                         scriptProp->Set(&d);
                     }
-                    else
+                    else if (type == "Vector3")
                     {
-                        Color d(1.0f, 1.0f, 1.0f);
+                        const jsonxx::Object& v = prop.second->get<jsonxx::Object>();
+                        Vector3 d(v.get<jsonxx::Number>("x"), v.get<jsonxx::Number>("y"), v.get<jsonxx::Number>("z"));
                         scriptProp->Set(&d);
                     }
-                }
-                else if (type == "Vector2")
-                {
-                    const jsonxx::Object& v = prop.second->get<jsonxx::Object>();
-                    Vector2 d(v.get<jsonxx::Number>("x"), v.get<jsonxx::Number>("y"));
-                    scriptProp->Set(&d);
-                }
-                else if (type == "Vector3")
-                {
-                    const jsonxx::Object& v = prop.second->get<jsonxx::Object>();
-                    Vector3 d(v.get<jsonxx::Number>("x"), v.get<jsonxx::Number>("y"), v.get<jsonxx::Number>("z"));
-                    scriptProp->Set(&d);
                 }
             }
         }

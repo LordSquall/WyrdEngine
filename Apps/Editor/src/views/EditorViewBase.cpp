@@ -26,13 +26,23 @@ namespace Wyrd::Editor
 
 	void EditorViewBase::OnPostEditorRender()
 	{
+		/* calculate the boundary for the window, this is reqiured to help route mouse events*/
+		_Boundary._position = { ImGui::GetWindowPos().x, ImGui::GetWindowPos().y };
+		_Boundary._size = { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y };
+
+		//{ // Enable for debug viewport overlay
+		//	ImVec2 pos = { _Boundary._position.x, _Boundary._position.y };
+		//	ImVec2 size = { _Boundary._position.x + _Boundary._size.x, _Boundary._position.y + _Boundary._size.y };
+		//	ImGui::GetForegroundDrawList()->AddRect(pos, size, IM_COL32(255, 0, 255, 255));
+		//	ImGui::GetForegroundDrawList()->AddCircleFilled(pos, 16.0f, IM_COL32(0, 255, 255, 255));
+		//}
+		
 		/* end the window */
 		ImGui::EndChild();
 		ImGui::End();
 
-		/* calculate the boundary for the window, this is reqiured to help route mouse events*/
-		_Boundary._position = { ImGui::GetWindowPos().x, ImGui::GetWindowPos().y };
-		_Boundary._size = { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y };
+		ImGui::GetWindowContentRegionMax();
+		ImGui::GetWindowContentRegionMin();
 
 		/* pop each of the stack flags */
 		ImGui::PopStyleVar();

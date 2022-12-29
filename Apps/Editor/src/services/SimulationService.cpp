@@ -120,8 +120,10 @@ namespace Wyrd::Editor
 	}
 
 
-	void SimulationService::CompileAll()
+	bool SimulationService::CompileAll()
 	{
+		bool result = false;
+
 		/* clear all the code logs from the output */
 		_EventService->Publish(Events::EventType::ClearLogEntry, std::make_unique<Events::ClearLogEntryArgs>(LogType::Code));
 
@@ -200,9 +202,12 @@ namespace Wyrd::Editor
 
 			// Mark the compiles as unsuccessful
 			_IsAvailable = false;
+			result = false;
 		}
 		else
 		{
+			result = true;
+
 			/* Second stage is to copy of the successfully compiled model to the execution director, only if the compilation was successful */
 			Utils::RemoveFile(finalModelFileName);
 			Utils::RemoveFile(finalModelDebugFileName);
@@ -217,6 +222,8 @@ namespace Wyrd::Editor
 		}
 
 		_EventService->Publish(Events::EventType::RefreshView, std::make_unique<Events::RefreshViewEventArgs>());
+		
+		return result;
 	}
 
 	std::shared_ptr<Wyrd::ScriptedClass> SimulationService::GetClass(const std::string& className)

@@ -60,6 +60,11 @@ namespace WyrdAPI
             return component;
         }
 
+        public static Entity CreateEntity(String name)
+        {
+            return new Entity();
+        }
+
         #region P/Invoke functions
 
         [DllImport("WyrdCAPI")]
@@ -67,6 +72,9 @@ namespace WyrdAPI
 
         [DllImport("WyrdCAPI")]
         public static extern IntPtr Scene_BuildComponentList(IntPtr scenePtr);
+
+        [DllImport("WyrdCAPI")]
+        public static extern IntPtr Scene_CreateEntity(IntPtr scenePtr, Int32 componentPoolIndex, UInt64 entity);
 
         #endregion
 

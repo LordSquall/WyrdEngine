@@ -207,19 +207,22 @@ namespace Wyrd::Editor
 		}
 		else
 		{
-			ServiceManager::Get<SimulationService>()->CompileAll();
+			bool successfullyCompiled = ServiceManager::Get<SimulationService>()->CompileAll();
 
-			// Resolve all the script resources to the scripted classes
-			for (auto& [key, value] : _resourceMap)
+			if (successfullyCompiled)
 			{
-				auto downcastedPtr = std::dynamic_pointer_cast<ScriptRes>(value);
-				if (downcastedPtr)
+				// Resolve all the script resources to the scripted classes
+				for (auto& [key, value] : _resourceMap)
 				{
-					auto scriptedClass = ServiceManager::Get<SimulationService>()->GetClass(value->GetName());
+					auto downcastedPtr = std::dynamic_pointer_cast<ScriptRes>(value);
+					if (downcastedPtr)
+					{
+						auto scriptedClass = ServiceManager::Get<SimulationService>()->GetClass(value->GetName());
 
-					/* set the uid of the scripted class to match the resource */
-					scriptedClass->SetUID(downcastedPtr->GetResourceID());
-					downcastedPtr->Script = scriptedClass;
+						/* set the uid of the scripted class to match the resource */
+						scriptedClass->SetUID(downcastedPtr->GetResourceID());
+						downcastedPtr->Script = scriptedClass;
+					}
 				}
 			}
 		}

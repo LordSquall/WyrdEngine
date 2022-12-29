@@ -45,7 +45,7 @@ namespace Wyrd::Editor
 		void SetMousePosition(float x, float y);
 		void SetMouseButtonState(int i, bool state);
 			
-		void CompileAll();
+		bool CompileAll();
 
 		std::shared_ptr<Wyrd::ScriptedClass> GetClass(const std::string& className);
 
