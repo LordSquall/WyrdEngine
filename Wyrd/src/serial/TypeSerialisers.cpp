@@ -2,6 +2,7 @@
 
 /* local includes  */
 #include "core/UID.h"
+#include "core/Resources.h"
 #include "serial/TypeSerialisers.h"
 
 namespace glm
@@ -175,6 +176,12 @@ namespace Wyrd
 		return data;
 	}
 
+	jsonxx::Object& operator<<(jsonxx::Object& data, Wyrd::Texture** val)
+	{
+		data << (*val)->GetUID();
+		return data;
+	}
+
 	jsonxx::Object& operator<<(jsonxx::Object& data, const UID& val) {
 		data << val.str();
 		return data;
@@ -208,6 +215,12 @@ namespace Wyrd
 		data.g = (float)val.get<jsonxx::Number>("g");
 		data.b = (float)val.get<jsonxx::Number>("b");
 		data.a = (float)val.get<jsonxx::Number>("a");
+		return data;
+	}
+
+	Wyrd::Texture** operator<<(Wyrd::Texture** data, const jsonxx::String val)
+	{
+		(*data) = Resources::Get().Textures[UID(val.c_str())].get();
 		return data;
 	}
 

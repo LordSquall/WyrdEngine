@@ -23,5 +23,10 @@ namespace Wyrd
 		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
 	}
 
+	void FloatProperty::Serialise(jsonxx::Object& object)
+	{
+		object << _Name << _Value;
+	}
+
 	SCRIPT_PROPERTY_FACTORY_REGISTER(FloatProperty);
 }

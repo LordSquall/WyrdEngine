@@ -14,8 +14,8 @@ namespace Wyrd
 		virtual void Set(void* data) override;
 		virtual void Set(void* object, void* data) override;
 
-		inline Texture* GetValue() { return _Value; }
-		inline void SetValue(Texture* value) { _Value = value; };
+		inline Texture* GetValue() { return *_Value; }
+		inline void SetValue(Texture* value) { *_Value = value; };
 
 		virtual void Resolve(Scene& scene) override;
 
@@ -26,6 +26,6 @@ namespace Wyrd
 		UID _ValueUID;
 
 	private:
-		SCRIPT_PROPERTY_FACTORY_SETUP(TextureProperty, Texture*, 0, WyrdAPI.Texture);
+		SCRIPT_PROPERTY_FACTORY_SETUP(TextureProperty, Texture**, 0, WyrdAPI.Texture);
 	};
 }

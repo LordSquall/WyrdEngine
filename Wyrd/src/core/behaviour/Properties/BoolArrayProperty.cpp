@@ -31,5 +31,10 @@ namespace Wyrd
 	//	return true;
 	//}
 
+	void BoolArrayProperty::Serialise(jsonxx::Object& object)
+	{
+		object << _Name << _Value;
+	}
+
 	SCRIPT_PROPERTY_FACTORY_REGISTER(BoolArrayProperty);
 }

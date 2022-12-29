@@ -13,24 +13,18 @@ namespace Wyrd::Editor
 {
 	void TexturePropertyView::OnEditorRender(const std::shared_ptr<ScriptProperty>& prop, void* value)
 	{
-		char* nullCheck = (char*)value;
-		UID textureUID = UID((char*)value);
+		Texture** indirectTexture = (Texture**)value;
 
-		if (*nullCheck == '\0')
+		if (*indirectTexture == nullptr)
 		{
 			ImGui::Text("TexturePropertyView: Not Set");
 		}
 		else
 		{
-			ImGui::Text("TexturePropertyView: %s", textureUID.str().c_str());
+			ImGui::Text("TexturePropertyView: %s", (*indirectTexture)->GetUID().str().c_str());
 
-			Texture* texture = &*(Application::Get().GetResources().Textures[textureUID]);
-
-			if (texture == nullptr)
-			{
-				texture = &*(Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)]);
-			}
-
+			Texture* texture = (*indirectTexture);
+				
 			ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2((float)texture->GetWidth(), (float)texture->GetHeight()));
 		}
 
@@ -39,7 +33,8 @@ namespace Wyrd::Editor
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_TEXTURE"))
 			{
 				UID* textureUID = (UID*)payload->Data;
-				strcpy((char*)value, textureUID->str().c_str());
+
+				(*((Texture**)value)) = Resources::Get().Textures[*textureUID].get();
 			}
 			ImGui::EndDragDropTarget();
 		}

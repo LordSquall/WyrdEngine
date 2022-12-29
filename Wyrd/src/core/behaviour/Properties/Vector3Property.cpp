@@ -52,24 +52,11 @@ namespace Wyrd
 
 		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
 	}
-
-	std::shared_ptr<ScriptProperty> Vector3Property::CreateClone() {
-		std::shared_ptr<Vector3Property> clone = std::make_shared<Vector3Property>();
-		clone->SetName(_Name);
-		clone->SetSetter(_Setter);
-		clone->SetGetter(_Getter);
-		clone->SetNameSpace(_NameSpace);
-		clone->SetTypeName(_TypeName);
-		return clone;
-	}
-	void Vector3Property::Serialise(jsonxx::Object& object) {
+	
+	void Vector3Property::Serialise(jsonxx::Object& object)
+	{
 		object << _Name << _Value;
 	}
 
-	bool Vector3Property::s_Registered = ScriptPropertyFactory::Register(
-		Vector3Property::GetManagedType(),
-		Vector3Property::CreateProperty);
-
-
-	//SCRIPT_PROPERTY_FACTORY_REGISTER(Vector3Property);
+	SCRIPT_PROPERTY_FACTORY_REGISTER(Vector3Property);
 }

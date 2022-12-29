@@ -86,15 +86,30 @@ namespace Wyrd
                         }
                         else if (type == "Vector2")
                         {
-                            const jsonxx::Object& v = prop.second->get<jsonxx::Object>();
-                            Vector2 d(v.get<jsonxx::Number>("x"), v.get<jsonxx::Number>("y"));
-                            scriptProp->Set(&d);
+                            if (prop.second->is<jsonxx::Object>())
+                            {
+                                const jsonxx::Object& v = prop.second->get<jsonxx::Object>();
+                                Vector2 d(v.get<jsonxx::Number>("x"), v.get<jsonxx::Number>("y"));
+                                scriptProp->Set(&d);
+                            }
                         }
                         else if (type == "Vector3")
                         {
-                            const jsonxx::Object& v = prop.second->get<jsonxx::Object>();
-                            Vector3 d(v.get<jsonxx::Number>("x"), v.get<jsonxx::Number>("y"), v.get<jsonxx::Number>("z"));
-                            scriptProp->Set(&d);
+                            if (prop.second->is<jsonxx::Object>())
+                            {
+                                const jsonxx::Object& v = prop.second->get<jsonxx::Object>();
+                                Vector3 d(v.get<jsonxx::Number>("x"), v.get<jsonxx::Number>("y"), v.get<jsonxx::Number>("z"));
+                                scriptProp->Set(&d);
+                            }
+                        }
+                        else if (type == "Texture")
+                        {
+                            if (prop.second->is<jsonxx::String>())
+                            {
+                                const jsonxx::String& v = prop.second->get<jsonxx::String>();
+                                Wyrd::UID textureUID = Wyrd::UID(v);
+                                scriptProp->Set(Resources::Get().Textures[textureUID].get());
+                            }
                         }
                     }
                     else

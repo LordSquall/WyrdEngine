@@ -7,6 +7,7 @@
 #include "core/behaviour/Properties/TextureProperty.h"
 #include "core/behaviour/Properties/ScriptPropertyFactory.h"
 #include "core/behaviour/MonoUtils.h"
+#include "serial/TypeSerialisers.h"
 
 /* external includes */
 #include <mono/jit/jit.h>
@@ -15,7 +16,7 @@ namespace Wyrd
 {
 	void TextureProperty::Set(void* data)
 	{
-		//TODO
+		_Value = (Texture**)data;
 	}
 
 	void TextureProperty::Set(void* object, void* data)
@@ -45,11 +46,16 @@ namespace Wyrd
 		args.push_back(textureObject);
 
 		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
-	}	
+	}
 
 	void TextureProperty::Resolve(Scene& scene)
 	{
-		_Value = Application::Get().GetResources().Textures[_ValueUID].get();
+		(*_Value) = Application::Get().GetResources().Textures[_ValueUID].get();
+	}
+
+	void TextureProperty::Serialise(jsonxx::Object& object)
+	{
+		object << _Name << (Texture**)GetRawDataPtr();
 	}
 
 	SCRIPT_PROPERTY_FACTORY_REGISTER(TextureProperty);

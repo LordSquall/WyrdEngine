@@ -15,9 +15,6 @@ std::shared_ptr<ScriptProperty> clsname::CreateClone() {\
 	clone->SetTypeName(_TypeName);\
 	return clone;\
 }\
-void clsname::Serialise(jsonxx::Object& object){\
-	object << _Name << _Value;\
-}\
 bool clsname::s_Registered = ScriptPropertyFactory::Register(\
 clsname::GetManagedType(),\
 clsname::CreateProperty)

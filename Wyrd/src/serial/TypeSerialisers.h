@@ -4,6 +4,7 @@
 #include "core/Structures.h"
 #include "core/UID.h"
 #include "core/maths/Rect.h"
+#include "core/renderer/Texture.h"
 
 /* external includes */
 #include <glm/glm.hpp>
@@ -33,12 +34,14 @@ namespace Wyrd
 	jsonxx::Object& operator<<(jsonxx::Object& data, const Wyrd::Vector2& val);
 	jsonxx::Object& operator<<(jsonxx::Object& data, const Wyrd::Vector3& val);
 	jsonxx::Object& operator<<(jsonxx::Object& data, const Wyrd::Color& val);
+	jsonxx::Object& operator<<(jsonxx::Object& data, Wyrd::Texture** val);
 	jsonxx::Object& operator<<(jsonxx::Object& data, const Wyrd::UID& val);
 	jsonxx::Object& operator<<(jsonxx::Object& data, const Wyrd::Rect& val);
 
 	Wyrd::Vector2& operator<<(Wyrd::Vector2& data, const jsonxx::Object& val);
 	Wyrd::Vector3& operator<<(Wyrd::Vector3& data, const jsonxx::Object& val);
 	Wyrd::Color& operator<<(Wyrd::Color& data, const jsonxx::Object& val);
+	Wyrd::Texture** operator<<(Wyrd::Texture** data, const jsonxx::String val);
 	Wyrd::UID& operator<<(Wyrd::UID& data, const jsonxx::String val);
 	Wyrd::Rect& operator<<(Wyrd::Rect& data, const jsonxx::Object& val);
 }

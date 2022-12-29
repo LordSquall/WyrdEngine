@@ -49,5 +49,10 @@ namespace Wyrd
 		mono_runtime_invoke((MonoMethod*)_Setter, (MonoObject*)object, &args[0], nullptr);
 	}
 
+	void Vector2Property::Serialise(jsonxx::Object& object)
+	{
+		object << _Name << _Value;
+	}
+
 	SCRIPT_PROPERTY_FACTORY_REGISTER(Vector2Property);
 }
