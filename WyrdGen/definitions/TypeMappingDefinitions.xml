@@ -90,6 +90,12 @@
     <JsonType type="String" isStreamable="true" isPrimitive="true"/>
   </TypeMap>
 
+  <TypeMap name="Texture">
+    <UnmanagedType type="Wyrd::UID" default="" isPrimitive="false"/>
+    <ManagedType type="Texture" marshalType="Struct" default="0" />
+    <JsonType type="String" isStreamable="true" isPrimitive="true"/>
+  </TypeMap>
+
   <TypeMap name="Rect">
     <UnmanagedType type="Wyrd::Rect" default="0,0,0,0" isPrimitive="false"/>
     <ManagedType type="Rect" marshalType="Struct" default="0"/>
@@ -100,6 +106,11 @@
     <UnmanagedType type="Wyrd::Entity" default="ENTITY_INVALID"/>
     <ManagedType type="Entity" marshalType="Struct" default="0"/>
     <JsonType type="Number" isStreamable="false" isPrimitive="true"/>
+  </TypeMap>
+
+  <TypeMap name="Ref">
+    <UnmanagedType type="void*" default="" isPrimitive="true"/>
+    <ManagedType type="IntPtr" marshalType="Struct" default="0" wrapperType="Texture" />
   </TypeMap>
 
   <TypeMap name="ScriptPropertiesMapRef" HeapOnly="true">

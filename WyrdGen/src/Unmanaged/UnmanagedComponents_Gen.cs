@@ -129,7 +129,7 @@ namespace WyrdGen
             // retrieve type mapping
             TypeMap typeMap = TypeMappings[type.Type];
             UnmanagedType unmanagedType = typeMap.Unmanaged;
-            return String.Format("{0}({1})", type.Name, unmanagedType.Default);
+            return String.Format("{0}({1})", type.Name, !String.IsNullOrWhiteSpace(type.Default) ? type.Default : unmanagedType.Default);
         }
 
         private String FormatOptionalCommentBlock(String comment)

@@ -3,21 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace WyrdAPI
 {
-    public class ResourceManager
+    public class ResourceManager : NativeManager
     {
-        public static List<Texture> _Textures = new List<Texture>();
-
-        public static void Reset()
-        {
-            _Textures.Clear();
-        }
-
-        public static void AddTexture(IntPtr nativePtr)
-        {
-            _Textures.Add(new Texture() { NativePtr = nativePtr });
-        }
+        #region P/Invoke functions
+        // TODO
+        #endregion
     }
 }

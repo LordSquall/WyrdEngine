@@ -54,7 +54,14 @@ namespace WyrdGen
 
                             content.AppendFormat($"      [MarshalAs(UnmanagedType.{expandedMarshalType})]"); // , SizeConst = 1024)
                             content.AppendLine();
-                            content.AppendFormat($"      private {typeMap.Type} _{data.Name.ToLower()};");
+                            if (String.IsNullOrEmpty(typeMap.WrapperType))
+                            {
+                                content.AppendFormat($"      private {typeMap.Type} _{data.Name.ToLower()};");
+                            }
+                            else
+                            {
+                                content.AppendFormat($"      private {typeMap.WrapperType} _{data.Name.ToLower()};");
+                            }
                             content.AppendLine();
                             content.AppendLine();
                         }
@@ -72,16 +79,32 @@ namespace WyrdGen
                         if (data.HeapOnly == false)
                         {
                             ManagedType typeMap = TypeMappings[data.Type].Managed;
-                            content.AppendLine($"      public {typeMap.Type} {data.Name.Substring(0, 1).ToUpper()}{data.Name.Substring(1).ToLower()}");
-                            content.AppendLine("      {");
-                            content.AppendLine("         get { return _" + data.Name.ToLower() + "; }");
-                            content.AppendLine("         set ");
-                            content.AppendLine("         {");
-                            content.AppendLine("             _" + data.Name.ToLower() + " = value;");
-                            content.AppendLine("             " + component.Name + "_Set" + data.Name.Substring(0, 1).ToUpper() + data.Name.Substring(1).ToLower() + "(Scene.NativePtr, Entity, _" + data.Name.ToLower() + ");");
-                            content.AppendLine("         }");
-                            content.AppendLine("      }");
-                            content.AppendLine();
+                            if (String.IsNullOrEmpty(typeMap.WrapperType))
+                            {
+                                content.AppendLine($"      public {typeMap.Type} {data.Name.Substring(0, 1).ToUpper()}{data.Name.Substring(1).ToLower()}");
+                                content.AppendLine("      {");
+                                content.AppendLine("         get { return _" + data.Name.ToLower() + "; }");
+                                content.AppendLine("         set ");
+                                content.AppendLine("         {");
+                                content.AppendLine("             _" + data.Name.ToLower() + " = value;");
+                                content.AppendLine("             " + component.Name + "_Set" + data.Name.Substring(0, 1).ToUpper() + data.Name.Substring(1).ToLower() + "(Scene.NativePtr, Entity, _" + data.Name.ToLower() + ");");
+                                content.AppendLine("         }");
+                                content.AppendLine("      }");
+                                content.AppendLine();
+                            }
+                            else
+                            {
+                                content.AppendLine($"      public {typeMap.WrapperType} {data.Name.Substring(0, 1).ToUpper()}{data.Name.Substring(1).ToLower()}");
+                                content.AppendLine("      {");
+                                content.AppendLine("         get { return _" + data.Name.ToLower() + "; }");
+                                content.AppendLine("         set ");
+                                content.AppendLine("         {");
+                                content.AppendLine("             _" + data.Name.ToLower() + " = value;");
+                                content.AppendLine("             " + component.Name + "_Set" + data.Name.Substring(0, 1).ToUpper() + data.Name.Substring(1).ToLower() + "(Scene.NativePtr, Entity, _" + data.Name.ToLower() + ".NativePtr);");
+                                content.AppendLine("         }");
+                                content.AppendLine("      }");
+                                content.AppendLine();
+                            }
                         }
                     }
 
@@ -98,10 +121,20 @@ namespace WyrdGen
                         {
                             ManagedType typeMap = TypeMappings[data.Type].Managed;
 
-                            content.AppendFormat($"         [DllImport(\"WyrdCAPI\")]");
-                            content.AppendLine();
-                            content.AppendFormat($"         public static extern IntPtr {component.Name}_Set{data.Name.Substring(0, 1).ToUpper()}{data.Name.Substring(1).ToLower()}(IntPtr scenePtr, UInt64 entity, {typeMap.Type} {data.Name.ToLower()});");
-                            content.AppendLine();
+                            if (String.IsNullOrEmpty(typeMap.WrapperType))
+                            {
+                                content.AppendFormat($"         [DllImport(\"WyrdCAPI\")]");
+                                content.AppendLine();
+                                content.AppendFormat($"         public static extern IntPtr {component.Name}_Set{data.Name.Substring(0, 1).ToUpper()}{data.Name.Substring(1).ToLower()}(IntPtr scenePtr, UInt64 entity, {typeMap.Type} {data.Name.ToLower()});");
+                                content.AppendLine();
+                            }
+                            else
+                            {
+                                content.AppendFormat($"         [DllImport(\"WyrdCAPI\")]");
+                                content.AppendLine();
+                                content.AppendFormat($"         public static extern IntPtr {component.Name}_Set{data.Name.Substring(0, 1).ToUpper()}{data.Name.Substring(1).ToLower()}(IntPtr scenePtr, UInt64 entity, IntPtr {data.Name.ToLower()});");
+                                content.AppendLine();
+                            }
                         }
                     }
 

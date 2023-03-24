@@ -60,6 +60,20 @@ namespace WyrdAPI
             return component;
         }
 
+        public static T AddComponent<T>(Entity entity) where T : Component
+        {
+            // check to ensure we have the script type mapped
+            if (!_ScriptClassMap.ContainsKey(typeof(T)))
+            {
+                Console.WriteLine("Attempting to GetComponent on an unmapped native script type: {0}", typeof(T).Name);
+                return default(T);
+            }
+
+            IntPtr nativePtr = Scene_AddComponent(NativePtr, _ScriptClassMap[typeof(T)], entity.NativeID);
+            T component = Marshal.PtrToStructure<T>(nativePtr);
+            return component;
+        }
+
         public static Entity CreateEntity(String name)
         {
             Entity newEntity = new Entity();
@@ -71,6 +85,9 @@ namespace WyrdAPI
 
         [DllImport("WyrdCAPI")]
         public static extern IntPtr Scene_GetComponent(IntPtr scenePtr, Int32 componentPoolIndex, UInt64 entity);
+        
+        [DllImport("WyrdCAPI")]
+        public static extern IntPtr Scene_AddComponent(IntPtr scenePtr, Int32 componentPoolIndex, UInt64 entity);
 
         [DllImport("WyrdCAPI")]
         public static extern IntPtr Scene_BuildComponentList(IntPtr scenePtr);

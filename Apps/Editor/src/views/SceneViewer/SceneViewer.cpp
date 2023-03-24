@@ -11,7 +11,9 @@
 
 /* local include */
 #include "SceneViewer.h"
-#include "gizmos/2D/Translation2DGizmo.h"
+#include "gizmos/2D/Translate2DGizmo.h"
+#include "gizmos/2D/Rotate2DGizmo.h"
+#include "gizmos/2D/Scale2DGizmo.h"
 #include "gizmos/GridGizmo.h"
 #include "support/ImGuiUtils.h"
 #include "datamodels/EditorComponents.h"
@@ -40,9 +42,19 @@ namespace Wyrd::Editor
 		/* initialise camera */
 		_CameraController = std::make_shared<OrthographicCameraController>();
 
-		/* initialise each of the gizmos */
+		/* initialise each of the transformation gizmos */
+		_TransformationGizmos.push_back(std::make_unique<Translate2DGizmo>(this));
+		_TransformationGizmos.push_back(std::make_unique<Rotate2DGizmo>(this));
+		_TransformationGizmos.push_back(std::make_unique<Scale2DGizmo>(this));
+		_CurrentTransformationGizmoIndex = 0;
+
 		_GridGizmo = std::make_unique<GridGizmo>(this);
-		_Translation2DGizmo = std::make_unique<Translation2DGizmo>(this);
+
+		/* initialise each icon */
+		_pointSelectBtnIcon = _ResourceService->GetIconLibrary().GetIcon("common", "sim_play");
+		_TransformationGizmoIcons.push_back(_ResourceService->GetIconLibrary().GetIcon("common", "sim_play"));
+		_TransformationGizmoIcons.push_back(_ResourceService->GetIconLibrary().GetIcon("common", "sim_play"));
+		_TransformationGizmoIcons.push_back(_ResourceService->GetIconLibrary().GetIcon("common", "sim_play"));
 
 		/* create a new framebuffer */
 		_Framebuffer.reset(Wyrd::FrameBuffer::Create(FrameBufferConfig()));
@@ -68,32 +80,26 @@ namespace Wyrd::Editor
 				if (editorComponent)
 				{
 
-					//Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
-					//SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
-					//TextComponent* text = _Scene->Get<TextComponent>(e);
-					//
-					//Rect r;
-					//
-					//if (sprite)
-					//{
-					//	// calculate aabb sprite component render rect
-					//
-					//	Rect newRect;
-					//	newRect._position = sprite->position + transform->position;
-					//	newRect._size = sprite->size;
-					//	r = newRect;
-					//}
-					//
-					//if (text)
-					//{
-					//	// calculate aabb text component render rect
-					//}
-					//
-					//if (editorComponent)
-					//{
-					//	editorComponent->inputArea._position = r._position;
-					//	editorComponent->inputArea._size = r._size;
-					//}
+					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
+					SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
+					
+					Rect r;
+					
+					if (sprite)
+					{
+						// calculate aabb sprite component render rect
+					
+						Rect newRect;
+						newRect._position = { sprite->position.x + transform->position.x, sprite->position.y + transform->position.y } ;
+						newRect._size = { sprite->size.x, sprite->size.y };
+						r = newRect;
+					}
+					
+					if (editorComponent)
+					{
+						editorComponent->inputArea._position = r._position;
+						editorComponent->inputArea._size = r._size;
+					}
 				}
 			}
 		}
@@ -113,7 +119,7 @@ namespace Wyrd::Editor
 
 			renderer.Clear(0.1f, 0.1f, 0.1f);
 
-			//_GridGizmo->Render(ts, renderer);
+			_GridGizmo->Render(ts, renderer);
 
 			if (_Scene != nullptr)
 			{
@@ -123,7 +129,7 @@ namespace Wyrd::Editor
 					SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
 				
 					Wyrd::DrawSpriteCommand cmd{};
-					cmd.position = transform->position;
+					cmd.position = transform->position + sprite->position;
 					cmd.size = sprite->size;
 					cmd.rotation = transform->rotation;
 					cmd.rotationOrigin = { 0, 0 };// transform->rotationOrigin;
@@ -135,6 +141,32 @@ namespace Wyrd::Editor
 				
 					renderer.Submit(cmd);
 				}
+
+				for (Entity e : EntitySet<EditorComponent>(*_Scene.get()))
+				{
+					EditorComponent* editorComp = _Scene->Get<EditorComponent>(e);
+					Wyrd::DrawRectCommand cmd{};
+					cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
+					cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
+					cmd.position = { editorComp->inputArea._position.x, editorComp->inputArea._position.y };
+					cmd.rotationOrigin = { 0.0f, 0.0f };
+					cmd.rotation = 0.0f;
+					cmd.size = { 64.0f, 64.0f };
+					cmd.thickness = 2.0f;
+
+					if (e == _SelectedEntity)
+					{
+						cmd.color = { 1.0f, 0.0f, 1.0f, 1.0f };
+					}
+					else
+					{
+						cmd.color = { 1.0f, 1.0f, 0.0f, 1.0f };
+					}
+
+					renderer.Submit(cmd);
+					renderer.Flush();
+				}
+				
 				//
 				//for (Entity e : EntitySet<Transform2DComponent, TextComponent>(*_Scene.get()))
 				//{
@@ -159,6 +191,7 @@ namespace Wyrd::Editor
 			/* Gizmos */
 			if (_SelectedEntity != ENTITY_INVALID)
 			{
+
 				//CameraComponent* cameraComp = _Scene->Get<CameraComponent>(_SelectedEntity);
 				//if (cameraComp != nullptr)
 				//{
@@ -174,8 +207,8 @@ namespace Wyrd::Editor
 				//
 				//	renderer.Submit(cmd);
 				//}
-				//
-				//_Translation2DGizmo->Render(ts, renderer);
+				
+				_TransformationGizmos[_CurrentTransformationGizmoIndex]->Render(ts, renderer);
 			}
 
 			renderer.Flush();
@@ -198,7 +231,7 @@ namespace Wyrd::Editor
 		dispatcher.Dispatch<KeyPressedEvent>(WYRD_BIND_EVENT_FN(SceneViewer::OnKeyPressedEvent), nullptr);
 		dispatcher.Dispatch<KeyReleasedEvent>(WYRD_BIND_EVENT_FN(SceneViewer::OnKeyReleasedEvent), nullptr);
 
-		_Translation2DGizmo->OnEvent(event);
+		_TransformationGizmos[_CurrentTransformationGizmoIndex]->OnEvent(event);
 
 		/* Set camera settings */
 		if (_Scene != nullptr)
@@ -213,8 +246,33 @@ namespace Wyrd::Editor
 		static bool showStats = false;
 		static bool showGizmoSettings = false;
 
+		/* get the current cursor screen pos for y to determine the final size of the toolbars */
+		float menuBarHeight = ImGui::GetCursorScreenPos().y;
+
+		const ImVec2 size(16.0f, 16.0f);
+
+		/* here we want to create a simple toolbox to show the different transformation tools */
+		for (int i = 0; i < _TransformationGizmos.size(); i++)
+		{
+			ImGui::PushID(_TransformationGizmos[i].get());
+			if (ImGui::IconButton(_TransformationGizmoIcons[i], 1, _CurrentTransformationGizmoIndex == i, size) == true)
+			{
+				_CurrentTransformationGizmoIndex = i;
+			}
+			ImGui::SameLine();
+			ImGui::PopID();
+		}
+
+		if (ImGui::IconButton(_pointSelectBtnIcon, 1, false, size) == true)
+		{
+
+		}
+		ImGui::SameLine();
+
 		/* build the top toolbar */
 		ImGui::Checkbox("show stats", &showStats);
+
+		menuBarHeight = ImGui::GetCursorScreenPos().y - menuBarHeight;
 
 		/* calculate the mouse offset for events */
 		_mouseOffset = { ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y };

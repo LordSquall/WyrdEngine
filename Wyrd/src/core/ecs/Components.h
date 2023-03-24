@@ -25,7 +25,7 @@ namespace Wyrd
         char name[255];
         Wyrd::UID uid;
 
-        MetaDataComponent() : name(), uid() {} 
+        MetaDataComponent() : name(), uid(UID()) {} 
     };
 
 
@@ -35,7 +35,7 @@ namespace Wyrd
         float rotation;
         Wyrd::Vector2 scale;
 
-        Transform2DComponent() : position(0.0,0.0), rotation(0.0f), scale(0.0,0.0) {} 
+        Transform2DComponent() : position(0,0), rotation(0.0f), scale(1,1) {} 
     };
 
 
@@ -48,7 +48,7 @@ namespace Wyrd
         Wyrd::Vector2 tiling;
         Wyrd::Color color;
 
-        SpriteComponent() : enabled(false), sprite(), position(0.0,0.0), size(0.0,0.0), tiling(0.0,0.0), color(1,1,1,1) {} 
+        SpriteComponent() : enabled(true), sprite(UID()), position(0,0), size(64,64), tiling(1,1), color(1,1,1,1) {} 
     };
 
 
@@ -59,7 +59,7 @@ namespace Wyrd
         int32_t instanceId;
         ScriptPropertiesMapRef properties;
 
-        ScriptComponent() : enabled(false), scriptId(), instanceId(0), properties(nullptr) {} 
+        ScriptComponent() : enabled(true), scriptId(UID()), instanceId(0), properties(nullptr) {} 
     };
 
 
@@ -83,7 +83,7 @@ namespace Wyrd
         float aspectRatio;
         Wyrd::Vector2 size;
 
-        CameraComponent() : viewport(0,0,0,0), aspectRatio(0.0f), size(0.0,0.0) {} 
+        CameraComponent() : viewport(0,0,0,0), aspectRatio(1.0f), size(0,0) {} 
     };
 
 };

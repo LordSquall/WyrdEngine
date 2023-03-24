@@ -89,7 +89,7 @@ namespace Wyrd
                             if (prop.second->is<jsonxx::Object>())
                             {
                                 const jsonxx::Object& v = prop.second->get<jsonxx::Object>();
-                                Vector2 d(v.get<jsonxx::Number>("x"), v.get<jsonxx::Number>("y"));
+                                Vector2 d((float)v.get<jsonxx::Number>("x"), (float)v.get<jsonxx::Number>("y"));
                                 scriptProp->Set(&d);
                             }
                         }
@@ -98,7 +98,7 @@ namespace Wyrd
                             if (prop.second->is<jsonxx::Object>())
                             {
                                 const jsonxx::Object& v = prop.second->get<jsonxx::Object>();
-                                Vector3 d(v.get<jsonxx::Number>("x"), v.get<jsonxx::Number>("y"), v.get<jsonxx::Number>("z"));
+                                Vector3 d((float)v.get<jsonxx::Number>("x"), (float)v.get<jsonxx::Number>("y"), (float)v.get<jsonxx::Number>("z"));
                                 scriptProp->Set(&d);
                             }
                         }
@@ -108,7 +108,7 @@ namespace Wyrd
                             {
                                 const jsonxx::String& v = prop.second->get<jsonxx::String>();
                                 Wyrd::UID textureUID = Wyrd::UID(v);
-                                scriptProp->Set(Resources::Get().Textures[textureUID].get());
+                                scriptProp->Set(&textureUID);
                             }
                         }
                     }

@@ -50,6 +50,21 @@ namespace WyrdAPI
             }
         }
 
+        public T AddComponent<T>() where T : Component, new()
+        {
+            if (_components.ContainsKey(typeof(T)))
+            {
+                return (T)_components[typeof(T)];
+            }
+            else
+            {
+                _components[typeof(T)] = Scene.AddComponent<T>(this);
+                _components[typeof(T)].SetEntity(_NativeID);
+
+                return (T)_components[typeof(T)];
+            }
+        }
+
         private Dictionary<Type, Component> _components = new Dictionary<Type, Component>();
 
         public override string ToString()

@@ -69,7 +69,7 @@ namespace Wyrd::Editor
 		if (_workspaceService->GetCurrentProject() != nullptr)
 		{
 			/* capture the width of the child area to determine the column count */
-			layoutSettings.itemColumnCnt = (int)(ImGui::GetContentRegionAvail().x / layoutSettings.itemGroupSize);
+			//layoutSettings.itemColumnCnt = (int)(ImGui::GetContentRegionAvail().x / layoutSettings.itemGroupSize);
 
 			ImGui::Text("Search: ");
 			ImGui::SameLine(); 

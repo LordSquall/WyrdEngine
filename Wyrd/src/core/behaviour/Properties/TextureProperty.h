@@ -14,18 +14,10 @@ namespace Wyrd
 		virtual void Set(void* data) override;
 		virtual void Set(void* object, void* data) override;
 
-		inline Texture* GetValue() { return *_Value; }
-		inline void SetValue(Texture* value) { *_Value = value; };
-
-		virtual void Resolve(Scene& scene) override;
-
-		inline UID* GetValueUID() { return &_ValueUID; }
-		inline void SetValueUID(UID* uid) { _ValueUID = *uid; }
+		inline UID GetValue() { return _Value; }
+		inline void SetValue(UID value) { _Value = value; };
 
 	private:
-		UID _ValueUID;
-
-	private:
-		SCRIPT_PROPERTY_FACTORY_SETUP(TextureProperty, Texture**, 0, WyrdAPI.Texture);
+		SCRIPT_PROPERTY_FACTORY_SETUP(TextureProperty, UID, UID(), WyrdAPI.Texture);
 	};
 }

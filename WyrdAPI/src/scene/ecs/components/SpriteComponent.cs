@@ -15,7 +15,7 @@ namespace WyrdAPI
       private bool _enabled;
 
       [MarshalAs(UnmanagedType.Struct)]
-      private UID _sprite;
+      private Texture _sprite;
 
       [MarshalAs(UnmanagedType.Struct)]
       private Vector2 _position;
@@ -41,7 +41,7 @@ namespace WyrdAPI
          }
       }
 
-      public UID Sprite
+      public Texture Sprite
       {
          get { return _sprite; }
          set 
@@ -105,7 +105,7 @@ namespace WyrdAPI
          [DllImport("WyrdCAPI")]
          public static extern IntPtr SpriteComponent_SetEnabled(IntPtr scenePtr, UInt64 entity, bool enabled);
          [DllImport("WyrdCAPI")]
-         public static extern IntPtr SpriteComponent_SetSprite(IntPtr scenePtr, UInt64 entity, UID sprite);
+         public static extern IntPtr SpriteComponent_SetSprite(IntPtr scenePtr, UInt64 entity, Texture sprite);
          [DllImport("WyrdCAPI")]
          public static extern IntPtr SpriteComponent_SetPosition(IntPtr scenePtr, UInt64 entity, Vector2 position);
          [DllImport("WyrdCAPI")]

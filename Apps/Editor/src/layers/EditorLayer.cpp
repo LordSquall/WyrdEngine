@@ -17,6 +17,7 @@
 #include "views/HierarchyView/HierarchyView.h"
 #include "views/Dialogs/PreferencesDialog.h"
 #include "views/Dialogs/NewProjectDialog.h"
+#include "views/SystemsDebugView/SystemsDebugView.h"
 #include "platform/OpenGL/imgui_opengl_renderer.h"
 #include "support/ImGuiUtils.h"
 
@@ -58,7 +59,8 @@ namespace Wyrd::Editor
 		_views["Asset Viewer"] = std::make_shared<AssetViewer>(this);
 		_views["Output"] = std::make_shared<OutputView>(this);
 		_views["Export View"] = std::make_shared<ExportView>(this);
-
+		_views["Systems Debug"] = std::make_shared<SystemsDebugView>(this);
+		
 		/* cache services */
 		_eventService = ServiceManager::Get<EventService>();
 		_workspaceService = ServiceManager::Get<WorkspaceService>();
@@ -73,6 +75,7 @@ namespace Wyrd::Editor
 		/* cache icon resources */
 		_playButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "sim_play");
 		_stopButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "sim_stop");
+		_pauseButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "sim_pause");
 	}
 
 	EditorLayer::~EditorLayer()
@@ -219,10 +222,10 @@ namespace Wyrd::Editor
 		ImGui_ImplOpenGL3_Init("#version 410");
 
 		/* attempt to load the default project otherwise asked the user to create a new one */
-		//if (_workspaceService->LoadProject(_settingsService->GetSetting(CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT, "")) == false)
-		//{
-		_dialogService->OpenDialog(std::make_shared<NewProjectDialog>(this));
-		//}
+		if (_workspaceService->LoadProject(_settingsService->GetSetting(CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT, "")) == false)
+		{
+			_dialogService->OpenDialog(std::make_shared<NewProjectDialog>(this));
+		}
 
 		/* register for events */
 		_eventService->Subscribe(Events::EventType::CloseEditor, [this](Events::EventArgs& args)
@@ -393,17 +396,22 @@ namespace Wyrd::Editor
 
 		ImGui::EndMainMenuBar();
 
-		ImGui::SetCursorPosX((ImGui::GetWindowWidth() - 64.0f) * 0.5f);
-
 		/* primary control bar */
 		const ImVec2 size(16.0f, 16.0f);
+
+		ImGui::SetCursorPosX((ImGui::GetWindowWidth() - 64.0f) * 0.5f);
 
 		if (ImGui::IconButton(_playButtonIcon, 1, !_simulationService->IsRunning() && _simulationService->IsAvailable(), size) == true)
 		{
 			_simulationService->Start();
 		}
 		ImGui::SameLine();
-		if (ImGui::IconButton(_stopButtonIcon, 2, _simulationService->IsRunning() && _simulationService->IsAvailable(), size) == true)
+		if (ImGui::IconButton(_pauseButtonIcon, 2, _simulationService->IsRunning() && _simulationService->IsAvailable(), size) == true)
+		{
+			_simulationService->TogglePause();
+		}
+		ImGui::SameLine();
+		if (ImGui::IconButton(_stopButtonIcon, 3, _simulationService->IsRunning() && _simulationService->IsAvailable(), size) == true)
 		{
 			_simulationService->Stop();
 		}

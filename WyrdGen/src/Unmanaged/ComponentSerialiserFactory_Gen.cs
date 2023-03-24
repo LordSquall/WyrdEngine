@@ -128,9 +128,20 @@ namespace WyrdGen
                     content.AppendLine("    {");
                     foreach (Data data in component.Data)
                     {
-                        if (data.HeapOnly == false)
+                        if (data.HeapOnly && data.CustomSerialisation)
                         {
-                            content.AppendLine("        obj << \"" + data.Name + "\" << data->" + data.Name + ";");
+                            content.AppendLine($"        CustomSerialisation_{component.ShortName}_{data.Name}(obj, data);");
+                        }
+                        else if (data.HeapOnly == false)
+                        {
+                            if (data.CustomSerialisation)
+                            {
+                                content.AppendLine($"        CustomSerialisation_{component.ShortName}_{data.Name}(obj, data);");
+                            }
+                            else
+                            {
+                                content.AppendLine("        obj << \"" + data.Name + "\" << data->" + data.Name + ";");
+                            }
                         }
                     }
 
@@ -156,7 +167,11 @@ namespace WyrdGen
                     content.AppendLine("    {");
                     foreach (Data data in component.Data)
                     {
-                        if (data.HeapOnly == false)
+                        if (data.HeapOnly && data.CustomSerialisation)
+                        {
+                            content.AppendLine($"        CustomDeserialisation_{component.ShortName}_{data.Name}(data, obj);");
+                        }
+                        else if (data.HeapOnly == false)
                         {
                             // retrieve json type mapping
                             JsonType jsonType = _TypeMappings[data.Type].Json;
@@ -171,8 +186,15 @@ namespace WyrdGen
                                 defaultValue = "Decode" + data.Type + "(\"" + data.Default + "\")";
                             }
 
-                            // content.AppendLine("        data->" + data.Name + " " + assignementOperator + " TryGetOrDefault<jsonxx::" + jsonType.Type + ">(obj, \"" + data.Name + "\"" + defaultValue + ");"); ;
-                            content.AppendLine("        data->" + data.Name + " " + assignementOperator + " obj.get<jsonxx::" + jsonType.Type + ">(\"" + data.Name + "\", " + defaultValue + ");"); ;
+                            if (data.CustomSerialisation)
+                            {
+                                content.AppendLine($"        CustomDeserialisation_{component.ShortName}_{data.Name}(data, obj);");
+                            }
+                            else
+                            {
+                                // content.AppendLine("        data->" + data.Name + " " + assignementOperator + " TryGetOrDefault<jsonxx::" + jsonType.Type + ">(obj, \"" + data.Name + "\"" + defaultValue + ");"); ;
+                                content.AppendLine("        data->" + data.Name + " " + assignementOperator + " obj.get<jsonxx::" + jsonType.Type + ">(\"" + data.Name + "\", " + defaultValue + ");"); ;
+                            }
                         }
                     }
                     

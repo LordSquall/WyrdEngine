@@ -1,7 +1,7 @@
 <ComponentDefinitions>
   
   <Component name="MetaDataComponent" shortName="MetaData" comment="Default Component to all entity to provide basic ID information" >
-    <Data name="name" type="String" length="255" default="Unknown Entity"/>
+    <Data name="name" type="String" length="255"/>
     <Data name="uid" type="UID" default="UID()"/>
   </Component>
 
@@ -11,9 +11,9 @@
     <Data name="scale" type="Vec2" default="1,1"/>
   </Component>
 
-  <Component name="SpriteComponent" shortName="Sprite" >
+  <Component name="SpriteComponent" shortName="Sprite">
     <Data name="enabled" type="Boolean" default="true" />
-    <Data name="sprite" type="UID" default="UID()"/>
+    <Data name="sprite" type="Texture" default="UID()"/>
     <Data name="position" type="Vec2" default="0,0"/>
     <Data name="size" type="Vec2" default="64,64"/>
     <Data name="tiling" type="Vec2" default="1,1"/>

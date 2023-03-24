@@ -55,6 +55,7 @@ namespace Wyrd::Editor
 
 		std::shared_ptr<Icon> _playButtonIcon;
 		std::shared_ptr<Icon> _stopButtonIcon;
+		std::shared_ptr<Icon> _pauseButtonIcon;
 
 		std::shared_ptr<EditorViewBase> _mouseEventOwner;
 

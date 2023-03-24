@@ -132,44 +132,6 @@ namespace Wyrd::Editor
 			}
 		}
 
-		/* we need to allocate the data maps on each of the script components to store the property data */
-		//for (Entity e : EntitySet<ScriptComponent>(scene))
-		//{
-		//	ScriptComponent* scriptComponent = scene.Get<ScriptComponent>(e);
-		//	if (scriptComponent)
-		//	{
-		//		// Initial all the data required for the assigned script
-		//		auto scriptClass = Application::Get().GetBehaviour().GetCustomClassByUID(scriptComponent->scriptId);
-		//
-		//		if (scriptClass != nullptr)
-		//		{
-		//			scriptComponent->properties = scriptClass->GetPropertiesCopy();
-		//		}
-		//		else
-		//		{
-		//			// TODO: Error Case: Script no longer exists
-		//		}
-		//	}
-		//}
-
-		/* set the main camera */
-		if (scene.GetPrimaryCameraEntity() != ENTITY_INVALID)
-		{
-			//CameraComponent* cameraComponent = scene.Get<CameraComponent>(scene.GetPrimaryCameraEntity());
-			//if (cameraComponent != nullptr)
-			//{
-			//	ServiceManager::Get<EventService>()->Publish(Editor::Events::EventType::SetSceneCamera, std::make_unique<Events::SetSceneCameraArgs>(scene.GetPrimaryCameraEntity(), cameraComponent));
-			//}
-			//else
-			//{
-			//	WYRD_ERROR("Selected Camera Entity missing Camera component.");
-			//}
-		}
-		else
-		{
-			WYRD_ERROR("Unable to find Selected Camera Entity.");
-		}
-
 		return result;
 	}
 

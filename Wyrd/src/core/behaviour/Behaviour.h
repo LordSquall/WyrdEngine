@@ -8,6 +8,7 @@
 #include "core/UID.h"
 #include "core/behaviour/BehaviourInput.h"
 #include "core/ecs/ECS.h"
+#include "core/interfaces/IResourceManager.h"
 #include "core/interfaces/ISceneManager.h"
 
 #include <mono/metadata/object-forward.h>
@@ -129,9 +130,16 @@ namespace Wyrd
 		 * @param uid 
 		 * @return 
 		*/
-		std::shared_ptr<ScriptedClass> GetCustomClassByUID(UID& uid);
+		std::shared_ptr<ScriptedClass> GetCustomClassByUID(const UID& uid);
 
 		inline void SetSceneManager(ISceneManager* sceneManager) { _SceneManager = sceneManager; }
+
+#ifdef WYRD_DEBUG
+		inline const std::map<std::string, std::shared_ptr<ScriptedClass>>& GetScriptedClasses() { return _ScriptedClasses; }
+		inline const std::map<std::string, std::shared_ptr<ScriptedClass>>& GetScriptedCustomClasses() { return _ScriptedCustomClasses; }
+		inline const std::map<UID, std::vector<std::shared_ptr<ScriptedCustomObject>>>& GetESCScriptedCustomObjects() { return _ECSScriptedCustomObjects; };
+#endif
+
 
 	private:
 

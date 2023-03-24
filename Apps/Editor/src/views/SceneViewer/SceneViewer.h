@@ -3,6 +3,7 @@
 #include "events/EditorEvents.h"
 #include "services/ServiceManager.h"
 #include "datamodels/OrthographicCameraController.h"
+#include "gizmos/Gizmo.h"
 
 #include <core/renderer/Buffer.h>
 #include <core/renderer/Shader.h>
@@ -64,10 +65,17 @@ namespace Wyrd::Editor
 		std::shared_ptr<OrthographicCameraController>	_CameraController;
 		std::shared_ptr<Shader>							_Shader;
 
+		// selection icons
+		std::shared_ptr<Icon> _pointSelectBtnIcon;	
+
+		// translation icons
+		std::vector<std::shared_ptr<Icon>> _TransformationGizmoIcons;
+
+		int _CurrentTransformationGizmoIndex;
+		std::vector<std::unique_ptr<Gizmo>> _TransformationGizmos;
 
 		std::unique_ptr<GridGizmo>						_GridGizmo;
-		std::unique_ptr<Translation2DGizmo>				_Translation2DGizmo;
-		std::shared_ptr<Shader>							_GizmoShader;
+		std::shared_ptr<Shader>						_GizmoShader;
 
 		Entity	_SelectedEntity;
 

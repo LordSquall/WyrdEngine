@@ -74,7 +74,7 @@ namespace Wyrd
 
     void ComponentSerialiserFactory::Deserialise(jsonxx::Object & obj, Wyrd::MetaDataComponent* data)
     {
-        data->name << obj.get<jsonxx::String>("name", DecodeString("Unknown Entity"));
+        data->name << obj.get<jsonxx::String>("name", DecodeString(""));
         data->uid << obj.get<jsonxx::String>("uid", UID());
     }
 

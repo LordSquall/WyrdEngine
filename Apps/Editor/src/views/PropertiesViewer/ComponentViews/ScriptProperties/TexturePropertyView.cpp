@@ -3,6 +3,7 @@
 #include <core/Log.h>
 #include <core/Application.h>
 #include <core/behaviour/Behaviour.h>
+#include <core/behaviour/Properties/TextureProperty.h>
 
 /* local includes */
 #include "TexturePropertyView.h"
@@ -13,28 +14,29 @@ namespace Wyrd::Editor
 {
 	void TexturePropertyView::OnEditorRender(const std::shared_ptr<ScriptProperty>& prop, void* value)
 	{
-		Texture** indirectTexture = (Texture**)value;
+		// cast the property
+		TextureProperty* textureProperty = dynamic_cast<TextureProperty*>(prop.get());
 
-		if (*indirectTexture == nullptr)
+		UID currentUID = textureProperty->GetValue();
+
+		if (!currentUID.isValid())
 		{
 			ImGui::Text("TexturePropertyView: Not Set");
 		}
 		else
 		{
-			ImGui::Text("TexturePropertyView: %s", (*indirectTexture)->GetUID().str().c_str());
+			// check we have a value texture in resources
+			Texture* texture = Resources::Get().Textures[currentUID].get();
 
-			Texture* texture = (*indirectTexture);
-				
+			ImGui::Text("TexturePropertyView: %s", currentUID.str().c_str());
 			ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2((float)texture->GetWidth(), (float)texture->GetHeight()));
-		}
 
+		}
 		if (ImGui::BeginDragDropTarget())
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_TEXTURE"))
 			{
-				UID* textureUID = (UID*)payload->Data;
-
-				(*((Texture**)value)) = Resources::Get().Textures[*textureUID].get();
+				textureProperty->Set(payload->Data);
 			}
 			ImGui::EndDragDropTarget();
 		}

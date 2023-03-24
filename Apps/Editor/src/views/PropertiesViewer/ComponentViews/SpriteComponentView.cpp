@@ -21,9 +21,9 @@ namespace Wyrd::Editor
 		/* Cast to the correct component */
 		SpriteComponent* sprite = (SpriteComponent*)data;
 		
-		//ImGui::InputFloat2("Pos ", (float*)&sprite->position);
+		ImGui::InputFloat2("Pos ", (float*)&sprite->position);
 		ImGui::InputFloat2("Size", (float*)&sprite->size);
-		//ImGui::InputFloat2("Tiling", (float*)&sprite->tiling);
+		ImGui::InputFloat2("Tiling", (float*)&sprite->tiling);
 		
 		//TODO - need to move to util function
 		ImGui::Text("Texture");

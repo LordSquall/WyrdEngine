@@ -38,6 +38,9 @@ namespace WyrdGen
 
         [XmlAttribute("generateMaxLengthDefines")]
         public bool GenerateMaxLengthDefines;
+
+        [XmlAttribute("wrapperType")]
+        public String WrapperType;
     }
 
     public class JsonType

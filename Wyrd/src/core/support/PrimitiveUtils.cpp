@@ -149,4 +149,16 @@ namespace Wyrd {
 
 		return resolution * 6;
 	}
+
+
+	void PrimitiveUtils::UpdateColor(std::vector<Vertex2D>& vertices, uint32_t offset, uint32_t count, Color color)
+	{
+		for (int i = 0; i < count; ++i)
+		{
+			vertices[(int)offset + i].r = color.r;
+			vertices[(int)offset + i].g = color.g;
+			vertices[(int)offset + i].b = color.b;
+			vertices[(int)offset + i].a = color.a;
+		}
+	}
 }

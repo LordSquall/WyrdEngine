@@ -9,6 +9,7 @@
 
 namespace Wyrd
 {
+	typedef std::map<std::string, std::pair<MonoMethod*, MonoMethod*>> PropertyMap;
 	class WYRD_LIBRARY_API ScriptedCustomObject
 	{
 	public:
@@ -20,6 +21,8 @@ namespace Wyrd
 
 		MonoMethod* GetMethod(const std::string name);
 
+		inline const PropertyMap& GetProperties() const { return _Properties; }
+
 	public:
 		MonoClass** Class;
 		MonoObject* Object;
@@ -27,7 +30,7 @@ namespace Wyrd
 		
 	private:
 		std::string _Name;
-		std::map<std::string, std::pair<MonoMethod*, MonoMethod*>> _Properties;
+		PropertyMap _Properties;
 		std::map<std::string, MonoMethod*> _Methods;
 	};
 }

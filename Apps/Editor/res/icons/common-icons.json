@@ -52,6 +52,27 @@
       "height": 128,
       "x": 128,
       "y": 896
+    },
+    {
+      "name": "gizmo_2dtranslate",
+      "width": 128,
+      "height": 128,
+      "x": 0,
+      "y": 768
+    },
+    {
+      "name": "gizmo_2drotate",
+      "width": 128,
+      "height": 128,
+      "x": 128,
+      "y": 768
+    },
+    {
+      "name": "gizmo_2dscale",
+      "width": 128,
+      "height": 128,
+      "x": 256,
+      "y": 768
     }
   ]
 }

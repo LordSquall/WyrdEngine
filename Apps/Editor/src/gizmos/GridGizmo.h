@@ -22,7 +22,8 @@ namespace Wyrd::Editor
 		GridGizmo(SceneViewer* sceneViewer);
 		~GridGizmo();
 
-		void Render(Timestep ts, Renderer& renderer);
+		void Render(Timestep ts, Renderer& renderer) override;
+		void OnEvent(Event& event) override;
 
 		void OnSettingsChanged(Events::EventArgs& args);
 
@@ -31,6 +32,9 @@ namespace Wyrd::Editor
 
 		inline void SetColor(Color& color) { _Color = color; }
 		inline const Color& GetColor() const { return _Color; }
+
+		bool OnMouseMovedEvent(MouseMovedEvent& e, void* data);
+		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data);
 
 	private:
 		void BuildGrid();
@@ -43,5 +47,6 @@ namespace Wyrd::Editor
 
 		bool _Enabled;
 		Color _Color;
+		glm::vec4 cursorPosition;
 	};
 }

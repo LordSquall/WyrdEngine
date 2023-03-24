@@ -8,6 +8,7 @@
 #include "core/renderer/Texture.h"
 #include "core/behaviour/ScriptedClass.h"
 #include "core/behaviour/ScriptedCustomObject.h"
+#include "core/behaviour/ResourceDescriptors.h"
 #include "core/ecs/ECS.h"
 #include "core/ecs/Components.h"
 #include "core/ecs/EntitySet.h"
@@ -91,6 +92,11 @@ namespace Wyrd
 		_PhysicsSubsystem = Application::Get().GetPhysicsPtr();
 		_ResourcesSubsystem = Application::Get().GetResourcesPtr();
 
+		/* setup Manager proxy VM pointer objects */
+		if (MonoUtils::SetProperty((MonoImage*)_CoreImage, "WyrdAPI", "BehaviourManagerProxy", "NativePtr", nullptr, { &_BehaviourSubsystem }) == false) { WYRD_ERROR("Failed to set BehaviourManager::NativePtr!"); return; }
+		if (MonoUtils::SetProperty((MonoImage*)_CoreImage, "WyrdAPI", "PhysicsManagerProxy", "NativePtr", nullptr, { &_PhysicsSubsystem }) == false) { WYRD_ERROR("Failed to set PhysicsManager::NativePtr!"); return; }
+		if (MonoUtils::SetProperty((MonoImage*)_CoreImage, "WyrdAPI", "ResourceManagerProxy", "NativePtr", nullptr, { &_ResourcesSubsystem }) == false) { WYRD_ERROR("Failed to set ResourceManager::NativePtr!"); return; }
+
 		/* setup the interface pointers for all external events */
 		if (MonoUtils::SetProperty((MonoImage*)_CoreImage, "WyrdAPI", "SceneManager", "NativePtr", nullptr, { &_SceneManager }) == false)
 		{
@@ -109,6 +115,22 @@ namespace Wyrd
 				WYRD_ERROR("Failed to set Scene::NativePtr!");
 				return;
 			}
+
+			/* populate the texture resources in the VM */
+			for (auto& texture : _ResourcesSubsystem->Textures)
+			{
+				ManagedTextureDesc mtd;
+				mtd.nativePtr = (void*)&texture.first;
+				mtd.guid = texture.first.bytes();
+				mtd.width = texture.second->GetWidth();
+				mtd.height = texture.second->GetHeight();
+
+				std::vector<void*> args;
+				args.push_back(&mtd);
+
+				MonoUtils::InvokeMethod((MonoImage*)_CoreImage, "WyrdAPI", "ResourceManagerProxy", "CacheTexture", nullptr, { args });
+			}
+
 
 			/** 
 			* We add each of the pools types to the Managed Scene. This will link the Managed classes to the unmanaged pool
@@ -331,7 +353,7 @@ namespace Wyrd
 		return _ScriptedCustomClasses[name]; 
 	}
 
-	std::shared_ptr<ScriptedClass> Behaviour::GetCustomClassByUID(UID& uid)
+	std::shared_ptr<ScriptedClass> Behaviour::GetCustomClassByUID(const UID& uid)
 	{
 		for (auto& sc : _ScriptedCustomClasses)
 		{

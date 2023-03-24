@@ -45,8 +45,8 @@ namespace Wyrd::Editor
 		~TranslationGizmo();
 
 		void Render(Timestep ts, Renderer& renderer) override;
+		void OnEvent(Event& event) override;
 
-		void OnEvent(Event& event);
 		bool OnMouseMovedEvent(MouseMovedEvent& e, void* data);
 		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data);
 		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e, void* data);

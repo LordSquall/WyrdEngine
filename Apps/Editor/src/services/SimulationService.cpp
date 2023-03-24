@@ -78,10 +78,15 @@ namespace Wyrd::Editor
 		_IsRunning = false;
 	}
 
+	void SimulationService::TogglePause()
+	{
+		_IsPaused = !_IsPaused;
+	}
+
 	void SimulationService::Update(Timestep ts)
 	{
 		/* we only action anything in the function if we are in running mode */
-		if (_IsRunning == true)
+		if (_IsRunning == true && _IsPaused == false)
 		{
 			auto sceneViewer = std::dynamic_pointer_cast<SceneViewer>(_SceneViewer);
 

@@ -50,18 +50,70 @@ namespace Wyrd::Editor
 		/* calculate the different between the camera viewport and the sceneviewer to set the scalling */
 		float diff = _CameraController->GetSize() / std::min<float>(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
 
-		Wyrd::DrawVertex2DCommand cmd{};
-		cmd.type = 1;
-		cmd.position = { 0.0f, 0.0f };
-		cmd.vertices = &_Vertices;
-		cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-		cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
-		cmd.color = { 0.2f, 0.2f, 0.2f, 1.0f };
-		cmd.drawType = RendererDrawType::Triangles;
+		{
+			Wyrd::DrawVertex2DCommand cmd{};
+			cmd.type = 1;
+			cmd.position = { 0.0f, 0.0f };
+			cmd.vertices = &_Vertices;
+			cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
+			cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
+			cmd.color = { 0.2f, 0.2f, 0.2f, 1.0f };
+			cmd.drawType = RendererDrawType::Triangles;
+			
+			renderer.Submit(cmd);
+			renderer.Flush();
+		}
+		{
+			Wyrd::DrawRectCommand cmd{};
+			cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
+			cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
+			cmd.position = { cursorPosition.x, cursorPosition.y };
+			cmd.rotationOrigin = { 0.0f, 0.0f };
+			cmd.rotation = 0.0f;
+			cmd.size = { 64.0f, 64.0f };
+			cmd.thickness = 4.0f;
+			cmd.color = { 0.7f, 0.7f, 0.7f, 1.0f };
 
-		renderer.Submit(cmd);
+			renderer.Submit(cmd);
+			renderer.Flush();
+		}
+	}
 
-		renderer.Flush();
+	void GridGizmo::OnEvent(Event& event)
+	{
+		EventDispatcher dispatcher(event);
+		dispatcher.Dispatch<MouseMovedEvent>(WYRD_BIND_EVENT_FN(GridGizmo::OnMouseMovedEvent), nullptr);
+		dispatcher.Dispatch<MouseButtonPressedEvent>(WYRD_BIND_EVENT_FN(GridGizmo::OnMouseButtonPressedEvent), nullptr);
+
+	}
+
+	bool GridGizmo::OnMouseMovedEvent(MouseMovedEvent& e, void* data)
+	{
+		glm::vec4 worldPos = glm::vec4(_SceneViewer->Convert2DToWorldSpace({ e.GetX(), e.GetY() }), -1.0f, 1.0f);
+
+		cursorPosition.x = floor((worldPos.x / 64.0f)) * 64.0f;
+		cursorPosition.y = floor((worldPos.y / 64.0f)) * 64.0f;
+
+		return true;
+	}
+
+	bool GridGizmo::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data)
+	{
+		//glm::vec4 worldPos = glm::vec4(_SceneViewer->Convert2DToWorldSpace({ e.GetPositionX(), e.GetPositionY() }), -1.0f, 1.0f);
+		//
+		//glm::vec3 cellPos = { floor((worldPos.x / 64.0f)) * 64.0f, floor((worldPos.y / 64.0f)) * 64.0f, 1.0f };
+		//
+		//std::shared_ptr<Scene> scene = _SceneViewer->GetScene();
+		//
+		//Entity ent = scene->CreateEntity();
+		//scene->AssignComponent<SpriteComponent>(ent);
+		//
+		//
+		//auto transform = scene->Get<Transform2DComponent>(ent);
+		//transform->position.x = cellPos.x;
+		//transform->position.y = cellPos.y;
+
+		return true;
 	}
 
 	void GridGizmo::BuildGrid()

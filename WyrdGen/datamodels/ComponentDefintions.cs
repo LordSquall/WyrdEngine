@@ -20,6 +20,9 @@ namespace WyrdGen
 
         [XmlAttribute("default")]
         public String Default { get; set; }
+
+        [XmlAttribute("customSerialisation")]
+        public bool CustomSerialisation { get; set; }
     }
 
     public class Component

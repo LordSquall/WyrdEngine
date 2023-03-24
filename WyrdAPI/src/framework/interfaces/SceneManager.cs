@@ -17,7 +17,6 @@ namespace WyrdAPI
         #region P/Invoke functions
 
         [DllImport("WyrdCAPI")]
-
         public static extern IntPtr SceneManager_ChangeScene(IntPtr scenePtr, String sceneName);
 
         #endregion

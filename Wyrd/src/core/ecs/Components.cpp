@@ -7,8 +7,5 @@
 
 namespace Wyrd
 {
-	//glm::mat4 Transform2DComponent::CalculateModelMatrix()
-	//{
-	//	return glm::translate(glm::mat4(1.0), glm::vec3(position, 0.0f));
-	//}
+
 }

@@ -19,7 +19,7 @@ namespace Wyrd::Editor
 	class SimulationService : public IService
 	{
 	public:
-		SimulationService() : _IsRunning(false), _IsAvailable(true), _pendingRebuild(false){}
+		SimulationService() : _IsRunning(false), _IsPaused(false), _IsAvailable(true), _pendingRebuild(false) {}
 		~SimulationService() {}
 
 	public:
@@ -33,6 +33,7 @@ namespace Wyrd::Editor
 	public:
 		void Start();
 		void Stop();
+		void TogglePause();
 		void Update(Timestep ts);
 
 		void OnSceneOpenedEvent(Events::EventArgs& args);
@@ -53,6 +54,7 @@ namespace Wyrd::Editor
 
 	private:
 		bool _IsRunning;
+		bool _IsPaused;
 		bool _IsAvailable;
 		bool _pendingRebuild;
 

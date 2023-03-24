@@ -1,22 +1,33 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WyrdAPI
 {
     [StructLayout(LayoutKind.Sequential)]
-    public class Texture
+    public class Texture : NativeObject
     {
-        public IntPtr NativePtr { get; set; }
+        public Int32 Width;
 
+        public Int32 Height;
+
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
         public Texture() { }
+
+        #region Native Properties
+
+        #endregion
 
         public override string ToString()
         {
-            return "Texture::ToString()";
+            return "Managed Texture Object!";
         }
+
+        [DllImport("WyrdCAPI")]
+        public static extern Int32 Texture_GetWidth(IntPtr nativePtr);
+
+        [DllImport("WyrdCAPI")]
+        public static extern Int32 Texture_GetHeight(IntPtr nativePtr);
     }
 }

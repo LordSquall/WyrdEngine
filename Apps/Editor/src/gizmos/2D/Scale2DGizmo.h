@@ -12,17 +12,14 @@ namespace Wyrd::Editor
 {
 	class SceneViewer;
 
-	class Translation2DGizmo : public Gizmo
+	class Scale2DGizmo : public Gizmo
 	{
 	public:
-		Translation2DGizmo(SceneViewer* sceneViewer);
-		~Translation2DGizmo();
+		Scale2DGizmo(SceneViewer* sceneViewer);
+		~Scale2DGizmo();
 
 		void Render(Timestep ts, Renderer& renderer) override;
-
-		//bool OnMouseMovedEvent(MouseMovedEvent& e);
-		//bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
-		//bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
+		void OnEvent(Event& event) override;
 
 		void OnSelectedEntityChanged(Events::EventArgs& args);
 

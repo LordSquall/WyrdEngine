@@ -121,7 +121,6 @@ namespace Wyrd::Editor
         }
 	}
 
-
     void TranslationGizmo::OnEvent(Event& event)
     {
         if (_Entity != ENTITY_INVALID)
