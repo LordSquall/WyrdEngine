@@ -8,11 +8,9 @@
 extern "C" {
 #endif
 
-LIBRARY_API INT32 Texture_GetWidth(void* nativePtr);
+LIBRARY_API int32_t Texture_GetWidth(void* nativePtr);
 
-LIBRARY_API INT32 Texture_GetHeight(void* nativePtr);
-
-LIBRARY_API BSTR Texture_GetName(void* nativePtr);
+LIBRARY_API int32_t Texture_GetHeight(void* nativePtr);
 
 #ifdef __cplusplus
 }

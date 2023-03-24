@@ -11,8 +11,8 @@ namespace Wyrd
 	{
 		void* nativePtr;
 		std::array<unsigned char, 16> guid;
-		INT32 width;
-		INT32 height;
+		int32_t width;
+		int32_t height;
 	};
 
 }

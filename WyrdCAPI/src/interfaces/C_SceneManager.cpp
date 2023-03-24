@@ -9,5 +9,6 @@ void SceneManager_ChangeScene(void* sceneManagerPtr, const char* sceneName)
 {
 	Wyrd::ISceneManager* sceneManager = (Wyrd::ISceneManager*)sceneManagerPtr;
 
-	sceneManager->ChangeScene(std::string(sceneName));
+	std::string sceneNameStr = sceneName;
+	sceneManager->ChangeScene(sceneNameStr);
 }

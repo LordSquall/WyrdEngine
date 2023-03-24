@@ -53,11 +53,11 @@ namespace Wyrd::Editor
 		{
 			Wyrd::DrawVertex2DCommand cmd{};
 			cmd.type = 1;
-			cmd.position = { 0.0f, 0.0f };
+			cmd.position = Vector2 { 0.0f, 0.0f };
 			cmd.vertices = &_Vertices;
 			cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
 			cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
-			cmd.color = { 0.2f, 0.2f, 0.2f, 1.0f };
+			cmd.color = Color { 0.2f, 0.2f, 0.2f, 1.0f };
 			cmd.drawType = RendererDrawType::Triangles;
 			
 			renderer.Submit(cmd);
@@ -67,12 +67,12 @@ namespace Wyrd::Editor
 			Wyrd::DrawRectCommand cmd{};
 			cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
 			cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-			cmd.position = { cursorPosition.x, cursorPosition.y };
-			cmd.rotationOrigin = { 0.0f, 0.0f };
+			cmd.position = Vector2 { cursorPosition.x, cursorPosition.y };
+			cmd.rotationOrigin = Vector2 { 0.0f, 0.0f };
 			cmd.rotation = 0.0f;
-			cmd.size = { 64.0f, 64.0f };
+			cmd.size = Vector2 { 64.0f, 64.0f };
 			cmd.thickness = 4.0f;
-			cmd.color = { 0.7f, 0.7f, 0.7f, 1.0f };
+			cmd.color = Color { 0.7f, 0.7f, 0.7f, 1.0f };
 
 			renderer.Submit(cmd);
 			renderer.Flush();
@@ -121,10 +121,10 @@ namespace Wyrd::Editor
 		float gap = 100.0f;
 		float thickness = 0.5f;
 		
-		float xSpacing = Utils::ToFloat(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__XSPACING, std::string("64")));
-		float ySpacing = Utils::ToFloat(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__YSPACING, std::string("64")));
-		float columnCnt = Utils::ToFloat(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLS, std::string("128")));
-		float rowCnt = Utils::ToFloat(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__ROWS, std::string("128")));
+		float xSpacing = 64; // Utils::ToFloat(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__XSPACING, std::string("64")));
+		float ySpacing = 64; // Utils::ToFloat(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__YSPACING, std::string("64")));
+		float columnCnt = 128; // Utils::ToFloat(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLS, std::string("128")));
+		float rowCnt = 128; // Utils::ToFloat(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__ROWS, std::string("128")));
 
 		float width = columnCnt * xSpacing;
 		float height = rowCnt * ySpacing;

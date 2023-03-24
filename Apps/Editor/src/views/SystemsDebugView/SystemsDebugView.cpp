@@ -128,7 +128,7 @@ namespace Wyrd::Editor
 						for (auto& so : customScriptedObjects)
 						{
 							// retrieve the Scripted Class
-							auto& scriptedClass = behaviour.GetCustomClassByUID(so.first);
+							std::shared_ptr<ScriptedClass> scriptedClass = behaviour.GetCustomClassByUID(so.first);
 							if (ImGui::TreeNode(scriptedClass->GetName().c_str()))
 							{
 								for (auto& instance : so.second)

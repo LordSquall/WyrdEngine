@@ -333,7 +333,8 @@ namespace Wyrd::Editor
 		/* Drag and Drop */
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 		{
-			ImGui::SetDragDropPayload(IMGUI_DND_TEXTURE, &textureResource.GetResourceID(), sizeof(UID));
+			const UID resourceID = textureResource.GetResourceID();
+			ImGui::SetDragDropPayload(IMGUI_DND_TEXTURE, &resourceID, sizeof(UID));
 			ImGui::Image((ImTextureID)(INT_PTR)textureResource.GetTexture()->GetHandle(), ImVec2(32, 32));
 			ImGui::EndDragDropSource();
 		}
@@ -444,7 +445,8 @@ namespace Wyrd::Editor
 		/* Drag and Drop */
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 		{
-			ImGui::SetDragDropPayload(IMGUI_DND_SCRIPT, &scriptResource.GetResourceID(), sizeof(UID));
+			const UID resourceID = scriptResource.GetResourceID();
+			ImGui::SetDragDropPayload(IMGUI_DND_SCRIPT, &resourceID, sizeof(UID));
 			ImGui::Image(*_ScriptIcon, ImVec2(32, 32));
 			ImGui::EndDragDropSource();
 		}

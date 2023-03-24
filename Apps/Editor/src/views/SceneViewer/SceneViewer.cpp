@@ -132,8 +132,8 @@ namespace Wyrd::Editor
 					cmd.position = transform->position + sprite->position;
 					cmd.size = sprite->size;
 					cmd.rotation = transform->rotation;
-					cmd.rotationOrigin = { 0, 0 };// transform->rotationOrigin;
-					cmd.tiling = { 1, 1 };// sprite->tiling;
+					cmd.rotationOrigin = Vector2{ 0, 0 };// transform->rotationOrigin;
+					cmd.tiling = Vector2 { 1, 1 };// sprite->tiling;
 					cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
 					cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
 					cmd.texture = Application::Get().GetResources().Textures[sprite->sprite].get();
@@ -148,19 +148,19 @@ namespace Wyrd::Editor
 					Wyrd::DrawRectCommand cmd{};
 					cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
 					cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-					cmd.position = { editorComp->inputArea._position.x, editorComp->inputArea._position.y };
-					cmd.rotationOrigin = { 0.0f, 0.0f };
+					cmd.position = Vector2{ editorComp->inputArea._position.x, editorComp->inputArea._position.y };
+					cmd.rotationOrigin = Vector2 { 0.0f, 0.0f };
 					cmd.rotation = 0.0f;
-					cmd.size = { 64.0f, 64.0f };
+					cmd.size = Vector2 { 64.0f, 64.0f };
 					cmd.thickness = 2.0f;
 
 					if (e == _SelectedEntity)
 					{
-						cmd.color = { 1.0f, 0.0f, 1.0f, 1.0f };
+						cmd.color = Color { 1.0f, 0.0f, 1.0f, 1.0f };
 					}
 					else
 					{
-						cmd.color = { 1.0f, 1.0f, 0.0f, 1.0f };
+						cmd.color = Color { 1.0f, 1.0f, 0.0f, 1.0f };
 					}
 
 					renderer.Submit(cmd);

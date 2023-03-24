@@ -38,17 +38,23 @@ namespace Wyrd {
 
 		Vector2& operator= (const glm::vec2& o)
 		{
-			return Vector2(o.x, o.y);
+			this->x = o.x;
+			this->y = o.y;
+			return *this;
 		}
 
 		Vector2& operator+ (const Vector2& o)
 		{
-			return Vector2(this->x + o.x, this->y + o.y);
+			this->x += o.x;
+			this->y += o.y;
+			return *this;
 		}
 
 		Vector2& operator- (const Vector2& o)
 		{
-			return Vector2(this->x - o.x, this->y - o.y);
+			this->x -= o.x;
+			this->y -= o.y;
+			return *this;
 		}
 	
 		static Vector2 RotateAtPoint(Vector2 pt, float angle, Vector2 pivot)
@@ -81,7 +87,10 @@ namespace Wyrd {
 
 		Vector3& operator= (const glm::vec3& o)
 		{
-			return Vector3(o.x, o.y, o.z);
+			this->x = o.x;
+			this->y = o.y;
+			this->z = o.z;
+			return *this;
 		}
 	};
 

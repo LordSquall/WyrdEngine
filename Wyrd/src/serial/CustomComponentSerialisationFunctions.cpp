@@ -16,7 +16,7 @@ namespace Wyrd
 
         if (data->properties != nullptr)
         {
-            for each (auto & prop in *data->properties)
+            for (auto& prop : *data->properties)
             {
                 prop.second->Serialise(propertiesSet);
             }
@@ -54,7 +54,7 @@ namespace Wyrd
                         else if (type == "Int32")
                         {
                             const jsonxx::Number& v = prop.second->get<jsonxx::Number>();
-                            INT32 d = (INT32)v;
+                            int32_t d = (int32_t)v;
                             scriptProp->Set(&d);
                         }
                         else if (type == "String")

@@ -24,7 +24,6 @@
     <DefineConstants>WYRD_PLATFORM_WINDOWS;WYRD_EDITOR_ENABLED;GLFW_INCLUDE_NONE;GLM_ENABLE_EXPERIMENTAL;WYRD_DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -37,7 +36,6 @@
     <DefineConstants>WYRD_PLATFORM_WINDOWS;WYRD_EDITOR_ENABLED;GLFW_INCLUDE_NONE;GLM_ENABLE_EXPERIMENTAL;WYRD_RELEASE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Distribution|x64' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -50,7 +48,6 @@
     <DefineConstants>WYRD_PLATFORM_WINDOWS;WYRD_EDITOR_ENABLED;GLFW_INCLUDE_NONE;GLM_ENABLE_EXPERIMENTAL;WYRD_DISTRIBUTION</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
   </ItemGroup>
@@ -60,33 +57,37 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\enums\InputEnums.cs" />
-    <Compile Include="src\framework\NativeManager.cs" />
-    <Compile Include="src\framework\NativeObject.cs" />
-    <Compile Include="src\framework\ResourceDescriptors.cs" />
-    <Compile Include="src\framework\UID.cs" />
     <Compile Include="src\framework\Color.cs" />
     <Compile Include="src\framework\Input.cs" />
     <Compile Include="src\framework\MathUtils.cs" />
+    <Compile Include="src\framework\NativeManager.cs" />
+    <Compile Include="src\framework\NativeObject.cs" />
+    <Compile Include="src\framework\Rect.cs" />
+    <Compile Include="src\framework\ResourceDescriptors.cs" />
     <Compile Include="src\framework\ScriptedEntity.cs" />
     <Compile Include="src\framework\Texture.cs" />
+    <Compile Include="src\framework\UID.cs" />
     <Compile Include="src\framework\Vector2.cs" />
     <Compile Include="src\framework\Vector3.cs" />
     <Compile Include="src\framework\interfaces\SceneManager.cs" />
-    <Compile Include="src\scene\ecs\components\RelationshipComponent.cs" />
-    <Compile Include="src\scene\ecs\components\ScriptComponent.cs" />
-    <Compile Include="src\scene\manager\ResourceManagerProxy.cs" />
-    <Compile Include="src\scene\manager\BehaviourManagerProxy.cs" />
     <Compile Include="src\scene\Scene.cs" />
     <Compile Include="src\scene\ecs\Component.cs" />
     <Compile Include="src\scene\ecs\Entity.cs" />
     <Compile Include="src\scene\ecs\EntityManager.cs" />
-    <Compile Include="src\scene\manager\PhysicsManagerProxy.cs" />
+    <Compile Include="src\scene\ecs\ResourceManager.cs" />
+    <Compile Include="src\scene\ecs\components\CameraComponent.cs" />
     <Compile Include="src\scene\ecs\components\MetaDataComponent.cs" />
+    <Compile Include="src\scene\ecs\components\RelationshipComponent.cs" />
+    <Compile Include="src\scene\ecs\components\ScriptComponent.cs" />
     <Compile Include="src\scene\ecs\components\SpriteComponent.cs" />
     <Compile Include="src\scene\ecs\components\TextComponent.cs" />
     <Compile Include="src\scene\ecs\components\Transform2DComponent.cs" />
+    <Compile Include="src\scene\manager\BehaviourManagerProxy.cs" />
+    <Compile Include="src\scene\manager\PhysicsManagerProxy.cs" />
+    <Compile Include="src\scene\manager\ResourceManagerProxy.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

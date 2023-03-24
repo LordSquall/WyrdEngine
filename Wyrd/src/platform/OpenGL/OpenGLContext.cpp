@@ -20,10 +20,10 @@ namespace Wyrd {
 
 		OSR_CORE_ASSERT(status, "Failed to initialise GLAD!");
 
-		WYRD_CORE_INFO("Graphics Context Info: OpenGL");
-		WYRD_CORE_INFO("   Vendor: {0}", glGetString(GL_VENDOR));
-		WYRD_CORE_INFO("   Renderer: {0}", glGetString(GL_RENDERER));
-		WYRD_CORE_INFO("   Version: {0}", glGetString(GL_VERSION));
+		//WYRD_CORE_INFO("Graphics Context Info: OpenGL");
+		//WYRD_CORE_INFO("   Vendor: {0}", glGetString(GL_VENDOR));
+		//WYRD_CORE_INFO("   Renderer: {0}", glGetString(GL_RENDERER));
+		//WYRD_CORE_INFO("   Version: {0}", glGetString(GL_VERSION));
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

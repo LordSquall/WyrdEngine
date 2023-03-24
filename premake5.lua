@@ -119,7 +119,8 @@ group ""
 		{
 			"%{prj.name}/src/",
 			"%{prj.name}/vendor/glad/include",
-			"dependencies/soil/src/"
+			"dependencies/soil/src/",
+			includedir["jsonxx"]
 		}
 		
 		libdirs
@@ -189,52 +190,53 @@ group ""
 			symbols "on"
 
 group "Tools"
-project "WyrdGen"
-		location "WyrdGen"
-		kind "ConsoleApp"
-		language "C#"
+if os.istarget("windows") then
+	project "WyrdGen"
+			location "WyrdGen"
+			kind "ConsoleApp"
+			language "C#"
 
-		targetdir ("lib/" .. outputdir .. "/%{prj.name}")
-		objdir ("obj/" .. outputdir .. "/%{prj.name}")
-		
-		files
-		{
-			"%{prj.name}/**.cs",
-			"%{prj.name}/**.xml"
-		}
-		
-		links { "System.Xml" }
-
-		filter "system:windows"
-			systemversion "latest"
-
-			defines
-			{
-				"WYRD_PLATFORM_WINDOWS",
-				"WYRD_EDITOR_ENABLED",
-				"GLFW_INCLUDE_NONE",
-				"GLM_ENABLE_EXPERIMENTAL"
-			}
-
-		filter "configurations:Debug"
-			defines "WYRD_DEBUG"
-			runtime "Debug"
-			symbols "on"
-
-		filter "configurations:Release"
-			defines "WYRD_RELEASE"
-			runtime "Release"
-			symbols "on"
-
-		filter "configurations:Distribution"
-			defines "WYRD_DISTRIBUTION"
-			runtime "Release"
-			symbols "on"
+			targetdir ("lib/" .. outputdir .. "/%{prj.name}")
+			objdir ("obj/" .. outputdir .. "/%{prj.name}")
 			
+			files
+			{
+				"%{prj.name}/**.cs",
+				"%{prj.name}/**.xml"
+			}
+			
+			links { "System.Xml" }
+
+			filter "system:windows"
+				systemversion "latest"
+
+				defines
+				{
+					"WYRD_PLATFORM_WINDOWS",
+					"WYRD_EDITOR_ENABLED",
+					"GLFW_INCLUDE_NONE",
+					"GLM_ENABLE_EXPERIMENTAL"
+				}
+
+			filter "configurations:Debug"
+				defines "WYRD_DEBUG"
+				runtime "Debug"
+				symbols "on"
+
+			filter "configurations:Release"
+				defines "WYRD_RELEASE"
+				runtime "Release"
+				symbols "on"
+
+			filter "configurations:Distribution"
+				defines "WYRD_DISTRIBUTION"
+				runtime "Release"
+				symbols "on"
+end
 group "Scripting"
 project "WyrdCAPI"
 		location "WyrdCAPI"
-		kind "SharedLib"
+		kind "StaticLib"
 		language "C++"
 		cppdialect "C++17"
 		staticruntime "off"
@@ -291,6 +293,7 @@ project "WyrdCAPI"
 			runtime "Release"
 			symbols "on"
 			
+if os.istarget("windows") then
 project "WyrdAPI"
 		location "WyrdAPI"
 		kind "SharedLib"
@@ -329,9 +332,10 @@ project "WyrdAPI"
 			defines "WYRD_DISTRIBUTION"
 			runtime "Release"
 			symbols "on"
-			
+end
+
 group "Applications"
-project "TestPlayer"
+--[[project "TestPlayer"
 	location "Apps/TestPlayer"
 	kind "ConsoleApp"
 	language "C++"
@@ -437,7 +441,7 @@ project "TestPlayer"
 		defines "WYRD_DISTRIBUTION"
 		runtime "Debug"
 		symbols "on"
-		
+]]--		
 project "Editor"
 	location "Apps/Editor"
 	kind "ConsoleApp"
@@ -493,6 +497,7 @@ project "Editor"
 			"WYRD_PLATFORM_WINDOWS",
 			"WYRD_EDITOR_ENABLED",
 			"GLM_ENABLE_EXPERIMENTAL",
+			"IMGUI_DEFINE_MATH_OPERATORS",
 			"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
 			"MONO_INSTALL_LOC=" .. monodir,
 			iif(renderdocfound, "WYRD_RENDERDOC_ENABLED", "")
