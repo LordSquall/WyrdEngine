@@ -11,6 +11,17 @@
     <Data name="scale" type="Vec2" default="1,1"/>
   </Component>
 
+  <Component name="Transform3DComponent" shortName="Transform3D" >
+    <Data name="position" type="Vec3" default="0,0,0" />
+    <Data name="rotation" type="Vec3" default="0,0,0"/>
+    <Data name="scale" type="Vec3" default="1,1,1"/>
+  </Component>
+
+  <Component name="MeshComponent" shortName="Mesh">
+    <Data name="enabled" type="Boolean" default="true" />
+    <Data name="color" type="Color" default="1,1,1,1"/>
+  </Component>
+  
   <Component name="SpriteComponent" shortName="Sprite">
     <Data name="enabled" type="Boolean" default="true" />
     <Data name="sprite" type="Texture" default="UID()"/>

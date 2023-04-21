@@ -25,6 +25,8 @@ namespace Wyrd
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	OpenGLRenderer::~OpenGLRenderer()
@@ -40,7 +42,7 @@ namespace Wyrd
 	void OpenGLRenderer::Clear(float r, float g, float b) const
 	{
 		glClearColor(r, g, b, 1);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	void OpenGLRenderer::DrawElements(RendererDrawType type, uint32_t count) const

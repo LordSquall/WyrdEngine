@@ -34,8 +34,8 @@ namespace Wyrd::Editor
 		void Build();
 
 	private:
-		bool _XYMoveActive;
-		glm::vec2 _LastMouseWorldPos;
+		bool _DragActive;
+		Vector2 _StartDragPosition;
 
 		std::vector<Region> _Regions;
 		int _ActiveRegion;

@@ -9,9 +9,12 @@
 
 namespace Wyrd::Editor
 {
-	ObjLoader::Result ObjLoader::Load(std::string path, std::vector<Vertex2D>& vertices, std::vector<uint32_t>& indices, std::map<std::string, std::pair<uint32_t, uint32_t>>& vertexGroups, float scaleFactor)
+	ObjLoader::Result ObjLoader::Load(std::string path, std::vector<Vertex3D>* vertices, std::vector<uint32_t>* indices, std::map<std::string, std::pair<uint32_t, uint32_t>>* vertexGroups, float scaleFactor)
 	{
 		ObjLoader::Result result = Success;
+
+		std::vector<Vector3> verts;
+		std::vector<Vector2> uvCoords;
 
 		std::ifstream filestream(path);
 
@@ -19,29 +22,8 @@ namespace Wyrd::Editor
 		std::string currentGroupName = "";
 		while (std::getline(filestream, line))
 		{
-			/* Groups */
-			if (line[0] == 'g')
-			{
-				if (currentGroupName != "")
-				{
-					vertexGroups[currentGroupName].second = vertices.size() - 1;
-				}
-
-				char tag;
-				std::istringstream iss(line);
-				iss >> tag >> currentGroupName;
-
-				// condition the name to remove any unwanted suffix
-				if (currentGroupName.find_last_of('_') != std::string::npos)
-				{
-					currentGroupName = currentGroupName.substr(0, currentGroupName.find_last_of('_'));
-				}
-
-				vertexGroups[currentGroupName] = { vertices.size(), 0 };
-			}
-
 			/* Vertices */
-			if (line[0] == 'v')
+			if (line[0] == 'v' && line[1] == ' ')
 			{
 				char tag;
 				float x, y, z;
@@ -52,22 +34,57 @@ namespace Wyrd::Editor
 				y *= scaleFactor; 
 				z *= scaleFactor;
 
-				vertices.push_back({ x, z, 1.0f, 1.0f, 1.0f, 1.0f });
+				verts.push_back({ x, y, z });
 			}
 
-			/* Indices */
+			/* UV Coords */
+			if (line[0] == 'v' && line[1] == 't')
+			{
+				std::string tag;
+				float u, v;
+				std::istringstream iss(line);
+				iss >> tag >> u >> v;
+
+				uvCoords.push_back({ u, v });
+			}
+
+			/* faces */
 			if (line[0] == 'f')
 			{
 				char tag;
-				uint32_t p1, p2, p3;
+				std::string set1, set2, set3;
 				std::istringstream iss(line);
-				iss >> tag >> p1 >> p2 >> p3;
-				indices.push_back(p1 - 1);
-				indices.push_back(p2 - 1);
-				indices.push_back(p3 - 1);
+				iss >> tag >> set1 >> set2 >> set3;
+
+				{
+					int vertIdx, textureIdx;
+					sscanf(set1.c_str(), "%d/%d", &vertIdx, &textureIdx);
+					vertIdx--;
+					textureIdx--;
+
+					vertices->push_back({ verts[vertIdx].x, verts[vertIdx].y , verts[vertIdx].z, uvCoords[textureIdx].x, uvCoords[textureIdx].y });
+				}
+				{
+					int vertIdx, textureIdx;
+					sscanf(set2.c_str(), "%d/%d", &vertIdx, &textureIdx);
+					vertIdx--;
+					textureIdx--;
+
+					vertices->push_back({ verts[vertIdx].x, verts[vertIdx].y , verts[vertIdx].z, uvCoords[textureIdx].x, uvCoords[textureIdx].y });
+				}
+				{
+					int vertIdx, textureIdx;
+					sscanf(set3.c_str(), "%d/%d", &vertIdx, &textureIdx);
+					vertIdx--;
+					textureIdx--;
+
+					vertices->push_back({ verts[vertIdx].x, verts[vertIdx].y , verts[vertIdx].z, uvCoords[textureIdx].x, uvCoords[textureIdx].y });
+				}
 			}
 		}
-		vertexGroups[currentGroupName].second = vertices.size() - 1;
+
+		if (vertexGroups != nullptr)
+			(*vertexGroups)[currentGroupName].second = vertices->size() - 1;
 
 		// DEBUG
 		//for (auto& v : vertices)

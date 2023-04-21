@@ -88,7 +88,7 @@ namespace Wyrd::Editor
 		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, WYRD_BIND_FN(TranslationGizmo::OnSelectedEntityChanged));
 
         /* load the vertices from an external source file */
-		ObjLoader::Load(Utils::GetEditorResFolder() + "gizmos\\translation_gizmo.obj", _Vertices, _Indices, _VertexGroups, 0.4f);
+		//ObjLoader::Load(Utils::GetEditorResFolder() + "gizmos\\translation_gizmo.obj", &_Vertices, &_Indices, &_VertexGroups, 0.4f);
 
 		/* update handle colors */
 		UpdateVertexGroupColor("XY_Handle", colorXYAxisNormal);
@@ -103,7 +103,7 @@ namespace Wyrd::Editor
         if (_Entity != ENTITY_INVALID)
         {
             /* calculate the different between the camera viewport and the sceneviewer to set the scalling */
-            float diff = _CameraController->GetSize() / std::min<float>(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
+            //float diff = _CameraController->GetSize() / std::min<float>(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
 
             //Transform2DComponent* transform2DComponent = _SceneViewer->GetScene()->Get<Transform2DComponent>(_Entity);
             //
@@ -134,7 +134,7 @@ namespace Wyrd::Editor
 
     bool TranslationGizmo::OnMouseMovedEvent(MouseMovedEvent& e, void* data)
     {
-        float diff = _CameraController->GetSize() / std::min<float>(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
+        //float diff = _CameraController->GetSize() / std::min<float>(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
 
         //Transform2DComponent* transform2DComponent = _SceneViewer->GetScene()->Get<Transform2DComponent>(_Entity);
         //
@@ -205,7 +205,7 @@ namespace Wyrd::Editor
 
         glm::vec2 viewportMouseCoords = _SceneViewer->GetViewportSpaceFromPoint({ e.GetPositionX(), e.GetPositionY() });;
 
-        _LastMouseWorldPos = _CameraController->GetCamera().GetEyeSpaceFromPoint(viewportMouseCoords, _SceneViewer->GetViewport());
+        //_LastMouseWorldPos = _CameraController->GetCamera().GetEyeSpaceFromPoint(viewportMouseCoords, _SceneViewer->GetViewport());
 
         return true;
     }

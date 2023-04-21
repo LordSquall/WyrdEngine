@@ -33,26 +33,26 @@ namespace Wyrd::Editor
 
 	void Rotate2DGizmo::Render(Timestep ts, Renderer& renderer)
 	{
-        if (_Entity != ENTITY_INVALID)
-        {
-            /* calculate the different between the camera viewport and the sceneviewer to set the scalling */
-            float diff = _CameraController->GetSize() / std::min<float>(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
-
-            Transform2DComponent* transform2DComponent = _SceneViewer->GetScene()->Get<Transform2DComponent>(_Entity);
-            
-            Wyrd::DrawVertex2DCommand cmd{};
-            cmd.type = 1;
-            cmd.position = transform2DComponent->position;
-            cmd.vertices = &_Vertices;
-            cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-            cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
-            cmd.color = { 1.0f, 1.0f, 1.0f, 1.0f };
-            cmd.drawType = RendererDrawType::Triangles;
-            
-            Build();
-            
-            renderer.Submit(cmd);
-        }
+       //if (_Entity != ENTITY_INVALID)
+       //{
+       //    /* calculate the different between the camera viewport and the sceneviewer to set the scalling */
+       //    //float diff = _CameraController->GetSize() / std::min<float>(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
+       //
+       //    Transform2DComponent* transform2DComponent = _SceneViewer->GetScene()->Get<Transform2DComponent>(_Entity);
+       //    
+       //    Wyrd::DrawVertex2DCommand cmd{};
+       //    cmd.type = 1;
+       //    cmd.position = transform2DComponent->position;
+       //    cmd.vertices = &_Vertices;
+       //    cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
+       //    cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
+       //    cmd.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+       //    cmd.drawType = RendererDrawType::Triangles;
+       //    
+       //    Build();
+       //    
+       //    renderer.Submit(cmd);
+       //}
 	}
     
     void Rotate2DGizmo::OnEvent(Event& event)

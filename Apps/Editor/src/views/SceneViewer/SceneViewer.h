@@ -2,7 +2,7 @@
 #include "views/EditorViewBase.h"
 #include "events/EditorEvents.h"
 #include "services/ServiceManager.h"
-#include "datamodels/OrthographicCameraController.h"
+#include "datamodels/CameraController.h"
 #include "gizmos/Gizmo.h"
 
 #include <core/renderer/Buffer.h>
@@ -10,7 +10,7 @@
 
 namespace Wyrd::Editor
 {
-	class GridGizmo;
+	class Grid3DGizmo;
 	class Translation2DGizmo;
 
 	class SceneViewer : public EditorViewBase
@@ -28,7 +28,7 @@ namespace Wyrd::Editor
 		void OnResize() override;
 
 		inline const Wyrd::Rect& GetViewport() { return _Viewport; }
-		inline const std::shared_ptr<OrthographicCameraController> GetCamera() const { return _CameraController; }
+		inline const std::shared_ptr<CameraController> GetCamera() const { return _CameraController; }
 
 		inline const glm::vec2 GetMouseWorldPos() const { return _MouseWorldPos; }
 
@@ -61,9 +61,9 @@ namespace Wyrd::Editor
 		std::shared_ptr<CoreSystemsService>		_CoreSystemService;
 		std::unique_ptr<Wyrd::FrameBuffer>		_Framebuffer;
 
-		std::shared_ptr<Scene>							_Scene;
-		std::shared_ptr<OrthographicCameraController>	_CameraController;
-		std::shared_ptr<Shader>							_Shader;
+		std::shared_ptr<Scene>					_Scene;
+		std::shared_ptr<CameraController>		_CameraController;
+		std::shared_ptr<Shader>					_Shader;
 
 		// selection icons
 		std::shared_ptr<Icon> _pointSelectBtnIcon;	
@@ -74,7 +74,7 @@ namespace Wyrd::Editor
 		int _CurrentTransformationGizmoIndex;
 		std::vector<std::unique_ptr<Gizmo>> _TransformationGizmos;
 
-		std::unique_ptr<GridGizmo>						_GridGizmo;
+		std::unique_ptr<Grid3DGizmo>						_Grid3DGizmo;
 		std::shared_ptr<Shader>						_GizmoShader;
 
 		Entity	_SelectedEntity;

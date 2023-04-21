@@ -33,6 +33,19 @@ namespace Wyrd
         obj << "scale" << data->scale;
     }
 
+    void ComponentSerialiserFactory::Serialise(jsonxx::Object & obj, Wyrd::Transform3DComponent* data)
+    {
+        obj << "position" << data->position;
+        obj << "rotation" << data->rotation;
+        obj << "scale" << data->scale;
+    }
+
+    void ComponentSerialiserFactory::Serialise(jsonxx::Object & obj, Wyrd::MeshComponent* data)
+    {
+        obj << "enabled" << data->enabled;
+        obj << "color" << data->color;
+    }
+
     void ComponentSerialiserFactory::Serialise(jsonxx::Object & obj, Wyrd::SpriteComponent* data)
     {
         obj << "enabled" << data->enabled;
@@ -83,6 +96,19 @@ namespace Wyrd
         data->position << obj.get<jsonxx::Object>("position", DecodeVec2("0,0"));
         data->rotation = obj.get<jsonxx::Number>("rotation", 0.0f);
         data->scale << obj.get<jsonxx::Object>("scale", DecodeVec2("1,1"));
+    }
+
+    void ComponentSerialiserFactory::Deserialise(jsonxx::Object & obj, Wyrd::Transform3DComponent* data)
+    {
+        data->position << obj.get<jsonxx::Object>("position", DecodeVec3("0,0,0"));
+        data->rotation << obj.get<jsonxx::Object>("rotation", DecodeVec3("0,0,0"));
+        data->scale << obj.get<jsonxx::Object>("scale", DecodeVec3("1,1,1"));
+    }
+
+    void ComponentSerialiserFactory::Deserialise(jsonxx::Object & obj, Wyrd::MeshComponent* data)
+    {
+        data->enabled = obj.get<jsonxx::Boolean>("enabled", true);
+        data->color << obj.get<jsonxx::Object>("color", DecodeColor("1,1,1,1"));
     }
 
     void ComponentSerialiserFactory::Deserialise(jsonxx::Object & obj, Wyrd::SpriteComponent* data)

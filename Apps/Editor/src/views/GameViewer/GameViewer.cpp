@@ -12,7 +12,6 @@
 /* local include */
 #include "GameViewer.h"
 #include "gizmos/TranslationGizmo.h"
-#include "gizmos/GridGizmo.h"
 #include "support/ImGuiUtils.h"
 
 /* external includes */
@@ -90,23 +89,23 @@ namespace Wyrd::Editor
 			renderer.Clear(0.1f, 0.1f, 0.1f);
 			if (_Scene != nullptr)
 			{
-				for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
-				{
-					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
-					SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
-				
-					Wyrd::DrawSpriteCommand cmd{};
-					cmd.type = 1;
-					cmd.position = sprite->position + transform->position;
-					cmd.size = sprite->size;
-					cmd.tiling = sprite->tiling;
-					cmd.vpMatrix = _Camera.GetViewProjectionMatrix();
-					cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
-					cmd.texture = Application::Get().GetResources().Textures[sprite->sprite].get();
-					cmd.color = sprite->color;
-				
-					renderer.Submit(cmd);
-				}
+				//for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
+				//{
+				//	Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
+				//	SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
+				//
+				//	Wyrd::DrawSpriteCommand cmd{};
+				//	cmd.type = 1;
+				//	cmd.position = sprite->position + transform->position;
+				//	cmd.size = sprite->size;
+				//	cmd.tiling = sprite->tiling;
+				//	cmd.vpMatrix = _Camera.GetViewProjectionMatrix();
+				//	cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
+				//	cmd.texture = Application::Get().GetResources().Textures[sprite->sprite].get();
+				//	cmd.color = sprite->color;
+				//
+				//	renderer.Submit(cmd);
+				//}
 				
 				//for (Entity e : EntitySet<Transform2DComponent, TextComponent>(*_Scene.get()))
 				//{

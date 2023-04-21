@@ -8,7 +8,7 @@
 #include <core/renderer/VertexArray.h>
 
 /* local includes */
-#include "datamodels/OrthographicCameraController.h"
+#include "datamodels/CameraController.h"
 #include "events/EditorEvents.h"
 #include "services/ServiceManager.h"
 
@@ -23,6 +23,7 @@ namespace Wyrd::Editor
 		typedef std::function<void(int)> MouseExitFunc;
 		typedef std::function<void(int)> MouseButtonPressedFunc;
 		typedef std::function<void(int)> MouseButtonReleaseFunc;
+		typedef std::function<void(Vector2)> OnDrag;
 
 	public:
 		struct Region
@@ -36,6 +37,7 @@ namespace Wyrd::Editor
 			MouseExitFunc mouseExitFunc;
 			MouseButtonPressedFunc mouseButtonPressedFunc;
 			MouseButtonReleaseFunc mouseButtonReleasedFunc;
+			OnDrag onDragFunc;
 		};
 
 	public:
@@ -46,7 +48,7 @@ namespace Wyrd::Editor
 		virtual void OnEvent(Event& event) = 0;
 
 	protected:
-		std::shared_ptr<OrthographicCameraController> _CameraController;
+		std::shared_ptr<CameraController> _CameraController;
 		SceneViewer* _SceneViewer;
 
 		std::shared_ptr<EventService>		_EventService;

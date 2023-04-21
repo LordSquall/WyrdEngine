@@ -2,7 +2,7 @@
 
 /* core wyrd includes */
 #include <wyrdpch.h>
-#include <core/pipeline/Vertex2D.h>
+#include <core/pipeline/Vertex3D.h>
 
 using namespace Wyrd;
 
@@ -18,6 +18,6 @@ namespace Wyrd::Editor {
 			DirectoryNotFound = 4, FileAlreadyExists = 5, InsufficientSpace = 6
 		};
 
-		static ObjLoader::Result Load(std::string path, std::vector<Vertex2D>& vertices, std::vector<uint32_t>& indices, std::map<std::string, std::pair<uint32_t, uint32_t>>& vertexGroups, float scaleFactor);
+		static ObjLoader::Result Load(std::string path, std::vector<Vertex3D>* vertices, std::vector<uint32_t>* indices = nullptr, std::map<std::string, std::pair<uint32_t, uint32_t>>* vertexGroups = nullptr, float scaleFactor = 1.0f);
 	};
 }

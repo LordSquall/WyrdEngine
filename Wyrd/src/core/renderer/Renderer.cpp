@@ -30,6 +30,8 @@ namespace Wyrd
 
 	void Renderer::Initialise() 
 	{
+		_MeshBatch.Initialise(this);
+		_vertex3DBatch.Initialise(this);
 		_vertex2DBatch.Initialise(this);
 		_spriteBatch.Initialise(this);
 		_textBatch.Initialise(this);
@@ -38,6 +40,12 @@ namespace Wyrd
 	void Renderer::Submit(DrawRectCommand& cmd)
 	{
 		_vertex2DBatch.Submit(cmd);
+	}
+
+
+	void Renderer::Submit(DrawMeshCommand& cmd)
+	{
+		_MeshBatch.Submit(cmd);
 	}
 
 	void Renderer::Submit(DrawSpriteCommand& cmd)
@@ -56,8 +64,15 @@ namespace Wyrd
 		_vertex2DBatch.Submit(cmd);
 	}
 
+	void Renderer::Submit(DrawVertex3DCommand& cmd)
+	{
+		_vertex3DBatch.Submit(cmd);
+	}
+
 	void Renderer::Flush()
 	{
+		_vertex3DBatch.Flush();
+		_MeshBatch.Flush();
 		_spriteBatch.Flush();
 		_vertex2DBatch.Flush();
 	}

@@ -5,6 +5,7 @@
 #include "core/UID.h"
 #include "core/Structures.h"
 #include "core/pipeline/Vertex2D.h"
+#include "core/pipeline/Vertex3D.h"
 #include "core/renderer/RendererDrawTypes.h"
 
 /* external includes */
@@ -15,6 +16,7 @@ namespace Wyrd
 {
 	class Shader;
 	class Texture;
+	class Mesh;
 	class FontType;
 
 	struct WYRD_LIBRARY_API DrawCommand
@@ -24,6 +26,20 @@ namespace Wyrd
 		Shader* shader;
 	};
 
+	struct WYRD_LIBRARY_API DrawMeshCommand : public DrawCommand
+	{
+		RendererDrawType drawType;
+		Wyrd::Vector3 position;
+		Wyrd::Vector3 rotationOrigin;
+		Wyrd::Vector3 rotation;
+		Wyrd::Vector3 scale;
+		Color color;
+		Mesh* mesh;
+		Texture* baseTexture;
+		glm::mat4 viewMatrix;
+		glm::mat4 projectionMatrix;
+
+	};
 	struct WYRD_LIBRARY_API DrawSpriteCommand : public DrawCommand
 	{
 		Wyrd::Vector2 position;
@@ -61,5 +77,15 @@ namespace Wyrd
 		std::vector<Vertex2D>* vertices;
 		Color color;
 		RendererDrawType drawType;
+	};
+
+	struct WYRD_LIBRARY_API DrawVertex3DCommand : public DrawCommand
+	{
+		Wyrd::Vector3 position;
+		std::vector<Vertex3D>* vertices;
+		Color color;
+		RendererDrawType drawType;
+		glm::mat4 viewMatrix;
+		glm::mat4 projectionMatrix;
 	};
 }

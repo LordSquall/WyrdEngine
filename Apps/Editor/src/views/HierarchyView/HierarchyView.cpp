@@ -192,6 +192,11 @@ namespace Wyrd::Editor
 				Transform2DComponent* c = scene.AssignComponent<Transform2DComponent>(entity);
 			}
 			ImGui::Separator();
+			if (ImGui::MenuItem("Add Mesh"))
+			{
+				scene.AssignComponent<Transform3DComponent>(entity);
+				scene.AssignComponent<MeshComponent>(entity);
+			}
 			if (ImGui::MenuItem("Add Sprite"))
 			{
 				SpriteComponent* c = scene.AssignComponent<SpriteComponent>(entity);

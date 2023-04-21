@@ -7,7 +7,9 @@
 #include "events/Event.h"
 #include "core/renderer/commands/RendererCommands.h"
 #include "core/renderer/RendererDrawTypes.h"
+#include "core/pipeline/MeshBatch.h"
 #include "core/pipeline/Vertex2DBatch.h"
+#include "core/pipeline/Vertex3DBatch.h"
 #include "core/pipeline/SpriteBatch.h"
 #include "core/pipeline/TextBatch.h"
 
@@ -37,9 +39,11 @@ namespace Wyrd
 
 		virtual void Initialise();
 		virtual void Submit(DrawRectCommand& cmd);
+		virtual void Submit(DrawMeshCommand& cmd);
 		virtual void Submit(DrawSpriteCommand& cmd);
 		virtual void Submit(DrawTextCommand& cmd);
 		virtual void Submit(DrawVertex2DCommand& cmd);
+		virtual void Submit(DrawVertex3DCommand& cmd);
 		virtual void Flush();
 
 		inline struct RendererInfo& GetVendorInfo() { return _vendorInfo; }
@@ -53,7 +57,9 @@ namespace Wyrd
 
 		static Renderer* Create();
 	private:
+		MeshBatch _MeshBatch;
 		Vertex2DBatch _vertex2DBatch;
+		Vertex3DBatch _vertex3DBatch;
 		SpriteBatch _spriteBatch;
 		TextBatch _textBatch;
 

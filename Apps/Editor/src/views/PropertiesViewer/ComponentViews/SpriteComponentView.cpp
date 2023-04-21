@@ -48,7 +48,7 @@ namespace Wyrd::Editor
 				if (newTexture)
 				{
 					sprite->sprite = *spriteUID;
-					sprite->size = Vector2 { (float)newTexture->GetWidth(), (float)newTexture->GetHeight() };
+					sprite->size = { (float)newTexture->GetWidth(), (float)newTexture->GetHeight() };
 				}
 				else
 				{

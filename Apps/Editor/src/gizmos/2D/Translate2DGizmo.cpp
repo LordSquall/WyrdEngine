@@ -20,7 +20,7 @@
 
 namespace Wyrd::Editor
 {
-    Translate2DGizmo::Translate2DGizmo(SceneViewer* sceneViewer) : Gizmo(sceneViewer, ENTITY_INVALID), _XYMoveActive(false), _ActiveRegion(-1)
+    Translate2DGizmo::Translate2DGizmo(SceneViewer* sceneViewer) : Gizmo(sceneViewer, ENTITY_INVALID), _DragActive(false), _ActiveRegion(-1)
 	{
 		/* retrieve the services */
 		_EventService = ServiceManager::Get<EventService>();
@@ -33,26 +33,26 @@ namespace Wyrd::Editor
 
 	void Translate2DGizmo::Render(Timestep ts, Renderer& renderer)
 	{
-        if (_Entity != ENTITY_INVALID)
-        {
-            /* calculate the different between the camera viewport and the sceneviewer to set the scalling */
-            float diff = _CameraController->GetSize() / std::min<float>(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
-
-            Transform2DComponent* transform2DComponent = _SceneViewer->GetScene()->Get<Transform2DComponent>(_Entity);
-            
-            Wyrd::DrawVertex2DCommand cmd{};
-            cmd.type = 1;
-            cmd.position = transform2DComponent->position;
-            cmd.vertices = &_Vertices;
-            cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-            cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
-            cmd.color = { 1.0f, 1.0f, 1.0f, 1.0f };
-            cmd.drawType = RendererDrawType::Triangles;
-            
-            //Build();
-            
-            renderer.Submit(cmd);
-        }
+       //if (_Entity != ENTITY_INVALID)
+       //{
+       //    /* calculate the different between the camera viewport and the sceneviewer to set the scalling */
+       //    float diff = _CameraController->GetSize() / std::min<float>(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
+       //
+       //    Transform2DComponent* transform2DComponent = _SceneViewer->GetScene()->Get<Transform2DComponent>(_Entity);
+       //    
+       //    Wyrd::DrawVertex2DCommand cmd{};
+       //    cmd.type = 1;
+       //    cmd.position = transform2DComponent->position;
+       //    cmd.vertices = &_Vertices;
+       //    cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
+       //    cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
+       //    cmd.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+       //    cmd.drawType = RendererDrawType::Triangles;
+       //    
+       //    //Build();
+       //    
+       //    renderer.Submit(cmd);
+       //}
 	}
     
     void Translate2DGizmo::OnEvent(Event& event)
@@ -79,54 +79,67 @@ namespace Wyrd::Editor
             glm::vec2 worldPos = _SceneViewer->Convert2DToWorldSpace({ e.GetX(), e.GetY() });
             glm::vec2 mousePos = { worldPos.x + -transform2DComponent->position.x, worldPos.y + -transform2DComponent->position.y };
 
-            // check if we have hit a new region
-            int newRegion = _ActiveRegion;
-            bool regionFound = false;
-            for (int i = 0; i < _Regions.size(); i++)
+            // check if we are actively performing a drag operation
+            if (_DragActive && _ActiveRegion != -1)
             {
-                if (_Regions[i].area.ContainsPoint(glm::vec4(mousePos, -1.0f, 1.0f)))
+                // calculate mouse delta
+                Vector2 delta = _StartDragPosition - Vector2 { mousePos.x, mousePos.y };
+                if (_Regions[_ActiveRegion].onDragFunc != nullptr)
                 {
-                    newRegion = i;
-                    regionFound = true;
+                    _Regions[_ActiveRegion].onDragFunc(delta);
                 }
             }
-
-            if (regionFound == false)
+            else
             {
-                if (_ActiveRegion != -1)
-                {
-                    if (_Regions[_ActiveRegion].mouseExitFunc != nullptr)
-                    {
-                        _Regions[_ActiveRegion].mouseExitFunc(_ActiveRegion);
-                    }
-                }
-                _ActiveRegion = -1;
-                return false;
-            }
-
-            if (_ActiveRegion != newRegion)
-            {
-                if (_ActiveRegion != -1)
-                {
-                    if (_Regions[_ActiveRegion].mouseExitFunc != nullptr)
-                    {
-                        _Regions[_ActiveRegion].mouseExitFunc(_ActiveRegion);
-                    }
-                }
-
-                // update the look and feel based on current region
+                // check if we have hit a new region
+                int newRegion = _ActiveRegion;
+                bool regionFound = false;
                 for (int i = 0; i < _Regions.size(); i++)
                 {
-                    if (newRegion == i)
+                    if (_Regions[i].area.ContainsPoint(glm::vec4(mousePos, -1.0f, 1.0f)))
                     {
-                        if (_Regions[i].mouseEnterFunc != nullptr)
-                        {
-                            _Regions[i].mouseEnterFunc(i);
-                        }
+                        newRegion = i;
+                        regionFound = true;
                     }
                 }
 
-                _ActiveRegion = newRegion;
+                if (regionFound == false && !_DragActive)
+                {
+                    if (_ActiveRegion != -1)
+                    {
+                        if (_Regions[_ActiveRegion].mouseExitFunc != nullptr)
+                        {
+                            _Regions[_ActiveRegion].mouseExitFunc(_ActiveRegion);
+                        }
+                    }
+                    _ActiveRegion = -1;
+                    return false;
+                }
+
+                if (_ActiveRegion != newRegion)
+                {
+                    if (_ActiveRegion != -1)
+                    {
+                        if (_Regions[_ActiveRegion].mouseExitFunc != nullptr)
+                        {
+                            _Regions[_ActiveRegion].mouseExitFunc(_ActiveRegion);
+                        }
+                    }
+
+                    // update the look and feel based on current region
+                    for (int i = 0; i < _Regions.size(); i++)
+                    {
+                        if (newRegion == i)
+                        {
+                            if (_Regions[i].mouseEnterFunc != nullptr)
+                            {
+                                _Regions[i].mouseEnterFunc(i);
+                            }
+                        }
+                    }
+
+                    _ActiveRegion = newRegion;
+                }
             }
         }
 
@@ -135,11 +148,20 @@ namespace Wyrd::Editor
 
     bool Translate2DGizmo::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data)
     {
+        if (_ActiveRegion != -1)
+        {
+            glm::vec2 worldPos = _SceneViewer->Convert2DToWorldSpace({ e.GetPositionX(), e.GetPositionY() });
+            _StartDragPosition = { worldPos.x , worldPos.y };
+
+            _DragActive = true;
+        }
         return false;
     }
 
     bool Translate2DGizmo::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e, void* data)
     {
+        _DragActive = false;
+
         return false;
     }
 
@@ -167,6 +189,10 @@ namespace Wyrd::Editor
                 PrimitiveUtils::UpdateColor(_Vertices, _Regions[offset].vertexOffset, PrimitiveUtils::RectCount, Color::RED);
             };
 
+            //yAxixHandleRegion.onDragFunc = [transform2DComponent](Vector2 delta) {
+            //    transform2DComponent->position.y += delta.y;
+            //};
+
             Region xAxixHandleRegion;
             xAxixHandleRegion.area = { { -2.0f, 10.0f }, { 4.0f, 20.0f } };
             xAxixHandleRegion.color = Color::GREEN;
@@ -178,6 +204,10 @@ namespace Wyrd::Editor
             xAxixHandleRegion.mouseExitFunc = [this](int offset) {
                 PrimitiveUtils::UpdateColor(_Vertices, _Regions[offset].vertexOffset, PrimitiveUtils::RectCount, Color::GREEN);
             };
+
+            //xAxixHandleRegion.onDragFunc = [transform2DComponent](Vector2 delta) {
+            //    transform2DComponent->position.x += delta.x;
+            //};
 
             Region xyAxisHandleRegion;
             xyAxisHandleRegion.area = { { -5.0f, -5.0f }, { 10.0f, 10.0f } };
@@ -191,12 +221,17 @@ namespace Wyrd::Editor
                 PrimitiveUtils::UpdateColor(_Vertices, _Regions[offset].vertexOffset, PrimitiveUtils::RectCount, Color::WHITE);
             };
 
+            //xyAxisHandleRegion.onDragFunc = [transform2DComponent](Vector2 delta) {
+            //    transform2DComponent->position.x = delta.x;
+            //    transform2DComponent->position.y = delta.y;
+            //};
+
 
 
             uint32_t offset = 0;
 
             /* entity outline */
-            offset += PrimitiveUtils::GenerateRect(_Vertices, offset, { 0.0f, 0.0f }, editorComponent->inputArea._size, _XYMoveActive ? Color::MAGENTA : Color::CYAN, 2.0f, transform2DComponent->rotation, { 0.0f, 0.0f });
+            offset += PrimitiveUtils::GenerateRect(_Vertices, offset, { 0.0f, 0.0f }, editorComponent->inputArea._size, Color::CYAN, 2.0f, transform2DComponent->rotation, { 0.0f, 0.0f });
             
             /* axis movement*/
             yAxixHandleRegion.vertexOffset = offset;

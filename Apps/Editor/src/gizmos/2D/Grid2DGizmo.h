@@ -8,19 +8,19 @@
 #include <core/renderer/VertexArray.h>
 
 /* local includes */
-#include "Gizmo.h"
+#include "gizmos/Gizmo.h"
 #include "services/ServiceManager.h"
-#include "datamodels/OrthographicCameraController.h"
+#include "datamodels/CameraController.h"
 #include "support/IconLibrary.h"
 #include "events/EditorEvents.h"
 
 namespace Wyrd::Editor
 {
-	class GridGizmo : public Gizmo
+	class Grid2DGizmo : public Gizmo
 	{
 	public:
-		GridGizmo(SceneViewer* sceneViewer);
-		~GridGizmo();
+		Grid2DGizmo(SceneViewer* sceneViewer);
+		~Grid2DGizmo();
 
 		void Render(Timestep ts, Renderer& renderer) override;
 		void OnEvent(Event& event) override;
@@ -43,7 +43,7 @@ namespace Wyrd::Editor
 		std::shared_ptr<EventService>		_EventService;
 		std::shared_ptr<SettingsService>	_SettingsService;
 
-		std::shared_ptr<OrthographicCameraController> _CameraController;
+		std::shared_ptr<CameraController> _CameraController;
 
 		bool _Enabled;
 		Color _Color;

@@ -39,6 +39,25 @@ namespace Wyrd
     };
 
 
+    struct WYRD_LIBRARY_API Transform3DComponent
+    {
+        Wyrd::Vector3 position;
+        Wyrd::Vector3 rotation;
+        Wyrd::Vector3 scale;
+
+        Transform3DComponent() : position(0,0,0), rotation(0,0,0), scale(1,1,1) {} 
+    };
+
+
+    struct WYRD_LIBRARY_API MeshComponent
+    {
+        bool enabled;
+        Wyrd::Color color;
+
+        MeshComponent() : enabled(true), color(1,1,1,1) {} 
+    };
+
+
     struct WYRD_LIBRARY_API SpriteComponent
     {
         bool enabled;

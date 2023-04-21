@@ -3,7 +3,7 @@
 #include <core/Log.h>
 
 /* local includes */
-#include "GridGizmo.h"
+#include "Grid2DGizmo.h"
 #include "services/ServiceManager.h"
 #include "services/EventsService.h"
 #include "services/SettingsService.h"
@@ -15,7 +15,7 @@
 
 namespace Wyrd::Editor
 {
-	GridGizmo::GridGizmo(SceneViewer* sceneViewer) : Gizmo(sceneViewer, ENTITY_INVALID)
+	Grid2DGizmo::Grid2DGizmo(SceneViewer* sceneViewer) : Gizmo(sceneViewer, ENTITY_INVALID)
 	{
 		/* Store the camera controller */
 		_CameraController = sceneViewer->GetCamera();
@@ -29,7 +29,7 @@ namespace Wyrd::Editor
 		//_Color = Utils::ToColor(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLOR, std::string("1.0,1.0,1.0,1.0")));
 
 		/* Subscribe to settings events */
-		_EventService->Subscribe(Events::EventType::SettingsUpdated, WYRD_BIND_FN(GridGizmo::OnSettingsChanged));
+		_EventService->Subscribe(Events::EventType::SettingsUpdated, WYRD_BIND_FN(Grid2DGizmo::OnSettingsChanged));
 
 		/* Create and bind a default VAO */
 		_VertexArray.reset(VertexArray::Create());
@@ -40,54 +40,54 @@ namespace Wyrd::Editor
 		return;
 	}
 
-	GridGizmo::~GridGizmo() 
+	Grid2DGizmo::~Grid2DGizmo()
 	{
 		WYRD_TRACE("GOOEL");
 	}
 
-	void GridGizmo::Render(Timestep ts, Renderer& renderer)
+	void Grid2DGizmo::Render(Timestep ts, Renderer& renderer)
 	{
 		/* calculate the different between the camera viewport and the sceneviewer to set the scalling */
-		float diff = _CameraController->GetSize() / std::min<float>(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
+		//float diff = _CameraController->GetSize() / std::min<float>(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
 
-		{
-			Wyrd::DrawVertex2DCommand cmd{};
-			cmd.type = 1;
-			cmd.position = Vector2 { 0.0f, 0.0f };
-			cmd.vertices = &_Vertices;
-			cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-			cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
-			cmd.color = Color { 0.2f, 0.2f, 0.2f, 1.0f };
-			cmd.drawType = RendererDrawType::Triangles;
-			
-			renderer.Submit(cmd);
-			renderer.Flush();
-		}
-		{
-			Wyrd::DrawRectCommand cmd{};
-			cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
-			cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-			cmd.position = Vector2 { cursorPosition.x, cursorPosition.y };
-			cmd.rotationOrigin = Vector2 { 0.0f, 0.0f };
-			cmd.rotation = 0.0f;
-			cmd.size = Vector2 { 64.0f, 64.0f };
-			cmd.thickness = 4.0f;
-			cmd.color = Color { 0.7f, 0.7f, 0.7f, 1.0f };
-
-			renderer.Submit(cmd);
-			renderer.Flush();
-		}
+		//{
+		//	Wyrd::DrawVertex2DCommand cmd{};
+		//	cmd.type = 1;
+		//	cmd.position = Vector2 { 0.0f, 0.0f };
+		//	cmd.vertices = &_Vertices;
+		//	cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
+		//	cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
+		//	cmd.color = Color { 0.2f, 0.2f, 0.2f, 1.0f };
+		//	cmd.drawType = RendererDrawType::Triangles;
+		//	
+		//	renderer.Submit(cmd);
+		//	renderer.Flush();
+		//}
+		//{
+		//	Wyrd::DrawRectCommand cmd{};
+		//	cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
+		//	cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
+		//	cmd.position = Vector2 { cursorPosition.x, cursorPosition.y };
+		//	cmd.rotationOrigin = Vector2 { 0.0f, 0.0f };
+		//	cmd.rotation = 0.0f;
+		//	cmd.size = Vector2 { 64.0f, 64.0f };
+		//	cmd.thickness = 4.0f;
+		//	cmd.color = Color { 0.7f, 0.7f, 0.7f, 1.0f };
+		//
+		//	renderer.Submit(cmd);
+		//	renderer.Flush();
+		//}
 	}
 
-	void GridGizmo::OnEvent(Event& event)
+	void Grid2DGizmo::OnEvent(Event& event)
 	{
 		EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<MouseMovedEvent>(WYRD_BIND_EVENT_FN(GridGizmo::OnMouseMovedEvent), nullptr);
-		dispatcher.Dispatch<MouseButtonPressedEvent>(WYRD_BIND_EVENT_FN(GridGizmo::OnMouseButtonPressedEvent), nullptr);
+		dispatcher.Dispatch<MouseMovedEvent>(WYRD_BIND_EVENT_FN(Grid2DGizmo::OnMouseMovedEvent), nullptr);
+		dispatcher.Dispatch<MouseButtonPressedEvent>(WYRD_BIND_EVENT_FN(Grid2DGizmo::OnMouseButtonPressedEvent), nullptr);
 
 	}
 
-	bool GridGizmo::OnMouseMovedEvent(MouseMovedEvent& e, void* data)
+	bool Grid2DGizmo::OnMouseMovedEvent(MouseMovedEvent& e, void* data)
 	{
 		glm::vec4 worldPos = glm::vec4(_SceneViewer->Convert2DToWorldSpace({ e.GetX(), e.GetY() }), -1.0f, 1.0f);
 
@@ -97,7 +97,7 @@ namespace Wyrd::Editor
 		return true;
 	}
 
-	bool GridGizmo::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data)
+	bool Grid2DGizmo::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data)
 	{
 		//glm::vec4 worldPos = glm::vec4(_SceneViewer->Convert2DToWorldSpace({ e.GetPositionX(), e.GetPositionY() }), -1.0f, 1.0f);
 		//
@@ -116,7 +116,7 @@ namespace Wyrd::Editor
 		return true;
 	}
 
-	void GridGizmo::BuildGrid()
+	void Grid2DGizmo::BuildGrid()
 	{
 		float gap = 100.0f;
 		float thickness = 0.5f;
@@ -162,7 +162,7 @@ namespace Wyrd::Editor
 	}
 
 
-	void GridGizmo::OnSettingsChanged(Events::EventArgs& args)
+	void Grid2DGizmo::OnSettingsChanged(Events::EventArgs& args)
 	{
 		WYRD_TRACE("UPDATE GRID: SETTINGS MAY HAVE CHANGED!!!");
 	}

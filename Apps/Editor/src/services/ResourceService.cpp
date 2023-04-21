@@ -4,6 +4,7 @@
 #include <core/Application.h>
 #include <core/Resources.h>
 #include <core/renderer/Shader.h>
+#include <core/renderer/Mesh.h>
 #include <core/renderer/FontType.h>
 
 /* local includes */
@@ -11,7 +12,9 @@
 #include "services/ServiceManager.h"
 #include "loaders/AssetCacheLoader.h"
 #include "loaders/TextureLoader.h"
+#include "loaders/ObjLoader.h"
 #include "datamodels/resources/TextureRes.h"
+
 
 namespace Wyrd::Editor
 {
@@ -82,6 +85,32 @@ namespace Wyrd::Editor
 			Application::Get().GetResources().Shaders.insert(std::pair<std::string, std::shared_ptr<Shader>>("Text", shader));
 		}
 		{
+			/* grid 3D shader */
+			std::ifstream vertexStream(Utils::GetEditorResFolder() + "shaders/gizmo3DGrid.vs");
+			std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
+
+			std::ifstream fragmentStream(Utils::GetEditorResFolder() + "shaders/gizmo3DGrid.fs");
+			std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
+
+			std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
+			shader->Build(vertexSrc, fragmentSrc);
+			shader->Bind();
+			Application::Get().GetResources().Shaders.insert(std::pair<std::string, std::shared_ptr<Shader>>("Gizmo3DGrid", shader));
+		}
+		{
+			/* mesh shader */
+			std::ifstream vertexStream(Utils::GetEditorResFolder() + "shaders/mesh.vs");
+			std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
+
+			std::ifstream fragmentStream(Utils::GetEditorResFolder() + "shaders/mesh.fs");
+			std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
+
+			std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
+			shader->Build(vertexSrc, fragmentSrc);
+			shader->Bind();
+			Application::Get().GetResources().Shaders.insert(std::pair<std::string, std::shared_ptr<Shader>>("Mesh", shader));
+		}
+		{
 			/* default font(s) */
 			for (const auto& entry : std::filesystem::directory_iterator(Utils::GetEditorResFolder() + "fonts"))
 			{
@@ -90,6 +119,21 @@ namespace Wyrd::Editor
 					AddResource(entry.path().string(), UID());
 				}
 			}
+		}
+
+		{
+			/* mesh shader */
+			std::vector<Vertex3D> vertices;
+			ObjLoader::Load(Utils::GetEditorResFolder() + "meshes/sphere.obj", &vertices);
+
+			std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
+			mesh->Vertices = vertices;
+			Application::Get().GetResources().Meshs.insert(std::pair<std::string, std::shared_ptr<Mesh>>("Cube", mesh));
+
+			std::shared_ptr<TextureRes> texture = std::make_shared<TextureRes>(Utils::GetEditorResFolder() + "meshes\\cube_base.png");
+			texture->SetResourceID(UIDUtils::Create());
+			texture->Load();
+			mesh->BaseTexture = texture->GetResourceID();
 		}
 
 		/* Load defaults from the editor resources */
