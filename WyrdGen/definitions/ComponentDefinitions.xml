@@ -17,9 +17,11 @@
     <Data name="scale" type="Vec3" default="1,1,1"/>
   </Component>
 
-  <Component name="MeshComponent" shortName="Mesh">
+  <Component name="MeshRendererComponent" shortName="Mesh">
     <Data name="enabled" type="Boolean" default="true" />
     <Data name="color" type="Color" default="1,1,1,1"/>
+    <Data name="material" type="Material" default="UID()"/>
+    <Data name="model" type="Model" default="UID()"/>
   </Component>
   
   <Component name="SpriteComponent" shortName="Sprite">

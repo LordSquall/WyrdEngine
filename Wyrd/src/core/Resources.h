@@ -42,9 +42,9 @@ namespace Wyrd {
 		std::map<std::string, std::shared_ptr<Shader>> Shaders;
 
 		/**
-		 * @brief Models resource map
+		 * @brief Mesh resource map
 		*/
-		std::map<std::string, std::shared_ptr<Mesh>> Meshs;
+		std::map<UID, std::shared_ptr<Mesh>> Meshs;
 
 		/**
 		 * @brief Texture resource map

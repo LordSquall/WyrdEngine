@@ -122,10 +122,10 @@ namespace Wyrd::Editor
 			
 			if (_Scene != nullptr)
 			{
-				for (Entity e : EntitySet<Transform3DComponent, MeshComponent>(*_Scene.get()))
+				for (Entity e : EntitySet<Transform3DComponent, MeshRendererComponent>(*_Scene.get()))
 				{
 					Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(e);
-					MeshComponent* mesh = _Scene->Get<MeshComponent>(e);
+					MeshRendererComponent* meshRenderer = _Scene->Get<MeshRendererComponent>(e);
 
 					Wyrd::DrawMeshCommand cmd{};
 					cmd.position = transform->position;
@@ -135,9 +135,9 @@ namespace Wyrd::Editor
 					cmd.viewMatrix = _CameraController->GetCamera().GetViewMatrix();
 					cmd.projectionMatrix = _CameraController->GetCamera().GetProjectionMatrix();
 					cmd.shader = Application::Get().GetResources().Shaders["Mesh"].get();
-					cmd.mesh = Application::Get().GetResources().Meshs["Cube"].get();
-					cmd.baseTexture = Application::Get().GetResources().Textures[cmd.mesh->BaseTexture].get();
-					cmd.color = mesh->color;
+					cmd.mesh = Application::Get().GetResources().Meshs[meshRenderer->model].get();
+					cmd.baseTexture = Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)].get();
+					cmd.color = meshRenderer->color;
 					cmd.drawType = RendererDrawType::Triangles;
 
 					renderer.Submit(cmd);
@@ -271,7 +271,7 @@ _Framebuffer->Unbind();
 
 	void SceneViewer::OnEditorRender()
 	{
-		static bool showStats = true;
+		static bool showStats = false;
 		static bool useOrtho = false;
 		static bool showGizmoSettings = false;
 
@@ -300,7 +300,6 @@ _Framebuffer->Unbind();
 
 		/* build the top toolbar */
 		ImGui::Checkbox("show stats", &showStats);
-		ImGui::Checkbox("use ortho", &useOrtho);
 
 		menuBarHeight = ImGui::GetCursorScreenPos().y - menuBarHeight;
 
@@ -332,7 +331,8 @@ _Framebuffer->Unbind();
 
 		if (showStats == true)
 		{
-			ImGui::SetCursorPosY(42.0f);
+			ImGui::Checkbox("use ortho", &useOrtho);
+			ImGui::SetCursorPosY(58.0f);
 			ImGui::Text("Camera:");
 
 			float camYaw = _CameraController->GetCamera().GetYaw();

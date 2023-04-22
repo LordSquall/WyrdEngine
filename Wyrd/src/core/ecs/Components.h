@@ -49,12 +49,14 @@ namespace Wyrd
     };
 
 
-    struct WYRD_LIBRARY_API MeshComponent
+    struct WYRD_LIBRARY_API MeshRendererComponent
     {
         bool enabled;
         Wyrd::Color color;
+        Wyrd::UID material;
+        Wyrd::UID model;
 
-        MeshComponent() : enabled(true), color(1,1,1,1) {} 
+        MeshRendererComponent() : enabled(true), color(1,1,1,1), material(UID()), model(UID()) {} 
     };
 
 

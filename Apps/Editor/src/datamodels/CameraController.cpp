@@ -25,7 +25,7 @@ namespace Wyrd::Editor {
 	{
 		_Camera.perspectiveSettings.aspect = width / height;
 
-		// TODO needs work
+		// TODO needs work :/
 		float a = glm::radians(45.0f);
 		float halfY = 20 * sqrt(1 + a * a) / 2.0f * 3.1415926f / 180.0f;
 		float top = 1.0f * tan(halfY);

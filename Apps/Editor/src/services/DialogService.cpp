@@ -38,8 +38,8 @@ namespace Wyrd::Editor
 			{
 				EditorDialogConfig dialogConfig = dialog->GetConfig();
 
-				const char* name = dialog->GetName().c_str();
-				if (!ImGui::IsPopupOpen(name))
+				const char* title = dialog->GetTitle().c_str();
+				if (!ImGui::IsPopupOpen(title))
 				{
 					if (dialogConfig.alwaysCenter)
 					{
@@ -52,16 +52,16 @@ namespace Wyrd::Editor
 						ImGui::SetNextWindowPos(ImVec2(xPos, yPos));
 						ImGui::SetNextWindowSize(ImVec2(dialogConfig.width, dialogConfig.height));
 					}
-					ImGui::OpenPopup(name);
+					ImGui::OpenPopup(title);
 				}
 
-				if (ImGui::BeginPopupModal(name, nullptr))
+				if (ImGui::BeginPopupModal(title, nullptr))
 				{
 					dialog->OnDialogRender();
 					ImGui::EndPopup();
 				}
 
-				return ImGui::IsPopupOpen(name);
+				return ImGui::IsPopupOpen(title);
 			}
 			return false;
 		};
@@ -84,7 +84,39 @@ namespace Wyrd::Editor
 		{
 			if (dialog != nullptr)
 			{
-				const char* name = dialog->GetName().c_str();
+				const char* title = dialog->GetTitle().c_str();
+				if (!ImGui::IsPopupOpen(title))
+					ImGui::OpenPopup(title);
+
+				if (ImGui::BeginPopupModal(title, nullptr, ImGuiWindowFlags_NoResize))
+				{
+					dialog->OnDialogRender();
+					ImGui::EndPopup();
+				}
+
+				return ImGui::IsPopupOpen(title);
+			}
+			return false;
+		};
+	}
+
+	void DialogService::OpenSingleEntryDialog(EditorLayer* editorLayer, const std::string title, const std::string& prompt, std::function<void(std::string)> successCallback, std::function<void(std::string)> failureCallback)
+	{
+		if (_singleEntryDialog)
+			_singleEntryDialog = std::make_shared<SingleEntryDialog>(editorLayer);
+
+		_singleEntryDialog->SetTitle(title);
+		_singleEntryDialog->SetPrompt(prompt);
+		_singleEntryDialog->SetSuccessCallback(successCallback);
+		_singleEntryDialog->SetFailureCallback(failureCallback);
+
+		_activeDialog = _singleEntryDialog;
+
+		_popupDialogCallback = [](std::shared_ptr<EditorViewDialogBase> dialog)->bool
+		{
+			if (dialog != nullptr)
+			{
+				const char* name = dialog->GetTitle().c_str();
 				if (!ImGui::IsPopupOpen(name))
 					ImGui::OpenPopup(name);
 

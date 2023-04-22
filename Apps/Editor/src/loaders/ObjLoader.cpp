@@ -15,6 +15,7 @@ namespace Wyrd::Editor
 
 		std::vector<Vector3> verts;
 		std::vector<Vector2> uvCoords;
+		std::vector<Vector3> normals;
 
 		std::ifstream filestream(path);
 
@@ -48,6 +49,17 @@ namespace Wyrd::Editor
 				uvCoords.push_back({ u, v });
 			}
 
+			/* normals */
+			if (line[0] == 'v' && line[1] == 'n')
+			{
+				std::string tag;
+				float x, y, z;
+				std::istringstream iss(line);
+				iss >> tag >> x >> y >> z;
+
+				normals.push_back({ x, y, z });
+			}
+
 			/* faces */
 			if (line[0] == 'f')
 			{
@@ -57,28 +69,31 @@ namespace Wyrd::Editor
 				iss >> tag >> set1 >> set2 >> set3;
 
 				{
-					int vertIdx, textureIdx;
-					sscanf(set1.c_str(), "%d/%d", &vertIdx, &textureIdx);
+					int vertIdx, textureIdx, normalIdx;
+					sscanf(set1.c_str(), "%d/%d/%d", &vertIdx, &textureIdx, &normalIdx);
 					vertIdx--;
 					textureIdx--;
+					normalIdx--;
 
-					vertices->push_back({ verts[vertIdx].x, verts[vertIdx].y , verts[vertIdx].z, uvCoords[textureIdx].x, uvCoords[textureIdx].y });
+					vertices->push_back({ verts[vertIdx].x, verts[vertIdx].y , verts[vertIdx].z, uvCoords[textureIdx].x, uvCoords[textureIdx].y, normals[normalIdx].x, normals[normalIdx].y , normals[normalIdx].z });
 				}
 				{
-					int vertIdx, textureIdx;
-					sscanf(set2.c_str(), "%d/%d", &vertIdx, &textureIdx);
+					int vertIdx, textureIdx, normalIdx;
+					sscanf(set2.c_str(), "%d/%d/%d", &vertIdx, &textureIdx, &normalIdx);
 					vertIdx--;
 					textureIdx--;
+					normalIdx--;
 
-					vertices->push_back({ verts[vertIdx].x, verts[vertIdx].y , verts[vertIdx].z, uvCoords[textureIdx].x, uvCoords[textureIdx].y });
+					vertices->push_back({ verts[vertIdx].x, verts[vertIdx].y , verts[vertIdx].z, uvCoords[textureIdx].x, uvCoords[textureIdx].y, normals[normalIdx].x, normals[normalIdx].y , normals[normalIdx].z });
 				}
 				{
-					int vertIdx, textureIdx;
-					sscanf(set3.c_str(), "%d/%d", &vertIdx, &textureIdx);
+					int vertIdx, textureIdx, normalIdx;
+					sscanf(set3.c_str(), "%d/%d/%d", &vertIdx, &textureIdx, &normalIdx);
 					vertIdx--;
 					textureIdx--;
+					normalIdx--;
 
-					vertices->push_back({ verts[vertIdx].x, verts[vertIdx].y , verts[vertIdx].z, uvCoords[textureIdx].x, uvCoords[textureIdx].y });
+					vertices->push_back({ verts[vertIdx].x, verts[vertIdx].y , verts[vertIdx].z, uvCoords[textureIdx].x, uvCoords[textureIdx].y, normals[normalIdx].x, normals[normalIdx].y , normals[normalIdx].z });
 				}
 			}
 		}

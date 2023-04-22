@@ -6,6 +6,7 @@ namespace Wyrd {
 	struct Vertex3D
 	{
 		float x, y, z;				/* 3D position		*/
-		float u, v;
+		float u, v;					/* UV */
+		float xn, yx, zn;			/* Normal */
 	};
 }

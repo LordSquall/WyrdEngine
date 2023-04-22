@@ -42,6 +42,8 @@ namespace Wyrd::Editor
 		_extensions.insert(std::pair<std::string, ResourceType>(".shader", ResourceType::SHADER));
 		_extensions.insert(std::pair<std::string, ResourceType>(".scene", ResourceType::SCENE));
 		_extensions.insert(std::pair<std::string, ResourceType>(".script", ResourceType::SCRIPT));
+		_extensions.insert(std::pair<std::string, ResourceType>(".material", ResourceType::MATERIAL));
+		_extensions.insert(std::pair<std::string, ResourceType>(".obj", ResourceType::MODEL));
 
 
 		/* add the default shaders */
@@ -119,21 +121,6 @@ namespace Wyrd::Editor
 					AddResource(entry.path().string(), UID());
 				}
 			}
-		}
-
-		{
-			/* mesh shader */
-			std::vector<Vertex3D> vertices;
-			ObjLoader::Load(Utils::GetEditorResFolder() + "meshes/sphere.obj", &vertices);
-
-			std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
-			mesh->Vertices = vertices;
-			Application::Get().GetResources().Meshs.insert(std::pair<std::string, std::shared_ptr<Mesh>>("Cube", mesh));
-
-			std::shared_ptr<TextureRes> texture = std::make_shared<TextureRes>(Utils::GetEditorResFolder() + "meshes\\cube_base.png");
-			texture->SetResourceID(UIDUtils::Create());
-			texture->Load();
-			mesh->BaseTexture = texture->GetResourceID();
 		}
 
 		/* Load defaults from the editor resources */

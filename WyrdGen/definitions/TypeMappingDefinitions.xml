@@ -96,6 +96,18 @@
     <JsonType type="String" isStreamable="true" isPrimitive="true"/>
   </TypeMap>
 
+  <TypeMap name="Material">
+    <UnmanagedType type="Wyrd::UID" default="" isPrimitive="false"/>
+    <ManagedType type="Material" marshalType="Struct" default="0" />
+    <JsonType type="String" isStreamable="true" isPrimitive="true"/>
+  </TypeMap>
+  
+  <TypeMap name="Model">
+    <UnmanagedType type="Wyrd::UID" default="" isPrimitive="false"/>
+    <ManagedType type="Model" marshalType="Struct" default="0" />
+    <JsonType type="String" isStreamable="true" isPrimitive="true"/>
+  </TypeMap>
+
   <TypeMap name="Rect">
     <UnmanagedType type="Wyrd::Rect" default="0,0,0,0" isPrimitive="false"/>
     <ManagedType type="Rect" marshalType="Struct" default="0"/>

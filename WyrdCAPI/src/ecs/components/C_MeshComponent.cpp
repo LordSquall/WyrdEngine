@@ -5,7 +5,7 @@
 #include <platform/OpenGL/OpenGLTexture.h>
 
 /* local includes */
-#include "C_MeshComponent.h" 
+#include "C_MeshRendererComponent.h" 
 
 void MeshComponent_SetEnabled(void* scenePtr, Wyrd::Entity entity, bool enabled)
 {

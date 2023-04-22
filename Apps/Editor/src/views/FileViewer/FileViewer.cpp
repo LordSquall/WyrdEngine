@@ -9,8 +9,6 @@
 #include "FileViewer.h"
 #include "datamodels/resources/Resource.h"
 #include "datamodels/resources/TextureRes.h"
-#include "views/Dialogs/NewScriptDialog.h"
-#include "views/Dialogs/NewSceneDialog.h"
 #include "services/ServiceManager.h"
 #include "support/ImGuiUtils.h"
 

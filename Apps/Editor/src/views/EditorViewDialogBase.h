@@ -29,7 +29,7 @@ namespace Wyrd::Editor
 	class EditorViewDialogBase : EditorViewBase
 	{
 	public:
-		EditorViewDialogBase(const std::string& name, EditorLayer* editorLayer) : EditorViewBase(name, editorLayer) { _name = name; }
+		EditorViewDialogBase(const std::string& title, EditorLayer* editorLayer) : EditorViewBase(title, editorLayer) { _title = title; }
 		virtual ~EditorViewDialogBase() = default;
 
 		/**
@@ -47,7 +47,13 @@ namespace Wyrd::Editor
 		 * @brief Get Name
 		 * @return 
 		*/
-		inline const std::string& GetName() { return _name; }
+		inline const std::string& GetTitle() { return _title; }
+
+
+		/**
+		 * @brief Set the current title for the dialog
+		*/
+		inline void SetTitle(const std::string& title) { _title = title; }
 
 		/**
 		 * @brief Retrieve the dialog settings used for this dialog
@@ -64,6 +70,6 @@ namespace Wyrd::Editor
 		EditorDialogConfig _dialogConfig;
 
 	private:
-		std::string _name;
+		std::string _title;
 	};
 }

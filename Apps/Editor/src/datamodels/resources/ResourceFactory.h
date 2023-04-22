@@ -8,6 +8,8 @@
 #include "datamodels/resources/SceneRes.h"
 #include "datamodels/resources/ScriptRes.h"
 #include "datamodels/resources/FontTypeRes.h"
+#include "datamodels/resources/MaterialRes.h"
+#include "datamodels/resources/ModelRes.h"
 
 namespace Wyrd::Editor
 {
@@ -26,6 +28,10 @@ namespace Wyrd::Editor
 				return std::make_shared<ScriptRes>(resourceFilePath);
 			case FONT:
 				return std::make_shared<FontTypeRes>(resourceFilePath);
+			case MATERIAL:
+				return std::make_shared<MaterialRes>(resourceFilePath);
+			case MODEL:
+				return std::make_shared<ModelRes>(resourceFilePath);
 			case UNKNOWN:
 			case NONE:
 			default:

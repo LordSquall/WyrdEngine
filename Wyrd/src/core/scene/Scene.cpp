@@ -41,7 +41,7 @@ namespace Wyrd
 		RegisterComponent<Transform2DComponent>("Transform2D", "Transform2DComponent", true);
 		RegisterComponent<Transform3DComponent>("Transform3D", "Transform3DComponent", true);
 		RegisterComponent<RelationshipComponent>("Relationship", "RelationshipComponent", true);
-		RegisterComponent<MeshComponent>("Mesh", "MeshComponent", true);
+		RegisterComponent<MeshRendererComponent>("MeshRenderer", "MeshRendererComponent", true);
 		RegisterComponent<SpriteComponent>("Sprite", "SpriteComponent", true);
 		RegisterComponent<ScriptComponent>("Script", "ScriptComponent", true);
 		RegisterComponent<CameraComponent>("Camera", "CameraComponent", true);
@@ -251,16 +251,12 @@ namespace Wyrd
 		/* register all the inbuild components with the ECS */
 		InitialiseComponent<MetaDataComponent>(ent);
 		InitialiseComponent<RelationshipComponent>(ent);
-		InitialiseComponent<Transform2DComponent>(ent);
-		//InitialiseComponent<SpriteComponent>(ent);
-		//InitialiseComponent<ScriptComponent>(ent);
-		//InitialiseComponent<CameraComponent>(ent);
-		//InitialiseComponent<TextComponent>(ent);
+		InitialiseComponent<Transform3DComponent>(ent);
 
 		// Assign all initial components
 		MetaDataComponent* metaDataComponent = AssignComponent<MetaDataComponent>(ent);
 		RelationshipComponent* relationshipComponent = AssignComponent<RelationshipComponent>(ent);
-		Transform2DComponent* transform2DComponent = AssignComponent<Transform2DComponent>(ent);
+		Transform3DComponent* transform3DComponent = AssignComponent<Transform3DComponent>(ent);
 
 		strcpy(metaDataComponent->name, "New Entity");
 
@@ -274,12 +270,12 @@ namespace Wyrd
 		/* register all the inbuild components with the ECS */
 		InitialiseComponent<MetaDataComponent>(ent);
 		InitialiseComponent<RelationshipComponent>(ent);
-		InitialiseComponent<Transform2DComponent>(ent);
+		InitialiseComponent<Transform3DComponent>(ent);
 		
 		// Assign all initial components
 		MetaDataComponent* metaDataComponent = AssignComponent<MetaDataComponent>(ent);
 		RelationshipComponent* relationshipComponent = AssignComponent<RelationshipComponent>(ent);
-		Transform2DComponent* transform2DComponent = AssignComponent<Transform2DComponent>(ent);
+		Transform3DComponent* transform3DComponent = AssignComponent<Transform3DComponent>(ent);
 
 		strcpy(metaDataComponent->name, name.c_str());
 

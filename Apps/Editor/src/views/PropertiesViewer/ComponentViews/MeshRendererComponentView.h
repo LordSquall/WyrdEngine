@@ -6,9 +6,9 @@
 
 namespace Wyrd::Editor
 {
-	class MeshComponentView
+	class MeshRendererComponentView
 	{
 	public:
-		COMPONENT_VIEW_FACTORY_SETUP(MeshComponentView);
+		COMPONENT_VIEW_FACTORY_SETUP(MeshRendererComponentView);
 	};
 }

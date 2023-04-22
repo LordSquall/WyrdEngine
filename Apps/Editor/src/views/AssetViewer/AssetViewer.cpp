@@ -9,9 +9,6 @@
 #include "AssetViewer.h"
 #include "datamodels/resources/Resource.h"
 #include "datamodels/resources/TextureRes.h"
-#include "views/Dialogs/NewScriptDialog.h"
-#include "views/Dialogs/NewSceneDialog.h"
-#include "views/Dialogs/SpriteSheetImporterDialog.h"
 #include "services/ServiceManager.h"
 #include "support/ImGuiUtils.h"
 
@@ -117,9 +114,37 @@ namespace Wyrd::Editor
 				}
 				if (ImGui::BeginMenu("Create..."))
 				{
+					if (ImGui::MenuItem("Material"))
+					{
+						_dialogService->OpenSingleEntryDialog(_EditorLayer, "Create new Material", "Name", [&](std::string d) -> void {
+
+							/* load the material template */
+							std::string rawTemplateContent = Utils::ReadFileToString(Utils::GetEditorResFolder() + "\\templates\\Material.material");
+
+							/* populate the template tags */
+							std::string populatedTemplateContent = Utils::ReplaceAll(rawTemplateContent, "<<MATERIAL_NAME>>", d.c_str());
+
+							/* create the file */
+							Utils::CreateRawFile(_SelectedDirectory / (d + ".material"), populatedTemplateContent);
+
+							WYRD_TRACE("Add Material... {0}", d.c_str());
+						});
+					}
 					if (ImGui::MenuItem("Script"))
 					{
-						_dialogService->OpenDialog(std::make_shared<NewScriptDialog>(_EditorLayer, _SelectedDirectory.string()));
+						_dialogService->OpenSingleEntryDialog(_EditorLayer, "Create new Script", "Name", [&](std::string d) -> void {
+
+							/* load the material template */
+							std::string rawTemplateContent = Utils::ReadFileToString(Utils::GetEditorResFolder() + "\\templates\\Script.cs");
+
+							/* populate the template tags */
+							std::string populatedTemplateContent = Utils::ReplaceAll(rawTemplateContent, "<<CLASS_NAME>>", d.c_str());
+
+							/* create the file */
+							Utils::CreateRawFile(_SelectedDirectory / (d + ".cs"), populatedTemplateContent);
+
+							WYRD_TRACE("Add Script... {0}", d.c_str());
+						});
 					}
 					ImGui::EndMenu();
 				}
@@ -263,6 +288,13 @@ namespace Wyrd::Editor
 					DrawScriptItem(resIdx, (ScriptRes&)*resource.get());
 					break;
 				case ResourceType::SHADER:
+					break;
+				case ResourceType::MATERIAL:
+					DrawMaterialItem(resIdx, (MaterialRes&)*resource.get());
+					break;
+				case ResourceType::MODEL:
+					DrawModelItem(resIdx, (ModelRes&)*resource.get());
+					break;
 				case ResourceType::NONE:
 				default:
 					DrawUnknownItem(resIdx, file.stem().string());
@@ -355,11 +387,6 @@ namespace Wyrd::Editor
 			if (ImGui::MenuItem("Delete"))
 			{
 				Utils::RemoveFile(textureResource.GetPath());
-			}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Convert To Sprite Sheet"))
-			{
-				_dialogService->OpenDialog(std::make_shared<SpriteSheetImporterDialog>(_EditorLayer, &textureResource));
 			}
 			ImGui::EndPopup();
 		}
@@ -495,6 +522,106 @@ namespace Wyrd::Editor
 		/* Visuals */
 		ImGui::Image(*_ScriptIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 		ImGui::TextClipped(scriptResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
+	}
+
+	void AssetViewer::DrawMaterialItem(int resID, MaterialRes& materialResource)
+	{
+		/* Drag and Drop */
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+		{
+			const UID resourceID = materialResource.GetResourceID();
+			ImGui::SetDragDropPayload(IMGUI_DND_MATERIAL, &resourceID, sizeof(UID));
+			ImGui::Text(materialResource.GetName().c_str());
+			ImGui::EndDragDropSource();
+		}
+
+		/* Tool Tip */
+		if (ImGui::IsItemHovered())
+		{
+			ImGui::BeginTooltip();
+			ImGui::Text(materialResource.GetName().c_str());
+			ImGui::Text("Filename: %s", materialResource.GetPath().c_str());
+			ImGui::Text("UID: %s", materialResource.GetResourceID().str().c_str());
+			ImGui::EndTooltip();
+		}
+
+		/* Context Menu */
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Delete"))
+			{
+				Utils::RemoveFile(materialResource.GetPath().c_str());
+			}
+			ImGui::EndPopup();
+		}
+
+		/* Input */
+		if (ImGui::IsItemHovered())
+		{
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+				_SelectedResource = resID;
+
+			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+			{
+				_SelectedResource = resID;
+				Utils::SystemExecute("code " + materialResource.GetPath().string());
+			}
+		}
+
+		/* Visuals */
+		ImGui::Image(*_SceneIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+		ImGui::TextClipped(materialResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
+
+	}
+
+	void AssetViewer::DrawModelItem(int resID, ModelRes& modelResource)
+	{
+		/* Drag and Drop */
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+		{
+			const UID resourceID = modelResource.GetResourceID();
+			ImGui::SetDragDropPayload(IMGUI_DND_MODEL, &resourceID, sizeof(UID));
+			ImGui::Text(modelResource.GetName().c_str());
+			ImGui::EndDragDropSource();
+		}
+
+		/* Tool Tip */
+		if (ImGui::IsItemHovered())
+		{
+			ImGui::BeginTooltip();
+			ImGui::Text(modelResource.GetName().c_str());
+			ImGui::Text("Filename: %s", modelResource.GetPath().c_str());
+			ImGui::Text("UID: %s", modelResource.GetResourceID().str().c_str());
+			ImGui::EndTooltip();
+		}
+
+		/* Context Menu */
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Delete"))
+			{
+				Utils::RemoveFile(modelResource.GetPath().c_str());
+			}
+			ImGui::EndPopup();
+		}
+
+		/* Input */
+		if (ImGui::IsItemHovered())
+		{
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+				_SelectedResource = resID;
+
+			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+			{
+				_SelectedResource = resID;
+				Utils::SystemExecute("code " + modelResource.GetPath().string());
+			}
+		}
+
+		/* Visuals */
+		ImGui::Image(*_SceneIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+		ImGui::TextClipped(modelResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
+
 	}
 
 	void AssetViewer::DrawUnknownItem(int resID, const std::string& unknownResourceName)

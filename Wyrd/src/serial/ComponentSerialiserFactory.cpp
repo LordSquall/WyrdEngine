@@ -40,10 +40,12 @@ namespace Wyrd
         obj << "scale" << data->scale;
     }
 
-    void ComponentSerialiserFactory::Serialise(jsonxx::Object & obj, Wyrd::MeshComponent* data)
+    void ComponentSerialiserFactory::Serialise(jsonxx::Object & obj, Wyrd::MeshRendererComponent* data)
     {
         obj << "enabled" << data->enabled;
         obj << "color" << data->color;
+        obj << "material" << data->material;
+        obj << "model" << data->model;
     }
 
     void ComponentSerialiserFactory::Serialise(jsonxx::Object & obj, Wyrd::SpriteComponent* data)
@@ -105,10 +107,12 @@ namespace Wyrd
         data->scale << obj.get<jsonxx::Object>("scale", DecodeVec3("1,1,1"));
     }
 
-    void ComponentSerialiserFactory::Deserialise(jsonxx::Object & obj, Wyrd::MeshComponent* data)
+    void ComponentSerialiserFactory::Deserialise(jsonxx::Object & obj, Wyrd::MeshRendererComponent* data)
     {
         data->enabled = obj.get<jsonxx::Boolean>("enabled", true);
         data->color << obj.get<jsonxx::Object>("color", DecodeColor("1,1,1,1"));
+        data->material << obj.get<jsonxx::String>("material", UID());
+        data->model << obj.get<jsonxx::String>("model", UID());
     }
 
     void ComponentSerialiserFactory::Deserialise(jsonxx::Object & obj, Wyrd::SpriteComponent* data)

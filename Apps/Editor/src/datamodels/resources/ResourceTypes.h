@@ -14,6 +14,7 @@ namespace Wyrd::Editor
 		MODEL = 4,
 		SCENE = 5,
 		SCRIPT = 6,
-		FONT = 7
+		FONT = 7,
+		MATERIAL = 8
 	};
 }

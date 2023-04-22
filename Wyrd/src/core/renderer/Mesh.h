@@ -2,6 +2,7 @@
 
 /* local includes */
 #include "core/export.h"
+#include "core/UID.h"
 #include "core/Structures.h"
 #include "core/pipeline/Vertex3D.h"
 

@@ -121,9 +121,8 @@ namespace ImGui
         ImVec2 textSize = ImGui::CalcTextSize(text);
         ImVec2 clippedTextSize = ImVec2(clipLength, textSize.y);
 
-        int textLength = strlen(text);
         int suffixLength = strlen(suffix);
-        if (suffixLength > 0 && textLength > suffixLength)
+        if (textSize.x > clippedTextSize.x)
         {
             textContent.replace(textContent.end() - suffixLength, textContent.end(), suffix);
         }

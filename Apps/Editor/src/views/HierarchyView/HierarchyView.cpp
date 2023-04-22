@@ -195,7 +195,7 @@ namespace Wyrd::Editor
 			if (ImGui::MenuItem("Add Mesh"))
 			{
 				scene.AssignComponent<Transform3DComponent>(entity);
-				scene.AssignComponent<MeshComponent>(entity);
+				scene.AssignComponent<MeshRendererComponent>(entity);
 			}
 			if (ImGui::MenuItem("Add Sprite"))
 			{
