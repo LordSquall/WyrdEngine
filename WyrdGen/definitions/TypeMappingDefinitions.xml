@@ -125,6 +125,18 @@
     <ManagedType type="IntPtr" marshalType="Struct" default="0" wrapperType="Texture" />
   </TypeMap>
 
+  <TypeMap name="PropertyList" HeapOnly="true">
+    <UnmanagedType type="BasePropMapRef" default="nullptr"/>
+    <ManagedType type="BasePropMapRef" marshalType="Struct" default="null"/>
+    <JsonType type="BasePropMapRef" isStreamable="false" isPrimitive="true"/>
+  </TypeMap>
+
+  <TypeMap name="PropetryList" HeapOnly="true">
+    <UnmanagedType type="PropetryListRef" default="nullptr"/>
+    <ManagedType type="PropetryListRef" marshalType="Struct" default="null"/>
+    <JsonType type="PropetryListRef" isStreamable="false" isPrimitive="true"/>
+  </TypeMap>
+  
   <TypeMap name="ScriptPropertiesMapRef" HeapOnly="true">
     <UnmanagedType type="ScriptPropertiesMapRef" default="nullptr"/>
     <ManagedType type="ScriptPropertiesMapRef" marshalType="Struct" default="null"/>
@@ -136,5 +148,7 @@
     <ManagedType type="ScriptPropertiesDataMapRef" marshalType="Struct" default="null"/>
     <JsonType type="ScriptPropertiesDataMapRef" isStreamable="false" isPrimitive="true"/>
   </TypeMap>
+  
+  
   
 </TypeMappings>

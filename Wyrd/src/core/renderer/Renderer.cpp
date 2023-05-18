@@ -1,6 +1,6 @@
 #include "wyrdpch.h"
+#include "core/Application.h"
 #include "core/renderer/Renderer.h"
-
 #include "platform/OpenGL/OpenGLRenderer.h"
 
 namespace Wyrd
@@ -35,6 +35,13 @@ namespace Wyrd
 		_vertex2DBatch.Initialise(this);
 		_spriteBatch.Initialise(this);
 		_textBatch.Initialise(this);
+
+		Vertex3D verts = { 0.0f, 0.0f, 0.0f };
+
+		_DebugVertexBuffer.reset(VertexBuffer::Create((float*)&verts, sizeof(Vertex3D), "debug3d"));
+		_DebugVertexArray.reset(VertexArray::Create());
+		_DebugVertexArray->SetAttribute(0, 0, 3, sizeof(Vertex3D));
+		_DebugVertexArray->SetAttribute(1, 3, 2, sizeof(Vertex3D));
 	}
 
 	void Renderer::Submit(DrawRectCommand& cmd)
@@ -69,12 +76,17 @@ namespace Wyrd
 		_vertex3DBatch.Submit(cmd);
 	}
 
+	void Renderer::Submit(DrawMeshInputColorPickerCommand& cmd)
+	{
+
+	}
+
 	void Renderer::Flush()
 	{
 		_vertex3DBatch.Flush();
 		_MeshBatch.Flush();
-		_spriteBatch.Flush();
-		_vertex2DBatch.Flush();
+		//_spriteBatch.Flush();
+		//_vertex2DBatch.Flush();
 	}
 
 #ifdef WYRD_INCLUDE_DEBUG_TAGS

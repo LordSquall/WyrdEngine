@@ -45,6 +45,13 @@ namespace Wyrd
 		inline const glm::mat4 GetViewMatrix() const { return _viewMatrix; }
 		inline const glm::mat4 GetProjectionMatrix() const { return _projectionMatrix; }
 
+		const glm::vec3 GetWorldSpaceFromPoint(const glm::vec3& point, const Wyrd::Rect& boundary);
+
+		inline const glm::vec3 GetNDCFromPoint(const glm::vec3& point, const Wyrd::Rect& boundary)
+		{
+			return { -(1.0 - (point.x * (1.0f / (boundary._size.x * 0.5f)))), 1.0f - (point.y * (1.0f / (boundary._size.y * 0.5f))), 0.0f };
+		}
+
 	public:
 
 		enum class Mode { Orthographic, Perspective } _Mode;

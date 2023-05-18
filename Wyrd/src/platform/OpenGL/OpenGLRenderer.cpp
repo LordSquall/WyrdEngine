@@ -1,6 +1,9 @@
 #include "wyrdpch.h"
 #include "OpenGLRenderer.h"
 #include "core/Log.h"
+#include "core/Application.h"
+
+#include "core/renderer/Mesh.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -27,6 +30,11 @@ namespace Wyrd
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
 		glEnable(GL_DEPTH_TEST);
+
+		_DebugVertexBuffer.reset(VertexBuffer::Create((float*)&_DebugVertices, sizeof(Vertex3D), "debugVector3Dbatch"));
+
+		_DebugVertexArray.reset(VertexArray::Create());
+		_DebugVertexArray->SetAttribute(0, 0, 3, sizeof(Vertex3D));
 	}
 
 	OpenGLRenderer::~OpenGLRenderer()
@@ -85,9 +93,70 @@ namespace Wyrd
 		case RendererDrawType::Quads:
 			primitiveType = GL_QUADS;
 			break;
+		case RendererDrawType::Lines:
+			primitiveType = GL_LINES;
+			break;
 		}
 
 		glDrawArrays(primitiveType, offset, count);
+	}
+
+
+	void OpenGLRenderer::DrawDebugBoundingBox(const BoundingBox& boundingBox, const glm::vec3& position, const Color& color, const glm::mat4& projection, const glm::mat4& view)
+	{
+		glm::vec3 c = position + boundingBox._position;
+		glm::vec3 min = boundingBox._minExtent;
+		glm::vec3 max = boundingBox._maxExtent;
+		_DebugVertices.push_back({ c.x + min.x, c.y + min.y, c.z + min.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + min.x, c.y + max.y, c.z + min.z , 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + min.x, c.y + max.y, c.z + min.z , 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + max.x, c.y + max.y, c.z + min.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + max.x, c.y + max.y, c.z + min.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + max.x, c.y + min.y, c.z + min.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + max.x, c.y + min.y, c.z + min.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + min.x, c.y + min.y, c.z + min.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+																 
+		_DebugVertices.push_back({ c.x + min.x, c.y + min.y, c.z + max.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + min.x, c.y + max.y, c.z + max.z , 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + min.x, c.y + max.y, c.z + max.z , 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + max.x, c.y + max.y, c.z + max.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + max.x, c.y + max.y, c.z + max.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + max.x, c.y + min.y, c.z + max.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + max.x, c.y + min.y, c.z + max.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + min.x, c.y + min.y, c.z + max.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+														 
+		_DebugVertices.push_back({ c.x + min.x, c.y + min.y, c.z + min.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + min.x, c.y + min.y, c.z + max.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + min.x, c.y + max.y, c.z + min.z , 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + min.x, c.y + max.y, c.z + max.z , 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + max.x, c.y + max.y, c.z + min.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + max.x, c.y + max.y, c.z + max.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + max.x, c.y + max.y, c.z + min.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + max.x, c.y + max.y, c.z + max.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + max.x, c.y + min.y, c.z + min.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ c.x + max.x, c.y + min.y, c.z + max.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+
+		auto shader = Application::Get().GetResources().Shaders["Debug3D"];
+
+		shader->Bind();
+		shader->SetMatrix("u_view", view);
+		shader->SetMatrix("u_projection", projection);
+
+		shader->SetUniformColor("u_BlendColor", color);
+
+		_DebugVertexArray->Bind();
+		_DebugVertexBuffer->Bind();
+
+
+		/* update both the vertex and index buffers */
+		_DebugVertexBuffer->Update((float*)&_DebugVertices.at(0), sizeof(Vertex3D) * (uint32_t)_DebugVertices.size(), 0);
+
+		DrawArray(RendererDrawType::Lines, 0, (uint32_t)_DebugVertices.size());
+
+#ifdef WYRD_INCLUDE_DEBUG_TAGS
+		_Renderer->EndNamedSection();
+#endif
+		_DebugVertices.clear();
 	}
 
 

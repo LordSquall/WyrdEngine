@@ -10,35 +10,32 @@
 
 namespace Wyrd::Editor
 {
-	TextureLoader::Result TextureLoader::Load(const std::filesystem::path& filepath, TextureRes& texture)
+	TextureLoader::Result TextureLoader::Load(const std::filesystem::path& filepath, int32_t& width, int32_t& height, uint32_t& channels, unsigned char** data)
 	{
-		int width, height, channels;
-		unsigned char* data;
+		int w, h, c;
+		unsigned char* d;
 
 		/* check the file exsits */
 		if (!Utils::FileExists(filepath))
 		{
-			texture.SetLoaded(false);
 			return Result::FileNotFound;
 		}
 
 		/* perform the actual load operation */
-		data = SOIL_load_image(filepath.string().c_str(), &width, &height, &channels, 4);
+		d = SOIL_load_image(filepath.string().c_str(), &w, &h, &c, 4);
 
-		if (data == nullptr)
+		if (d == nullptr)
 		{
 			printf("SOIL loading error: '%s'\n", SOIL_last_result());
-			texture.SetLoaded(false);
 			return Result::FileMalformed;
 		}
 
 		/* set texture details */
-		texture.SetWidth(width);
-		texture.SetHeight(height);
-		texture.SetChannels(channels);
-		texture.SetData(data);
-		texture.SetLoaded(true);
-
+		width = w;
+		height = h;
+		channels = c;
+		(*data) = d;
+		
 		return Result::Success;
 	}
 }

@@ -27,6 +27,7 @@ namespace Wyrd::Editor
 		void DrawScriptItem(int resID, ScriptRes& scriptResource);
 		void DrawMaterialItem(int resID, MaterialRes& materialResource);
 		void DrawModelItem(int resID, ModelRes& modelResource);
+		void DrawShaderItem(int resID, ShaderRes& ShaderResource);
 		void DrawUnknownItem(int resID, const std::string& unknownResourceName);
 
 		/* Selection State(s) */

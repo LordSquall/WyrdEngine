@@ -43,9 +43,15 @@ namespace Wyrd
     void ComponentSerialiserFactory::Serialise(jsonxx::Object & obj, Wyrd::MeshRendererComponent* data)
     {
         obj << "enabled" << data->enabled;
+        obj << "model" << data->model;
+    }
+
+    void ComponentSerialiserFactory::Serialise(jsonxx::Object & obj, Wyrd::MaterialComponent* data)
+    {
+        obj << "enabled" << data->enabled;
         obj << "color" << data->color;
         obj << "material" << data->material;
-        obj << "model" << data->model;
+        CustomSerialisation_MaterialComponent(obj, data);
     }
 
     void ComponentSerialiserFactory::Serialise(jsonxx::Object & obj, Wyrd::SpriteComponent* data)
@@ -110,9 +116,15 @@ namespace Wyrd
     void ComponentSerialiserFactory::Deserialise(jsonxx::Object & obj, Wyrd::MeshRendererComponent* data)
     {
         data->enabled = obj.get<jsonxx::Boolean>("enabled", true);
+        data->model << obj.get<jsonxx::String>("model", RES_MODEL_3D_DEFAULT);
+    }
+
+    void ComponentSerialiserFactory::Deserialise(jsonxx::Object & obj, Wyrd::MaterialComponent* data)
+    {
+        data->enabled = obj.get<jsonxx::Boolean>("enabled", true);
         data->color << obj.get<jsonxx::Object>("color", DecodeColor("1,1,1,1"));
-        data->material << obj.get<jsonxx::String>("material", UID());
-        data->model << obj.get<jsonxx::String>("model", UID());
+        data->material << obj.get<jsonxx::String>("material", RES_MATERIAL_3D_DEFAULT);
+        CustomDeserialisation_MaterialComponent(data, obj);
     }
 
     void ComponentSerialiserFactory::Deserialise(jsonxx::Object & obj, Wyrd::SpriteComponent* data)

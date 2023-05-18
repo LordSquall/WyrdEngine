@@ -47,9 +47,6 @@ namespace Wyrd::Editor
 
 	void Grid3DGizmo::Render(Timestep ts, Renderer& renderer)
 	{
-		/* calculate the different between the camera viewport and the sceneviewer to set the scalling */
-		//float diff = _CameraController->GetSize() / std::min<float>(_SceneViewer->GetViewport()._size.x, _SceneViewer->GetViewport()._size.y);
-
 		{
 			Wyrd::DrawVertex3DCommand cmd{};
 			cmd.type = 1;
@@ -57,27 +54,13 @@ namespace Wyrd::Editor
 			cmd.vertices = &_gridVertices;
 			cmd.viewMatrix = _CameraController->GetCamera().GetViewMatrix();
 			cmd.projectionMatrix = _CameraController->GetCamera().GetProjectionMatrix();
-			cmd.shader = Application::Get().GetResources().Shaders["Gizmo3DGrid"].get();
+			cmd.material = Application::Get().GetResources().Materials[RES_MATERIAL_GRID3D].get();
 			cmd.color = Color { 0.2f, 0.2f, 0.2f, 1.0f };
 			cmd.drawType = RendererDrawType::Triangles;
 			
 			renderer.Submit(cmd);
 			renderer.Flush();
 		}
-		//{
-		//	Wyrd::DrawRectCommand cmd{};
-		//	cmd.shader = Application::Get().GetResources().Shaders["Gizmo3DGrid"].get();
-		//	cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-		//	cmd.position = Vector2 { cursorPosition.x, cursorPosition.y };
-		//	cmd.rotationOrigin = Vector2 { 0.0f, 0.0f };
-		//	cmd.rotation = 0.0f;
-		//	cmd.size = Vector2 { 64.0f, 64.0f };
-		//	cmd.thickness = 4.0f;
-		//	cmd.color = Color { 0.7f, 0.7f, 0.7f, 1.0f };
-		//
-		//	renderer.Submit(cmd);
-		//	renderer.Flush();
-		//}
 	}
 
 	void Grid3DGizmo::OnEvent(Event& event)

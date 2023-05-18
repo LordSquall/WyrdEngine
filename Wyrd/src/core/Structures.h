@@ -92,6 +92,14 @@ namespace Wyrd {
 			this->z = o.z;
 			return *this;
 		}
+
+		Vector3& operator+ (const glm::vec3& o)
+		{
+			this->x += o.x;
+			this->y += o.y;
+			this->z += o.z;
+			return *this;
+		}
 	};
 
 	struct ImageArea

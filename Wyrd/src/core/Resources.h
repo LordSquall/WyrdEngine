@@ -11,6 +11,7 @@
 namespace Wyrd {
 
 	class Shader;
+	class Material;
 	class Texture;
 	class Mesh;
 	class ScriptedClass;
@@ -40,6 +41,11 @@ namespace Wyrd {
 		 * @brief Shader resource map 
 		*/
 		std::map<std::string, std::shared_ptr<Shader>> Shaders;
+
+		/**
+		 * @brief Material resource map
+		*/
+		std::map<UID, std::shared_ptr<Material>> Materials;
 
 		/**
 		 * @brief Mesh resource map

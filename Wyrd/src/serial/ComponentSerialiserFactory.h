@@ -37,6 +37,10 @@ namespace Wyrd
             {
                 Serialise(obj, (MeshRendererComponent*)data);
             }
+            else if (strcmp(name.c_str(), "Material") == 0)
+            {
+                Serialise(obj, (MaterialComponent*)data);
+            }
             else if (strcmp(name.c_str(), "Sprite") == 0)
             {
                 Serialise(obj, (SpriteComponent*)data);
@@ -84,6 +88,11 @@ namespace Wyrd
                 MeshRendererComponent* comp = new (buffer) MeshRendererComponent();
                 Deserialise(obj, comp);
             }
+            else if (strcmp(name.c_str(), "Material") == 0)
+            {
+                MaterialComponent* comp = new (buffer) MaterialComponent();
+                Deserialise(obj, comp);
+            }
             else if (strcmp(name.c_str(), "Sprite") == 0)
             {
                 SpriteComponent* comp = new (buffer) SpriteComponent();
@@ -120,6 +129,9 @@ namespace Wyrd
 
         static void Serialise(jsonxx::Object& obj, Wyrd::MeshRendererComponent* data);
         static void Deserialise(jsonxx::Object& obj, Wyrd::MeshRendererComponent* data);
+
+        static void Serialise(jsonxx::Object& obj, Wyrd::MaterialComponent* data);
+        static void Deserialise(jsonxx::Object& obj, Wyrd::MaterialComponent* data);
 
         static void Serialise(jsonxx::Object& obj, Wyrd::SpriteComponent* data);
         static void Deserialise(jsonxx::Object& obj, Wyrd::SpriteComponent* data);

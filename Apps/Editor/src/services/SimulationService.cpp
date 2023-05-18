@@ -90,11 +90,11 @@ namespace Wyrd::Editor
 		{
 			auto sceneViewer = std::dynamic_pointer_cast<SceneViewer>(_SceneViewer);
 
-			glm::vec2 worldSpaceCoords = sceneViewer->GetWorldSpaceFromPoint(glm::vec2(_MousePos[0], _MousePos[1]));
-			Application::Get().GetBehaviour().SetMouseState(worldSpaceCoords.x, worldSpaceCoords.y);
-
-			Application::Get().GetBehaviour().Update(ts);
-			Application::Get().GetPhysics().Update(ts);
+			//glm::vec2 worldSpaceCoords = sceneViewer->GetWorldSpaceFromPoint(glm::vec2(_MousePos[0], _MousePos[1]));
+			//Application::Get().GetBehaviour().SetMouseState(worldSpaceCoords.x, worldSpaceCoords.y);
+			//
+			//Application::Get().GetBehaviour().Update(ts);
+			//Application::Get().GetPhysics().Update(ts);
 		}
 	}
 

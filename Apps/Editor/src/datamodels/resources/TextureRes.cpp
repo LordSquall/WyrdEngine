@@ -12,12 +12,12 @@
 
 namespace Wyrd::Editor
 {
-	TextureRes::TextureRes(const std::filesystem::path& filepath) : Resource(filepath.stem().string(), filepath), _loaded(false), _width(0u), _height(0u), _channels(0u), _data(0)
+	TextureRes::TextureRes(const std::filesystem::path& filepath, const UID& uid) : Resource(filepath.stem().string(), filepath, uid), _width(0u), _height(0u), _channels(0u), _data(0)
 	{
 
 	}
 	
-	bool TextureRes::Load()
+	int TextureRes::Load()
 	{
 		/* textures should always be loaded on the main thread */
 		if (Application::Get().GetMainThreadID() != std::this_thread::get_id())
@@ -31,7 +31,7 @@ namespace Wyrd::Editor
 		else
 		{
 			/* load the data from file */
-			TextureLoader::Load(_path, *this);
+			TextureLoader::Load(_path, _width, _height, _channels, &_data);
 
 			/* build the texture description structure */
 			TextureDesc textureDesc;
@@ -50,10 +50,10 @@ namespace Wyrd::Editor
 			/* register the texture with the core resource manager */
 			Application::Get().GetResources().Textures[_resourceID] = _texture;
 		
-			_loaded = true;
+			_isLoaded = true;
 		}
 
 
-		return _loaded;
+		return 0;
 	}
 }

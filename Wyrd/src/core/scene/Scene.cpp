@@ -42,6 +42,7 @@ namespace Wyrd
 		RegisterComponent<Transform3DComponent>("Transform3D", "Transform3DComponent", true);
 		RegisterComponent<RelationshipComponent>("Relationship", "RelationshipComponent", true);
 		RegisterComponent<MeshRendererComponent>("MeshRenderer", "MeshRendererComponent", true);
+		RegisterComponent<MaterialComponent>("Material", "MaterialComponent", true);
 		RegisterComponent<SpriteComponent>("Sprite", "SpriteComponent", true);
 		RegisterComponent<ScriptComponent>("Script", "ScriptComponent", true);
 		RegisterComponent<CameraComponent>("Camera", "CameraComponent", true);

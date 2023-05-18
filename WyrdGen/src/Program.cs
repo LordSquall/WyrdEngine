@@ -18,13 +18,6 @@ namespace WyrdGen
 
             TypeMappingDefinitions typeMappings = Utils.DeserializeToObject<TypeMappingDefinitions>("definitions\\TypeMappingDefinitions.xml");
 
-            // delete all previously generated files
-            if (Directory.Exists("generated"))
-            {
-                Directory.Delete("generated", true);
-            }
-            Directory.CreateDirectory("generated");
-
             // generate unmanaged files
             UnmanagedComponents_Gen unmanagedComponentsGen = new UnmanagedComponents_Gen();
             unmanagedComponentsGen.TypeMappings = typeMappings;

@@ -21,7 +21,7 @@ namespace Wyrd
 		_VertexArray.reset(VertexArray::Create());
 		_VertexArray->SetAttribute(0, 0, 3, sizeof(Vertex3D));
 
-		_Shader = nullptr;
+		_Material = nullptr;
 		_DrawType = RendererDrawType::Uknown;
 
 		return true;
@@ -30,10 +30,6 @@ namespace Wyrd
 	void Vertex3DBatch::Submit(DrawVertex3DCommand& cmd)
 	{
 		bool flushRequired = false;
-
-		/* switching shaders requires a flush */
-		if ((_Shader != nullptr) && _Shader != cmd.shader)
-			flushRequired = true;
 
 		/* switching primitive type requires a flush */
 		if (_DrawType != cmd.drawType)
@@ -60,7 +56,7 @@ namespace Wyrd
 
 		_ViewMatrix = cmd.viewMatrix;
 		_ProjectionMatrix = cmd.projectionMatrix;
-		_Shader = cmd.shader;
+		_Material = cmd.material;
 		_Color = cmd.color;
 	}
 
@@ -69,15 +65,10 @@ namespace Wyrd
 		if (_vertices.size() == 0)
 			return;
 
-		if (_Shader == nullptr)
-		{
-			return;
-		}
-
-		_Shader->Bind();
-
-		_Shader->SetMatrix("u_view", _ViewMatrix);
-		_Shader->SetMatrix("u_projection", _ProjectionMatrix);
+		_Material->BindShader();
+		//_Material->Bind();
+		_Material->BindViewMatrix(_ViewMatrix);
+		_Material->BindProjectionMatrix(_ProjectionMatrix);
 
 		_VertexArray->Bind();
 		_VertexBuffer->Bind();
@@ -86,7 +77,7 @@ namespace Wyrd
 		_Renderer->StartNamedSection("Vertex2D Batch Render");
 #endif
 
-		_Renderer->DrawArray(_DrawType, 0, _vertices.size());
+		_Renderer->DrawArray(_DrawType, 0, (uint32_t)_vertices.size());
 
 #ifdef WYRD_INCLUDE_DEBUG_TAGS
 		_Renderer->EndNamedSection();

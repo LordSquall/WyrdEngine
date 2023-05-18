@@ -4,9 +4,11 @@
 #include "core/export.h"
 #include "core/UID.h"
 #include "core/Structures.h"
+#include "core/ecs/ECS.h"
 #include "core/pipeline/Vertex2D.h"
 #include "core/pipeline/Vertex3D.h"
 #include "core/renderer/RendererDrawTypes.h"
+#include "properties/BaseProp.h"
 
 /* external includes */
 #include <string>
@@ -14,7 +16,7 @@
 
 namespace Wyrd
 {
-	class Shader;
+	class Material;
 	class Texture;
 	class Mesh;
 	class FontType;
@@ -23,7 +25,7 @@ namespace Wyrd
 	{
 		uint32_t type;
 		glm::mat4 vpMatrix;
-		Shader* shader;
+		Material* material;
 	};
 
 	struct WYRD_LIBRARY_API DrawMeshCommand : public DrawCommand
@@ -36,6 +38,7 @@ namespace Wyrd
 		Color color;
 		Mesh* mesh;
 		Texture* baseTexture;
+		BasePropMapRef* materialProps;
 		glm::mat4 viewMatrix;
 		glm::mat4 projectionMatrix;
 
@@ -85,6 +88,20 @@ namespace Wyrd
 		std::vector<Vertex3D>* vertices;
 		Color color;
 		RendererDrawType drawType;
+		glm::mat4 viewMatrix;
+		glm::mat4 projectionMatrix;
+	};
+
+	struct WYRD_LIBRARY_API DrawMeshInputColorPickerCommand : public DrawCommand
+	{
+		DrawMeshCommand meshCommand;
+		Entity entity;
+	};
+
+	struct WYRD_LIBRARY_API DrawDebugBoundingBoxCommand : public DrawCommand
+	{
+		Wyrd::Vector3 position;
+		Color color;
 		glm::mat4 viewMatrix;
 		glm::mat4 projectionMatrix;
 	};

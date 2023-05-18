@@ -35,4 +35,17 @@ namespace Wyrd
 		// Check if the index is our invalid index
 		return (id >> 32) != EntityIndex(-1);
 	}
+
+	inline static Color EntityToColor(Entity e)
+	{
+		int r = (e & 0x000000FF) >> 0;
+		int g = (e & 0x0000FF00) >> 8;
+		int b = (e & 0x00FF0000) >> 16;
+		return Color((float)r / 255.0f, (float)g / 255.0f, (float)b / 255.0f, 1.0f);
+	}
+
+	inline static Entity ColorToEntity(Color c)
+	{
+		return (Entity)(c.r + (c.g * 256) + (c.b * 256 * 256));
+	}
 };

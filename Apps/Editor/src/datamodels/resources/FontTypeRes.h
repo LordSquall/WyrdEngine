@@ -15,16 +15,15 @@ namespace Wyrd::Editor
 	class FontTypeRes : public Resource
 	{
 	public:
-		FontTypeRes(const std::filesystem::path& filepath);
+		FontTypeRes(const std::filesystem::path& filepath, const UID& uid);
 
 		~FontTypeRes() = default;
 
 		// Resource overrides
-		bool Load() override;
-		int GetType() override { return ResourceType::FONT; }
+		int Load() override;
+		ResourceType GetType() override { return Wyrd::Editor::ResourceType::FONT; }
 
 	private:
-		bool _loaded;
 		std::string _name;
 		uint32_t _channels;
 		unsigned char* _data;

@@ -2,7 +2,7 @@
 
 /* core wyrd includes */
 #include <wyrdpch.h>
-#include <core/renderer/Texture.h>
+#include <core/pipeline/materials/Material.h>
 
 /* local includes */
 #include "core/export.h"
@@ -17,36 +17,14 @@ namespace Wyrd::Editor
 	class MaterialRes : public Resource
 	{
 	public:
-		MaterialRes(const std::filesystem::path& filepath);
-
+		MaterialRes(const std::filesystem::path& filepath, const UID& uid);
 		~MaterialRes() = default;
 
-		// Resource overrides
-		bool Load() override;
-		int GetType() override { return ResourceType::MATERIAL; }
-
-		// Getters and Setters
-		inline uint32_t GetWidth() { return _texture->GetWidth(); }
-		inline void SetWidth(uint32_t width) { _width = width;  }
-		inline uint32_t GetHeight() { return _texture->GetHeight(); }
-		inline void SetHeight(uint32_t height) { _height = height; }
-		inline uint32_t GetChannels() { return _channels; }
-		inline void SetChannels(uint32_t channels) { _channels = channels; }
-		inline BYTE* GetData() { return _data; }
-		inline void SetData(BYTE* data) { _data = data; }
-		inline std::shared_ptr<Texture> GetTexture() { return _texture; }
-		inline bool IsLoaded() { return _loaded; }
-		inline void SetLoaded(bool loaded) { _loaded = loaded; }
+		
+		int Load() override;
+		ResourceType GetType() override { return ResourceType::MATERIAL; }
 
 	private:
-		bool _loaded;
-		std::string _name;
-		uint32_t _channels;
-		BYTE* _data;
-
-		int32_t _width;
-		int32_t _height;
-
-		std::shared_ptr<Texture> _texture;
+		std::shared_ptr<Material> _material;
 	};
 }

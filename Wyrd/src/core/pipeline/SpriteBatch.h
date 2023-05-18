@@ -43,7 +43,7 @@ namespace Wyrd {
 
 		uint32_t						_SpriteCount;
 		glm::mat4						_VPMatrix;
-		Shader*							_Shader;
+		Material*						_Material;
 		Texture*						_Texture;
 		Color							_Color;
 	};

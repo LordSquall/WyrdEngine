@@ -11,6 +11,7 @@
 #include "ResourceService.h"
 #include "services/ServiceManager.h"
 #include "loaders/AssetCacheLoader.h"
+#include "loaders/ResourceSetLoader.h"
 #include "loaders/TextureLoader.h"
 #include "loaders/ObjLoader.h"
 #include "datamodels/resources/TextureRes.h"
@@ -32,8 +33,7 @@ namespace Wyrd::Editor
 		_extensions.insert(std::pair<std::string, ResourceType>(".png", ResourceType::TEXTURE));
 		_extensions.insert(std::pair<std::string, ResourceType>(".jpg", ResourceType::TEXTURE));
 		_extensions.insert(std::pair<std::string, ResourceType>(".bmp", ResourceType::TEXTURE));
-		_extensions.insert(std::pair<std::string, ResourceType>(".vs", ResourceType::SHADER));
-		_extensions.insert(std::pair<std::string, ResourceType>(".fs", ResourceType::SHADER));
+		_extensions.insert(std::pair<std::string, ResourceType>(".shader", ResourceType::SHADER));
 		_extensions.insert(std::pair<std::string, ResourceType>(".cs", ResourceType::SCRIPT));
 		_extensions.insert(std::pair<std::string, ResourceType>(".ttf", ResourceType::FONT));
 
@@ -45,73 +45,10 @@ namespace Wyrd::Editor
 		_extensions.insert(std::pair<std::string, ResourceType>(".material", ResourceType::MATERIAL));
 		_extensions.insert(std::pair<std::string, ResourceType>(".obj", ResourceType::MODEL));
 
+		/* Load the Editor Resources */
+		ResourceSetLoader::Load(Utils::GetEditorResFolder() + "editorResources.json");
 
 		/* add the default shaders */
-		{
-			/* default sprite shader */
-			std::ifstream vertexStream(Utils::GetEditorResFolder() + "shaders/sprite.vs");
-			std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
-
-			std::ifstream fragmentStream(Utils::GetEditorResFolder() + "shaders/sprite.fs");
-			std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
-
-			std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
-			shader->Build(vertexSrc, fragmentSrc);
-			shader->Bind();
-			Application::Get().GetResources().Shaders.insert(std::pair<std::string, std::shared_ptr<Shader>>("Sprite", shader));
-		}
-		{
-			/* default vertex 2D shader */
-			std::ifstream vertexStream(Utils::GetEditorResFolder() + "shaders/vertex2D.vs");
-			std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
-
-			std::ifstream fragmentStream(Utils::GetEditorResFolder() + "shaders/vertex2D.fs");
-			std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
-
-			std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
-			shader->Build(vertexSrc, fragmentSrc);
-			shader->Bind();
-			Application::Get().GetResources().Shaders.insert(std::pair<std::string, std::shared_ptr<Shader>>("Vertex2D", shader));
-		}
-		{
-			/* default text shader */
-			std::ifstream vertexStream(Utils::GetEditorResFolder() + "shaders/text.vs");
-			std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
-
-			std::ifstream fragmentStream(Utils::GetEditorResFolder() + "shaders/text.fs");
-			std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
-
-			std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
-			shader->Build(vertexSrc, fragmentSrc);
-			shader->Bind();
-			Application::Get().GetResources().Shaders.insert(std::pair<std::string, std::shared_ptr<Shader>>("Text", shader));
-		}
-		{
-			/* grid 3D shader */
-			std::ifstream vertexStream(Utils::GetEditorResFolder() + "shaders/gizmo3DGrid.vs");
-			std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
-
-			std::ifstream fragmentStream(Utils::GetEditorResFolder() + "shaders/gizmo3DGrid.fs");
-			std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
-
-			std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
-			shader->Build(vertexSrc, fragmentSrc);
-			shader->Bind();
-			Application::Get().GetResources().Shaders.insert(std::pair<std::string, std::shared_ptr<Shader>>("Gizmo3DGrid", shader));
-		}
-		{
-			/* mesh shader */
-			std::ifstream vertexStream(Utils::GetEditorResFolder() + "shaders/mesh.vs");
-			std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
-
-			std::ifstream fragmentStream(Utils::GetEditorResFolder() + "shaders/mesh.fs");
-			std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
-
-			std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
-			shader->Build(vertexSrc, fragmentSrc);
-			shader->Bind();
-			Application::Get().GetResources().Shaders.insert(std::pair<std::string, std::shared_ptr<Shader>>("Mesh", shader));
-		}
 		{
 			/* default font(s) */
 			for (const auto& entry : std::filesystem::directory_iterator(Utils::GetEditorResFolder() + "fonts"))
@@ -121,13 +58,6 @@ namespace Wyrd::Editor
 					AddResource(entry.path().string(), UID());
 				}
 			}
-		}
-
-		/* Load defaults from the editor resources */
-		_defaultTexture = std::make_shared<TextureRes>(Utils::GetEditorResFolder() + "textures\\default.png");
-		if (!_defaultTexture->Load())
-		{
-			WYRD_CORE_ERROR("Unable to load default texture!");
 		}
 
 		/* Load default icons into the icon library */
@@ -164,8 +94,7 @@ namespace Wyrd::Editor
 			if (resourceType != ResourceType::NONE)
 			{
 				/* create a new resource object */
-				std::shared_ptr<Resource> resource = ResourceFactory::Create(resourceType, resourcePath);
-				resource->SetResourceID(uid);
+				std::shared_ptr<Resource> resource = ResourceFactory::Create(resourceType, resourcePath, uid);
 
 				/* add to the resource map */
 				_resourceMap.insert(std::pair<UID, std::shared_ptr<Resource>>(resource->GetResourceID(), resource));

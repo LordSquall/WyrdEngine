@@ -232,6 +232,123 @@ if os.istarget("windows") then
 				defines "WYRD_DISTRIBUTION"
 				runtime "Release"
 				symbols "on"
+				
+	project "WyrdHeadless"
+		kind "ConsoleApp"
+		language "C++"
+		cppdialect "C++17"
+		staticruntime "off"
+
+		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+		objdir ("obj/" .. outputdir .. "/%{prj.name}")
+
+		files
+		{
+			"Apps/%{prj.name}/src/**.h",
+			"Apps/%{prj.name}/src/**.cpp",
+			"Apps/%{prj.name}/res/**.vs",
+			"Apps/%{prj.name}/res/**.fs"
+		}
+
+		includedirs
+		{
+			"Apps/%{prj.name}/src",
+			"Wyrd/src",
+			"%{includedir.glm}",
+			"%{includedir.GLFW}",
+			"%{includedir.GLAD}",
+			"%{includedir.jsonxx}",
+			"%{includedir.SOIL}",
+			"%{includedir.imgui}",
+			"%{includedir.glm}",
+			"%{includedir.tinyobjloader}",
+			"%{includedir.mono}",
+			"%{includedir.spdlog}",
+			"%{includedir.crossguid}",
+			"%{includedir.hash}",
+			iif(renderdocfound, includedir["renderdoc"], "")
+		}
+
+		dependson 
+		{ 
+			"WyrdAPI", 
+			"WyrdCAPI",
+			"Player"
+		}
+
+		filter "system:windows"
+			systemversion "latest"
+
+			defines
+			{
+				"WYRD_PLATFORM_WINDOWS",
+				"WYRD_EDITOR_ENABLED",
+				"GLM_ENABLE_EXPERIMENTAL",
+				"IMGUI_DEFINE_MATH_OPERATORS",
+				"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
+				"MONO_INSTALL_LOC=" .. monodir,
+				iif(renderdocfound, "WYRD_RENDERDOC_ENABLED", "")
+			}
+
+			links
+			{
+				"Wyrd",
+				"GLFW",
+				"GLAD",
+				"SOIL",
+				"jsonxx",
+				"imgui",
+				"opengl32.dll"
+			}
+			
+			linkoptions { "/WHOLEARCHIVE:Wyrd" }
+			
+		filter  "system:linux"
+			defines
+			{
+				"WYRD_PLATFORM_LINUX",
+				"WYRD_EDITOR_ENABLED",
+				"GLM_ENABLE_EXPERIMENTAL",
+				"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
+				"MONO_INSTALL_LOC=" .. monodir
+			}
+
+			libdirs
+			{
+				"buildsystem/linux/bin/Debug/glad/",
+				"buildsystem/linux/bin/Debug/jsonxx/"
+			}
+
+			links
+			{
+				"Wyrd",
+				"glfw3",
+				"SOIL",
+				"crossguid",
+				"uuid",
+				"glad",
+				"imgui",
+				"jsonxx",
+				"mono-2.0",
+				"dl",
+				"pthread"
+			}
+
+		filter "configurations:Debug"
+			defines "WYRD_DEBUG"
+			runtime "Debug"
+			symbols "on"
+
+		filter "configurations:Release"
+			defines "WYRD_RELEASE"
+			runtime "Debug"
+			symbols "on"
+
+		filter "configurations:Distribution"
+			defines "WYRD_DISTRIBUTION"
+			runtime "Debug"
+			symbols "on"
+					
 end
 group "Scripting"
 project "WyrdCAPI"

@@ -190,4 +190,16 @@ namespace Wyrd
 	{
 		return _config;
 	}
+
+	Color OpenGLFrameBuffer::GetPixelData(Vector2 coordinates) const
+	{
+		unsigned char data[4];
+		glReadPixels(coordinates.x / _config.width, coordinates.y / _config.height, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		Color c;
+		c.r = (float)data[0];
+		c.g = (float)data[1];
+		c.b = (float)data[2];
+		c.a = (float)data[3];
+		return c;
+	}
 }

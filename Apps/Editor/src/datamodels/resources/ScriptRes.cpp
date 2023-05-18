@@ -9,13 +9,13 @@
 
 namespace Wyrd::Editor
 {
-	ScriptRes::ScriptRes(const std::filesystem::path& filepath) : Resource(filepath.stem().string(), filepath), PendingReload(false)
+	ScriptRes::ScriptRes(const std::filesystem::path& filepath, const UID& uid) : Resource(filepath.stem().string(), filepath, uid), PendingReload(false)
 	{
 
 	}
 
-	bool ScriptRes::Load()
+	int ScriptRes::Load()
 	{
-		return true;
+		return 0;
 	}
 }

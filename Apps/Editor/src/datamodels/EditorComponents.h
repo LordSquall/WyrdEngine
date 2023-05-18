@@ -3,12 +3,13 @@
 /* core includes */
 #include <wyrdpch.h>
 #include <core/export.h>
-#include <core/maths/Rect.h>
+#include <core/maths/BoundingBox.h>
 
 namespace Wyrd::Editor
 {
 	struct WYRD_LIBRARY_API EditorComponent
 	{
-		Rect inputArea;
+		BoundingBox inputBoundingBox;
+		glm::mat4 modelMatrix;
 	};
 };

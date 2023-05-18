@@ -12,23 +12,23 @@
 
 namespace Wyrd::Editor
 {
-	ModelRes::ModelRes(const std::filesystem::path& filepath) : Resource(filepath.stem().string(), filepath), _loaded(false)
+	ModelRes::ModelRes(const std::filesystem::path& filepath, const UID& uid) : Resource(filepath.stem().string(), filepath, uid)
 	{
 
 	}
 	
-	bool ModelRes::Load()
+	int ModelRes::Load()
 	{
 		/* load the data from file */
 		_mesh = std::make_shared<Mesh>();
 
-		ObjLoader::Load(_path.string().c_str(), &_mesh->Vertices);
+		ObjLoader::Load(_path.string().c_str(), &_mesh->Vertices, nullptr, nullptr, 1.0f, &_mesh->boundingBox);
 
 		/* register the mesh with the core resource manager */
 		Application::Get().GetResources().Meshs[_resourceID] = _mesh;
 
-		_loaded = true;
+		_isLoaded = true;
 
-		return _loaded;
+		return 0;
 	}
 }

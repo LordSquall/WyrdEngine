@@ -30,7 +30,7 @@ namespace Wyrd::Editor
 	struct LayoutSettings_s
 	{
 		float itemGroupSize = 64.0f;
-		int itemColumnCnt = 4;
+		int itemColumnCnt = 6;
 		int itemLabelShortCharLimit = 9;
 	} layoutSettings;
 
@@ -145,6 +145,22 @@ namespace Wyrd::Editor
 
 							WYRD_TRACE("Add Script... {0}", d.c_str());
 						});
+					}
+					if (ImGui::MenuItem("Shader"))
+					{
+						_dialogService->OpenSingleEntryDialog(_EditorLayer, "Create new Shader", "Name", [&](std::string d) -> void {
+
+							/* load the material template */
+							std::string rawTemplateContent = Utils::ReadFileToString(Utils::GetEditorResFolder() + "\\templates\\Shader.shader");
+
+							/* populate the template tags */
+							std::string populatedTemplateContent = Utils::ReplaceAll(rawTemplateContent, "<<SHADER_NAME>>", d.c_str());
+
+							/* create the file */
+							Utils::CreateRawFile(_SelectedDirectory / (d + ".shader"), populatedTemplateContent);
+
+							WYRD_TRACE("Add Shader... {0}", d.c_str());
+							});
 					}
 					ImGui::EndMenu();
 				}
@@ -288,6 +304,7 @@ namespace Wyrd::Editor
 					DrawScriptItem(resIdx, (ScriptRes&)*resource.get());
 					break;
 				case ResourceType::SHADER:
+					DrawShaderItem(resIdx, (ShaderRes&)*resource.get());
 					break;
 				case ResourceType::MATERIAL:
 					DrawMaterialItem(resIdx, (MaterialRes&)*resource.get());
@@ -621,6 +638,48 @@ namespace Wyrd::Editor
 		/* Visuals */
 		ImGui::Image(*_SceneIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 		ImGui::TextClipped(modelResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
+
+	}
+
+
+	void AssetViewer::DrawShaderItem(int resID, ShaderRes& ShaderResource)
+	{
+		/* Tool Tip */
+		if (ImGui::IsItemHovered())
+		{
+			ImGui::BeginTooltip();
+			ImGui::Text(ShaderResource.GetName().c_str());
+			ImGui::Text("Filename: %s", ShaderResource.GetPath().c_str());
+			ImGui::Text("UID: %s", ShaderResource.GetResourceID().str().c_str());
+			ImGui::EndTooltip();
+		}
+
+		/* Context Menu */
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Delete"))
+			{
+				Utils::RemoveFile(ShaderResource.GetPath().c_str());
+			}
+			ImGui::EndPopup();
+		}
+
+		/* Input */
+		if (ImGui::IsItemHovered())
+		{
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+				_SelectedResource = resID;
+
+			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+			{
+				_SelectedResource = resID;
+				Utils::SystemExecute("code " + ShaderResource.GetPath().string());
+			}
+		}
+
+		/* Visuals */
+		ImGui::Image(*_SceneIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+		ImGui::TextClipped(ShaderResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
 
 	}
 

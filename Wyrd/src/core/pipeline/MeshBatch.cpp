@@ -5,7 +5,6 @@
 #include "core/renderer/VertexArray.h"
 #include "core/renderer/Buffer.h"
 #include "core/renderer/Texture.h"
-#include "core/renderer/Shader.h"
 #include "core/renderer/Mesh.h"
 #include "core/pipeline/SpriteVertex.h"
 
@@ -23,7 +22,7 @@ namespace Wyrd
 		_VertexArray->SetAttribute(0, 0, 3, sizeof(Vertex3D));
 		_VertexArray->SetAttribute(1, 3, 2, sizeof(Vertex3D));
 
-		_Shader = nullptr;
+		_Material = nullptr;
 		_DrawType = RendererDrawType::Uknown;
 
 		return true;
@@ -32,10 +31,6 @@ namespace Wyrd
 	void MeshBatch::Submit(DrawMeshCommand& cmd)
 	{
 		bool flushRequired = false;
-
-		/* switching shaders requires a flush */
-		if ((_Shader != nullptr) && _Shader != cmd.shader)
-			flushRequired = true;
 
 		/* switching primitive type requires a flush */
 		if (_DrawType != cmd.drawType)
@@ -65,9 +60,10 @@ namespace Wyrd
 
 		_ViewMatrix = cmd.viewMatrix;
 		_ProjectionMatrix = cmd.projectionMatrix;
-		_Shader = cmd.shader;
+		_Material = cmd.material;
 		_Color = cmd.color;
 		_BaseTexture = cmd.baseTexture;
+		_MaterialProps = cmd.materialProps;
 	}
 
 	void MeshBatch::Flush()
@@ -75,30 +71,19 @@ namespace Wyrd
 		if (_vertices.size() == 0)
 			return;
 
-		if (_Shader == nullptr)
-		{
-			return;
-		}
-
-		_Shader->Bind();
-
-		_Shader->SetMatrix("u_view", _ViewMatrix);
-		_Shader->SetMatrix("u_projection", _ProjectionMatrix);
-
-		_Shader->SetUniformColor("u_BlendColor", _Color);
-
-		_BaseTexture->Bind();
+		_Material->BindShader();
+		_Material->Bind(_MaterialProps);
+		_Material->BindViewMatrix(_ViewMatrix);
+		_Material->BindProjectionMatrix(_ProjectionMatrix);
 
 		_VertexArray->Bind();
 		_VertexBuffer->Bind();
-
-
 
 #ifdef WYRD_INCLUDE_DEBUG_TAGS
 		_Renderer->StartNamedSection("Vertex2D Batch Render");
 #endif
 
-		_Renderer->DrawArray(_DrawType, 0, _vertices.size());
+		_Renderer->DrawArray(_DrawType, 0, (uint32_t)_vertices.size());
 
 #ifdef WYRD_INCLUDE_DEBUG_TAGS
 		_Renderer->EndNamedSection();

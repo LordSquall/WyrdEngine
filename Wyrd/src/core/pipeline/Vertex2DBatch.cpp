@@ -22,7 +22,7 @@ namespace Wyrd
 		_VertexArray->SetAttribute(0, 0, 2, sizeof(Vertex2D));
 		_VertexArray->SetAttribute(1, 2, 4, sizeof(Vertex2D));
 
-		_Shader = nullptr;
+		_Material = nullptr;
 		_DrawType = RendererDrawType::Uknown;
 
 		return true;
@@ -34,8 +34,8 @@ namespace Wyrd
 		bool flushRequired = false;
 
 		/* switching shaders requires a flush */
-		if ((_Shader != nullptr) && _Shader != cmd.shader)
-			flushRequired = true;
+		//if ((_Shader != nullptr) && _Shader != cmd.shader)
+		//	flushRequired = true;
 
 		/* switching primitive type requires a flush */
 		if (_DrawType != RendererDrawType::Quads)
@@ -87,7 +87,7 @@ namespace Wyrd
 		_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(Vertex2D) * (uint32_t)_vertices.size(), 0);
 
 		_VPMatrix = cmd.vpMatrix;
-		_Shader = cmd.shader;
+		_Material = cmd.material;
 		_Color = cmd.color;
 	}
 
@@ -96,8 +96,8 @@ namespace Wyrd
 		bool flushRequired = false;
 
 		/* switching shaders requires a flush */
-		if ((_Shader != nullptr) && _Shader != cmd.shader)
-			flushRequired = true;
+		//if ((_Shader != nullptr) && _Shader != cmd.shader)
+		//	flushRequired = true;
 
 		/* switching primitive type requires a flush */
 		if (_DrawType != cmd.drawType)
@@ -125,39 +125,39 @@ namespace Wyrd
 		_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(Vertex2D) * (uint32_t)_vertices.size(), 0);
 
 		_VPMatrix = cmd.vpMatrix;
-		_Shader = cmd.shader;
+		_Material = cmd.material;
 		_Color = cmd.color;
 	}
 
 	void Vertex2DBatch::Flush()
 	{
-		if (_vertices.size() == 0)
-			return;
-
-		if (_Shader == nullptr)
-		{
-			return;
-		}
-
-		_Shader->Bind();
-
-		_Shader->SetVPMatrix(_VPMatrix);
-
-		_Shader->SetModelMatrix(glm::mat4(1.0f));
-		_Shader->SetUniformColor("blendColor", _Color);
-
-		_VertexArray->Bind();
-		_VertexBuffer->Bind();
-
-#ifdef WYRD_INCLUDE_DEBUG_TAGS
-		_Renderer->StartNamedSection("Vertex2D Batch Render");
-#endif
-
-		_Renderer->DrawArray(_DrawType, 0, _vertices.size());
-
-#ifdef WYRD_INCLUDE_DEBUG_TAGS
-		_Renderer->EndNamedSection();
-#endif
-		_vertices.clear();
+//		if (_vertices.size() == 0)
+//			return;
+//
+//		if (_Shader == nullptr)
+//		{
+//			return;
+//		}
+//
+//		_Shader->Bind();
+//
+//		_Shader->SetVPMatrix(_VPMatrix);
+//
+//		_Shader->SetModelMatrix(glm::mat4(1.0f));
+//		_Shader->SetUniformColor("blendColor", _Color);
+//
+//		_VertexArray->Bind();
+//		_VertexBuffer->Bind();
+//
+//#ifdef WYRD_INCLUDE_DEBUG_TAGS
+//		_Renderer->StartNamedSection("Vertex2D Batch Render");
+//#endif
+//
+//		_Renderer->DrawArray(_DrawType, 0, _vertices.size());
+//
+//#ifdef WYRD_INCLUDE_DEBUG_TAGS
+//		_Renderer->EndNamedSection();
+//#endif
+//		_vertices.clear();
 	}
 }

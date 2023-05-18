@@ -153,7 +153,7 @@ namespace Wyrd {
 
 	void PrimitiveUtils::UpdateColor(std::vector<Vertex2D>& vertices, uint32_t offset, uint32_t count, Color color)
 	{
-		for (int i = 0; i < count; ++i)
+		for (uint32_t i = 0; i < count; ++i)
 		{
 			vertices[(int)offset + i].r = color.r;
 			vertices[(int)offset + i].g = color.g;

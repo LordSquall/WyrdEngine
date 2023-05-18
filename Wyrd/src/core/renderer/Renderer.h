@@ -3,8 +3,11 @@
 /* local includes */
 #include "wyrdpch.h"
 #include "core/export.h"
+#include "core/maths/BoundingBox.h"
 #include "core/maths/Rect.h"
 #include "events/Event.h"
+#include "core/renderer/Buffer.h"
+#include "core/renderer/VertexArray.h"
 #include "core/renderer/commands/RendererCommands.h"
 #include "core/renderer/RendererDrawTypes.h"
 #include "core/pipeline/MeshBatch.h"
@@ -44,7 +47,10 @@ namespace Wyrd
 		virtual void Submit(DrawTextCommand& cmd);
 		virtual void Submit(DrawVertex2DCommand& cmd);
 		virtual void Submit(DrawVertex3DCommand& cmd);
+		virtual void Submit(DrawMeshInputColorPickerCommand& cmd);
 		virtual void Flush();
+
+		virtual void DrawDebugBoundingBox(const BoundingBox& boundingBox, const glm::vec3& position, const Color& color, const glm::mat4& projection, const glm::mat4& view) = 0;
 
 		inline struct RendererInfo& GetVendorInfo() { return _vendorInfo; }
 
@@ -56,12 +62,16 @@ namespace Wyrd
 #endif
 
 		static Renderer* Create();
-	private:
+	protected:
 		MeshBatch _MeshBatch;
 		Vertex2DBatch _vertex2DBatch;
 		Vertex3DBatch _vertex3DBatch;
 		SpriteBatch _spriteBatch;
 		TextBatch _textBatch;
+
+		std::vector<Vertex3D>			_DebugVertices;
+		std::shared_ptr<VertexArray>	_DebugVertexArray;
+		std::shared_ptr<VertexBuffer>	_DebugVertexBuffer;
 
 	private:
 		static RendererAPI s_RendererAPI;

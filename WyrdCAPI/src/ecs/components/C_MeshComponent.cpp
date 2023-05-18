@@ -10,7 +10,7 @@
 void MeshComponent_SetEnabled(void* scenePtr, Wyrd::Entity entity, bool enabled)
 {
    Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
-   Wyrd::MeshComponent* component = scene->Get<Wyrd::MeshComponent>(entity);
+   Wyrd::MeshRendererComponent* component = scene->Get<Wyrd::MeshRendererComponent>(entity);
 
    component->enabled = enabled;
 }
@@ -18,9 +18,8 @@ void MeshComponent_SetEnabled(void* scenePtr, Wyrd::Entity entity, bool enabled)
 void MeshComponent_SetColor(void* scenePtr, Wyrd::Entity entity, Wyrd::Color* color)
 {
    Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
-   Wyrd::MeshComponent* component = scene->Get<Wyrd::MeshComponent>(entity);
+   Wyrd::MeshRendererComponent* component = scene->Get<Wyrd::MeshRendererComponent>(entity);
 
-   component->color = *color;
 }
 
 

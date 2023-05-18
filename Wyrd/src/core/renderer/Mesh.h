@@ -4,6 +4,7 @@
 #include "core/export.h"
 #include "core/UID.h"
 #include "core/Structures.h"
+#include "core/maths/BoundingBox.h"
 #include "core/pipeline/Vertex3D.h"
 
 /* external includes */
@@ -19,6 +20,7 @@ namespace Wyrd
 	{
 	public:
 		std::vector<Vertex3D> Vertices;
+		BoundingBox boundingBox;
 		UID BaseTexture;
 	};
 }

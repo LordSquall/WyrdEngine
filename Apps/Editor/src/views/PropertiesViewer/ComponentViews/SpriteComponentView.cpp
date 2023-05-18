@@ -33,7 +33,7 @@ namespace Wyrd::Editor
 		auto texture = Application::Get().GetResources().Textures[sprite->sprite];
 		
 		if (texture == nullptr)
-			texture = Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)];
+			texture = Application::Get().GetResources().Textures[UID(RES_TEXTURE_DEFAULT)];
 		
 		ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2((float)texture->GetWidth(), (float)texture->GetHeight()));
 		if (ImGui::BeginDragDropTarget())

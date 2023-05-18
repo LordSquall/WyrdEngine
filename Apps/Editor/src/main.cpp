@@ -67,6 +67,8 @@ Wyrd::Application* Wyrd::CreateApplication()
 
 	IniParser iniParser = IniParser("config.ini");
 
+	properties.headlessMode = false;
+
 	if (iniParser.IsLoaded())
 	{
 		properties.windowProps.Width = std::stoul(iniParser.GetValue("Window", "width", "800"), NULL, 10);

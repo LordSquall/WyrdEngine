@@ -5,12 +5,12 @@
 
 namespace Wyrd::Editor
 {
-	SceneRes::SceneRes(const std::filesystem::path& filepath) : Resource(filepath.stem().string(), filepath)
+	SceneRes::SceneRes(const std::filesystem::path& filepath, const UID& uid) : Resource(filepath.stem().string(), filepath, uid)
 	{
 	}
 
-	bool SceneRes::Load()
+	int SceneRes::Load()
 	{
-		return true;
+		return 0;
 	}
 }

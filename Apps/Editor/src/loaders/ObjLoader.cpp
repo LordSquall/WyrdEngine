@@ -6,10 +6,11 @@
 #include "ObjLoader.h"
 
 /* external include */
+#include <limits>
 
 namespace Wyrd::Editor
 {
-	ObjLoader::Result ObjLoader::Load(std::string path, std::vector<Vertex3D>* vertices, std::vector<uint32_t>* indices, std::map<std::string, std::pair<uint32_t, uint32_t>>* vertexGroups, float scaleFactor)
+	ObjLoader::Result ObjLoader::Load(std::string path, std::vector<Vertex3D>* vertices, std::vector<uint32_t>* indices, std::map<std::string, std::pair<uint32_t, uint32_t>>* vertexGroups, float scaleFactor, BoundingBox* bounds)
 	{
 		ObjLoader::Result result = Success;
 
@@ -95,6 +96,25 @@ namespace Wyrd::Editor
 
 					vertices->push_back({ verts[vertIdx].x, verts[vertIdx].y , verts[vertIdx].z, uvCoords[textureIdx].x, uvCoords[textureIdx].y, normals[normalIdx].x, normals[normalIdx].y , normals[normalIdx].z });
 				}
+			}
+		}
+
+		if (bounds != nullptr)
+		{
+			bounds->_position = { 0.0f, 0.0f, 0.0f };
+			bounds->_minExtent = { FLT_MAX, FLT_MAX , FLT_MAX };
+			bounds->_maxExtent = { FLT_MIN, FLT_MIN, FLT_MIN };
+
+			for (auto& v : verts)
+			{
+				if (v.x > bounds->_maxExtent.x) bounds->_maxExtent.x = v.x;
+				if (v.y > bounds->_maxExtent.y) bounds->_maxExtent.y = v.y;
+				if (v.z > bounds->_maxExtent.z) bounds->_maxExtent.z = v.z;
+
+
+				if (v.x < bounds->_minExtent.x) bounds->_minExtent.x = v.x;
+				if (v.y < bounds->_minExtent.y) bounds->_minExtent.y = v.y;
+				if (v.z < bounds->_minExtent.z) bounds->_minExtent.z = v.z;
 			}
 		}
 

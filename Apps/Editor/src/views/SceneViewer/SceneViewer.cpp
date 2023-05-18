@@ -9,6 +9,7 @@
 #include <core/ecs/ECS.h>
 #include <core/ecs/EntitySet.h>
 #include <core/renderer/Mesh.h>
+#include <core/physics/PhysicsUtils.h>
 
 /* local include */
 #include "SceneViewer.h"
@@ -21,10 +22,13 @@
 
 /* external includes */
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <imgui.h>
 
 namespace Wyrd::Editor
 {
+	static bool showEditorComponent = false;
+
 	SceneViewer::SceneViewer(EditorLayer* editorLayer) : EditorViewBase("Scene Viewer", editorLayer), _SelectedEntity(ENTITY_INVALID)
 	{
 		/* retrieve services */
@@ -70,36 +74,26 @@ namespace Wyrd::Editor
 		WYRD_TRACE("SceneViewer::~");
 	}
 
-	void SceneViewer::OnUpdate(Timestep ts)
+	void SceneViewer::OnUpdate(Timestep ts) 
 	{
 		if (_Scene != nullptr)
 		{
-			/* we want to process all the entities */
-			for (Entity e : EntitySet<EditorComponent>(*_Scene.get()))
+			for (Entity e : EntitySet<EditorComponent, Transform3DComponent>(*_Scene.get()))
 			{
 				EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
-				if (editorComponent)
-				{
+				Transform3DComponent* transform3DComponent = _Scene->Get<Transform3DComponent>(e);
 
-					Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
-					SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
-					
-					Rect r;
-					
-					if (sprite)
+				editorComponent->modelMatrix = glm::translate(glm::mat4(1), glm::vec3(transform3DComponent->position.x, transform3DComponent->position.y, transform3DComponent->position.z));
+				//editorComponent->modelMatrix = glm::scale(editorComponent->modelMatrix, Scale);
+				//editorComponent->modelMatrix = glm::rotate(editorComponent->modelMatrix, rotAngle, Rotation);
+
+				MeshRendererComponent* meshRenderer = _Scene->Get<MeshRendererComponent>(e);
+				if (meshRenderer != nullptr)
+				{
+					const auto& mesh = Application::Get().GetResources().Meshs[meshRenderer->model].get();
+					if (mesh != nullptr)
 					{
-						// calculate aabb sprite component render rect
-					
-						Rect newRect;
-						newRect._position = { sprite->position.x + transform->position.x, sprite->position.y + transform->position.y } ;
-						newRect._size = { sprite->size.x, sprite->size.y };
-						r = newRect;
-					}
-					
-					if (editorComponent)
-					{
-						editorComponent->inputArea._position = r._position;
-						editorComponent->inputArea._size = r._size;
+						editorComponent->inputBoundingBox = mesh->boundingBox;
 					}
 				}
 			}
@@ -115,17 +109,18 @@ namespace Wyrd::Editor
 		if (_Framebuffer->GetConfig().height > 0 && _Framebuffer->GetConfig().width > 0)
 		{
 			_CameraController->OnUpdate(ts);
-
-			_Framebuffer->Bind();
-
-			renderer.Clear(0.1f, 0.1f, 0.1f);
 			
 			if (_Scene != nullptr)
 			{
-				for (Entity e : EntitySet<Transform3DComponent, MeshRendererComponent>(*_Scene.get()))
+
+				_Framebuffer->Bind();
+				renderer.Clear(0.1f, 0.1f, 0.1f);
+
+				for (Entity e : EntitySet<Transform3DComponent, MeshRendererComponent, MaterialComponent>(*_Scene.get()))
 				{
 					Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(e);
 					MeshRendererComponent* meshRenderer = _Scene->Get<MeshRendererComponent>(e);
+					MaterialComponent* material = _Scene->Get<MaterialComponent>(e);
 
 					Wyrd::DrawMeshCommand cmd{};
 					cmd.position = transform->position;
@@ -134,114 +129,54 @@ namespace Wyrd::Editor
 					cmd.rotationOrigin = Vector3{ 0, 0, 0 };
 					cmd.viewMatrix = _CameraController->GetCamera().GetViewMatrix();
 					cmd.projectionMatrix = _CameraController->GetCamera().GetProjectionMatrix();
-					cmd.shader = Application::Get().GetResources().Shaders["Mesh"].get();
+					cmd.material = Application::Get().GetResources().Materials[material->material].get();
+					cmd.materialProps = &material->properties;
 					cmd.mesh = Application::Get().GetResources().Meshs[meshRenderer->model].get();
-					cmd.baseTexture = Application::Get().GetResources().Textures[UID(RESOURCE_DEFAULT_TEXTURE)].get();
-					cmd.color = meshRenderer->color;
+					cmd.baseTexture = Application::Get().GetResources().Textures[RES_TEXTURE_DEFAULT].get();
 					cmd.drawType = RendererDrawType::Triangles;
-
+					
 					renderer.Submit(cmd);
 					renderer.Flush();
 				}
+
+				if (showEditorComponent)
+				{
+					for (Entity e : EntitySet<Transform3DComponent, EditorComponent>(*_Scene.get()))
+					{
+						Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(e);
+						EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
+
+						BasePropMapRef materialProps = std::make_shared<std::map<std::string, BasePropRef>>();
+						(*materialProps)["BlendColor"] = PropFactory::CreateProp("Color", "BlendColor");
+						(*materialProps)["BlendColor"]->Set<Color>(Color::MAGENTA);
+
+						renderer.DrawDebugBoundingBox(editorComponent->inputBoundingBox, { transform->position.x, transform->position.y, transform->position.z }, Color::MAGENTA, _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
+
+						//Wyrd::DrawMeshCommand cmd{};
+						//cmd.position = transform->position;
+						//cmd.rotation = transform->rotation;
+						//cmd.scale = transform->scale;
+						//cmd.rotationOrigin = Vector3{ 0, 0, 0 };
+						//cmd.viewMatrix = _CameraController->GetCamera().GetViewMatrix();
+						//cmd.projectionMatrix = _CameraController->GetCamera().GetProjectionMatrix();
+						//cmd.material = Application::Get().GetResources().Materials[RES_MATERIAL_3D_DEFAULT].get();
+						//cmd.materialProps = &materialProps;
+						//cmd.mesh = Application::Get().GetResources().Meshs[RES_MODEL_3D_DEFAULT].get();
+						//cmd.baseTexture = Application::Get().GetResources().Textures[RES_TEXTURE_DEFAULT].get();
+						//cmd.drawType = RendererDrawType::Triangles;
+						//
+						//renderer.Submit(cmd);
+						//renderer.Flush();
+					}
+				}
+
+				_Grid3DGizmo->Render(ts, renderer);
+
 			}
-			
 
-			_Grid3DGizmo->Render(ts, renderer);
+			renderer.Flush();
 
-
-			//if (_Scene != nullptr)
-			//{
-			//	for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
-			//	{
-			//		Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
-			//		SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
-			//		
-			//		Wyrd::DrawSpriteCommand cmd{};
-			//		cmd.position = transform->position + sprite->position;
-			//		cmd.size = sprite->size;
-			//		cmd.rotation = transform->rotation;
-			//		cmd.rotationOrigin = Vector2{ 0, 0 };// transform->rotationOrigin;
-			//		cmd.tiling = Vector2 { 1, 1 };// sprite->tiling;
-			//		cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-			//		cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
-			//		cmd.texture = Application::Get().GetResources().Textures[sprite->sprite].get();
-			//		cmd.color = sprite->color;
-			//		
-			//		renderer.Submit(cmd);
-			//	}
-			//
-			//	for (Entity e : EntitySet<EditorComponent>(*_Scene.get()))
-			//	{
-			//		EditorComponent* editorComp = _Scene->Get<EditorComponent>(e);
-			//		Wyrd::DrawRectCommand cmd{};
-			//		cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
-			//		cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-			//		cmd.position = Vector2{ editorComp->inputArea._position.x, editorComp->inputArea._position.y };
-			//		cmd.rotationOrigin = Vector2 { 0.0f, 0.0f };
-			//		cmd.rotation = 0.0f;
-			//		cmd.size = Vector2 { 64.0f, 64.0f };
-			//		cmd.thickness = 2.0f;
-			//		
-			//		if (e == _SelectedEntity)
-			//		{
-			//			cmd.color = Color { 1.0f, 0.0f, 1.0f, 1.0f };
-			//		}
-			//		else
-			//		{
-			//			cmd.color = Color { 1.0f, 1.0f, 0.0f, 1.0f };
-			//		}
-			//		
-			//		renderer.Submit(cmd);
-			//		renderer.Flush();
-			//	}
-			//	
-			//	//
-			//	//for (Entity e : EntitySet<Transform2DComponent, TextComponent>(*_Scene.get()))
-			//	//{
-			//	//	Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
-			//	//	TextComponent* text = _Scene->Get<TextComponent>(e);
-			//	//
-			//	//	Wyrd::DrawTextCommand cmd{};
-			//	//	cmd.position = transform->position;
-			//	//	cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-			//	//	cmd.shader = Application::Get().GetResources().Shaders["Text"].get();
-			//	//	cmd.content = text->content;
-			//	//	cmd.scale = 1.0f;
-			//	//	cmd.size = text->size;
-			//	//	cmd.font = Application::Get().GetResources().FontTypes[text->font].get();
-			//	//	cmd.color = text->color;
-			//	//
-			//	//	renderer.Submit(cmd);
-			//	//}
-			//
-			//}
-			//
-			///* Gizmos */
-			//if (_SelectedEntity != ENTITY_INVALID)
-			//{
-			//
-			//	//CameraComponent* cameraComp = _Scene->Get<CameraComponent>(_SelectedEntity);
-			//	//if (cameraComp != nullptr)
-			//	//{
-			//	//	Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(_SelectedEntity);
-			//	//
-//	//	Wyrd::DrawRectCommand cmd{};
-//	//	cmd.position = { transform->position.x + (-((cameraComp->size * cameraComp->aspectRatio) / 2.0f)), transform->position.y + (-(cameraComp->size) / 2.0f) };
-//	//	cmd.size = { cameraComp->size * cameraComp->aspectRatio, cameraComp->size };
-//	//	cmd.thickness = 2.0f;
-//	//	cmd.vpMatrix = _CameraController->GetCamera().GetViewProjectionMatrix();
-//	//	cmd.shader = Application::Get().GetResources().Shaders["Vertex2D"].get();
-//	//	cmd.color = { 1.0f, 0.0f, 0.0f, 1.0f };
-//	//
-//	//	renderer.Submit(cmd);
-//	//}
-//	
-//	//_TransformationGizmos[_CurrentTransformationGizmoIndex]->Render(ts, renderer);
-//}
-
-renderer.Flush();
-
-_Framebuffer->Unbind();
+			_Framebuffer->Unbind();
 		}
 
 #ifdef WYRD_INCLUDE_DEBUG_TAGS
@@ -300,6 +235,8 @@ _Framebuffer->Unbind();
 
 		/* build the top toolbar */
 		ImGui::Checkbox("show stats", &showStats);
+		ImGui::SameLine();
+		ImGui::Checkbox("show EC", &showEditorComponent);
 
 		menuBarHeight = ImGui::GetCursorScreenPos().y - menuBarHeight;
 
@@ -364,7 +301,7 @@ _Framebuffer->Unbind();
 
 	void SceneViewer::OnResize()
 	{
-		/* resize the underlying framebuffer */
+		/* resize the underlying framebuffer(s) */
 		_Framebuffer->Resize((uint32_t)_Viewport._size.x, (uint32_t)_Viewport._size.y);
 
 		/* Set the camera viewport */
@@ -389,11 +326,11 @@ _Framebuffer->Unbind();
 		return point - _ViewportBoundary._position;
 	}
 
-	glm::vec2 SceneViewer::GetWorldSpaceFromPoint(const glm::vec2& point)
+	glm::vec3 SceneViewer::GetWorldSpaceFromPoint(const glm::vec3& point)
 	{
-		glm::vec2 viewportMouseCoords = point - _ViewportBoundary._position;
+		glm::vec3 viewportMouseCoords = point - glm::vec3(_ViewportBoundary._position.x, _ViewportBoundary._position.y, 0.0f);
 
-		return { 0.0f, 0.0f };//return _CameraController->GetCamera().GetWorldSpaceFromPoint(viewportMouseCoords, _ViewportBoundary);
+		return _CameraController->GetCamera().GetWorldSpaceFromPoint(viewportMouseCoords, _ViewportBoundary);
 	}
 
 	glm::vec2 SceneViewer::GetScreenSpaceFromWorldPoint(const glm::vec2& point)
@@ -417,18 +354,17 @@ _Framebuffer->Unbind();
 		/* we only want to process mouse events within the viewport of the scene */
 		if (_Viewport.ContainsPoint(viewportPos) == true)
 		{
-			glm::vec2 worldSpace = Convert2DToWorldSpace(mousePos);		
-			if (_Scene != nullptr)
+			for (Entity e : EntitySet<EditorComponent, MetaDataComponent>(*_Scene.get()))
 			{
-				/* test each of the editor components to check input */
-				for (Entity e : EntitySet<EditorComponent>(*_Scene.get()))
-				{
-					EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
+				MetaDataComponent* metaDataComponent = _Scene->Get<MetaDataComponent>(e);
+				EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
 
-					if (editorComponent->inputArea.ContainsPoint(worldSpace) == true)
-					{
-						_EventService->Publish(Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(e));
-					}
+				Ray r;
+				PhysicsUtils::ScreenPosToWorldRay(viewportPos, _ViewportBoundary._size, _CameraController->GetCamera().GetViewMatrix(), _CameraController->GetCamera().GetProjectionMatrix(), r);
+
+				if (PhysicsUtils::IntersectRayBoundingBox(editorComponent->modelMatrix, r, editorComponent->inputBoundingBox))
+				{
+					_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(e));
 				}
 			}
 		}

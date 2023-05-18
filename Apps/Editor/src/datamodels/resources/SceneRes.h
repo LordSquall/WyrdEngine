@@ -14,12 +14,12 @@ namespace Wyrd::Editor
 	class SceneRes : public Resource
 	{
 	public:
-		SceneRes(const std::filesystem::path& filepath);
+		SceneRes(const std::filesystem::path& filepath, const UID& uid);
 
 		~SceneRes() = default;
 
 		/* Resource overrides */
-		bool Load() override;
-		int GetType() override { return ResourceType::SCENE; }
+		int Load() override;
+		ResourceType GetType() override { return ResourceType::SCENE; }
 	};
 }

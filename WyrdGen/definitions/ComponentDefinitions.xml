@@ -17,11 +17,16 @@
     <Data name="scale" type="Vec3" default="1,1,1"/>
   </Component>
 
-  <Component name="MeshRendererComponent" shortName="Mesh">
+  <Component name="MeshRendererComponent" shortName="MeshRenderer">
+    <Data name="enabled" type="Boolean" default="true" />
+    <Data name="model" type="Model" default="RES_MODEL_3D_DEFAULT"/>
+  </Component>
+
+  <Component name="MaterialComponent" shortName="Material" customSerialisation="true">
     <Data name="enabled" type="Boolean" default="true" />
     <Data name="color" type="Color" default="1,1,1,1"/>
-    <Data name="material" type="Material" default="UID()"/>
-    <Data name="model" type="Model" default="UID()"/>
+    <Data name="material" type="Material" default="RES_MATERIAL_3D_DEFAULT"/>
+    <Data name="properties" type="PropertyList" heapOnly="true" default="" />-->
   </Component>
   
   <Component name="SpriteComponent" shortName="Sprite">

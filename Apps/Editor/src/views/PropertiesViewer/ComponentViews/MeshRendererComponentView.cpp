@@ -20,8 +20,6 @@ namespace Wyrd::Editor
 	{
 		/* Cast to the correct component */
 		MeshRendererComponent* meshRenderer = (MeshRendererComponent*)data;
-		
-		ImGui::ColorPicker4("Pos ", (float*)&meshRenderer->color);
 
 		ImGui::Text(meshRenderer->model.str().c_str());
 		if (ImGui::BeginDragDropTarget())
@@ -30,17 +28,6 @@ namespace Wyrd::Editor
 			{
 				UID* modelUID = (UID*)payload->Data;
 				meshRenderer->model = *modelUID;
-			}
-			ImGui::EndDragDropTarget();
-		}
-
-		ImGui::Text(meshRenderer->material.str().c_str());
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_DND_MATERIAL))
-			{
-				UID* materialUID = (UID*)payload->Data;
-				meshRenderer->material = *materialUID;
 			}
 			ImGui::EndDragDropTarget();
 		}

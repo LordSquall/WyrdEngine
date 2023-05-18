@@ -23,7 +23,7 @@ namespace Wyrd
 		_VertexArray->SetAttribute(0, 0, 2, sizeof(SpriteVertex));
 		_VertexArray->SetAttribute(1, 2, 2, sizeof(SpriteVertex));
 
-		_Shader = nullptr;
+		_Material = nullptr;
 		_Texture = nullptr;
 
 		return true;
@@ -66,10 +66,10 @@ namespace Wyrd
 		_VertexArray->Bind();
 
 		/* update both the vertex and index buffers */
-		_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(SpriteVertex) * _vertices.size(), offset);
+		_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(SpriteVertex) * (uint32_t)_vertices.size(), offset);
 
 		_VPMatrix = cmd.vpMatrix;
-		_Shader = cmd.shader;
+		_Material = cmd.material;
 		_Texture = cmd.texture;
 		_Color = cmd.color;
 
@@ -79,38 +79,35 @@ namespace Wyrd
 
 	void SpriteBatch::Flush()
 	{
-		if (_SpriteCount == 0)
-			return;
-
-		if (_Shader == nullptr)
-		{
-			return;
-		}
-
-		_Shader->Bind();
-
-		_Shader->SetVPMatrix(_VPMatrix);
-
-		_Shader->SetModelMatrix(glm::mat4(1.0f));
-		_Shader->SetUniformColor("blendColor", _Color);
-
-		if (_Texture != nullptr)
-			_Texture->Bind();
-
-		_VertexArray->Bind();
-		_VertexBuffer->Bind();
-
-#ifdef WYRD_INCLUDE_DEBUG_TAGS
-		_Renderer->StartNamedSection("Sprite Batch Render");
-#endif
-
-		_Renderer->DrawArray(RendererDrawType::Triangles, 0, _SpriteCount * 6);
-
-#ifdef WYRD_INCLUDE_DEBUG_TAGS
-		_Renderer->EndNamedSection();
-#endif
-
-		_vertices.clear();
-		_SpriteCount = 0;
+///		if (_SpriteCount == 0)
+///			return;
+///
+///		_Material->BindViewMatrix();
+///		_Material->BindProjectionMatrix();
+///		_Shader->Bind();
+///
+///		_Shader->SetVPMatrix(_VPMatrix);
+///
+///		_Shader->SetModelMatrix(glm::mat4(1.0f));
+///		_Shader->SetUniformColor("blendColor", _Color);
+///
+///		if (_Texture != nullptr)
+///			_Texture->Bind();
+///
+///		_VertexArray->Bind();
+///		_VertexBuffer->Bind();
+///
+///#ifdef WYRD_INCLUDE_DEBUG_TAGS
+///		_Renderer->StartNamedSection("Sprite Batch Render");
+///#endif
+///
+///		_Renderer->DrawArray(RendererDrawType::Triangles, 0, _SpriteCount * 6);
+///
+///#ifdef WYRD_INCLUDE_DEBUG_TAGS
+///		_Renderer->EndNamedSection();
+///#endif
+///
+///		_vertices.clear();
+///		_SpriteCount = 0;
 	}
 }

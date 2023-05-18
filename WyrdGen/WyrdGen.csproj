@@ -61,12 +61,12 @@
   <ItemGroup>
     <Compile Include="datamodels\ComponentDefintions.cs" />
     <Compile Include="datamodels\TypeMappingDefinitions.cs" />
-    <Content Include="definitions\ComponentDefinitions.xml">
+    <None Include="definitions\ComponentDefinitions.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="definitions\TypeMappingDefinitions.xml">
+    </None>
+    <None Include="definitions\TypeMappingDefinitions.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
     <Compile Include="src\GeneratorUtils.cs" />
     <Compile Include="src\Managed\ManagedComponents_Gen.cs" />
     <Compile Include="src\Program.cs" />
@@ -75,26 +75,26 @@
     <Compile Include="src\Unmanaged\PInvokeAPI_Gen.cs" />
     <Compile Include="src\Unmanaged\UnmanagedComponents_Gen.cs" />
     <Compile Include="src\Utils.cs" />
+    <None Include="templates\Components.cs.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="templates\Components.h.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="templates\ComponentSerialiserFactory.cpp.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="templates\ComponentSerialiserFactory.h.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="templates\PInvokeAPI.cpp.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="templates\PInvokeAPI.h.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="templates\Components.cs.template">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="templates\Components.h.template">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="templates\ComponentSerialiserFactory.cpp.template">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="templates\ComponentSerialiserFactory.h.template">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="templates\PInvokeAPI.cpp.template">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="templates\PInvokeAPI.h.template">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

@@ -35,7 +35,7 @@ namespace Wyrd::Editor
 		defaultIconSet->imagePath = Utils::GetEditorResFolder() + "icons\\default.png";
 		defaultIconSet->height = (int)defaultIconHeight;
 		defaultIconSet->width = (int)defaultIconWidth;
-		defaultIconSet->Texture = std::make_shared<TextureRes>(Utils::GetEditorResFolder() + "icons\\default.png");
+		defaultIconSet->Texture = std::make_shared<TextureRes>(Utils::GetEditorResFolder() + "icons\\default.png", UIDUtils::Create());
 
 		_DefaultIcon = std::make_shared<Icon>();
 		_DefaultIcon->height = (int)defaultIconHeight;

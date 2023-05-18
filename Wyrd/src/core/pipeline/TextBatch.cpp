@@ -24,7 +24,7 @@ namespace Wyrd
 		_VertexArray->SetAttribute(1, 2, 2, sizeof(TextVertex2D));
 
 		_FontType = nullptr;
-		_Shader = nullptr;
+		_Material = nullptr;
 
 		return true;
 	}
@@ -62,7 +62,7 @@ namespace Wyrd
 
 
 			_VPMatrix = cmd.vpMatrix;
-			_Shader = cmd.shader;
+			_Material = cmd.material;
 			_FontType = cmd.font;
 			_Color = cmd.color;
 
@@ -76,22 +76,17 @@ namespace Wyrd
 
 	void TextBatch::Flush()
 	{
-		if (_Shader == nullptr)
-		{
-			return;
-		}
-
-		_Shader->Bind();
-
-		_Shader->SetVPMatrix(_VPMatrix);
-
-		_Shader->SetUniformColor("blendColor", _Color);
-
-		_VertexArray->Bind();
-		_VertexBuffer->Bind();
-
-		_Renderer->DrawArray(RendererDrawType::Triangles, 0, _vertices.size());
-
-		_vertices.clear();
+		//_Shader->Bind();
+		//
+		//_Shader->SetVPMatrix(_VPMatrix);
+		//
+		//_Shader->SetUniformColor("blendColor", _Color);
+		//
+		//_VertexArray->Bind();
+		//_VertexBuffer->Bind();
+		//
+		//_Renderer->DrawArray(RendererDrawType::Triangles, 0, _vertices.size());
+		//
+		//_vertices.clear();
 	}
 }

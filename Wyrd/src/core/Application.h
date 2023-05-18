@@ -15,6 +15,7 @@ namespace Wyrd {
 	struct AppProps
 	{
 		WindowProps windowProps;
+		bool headlessMode = false;
 	};
 
 	/**

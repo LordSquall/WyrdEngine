@@ -35,35 +35,43 @@ namespace Wyrd {
 		/* call the pre init function */
 		OnPreAppCreation(this);
 
-		/* create a windows and bind the event callback */
-		_Window = std::unique_ptr<Window>(Window::Create(props.windowProps));
-		_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
-
-		_Window->SetSize(props.windowProps.Width, props.windowProps.Height);
-		
-		/* create a renderer */
-		_Renderer.reset(Renderer::Create());
-
-		/* create the resource subsystem */
-		_Resources = std::make_unique<Resources>();
-
+		if (!props.headlessMode)
 		{
-			/* default sprite texture */
-			int width, height, channels;
-			unsigned char* data;
+			/* create a windows and bind the event callback */
+			_Window = std::unique_ptr<Window>(Window::Create(props.windowProps));
+			_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
-			data = SOIL_load_image("../../Wyrd/res/textures/box_01.png", &width, &height, &channels, 4);
+			_Window->SetSize(props.windowProps.Width, props.windowProps.Height);
 
-			TextureDesc textureDesc;
-			textureDesc.data = data;
-			textureDesc.width = width;
-			textureDesc.height = height;
-			textureDesc.channels = channels;
-			textureDesc.description = "Default Sprite Texture";
+			/* create a renderer */
+			_Renderer.reset(Renderer::Create());
 
-			std::shared_ptr<Texture> texture = std::shared_ptr<Texture>(Texture::Create(textureDesc));
-			texture->SetUID(UID(RESOURCE_DEFAULT_TEXTURE));
-			_Resources->Textures.insert(std::pair<std::string, std::shared_ptr<Texture>>(UID(RESOURCE_DEFAULT_TEXTURE), texture));
+
+			/* create the resource subsystem */
+			_Resources = std::make_unique<Resources>();
+
+			{
+				/* default sprite texture */
+				int width, height, channels;
+				unsigned char* data;
+
+				data = SOIL_load_image("../../Wyrd/res/textures/box_01.png", &width, &height, &channels, 4);
+
+				TextureDesc textureDesc;
+				textureDesc.data = data;
+				textureDesc.width = width;
+				textureDesc.height = height;
+				textureDesc.channels = channels;
+				textureDesc.description = "Default Sprite Texture";
+
+				std::shared_ptr<Texture> texture = std::shared_ptr<Texture>(Texture::Create(textureDesc));
+				texture->SetUID(UID(RES_TEXTURE_DEFAULT));
+				_Resources->Textures.insert(std::pair<std::string, std::shared_ptr<Texture>>(UID(RES_TEXTURE_DEFAULT), texture));
+			}
+		}
+		else
+		{
+			_Running = false;
 		}
 		
 		/* create behaviour subsystem */

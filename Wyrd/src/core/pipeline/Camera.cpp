@@ -52,4 +52,15 @@ namespace Wyrd
 			_Position + _Forward,
 			_Up);
 	}
+
+	const glm::vec3 Camera::GetWorldSpaceFromPoint(const glm::vec3& point, const Wyrd::Rect& boundary)
+	{
+		glm::vec3 ndcMouseCoords = GetNDCFromPoint(point, boundary);
+
+		glm::vec4 eyeCoords = glm::inverse(_projectionMatrix) * glm::vec4(ndcMouseCoords.x, ndcMouseCoords.y, -1.0f, 1.0f);
+
+		glm::vec4 worldCoords = glm::inverse(_viewMatrix) * eyeCoords;
+
+		return glm::vec3(worldCoords.x, worldCoords.y, worldCoords.z);
+	}
 }

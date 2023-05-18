@@ -1,0 +1,3 @@
+{
+	"name": <<SHADER_NAME>>
+} 

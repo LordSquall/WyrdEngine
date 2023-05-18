@@ -49,6 +49,8 @@ namespace Wyrd
 		virtual uint32_t GetColorAttachmentID() const override;
 		virtual const FrameBufferConfig& GetConfig() const override;
 
+		virtual Color GetPixelData(Vector2 coordinates) const override;
+
 	private:
 		FrameBufferConfig _config;
 

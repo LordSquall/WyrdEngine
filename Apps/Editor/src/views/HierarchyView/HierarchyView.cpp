@@ -201,6 +201,10 @@ namespace Wyrd::Editor
 			{
 				SpriteComponent* c = scene.AssignComponent<SpriteComponent>(entity);
 			}
+			if (ImGui::MenuItem("Add Material"))
+			{
+				scene.AssignComponent<MaterialComponent>(entity);
+			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Add Script"))
 			{

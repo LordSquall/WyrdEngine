@@ -1,0 +1,13 @@
+{
+	"name": "Default3DMaterial",
+	"shader": {
+		"name": "Mesh",
+		"inputs": [
+			{
+				"name": "BlendColor",
+				"type": "Color",
+				"binding": "u_BlendColor"
+			}
+		]
+	}
+} 

@@ -34,7 +34,7 @@ namespace Wyrd::Editor
 
 		glm::vec2 Convert2DToWorldSpace(const glm::vec2& point);
 		glm::vec2 GetViewportSpaceFromPoint(const glm::vec2& point);
-		glm::vec2 GetWorldSpaceFromPoint(const glm::vec2& point); 
+		glm::vec3 GetWorldSpaceFromPoint(const glm::vec3& point); 
 		glm::vec2 GetScreenSpaceFromWorldPoint(const glm::vec2& point);
 
 

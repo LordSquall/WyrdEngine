@@ -35,7 +35,7 @@ namespace Wyrd {
 
 		glm::mat4						_ViewMatrix;
 		glm::mat4						_ProjectionMatrix;
-		Shader*							_Shader;
+		Material*						_Material;
 		Color							_Color;
 		RendererDrawType				_DrawType;
 	};

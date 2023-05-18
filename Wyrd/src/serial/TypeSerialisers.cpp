@@ -43,7 +43,7 @@ namespace Wyrd
 
 		std::stringstream ss(data);
 
-		for (int i; ss >> i;) {
+		for (float i; ss >> i;) {
 			values.push_back(i);
 			if (ss.peek() == ',')
 				ss.ignore();

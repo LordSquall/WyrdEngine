@@ -13,13 +13,13 @@ namespace Wyrd {
 	public:
 		struct Hit
 		{
-			glm::vec2 point;
-			glm::vec2 normal;
+			glm::vec3 point;
+			glm::vec3 normal;
 			float distance;
 		};
 
 	public:
-		glm::vec2 origin;
-		glm::vec2 dir;
+		glm::vec3 origin;
+		glm::vec3 dir;
 	};
 }

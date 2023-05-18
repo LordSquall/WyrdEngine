@@ -231,18 +231,18 @@ namespace Wyrd::Editor
             uint32_t offset = 0;
 
             /* entity outline */
-            offset += PrimitiveUtils::GenerateRect(_Vertices, offset, { 0.0f, 0.0f }, editorComponent->inputArea._size, Color::CYAN, 2.0f, transform2DComponent->rotation, { 0.0f, 0.0f });
-            
-            /* axis movement*/
-            yAxixHandleRegion.vertexOffset = offset;
-            offset += PrimitiveUtils::GenerateRect(_Vertices, offset, yAxixHandleRegion.area._position, yAxixHandleRegion.area._size, yAxixHandleRegion.color, 2.0f, transform2DComponent->rotation, { 0.0f, 0.0f });
-
-            xAxixHandleRegion.vertexOffset = offset;
-            offset += PrimitiveUtils::GenerateRect(_Vertices, offset, xAxixHandleRegion.area._position, xAxixHandleRegion.area._size, xAxixHandleRegion.color, 2.0f, transform2DComponent->rotation, { 0.0f, 0.0f });
-
-            /* origin */
-            xyAxisHandleRegion.vertexOffset = offset;
-            offset += PrimitiveUtils::GenerateRect(_Vertices, offset, xyAxisHandleRegion.area._position, xyAxisHandleRegion.area._size, xyAxisHandleRegion.color, 2.0f, transform2DComponent->rotation, { 0.0f, 0.0f });
+            //offset += PrimitiveUtils::GenerateRect(_Vertices, offset, { 0.0f, 0.0f }, editorComponent->inputArea._size, Color::CYAN, 2.0f, transform2DComponent->rotation, { 0.0f, 0.0f });
+            //
+            ///* axis movement*/
+            //yAxixHandleRegion.vertexOffset = offset;
+            //offset += PrimitiveUtils::GenerateRect(_Vertices, offset, yAxixHandleRegion.area._position, yAxixHandleRegion.area._size, yAxixHandleRegion.color, 2.0f, transform2DComponent->rotation, { 0.0f, 0.0f });
+            //
+            //xAxixHandleRegion.vertexOffset = offset;
+            //offset += PrimitiveUtils::GenerateRect(_Vertices, offset, xAxixHandleRegion.area._position, xAxixHandleRegion.area._size, xAxixHandleRegion.color, 2.0f, transform2DComponent->rotation, { 0.0f, 0.0f });
+            //
+            ///* origin */
+            //xyAxisHandleRegion.vertexOffset = offset;
+            //offset += PrimitiveUtils::GenerateRect(_Vertices, offset, xyAxisHandleRegion.area._position, xyAxisHandleRegion.area._size, xyAxisHandleRegion.color, 2.0f, transform2DComponent->rotation, { 0.0f, 0.0f });
             
             _Regions.push_back(yAxixHandleRegion);
             _Regions.push_back(xAxixHandleRegion);

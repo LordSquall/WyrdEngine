@@ -52,11 +52,20 @@ namespace Wyrd
     struct WYRD_LIBRARY_API MeshRendererComponent
     {
         bool enabled;
-        Wyrd::Color color;
-        Wyrd::UID material;
         Wyrd::UID model;
 
-        MeshRendererComponent() : enabled(true), color(1,1,1,1), material(UID()), model(UID()) {} 
+        MeshRendererComponent() : enabled(true), model(RES_MODEL_3D_DEFAULT) {} 
+    };
+
+
+    struct WYRD_LIBRARY_API MaterialComponent
+    {
+        bool enabled;
+        Wyrd::Color color;
+        Wyrd::UID material;
+        BasePropMapRef properties;
+
+        MaterialComponent() : enabled(true), color(1,1,1,1), material(RES_MATERIAL_3D_DEFAULT), properties(nullptr) {} 
     };
 
 
