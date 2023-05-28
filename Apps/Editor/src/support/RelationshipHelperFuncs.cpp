@@ -180,52 +180,6 @@ namespace Wyrd::Editor
 				source_rc->next = target;
 				target_rc->previous = source;
 			}
-
-			//if (isFirst)
-			//{
-			//	if (source_rc->previous != ENTITY_INVALID)
-			//	{
-			//		RelationshipComponent* prevSource_rc = scene->Get<RelationshipComponent>(source_rc->previous);
-			//		prevSource_rc->next = source_rc->next;
-			//	}
-			//
-			//	if (source_rc->next != ENTITY_INVALID)
-			//	{
-			//		RelationshipComponent* nextSource_rc = scene->Get<RelationshipComponent>(source_rc->next);
-			//		nextSource_rc->previous = source_rc->previous;
-			//	}
-			//}
-			//
-			///* if we had a parent before ... */
-			//if (source_rc->parent != ENTITY_INVALID)
-			//{
-			//	RelationshipComponent* originalParent_rc = scene->Get<RelationshipComponent>(source_rc->parent);
-			//	originalParent_rc->childrenCnt--;
-			//
-			//	if (isFirst)
-			//	{
-			//		originalParent_rc->first = source_rc->next != ENTITY_INVALID ? source_rc->next : source_rc->previous;
-			//	}
-			//}
-			//
-			///* set the parent link */
-			//source_rc->parent = parent;
-			//
-			///* increment the parent child count */
-			//target_rc->childrenCnt += 1;
-			//
-			///* add new child to start of child list */
-			//RelationshipComponent* firstChildRC = scene->Get<RelationshipComponent>(target_rc->first);
-			//if (firstChildRC != nullptr)
-			//{
-			//	firstChildRC->previous = child;
-			//	source_rc->next = target_rc->first;
-			//	target_rc->first = child;
-			//}
-			//else
-			//{
-			//	target_rc->first = child;
-			//}
 		}
 	}  
 

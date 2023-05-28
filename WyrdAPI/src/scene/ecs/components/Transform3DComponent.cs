@@ -20,6 +20,9 @@ namespace WyrdAPI
       [MarshalAs(UnmanagedType.Struct)]
       private Vector3 _scale;
 
+      [MarshalAs(UnmanagedType.Struct)]
+      private Matrix4 _modelmatrix;
+
 
 
       public Vector3 Position
@@ -28,7 +31,7 @@ namespace WyrdAPI
          set 
          {
              _position = value;
-             Transform3DComponent_SetPosition(Scene.NativePtr, Entity, _position);
+             Transform3DComponent_SetPosition(Scene.NativePtr, EntityID, _position);
          }
       }
 
@@ -38,7 +41,7 @@ namespace WyrdAPI
          set 
          {
              _rotation = value;
-             Transform3DComponent_SetRotation(Scene.NativePtr, Entity, _rotation);
+             Transform3DComponent_SetRotation(Scene.NativePtr, EntityID, _rotation);
          }
       }
 
@@ -48,17 +51,27 @@ namespace WyrdAPI
          set 
          {
              _scale = value;
-             Transform3DComponent_SetScale(Scene.NativePtr, Entity, _scale);
+             Transform3DComponent_SetScale(Scene.NativePtr, EntityID, _scale);
+         }
+      }
+
+      public Matrix4 Modelmatrix
+      {
+         get { return _modelmatrix; }
+         set 
+         {
+             _modelmatrix = value;
+             Transform3DComponent_SetModelmatrix(Scene.NativePtr, EntityID, _modelmatrix);
          }
       }
 
 
 
-        public ulong Entity { get; set; }
+        public UInt64 EntityID { get; set; }
 
-        public void SetEntity(ulong entity)
+        public void SetEntity(Entity entity)
         {
-            Entity = entity;
+            EntityID = entity.NativeID;
         }
 
         #region P/Invoke functions
@@ -69,6 +82,8 @@ namespace WyrdAPI
          public static extern IntPtr Transform3DComponent_SetRotation(IntPtr scenePtr, UInt64 entity, Vector3 rotation);
          [DllImport("WyrdCAPI")]
          public static extern IntPtr Transform3DComponent_SetScale(IntPtr scenePtr, UInt64 entity, Vector3 scale);
+         [DllImport("WyrdCAPI")]
+         public static extern IntPtr Transform3DComponent_SetModelmatrix(IntPtr scenePtr, UInt64 entity, Matrix4 modelmatrix);
 
 
         #endregion

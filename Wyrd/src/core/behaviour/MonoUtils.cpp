@@ -11,6 +11,9 @@
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
 
+#define WYRD_CORE_API_NAMESPACE "WyrdAPI"
+#define WYRD_GAME_API_NAMESPACE "WyrdGame"
+
 namespace Wyrd
 {
 	bool MonoUtils::SetProperty(MonoImage* image, const std::string& ns, const std::string& cls, const std::string& prop, MonoObject* obj, std::vector<void*> value)

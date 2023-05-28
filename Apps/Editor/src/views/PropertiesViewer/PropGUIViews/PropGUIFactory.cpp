@@ -5,6 +5,8 @@
 #include "properties/BaseProp.h"
 #include "core/Application.h"
 
+#include <misc/cpp/imgui_stdlib.h>
+
 namespace Wyrd
 {
     void CreatePropGUI_Int(BaseProp* prop)
@@ -37,6 +39,24 @@ namespace Wyrd
         ImGui::InputInt(prop->GetName().c_str(), (int*)&intU64Prop->Value);
     }
 
+    void CreatePropGUI_Float(BaseProp* prop)
+    {
+        PropFloat* floatProp = (PropFloat*)prop;
+        ImGui::InputFloat(prop->GetName().c_str(), (float*)&floatProp->Value);
+    }
+
+    void CreatePropGUI_Double(BaseProp* prop)
+    {
+        PropDouble* doubleProp = (PropDouble*)prop;
+        ImGui::InputDouble(prop->GetName().c_str(), (double*)&doubleProp->Value);
+    }
+
+    void CreatePropGUI_String(BaseProp* prop)
+    {
+        PropDouble* doubleProp = (PropDouble*)prop;
+        ImGui::InputText(prop->GetName().c_str(), (std::string*)&doubleProp->Value);
+    }
+
     void CreatePropGUI_Vec2(BaseProp* prop)
     {
         PropVec2* vec2Prop = (PropVec2*)prop;
@@ -61,13 +81,14 @@ namespace Wyrd
 
         if (textureProp->Value != nullptr)
         {
-            ImGui::Image((ImTextureID)(INT_PTR)textureProp->Value->GetHandle(), ImVec2((float)textureProp->Value->GetWidth(), (float)textureProp->Value->GetHeight()));
+            ImGui::Image((ImTextureID)(INT_PTR)textureProp->Value->GetHandle(), ImVec2(64.0f, 64.0f));
         }
         else
         {
             auto defaultTexture = Application::Get().GetResources().Textures[UID(RES_TEXTURE_DEFAULT)];
-            ImGui::Image((ImTextureID)(INT_PTR)defaultTexture->GetHandle(), ImVec2((float)defaultTexture->GetWidth(), (float)defaultTexture->GetHeight()));
+            ImGui::Image((ImTextureID)(INT_PTR)defaultTexture->GetHandle(), ImVec2(64.0f, 64.0f));
         }
+
         if (ImGui::BeginDragDropTarget())
         {
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_DND_TEXTURE))
@@ -88,6 +109,8 @@ namespace Wyrd
             }
             ImGui::EndDragDropTarget();
         }
+        ImGui::SameLine();
+        ImGui::Text(prop->GetName().c_str());
     }
 
     std::map<std::string, PropGUIFactory::DrawPropGUIFunc>* PropGUIFactory::GetPropsGUI()
@@ -98,10 +121,32 @@ namespace Wyrd
             { "UInt32", CreatePropGUI_UInt32 },
             { "Int64", CreatePropGUI_Int64 },
             { "UInt64", CreatePropGUI_UInt64 },
+            { "Float", CreatePropGUI_Float },
+            { "Double", CreatePropGUI_Double },
+            { "String", CreatePropGUI_String },
             { "Vec2", CreatePropGUI_Vec2 },
             { "Vec3", CreatePropGUI_Vec3 },
             { "Color", CreatePropGUI_Color },
             { "Texture", CreatePropGUI_Texture }
+        };
+        return &properties;
+    }
+
+    std::map<std::string, PropGUIFactory::DrawPropGUIFunc>* PropGUIFactory::GetManagedPropsGUI()
+    {
+        static std::map<std::string, PropGUIFactory::DrawPropGUIFunc> properties{
+            { "System.Int", CreatePropGUI_Int },
+            { "System.Int32", CreatePropGUI_Int32 },
+            { "System.UInt32", CreatePropGUI_UInt32 },
+            { "System.Int64", CreatePropGUI_Int64 },
+            { "System.UInt64", CreatePropGUI_UInt64 },
+            { "System.Single", CreatePropGUI_Float },
+            { "System.Double", CreatePropGUI_Double },
+            { "System.String", CreatePropGUI_String },
+            { "WyrdAPI.Vector2", CreatePropGUI_Vec2 },
+            { "WyrdAPI.Vector3", CreatePropGUI_Vec3 },
+            { "WyrdAPI.Color", CreatePropGUI_Color },
+            { "WyrdAPI.Texture", CreatePropGUI_Texture }
         };
         return &properties;
     }
@@ -123,6 +168,19 @@ namespace Wyrd
         if (properties->find(prop->GetType()) != properties->end())
         {
             properties->at(prop->GetType())(prop);
+        }
+        else
+        {
+            ImGui::TextColored({ 0.9f, 0.1f, 0.1f, 1.0f }, prop->GetName().c_str());
+        }
+    }
+
+    void PropGUIFactory::DrawManagedProp(BaseProp* prop)
+    {
+        auto properties = GetManagedPropsGUI();
+        if (properties->find(prop->GetManagedType()) != properties->end())
+        {
+            properties->at(prop->GetManagedType())(prop);
         }
         else
         {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace WyrdAPI
 {
     [StructLayout(LayoutKind.Sequential)]
-    public class MaterialComponent : Component
+    public partial class MaterialComponent : Component
     {
 
       [MarshalAs(UnmanagedType.Bool)]
@@ -28,7 +28,7 @@ namespace WyrdAPI
          set 
          {
              _enabled = value;
-             MaterialComponent_SetEnabled(Scene.NativePtr, Entity, _enabled);
+             MaterialComponent_SetEnabled(Scene.NativePtr, EntityID, _enabled);
          }
       }
 
@@ -38,7 +38,7 @@ namespace WyrdAPI
          set 
          {
              _color = value;
-             MaterialComponent_SetColor(Scene.NativePtr, Entity, _color);
+             MaterialComponent_SetColor(Scene.NativePtr, EntityID, _color);
          }
       }
 
@@ -48,17 +48,17 @@ namespace WyrdAPI
          set 
          {
              _material = value;
-             MaterialComponent_SetMaterial(Scene.NativePtr, Entity, _material);
+             MaterialComponent_SetMaterial(Scene.NativePtr, EntityID, _material);
          }
       }
 
 
 
-        public ulong Entity { get; set; }
+        public UInt64 EntityID { get; set; }
 
-        public void SetEntity(ulong entity)
+        public void SetEntity(Entity entity)
         {
-            Entity = entity;
+            EntityID = entity.NativeID;
         }
 
         #region P/Invoke functions

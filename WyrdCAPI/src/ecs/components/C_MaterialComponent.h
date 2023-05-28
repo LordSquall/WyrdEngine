@@ -17,6 +17,7 @@ LIBRARY_API void MaterialComponent_SetColor(void* obj, Wyrd::Entity entity, Wyrd
 
 LIBRARY_API void MaterialComponent_SetMaterial(void* obj, Wyrd::Entity entity, Wyrd::UID* position);
 
+LIBRARY_API void MaterialComponent_SetProperty_Texture(void* scenePtr, Wyrd::Entity entity, char* name, Wyrd::Texture* texture);
 
 
 #ifdef __cplusplus

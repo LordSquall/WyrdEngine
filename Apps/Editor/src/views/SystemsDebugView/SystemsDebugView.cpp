@@ -77,24 +77,24 @@ namespace Wyrd::Editor
 							{
 								if (ImGui::TreeNode("Properties"))
 								{
-									ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
-									if (ImGui::BeginTable("proptable", 2, flags))
-									{
-										ImGui::TableSetupColumn("Name");
-										ImGui::TableSetupColumn("Type");
-										ImGui::TableHeadersRow();
-
-										for (auto& prop : cls.second->Properties)
-										{
-											ImGui::TableNextRow();
-											ImGui::TableNextColumn();
-											ImGui::Text(prop.first.c_str());
-											ImGui::TableNextColumn();
-											ImGui::Text(prop.second->GetTypeName().c_str());
-										}
-
-										ImGui::EndTable();
-									}
+									//ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+									//if (ImGui::BeginTable("proptable", 2, flags))
+									//{
+									//	ImGui::TableSetupColumn("Name");
+									//	ImGui::TableSetupColumn("Type");
+									//	ImGui::TableHeadersRow();
+									//
+									//	for (auto& prop : cls.second->Properties)
+									//	{
+									//		ImGui::TableNextRow();
+									//		ImGui::TableNextColumn();
+									//		ImGui::Text(prop.first.c_str());
+									//		ImGui::TableNextColumn();
+									//		ImGui::Text(prop.second->GetTypeName().c_str());
+									//	}
+									//
+									//	ImGui::EndTable();
+									//}
 									ImGui::TreePop();
 								}
 								if (ImGui::TreeNode("Methods"))

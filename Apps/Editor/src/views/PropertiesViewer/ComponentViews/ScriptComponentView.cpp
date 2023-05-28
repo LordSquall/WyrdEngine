@@ -8,6 +8,7 @@
 /* local includes */
 #include "ScriptComponentView.h"
 #include "support/ImGuiUtils.h"
+#include "views/PropertiesViewer/PropGUIViews/PropGUIFactory.h"
 
 /* external includes */
 #include <imgui.h>
@@ -46,7 +47,7 @@ namespace Wyrd::Editor
 				{
 					/* assign the script */
 					script->scriptId = *scriptUID;
-					script->properties = scriptClass->GetPropertiesCopy();
+					script->properties = PropFactory::CopyPropMap(scriptClass->Properties);
 				}
 
 			}
@@ -55,15 +56,17 @@ namespace Wyrd::Editor
 
 		if (currentScriptClass != nullptr)
 		{
-			for (auto& prop : *script->properties)
+			if (script->properties != nullptr)
 			{
-				// if this is empty this implied the script failure to parse the property, however the entity component is still expecting it.
-				// this will clean up on the next save operation. See output for more details on which is prop is failing
-				if (prop.second != nullptr)
+				for (auto& inputProp : *script->properties)
 				{
-					if (ScriptPropertyViewFactory::Create(prop.second, nullptr) == false)
+					if (inputProp.second)
 					{
-						ImGui::TextColored({ 1.0f, 0.0f, 0.0f, 1.0f }, "Unabled to create view for property: %s", prop.first.c_str());
+						PropGUIFactory::DrawManagedProp(inputProp.second.get());
+					}
+					else
+					{
+						PropGUIFactory::DrawMissingProp(inputProp.first);
 					}
 				}
 			}

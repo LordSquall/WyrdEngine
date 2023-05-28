@@ -78,6 +78,12 @@
     <JsonType type="Object" isStreamable="true" isPrimitive="false"/>
   </TypeMap>
 
+  <TypeMap name="Mat4">
+    <UnmanagedType type="glm::mat4" default="glm::mat4(1.0)" isPrimitive="false"/>
+    <ManagedType type="Matrix4" marshalType="Struct" default="0"/>
+    <JsonType type="Object" isStreamable="true" isPrimitive="false"/>
+  </TypeMap>
+
   <TypeMap name="Color">
     <UnmanagedType type="Wyrd::Color" default="1,1,1,1" isPrimitive="false"/>
     <ManagedType type="Color" marshalType="Struct" default="0"/>

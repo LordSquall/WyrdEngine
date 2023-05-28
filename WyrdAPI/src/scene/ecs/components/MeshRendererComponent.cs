@@ -25,7 +25,7 @@ namespace WyrdAPI
          set 
          {
              _enabled = value;
-             MeshRendererComponent_SetEnabled(Scene.NativePtr, Entity, _enabled);
+             MeshRendererComponent_SetEnabled(Scene.NativePtr, EntityID, _enabled);
          }
       }
 
@@ -35,17 +35,17 @@ namespace WyrdAPI
          set 
          {
              _model = value;
-             MeshRendererComponent_SetModel(Scene.NativePtr, Entity, _model);
+             MeshRendererComponent_SetModel(Scene.NativePtr, EntityID, _model);
          }
       }
 
 
 
-        public ulong Entity { get; set; }
+        public UInt64 EntityID { get; set; }
 
-        public void SetEntity(ulong entity)
+        public void SetEntity(Entity entity)
         {
-            Entity = entity;
+            EntityID = entity.NativeID;
         }
 
         #region P/Invoke functions

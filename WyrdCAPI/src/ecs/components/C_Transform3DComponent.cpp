@@ -31,4 +31,12 @@ void Transform3DComponent_SetScale(void* scenePtr, Wyrd::Entity entity, Wyrd::Ve
    component->scale = *scale;
 }
 
+void Transform3DComponent_SetModelmatrix(void* scenePtr, Wyrd::Entity entity, glm::mat4* modelMatrix)
+{
+   Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
+   Wyrd::Transform3DComponent* component = scene->Get<Wyrd::Transform3DComponent>(entity);
+
+   component->modelMatrix = *modelMatrix;
+}
+
 

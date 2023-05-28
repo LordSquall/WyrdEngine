@@ -15,11 +15,11 @@ namespace WyrdAPI
 
 <!PROPERTIES>
 
-        public ulong Entity { get; set; }
+        public UInt64 EntityID { get; set; }
 
-        public void SetEntity(ulong entity)
+        public void SetEntity(Entity entity)
         {
-            Entity = entity;
+            EntityID = entity.NativeID;
         }
 
         #region P/Invoke functions

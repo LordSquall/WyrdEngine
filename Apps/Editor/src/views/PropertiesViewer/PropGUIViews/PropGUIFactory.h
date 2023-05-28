@@ -25,9 +25,11 @@ namespace Wyrd
 		static bool Register(const std::string typeName, DrawPropGUIFunc createFunc);
 
 		static void DrawProp(BaseProp* prop);
+		static void DrawManagedProp(BaseProp* prop);
 
 		static void DrawMissingProp(const std::string& name);
 
 		static std::map<std::string, PropGUIFactory::DrawPropGUIFunc>* GetPropsGUI();
+		static std::map<std::string, PropGUIFactory::DrawPropGUIFunc>* GetManagedPropsGUI();
 	};
 }

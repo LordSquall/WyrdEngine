@@ -54,6 +54,8 @@ namespace Wyrd
 			}
 		}
 
+		Properties = std::make_shared<std::map<std::string, BasePropRef>>();
+
 		/* at this point we want to process each of the properties in object */
 		while ((unmanagedProp = mono_class_get_properties((MonoClass*)*ManagedClass, &propertyIter))) {
 
@@ -83,17 +85,11 @@ namespace Wyrd
 					qualifiedType = "WyrdGame.ScriptedObject";
 				}
 
-				std::unique_ptr<ScriptProperty> scriptProp = ScriptPropertyFactory::Create(qualifiedType);
+				BasePropRef scriptProp = PropFactory::CreateManagedProp(qualifiedType, name);
 				if (scriptProp != nullptr)
 				{
-					scriptProp->SetNameSpace(fullTypeNS);
-					scriptProp->SetTypeName(fullTypeName);
-					scriptProp->SetName(name);
-					scriptProp->SetSetter(setter);
-					scriptProp->SetGetter(getter);
-
 					WYRD_TRACE("- Property: {0}", name);
-					Properties[name] = std::move(scriptProp);
+					(*Properties)[name] = std::move(scriptProp);
 				}
 			}
 			else
@@ -103,14 +99,17 @@ namespace Wyrd
 		}
 	}
 
-	std::shared_ptr<PropertyList_t> ScriptedClass::GetPropertiesCopy() const
+	BasePropMapRef ScriptedClass::GetPropertiesCopy() const
 	{
-		std::shared_ptr<PropertyList_t> newPropertyList = std::make_shared<std::map<std::string, std::shared_ptr<ScriptProperty>>>();
+		BasePropMapRef newPropertyList = std::make_shared<std::map<std::string, BasePropRef>>();
 
-		for (auto& prop : Properties)
-		{
-			(*newPropertyList)[prop.first] = prop.second->CreateClone();
-		}
+		//BasePropMapRef newPropertyList = PropFactory::CopyPropMap(*Properties);
+		//for (auto& prop : *Properties)
+		//{
+		//	PropFactory::CopyPropMap(*Properties)
+		//	BasePropRef p = PropFactory::CreateProp(prop.second->GetType(), prop.second->GetName());
+		//	(*newPropertyList)[prop.first] = prop.second->CreateClone();
+		//}
 
 		return newPropertyList;
 	}
@@ -119,10 +118,10 @@ namespace Wyrd
 	{
 		std::shared_ptr<DataList_t> newPropertyDataList = std::make_shared<DataList_t>();
 
-		for (auto& prop : Properties)
-		{
-			(*newPropertyDataList)[prop.first] = prop.second->AllocateData();
-		}
+		//for (auto& prop : Properties)
+		//{
+		//	(*newPropertyDataList)[prop.first] = prop.second->AllocateData();
+		//}
 
 		return newPropertyDataList;
 	}

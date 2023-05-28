@@ -28,7 +28,7 @@ namespace WyrdAPI
          set 
          {
              _viewport = value;
-             CameraComponent_SetViewport(Scene.NativePtr, Entity, _viewport);
+             CameraComponent_SetViewport(Scene.NativePtr, EntityID, _viewport);
          }
       }
 
@@ -38,7 +38,7 @@ namespace WyrdAPI
          set 
          {
              _aspectratio = value;
-             CameraComponent_SetAspectratio(Scene.NativePtr, Entity, _aspectratio);
+             CameraComponent_SetAspectratio(Scene.NativePtr, EntityID, _aspectratio);
          }
       }
 
@@ -48,17 +48,17 @@ namespace WyrdAPI
          set 
          {
              _size = value;
-             CameraComponent_SetSize(Scene.NativePtr, Entity, _size);
+             CameraComponent_SetSize(Scene.NativePtr, EntityID, _size);
          }
       }
 
 
 
-        public ulong Entity { get; set; }
+        public UInt64 EntityID { get; set; }
 
-        public void SetEntity(ulong entity)
+        public void SetEntity(Entity entity)
         {
-            Entity = entity;
+            EntityID = entity.NativeID;
         }
 
         #region P/Invoke functions

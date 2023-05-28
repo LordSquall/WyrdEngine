@@ -46,9 +46,10 @@ namespace Wyrd
 		for (int i = 0; i < cmd.mesh->Vertices.size(); ++i)
 		{
 			Vertex3D v = cmd.mesh->Vertices.at(i);
-			v.x += cmd.position.x;
-			v.y += cmd.position.y;
-			v.z += cmd.position.z;
+			glm::vec4 translatedPos = cmd.modelMatrix * glm::vec4(v.x, v.y, v.z, 1.0f);
+			v.x = translatedPos.x;
+			v.y = translatedPos.y;
+			v.z = translatedPos.z;
 			_vertices.push_back(v);
 		}
 		

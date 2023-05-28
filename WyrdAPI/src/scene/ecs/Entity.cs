@@ -44,7 +44,7 @@ namespace WyrdAPI
             else 
             {
                 _components[typeof(T)] = Scene.GetComponent<T>(this);
-                _components[typeof(T)].SetEntity(_NativeID);
+                _components[typeof(T)].SetEntity(this);
 
                 return (T)_components[typeof(T)];
             }
@@ -59,7 +59,7 @@ namespace WyrdAPI
             else
             {
                 _components[typeof(T)] = Scene.AddComponent<T>(this);
-                _components[typeof(T)].SetEntity(_NativeID);
+                _components[typeof(T)].SetEntity(this);
 
                 return (T)_components[typeof(T)];
             }

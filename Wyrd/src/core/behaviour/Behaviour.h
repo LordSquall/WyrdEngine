@@ -132,6 +132,8 @@ namespace Wyrd
 		*/
 		std::shared_ptr<ScriptedClass> GetCustomClassByUID(const UID& uid);
 
+		MonoObject* RetrieveCachedManagedTextureObject(const Wyrd::UID& uid);
+
 		inline void SetSceneManager(ISceneManager* sceneManager) { _SceneManager = sceneManager; }
 
 #ifdef WYRD_DEBUG
@@ -182,6 +184,9 @@ namespace Wyrd
 		Behaviour*		_BehaviourSubsystem;
 		Physics*		_PhysicsSubsystem;
 		Resources*		_ResourcesSubsystem;
+
+		/* Managed Proxy Managers */
+		MonoObject* _ResourceManagedProxy;
 
 		/* Interfaces */
 		ISceneManager*  _SceneManager;

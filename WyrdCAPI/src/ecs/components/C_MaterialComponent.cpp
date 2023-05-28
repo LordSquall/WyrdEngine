@@ -1,4 +1,5 @@
 /* core wyrd includes */
+#include <properties/BaseProp.h>
 #include <core/renderer/Texture.h>
 #include <core/scene/Scene.h>
 #include <core/ecs/Components.h>
@@ -31,4 +32,11 @@ void MaterialComponent_SetMaterial(void* scenePtr, Wyrd::Entity entity, Wyrd::UI
    component->material = *material;
 }
 
+void MaterialComponent_SetProperty_Texture(void* scenePtr, Wyrd::Entity entity, char* name, Wyrd::Texture* texture)
+{
+	Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
+	Wyrd::MaterialComponent* component = scene->Get<Wyrd::MaterialComponent>(entity);
+
+	(*component->properties)[name]->Set(texture);
+}
 

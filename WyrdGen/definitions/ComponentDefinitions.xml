@@ -15,6 +15,7 @@
     <Data name="position" type="Vec3" default="0,0,0" />
     <Data name="rotation" type="Vec3" default="0,0,0"/>
     <Data name="scale" type="Vec3" default="1,1,1"/>
+    <Data name="modelMatrix" type="Mat4" default="glm::mat4(1.0)" runtimeOnly="true"/>
   </Component>
 
   <Component name="MeshRendererComponent" shortName="MeshRenderer">
@@ -26,7 +27,7 @@
     <Data name="enabled" type="Boolean" default="true" />
     <Data name="color" type="Color" default="1,1,1,1"/>
     <Data name="material" type="Material" default="RES_MATERIAL_3D_DEFAULT"/>
-    <Data name="properties" type="PropertyList" heapOnly="true" default="" />-->
+    <Data name="properties" type="PropertyList" heapOnly="true" default="" />
   </Component>
   
   <Component name="SpriteComponent" shortName="Sprite">
@@ -42,7 +43,8 @@
     <Data name="enabled" type="Boolean" default="true" />  
     <Data name="scriptId" type="UID" default="UID()"/>
     <Data name="instanceId" type="Int32" default="0" />
-    <Data name="properties" type="ScriptPropertiesMapRef" heapOnly="true" default="" />
+    <!--<Data name="properties" type="ScriptPropertiesMapRef" heapOnly="true" default="" />-->
+    <Data name="properties" type="PropertyList" heapOnly="true" default="" />
   </Component>
   
   <Component name="RelationshipComponent" shortName="Relationship">

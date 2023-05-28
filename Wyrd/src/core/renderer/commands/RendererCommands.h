@@ -31,10 +31,7 @@ namespace Wyrd
 	struct WYRD_LIBRARY_API DrawMeshCommand : public DrawCommand
 	{
 		RendererDrawType drawType;
-		Wyrd::Vector3 position;
-		Wyrd::Vector3 rotationOrigin;
-		Wyrd::Vector3 rotation;
-		Wyrd::Vector3 scale;
+		glm::mat4 modelMatrix;
 		Color color;
 		Mesh* mesh;
 		Texture* baseTexture;

@@ -3,6 +3,7 @@
 /* local includes */
 #include "wyrdpch.h"
 #include "core/export.h"
+#include "core/UID.h"
 
 /* external includes */
 #include <mono/jit/jit.h>

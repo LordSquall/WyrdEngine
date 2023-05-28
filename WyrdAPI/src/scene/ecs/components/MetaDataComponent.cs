@@ -25,7 +25,7 @@ namespace WyrdAPI
          set 
          {
              _name = value;
-             MetaDataComponent_SetName(Scene.NativePtr, Entity, _name);
+             MetaDataComponent_SetName(Scene.NativePtr, EntityID, _name);
          }
       }
 
@@ -35,17 +35,17 @@ namespace WyrdAPI
          set 
          {
              _uid = value;
-             MetaDataComponent_SetUid(Scene.NativePtr, Entity, _uid);
+             MetaDataComponent_SetUid(Scene.NativePtr, EntityID, _uid);
          }
       }
 
 
 
-        public ulong Entity { get; set; }
+        public UInt64 EntityID { get; set; }
 
-        public void SetEntity(ulong entity)
+        public void SetEntity(Entity entity)
         {
-            Entity = entity;
+            EntityID = entity.NativeID;
         }
 
         #region P/Invoke functions

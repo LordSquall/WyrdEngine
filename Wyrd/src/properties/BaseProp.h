@@ -8,10 +8,8 @@
 #include "core/renderer/Texture.h"
 
 
-#define PROPERTY_FACTORY_REGISTER(Name, typeName)\
-bool Prop##Name::s_Registered = PropFactory::Register(\
-typeName,\
-Prop##Name::Create)
+#define PROPERTY_FACTORY_REGISTER(Name, typeName, managedName)\
+bool Prop##Name::s_Registered = PropFactory::Register(typeName, managedName,Prop##Name::Create)
 
 
 #define PROPERTY_SERIALISE_FUNCSIG(Name) bool Prop##Name::Serialise(jsonxx::Object& json)
@@ -36,59 +34,35 @@ Type BaseProp::Get(){  return ((Prop##Name*)this)->Value; }
 template <>\
 Type BaseProp::Get(){  return ((Prop##Name*)this)->Value; }
 
-#define PROPERTY_TYPE(Name, Type, DefaultValue)\
-class Prop##Name :  public BaseProp\
+#define PROPERTY_TYPE(Name, ManagedName, InternalStorageType, DefaultValue)\
+template<>\
+void BaseProp::Set<InternalStorageType>(InternalStorageType v);\
+template<>\
+InternalStorageType BaseProp::Get<InternalStorageType>();\
+class WYRD_LIBRARY_API Prop##Name :  public BaseProp\
 {\
 public:\
-	Prop##Name() : BaseProp("", ""), Value(DefaultValue) {}\
-	Prop##Name(const std::string& name) : BaseProp(name, ""), Value(DefaultValue) {}\
-	Prop##Name(const std::string& name, const std::string& type) : BaseProp(name, type), Value(DefaultValue) {}\
-	Prop##Name(const std::string& name, const std::string& type, Type value) : BaseProp(name, type), Value(value) { }\
-	Prop##Name(const std::string& name, const std::string& type, const jsonxx::Value& value) : BaseProp(name, type), Value(DefaultValue) { Deserialise(value); }\
+	Prop##Name() : BaseProp("", "", #ManagedName), Value(DefaultValue) {}\
+	Prop##Name(const std::string& name) : BaseProp(name, "", #ManagedName), Value(DefaultValue) {}\
+	Prop##Name(const std::string& name, const std::string& type) : BaseProp(name, type, #ManagedName), Value(DefaultValue) {}\
+	Prop##Name(const std::string& name, const std::string& type, InternalStorageType value) : BaseProp(name, type, #ManagedName), Value(value) { }\
+	Prop##Name(const std::string& name, const std::string& type, const jsonxx::Value& value) : BaseProp(name, type, #ManagedName), Value(DefaultValue) { Deserialise(value); }\
 	\
 	bool Serialise(jsonxx::Object& json);\
 	bool Deserialise(const jsonxx::Object& json);\
 	bool Deserialise(const jsonxx::Value& json);\
+	void* GetRawValuePtr() { return &Value; }\
+	std::unique_ptr<BaseProp> CreateCopy(BaseProp* ref) override { return std::make_unique<Prop##Name>(ref->GetName(), ref->GetType(), ref->Get<InternalStorageType>()); }\
 	const std::string ToString();\
 	static BasePropRef Create(const std::string& name, const std::string& type, const jsonxx::Value& value, bool parseValue) { \
 		return parseValue ? std::make_unique<Prop##Name>(name, type, value) : std::make_unique<Prop##Name>(name, type); \
 	}\
 public:\
-	Type Value;\
+	InternalStorageType Value;\
 protected:\
 	static bool s_Registered;\
-};\
-template<>\
-void BaseProp::Set<Type>(Type v);\
-template<>\
-Type BaseProp::Get<Type>();\
+};
 
-#define PROPERTY_WRAPPER_TYPE(Name, Wrapper, Type, DefaultValue)\
-class Prop##Name :  public BaseProp\
-{\
-public:\
-	Prop##Name() : BaseProp("", ""), Value(DefaultValue) {}\
-	Prop##Name(const std::string& name) : BaseProp(name, ""), Value(DefaultValue) {}\
-	Prop##Name(const std::string& name, const std::string& type) : BaseProp(name, type), Value(DefaultValue) {}\
-	Prop##Name(const std::string& name, const std::string& type, Type value) : BaseProp(name, type), Value(value) { }\
-	Prop##Name(const std::string& name, const std::string& type, const jsonxx::Value& value) : BaseProp(name, type), Value(DefaultValue) { Deserialise(value); }\
-	\
-	bool Serialise(jsonxx::Object& json);\
-	bool Deserialise(const jsonxx::Object& json);\
-	bool Deserialise(const jsonxx::Value& json);\
-	const std::string ToString();\
-	static BasePropRef Create(const std::string& name, const std::string& type, const jsonxx::Value& value, bool parseValue) { \
-		return parseValue ? std::make_unique<Prop##Name>(name, type, value) : std::make_unique<Prop##Name>(name, type); \
-	}\
-public:\
-	Type Value;\
-protected:\
-	static bool s_Registered;\
-};\
-template<>\
-void BaseProp::Set<Wrapper>(Wrapper v);\
-template<>\
-Wrapper BaseProp::Get<Wrapper>();\
 
 
 const std::string emptryStr = "";
@@ -100,12 +74,14 @@ namespace Wyrd
 	typedef std::unique_ptr<BaseProp> BasePropRef;
 	typedef std::shared_ptr<std::map<std::string, BasePropRef>> BasePropMapRef;
 
-	class BaseProp {
+	class WYRD_LIBRARY_API BaseProp {
 	public:
-		BaseProp(const std::string& name, const std::string& type) : _Name(name), _Type(type) {}
+		BaseProp(const std::string& name, const std::string& type, const std::string& managedType) : _Name(name), _Type(type), _ManagedType(managedType){}
 
 		virtual bool Serialise(jsonxx::Object& json) = 0;
 		virtual bool Deserialise(const jsonxx::Object& json) = 0;
+
+		virtual std::unique_ptr<BaseProp> CreateCopy(BaseProp* ref) = 0;
 
 		virtual const std::string ToString() = 0;
 
@@ -113,16 +89,20 @@ namespace Wyrd
 		void Set(T value) { printf("Called default Set template function!"); };
 
 		template <class T>
-		T Get() { printf("Called default Get template function!"); return default(T); };
+		T Get() { printf("Called default Get template function!"); return nullptr; };
+
+		virtual void* GetRawValuePtr() = 0;
 
 		inline const std::string GetName() const { return _Name; };
 		inline void SetName(const std::string& name) { _Name = name; };
 
 		inline const std::string GetType() const { return _Type; };
+		inline const std::string GetManagedType() const { return _ManagedType; };
 
 
 	protected:
 		std::string _Type;
+		std::string _ManagedType;
 		std::string _Name;
 	};
 
@@ -130,29 +110,67 @@ namespace Wyrd
 	{
 	public:
 		using CreatePropFunc = BasePropRef(*)(const std::string& name, const std::string& type, const jsonxx::Value& v, bool parseValue);
-	
+
 	public:
 		PropFactory() = delete;
-	
-		static bool Register(const std::string typeName, CreatePropFunc createFunc);
+
+		static bool Register(const std::string typeName, const std::string managedName, CreatePropFunc createFunc);
 
 		static BasePropRef CreateProp(const std::string& type, const std::string& name);
 
 		static BasePropRef CreateProp(const std::string& name, const jsonxx::Object& object);
 
+		static BasePropRef CreateManagedProp(const std::string& managedPropName, const std::string& name);
+
 		static BasePropMapRef CreatePropMap(const jsonxx::Object& object);
-	
-		static std::map<std::string, PropFactory::CreatePropFunc>* GetProps();
+
+		static BasePropMapRef CopyPropMap(BasePropMapRef map);
+
+		static std::map<std::string, PropFactory::CreatePropFunc>* GetNativeProps();
+		static std::map<std::string, PropFactory::CreatePropFunc>* GetManagedProps();
 	};
 
-	PROPERTY_TYPE(Int, int, 0);
-	PROPERTY_TYPE(Int32, int32_t, 0);
-	PROPERTY_TYPE(UInt32, uint32_t, 0);
-	PROPERTY_TYPE(Int64, int64_t, 0);
-	PROPERTY_TYPE(UInt64, uint64_t, 0);
-	PROPERTY_TYPE(String, std::string, "");
-	PROPERTY_TYPE(Vec2, Vector2, Vector2());
-	PROPERTY_TYPE(Vec3, Vector3, Vector3());
-	PROPERTY_TYPE(Color, Color, Color());
-	PROPERTY_TYPE(Texture, Texture*, nullptr);
+	// Type name, Managed Type name, internal storage type, default value
+	PROPERTY_TYPE(Int, System.Int, int, 0);
+	PROPERTY_TYPE(Int32, System.Int32, int32_t, 0);
+	PROPERTY_TYPE(UInt32, System.UInt32, uint32_t, 0);
+	PROPERTY_TYPE(Int64, System.Int64, int64_t, 0);
+	PROPERTY_TYPE(UInt64, System.UInt64, uint64_t, 0);
+	PROPERTY_TYPE(Float, System.Single, float, 0.0f);
+	PROPERTY_TYPE(Double, System.Double, double, 00.00);
+	PROPERTY_TYPE(String, System.String, std::string, "");
+	PROPERTY_TYPE(Vec2, WyrdAPI.Vector2, Vector2, Vector2());
+	PROPERTY_TYPE(Vec3, WyrdAPI.Vector3, Vector3, Vector3());
+	PROPERTY_TYPE(Color, WyrdAPI.Color, Color, Color());
+	PROPERTY_TYPE(Texture, WyrdAPI.Texture, Texture*, nullptr);
+
+
+//	class PropInt : public BaseProp
+//{
+//public:
+//	PropInt() : BaseProp("", ""), Value(0) {}
+//	PropInt(const std::string& name) : BaseProp(name, ""), Value(0) {}
+//	PropInt(const std::string& name, const std::string& type) : BaseProp(name, type), Value(0) {}
+//	PropInt(const std::string& name, const std::string& type, int value) : BaseProp(name, type), Value(value) { }
+//	PropInt(const std::string& name, const std::string& type, const jsonxx::Value& value) : BaseProp(name, type), Value(0) { Deserialise(value); }
+//	
+//	bool Serialise(jsonxx::Object& json);
+//	bool Deserialise(const jsonxx::Object& json);
+//	bool Deserialise(const jsonxx::Value& json);
+//	std::unique_ptr<BaseProp> CreateCopy(BaseProp* ref) override { 
+//		return std::make_unique<PropInt>(ref->GetName(), ref->GetType(), ref->Get<int>());
+//	}
+//	const std::string ToString();
+//	static BasePropRef Create(const std::string& name, const std::string& type, const jsonxx::Value& value, bool parseValue) { 
+//		return parseValue ? std::make_unique<PropInt>(name, type, value) : std::make_unique<PropInt>(name, type);
+//	}
+//public:
+//	int Value;
+//protected:
+//	static bool s_Registered;
+//};
+//template<>
+//void BaseProp::Set<int>(int v);
+//template<>
+//int BaseProp::Get<int>();
 }

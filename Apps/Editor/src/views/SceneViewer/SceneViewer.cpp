@@ -22,6 +22,9 @@
 
 /* external includes */
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/common.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <imgui.h>
 
@@ -83,9 +86,13 @@ namespace Wyrd::Editor
 				EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
 				Transform3DComponent* transform3DComponent = _Scene->Get<Transform3DComponent>(e);
 
-				editorComponent->modelMatrix = glm::translate(glm::mat4(1), glm::vec3(transform3DComponent->position.x, transform3DComponent->position.y, transform3DComponent->position.z));
-				//editorComponent->modelMatrix = glm::scale(editorComponent->modelMatrix, Scale);
-				//editorComponent->modelMatrix = glm::rotate(editorComponent->modelMatrix, rotAngle, Rotation);
+				glm::quat q = glm::quat(glm::vec3(glm::radians(transform3DComponent->rotation.x), glm::radians(transform3DComponent->rotation.y), glm::radians(transform3DComponent->rotation.z)));
+
+				glm::mat4 translate = glm::translate(glm::mat4(1), glm::vec3(transform3DComponent->position.x, transform3DComponent->position.y, transform3DComponent->position.z));
+				glm::mat4 rotate = glm::toMat4(q);
+				glm::mat4 scale = glm::scale(glm::mat4(1), glm::vec3(transform3DComponent->scale.x, transform3DComponent->scale.y, transform3DComponent->scale.z));
+
+				transform3DComponent->modelMatrix = translate * rotate * scale;
 
 				MeshRendererComponent* meshRenderer = _Scene->Get<MeshRendererComponent>(e);
 				if (meshRenderer != nullptr)
@@ -94,6 +101,11 @@ namespace Wyrd::Editor
 					if (mesh != nullptr)
 					{
 						editorComponent->inputBoundingBox = mesh->boundingBox;
+
+						glm::vec4 translatedMinExtents = rotate * scale * glm::vec4(editorComponent->inputBoundingBox._minExtent, 1.0f);
+						glm::vec4 translatedMaxExtents = rotate * scale * glm::vec4(editorComponent->inputBoundingBox._maxExtent, 1.0f);
+						editorComponent->inputBoundingBox._minExtent = glm::vec3(translatedMinExtents.x, translatedMinExtents.y, translatedMinExtents.z);
+						editorComponent->inputBoundingBox._maxExtent = glm::vec3(translatedMaxExtents.x, translatedMaxExtents.y, translatedMaxExtents.z);
 					}
 				}
 			}
@@ -123,10 +135,11 @@ namespace Wyrd::Editor
 					MaterialComponent* material = _Scene->Get<MaterialComponent>(e);
 
 					Wyrd::DrawMeshCommand cmd{};
-					cmd.position = transform->position;
-					cmd.rotation = transform->rotation;
-					cmd.scale = transform->scale;
-					cmd.rotationOrigin = Vector3{ 0, 0, 0 };
+					cmd.modelMatrix = transform->modelMatrix;
+					//cmd.position = transform->position;
+					//cmd.rotation = transform->rotation;
+					//cmd.scale = transform->scale;
+					//cmd.rotationOrigin = Vector3{ 0, 0, 0 };
 					cmd.viewMatrix = _CameraController->GetCamera().GetViewMatrix();
 					cmd.projectionMatrix = _CameraController->GetCamera().GetProjectionMatrix();
 					cmd.material = Application::Get().GetResources().Materials[material->material].get();
@@ -354,15 +367,16 @@ namespace Wyrd::Editor
 		/* we only want to process mouse events within the viewport of the scene */
 		if (_Viewport.ContainsPoint(viewportPos) == true)
 		{
-			for (Entity e : EntitySet<EditorComponent, MetaDataComponent>(*_Scene.get()))
+			for (Entity e : EntitySet<EditorComponent, MetaDataComponent, Transform3DComponent>(*_Scene.get()))
 			{
 				MetaDataComponent* metaDataComponent = _Scene->Get<MetaDataComponent>(e);
+				Transform3DComponent* transform3DComponent = _Scene->Get<Transform3DComponent>(e);
 				EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
 
 				Ray r;
 				PhysicsUtils::ScreenPosToWorldRay(viewportPos, _ViewportBoundary._size, _CameraController->GetCamera().GetViewMatrix(), _CameraController->GetCamera().GetProjectionMatrix(), r);
 
-				if (PhysicsUtils::IntersectRayBoundingBox(editorComponent->modelMatrix, r, editorComponent->inputBoundingBox))
+				if (PhysicsUtils::IntersectRayBoundingBox(transform3DComponent->modelMatrix, r, editorComponent->inputBoundingBox))
 				{
 					_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(e));
 				}

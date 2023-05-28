@@ -28,7 +28,7 @@ namespace WyrdAPI
          set 
          {
              _enabled = value;
-             ScriptComponent_SetEnabled(Scene.NativePtr, Entity, _enabled);
+             ScriptComponent_SetEnabled(Scene.NativePtr, EntityID, _enabled);
          }
       }
 
@@ -38,7 +38,7 @@ namespace WyrdAPI
          set 
          {
              _scriptid = value;
-             ScriptComponent_SetScriptid(Scene.NativePtr, Entity, _scriptid);
+             ScriptComponent_SetScriptid(Scene.NativePtr, EntityID, _scriptid);
          }
       }
 
@@ -48,17 +48,17 @@ namespace WyrdAPI
          set 
          {
              _instanceid = value;
-             ScriptComponent_SetInstanceid(Scene.NativePtr, Entity, _instanceid);
+             ScriptComponent_SetInstanceid(Scene.NativePtr, EntityID, _instanceid);
          }
       }
 
 
 
-        public ulong Entity { get; set; }
+        public UInt64 EntityID { get; set; }
 
-        public void SetEntity(ulong entity)
+        public void SetEntity(Entity entity)
         {
-            Entity = entity;
+            EntityID = entity.NativeID;
         }
 
         #region P/Invoke functions

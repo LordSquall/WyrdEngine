@@ -40,7 +40,7 @@ namespace WyrdAPI
          set 
          {
              _first = value;
-             RelationshipComponent_SetFirst(Scene.NativePtr, Entity, _first);
+             RelationshipComponent_SetFirst(Scene.NativePtr, EntityID, _first);
          }
       }
 
@@ -50,7 +50,7 @@ namespace WyrdAPI
          set 
          {
              _previous = value;
-             RelationshipComponent_SetPrevious(Scene.NativePtr, Entity, _previous);
+             RelationshipComponent_SetPrevious(Scene.NativePtr, EntityID, _previous);
          }
       }
 
@@ -60,7 +60,7 @@ namespace WyrdAPI
          set 
          {
              _next = value;
-             RelationshipComponent_SetNext(Scene.NativePtr, Entity, _next);
+             RelationshipComponent_SetNext(Scene.NativePtr, EntityID, _next);
          }
       }
 
@@ -70,7 +70,7 @@ namespace WyrdAPI
          set 
          {
              _parent = value;
-             RelationshipComponent_SetParent(Scene.NativePtr, Entity, _parent);
+             RelationshipComponent_SetParent(Scene.NativePtr, EntityID, _parent);
          }
       }
 
@@ -80,7 +80,7 @@ namespace WyrdAPI
          set 
          {
              _childrencnt = value;
-             RelationshipComponent_SetChildrencnt(Scene.NativePtr, Entity, _childrencnt);
+             RelationshipComponent_SetChildrencnt(Scene.NativePtr, EntityID, _childrencnt);
          }
       }
 
@@ -90,7 +90,7 @@ namespace WyrdAPI
          set 
          {
              _depth = value;
-             RelationshipComponent_SetDepth(Scene.NativePtr, Entity, _depth);
+             RelationshipComponent_SetDepth(Scene.NativePtr, EntityID, _depth);
          }
       }
 
@@ -100,17 +100,17 @@ namespace WyrdAPI
          set 
          {
              _remove = value;
-             RelationshipComponent_SetRemove(Scene.NativePtr, Entity, _remove);
+             RelationshipComponent_SetRemove(Scene.NativePtr, EntityID, _remove);
          }
       }
 
 
 
-        public ulong Entity { get; set; }
+        public UInt64 EntityID { get; set; }
 
-        public void SetEntity(ulong entity)
+        public void SetEntity(Entity entity)
         {
-            Entity = entity;
+            EntityID = entity.NativeID;
         }
 
         #region P/Invoke functions

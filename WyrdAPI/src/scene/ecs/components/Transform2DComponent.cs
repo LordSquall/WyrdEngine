@@ -28,7 +28,7 @@ namespace WyrdAPI
          set 
          {
              _position = value;
-             Transform2DComponent_SetPosition(Scene.NativePtr, Entity, _position);
+             Transform2DComponent_SetPosition(Scene.NativePtr, EntityID, _position);
          }
       }
 
@@ -38,7 +38,7 @@ namespace WyrdAPI
          set 
          {
              _rotation = value;
-             Transform2DComponent_SetRotation(Scene.NativePtr, Entity, _rotation);
+             Transform2DComponent_SetRotation(Scene.NativePtr, EntityID, _rotation);
          }
       }
 
@@ -48,17 +48,17 @@ namespace WyrdAPI
          set 
          {
              _scale = value;
-             Transform2DComponent_SetScale(Scene.NativePtr, Entity, _scale);
+             Transform2DComponent_SetScale(Scene.NativePtr, EntityID, _scale);
          }
       }
 
 
 
-        public ulong Entity { get; set; }
+        public UInt64 EntityID { get; set; }
 
-        public void SetEntity(ulong entity)
+        public void SetEntity(Entity entity)
         {
-            Entity = entity;
+            EntityID = entity.NativeID;
         }
 
         #region P/Invoke functions

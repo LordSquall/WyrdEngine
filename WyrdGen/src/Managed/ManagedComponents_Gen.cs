@@ -87,7 +87,7 @@ namespace WyrdGen
                                 content.AppendLine("         set ");
                                 content.AppendLine("         {");
                                 content.AppendLine("             _" + data.Name.ToLower() + " = value;");
-                                content.AppendLine("             " + component.Name + "_Set" + data.Name.Substring(0, 1).ToUpper() + data.Name.Substring(1).ToLower() + "(Scene.NativePtr, Entity, _" + data.Name.ToLower() + ");");
+                                content.AppendLine("             " + component.Name + "_Set" + data.Name.Substring(0, 1).ToUpper() + data.Name.Substring(1).ToLower() + "(Scene.NativePtr, EntityID, _" + data.Name.ToLower() + ");");
                                 content.AppendLine("         }");
                                 content.AppendLine("      }");
                                 content.AppendLine();
@@ -100,7 +100,7 @@ namespace WyrdGen
                                 content.AppendLine("         set ");
                                 content.AppendLine("         {");
                                 content.AppendLine("             _" + data.Name.ToLower() + " = value;");
-                                content.AppendLine("             " + component.Name + "_Set" + data.Name.Substring(0, 1).ToUpper() + data.Name.Substring(1).ToLower() + "(Scene.NativePtr, Entity, _" + data.Name.ToLower() + ".NativePtr);");
+                                content.AppendLine("             " + component.Name + "_Set" + data.Name.Substring(0, 1).ToUpper() + data.Name.Substring(1).ToLower() + "(Scene.NativePtr, EntityID, _" + data.Name.ToLower() + ".NativePtr);");
                                 content.AppendLine("         }");
                                 content.AppendLine("      }");
                                 content.AppendLine();

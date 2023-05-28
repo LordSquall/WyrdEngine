@@ -21,6 +21,9 @@ namespace WyrdGen
         [XmlAttribute("default")]
         public String Default { get; set; }
 
+        [XmlAttribute("runtimeOnly")]
+        public bool RuntimeOnly { get; set; }
+
         [XmlAttribute("customSerialisation")]
         public bool CustomSerialisation { get; set; }
     }
@@ -35,6 +38,9 @@ namespace WyrdGen
 
         [XmlAttribute("customSerialisation")]
         public bool CustomSerialisation { get; set; } = false;
+
+        [XmlAttribute("customInitialisation")]
+        public bool CustomInitialisation { get; set; } = false;
 
         [XmlAttribute("comment")]
         public String Comment { get; set; }

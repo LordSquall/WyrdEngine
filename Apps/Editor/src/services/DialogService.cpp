@@ -102,7 +102,7 @@ namespace Wyrd::Editor
 
 	void DialogService::OpenSingleEntryDialog(EditorLayer* editorLayer, const std::string title, const std::string& prompt, std::function<void(std::string)> successCallback, std::function<void(std::string)> failureCallback)
 	{
-		if (_singleEntryDialog)
+		if (!_singleEntryDialog)
 			_singleEntryDialog = std::make_shared<SingleEntryDialog>(editorLayer);
 
 		_singleEntryDialog->SetTitle(title);

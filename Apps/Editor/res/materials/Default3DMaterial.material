@@ -7,6 +7,11 @@
 				"name": "BlendColor",
 				"type": "Color",
 				"binding": "u_BlendColor"
+			},
+			{
+				"name" : "BaseTexture",
+				"type" : "Texture",
+				"binding" : "u_Texture"
 			}
 		]
 	}

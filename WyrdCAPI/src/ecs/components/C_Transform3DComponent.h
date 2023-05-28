@@ -17,6 +17,8 @@ LIBRARY_API void Transform3DComponent_SetRotation(void* obj, Wyrd::Entity entity
 
 LIBRARY_API void Transform3DComponent_SetScale(void* obj, Wyrd::Entity entity, Wyrd::Vector3* position);
 
+LIBRARY_API void Transform3DComponent_SetModelmatrix(void* obj, Wyrd::Entity entity, glm::mat4* position);
+
 
 
 #ifdef __cplusplus

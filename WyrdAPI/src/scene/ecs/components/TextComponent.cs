@@ -25,7 +25,7 @@ namespace WyrdAPI
             set
             {
                 _content = value;
-                TextComponent_SetContent(Scene.NativePtr, Entity, _content);
+                TextComponent_SetContent(Scene.NativePtr, EntityID, _content);
             }
         }
 
@@ -35,7 +35,7 @@ namespace WyrdAPI
             set
             {
                 _size = value;
-                TextComponent_SetSize(Scene.NativePtr, Entity, _size);
+                TextComponent_SetSize(Scene.NativePtr, EntityID, _size);
             }
         }
 
@@ -45,15 +45,15 @@ namespace WyrdAPI
             set
             {
                 _color = value;
-                TextComponent_SetColor(Scene.NativePtr, Entity, _color);
+                TextComponent_SetColor(Scene.NativePtr, EntityID, _color);
             }
         }
 
-        public ulong Entity { get; set; }
+        public UInt64 EntityID { get; set; }
 
-        public void SetEntity(ulong entity)
+        public void SetEntity(Entity entity)
         {
-            Entity = entity;
+            EntityID = entity.NativeID;
         }
 
         public override string ToString()

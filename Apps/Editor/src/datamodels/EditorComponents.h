@@ -10,6 +10,5 @@ namespace Wyrd::Editor
 	struct WYRD_LIBRARY_API EditorComponent
 	{
 		BoundingBox inputBoundingBox;
-		glm::mat4 modelMatrix;
 	};
 };

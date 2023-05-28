@@ -37,6 +37,7 @@ namespace Wyrd::Editor
 
 					/* retrieve the shader from resources */
 					material->SetShader(Application::Get().GetResources().Shaders[shaderName]);
+					material->SetName(name);
 
 					/* check for shader bindings */
 					if (shaderObject.has<jsonxx::Array>("inputs"))

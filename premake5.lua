@@ -353,7 +353,7 @@ end
 group "Scripting"
 project "WyrdCAPI"
 		location "WyrdCAPI"
-		kind "StaticLib"
+		kind "SharedLib"
 		language "C++"
 		cppdialect "C++17"
 		staticruntime "off"

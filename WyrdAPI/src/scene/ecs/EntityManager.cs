@@ -30,7 +30,7 @@ namespace WyrdAPI
 
             _Entities.Add(entity, e);
 
-            //Console.WriteLine("Create Entity: {0}", entity);
+            Console.WriteLine("Create Entity: {0}", entity);
 
             return e;
         }

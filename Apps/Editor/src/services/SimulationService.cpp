@@ -121,9 +121,9 @@ namespace Wyrd::Editor
 
 				if (scriptResource != nullptr && scriptResource->PendingReload == true)
 				{
-					std::shared_ptr<ScriptedClass> scriptClass = Application::Get().GetBehaviour().GetCustomClassByUID(scriptComponent->scriptId);
+					//std::shared_ptr<ScriptedClass> scriptClass = Application::Get().GetBehaviour().GetCustomClassByUID(scriptComponent->scriptId);
 
-					scriptComponent->properties = scriptClass->GetPropertiesCopy();
+					//scriptComponent->properties = scriptClass->GetPropertiesCopy();
 				}
 			}
 		}

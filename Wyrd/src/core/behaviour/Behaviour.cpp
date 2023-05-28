@@ -9,6 +9,7 @@
 #include "core/behaviour/ScriptedClass.h"
 #include "core/behaviour/ScriptedCustomObject.h"
 #include "core/behaviour/ResourceDescriptors.h"
+#include "core/behaviour/PropMonoFactory.h"
 #include "core/ecs/ECS.h"
 #include "core/ecs/Components.h"
 #include "core/ecs/EntitySet.h"
@@ -27,6 +28,10 @@
 #ifndef NATIVE_API_LIB_LOC
 #define NATIVE_API_LIB_LOC "C:/Projects/Wyrd/WyrdEngine/lib/Debug/"
 #endif
+
+
+#define WYRD_CORE_API_NAMESPACE "WyrdAPI"
+#define WYRD_GAME_API_NAMESPACE "WyrdGame"
 
 namespace Wyrd
 {
@@ -92,10 +97,14 @@ namespace Wyrd
 		_PhysicsSubsystem = Application::Get().GetPhysicsPtr();
 		_ResourcesSubsystem = Application::Get().GetResourcesPtr();
 
-		/* setup Manager proxy VM pointer objects */
-		if (MonoUtils::SetProperty((MonoImage*)_CoreImage, "WyrdAPI", "BehaviourManagerProxy", "NativePtr", nullptr, { &_BehaviourSubsystem }) == false) { WYRD_ERROR("Failed to set BehaviourManager::NativePtr!"); return; }
-		if (MonoUtils::SetProperty((MonoImage*)_CoreImage, "WyrdAPI", "PhysicsManagerProxy", "NativePtr", nullptr, { &_PhysicsSubsystem }) == false) { WYRD_ERROR("Failed to set PhysicsManager::NativePtr!"); return; }
-		if (MonoUtils::SetProperty((MonoImage*)_CoreImage, "WyrdAPI", "ResourceManagerProxy", "NativePtr", nullptr, { &_ResourcesSubsystem }) == false) { WYRD_ERROR("Failed to set ResourceManager::NativePtr!"); return; }
+		/* create a managed resource manager proxy object */
+		_ResourceManagedProxy = mono_object_new((MonoDomain*)_ClientDomain, *GetClass("ResourceManagerProxy")->ManagedClass);
+
+		/* setup the native pointer to the unmanaged systems */
+		if (MonoUtils::SetProperty((MonoImage*)_CoreImage, "WyrdAPI", "ResourceManagerProxy", "NativePtr", _ResourceManagedProxy, { &_BehaviourSubsystem }) == false) { WYRD_ERROR("Failed to set BehaviourManager::NativePtr!"); return; }
+
+		/* assign to the managed static reference */
+		if (MonoUtils::SetProperty((MonoImage*)_CoreImage, "WyrdAPI", "ManagerProxy", "ResourceManager", nullptr, { &_ResourceManagedProxy }) == false) { WYRD_ERROR("Failed to set BehaviourManager::NativePtr!"); return; }
 
 		/* setup the interface pointers for all external events */
 		if (MonoUtils::SetProperty((MonoImage*)_CoreImage, "WyrdAPI", "SceneManager", "NativePtr", nullptr, { &_SceneManager }) == false)
@@ -119,16 +128,18 @@ namespace Wyrd
 			/* populate the texture resources in the VM */
 			for (auto& texture : _ResourcesSubsystem->Textures)
 			{
-				ManagedTextureDesc mtd;
-				mtd.nativePtr = (void*)&texture.first;
-				mtd.guid = texture.first.bytes();
-				mtd.width = texture.second->GetWidth();
-				mtd.height = texture.second->GetHeight();
-
+				auto textureUID = texture.first.bytes();
 				std::vector<void*> args;
-				args.push_back(&mtd);
+				MonoArray* arr = mono_array_new((MonoDomain*)_ClientDomain, mono_get_byte_class(), textureUID.size());
+				
+				for (auto i = 0; i < textureUID.size(); i++) {
+					mono_array_set(arr, uint8_t, i, textureUID[i]);
+				}
 
-				MonoUtils::InvokeMethod((MonoImage*)_CoreImage, "WyrdAPI", "ResourceManagerProxy", "CacheTexture", nullptr, { args });
+				args.push_back(arr);
+				args.push_back(texture.second.get());
+
+				MonoUtils::InvokeMethod((MonoImage*)_CoreImage, "WyrdAPI", "ResourceManagerProxy", "CreateCachedTextureObject", _ResourceManagedProxy, { args });
 			}
 
 
@@ -193,9 +204,11 @@ namespace Wyrd
 					/* map the instance Id to the location in the map vector */
 					scriptComponent->instanceId = (uint32_t)_ECSScriptedCustomObjects[scriptComponent->scriptId].size() - 1;
 			
+					ScriptedCustomObject* obj = GetCustomObject(scriptComponent->scriptId, scriptComponent->instanceId);
+
 					for (auto& prop : *scriptComponent->properties)
 					{
-						prop.second->Set(scriptObject->Object, prop.second->GetRawDataPtr());
+						PropMonoFactory::SetProperty(prop.second.get(), (MonoImage*)_ClientImage, scriptClass->GetName(), obj->Object);
 					}
 				}
 				else
@@ -328,11 +341,12 @@ namespace Wyrd
 		args.push_back(&_Input.MouseButtons[1]);
 
 		MonoObject* exception = nullptr;
-		mono_runtime_invoke((MonoMethod*)_ScriptedClasses["Vector2"]->Properties["X"]->GetSetter(), (MonoObject*)_InputMousePos, &args[0], &exception);
-		if (exception != nullptr) mono_print_unhandled_exception(exception);
-
-		mono_runtime_invoke((MonoMethod*)_ScriptedClasses["Vector2"]->Properties["Y"]->GetSetter(), (MonoObject*)_InputMousePos, &args[1], &exception);
-		if (exception != nullptr) mono_print_unhandled_exception(exception);
+		auto properties = _ScriptedClasses["Vector2"]->Properties;
+		//mono_runtime_invoke((MonoMethod*)(*properties)["X"]->GetSetter(), (MonoObject*)_InputMousePos, &args[0], &exception);
+		//if (exception != nullptr) mono_print_unhandled_exception(exception);
+		//
+		//mono_runtime_invoke((MonoMethod*)(*properties)["Y"]->GetSetter(), (MonoObject*)_InputMousePos, &args[1], &exception);
+		//if (exception != nullptr) mono_print_unhandled_exception(exception);
 
 		mono_array_set((MonoArray*)_InputMouseButtonState, bool, 0, _Input.MouseButtons[0]);
 		mono_array_set((MonoArray*)_InputMouseButtonState, bool, 1, _Input.MouseButtons[1]);
@@ -362,6 +376,38 @@ namespace Wyrd
 		}
 
 		return nullptr;
+	}
+
+	MonoObject* Behaviour::RetrieveCachedManagedTextureObject(const Wyrd::UID& uid)
+	{
+		std::vector<void*> args;
+		MonoArray* arr = mono_array_new((MonoDomain*)_ClientDomain, mono_get_byte_class(), uid.bytes().size());
+		for (auto i = 0; i < uid.bytes().size(); i++) {
+			mono_array_set(arr, uint8_t, i, uid.bytes()[i]);
+		}
+		args.push_back(arr);
+
+		MonoClass* clsPtr = mono_class_from_name((MonoImage*)_CoreImage, WYRD_CORE_API_NAMESPACE, "ResourceManagerProxy");
+		if (clsPtr == nullptr)
+		{
+			return false;
+		}
+
+		MonoMethod* methodPtr = mono_class_get_method_from_name(clsPtr, "RetrieveCachedTextureObject", 1);
+		if (methodPtr == nullptr)
+		{
+			return nullptr;
+		}
+
+		MonoObject* exc = nullptr;
+		MonoObject* foundObject = mono_runtime_invoke(methodPtr, _ResourceManagedProxy, (args.size() == 0) ? nullptr : &args[0], &exc);
+		if (exc != nullptr)
+		{
+			mono_print_unhandled_exception(exc);
+			return nullptr;
+		}
+
+		return foundObject;
 	}
 
 	void Behaviour::LoadBehaviourModel(const std::vector<std::filesystem::path>& files, const std::filesystem::path& inputFile)
@@ -442,8 +488,9 @@ namespace Wyrd
 		}
 
 		/* Retrieve fixed objects */
-		_InputMousePos = mono_runtime_invoke((MonoMethod*)_ScriptedClasses["Input"]->Properties["MousePos"]->GetGetter(), nullptr, nullptr, nullptr);
-		_InputMouseButtonState = mono_runtime_invoke((MonoMethod*)_ScriptedClasses["Input"]->Properties["MouseButtons"]->GetGetter(), nullptr, nullptr, nullptr);
+		auto inputProps = _ScriptedClasses["Input"]->Properties;
+		//_InputMousePos = mono_runtime_invoke((MonoMethod*)(*inputProps)["MousePos"].GetGetter(), nullptr, nullptr, nullptr);
+		//_InputMouseButtonState = mono_runtime_invoke((MonoMethod*)(*inputProps)["MouseButtons"]->GetGetter(), nullptr, nullptr, nullptr);
 	}
 
 	void Behaviour::LoadAssembly(void* domain, void** image, void** assembly, const std::string& ns, std::vector<char>& assemblyData)

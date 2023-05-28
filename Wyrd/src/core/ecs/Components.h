@@ -8,7 +8,6 @@
 #include "core/ResourcesUIDs.h"
 #include "core/maths/Rect.h"
 #include "core/ecs/ECS.h"
-#include "core/behaviour/Properties/ScriptProperty.h"
 
 #include <glm/glm.hpp>
 
@@ -44,8 +43,9 @@ namespace Wyrd
         Wyrd::Vector3 position;
         Wyrd::Vector3 rotation;
         Wyrd::Vector3 scale;
+        glm::mat4 modelMatrix;
 
-        Transform3DComponent() : position(0,0,0), rotation(0,0,0), scale(1,1,1) {} 
+        Transform3DComponent() : position(0,0,0), rotation(0,0,0), scale(1,1,1), modelMatrix(glm::mat4(1.0)) {} 
     };
 
 
@@ -87,7 +87,7 @@ namespace Wyrd
         bool enabled;
         Wyrd::UID scriptId;
         int32_t instanceId;
-        ScriptPropertiesMapRef properties;
+        BasePropMapRef properties;
 
         ScriptComponent() : enabled(true), scriptId(UID()), instanceId(0), properties(nullptr) {} 
     };

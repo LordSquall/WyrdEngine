@@ -7,6 +7,7 @@
 /* local includes */
 #include "MaterialComponentView.h"
 #include "views/PropertiesViewer/PropGUIViews/PropGUIFactory.h"
+#include "support/MaterialHelperFuncs.h"
 
 /* external includes */
 #include <imgui.h>
@@ -19,8 +20,11 @@ namespace Wyrd::Editor
 	{
 		/* Cast to the correct component */
 		MaterialComponent* materialComponent = (MaterialComponent*)data;
+
+		/* Retrieve the material */
+		std::shared_ptr<Material> material = Application::Get().GetResources().Materials[materialComponent->material];
 		
-		ImGui::Text(materialComponent->material.str().c_str());
+		ImGui::Text(material->GetName().c_str());
 		if (ImGui::BeginDragDropTarget())
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_DND_MATERIAL))
@@ -28,19 +32,7 @@ namespace Wyrd::Editor
 				UID* materialUID = (UID*)payload->Data;
 				materialComponent->material = *materialUID;
 
-				/* Retrieve the material */
-				std::shared_ptr<Material> material = Application::Get().GetResources().Materials[materialComponent->material];
-				
-				Material::InputMap propList = material->GetInputPropertyList();
-				
-				/* Clear out and recreate the property set */
-				materialComponent->properties = std::make_shared<std::map<std::string, BasePropRef>>();
-				
-				/* Process each of the properties in the material and assign the data for the material component */
-				for (auto& [name, binding] : propList)
-				{
-					(*materialComponent->properties)[name] = PropFactory::CreateProp(binding.type, name);
-				}
+				MaterialHelperFuncs::AssignToComponent(materialComponent);
 			}
 			ImGui::EndDragDropTarget();
 		}

@@ -37,7 +37,7 @@ namespace WyrdAPI
          set 
          {
              _enabled = value;
-             SpriteComponent_SetEnabled(Scene.NativePtr, Entity, _enabled);
+             SpriteComponent_SetEnabled(Scene.NativePtr, EntityID, _enabled);
          }
       }
 
@@ -47,7 +47,7 @@ namespace WyrdAPI
          set 
          {
              _sprite = value;
-             SpriteComponent_SetSprite(Scene.NativePtr, Entity, _sprite);
+             SpriteComponent_SetSprite(Scene.NativePtr, EntityID, _sprite);
          }
       }
 
@@ -57,7 +57,7 @@ namespace WyrdAPI
          set 
          {
              _position = value;
-             SpriteComponent_SetPosition(Scene.NativePtr, Entity, _position);
+             SpriteComponent_SetPosition(Scene.NativePtr, EntityID, _position);
          }
       }
 
@@ -67,7 +67,7 @@ namespace WyrdAPI
          set 
          {
              _size = value;
-             SpriteComponent_SetSize(Scene.NativePtr, Entity, _size);
+             SpriteComponent_SetSize(Scene.NativePtr, EntityID, _size);
          }
       }
 
@@ -77,7 +77,7 @@ namespace WyrdAPI
          set 
          {
              _tiling = value;
-             SpriteComponent_SetTiling(Scene.NativePtr, Entity, _tiling);
+             SpriteComponent_SetTiling(Scene.NativePtr, EntityID, _tiling);
          }
       }
 
@@ -87,17 +87,17 @@ namespace WyrdAPI
          set 
          {
              _color = value;
-             SpriteComponent_SetColor(Scene.NativePtr, Entity, _color);
+             SpriteComponent_SetColor(Scene.NativePtr, EntityID, _color);
          }
       }
 
 
 
-        public ulong Entity { get; set; }
+        public UInt64 EntityID { get; set; }
 
-        public void SetEntity(ulong entity)
+        public void SetEntity(Entity entity)
         {
-            Entity = entity;
+            EntityID = entity.NativeID;
         }
 
         #region P/Invoke functions

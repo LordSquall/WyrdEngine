@@ -5,6 +5,7 @@
 #include "core/export.h"
 #include "core/behaviour/Properties/ScriptProperty.h"
 #include "core/behaviour/ScriptedMethod.h"
+#include "Properties/BaseProp.h"
 #include "core/UID.h"
 
 /* external includes */
@@ -60,12 +61,12 @@ namespace Wyrd
 		*/
 		inline void SetName(const std::string& name) { _Name = name; }
 
-		std::shared_ptr<PropertyList_t> GetPropertiesCopy() const;
+		BasePropMapRef GetPropertiesCopy() const;
 
 		std::shared_ptr<DataList_t> GetPropertiesDataCopy() const;
 
 	public:
-		PropertyList_t	Properties;
+		BasePropMapRef	Properties;
 		MethodList_t	Methods;
 		MonoClass**		ManagedClass;
 

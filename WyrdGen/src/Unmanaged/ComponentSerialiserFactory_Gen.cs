@@ -138,7 +138,7 @@ namespace WyrdGen
                             {
                                 content.AppendLine($"        CustomSerialisation_{component.ShortName}_{data.Name}(obj, data);");
                             }
-                            else
+                            else if (data.RuntimeOnly == false)
                             {
                                 content.AppendLine("        obj << \"" + data.Name + "\" << data->" + data.Name + ";");
                             }
@@ -190,7 +190,7 @@ namespace WyrdGen
                             {
                                 content.AppendLine($"        CustomDeserialisation_{component.ShortName}_{data.Name}(data, obj);");
                             }
-                            else
+                            else if (data.RuntimeOnly == false)
                             {
                                 // content.AppendLine("        data->" + data.Name + " " + assignementOperator + " TryGetOrDefault<jsonxx::" + jsonType.Type + ">(obj, \"" + data.Name + "\"" + defaultValue + ");"); ;
                                 content.AppendLine("        data->" + data.Name + " " + assignementOperator + " obj.get<jsonxx::" + jsonType.Type + ">(\"" + data.Name + "\", " + defaultValue + ");"); ;

@@ -6,16 +6,22 @@ namespace WyrdAPI
     [StructLayout(LayoutKind.Sequential)]
     public class Material : NativeObject
     {
-        public Int32 Width;
-
-        public Int32 Height;
 
         /// <summary>
         /// Default Constructor
         /// </summary>
         public Material() { }
 
-        #region Native Properties
+        public void SetProperty(String name, Texture texture)
+        {
+            Material_SetPropTexture(NativePtr, name, texture.NativePtr);
+        }
+
+        #region P/Invoke functions
+
+        [DllImport("WyrdCAPI")]
+        public static extern IntPtr Material_SetPropTexture(IntPtr nativePtr, String name, IntPtr texturePtr);
+
 
         #endregion
 

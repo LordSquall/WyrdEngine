@@ -15,6 +15,8 @@ namespace Wyrd
 	PROPERTY_TEMPLATE_SET_FUNC(UInt32, uint32_t)
 	PROPERTY_TEMPLATE_SET_FUNC(Int64, int64_t)
 	PROPERTY_TEMPLATE_SET_FUNC(UInt64, uint64_t)
+	PROPERTY_TEMPLATE_SET_FUNC(Float, float)
+	PROPERTY_TEMPLATE_SET_FUNC(Double, double)
 	PROPERTY_TEMPLATE_SET_FUNC(String, std::string)
 	PROPERTY_TEMPLATE_SET_FUNC(Vec2, Vector2)
 	PROPERTY_TEMPLATE_SET_FUNC(Vec3, Vector3)
@@ -26,6 +28,8 @@ namespace Wyrd
 	PROPERTY_TEMPLATE_GET_FUNC(UInt32, uint32_t)
 	PROPERTY_TEMPLATE_GET_FUNC(Int64, int64_t)
 	PROPERTY_TEMPLATE_GET_FUNC(UInt64, uint64_t)
+	PROPERTY_TEMPLATE_GET_FUNC(Float, float)
+	PROPERTY_TEMPLATE_GET_FUNC(Double, double)
 	PROPERTY_TEMPLATE_GET_FUNC(String, std::string)
 	PROPERTY_TEMPLATE_GET_FUNC(Vec2, Vector2)
 	PROPERTY_TEMPLATE_GET_FUNC(Vec3, Vector3)
@@ -154,6 +158,54 @@ namespace Wyrd
 
 	PROPERTY_TOSTRING_FUNCSIG(UInt64) { return std::to_string(Value); }
 
+	// Float
+	PROPERTY_SERIALISE_FUNCSIG(Float)
+	{
+		jsonxx::Object obj;
+		obj << "type" << "Float";
+		obj << "value" << Value;
+		json << _Name << obj;
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_FUNCSIG(Float)
+	{
+		Value = json.get<jsonxx::Number>("value", 0);
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_VAL_FUNCSIG(Float)
+	{
+		Value = json.get<jsonxx::Number>();
+		return true;
+	}
+
+	PROPERTY_TOSTRING_FUNCSIG(Float) { return std::to_string(Value); }
+
+	// Double
+	PROPERTY_SERIALISE_FUNCSIG(Double)
+	{
+		jsonxx::Object obj;
+		obj << "type" << "Double";
+		obj << "value" << Value;
+		json << _Name << obj;
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_FUNCSIG(Double)
+	{
+		Value = json.get<jsonxx::Number>("value", 0);
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_VAL_FUNCSIG(Double)
+	{
+		Value = json.get<jsonxx::Number>();
+		return true;
+	}
+
+	PROPERTY_TOSTRING_FUNCSIG(Double) { return std::to_string(Value); }
+
 	// String
 	PROPERTY_SERIALISE_FUNCSIG(String)
 	{
@@ -255,7 +307,14 @@ namespace Wyrd
 	{
 		jsonxx::Object obj;
 		obj << "type" << "Texture";
-		obj << "value" << &Value;
+		if (Value != nullptr)
+		{
+			obj << "value" << &Value;
+		}
+		else
+		{
+			obj << "value" << RES_TEXTURE_DEFAULT;
+		}
 		json << _Name << obj;
 		return true;
 	}

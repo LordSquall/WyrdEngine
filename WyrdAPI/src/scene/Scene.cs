@@ -57,6 +57,7 @@ namespace WyrdAPI
 
             IntPtr nativePtr = Scene_GetComponent(NativePtr, _ScriptClassMap[typeof(T)], entity.NativeID);
             T component = Marshal.PtrToStructure<T>(nativePtr);
+            component.SetEntity(entity);
             return component;
         }
 

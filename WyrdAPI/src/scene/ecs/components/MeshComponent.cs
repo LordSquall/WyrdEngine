@@ -25,7 +25,7 @@ namespace WyrdAPI
          set 
          {
              _enabled = value;
-             MeshComponent_SetEnabled(Scene.NativePtr, Entity, _enabled);
+             MeshComponent_SetEnabled(Scene.NativePtr, EntityID, _enabled);
          }
       }
 
@@ -35,22 +35,22 @@ namespace WyrdAPI
          set 
          {
              _color = value;
-             MeshComponent_SetColor(Scene.NativePtr, Entity, _color);
+             MeshComponent_SetColor(Scene.NativePtr, EntityID, _color);
          }
       }
 
 
 
-        public ulong Entity { get; set; }
+        public UInt64 EntityID { get; set; }
 
-        public void SetEntity(ulong entity)
+        public void SetEntity(Entity entity)
         {
-            Entity = entity;
+            EntityID = entity.NativeID;
         }
 
         #region P/Invoke functions
 
-         [DllImport("WyrdCAPI")]
+        [DllImport("WyrdCAPI")]
          public static extern IntPtr MeshComponent_SetEnabled(IntPtr scenePtr, UInt64 entity, bool enabled);
          [DllImport("WyrdCAPI")]
          public static extern IntPtr MeshComponent_SetColor(IntPtr scenePtr, UInt64 entity, Color color);

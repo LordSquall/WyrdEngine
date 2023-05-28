@@ -1,7 +1,6 @@
 {
 	"name": "Grid3DMaterial",
-	"shader" :
-	{
+	"shader": {
 		"name": "Gizmo3DGrid"
 	}
 } 

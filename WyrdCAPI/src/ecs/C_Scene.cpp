@@ -20,6 +20,13 @@ void* Scene_AddComponent_Transform2D(void* scenePtr, Wyrd::Entity entity)
 	return scene->AssignComponent<Wyrd::Transform2DComponent>(entity);
 }
 
+void* Scene_AddComponent_Transform3D(void* scenePtr, Wyrd::Entity entity)
+{
+	Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
+	return scene->AssignComponent<Wyrd::Transform3DComponent>(entity);
+}
+
+
 void* Scene_AddComponent_Relationship(void* scenePtr, Wyrd::Entity entity)
 {
 	Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
@@ -42,8 +49,10 @@ void Scene_BuildComponentList(void* scenePtr)
 {
 	Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
 
+	std::cout << "FOOOBAR!" << std::endl;
 	int metaDataComponentID			= Wyrd::GetID<Wyrd::MetaDataComponent>();
 	int transform2DComponenttID		= Wyrd::GetID<Wyrd::Transform2DComponent>();
+	int transform3DComponenttID		= Wyrd::GetID<Wyrd::Transform3DComponent>();
 	int relationshipComponentID		= Wyrd::GetID<Wyrd::RelationshipComponent>();
 	int spriteComponentID			= Wyrd::GetID<Wyrd::SpriteComponent>();
 	int scriptComponentID			= Wyrd::GetID<Wyrd::ScriptComponent>();
@@ -51,12 +60,14 @@ void Scene_BuildComponentList(void* scenePtr)
 
 	_componentCtorFuncs.emplace(metaDataComponentID, &Scene_AddComponent_MetaData);
 	_componentCtorFuncs.emplace(transform2DComponenttID, &Scene_AddComponent_Transform2D);
+	_componentCtorFuncs.emplace(transform3DComponenttID, &Scene_AddComponent_Transform3D);
 	_componentCtorFuncs.emplace(relationshipComponentID, &Scene_AddComponent_Relationship);
 	_componentCtorFuncs.emplace(spriteComponentID, &Scene_AddComponent_Sprite);
 	_componentCtorFuncs.emplace(scriptComponentID, &Scene_AddComponent_Script);
 
 	std::cout << "MetaDataComponent Type ID "			<< std::to_string(metaDataComponentID) << std::endl;
 	std::cout << "ECSTransform2DComponent Type ID "		<< std::to_string(transform2DComponenttID) << std::endl;
+	std::cout << "ECSTransform3DComponent Type ID "		<< std::to_string(transform3DComponenttID) << std::endl;
 	std::cout << "ECSRelationshipComponent Type ID "	<< std::to_string(relationshipComponentID) << std::endl;
 	std::cout << "ECSSpriteComponent Type ID "			<< std::to_string(spriteComponentID) << std::endl;
 	std::cout << "ECSScriptComponent Type ID "			<< std::to_string(scriptComponentID) << std::endl;

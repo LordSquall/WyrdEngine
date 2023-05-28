@@ -37,7 +37,11 @@ namespace Wyrd
 
 		inline const InputMap& GetInputPropertyList() const { return _inputs; }
 
+		inline void SetName(const std::string& name) { _name = name; }
+		inline const std::string& GetName() const { return _name; }
+
 	private:
+		std::string _name;
 		std::shared_ptr<Shader> _shader;
 		InputMap _inputs;
 	};
