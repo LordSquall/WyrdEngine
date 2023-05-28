@@ -137,7 +137,7 @@ namespace Wyrd
 				}
 
 				args.push_back(arr);
-				args.push_back(texture.second.get());
+				args.push_back(&texture.second);
 
 				MonoUtils::InvokeMethod((MonoImage*)_CoreImage, "WyrdAPI", "ResourceManagerProxy", "CreateCachedTextureObject", _ResourceManagedProxy, { args });
 			}

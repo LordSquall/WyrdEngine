@@ -5,18 +5,18 @@
 
 namespace Wyrd
 {
-    PROPERTY_FACTORY_REGISTER(Int, "Int", "System.Int");
-    PROPERTY_FACTORY_REGISTER(Int32, "Int32", "System.Int32");
-    PROPERTY_FACTORY_REGISTER(UInt32, "UInt32", "System.UInt32");
-    PROPERTY_FACTORY_REGISTER(Int64, "Int64", "System.Int64");
-    PROPERTY_FACTORY_REGISTER(UInt64, "UInt64", "System.UInt64");
-    PROPERTY_FACTORY_REGISTER(String, "String", "System.String");
-    PROPERTY_FACTORY_REGISTER(Float, "Float", "System.Single");
-    PROPERTY_FACTORY_REGISTER(Double, "Double", "System.Double");
-    PROPERTY_FACTORY_REGISTER(Vec2, "Vec2", "WyrdAPI.Vector2");
-    PROPERTY_FACTORY_REGISTER(Vec3, "Vec3", "WyrdAPI.Vector3");
-    PROPERTY_FACTORY_REGISTER(Color, "Color", "WyrdAPI.Color");
-    PROPERTY_FACTORY_REGISTER(Texture, "Texture", "WyrdAPI.Texture");
+    PROPERTY_FACTORY_REGISTER(Int, "Int", "System.Int", int);
+    PROPERTY_FACTORY_REGISTER(Int32, "Int32", "System.Int32", int32_t);
+    PROPERTY_FACTORY_REGISTER(UInt32, "UInt32", "System.UInt32", uint32_t);
+    PROPERTY_FACTORY_REGISTER(Int64, "Int64", "System.Int64", int64_t);
+    PROPERTY_FACTORY_REGISTER(UInt64, "UInt64", "System.UInt64", uint64_t);
+    PROPERTY_FACTORY_REGISTER(String, "String", "System.String", std::string);
+    PROPERTY_FACTORY_REGISTER(Float, "Float", "System.Single", float);
+    PROPERTY_FACTORY_REGISTER(Double, "Double", "System.Double", double);
+    PROPERTY_FACTORY_REGISTER(Vec2, "Vec2", "WyrdAPI.Vector2", Wyrd::Vector2);
+    PROPERTY_FACTORY_REGISTER(Vec3, "Vec3", "WyrdAPI.Vector3", Wyrd::Vector3);
+    PROPERTY_FACTORY_REGISTER(Color, "Color", "WyrdAPI.Color", Wyrd::Color);
+    PROPERTY_FACTORY_REGISTER(Texture, "Texture", "WyrdAPI.Texture", Wyrd::Texture*);
 
     std::map<std::string, PropFactory::CreatePropFunc>* PropFactory::GetNativeProps()
     {

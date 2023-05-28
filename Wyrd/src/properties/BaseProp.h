@@ -8,8 +8,10 @@
 #include "core/renderer/Texture.h"
 
 
-#define PROPERTY_FACTORY_REGISTER(Name, typeName, managedName)\
-bool Prop##Name::s_Registered = PropFactory::Register(typeName, managedName,Prop##Name::Create)
+#define PROPERTY_FACTORY_REGISTER(Name, typeName, managedName, InternalStorageType)\
+bool Prop##Name::s_Registered = PropFactory::Register(typeName, managedName,Prop##Name::Create);\
+template void BaseProp::Set<InternalStorageType>(InternalStorageType);\
+template InternalStorageType BaseProp::Get<InternalStorageType>();
 
 
 #define PROPERTY_SERIALISE_FUNCSIG(Name) bool Prop##Name::Serialise(jsonxx::Object& json)
@@ -36,9 +38,9 @@ Type BaseProp::Get(){  return ((Prop##Name*)this)->Value; }
 
 #define PROPERTY_TYPE(Name, ManagedName, InternalStorageType, DefaultValue)\
 template<>\
-void BaseProp::Set<InternalStorageType>(InternalStorageType v);\
+WYRD_LIBRARY_API void BaseProp::Set<InternalStorageType>(InternalStorageType v);\
 template<>\
-InternalStorageType BaseProp::Get<InternalStorageType>();\
+WYRD_LIBRARY_API InternalStorageType BaseProp::Get<InternalStorageType>();\
 class WYRD_LIBRARY_API Prop##Name :  public BaseProp\
 {\
 public:\
@@ -139,38 +141,8 @@ namespace Wyrd
 	PROPERTY_TYPE(Float, System.Single, float, 0.0f);
 	PROPERTY_TYPE(Double, System.Double, double, 00.00);
 	PROPERTY_TYPE(String, System.String, std::string, "");
-	PROPERTY_TYPE(Vec2, WyrdAPI.Vector2, Vector2, Vector2());
-	PROPERTY_TYPE(Vec3, WyrdAPI.Vector3, Vector3, Vector3());
-	PROPERTY_TYPE(Color, WyrdAPI.Color, Color, Color());
-	PROPERTY_TYPE(Texture, WyrdAPI.Texture, Texture*, nullptr);
-
-
-//	class PropInt : public BaseProp
-//{
-//public:
-//	PropInt() : BaseProp("", ""), Value(0) {}
-//	PropInt(const std::string& name) : BaseProp(name, ""), Value(0) {}
-//	PropInt(const std::string& name, const std::string& type) : BaseProp(name, type), Value(0) {}
-//	PropInt(const std::string& name, const std::string& type, int value) : BaseProp(name, type), Value(value) { }
-//	PropInt(const std::string& name, const std::string& type, const jsonxx::Value& value) : BaseProp(name, type), Value(0) { Deserialise(value); }
-//	
-//	bool Serialise(jsonxx::Object& json);
-//	bool Deserialise(const jsonxx::Object& json);
-//	bool Deserialise(const jsonxx::Value& json);
-//	std::unique_ptr<BaseProp> CreateCopy(BaseProp* ref) override { 
-//		return std::make_unique<PropInt>(ref->GetName(), ref->GetType(), ref->Get<int>());
-//	}
-//	const std::string ToString();
-//	static BasePropRef Create(const std::string& name, const std::string& type, const jsonxx::Value& value, bool parseValue) { 
-//		return parseValue ? std::make_unique<PropInt>(name, type, value) : std::make_unique<PropInt>(name, type);
-//	}
-//public:
-//	int Value;
-//protected:
-//	static bool s_Registered;
-//};
-//template<>
-//void BaseProp::Set<int>(int v);
-//template<>
-//int BaseProp::Get<int>();
+	PROPERTY_TYPE(Vec2, WyrdAPI.Vector2, Wyrd::Vector2, Vector2());
+	PROPERTY_TYPE(Vec3, WyrdAPI.Vector3, Wyrd::Vector3, Vector3());
+	PROPERTY_TYPE(Color, WyrdAPI.Color, Wyrd::Color, Color());
+	PROPERTY_TYPE(Texture, WyrdAPI.Texture, Wyrd::Texture*, nullptr);
 }

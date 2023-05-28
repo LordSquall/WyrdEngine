@@ -40,7 +40,7 @@ namespace WyrdAPI
             Console.WriteLine($"Entries: {_CachedTextures.Count}");
             foreach (var t in _CachedTextures)
             {
-                Console.WriteLine(ConvertByteToUID(t.Key));
+                Console.WriteLine(ConvertByteToUID(t.Key) + " --> " + t.Value.NativePtr);
             }
             return _CachedTextures[data];
         }
