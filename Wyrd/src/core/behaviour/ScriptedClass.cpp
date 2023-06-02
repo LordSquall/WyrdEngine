@@ -3,7 +3,6 @@
 #include "core/Log.h"
 #include "ScriptedClass.h"
 #include "MonoUtils.h"
-#include "core/behaviour/Properties/ScriptPropertyFactory.h"
 
 /* external includes */
 #include <mono/jit/jit.h>
@@ -45,13 +44,6 @@ namespace Wyrd
 
 			found = methodName.find("ToString");
 			if (found != std::string::npos) valueMethod = false;
-
-			if (valueMethod)
-			{
-				//WYRD_TRACE("- Method: {0}", methodName);
-				std::shared_ptr<ScriptedMethod> method = std::make_shared<ScriptedMethod>(unmangedMethod);
-				Methods[methodName] = method;
-			}
 		}
 
 		Properties = std::make_shared<std::map<std::string, BasePropRef>>();
@@ -102,27 +94,6 @@ namespace Wyrd
 	BasePropMapRef ScriptedClass::GetPropertiesCopy() const
 	{
 		BasePropMapRef newPropertyList = std::make_shared<std::map<std::string, BasePropRef>>();
-
-		//BasePropMapRef newPropertyList = PropFactory::CopyPropMap(*Properties);
-		//for (auto& prop : *Properties)
-		//{
-		//	PropFactory::CopyPropMap(*Properties)
-		//	BasePropRef p = PropFactory::CreateProp(prop.second->GetType(), prop.second->GetName());
-		//	(*newPropertyList)[prop.first] = prop.second->CreateClone();
-		//}
-
 		return newPropertyList;
-	}
-
-	std::shared_ptr<DataList_t> ScriptedClass::GetPropertiesDataCopy() const
-	{
-		std::shared_ptr<DataList_t> newPropertyDataList = std::make_shared<DataList_t>();
-
-		//for (auto& prop : Properties)
-		//{
-		//	(*newPropertyDataList)[prop.first] = prop.second->AllocateData();
-		//}
-
-		return newPropertyDataList;
 	}
 }

@@ -170,11 +170,9 @@ namespace Wyrd
 			* The key idea here is to allow the VM to create the managed instance using the unmanged entity id
 			* We can then store the MonoObject to enable further actions
 			*/
+			MonoMethod* createEntityMethod = MonoUtils::FindMethodInClass((MonoImage*)_CoreImage, WYRD_CORE_API_NAMESPACE, "EntityManager", "CreateEntity", 1);
 			for (auto& e : _CurrentScene->entities)
 			{
-				/* create a new entity object in mono */
-				MonoMethod* createEntityMethod = _ScriptedClasses["EntityManager"]->Methods["CreateEntity"]->GetManagedMethod();
-
 				MonoObject* exc = nullptr;
 				void* createEntityArgs[1] = { &e };
 				MonoObject* newObject = mono_runtime_invoke(createEntityMethod, nullptr, &createEntityArgs[0], &exc);

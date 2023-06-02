@@ -26,7 +26,6 @@ namespace Wyrd::Editor
 {
 	static std::shared_ptr<ResourceService> _resourceService;
 	static std::shared_ptr<CoreSystemsService> _coreSystemService;
-	static PropertyList_t _resolveProperties;
 
 	SceneLoader::Result SceneLoader::Load(const std::filesystem::path& path, Scene& scene, bool includeEditorComponents)
 	{

@@ -97,24 +97,6 @@ namespace Wyrd::Editor
 									//}
 									ImGui::TreePop();
 								}
-								if (ImGui::TreeNode("Methods"))
-								{
-									ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
-									if (ImGui::BeginTable("proptable", 1, flags))
-									{
-										ImGui::TableSetupColumn("Name");
-										ImGui::TableHeadersRow();
-
-										for (auto& method : cls.second->Methods)
-										{
-											ImGui::TableNextRow();
-											ImGui::TableNextColumn();
-											ImGui::Text(method.first.c_str());
-										}
-										ImGui::EndTable();
-									}
-									ImGui::TreePop();
-								}
 
 								ImGui::TreePop();
 							}

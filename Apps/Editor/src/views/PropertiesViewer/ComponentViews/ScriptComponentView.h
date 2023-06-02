@@ -3,8 +3,6 @@
 
 /* local includes */
 #include "ComponentViewFactory.h"
-#include "views/PropertiesViewer/ComponentViews/ScriptProperties/ScriptPropertyView.h"
-#include "views/PropertiesViewer/ComponentViews/ScriptProperties/ScriptPropertyViewFactory.h"
 
 namespace Wyrd::Editor
 {
@@ -12,11 +10,5 @@ namespace Wyrd::Editor
 	{
 	public:
 		COMPONENT_VIEW_FACTORY_SETUP(ScriptComponentView);
-
-	private:
-		void RebuildPropertyViews();
-
-	private:
-		std::vector<std::unique_ptr<ScriptPropertyView>> _PropertyViews;
 	};
 }
