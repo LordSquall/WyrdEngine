@@ -113,6 +113,11 @@ namespace Wyrd
         MonoUtils::SetProperty(image, "WyrdGame", className, prop->GetName(), object, { args });
     }
 
+    void SetPropMono_Bool(BaseProp* prop, MonoImage* image, const std::string& className, MonoObject* object)
+    {
+        MonoUtils::SetProperty(image, "WyrdGame", className, prop->GetName(), object, { prop->GetRawValuePtr() });
+    }
+
     void SetPropMono_Color(BaseProp* prop, MonoImage* image, const std::string& className, MonoObject* object)
     {
         /* cast data to color structure */
@@ -121,8 +126,6 @@ namespace Wyrd
 
         std::shared_ptr<ScriptedClass> colorClass = Application::Get().GetBehaviour().GetClass("Color");
         MonoObject* colorObject = mono_object_new((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), *colorClass->ManagedClass);
-
-        mono_object_new((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), *colorClass->ManagedClass);
 
         /* Call the object default constructor */
         MonoProperty* rProperty = mono_class_get_property_from_name((MonoClass*)*colorClass->ManagedClass, "R");
@@ -172,6 +175,32 @@ namespace Wyrd
         return;
     }
 
+    void SetPropMono_Entity(BaseProp* prop, MonoImage* image, const std::string& className, MonoObject* object)
+    {
+        /* cast data to color structure */
+        Entity entity = prop->Get<Entity>();
+        std::vector<void*> args;
+
+        std::shared_ptr<ScriptedClass> entityClass = Application::Get().GetBehaviour().GetClass("Entity");
+        MonoObject* entityObject = mono_object_new((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), *entityClass->ManagedClass);
+
+        /* Call the object default constructor */
+        MonoProperty* nativeProperty = mono_class_get_property_from_name((MonoClass*)*entityClass->ManagedClass, "NativeID");
+
+        MonoMethod* nativePropSetter = mono_property_get_set_method(nativeProperty);
+
+        args.push_back(&entity);
+
+        mono_runtime_invoke(nativePropSetter, entityObject, &args[0], nullptr);
+
+        args.clear();
+
+        args.push_back(entityObject);
+
+        MonoUtils::SetProperty(image, "WyrdGame", className, prop->GetName(), object, { args });
+        return;
+    }
+
     std::map<std::string, PropMonoFactory::SetPropMonoFunc>* PropMonoFactory::GetProps()
     {
         static std::map<std::string, PropMonoFactory::SetPropMonoFunc> properties{
@@ -185,8 +214,10 @@ namespace Wyrd
             { "String", SetPropMono_String },
             { "Vec2", SetPropMono_Vec2 },
             { "Vec3", SetPropMono_Vec3 },
+            { "Bool", SetPropMono_Bool },
             { "Color", SetPropMono_Color },
-            { "Texture", SetPropMono_Texture }
+            { "Texture", SetPropMono_Texture },
+            { "Entity", SetPropMono_Entity }
         };
         return &properties;
     }

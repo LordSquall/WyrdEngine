@@ -1,6 +1,8 @@
 /* Local includes */
 #include "wyrdpch.h"
 #include "core/Log.h"
+#include "core/ecs/ECS.h"
+#include "core/ecs/Components.h"
 #include "views/PropertiesViewer/PropGUIViews/PropGUIFactory.h"
 #include "properties/BaseProp.h"
 #include "core/Application.h"
@@ -69,6 +71,12 @@ namespace Wyrd
         ImGui::InputFloat3(prop->GetName().c_str(), (float*)&vec3Prop->Value);
     }
 
+    void CreatePropGUI_Bool(BaseProp* prop)
+    {
+        PropBool* boolProp = (PropBool*)prop;
+        ImGui::Checkbox(prop->GetName().c_str(), (bool*)&boolProp->Value);
+    }
+
     void CreatePropGUI_Color(BaseProp* prop)
     {
         PropColor* colorProp = (PropColor*)prop;
@@ -113,6 +121,30 @@ namespace Wyrd
         ImGui::Text(prop->GetName().c_str());
     }
 
+    void CreatePropGUI_Entity(BaseProp* prop)
+    {
+        PropEntity* entityProp = (PropEntity*)prop;
+        Entity ent = entityProp->Value;
+        if (ent != ENTITY_INVALID)
+        {
+            ImGui::Text("%ull", ent);
+        }
+        else
+        {
+            ImGui::Text("Unassigned");
+        }
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_DND_ENTITY))
+            {
+                Entity* entity = (Entity*)payload->Data;
+                entityProp->Set<Entity>(*entity);
+            }
+            ImGui::EndDragDropTarget();
+        }
+    }
+
     std::map<std::string, PropGUIFactory::DrawPropGUIFunc>* PropGUIFactory::GetPropsGUI()
     {
         static std::map<std::string, PropGUIFactory::DrawPropGUIFunc> properties{
@@ -126,8 +158,10 @@ namespace Wyrd
             { "String", CreatePropGUI_String },
             { "Vec2", CreatePropGUI_Vec2 },
             { "Vec3", CreatePropGUI_Vec3 },
+            { "Bool", CreatePropGUI_Bool },
             { "Color", CreatePropGUI_Color },
-            { "Texture", CreatePropGUI_Texture }
+            { "Texture", CreatePropGUI_Texture },
+            { "Entity", CreatePropGUI_Entity }
         };
         return &properties;
     }
@@ -145,8 +179,10 @@ namespace Wyrd
             { "System.String", CreatePropGUI_String },
             { "WyrdAPI.Vector2", CreatePropGUI_Vec2 },
             { "WyrdAPI.Vector3", CreatePropGUI_Vec3 },
+            { "System.Boolean", CreatePropGUI_Bool },
             { "WyrdAPI.Color", CreatePropGUI_Color },
-            { "WyrdAPI.Texture", CreatePropGUI_Texture }
+            { "WyrdAPI.Texture", CreatePropGUI_Texture },
+            { "WyrdAPI.Entity", CreatePropGUI_Entity }
         };
         return &properties;
     }

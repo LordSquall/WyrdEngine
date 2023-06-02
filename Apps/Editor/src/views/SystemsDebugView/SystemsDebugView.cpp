@@ -77,24 +77,24 @@ namespace Wyrd::Editor
 							{
 								if (ImGui::TreeNode("Properties"))
 								{
-									//ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
-									//if (ImGui::BeginTable("proptable", 2, flags))
-									//{
-									//	ImGui::TableSetupColumn("Name");
-									//	ImGui::TableSetupColumn("Type");
-									//	ImGui::TableHeadersRow();
-									//
-									//	for (auto& prop : cls.second->Properties)
-									//	{
-									//		ImGui::TableNextRow();
-									//		ImGui::TableNextColumn();
-									//		ImGui::Text(prop.first.c_str());
-									//		ImGui::TableNextColumn();
-									//		ImGui::Text(prop.second->GetTypeName().c_str());
-									//	}
-									//
-									//	ImGui::EndTable();
-									//}
+									ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+									if (ImGui::BeginTable("proptable", 2, flags))
+									{
+										ImGui::TableSetupColumn("Name");
+										ImGui::TableSetupColumn("Type");
+										ImGui::TableHeadersRow();
+									
+										for (auto& prop : *cls.second->Properties)
+										{
+											ImGui::TableNextRow();
+											ImGui::TableNextColumn();
+											ImGui::Text(prop.first.c_str());
+											ImGui::TableNextColumn();
+											ImGui::Text(prop.second->GetType().c_str());
+										}
+									
+										ImGui::EndTable();
+									}
 									ImGui::TreePop();
 								}
 
@@ -135,43 +135,6 @@ namespace Wyrd::Editor
 								ImGui::TreePop();
 							}
 						}
-
-						//ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
-						//if (ImGui::BeginTable("scriptinstances_tbl", 3, flags))
-						//{
-						//	ImGui::TableSetupColumn("Class Name");
-						//	ImGui::TableSetupColumn("Guid");
-						//	ImGui::TableSetupColumn("Count");
-						//	ImGui::TableHeadersRow();
-						//	ImGui::TableNextRow();
-						//
-						//	for (auto& so : customScriptedObjects)
-						//	{
-						//		// retrieve the Scripted Class
-						//		auto& scriptedClass = behaviour.GetCustomClassByUID(so.first);
-						//
-						//		ImGui::TableNextColumn();
-						//		ImGui::Text(scriptedClass->GetName().c_str());
-						//		ImGui::TableNextColumn();
-						//		ImGui::Text(so.first.str().c_str());
-						//		ImGui::TableNextColumn();
-						//		ImGui::Text("%d", so.second.size());
-						//
-						//		ImGui::TableNextColumn();
-						//		if (ImGui::BeginTable("scriptinstancesinner_tbl", 3, flags))
-						//		{
-						//			ImGui::TableSetupColumn("Class Name");
-						//			ImGui::TableSetupColumn("Guid");
-						//			ImGui::TableSetupColumn("Count");
-						//			ImGui::TableHeadersRow();
-						//			ImGui::TableNextRow();
-						//
-						//			ImGui::EndTable();
-						//		}
-						//
-						//	}
-						//	ImGui::EndTable();
-						//}
 					}
 
 					ImGui::EndTabItem();

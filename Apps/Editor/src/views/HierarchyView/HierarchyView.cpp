@@ -114,7 +114,7 @@ namespace Wyrd::Editor
 			DisplayEntityDragAndDrop(entity);
 			DisplayEntityTooltip(entity);
 		
-			if (ImGui::IsItemHovered() && ImGui::IsItemClicked(ImGuiMouseButton_Left))
+			if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
 			{
 				_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(entity));
 			}
@@ -154,7 +154,7 @@ namespace Wyrd::Editor
 			DisplayEntityDragAndDrop(entity);
 			DisplayEntityTooltip(entity);
 		
-			if (ImGui::IsItemHovered() && ImGui::IsItemClicked(ImGuiMouseButton_Left))
+			if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
 			{
 				_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(entity));
 			}

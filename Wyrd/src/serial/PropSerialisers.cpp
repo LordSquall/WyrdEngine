@@ -20,8 +20,10 @@ namespace Wyrd
 	PROPERTY_TEMPLATE_SET_FUNC(String, std::string)
 	PROPERTY_TEMPLATE_SET_FUNC(Vec2, Vector2)
 	PROPERTY_TEMPLATE_SET_FUNC(Vec3, Vector3)
+	PROPERTY_TEMPLATE_SET_FUNC(Bool, bool)
 	PROPERTY_TEMPLATE_SET_FUNC(Color, Color)
 	PROPERTY_TEMPLATE_SET_FUNC(Texture, Texture*)
+	//PROPERTY_TEMPLATE_SET_FUNC(Entity, Entity)   // not needed as uint64 speciailisation function will catch this type
 
 	PROPERTY_TEMPLATE_GET_FUNC(Int, int)
 	//PROPERTY_TEMPLATE_SET_FUNC(Int32, int32_t)	// not needed as int speciailisation function will catch this type
@@ -33,8 +35,10 @@ namespace Wyrd
 	PROPERTY_TEMPLATE_GET_FUNC(String, std::string)
 	PROPERTY_TEMPLATE_GET_FUNC(Vec2, Vector2)
 	PROPERTY_TEMPLATE_GET_FUNC(Vec3, Vector3)
+	PROPERTY_TEMPLATE_GET_FUNC(Bool, bool)
 	PROPERTY_TEMPLATE_GET_FUNC(Color, Color)
 	PROPERTY_TEMPLATE_GET_FUNC(Texture, Texture*)
+	//PROPERTY_TEMPLATE_GET_FUNC(Entity, Entity)   // not needed as uint64 speciailisation function will catch this type
 
 	// Serialisation functions
 	
@@ -278,6 +282,30 @@ namespace Wyrd
 
 	PROPERTY_TOSTRING_FUNCSIG(Vec3) { return "[" + std::to_string(Value.x) + ", " + std::to_string(Value.y) + ", " + std::to_string(Value.z) + "]"; }
 
+	// Boolean
+	PROPERTY_SERIALISE_FUNCSIG(Bool)
+	{
+		jsonxx::Object obj;
+		obj << "type" << "Bool";
+		obj << "value" << Value;
+		json << _Name << obj;
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_FUNCSIG(Bool)
+	{
+		Value = json.get<jsonxx::Boolean>("value", false);
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_VAL_FUNCSIG(Bool)
+	{
+		Value = json.get<jsonxx::Number>();
+		return true;
+	}
+
+	PROPERTY_TOSTRING_FUNCSIG(Bool) { return std::to_string(Value); }
+
 	// Color
 	PROPERTY_SERIALISE_FUNCSIG(Color)
 	{
@@ -347,4 +375,28 @@ namespace Wyrd
 	}
 
 	PROPERTY_TOSTRING_FUNCSIG(Texture) { return Value->GetUID().str().c_str(); }
+
+	// Entity
+	PROPERTY_SERIALISE_FUNCSIG(Entity)
+	{
+		jsonxx::Object obj;
+		obj << "type" << "Entity";
+		obj << "value" << Value;
+		json << _Name << obj;
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_FUNCSIG(Entity)
+	{
+		Value = json.get<jsonxx::Number>("value", ENTITY_INVALID);
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_VAL_FUNCSIG(Entity)
+	{
+		Value = json.get<jsonxx::Number>();
+		return true;
+	}
+
+	PROPERTY_TOSTRING_FUNCSIG(Entity) { return std::to_string(Value); }
 }

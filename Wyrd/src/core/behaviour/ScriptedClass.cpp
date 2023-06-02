@@ -83,6 +83,10 @@ namespace Wyrd
 					WYRD_TRACE("- Property: {0}", name);
 					(*Properties)[name] = std::move(scriptProp);
 				}
+				else
+				{
+					WYRD_WARN("- Property: {0} (Unregistered!)", name);
+				}
 			}
 			else
 			{

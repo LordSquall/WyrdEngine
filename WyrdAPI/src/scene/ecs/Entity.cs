@@ -9,6 +9,8 @@ namespace WyrdAPI
 {
     public class Entity
     {
+        public static Entity INVALID = new Entity() { _NativeID = 0 };
+
         private UInt64 _NativeID = 0;
 
         public UInt64 NativeID
@@ -69,7 +71,7 @@ namespace WyrdAPI
 
         public override string ToString()
         {
-            return Name;
+            return  _NativeID.ToString();
         }
     }
 }

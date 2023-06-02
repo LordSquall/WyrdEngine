@@ -157,6 +157,9 @@ namespace Wyrd {
 		*/
 		void* Get(uint32_t poolIndex, Entity entity)
 		{
+			if (entity == ENTITY_INVALID)
+				return nullptr;
+
 			if (!entities[entity - 1].mask.test(poolIndex))
 				return nullptr;
 
