@@ -4,7 +4,7 @@
 #include "wyrdpch.h"
 #include "core/export.h"
 #include "core/behaviour/ScriptedMethod.h"
-#include "Properties/BaseProp.h"
+#include "properties/BaseProp.h"
 #include "core/UID.h"
 
 /* external includes */
