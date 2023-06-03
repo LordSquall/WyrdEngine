@@ -166,7 +166,13 @@ group ""
 		filter "system:linux"
 			systemversion "latest"
 
-			defines
+
+   includedirs
+			{
+				"%{prj.name}/src/"
+			}
+
+   defines
 			{
 				"WYRD_PLATFORM_LINUX",
 				"WYRD_LIBRARY_EXPORT",
