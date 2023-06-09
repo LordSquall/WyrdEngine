@@ -26,7 +26,7 @@ if os.istarget("windows") then
 		monodir = "C:/PROGRA~1/Mono/"
 	else
 		print("Unable to find Mono installation. Please install before continuing")
-		os.exit()
+		
 	end
 	
 	if os.isfile("C:/PROGRA~1/RenderDoc/renderdoc_app.h") == true then
@@ -44,7 +44,7 @@ elseif os.istarget("linux") then
 		monodir = "/usr/"
 	else
 		print("Unable to find Mono installation. Please install before continuing")
-		os.exit()
+		
 	end
 end
 
