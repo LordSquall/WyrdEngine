@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Setup windows build environment
-      run: ./buildsystem/windows/setup-environment.sh
+      run: ./buildsystem/windows/setup-environment.bat
     - name: Setup and build Wyrd 
       run: ./buildsystem/windows/setup-wyrd.bat
     
