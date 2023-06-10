@@ -14,7 +14,7 @@ cd cmakedir
 cmake ../
 cd ../../..
 
-git clone https://github.com/hjiang
+git clone https://github.com/hjiang/jsonxx
 
 git clone https://github.com/gabime/spdlog dependencies/spdlog
 cd dependencies/spdlog
