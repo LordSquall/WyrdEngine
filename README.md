@@ -1,6 +1,6 @@
 # Wyrd Engine
 
-[![Linux Build Wyrd](https://github.com/LordSquall/WyrdEngine/actions/workflows/wyrd-linux-library.yml/badge.svg)](https://github.com/LordSquall/WyrdEngine/actions/workflows/wyrd-linux-library.yml)
+[![Build Wyrd](https://github.com/LordSquall/WyrdEngine/actions/workflows/build-windows-all.yml/badge.svg)](https://github.com/LordSquall/WyrdEngine/actions/workflows/build-windows-all.yml)
 
 ## Build Instructions:
 
