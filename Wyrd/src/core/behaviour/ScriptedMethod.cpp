@@ -3,7 +3,6 @@
 #include "core/Log.h"
 #include "ScriptedMethod.h"
 #include "MonoUtils.h"
-#include "core/behaviour/Properties/ScriptPropertyFactory.h"
 
 /* external includes */
 #include <mono/jit/jit.h>
