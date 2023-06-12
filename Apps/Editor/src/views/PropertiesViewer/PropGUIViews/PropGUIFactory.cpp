@@ -14,88 +14,116 @@ namespace Wyrd
     void CreatePropGUI_Int(BaseProp* prop)
     {
         PropInt* intProp = (PropInt*)prop;
-        ImGui::InputInt(prop->GetName().c_str(), (int*)&intProp->Value);
+        ImGui::Text(prop->GetName().c_str());
+        ImGui::SameLine();
+        ImGui::InputInt("", (int*)&intProp->Value);
     }
 
     void CreatePropGUI_Int32(BaseProp* prop)
     {
         PropInt32* int32Prop = (PropInt32*)prop;
-        ImGui::InputInt(prop->GetName().c_str(), (int*)&int32Prop->Value);
+        ImGui::Text(prop->GetName().c_str());
+        ImGui::SameLine();
+        ImGui::InputInt("", (int*)&int32Prop->Value);
     }
 
     void CreatePropGUI_UInt32(BaseProp* prop)
     {
         PropUInt32* intU32Prop = (PropUInt32*)prop;
-        ImGui::InputInt(prop->GetName().c_str(), (int*)&intU32Prop->Value);
+        ImGui::Text(prop->GetName().c_str());
+        ImGui::SameLine();
+        ImGui::InputInt("", (int*)&intU32Prop->Value);
     }
 
     void CreatePropGUI_Int64(BaseProp* prop)
     {
         PropInt64* int64Prop = (PropInt64*)prop;
-        ImGui::InputInt(prop->GetName().c_str(), (int*)&int64Prop->Value);
+        ImGui::Text(prop->GetName().c_str());
+        ImGui::SameLine();
+        ImGui::InputInt("", (int*)&int64Prop->Value);
     }
 
     void CreatePropGUI_UInt64(BaseProp* prop)
     {
         PropUInt64* intU64Prop = (PropUInt64*)prop;
-        ImGui::InputInt(prop->GetName().c_str(), (int*)&intU64Prop->Value);
+        ImGui::Text(prop->GetName().c_str());
+        ImGui::SameLine();
+        ImGui::InputInt("", (int*)&intU64Prop->Value);
     }
 
     void CreatePropGUI_Float(BaseProp* prop)
     {
         PropFloat* floatProp = (PropFloat*)prop;
-        ImGui::InputFloat(prop->GetName().c_str(), (float*)&floatProp->Value);
+        ImGui::Text(prop->GetName().c_str());
+        ImGui::SameLine();
+        ImGui::InputFloat("", (float*)&floatProp->Value);
     }
 
     void CreatePropGUI_Double(BaseProp* prop)
     {
         PropDouble* doubleProp = (PropDouble*)prop;
-        ImGui::InputDouble(prop->GetName().c_str(), (double*)&doubleProp->Value);
+        ImGui::Text(prop->GetName().c_str());
+        ImGui::SameLine();
+        ImGui::InputDouble("", (double*)&doubleProp->Value);
     }
 
     void CreatePropGUI_String(BaseProp* prop)
     {
         PropDouble* doubleProp = (PropDouble*)prop;
-        ImGui::InputText(prop->GetName().c_str(), (std::string*)&doubleProp->Value);
+        ImGui::Text(prop->GetName().c_str());
+        ImGui::SameLine();
+        ImGui::InputText("", (std::string*)&doubleProp->Value);
     }
 
     void CreatePropGUI_Vec2(BaseProp* prop)
     {
         PropVec2* vec2Prop = (PropVec2*)prop;
-        ImGui::InputFloat2(prop->GetName().c_str(), (float*)&vec2Prop->Value);
+        ImGui::Text(prop->GetName().c_str());
+        ImGui::SameLine();
+        ImGui::InputFloat2("", (float*)&vec2Prop->Value);
     }
 
     void CreatePropGUI_Vec3(BaseProp* prop)
     {
         PropVec3* vec3Prop = (PropVec3*)prop;
-        ImGui::InputFloat3(prop->GetName().c_str(), (float*)&vec3Prop->Value);
+        ImGui::Text(prop->GetName().c_str());
+        ImGui::SameLine();
+        ImGui::InputFloat3("", (float*)&vec3Prop->Value);
     }
 
     void CreatePropGUI_Bool(BaseProp* prop)
     {
         PropBool* boolProp = (PropBool*)prop;
-        ImGui::Checkbox(prop->GetName().c_str(), (bool*)&boolProp->Value);
+        ImGui::Text(prop->GetName().c_str());
+        ImGui::SameLine();
+        ImGui::Checkbox("", (bool*)&boolProp->Value);
     }
 
     void CreatePropGUI_Color(BaseProp* prop)
     {
         PropColor* colorProp = (PropColor*)prop;
-        ImGui::ColorEdit4(prop->GetName().c_str(), (float*)&colorProp->Value);
+        ImGui::Text(prop->GetName().c_str());
+        ImGui::SameLine();
+        ImGui::ColorEdit4("", (float*)&colorProp->Value);
     }
 
     void CreatePropGUI_Texture(BaseProp* prop)
     {
         PropTexture* textureProp = (PropTexture*)prop;
+        ImGui::Text(prop->GetName().c_str());
+        ImGui::SameLine();
 
-        if (textureProp->Value != nullptr)
+        auto texture = textureProp->Value ? textureProp->Value : Application::Get().GetResources().Textures[UID(RES_TEXTURE_DEFAULT)].get();
+        
+
+        ImGui::Text(texture->GetUID().str().c_str()); 
+        if (ImGui::IsItemHovered())
         {
-            ImGui::Image((ImTextureID)(INT_PTR)textureProp->Value->GetHandle(), ImVec2(64.0f, 64.0f));
+            ImGui::BeginTooltip();
+            ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2(64.0f, 64.0f));
+            ImGui::EndTooltip();
         }
-        else
-        {
-            auto defaultTexture = Application::Get().GetResources().Textures[UID(RES_TEXTURE_DEFAULT)];
-            ImGui::Image((ImTextureID)(INT_PTR)defaultTexture->GetHandle(), ImVec2(64.0f, 64.0f));
-        }
+        
 
         if (ImGui::BeginDragDropTarget())
         {
@@ -117,17 +145,18 @@ namespace Wyrd
             }
             ImGui::EndDragDropTarget();
         }
-        ImGui::SameLine();
-        ImGui::Text(prop->GetName().c_str());
     }
 
     void CreatePropGUI_Entity(BaseProp* prop)
     {
         PropEntity* entityProp = (PropEntity*)prop;
         Entity ent = entityProp->Value;
+
+        ImGui::Text(prop->GetName().c_str());
+        ImGui::SameLine();
         if (ent != ENTITY_INVALID)
         {
-            ImGui::Text("%ull", ent);
+            ImGui::Text("%u", ent);
         }
         else
         {
