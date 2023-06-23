@@ -1,78 +1,106 @@
 {
-	"name": "common",
-	"texture-path": "common-icons.png",
-	"texture-width": 1024,
-	"texture-height": 1024,
-  "icons": [
-    {
-      "name": "assets_scene",
-      "width": 128,
-      "height": 128,
-      "x": 0,
-      "y": 1024
-    },
-    {
-      "name": "assets_unknown",
-      "width": 128,
-      "height": 128,
-      "x": 128,
-      "y": 1024
-    },
-    {
-      "name": "assets_texture",
-      "width": 128,
-      "height": 128,
-      "x": 256,
-      "y": 1024
-    },
-    {
-      "name": "assets_script",
-      "width": 128,
-      "height": 128,
-      "x": 384,
-      "y": 1024
-    },
-    {
-      "name": "assets_folder",
-      "width": 128,
-      "height": 128,
-      "x": 512,
-      "y": 1024
-    },
-    {
-      "name": "sim_play",
-      "width": 128,
-      "height": 128,
-      "x": 0,
-      "y": 896
-    },
-    {
-      "name": "sim_stop",
-      "width": 128,
-      "height": 128,
-      "x": 128,
-      "y": 896
-    },
-    {
-      "name": "gizmo_2dtranslate",
-      "width": 128,
-      "height": 128,
-      "x": 0,
-      "y": 768
-    },
-    {
-      "name": "gizmo_2drotate",
-      "width": 128,
-      "height": 128,
-      "x": 128,
-      "y": 768
-    },
-    {
-      "name": "gizmo_2dscale",
-      "width": 128,
-      "height": 128,
-      "x": 256,
-      "y": 768
-    }
-  ]
+    "name":  "common",
+    "texture-path":  "common-icons.png",
+    "texture-width":  1024,
+    "texture-height":  1024,
+    "icons":  [
+                  {
+                      "y":  0,
+                      "width":  64,
+                      "name":  "assets_3dmodel",
+                      "height":  64,
+                      "x":  0
+                  },
+                  {
+                      "y":  0,
+                      "width":  64,
+                      "name":  "assets_folder",
+                      "height":  64,
+                      "x":  64
+                  },
+                  {
+                      "y":  0,
+                      "width":  64,
+                      "name":  "assets_scene",
+                      "height":  64,
+                      "x":  128
+                  },
+                  {
+                      "y":  0,
+                      "width":  64,
+                      "name":  "assets_script",
+                      "height":  64,
+                      "x":  192
+                  },
+                  {
+                      "y":  0,
+                      "width":  64,
+                      "name":  "assets_texture",
+                      "height":  64,
+                      "x":  256
+                  },
+                  {
+                      "y":  0,
+                      "width":  64,
+                      "name":  "assets_unknown",
+                      "height":  64,
+                      "x":  320
+                  },
+                  {
+                      "y":  0,
+                      "width":  64,
+                      "name":  "data_filteroff",
+                      "height":  64,
+                      "x":  384
+                  },
+                  {
+                      "y":  0,
+                      "width":  64,
+                      "name":  "default",
+                      "height":  64,
+                      "x":  448
+                  },
+                  {
+                      "y":  0,
+                      "width":  64,
+                      "name":  "nav_home",
+                      "height":  64,
+                      "x":  512
+                  },
+                  {
+                      "y":  0,
+                      "width":  64,
+                      "name":  "nav_open",
+                      "height":  64,
+                      "x":  576
+                  },
+                  {
+                      "y":  0,
+                      "width":  64,
+                      "name":  "nav_up",
+                      "height":  64,
+                      "x":  640
+                  },
+                  {
+                      "y":  0,
+                      "width":  64,
+                      "name":  "sim_pause",
+                      "height":  64,
+                      "x":  704
+                  },
+                  {
+                      "y":  0,
+                      "width":  64,
+                      "name":  "sim_play",
+                      "height":  64,
+                      "x":  768
+                  },
+                  {
+                      "y":  0,
+                      "width":  64,
+                      "name":  "sim_stop",
+                      "height":  64,
+                      "x":  832
+                  }
+              ]
 }

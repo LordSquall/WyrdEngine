@@ -49,6 +49,11 @@ namespace Wyrd::Editor
 		_SceneIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_scene");
 		_TextureIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_texture");
 		_ScriptIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_script");
+		_ModelIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_3dmodel");
+		_HomeIcon = _resourcesService->GetIconLibrary().GetIcon("common", "nav_home");
+		_UpIcon = _resourcesService->GetIconLibrary().GetIcon("common", "nav_up");
+		_OpenIcon = _resourcesService->GetIconLibrary().GetIcon("common", "nav_open");
+		_FilterOffIcon = _resourcesService->GetIconLibrary().GetIcon("common", "data_filteroff");
 
 		/* register from events */
 		_EventService->Subscribe(Events::EventType::ProjectLoaded, [this](Events::EventArgs& args)
@@ -77,21 +82,27 @@ namespace Wyrd::Editor
 			ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
 			ImGui::SameLine();
 			
-			if (ImGui::IconButton(_UnknownIcon, 0, true, ImVec2( 16.0f, 16.0f )))
+			if (ImGui::IconButton(_FilterOffIcon, 0, true, ImVec2(16.0f, 16.0f)))
+			{
+				_SearchCriteria = "";
+			}
+			ImGui::SameLine();
+
+			if (ImGui::IconButton(_HomeIcon, 0, true, ImVec2( 16.0f, 16.0f )))
 			{
 				_SearchCriteria = "";
 			}
 			ImGui::SameLine();
 			
 			ImVec2 buttonSize = ImVec2(16.0f, 16.0f);
-			if (ImGui::IconButton(_UnknownIcon, 2, _SelectedDirectory != _workspaceService->GetAssetsDirectory(), buttonSize))
+			if (ImGui::IconButton(_UpIcon, 2, _SelectedDirectory != _workspaceService->GetAssetsDirectory(), buttonSize))
 			{
 				_SelectedDirectory = _SelectedDirectory.parent_path();
 				_SelectedResource = -1;
 			}
 			ImGui::SameLine();
 			
-			if (ImGui::IconButton(_UnknownIcon, 3, true, buttonSize))
+			if (ImGui::IconButton(_OpenIcon, 3, true, buttonSize))
 			{
 				//ShellExecuteA(NULL, "open", _SelectedDirectory.string().c_str(), NULL, NULL, SW_SHOWDEFAULT);
 			}
@@ -636,7 +647,7 @@ namespace Wyrd::Editor
 		}
 
 		/* Visuals */
-		ImGui::Image(*_SceneIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+		ImGui::Image(*_ModelIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 		ImGui::TextClipped(modelResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
 
 	}

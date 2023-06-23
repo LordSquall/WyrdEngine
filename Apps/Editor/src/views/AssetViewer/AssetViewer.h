@@ -49,6 +49,11 @@ namespace Wyrd::Editor
 		std::shared_ptr<Icon> _SceneIcon;
 		std::shared_ptr<Icon> _TextureIcon;
 		std::shared_ptr<Icon> _ScriptIcon;
+		std::shared_ptr<Icon> _ModelIcon;
+		std::shared_ptr<Icon> _HomeIcon;
+		std::shared_ptr<Icon> _UpIcon;
+		std::shared_ptr<Icon> _OpenIcon;
+		std::shared_ptr<Icon> _FilterOffIcon;
 
 		std::string _SearchCriteria;
 	};

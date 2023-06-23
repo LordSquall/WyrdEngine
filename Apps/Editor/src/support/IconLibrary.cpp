@@ -36,6 +36,7 @@ namespace Wyrd::Editor
 		defaultIconSet->height = (int)defaultIconHeight;
 		defaultIconSet->width = (int)defaultIconWidth;
 		defaultIconSet->Texture = std::make_shared<TextureRes>(Utils::GetEditorResFolder() + "icons\\default.png", UIDUtils::Create());
+		defaultIconSet->Texture->Load();
 
 		_DefaultIcon = std::make_shared<Icon>();
 		_DefaultIcon->height = (int)defaultIconHeight;
@@ -95,7 +96,7 @@ namespace Wyrd::Editor
 			}
 			else
 			{
-				WYRD_WARN("Unable to find matching icon {0} in iconset {0}", name, setName);
+				WYRD_WARN("Unable to find matching icon {0} in iconset {1}", name, setName);
 				return _DefaultIcon;
 			}
 		}
