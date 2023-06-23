@@ -313,42 +313,42 @@ namespace Wyrd::Editor
 
 			bool fileOperationsFlag = _workspaceService->IsSceneLoaded() && _workspaceService->IsProjectLoaded();
 
-			if (ImGui::MenuItem("New Scene", nullptr, nullptr, _workspaceService->IsProjectLoaded())) {
-				std::optional<std::string> filepath = Utils::SaveFile({ { "Scene", "*.scene" } });
-				if (filepath.has_value())
-				{
-					_workspaceService->SaveSceneAs(filepath.value());
-					_workspaceService->LoadScene(filepath.value());
-				}
-			}
+			//if (ImGui::MenuItem("New Scene", nullptr, nullptr, _workspaceService->IsProjectLoaded())) {
+			//	std::optional<std::string> filepath = Utils::SaveFile({ { "Scene", "*.scene" } });
+			//	if (filepath.has_value())
+			//	{
+			//		_workspaceService->SaveSceneAs(filepath.value());
+			//		_workspaceService->LoadScene(filepath.value());
+			//	}
+			//}
+			//
+			//if (ImGui::MenuItem("Save Scene", nullptr, nullptr, _workspaceService->IsProjectLoaded() && _workspaceService->IsSceneLoaded())) {
+			//	if (_workspaceService->SaveScene() == true)
+			//	{
+			//		WYRD_CORE_INFO("Saved Scene");
+			//	}
+			//}
+			//
+			//if (ImGui::MenuItem("Save Scene As..", nullptr, nullptr, _workspaceService->IsProjectLoaded() && _workspaceService->IsSceneLoaded())) {
+			//	std::optional<std::string> filepath = Utils::SaveFile({ { "Scene", "*.scene" } });
+			//	if (filepath)
+			//	{
+			//		if (_workspaceService->SaveSceneAs(filepath.value()) == true)
+			//		{
+			//			WYRD_CORE_INFO("Saved Scene As");
+			//		}
+			//	}
+			//}
 
-			if (ImGui::MenuItem("Save Scene", nullptr, nullptr, _workspaceService->IsProjectLoaded() && _workspaceService->IsSceneLoaded())) {
-				if (_workspaceService->SaveScene() == true)
-				{
-					WYRD_CORE_INFO("Saved Scene");
-				}
-			}
+			//if (ImGui::MenuItem("Open Scene", nullptr, nullptr, _workspaceService->IsProjectLoaded())) {
+			//	std::string filepath = Utils::OpenFileDialog(".scene");
+			//	if (_workspaceService->LoadScene(filepath) == true)
+			//	{
+			//		WYRD_CORE_INFO("Opened Scene");
+			//	}
+			//}
 
-			if (ImGui::MenuItem("Save Scene As..", nullptr, nullptr, _workspaceService->IsProjectLoaded() && _workspaceService->IsSceneLoaded())) {
-				std::optional<std::string> filepath = Utils::SaveFile({ { "Scene", "*.scene" } });
-				if (filepath)
-				{
-					if (_workspaceService->SaveSceneAs(filepath.value()) == true)
-					{
-						WYRD_CORE_INFO("Saved Scene As");
-					}
-				}
-			}
-
-			if (ImGui::MenuItem("Open Scene", nullptr, nullptr, _workspaceService->IsProjectLoaded())) {
-				std::string filepath = Utils::OpenFileDialog(".scene");
-				if (_workspaceService->LoadScene(filepath) == true)
-				{
-					WYRD_CORE_INFO("Opened Scene");
-				}
-			}
-
-			ImGui::Separator();
+			//ImGui::Separator();
 
 			if (ImGui::MenuItem("Exit"))
 			{

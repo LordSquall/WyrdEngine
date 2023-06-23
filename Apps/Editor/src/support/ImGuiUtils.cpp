@@ -47,7 +47,7 @@ namespace ImGui
 			return false;
 
 		bool hovered, held;
-		bool pressed = ButtonBehavior(bb, imgId, &hovered, &held, flags);
+		bool pressed = ButtonBehavior(bb, imgId, &hovered, &held, flags) && enabled;
 
 		// Render
 		const ImU32 col = GetColorU32((held && hovered) ? ImGuiCol_ButtonActive : hovered ? ImGuiCol_ButtonHovered : ImGuiCol_Button);
@@ -90,7 +90,7 @@ namespace ImGui
 			return false;
                 
 		bool hovered, held;
-		bool pressed = ButtonBehavior(bb, id, &hovered, &held, flags);
+		bool pressed = ButtonBehavior(bb, id, &hovered, &held, flags) && enabled;
 		if (pressed)
 			MarkItemEdited(id);
         

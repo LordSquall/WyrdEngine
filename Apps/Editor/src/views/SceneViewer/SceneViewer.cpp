@@ -136,10 +136,6 @@ namespace Wyrd::Editor
 
 					Wyrd::DrawMeshCommand cmd{};
 					cmd.modelMatrix = transform->modelMatrix;
-					//cmd.position = transform->position;
-					//cmd.rotation = transform->rotation;
-					//cmd.scale = transform->scale;
-					//cmd.rotationOrigin = Vector3{ 0, 0, 0 };
 					cmd.viewMatrix = _CameraController->GetCamera().GetViewMatrix();
 					cmd.projectionMatrix = _CameraController->GetCamera().GetProjectionMatrix();
 					cmd.material = Application::Get().GetResources().Materials[material->material].get();
@@ -164,22 +160,6 @@ namespace Wyrd::Editor
 						(*materialProps)["BlendColor"]->Set<Color>(Color::MAGENTA);
 
 						renderer.DrawDebugBoundingBox(editorComponent->inputBoundingBox, { transform->position.x, transform->position.y, transform->position.z }, Color::MAGENTA, _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
-
-						//Wyrd::DrawMeshCommand cmd{};
-						//cmd.position = transform->position;
-						//cmd.rotation = transform->rotation;
-						//cmd.scale = transform->scale;
-						//cmd.rotationOrigin = Vector3{ 0, 0, 0 };
-						//cmd.viewMatrix = _CameraController->GetCamera().GetViewMatrix();
-						//cmd.projectionMatrix = _CameraController->GetCamera().GetProjectionMatrix();
-						//cmd.material = Application::Get().GetResources().Materials[RES_MATERIAL_3D_DEFAULT].get();
-						//cmd.materialProps = &materialProps;
-						//cmd.mesh = Application::Get().GetResources().Meshs[RES_MODEL_3D_DEFAULT].get();
-						//cmd.baseTexture = Application::Get().GetResources().Textures[RES_TEXTURE_DEFAULT].get();
-						//cmd.drawType = RendererDrawType::Triangles;
-						//
-						//renderer.Submit(cmd);
-						//renderer.Flush();
 					}
 				}
 
@@ -222,12 +202,12 @@ namespace Wyrd::Editor
 		static bool showStats = false;
 		static bool useOrtho = false;
 		static bool showGizmoSettings = false;
-
+		
 		/* get the current cursor screen pos for y to determine the final size of the toolbars */
 		float menuBarHeight = ImGui::GetCursorScreenPos().y;
-
+		
 		const ImVec2 size(16.0f, 16.0f);
-
+		
 		/* here we want to create a simple toolbox to show the different transformation tools */
 		for (int i = 0; i < _TransformationGizmos.size(); i++)
 		{
@@ -239,35 +219,35 @@ namespace Wyrd::Editor
 			ImGui::SameLine();
 			ImGui::PopID();
 		}
-
+		
 		if (ImGui::IconButton(_pointSelectBtnIcon, 1, false, size) == true)
 		{
-
+		
 		}
 		ImGui::SameLine();
-
+		
 		/* build the top toolbar */
 		ImGui::Checkbox("show stats", &showStats);
 		ImGui::SameLine();
 		ImGui::Checkbox("show EC", &showEditorComponent);
-
+		
 		menuBarHeight = ImGui::GetCursorScreenPos().y - menuBarHeight;
-
+		
 		/* calculate the mouse offset for events */
 		_mouseOffset = { ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y };
-
+		
 		/* calculate the viewport boundary */
 		_ViewportBoundary._position.x = _Boundary._position.x - (_Boundary._size.x - _Viewport._size.x);
 		_ViewportBoundary._position.y = _Boundary._position.y + (_Boundary._size.y - _Viewport._size.y);
 		_ViewportBoundary._size.x = ImGui::GetWindowSize().x;
 		_ViewportBoundary._size.y = ImGui::GetWindowSize().y - ImGui::GetCursorPos().y;
-
+		
 		/* calculate the viewport size */
 		_Viewport._position.x = 0.0f;
 		_Viewport._position.y = 0.0f;
 		_Viewport._size.x = ImGui::GetWindowSize().x;
 		_Viewport._size.y = ImGui::GetWindowSize().y - ImGui::GetCursorPos().y;
-
+		
 		if (useOrtho == true)
 		{
 			_CameraController->SetMode(Camera::Mode::Orthographic);
@@ -284,27 +264,27 @@ namespace Wyrd::Editor
 			ImGui::Checkbox("use ortho", &useOrtho);
 			ImGui::SetCursorPosY(58.0f);
 			ImGui::Text("Camera:");
-
+		
 			float camYaw = _CameraController->GetCamera().GetYaw();
-
+		
 			if (ImGui::InputFloat("Yaw", &camYaw))
 			{
 				_CameraController->GetCamera().SetYaw(camYaw);
 			}
 			ImGui::Text("\tPos		[%f, %f, %f]", _CameraController->GetPosition().x, _CameraController->GetPosition().y, _CameraController->GetPosition().z);
-
+		
 			ImGui::Text("\tUp		[%f, %f, %f]", _CameraController->GetCamera().GetUp().x, _CameraController->GetCamera().GetUp().y, _CameraController->GetCamera().GetUp().z);
 			ImGui::Text("\tForward	[%f, %f, %f]", _CameraController->GetCamera().GetForward().x, _CameraController->GetCamera().GetForward().y, _CameraController->GetCamera().GetForward().z);
 			ImGui::Text("\tPitch	[%f]", _CameraController->GetCamera().GetPitch());
 			ImGui::Text("\tYaw		[%f]", _CameraController->GetCamera().GetYaw());
-
+		
 			ImGui::Text("Window:");
 			ImGui::Text("\tAspect Ratio [%f]", _ViewportBoundary._size.x / _ViewportBoundary._size.y);
-
+		
 			ImGui::Text("FrameBuffer:");
 			ImGui::Text("Width [%d]", _Framebuffer->GetConfig().width);
 			ImGui::Text("Height [%d]", _Framebuffer->GetConfig().height);
-
+		
 			ImGui::Text("Cursor:");
 			ImGui::Text("Screen Position: [%d, %d]", (int32_t)_mouseOffset.x, (int32_t)_mouseOffset.y);
 			ImGui::Text("Viewport Offset Coords:   [%d, %d]", (int32_t)_mouseOffset.x, (int32_t)_mouseOffset.y);

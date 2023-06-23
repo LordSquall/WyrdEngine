@@ -78,24 +78,19 @@ namespace Wyrd::Editor
 
 			ImGui::InputText("##label", &_SearchCriteria);
 			ImGui::SameLine();
+						
+			if (ImGui::IconButton(_FilterOffIcon, 0, _SearchCriteria != "", ImVec2(16.0f, 16.0f)))
+			{
+				_SearchCriteria = "";
+			}
+			ImGui::SameLine();
 
 			ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
 			ImGui::SameLine();
 			
-			if (ImGui::IconButton(_FilterOffIcon, 0, true, ImVec2(16.0f, 16.0f)))
-			{
-				_SearchCriteria = "";
-			}
-			ImGui::SameLine();
-
-			if (ImGui::IconButton(_HomeIcon, 0, true, ImVec2( 16.0f, 16.0f )))
-			{
-				_SearchCriteria = "";
-			}
-			ImGui::SameLine();
-			
 			ImVec2 buttonSize = ImVec2(16.0f, 16.0f);
-			if (ImGui::IconButton(_UpIcon, 2, _SelectedDirectory != _workspaceService->GetAssetsDirectory(), buttonSize))
+			bool parentDirAvailable = _SelectedDirectory != _workspaceService->GetAssetsDirectory();
+			if (ImGui::IconButton(_UpIcon, 2, parentDirAvailable, buttonSize))
 			{
 				_SelectedDirectory = _SelectedDirectory.parent_path();
 				_SelectedResource = -1;
@@ -104,7 +99,7 @@ namespace Wyrd::Editor
 			
 			if (ImGui::IconButton(_OpenIcon, 3, true, buttonSize))
 			{
-				//ShellExecuteA(NULL, "open", _SelectedDirectory.string().c_str(), NULL, NULL, SW_SHOWDEFAULT);
+				ShellExecuteA(NULL, "open", _SelectedDirectory.string().c_str(), NULL, NULL, SW_SHOWDEFAULT);
 			}
 
 			//ImGui::SliderFloat("Size", &layoutSettings.itemGroupSize, 16.0f, 512.0f);
@@ -125,6 +120,22 @@ namespace Wyrd::Editor
 				}
 				if (ImGui::BeginMenu("Create..."))
 				{
+					if (ImGui::MenuItem("Scene"))
+					{
+						_dialogService->OpenSingleEntryDialog(_EditorLayer, "Create new Scene", "Name", [&](std::string d) -> void {
+
+							/* load the scene template */
+							std::string rawTemplateContent = Utils::ReadFileToString(Utils::GetEditorResFolder() + "\\templates\\Scene.scene");
+
+							/* populate the template tags */
+							std::string populatedTemplateContent = Utils::ReplaceAll(rawTemplateContent, "<<SCENE_NAME>>", d.c_str());
+
+							/* create the file */
+							Utils::CreateRawFile(_SelectedDirectory / (d + ".scene"), populatedTemplateContent);
+
+							WYRD_TRACE("Add Scene... {0}", d.c_str());
+							});
+					}
 					if (ImGui::MenuItem("Material"))
 					{
 						_dialogService->OpenSingleEntryDialog(_EditorLayer, "Create new Material", "Name", [&](std::string d) -> void {
