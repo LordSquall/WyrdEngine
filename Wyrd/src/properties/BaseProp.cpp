@@ -2,6 +2,7 @@
 #include "wyrdpch.h"
 #include "core/Log.h"
 #include "properties/BaseProp.h"
+#include "serial/TypeSerialisers.h"
 
 namespace Wyrd
 {
@@ -20,36 +21,51 @@ namespace Wyrd
     PROPERTY_FACTORY_REGISTER(Texture, "Texture", "WyrdAPI.Texture", Wyrd::Texture*);
     PROPERTY_FACTORY_REGISTER(Entity, "Entity", "WyrdAPI.Entity", Wyrd::Entity);
 
-    std::map<std::string, PropFactory::CreatePropFunc>* PropFactory::GetNativeProps()
+    std::map<std::string, PropFactory::CreateJsonPropFunc>* PropFactory::GetNativeProps()
     {
-        static std::map<std::string, PropFactory::CreatePropFunc> nativeProps  {
+        static std::map<std::string, PropFactory::CreateJsonPropFunc> nativeProps  {
         };
 
         return &nativeProps;
     }
 
-    std::map<std::string, PropFactory::CreatePropFunc>* PropFactory::GetManagedProps()
+    std::map<std::string, PropFactory::CreateJsonPropFunc>* PropFactory::GetManagedProps()
     {
-        static std::map<std::string, PropFactory::CreatePropFunc> managedProps{
+        static std::map<std::string, PropFactory::CreateJsonPropFunc> managedProps{
         };
 
         return &managedProps;
     }
+
+    std::map<std::string, PropFactory::CreateSerialPropFunc>* PropFactory::GetSerialProps()
+    {
+        static std::map<std::string, PropFactory::CreateSerialPropFunc> serialProps{
+        };
+
+        return &serialProps;
+    }
     
     bool PropFactory::Register(const std::string typeName,
         const std::string managedName,
-        CreatePropFunc funcCreate)
+        CreateJsonPropFunc funcCreateJson,
+        CreateSerialPropFunc funcCreateSerial)
     {
         auto nativeProperties = GetNativeProps();
         if (auto it = nativeProperties->find(typeName); it == nativeProperties->end())
         {
-            (*nativeProperties)[typeName] = funcCreate;
+            (*nativeProperties)[typeName] = funcCreateJson;
         }
 
         auto managedProperties = GetManagedProps();
         if (auto it = managedProperties->find(managedName); it == managedProperties->end())
         {
-            (*managedProperties)[managedName] = funcCreate;
+            (*managedProperties)[managedName] = funcCreateJson;
+        }
+
+        auto serialProperties = GetSerialProps();
+        if (auto it = serialProperties->find(typeName); it == serialProperties->end())
+        {
+            (*serialProperties)[typeName] = funcCreateSerial;
         }
         return true;
     }
@@ -127,6 +143,29 @@ namespace Wyrd
                     BasePropRef baseProp = (*properties)[t](name, t, v, true);
                     (*propMap)[name] = std::move(baseProp);
                 }
+            }
+        }
+
+        return propMap;
+    }
+
+    BasePropMapRef PropFactory::CreatePropMap(std::ifstream& stream)
+    {
+        BasePropMapRef propMap = std::make_unique<std::map<std::string, BasePropRef>>();
+
+        size_t propertyCount = 0;
+        stream.read((char*)&propertyCount, sizeof(size_t));
+        
+        for (size_t i = 0; i < propertyCount; ++i)
+        {
+            std::string t = readStr(stream);
+            std::string n = readStr(stream);
+
+            auto properties = GetSerialProps();
+            if (auto it = properties->find(t); it != properties->end())
+            {
+                BasePropRef baseProp = (*properties)[t](n, t, stream, true);
+                (*propMap)[n] = std::move(baseProp);
             }
         }
 

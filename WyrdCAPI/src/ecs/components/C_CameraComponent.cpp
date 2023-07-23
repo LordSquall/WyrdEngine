@@ -31,4 +31,36 @@ void CameraComponent_SetSize(void* scenePtr, Wyrd::Entity entity, Wyrd::Vector2*
    component->size = *size;
 }
 
+void CameraComponent_SetNearplane(void* scenePtr, Wyrd::Entity entity, float nearPlane)
+{
+   Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
+   Wyrd::CameraComponent* component = scene->Get<Wyrd::CameraComponent>(entity);
+
+   component->nearPlane = nearPlane;
+}
+
+void CameraComponent_SetFarplane(void* scenePtr, Wyrd::Entity entity, float farPlane)
+{
+   Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
+   Wyrd::CameraComponent* component = scene->Get<Wyrd::CameraComponent>(entity);
+
+   component->farPlane = farPlane;
+}
+
+void CameraComponent_SetAspect(void* scenePtr, Wyrd::Entity entity, float aspect)
+{
+   Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
+   Wyrd::CameraComponent* component = scene->Get<Wyrd::CameraComponent>(entity);
+
+   component->aspect = aspect;
+}
+
+void CameraComponent_SetFov(void* scenePtr, Wyrd::Entity entity, float fov)
+{
+   Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
+   Wyrd::CameraComponent* component = scene->Get<Wyrd::CameraComponent>(entity);
+
+   component->fov = fov;
+}
+
 

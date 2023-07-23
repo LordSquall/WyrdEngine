@@ -5,12 +5,12 @@
 
 namespace Wyrd
 {
-	Shader* Shader::Create()
+	Shader* Shader::Create(ShaderDesc desc)
 	{
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::None:		OSR_CORE_ASSERT(false, "RendererAPI::None is currently not supported"); return nullptr;
-		case RendererAPI::OpenGL:	return new OpenGLShader();
+		case RendererAPI::OpenGL:	return new OpenGLShader(desc);
 		}
 
 		OSR_CORE_ASSERT(false, "Unknown Renderer API");

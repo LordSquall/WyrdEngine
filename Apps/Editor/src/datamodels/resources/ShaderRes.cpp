@@ -25,8 +25,13 @@ namespace Wyrd::Editor
 		std::string fs;
 		ShaderLoader::Load(_path, name, vs, fs);
 
+		/* build shader description */
+		ShaderDesc shaderDesc;
+		shaderDesc.resource.guid = UIDUtils::Create();
+		shaderDesc.resource.name = name;
+
 		/* create the core renderer resource and load */
-		_shader.reset(Shader::Create());
+		_shader.reset(Shader::Create(shaderDesc));
 		_shader->Build(vs, fs);
 
 		/* register the texture with the core resource manager */

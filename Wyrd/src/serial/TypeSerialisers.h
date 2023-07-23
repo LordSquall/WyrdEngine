@@ -23,6 +23,11 @@ namespace glm
 
 namespace Wyrd
 {
+	void writeStr(std::ofstream& os, const std::string& str);
+	std::string readStr(std::ifstream& is);
+	void writeGuid(std::ofstream& os, const Wyrd::UID& guid);
+	Wyrd::UID readGuid(std::ifstream& is);
+
 	jsonxx::String DecodeString(const std::string& encodedData = "");
 	jsonxx::Object DecodeVec2(const std::string& encodedData = "");
 	jsonxx::Object DecodeVec3(const std::string& encodedData = "");

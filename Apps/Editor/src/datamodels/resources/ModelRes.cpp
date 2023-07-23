@@ -19,10 +19,18 @@ namespace Wyrd::Editor
 	
 	int ModelRes::Load()
 	{
-		/* load the data from file */
-		_mesh = std::make_shared<Mesh>();
+		std::vector<Vertex3D> vertices;
+		BoundingBox boundingBox;
+		ObjLoader::Load(_path.string().c_str(), &vertices, nullptr, nullptr, 1.0f, &boundingBox);
 
-		ObjLoader::Load(_path.string().c_str(), &_mesh->Vertices, nullptr, nullptr, 1.0f, &_mesh->boundingBox);
+		MeshDesc meshDesc;
+		meshDesc.resource.guid = _resourceID;
+		meshDesc.resource.name = _path.stem().string();
+		meshDesc.vertices = vertices;
+		meshDesc.boundingBox = boundingBox;
+
+		/* load the data from file */
+		_mesh = std::shared_ptr<Mesh>(Mesh::Create(meshDesc));
 
 		/* register the mesh with the core resource manager */
 		Application::Get().GetResources().Meshs[_resourceID] = _mesh;

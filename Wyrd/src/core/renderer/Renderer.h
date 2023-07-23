@@ -5,6 +5,7 @@
 #include "core/export.h"
 #include "core/maths/BoundingBox.h"
 #include "core/maths/Rect.h"
+#include "core/maths/Frustum.h"
 #include "events/Event.h"
 #include "core/renderer/Buffer.h"
 #include "core/renderer/VertexArray.h"
@@ -50,8 +51,10 @@ namespace Wyrd
 		virtual void Submit(DrawMeshInputColorPickerCommand& cmd);
 		virtual void Flush();
 
-		virtual void DrawDebugBoundingBox(const BoundingBox& boundingBox, const glm::vec3& position, const Color& color, const glm::mat4& projection, const glm::mat4& view) = 0;
-
+		virtual void DrawDebugBoundingBox(const BoundingBox& boundingBox, const glm::vec3& position, float thickness, const Color& color, const glm::mat4& model, const glm::mat4& projection, const glm::mat4& view) = 0;
+		virtual void DrawDebugVector(const Vector3& position, const glm::vec3& direction, float thickness, const Color& color, const glm::mat4& model, const glm::mat4& projection, const glm::mat4& view) = 0;
+		virtual void DrawDebugFrustum(const Vector3& position, const glm::vec3& direction, const Frustum& frustum, float thickness, const Color& color, const glm::mat4& model, const glm::mat4& projection, const glm::mat4& view) = 0;
+		
 		inline struct RendererInfo& GetVendorInfo() { return _vendorInfo; }
 
 		inline static RendererAPI GetAPI() { return s_RendererAPI; }

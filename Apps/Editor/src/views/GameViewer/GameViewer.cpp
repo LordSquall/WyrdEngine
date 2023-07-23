@@ -4,6 +4,7 @@
 #include <core/Application.h>
 #include <core/ecs/ECS.h>
 #include <core/ecs/EntitySet.h>
+#include <core/pipeline/Camera.h>
 #include <core/Layer.h>
 #include <core/Input.h>
 #include <core/KeyCodes.h>
@@ -19,7 +20,7 @@
 
 namespace Wyrd::Editor
 {
-	GameViewer::GameViewer(EditorLayer* editorLayer) : EditorViewBase("Game Viewer", editorLayer), _CameraEntity(ENTITY_INVALID), _CameraComponent(nullptr), _SizeConfigID(1)
+	GameViewer::GameViewer(EditorLayer* editorLayer) : EditorViewBase("Game Viewer", editorLayer), _CameraEntity(ENTITY_INVALID), _SizeConfigID(1)
 	{
 		/* retrieve services */
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
@@ -33,7 +34,6 @@ namespace Wyrd::Editor
 		_EventService->Subscribe(Events::EventType::SetSceneCamera, [this](Events::EventArgs& args) {
 			Events::SetSceneCameraArgs& a = (Events::SetSceneCameraArgs&)args;
 			_CameraEntity = a.entity;
-			_CameraComponent = a.cameraComponent;
 		});
 
 		/* create a new framebuffer */
@@ -42,6 +42,8 @@ namespace Wyrd::Editor
 		/* setup window config */
 		config.windowPaddingX = 0.0f;
 		config.windowPaddingY = 0.0f;
+
+		_Camera = std::make_shared<Camera>();
 	}
 
 	GameViewer::~GameViewer()
@@ -53,26 +55,17 @@ namespace Wyrd::Editor
 	{
 		if (_CameraEntity != ENTITY_INVALID)
 		{
-			Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(_CameraEntity);
+			Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(_CameraEntity);
+			CameraComponent* camera = _Scene->Get<CameraComponent>(_CameraEntity);
 			
-			_Camera.SetPosition({ transform->position.x, transform->position.y, 0.0f });
-			_Camera.SetSize(_CameraComponent->size.x);
-			
-			switch (_SizeConfigID)
-			{
-			case 0:
-				_Camera.SetViewportSize(_WorkspaceService->GetCurrentProject()->GetExportSettings().width, _WorkspaceService->GetCurrentProject()->GetExportSettings().height);
-				break;
-			case 1:
-				_Camera.SetViewportSize(_Viewport._size.x, _Viewport._size.y);
-				break;
-			case 2:
-				_Camera.SetViewportSize(800.0f, 600.0f);
-				break;
-			
-			}
-			
-			_Camera.RecalulateViewProjection();
+			_Camera->SetPosition({ transform->position.x, transform->position.y, transform->position.z });
+			_Camera->SetYaw(-transform->rotation.y);
+			_Camera->SetPitch(transform->rotation.x);
+			_Camera->SetMode(Camera::Mode::Perspective);
+			_Camera->perspectiveSettings.nearPlane = camera->nearPlane;
+			_Camera->perspectiveSettings.farPlane = camera->farPlane;
+			_Camera->perspectiveSettings.aspect = camera->aspectRatio;
+			_Camera->Update();
 		}
 	}
 
@@ -82,59 +75,45 @@ namespace Wyrd::Editor
 		renderer.StartNamedSection("GameViewer.Scene");
 #endif
 
-		if (_Framebuffer->GetConfig().height > 0 && _Framebuffer->GetConfig().width > 0)
+		if (_CameraEntity != ENTITY_INVALID)
 		{
-			_Framebuffer->Bind();
-
-			renderer.Clear(0.1f, 0.1f, 0.1f);
-			if (_Scene != nullptr)
+			if (_Framebuffer->GetConfig().height > 0 && _Framebuffer->GetConfig().width > 0)
 			{
-				//for (Entity e : EntitySet<Transform2DComponent, SpriteComponent>(*_Scene.get()))
-				//{
-				//	Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
-				//	SpriteComponent* sprite = _Scene->Get<SpriteComponent>(e);
-				//
-				//	Wyrd::DrawSpriteCommand cmd{};
-				//	cmd.type = 1;
-				//	cmd.position = sprite->position + transform->position;
-				//	cmd.size = sprite->size;
-				//	cmd.tiling = sprite->tiling;
-				//	cmd.vpMatrix = _Camera.GetViewProjectionMatrix();
-				//	cmd.shader = Application::Get().GetResources().Shaders["Sprite"].get();
-				//	cmd.texture = Application::Get().GetResources().Textures[sprite->sprite].get();
-				//	cmd.color = sprite->color;
-				//
-				//	renderer.Submit(cmd);
-				//}
-				
-				//for (Entity e : EntitySet<Transform2DComponent, TextComponent>(*_Scene.get()))
-				//{
-				//	Transform2DComponent* transform = _Scene->Get<Transform2DComponent>(e);
-				//	TextComponent* text = _Scene->Get<TextComponent>(e);
-				//
-				//	Wyrd::DrawTextCommand cmd{};
-				//	cmd.type = 1;
-				//	cmd.position = transform->position;
-				//	cmd.vpMatrix = _Camera.GetViewProjectionMatrix();
-				//	cmd.shader = Application::Get().GetResources().Shaders["Text"].get();
-				//	cmd.content = text->content;
-				//	cmd.scale = 1.0f;
-				//	cmd.size = text->size;
-				//	cmd.font = Application::Get().GetResources().FontTypes[text->font].get();
-				//	cmd.color = text->color;
-				//
-				//	renderer.Submit(cmd);
-				//}
-				
-				renderer.Flush();
+				_Framebuffer->Bind();
+
+				renderer.Clear(0.1f, 0.1f, 0.1f);
+				if (_Scene != nullptr)
+				{
+					for (Entity e : EntitySet<Transform3DComponent, MeshRendererComponent, MaterialComponent>(*_Scene.get()))
+					{
+						Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(e);
+						MeshRendererComponent* meshRenderer = _Scene->Get<MeshRendererComponent>(e);
+						MaterialComponent* material = _Scene->Get<MaterialComponent>(e);
+
+						Wyrd::DrawMeshCommand cmd{};
+						cmd.modelMatrix = transform->modelMatrix;
+						cmd.viewMatrix = _Camera->GetViewMatrix();
+						cmd.projectionMatrix = _Camera->GetProjectionMatrix();
+						cmd.material = Application::Get().GetResources().Materials[material->material].get();
+						cmd.materialProps = &material->properties;
+						cmd.mesh = Application::Get().GetResources().Meshs[meshRenderer->model].get();
+						cmd.baseTexture = Application::Get().GetResources().Textures[RES_TEXTURE_DEFAULT].get();
+						cmd.drawType = RendererDrawType::Triangles;
+
+						renderer.Submit(cmd);
+						renderer.Flush();
+					}
+
+					renderer.Flush();
+				}
+
+				_Framebuffer->Unbind();
 			}
 
-			_Framebuffer->Unbind();
-		}
-
 #ifdef WYRD_INCLUDE_DEBUG_TAGS
-		renderer.EndNamedSection();
+			renderer.EndNamedSection();
 #endif
+		}
 	}
 
 	void GameViewer::OnEditorRender()
@@ -165,25 +144,9 @@ namespace Wyrd::Editor
 				break;
 			}
 		}
-
-		if (_CameraComponent != nullptr)
+		if (_CameraEntity != ENTITY_INVALID)
 		{
-			_CameraComponent->viewport = _Viewport;
-			_CameraComponent->aspectRatio = _Camera.GetAspectRatio();
-		
-			auto pos = ImGui::GetCursorPos();
 			ImGui::Image((ImTextureID)(UINT_PTR)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport._size.x, _Viewport._size.y), ImVec2(0, 1), ImVec2(1, 0));
-		
-			ImGui::SetCursorPos(pos);
-			ImGui::Text("X : %f", _Viewport._position.x);
-			ImGui::Text("Y : %f", _Viewport._position.y);
-			ImGui::Text("W : %f", _Viewport._size.x);
-			ImGui::Text("H : %f", _Viewport._size.y);
-			ImGui::Text("Aspect Ratio : %f", _CameraComponent->aspectRatio);
-		}
-		else
-		{
-			ImGui::Text("No Scene Primary Camera Selected");
 		}
 	}
 
@@ -215,18 +178,18 @@ namespace Wyrd::Editor
 			if (cameraComponent != nullptr)
 			{
 				_CameraEntity = _Scene->GetPrimaryCameraEntity();
-				_CameraComponent = cameraComponent;
+				//_CameraComponent = cameraComponent;
 			}
 			else
 			{
 				_CameraEntity = ENTITY_INVALID;
-				_CameraComponent = nullptr;
+				//_CameraComponent = nullptr;
 			}
 		}
 		else
 		{
 			_CameraEntity = ENTITY_INVALID;
-			_CameraComponent = nullptr;
+			//_CameraComponent = nullptr;
 		}
 	}
 }

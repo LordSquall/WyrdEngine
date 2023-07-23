@@ -2,21 +2,30 @@
 
 #include <memory>
 
+#include <core/Application.h>
 #include <core/Layer.h>
 #include <core/renderer/Shader.h>
 #include <core/renderer/Buffer.h>
 #include <core/renderer/VertexArray.h>
-#include <core/pipeline/OrthographicCamera.h>
+#include <core/pipeline/Camera.h>
 #include <core/ecs/ECS.h>
 #include <events/KeyEvent.h>
 #include <events/MouseEvent.h>
 
 using namespace Wyrd;
 
+namespace Wyrd
+{
+	struct LayerProps : AppProps
+	{
+		std::string gameDir;
+	};
+};
+
 class ControlLayer : public Layer
 {
 public:
-	ControlLayer() : Layer("ControlLayer"), baseDirectory(""), _Camera(), _CameraEntity(ENTITY_INVALID)
+	ControlLayer(const LayerProps& props) : Layer("ControlLayer"), _layerProps(props), _Camera(), _CameraEntity(ENTITY_INVALID)
 	{
 
 	}
@@ -35,13 +44,13 @@ private:
 	bool OnMouseMovedEvent(MouseMovedEvent& e, void* data);
 
 public:
-	std::string baseDirectory;
-
 	bool LoadCoreFile();
 	bool LoadGameFile();
 	bool LoadCommonBundleFile();
 
 private:
-	Wyrd::OrthographicCamera _Camera;
+	LayerProps _layerProps;
+
+	Wyrd::Camera _Camera;
 	Entity _CameraEntity;
 };

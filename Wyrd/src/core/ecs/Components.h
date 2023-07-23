@@ -4,10 +4,11 @@
 #include "core/export.h"
 #include "core/UID.h"
 #include "core/Structures.h"
-#include "properties/BaseProp.h"
+#include "core/TypeDefs.h"
 #include "core/ResourcesUIDs.h"
 #include "core/maths/Rect.h"
 #include "core/ecs/ECS.h"
+#include "core/ecs/ComponentPool.h"
 
 #include <glm/glm.hpp>
 
@@ -25,6 +26,8 @@ namespace Wyrd
         Wyrd::UID uid;
 
         MetaDataComponent() : name(), uid(UID()) {} 
+
+        static void ResetFunc(ComponentPool* pool, Entity entity) {};
     };
 
 
@@ -35,7 +38,10 @@ namespace Wyrd
         Wyrd::Vector2 scale;
 
         Transform2DComponent() : position(0,0), rotation(0.0f), scale(1,1) {} 
+
+        static void ResetFunc(ComponentPool* pool, Entity entity) {}
     };
+
 
 
     struct WYRD_LIBRARY_API Transform3DComponent
@@ -45,7 +51,9 @@ namespace Wyrd
         Wyrd::Vector3 scale;
         glm::mat4 modelMatrix;
 
-        Transform3DComponent() : position(0,0,0), rotation(0,0,0), scale(1,1,1), modelMatrix(glm::mat4(1.0)) {} 
+        Transform3DComponent() : position(0,0,0), rotation(0,0,0), scale(1,1,1), modelMatrix(glm::mat4(1.0)) {}
+
+        static void ResetFunc(ComponentPool* pool, Entity entity) {}
     };
 
 
@@ -54,7 +62,9 @@ namespace Wyrd
         bool enabled;
         Wyrd::UID model;
 
-        MeshRendererComponent() : enabled(true), model(RES_MODEL_3D_DEFAULT) {} 
+        MeshRendererComponent() : enabled(true), model(RES_MODEL_3D_DEFAULT) {}
+
+        static void ResetFunc(ComponentPool* pool, Entity entity) {}
     };
 
 
@@ -65,7 +75,13 @@ namespace Wyrd
         Wyrd::UID material;
         BasePropMapRef properties;
 
-        MaterialComponent() : enabled(true), color(1,1,1,1), material(RES_MATERIAL_3D_DEFAULT), properties(nullptr) {} 
+        MaterialComponent() : enabled(true), color(1,1,1,1), material(RES_MATERIAL_3D_DEFAULT), properties(nullptr) {}
+
+        static void ResetFunc(ComponentPool* pool, Entity entity) 
+        {
+            MaterialComponent* c = (MaterialComponent*)pool->get(entity);
+            c->properties = nullptr;
+        }
     };
 
 
@@ -78,7 +94,9 @@ namespace Wyrd
         Wyrd::Vector2 tiling;
         Wyrd::Color color;
 
-        SpriteComponent() : enabled(true), sprite(UID()), position(0,0), size(64,64), tiling(1,1), color(1,1,1,1) {} 
+        SpriteComponent() : enabled(true), sprite(UID()), position(0,0), size(64,64), tiling(1,1), color(1,1,1,1) {}
+
+        static void ResetFunc(ComponentPool* pool, Entity entity) {}
     };
 
 
@@ -89,7 +107,9 @@ namespace Wyrd
         int32_t instanceId;
         BasePropMapRef properties;
 
-        ScriptComponent() : enabled(true), scriptId(UID()), instanceId(0), properties(nullptr) {} 
+        ScriptComponent() : enabled(true), scriptId(UID()), instanceId(0), properties(nullptr) {}
+
+        static void ResetFunc(ComponentPool* pool, Entity entity) {}
     };
 
 
@@ -103,7 +123,9 @@ namespace Wyrd
         int32_t depth;
         bool remove;
 
-        RelationshipComponent() : first(ENTITY_INVALID), previous(ENTITY_INVALID), next(ENTITY_INVALID), parent(ENTITY_INVALID), childrenCnt(0), depth(0), remove(false) {} 
+        RelationshipComponent() : first(ENTITY_INVALID), previous(ENTITY_INVALID), next(ENTITY_INVALID), parent(ENTITY_INVALID), childrenCnt(0), depth(0), remove(false) {}
+
+        static void ResetFunc(ComponentPool* pool, Entity entity) {}
     };
 
 
@@ -112,8 +134,14 @@ namespace Wyrd
         Wyrd::Rect viewport;
         float aspectRatio;
         Wyrd::Vector2 size;
+        float nearPlane;
+        float farPlane;
+        float aspect;
+        float fov;
 
-        CameraComponent() : viewport(0,0,0,0), aspectRatio(1.0f), size(0,0) {} 
+        CameraComponent() : viewport(0,0,0,0), aspectRatio(1.0f), size(0,0), nearPlane(0.1f), farPlane(100.0f), aspect(1.0f), fov(45.0f) {}
+
+        static void ResetFunc(ComponentPool* pool, Entity entity) {}
     };
 
 };

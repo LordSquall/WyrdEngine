@@ -3,6 +3,7 @@
 /* local includes */
 #include "core/export.h"
 #include "core/Structures.h"
+#include "core/renderer/ResourceBase.h"
 
 /* external includes */
 #include <glm/glm.hpp>
@@ -12,13 +13,21 @@
 
 namespace Wyrd
 {
+	struct ShaderDesc
+	{
+		ResourceDesc resource;
+		std::string vertexSrc;
+		std::string fragmentSrc;
+		ShaderDesc() : resource() { }
+	};
+
 	enum ShaderStage
 	{
 		Vertex,
 		Fragment
 	};
 
-	class WYRD_LIBRARY_API Shader
+	class WYRD_LIBRARY_API Shader : public ResourceBase
 	{
 	public:
 		virtual bool Build(const std::string& vertexSrc, const std::string& fragment) = 0;
@@ -36,7 +45,7 @@ namespace Wyrd
 
 		virtual void SetMatrix(const std::string& name, const glm::mat4& mat) = 0;
 
-		static Shader* Create();
+		static Shader* Create(ShaderDesc desc);
 
 		const std::string& GetSource(ShaderStage stage);
 

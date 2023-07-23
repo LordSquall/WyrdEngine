@@ -35,6 +35,8 @@ namespace Wyrd::Editor
 
 			/* build the texture description structure */
 			TextureDesc textureDesc;
+			textureDesc.guid = _resourceID;
+			textureDesc.name = _path.stem().string();
 			textureDesc.data = _data;
 			textureDesc.width = _width;
 			textureDesc.height = _height;
@@ -43,9 +45,6 @@ namespace Wyrd::Editor
 
 			/* create the core renderer resource and load */
 			_texture.reset(Wyrd::Texture::Create(textureDesc));
-
-			/* in the editor project, we want to the core assets uid to match the resource to allow easy decoupled linkage */
-			_texture->SetUID(_resourceID);
 
 			/* register the texture with the core resource manager */
 			Application::Get().GetResources().Textures[_resourceID] = _texture;

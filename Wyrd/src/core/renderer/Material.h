@@ -11,17 +11,26 @@
 
 namespace Wyrd
 {
-	class WYRD_LIBRARY_API Material
+	struct InputBinding
 	{
-	public:
-		struct InputBinding
-		{
-			std::string type;
-			std::string binding;
-		};
+		std::string type;
+		std::string binding;
+	};
 
-		typedef std::map<std::string, InputBinding> InputMap;
+	typedef std::map<std::string, InputBinding> MaterialInputMap;
 
+
+	struct MaterialDesc
+	{
+		ResourceDesc resource;
+		std::string shaderName;
+		MaterialInputMap inputMap;
+
+		MaterialDesc() : resource() { }
+	};
+
+	class WYRD_LIBRARY_API Material : public ResourceBase
+	{
 	public:
 		Material() {};
 
@@ -32,17 +41,17 @@ namespace Wyrd
 		void Bind(const BasePropMapRef* propMap);
 
 		void SetShader(std::shared_ptr<Shader> shader) { _shader = shader; }
+		inline std::shared_ptr<Shader> GetShader() const { return _shader; }
 
 		void AddInputBinding(const std::string& name, const std::string& type, const std::string& binding);
 
-		inline const InputMap& GetInputPropertyList() const { return _inputs; }
-
-		inline void SetName(const std::string& name) { _name = name; }
-		inline const std::string& GetName() const { return _name; }
+		inline const MaterialInputMap& GetInputPropertyList() const { return _inputs; }
 
 	private:
-		std::string _name;
 		std::shared_ptr<Shader> _shader;
-		InputMap _inputs;
+		MaterialInputMap _inputs;
+
+	public:
+		static Material* Create(const MaterialDesc& desc);
 	};
 }

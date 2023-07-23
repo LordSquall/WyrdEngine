@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace WyrdAPI
 {
     [StructLayout(LayoutKind.Sequential)]
-    public class SpriteComponent : Component
+    public partial class SpriteComponent : Component
     {
 
       [MarshalAs(UnmanagedType.Bool)]

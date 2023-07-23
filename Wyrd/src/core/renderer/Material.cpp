@@ -1,10 +1,27 @@
 #include "wyrdpch.h"
 #include "core/Application.h"
 #include "core/renderer/Texture.h"
-#include "core/pipeline/materials/Material.h"
+#include "core/renderer/Material.h"
 
 namespace Wyrd
 {
+	Material* Material::Create(const MaterialDesc& desc)
+	{
+		Material* newMaterial = new Material();
+
+		newMaterial->SetUID(desc.resource.guid);
+		newMaterial->SetName(desc.resource.name);
+
+		newMaterial->SetShader(Application::Get().GetResources().Shaders[desc.shaderName]);
+
+		for (auto& input : desc.inputMap)
+		{
+			newMaterial->AddInputBinding(input.first, input.second.type, input.second.binding);
+		}
+
+		return newMaterial;
+	}
+
 	void Material::BindViewMatrix(const glm::mat4& view)
 	{
 		_shader->SetMatrix("u_view", view);

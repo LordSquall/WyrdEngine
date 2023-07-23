@@ -61,7 +61,7 @@ public:
 
 };
 
-Wyrd::Application* Wyrd::CreateApplication()
+Wyrd::Application* Wyrd::CreateApplication(int argc, char** argv)
 {
 	AppProps properties = AppProps();
 

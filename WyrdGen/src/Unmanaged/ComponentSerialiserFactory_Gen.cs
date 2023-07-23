@@ -57,7 +57,7 @@ namespace WyrdGen
             String output = File.ReadAllText(@"templates\" + OutputFile_Header + ".template");
 
 
-            // Serialise Content
+            // Json Serialise Content
             {
                 // Build the content string 
                 StringBuilder content = new StringBuilder();
@@ -71,10 +71,27 @@ namespace WyrdGen
                 }
 
                 // Replace the content tag
-                output = output.Replace("<!CONTENT_SERIALISE>", content.ToString());
+                output = output.Replace("<!CONTENT_JSON_SERIALISE>", content.ToString());
             }
 
-            // Deserialise Content
+            // Stream Serialise Content
+            {
+                // Build the content string 
+                StringBuilder content = new StringBuilder();
+
+                foreach (Component component in definitions.Components)
+                {
+                    content.AppendLine("            else if (strcmp(name.c_str(), \"" + component.ShortName + "\") == 0)");
+                    content.AppendLine("            {");
+                    content.AppendLine("                Serialise(stream, (" + component.Name + "*)data);");
+                    content.AppendLine("            }");
+                }
+
+                // Replace the content tag
+                output = output.Replace("<!CONTENT_STREAM_SERIALISE>", content.ToString());
+            }
+
+            // Json Deserialise Content
             {
                 // Build the content string 
                 StringBuilder content = new StringBuilder();
@@ -89,7 +106,25 @@ namespace WyrdGen
                 }
 
                 // Replace the content tag
-                output = output.Replace("<!CONTENT_DESERIALISE>", content.ToString());
+                output = output.Replace("<!CONTENT_JSON_DESERIALISE>", content.ToString());
+            }
+
+            // Stream Deserialise Content
+            {
+                // Build the content string 
+                StringBuilder content = new StringBuilder();
+
+                foreach (Component component in definitions.Components)
+                {
+                    content.AppendLine("            else if (strcmp(name.c_str(), \"" + component.ShortName + "\") == 0)");
+                    content.AppendLine("            {");
+                    content.AppendLine("                " + component.Name + "* comp = new (buffer) " + component.Name + "();");
+                    content.AppendLine("                Deserialise(stream, comp);");
+                    content.AppendLine("            }");
+                }
+
+                // Replace the content tag
+                output = output.Replace("<!CONTENT_STREAM_DESERIALISE>", content.ToString());
             }
 
 
@@ -102,7 +137,9 @@ namespace WyrdGen
                 {
                     content.AppendLine();
                     content.AppendLine("        static void Serialise(jsonxx::Object& obj, Wyrd::" + component.Name + "* data);");
+                    content.AppendLine("        static void Serialise(std::ofstream& stream, Wyrd::" + component.Name + "* data);");
                     content.AppendLine("        static void Deserialise(jsonxx::Object& obj, Wyrd::" + component.Name + "* data);");
+                    content.AppendLine("        static void Deserialise(std::ifstream& stream, Wyrd::" + component.Name + "* data);");
                 }
 
                 // Replace the content tag
@@ -148,6 +185,30 @@ namespace WyrdGen
                     if (component.CustomSerialisation)
                     {
                         content.AppendLine($"        CustomSerialisation_{component.Name}(obj, data);");
+                    }
+                    content.AppendLine("    }");
+                    content.AppendLine();
+
+                    content.AppendLine("    void ComponentSerialiserFactory::Serialise(std::ofstream& stream, Wyrd::" + component.Name + "* data)");
+                    content.AppendLine("    {");
+                    foreach (Data data in component.Data)
+                    {
+                        UnmanagedType typeMap = _TypeMappings[data.Type].Unmanaged;
+                        if (data.HeapOnly == false)
+                        {
+                            if (typeMap.IsArray)
+                            {
+                                content.AppendLine($"        stream.write((char*)&data->{data.Name}, sizeof({_TypeMappings[data.Type].Unmanaged.Type}) * {data.Length});");
+                            }
+                            else
+                            {
+                                content.AppendLine($"        stream.write((char*)&data->{data.Name}, sizeof({_TypeMappings[data.Type].Unmanaged.Type}));");
+                            }
+                        }
+                    }
+                    if (component.CustomSerialisation)
+                    {
+                        content.AppendLine($"        CustomSerialisation_{component.Name}(stream, data);");
                     }
                     content.AppendLine("    }");
                     content.AppendLine();
@@ -197,11 +258,39 @@ namespace WyrdGen
                             }
                         }
                     }
-                    
+
                     if (component.CustomSerialisation)
                     {
                         content.AppendLine($"        CustomDeserialisation_{component.Name}(data, obj);");
                     }
+
+                    content.AppendLine("    }");
+
+                    content.AppendLine("");
+                    content.AppendLine("    void ComponentSerialiserFactory::Deserialise(std::ifstream& stream, Wyrd::" + component.Name + "* data)");
+                    content.AppendLine("    {");
+                    foreach (Data data in component.Data)
+                    {
+
+                        UnmanagedType typeMap = _TypeMappings[data.Type].Unmanaged;
+                        if (data.HeapOnly == false)
+                        {
+                            if (typeMap.IsArray)
+                            {
+                                content.AppendLine($"        stream.read((char*)&data->{data.Name}, sizeof({_TypeMappings[data.Type].Unmanaged.Type}) * {data.Length});");
+                            }
+                            else
+                            {
+                                content.AppendLine($"        stream.read((char*)&data->{data.Name}, sizeof({_TypeMappings[data.Type].Unmanaged.Type}));");
+                            }
+                        }
+                    }
+                    if (component.CustomSerialisation)
+                    {
+                        content.AppendLine($"        CustomDeserialisation_{component.Name}(stream, data);");
+                    }
+
+                    // Need custom deserialisation?
 
                     content.AppendLine("    }");
                     content.AppendLine();

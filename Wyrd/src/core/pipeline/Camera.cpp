@@ -34,6 +34,29 @@ namespace Wyrd
 		if (_Mode == Mode::Perspective)
 		{
 			_projectionMatrix = glm::perspective(glm::radians(perspectiveSettings.fov), perspectiveSettings.aspect, perspectiveSettings.nearPlane, perspectiveSettings.farPlane);
+
+			//// Update frustum
+			const float halfVSide = perspectiveSettings.farPlane * tanf(glm::radians(perspectiveSettings.fov) * .5f);
+			const float halfHSide = halfVSide * perspectiveSettings.aspect;
+			const glm::vec3 frontMultFar = perspectiveSettings.farPlane * -_Forward;
+			
+			frustum.nearFace = { _Position + perspectiveSettings.nearPlane * -_Forward, 
+				_Forward };
+
+			frustum.farFace = { _Position + frontMultFar, 
+				-_Forward };
+			
+			frustum.rightFace = { _Position, 
+				glm::cross(frontMultFar - _Right * halfHSide, _Up) };
+
+			frustum.leftFace = { _Position, 
+				glm::cross(_Up, frontMultFar + _Right * halfHSide) };
+			
+			frustum.bottomFace = { _Position, 
+				glm::cross(_Right, frontMultFar - _Up * halfVSide) };
+
+			frustum.topFace = { _Position, 
+				glm::cross(frontMultFar + _Up * halfVSide, _Right) };
 		}
 		else
 		{

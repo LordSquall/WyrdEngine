@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace WyrdAPI
 {
     [StructLayout(LayoutKind.Sequential)]
-    public class RelationshipComponent : Component
+    public partial class RelationshipComponent : Component
     {
 
       [MarshalAs(UnmanagedType.Struct)]

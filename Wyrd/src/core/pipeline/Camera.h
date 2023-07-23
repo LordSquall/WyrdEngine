@@ -4,6 +4,7 @@
 /* core wyrd includes */
 #include <core/maths/Rect.h>
 #include <core/export.h>
+#include <core/maths/Frustum.h>
 
 /* local includes */
 
@@ -100,5 +101,7 @@ namespace Wyrd
 	public:
 		OrthoSettings orthoSettings;
 		PerspectiveSettings perspectiveSettings;
+
+		Frustum frustum;
 	};
 }

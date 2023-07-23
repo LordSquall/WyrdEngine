@@ -40,10 +40,9 @@ namespace Wyrd::Editor
 		std::shared_ptr<Scene>							_Scene;
 		std::shared_ptr<Shader>							_Shader;
 
-		OrthographicCamera _Camera;
-
 		Entity _CameraEntity;
-		CameraComponent* _CameraComponent;
+		std::shared_ptr<Camera> _Camera;
+
 		bool _OpenContextMenu;
 
 		bool _mouseEventStarted;

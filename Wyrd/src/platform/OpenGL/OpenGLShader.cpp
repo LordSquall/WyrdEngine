@@ -8,10 +8,15 @@
 
 namespace Wyrd
 {
-	OpenGLShader::OpenGLShader()
+	OpenGLShader::OpenGLShader(ShaderDesc desc)
 		: m_RendererHandle(0)
 	{
+		_uid = desc.resource.guid;
+		_name = desc.resource.name;
 
+		// Store the source code
+		_Source[ShaderStage::Vertex] = desc.vertexSrc;
+		_Source[ShaderStage::Fragment] = desc.fragmentSrc;
 	}
 
 	bool OpenGLShader::Build(const std::string& vertexSrc, const std::string& fragmentSrc)

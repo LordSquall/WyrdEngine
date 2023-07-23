@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace WyrdAPI
 {
     [StructLayout(LayoutKind.Sequential)]
-    public class MetaDataComponent : Component
+    public partial class MetaDataComponent : Component
     {
 
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst=255)]

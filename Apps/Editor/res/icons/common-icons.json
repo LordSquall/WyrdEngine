@@ -63,44 +63,58 @@
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "nav_home",
+                      "name":  "export",
                       "height":  64,
                       "x":  512
                   },
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "nav_open",
+                      "name":  "export_settings",
                       "height":  64,
                       "x":  576
                   },
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "nav_up",
+                      "name":  "nav_home",
                       "height":  64,
                       "x":  640
                   },
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "sim_pause",
+                      "name":  "nav_open",
                       "height":  64,
                       "x":  704
                   },
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "sim_play",
+                      "name":  "nav_up",
                       "height":  64,
                       "x":  768
                   },
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "sim_stop",
+                      "name":  "sim_pause",
                       "height":  64,
                       "x":  832
+                  },
+                  {
+                      "y":  0,
+                      "width":  64,
+                      "name":  "sim_play",
+                      "height":  64,
+                      "x":  896
+                  },
+                  {
+                      "y":  0,
+                      "width":  64,
+                      "name":  "sim_stop",
+                      "height":  64,
+                      "x":  960
                   }
               ]
 }

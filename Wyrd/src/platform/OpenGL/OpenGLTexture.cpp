@@ -11,9 +11,11 @@ namespace Wyrd
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable byte-alignment restriction
 
 		/* Store width, height and data */
+		_name = desc.name;
 		_width = desc.width;
 		_height = desc.height;
 		_channels = desc.channels;
+		_uid = desc.guid;
 		_description = desc.description;
 		_maintainCPU = desc.maintainCPU;
 		

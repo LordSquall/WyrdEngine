@@ -61,6 +61,10 @@
     <Data name="viewport" type="Rect" default="0,0,0,0"/>
     <Data name="aspectRatio" type="Float" default="1.0f"/>
     <Data name="size" type="Vec2" default="0,0"/>
+    <Data name="nearPlane" type="Float" default="0.1f"/>
+    <Data name="farPlane" type="Float" default="100.0f"/>
+    <Data name="aspect" type="Float" default="1.0f"/>
+    <Data name="fov" type="Float" default="45.0f"/>
   </Component>
   
 </ComponentDefinitions>

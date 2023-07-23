@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace WyrdAPI
 {
     [StructLayout(LayoutKind.Sequential)]
-    public class Transform3DComponent : Component
+    public partial class Transform3DComponent : Component
     {
 
       [MarshalAs(UnmanagedType.Struct)]

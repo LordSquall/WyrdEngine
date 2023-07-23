@@ -41,10 +41,10 @@ namespace Wyrd::Editor
 
 		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::CloseProject, [this](Events::EventArgs& args) {});
 
-		//ServiceManager::Get<EventService>()->Subscribe(Events::EventType::SetSceneCamera, [this](Events::EventArgs& args) {
-		//	Events::SetSceneCameraArgs& a = (Events::SetSceneCameraArgs&)args;
-		//		_LoadedScene->SetPrimaryCameraEntity(a.entity);
-		//	});
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::SetSceneCamera, [this](Events::EventArgs& args) {
+			Events::SetSceneCameraArgs& a = (Events::SetSceneCameraArgs&)args;
+				_LoadedScene->SetPrimaryCameraEntity(a.entity);
+			});
 	}
 
 	void Wyrd::Editor::WorkspaceService::OnDestroy()
@@ -246,7 +246,7 @@ namespace Wyrd::Editor
 		/* Create a new scene shared pointer */
 		_LoadedScene = std::make_shared<Scene>(name);
 		_LoadedScene->Initialise();
-		_LoadedScene->RegisterComponent<EditorComponent>("Editor", "EditorComponent", false);
+		_LoadedScene->RegisterComponent<EditorComponent>("Editor", "EditorComponent", false, &EditorComponent::ResetFunc);
 
 		/* Setup initial scene settings */
 		_LoadedScene->cameraZoom = 500.0f;
@@ -264,7 +264,7 @@ namespace Wyrd::Editor
 	{
 		_LoadedScene = std::make_shared<Scene>();
 		_LoadedScene->Initialise();
-		_LoadedScene->RegisterComponent<EditorComponent>("Editor", "EditorComponent", false);
+		_LoadedScene->RegisterComponent<EditorComponent>("Editor", "EditorComponent", false, &EditorComponent::ResetFunc);
 
 		/* Load the scene object */
 		SceneLoader::Result result = SceneLoader::Load(path, *_LoadedScene, true);

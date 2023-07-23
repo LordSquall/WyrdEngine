@@ -19,6 +19,7 @@
 #include "views/Dialogs/NewProjectDialog.h"
 #include "views/SystemsDebugView/SystemsDebugView.h"
 #include "platform/OpenGL/imgui_opengl_renderer.h"
+#include "export/ExportManager.h"
 #include "support/ImGuiUtils.h"
 
 /* core includes */
@@ -76,6 +77,8 @@ namespace Wyrd::Editor
 		_playButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "sim_play");
 		_stopButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "sim_stop");
 		_pauseButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "sim_pause");
+		_exportOptionsButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "export_settings");
+		_exportButtonGameIcon = _resourceService->GetIconLibrary().GetIcon("common", "export");
 	}
 
 	EditorLayer::~EditorLayer()
@@ -416,6 +419,21 @@ namespace Wyrd::Editor
 			_simulationService->Stop();
 		}
 
+		ImGui::SameLine();
+		ImGui::SetCursorPosX(ImGui::GetWindowContentRegionWidth() - (size.x * 3));
+		
+		if (ImGui::IconButton(_exportOptionsButtonIcon, 4, true, size) == true)
+		{
+		}
+
+		ImGui::SameLine();
+		if (ImGui::IconButton(_exportButtonGameIcon, 5, true, size) == true)
+		{
+			_workspaceService->SaveScene();
+			ExportManager::Export();
+			Utils::SystemExecute("..\\..\\bin\\Debug\\TestPlayer\\TestPlayer.exe --gamedir \"C:/Projects/games/ScriptingTests/.builds/\"");
+		}
+
 		/* setup the dockspace */
 		ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiWindowFlags_NoBackground);
@@ -427,7 +445,15 @@ namespace Wyrd::Editor
 			if (showFlag == true)
 			{
 				(it->second)->OnUpdate(ts);
+			}
+		}
 
+		/* render of the currently open views */
+		for (std::map<std::string, std::shared_ptr<EditorViewBase>>::iterator it = _views.begin(); it != _views.end(); it++)
+		{
+			bool showFlag = *(it->second)->GetShowFlagRef();
+			if (showFlag == true)
+			{
 				(it->second)->OnRender(ts, renderer);
 
 				(it->second)->OnPreEditorRender();

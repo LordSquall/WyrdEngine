@@ -6,6 +6,7 @@
 #include "core/Structures.h"
 #include "core/maths/BoundingBox.h"
 #include "core/pipeline/Vertex3D.h"
+#include "core/renderer/ResourceBase.h"
 
 /* external includes */
 #include <glm/glm.hpp>
@@ -16,11 +17,23 @@
 
 namespace Wyrd
 {
-	class WYRD_LIBRARY_API Mesh
+	struct MeshDesc
+	{
+		ResourceDesc resource;
+		std::vector<Vertex3D> vertices;
+		BoundingBox boundingBox;
+
+		MeshDesc() : resource() { }
+	};
+
+	class WYRD_LIBRARY_API Mesh : public ResourceBase
 	{
 	public:
 		std::vector<Vertex3D> Vertices;
 		BoundingBox boundingBox;
 		UID BaseTexture;
+
+
+		static Mesh* Create(const MeshDesc& desc);
 	};
 }

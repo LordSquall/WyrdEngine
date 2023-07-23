@@ -3,11 +3,14 @@
 #include <core/Application.h>
 #include <core/renderer/Shader.h>
 #include <core/renderer/Texture.h>
+#include <core/renderer/Material.h>
+#include <core/renderer/Mesh.h>
 #include <core/renderer/FontType.h>
 #include <core/behaviour/ScriptedClass.h>
+#include <serial/ComponentSerialiserFactory.h>
+#include <serial/ResourceSerialisers.h>
 
 #include "import/ImportManager.h"
-#include "import/ComponentSerialiserFactory.h"
 #include "managers/SceneManager.h"
 
 
@@ -81,148 +84,100 @@ bool ImportManager::ImportCommonBundle(const std::string& root)
 		return false;
 	}
 
-	size_t shaderCount;
-	common.read((char*)&shaderCount, sizeof(size_t));
-
-	for (size_t i = 0; i < shaderCount; i++)
-	{
-		char shaderName[32];
-		common.read((char*)&shaderName[0], sizeof(char) * 32);
-
-		size_t vertSrcSize;
-		std::string vertSrc;
-		size_t fragSrcSize;
-		std::string fragSrc;
-
-		common.read((char*)&vertSrcSize, sizeof(size_t));
-		vertSrc.resize(vertSrcSize);
-		common.read(&vertSrc[0], vertSrcSize);
-
-		common.read((char*)&fragSrcSize, sizeof(size_t));
-		fragSrc.resize(fragSrcSize);
-		common.read(&fragSrc[0], fragSrcSize);
-
-		auto newShader = std::shared_ptr<Wyrd::Shader>(Wyrd::Shader::Create());
-		newShader->Build(vertSrc, fragSrc);
-
-		Application::Get().GetResources().Shaders.insert({ shaderName, newShader });
-	}
+	WYRD_CORE_TRACE("Import Core Resources:");
 
 	size_t textureCount;
 	common.read((char*)&textureCount, sizeof(size_t));
+	WYRD_CORE_TRACE("\tTextures: {0}", textureCount);
 
 	for (size_t i = 0; i < textureCount; i++)
 	{
-		char textureUID[64];
-		common.read((char*)&textureUID[0], sizeof(char) * 64);
+		auto newTexture = DeserialiseTexture(common);
 
-		uint32_t width; 
-		uint32_t height;
-
-		common.read((char*)&width, sizeof(uint32_t));
-		common.read((char*)&height, sizeof(uint32_t));
-		
-		std::vector<unsigned char> dataVector;
-		dataVector.resize(width * height * 4);
-		common.read((char*)&dataVector[0], sizeof(unsigned char) * (width * height * 4));
-
-		TextureDesc textureDesc;
-		textureDesc.data = &dataVector[0];
-		textureDesc.width = width;
-		textureDesc.height = height;
-		textureDesc.channels = 4;
-		textureDesc.description = "Loaded Texture";
-
-		auto newTexture = std::shared_ptr<Wyrd::Texture>(Wyrd::Texture::Create(textureDesc));
-		Application::Get().GetResources().Textures.insert({ UID(textureUID), newTexture});
+		Application::Get().GetResources().Textures.insert({ newTexture->GetUID(), newTexture });
+		WYRD_CORE_TRACE("\t\t{0} -> {1}", newTexture->GetUID().str(), newTexture->GetName());
 	}
 
-	size_t fontCount;
-	common.read((char*)&fontCount, sizeof(size_t));
+	size_t modelCount;
+	common.read((char*)&modelCount, sizeof(size_t));
+	WYRD_CORE_TRACE("\tModel: {0}", modelCount);
 
-	for (size_t i = 0; i < fontCount; i++)
+	for (size_t i = 0; i < modelCount; i++)
 	{
-		char fontName[64];
-		common.read((char*)&fontName[0], sizeof(char) * 64);
+		std::shared_ptr<Mesh> newMesh = DeserialiseModel(common);
 
-		auto newFontType = std::make_shared<Wyrd::FontType>();
-
-		uint32_t width;
-		uint32_t height;
-		uint32_t channels;
-
-		common.read((char*)&width, sizeof(uint32_t));
-		common.read((char*)&height, sizeof(uint32_t));
-		common.read((char*)&channels, sizeof(uint32_t));
-
-		std::vector<unsigned char> dataVector;
-		dataVector.resize(width * height * channels);
-		common.read((char*)&dataVector[0], sizeof(unsigned char) * (width * height * channels));
-
-		TextureDesc textureDesc;
-		textureDesc.data = &dataVector[0];
-		textureDesc.width = width;
-		textureDesc.height = height;
-		textureDesc.channels = 1;
-		textureDesc.uvWrapping = TextureUVWrap::CLAMP_TO_EDGE;
-		textureDesc.description = "Loaded Texture";
-
-		newFontType->Texture = std::shared_ptr<Wyrd::Texture>(Wyrd::Texture::Create(textureDesc));
-
-		size_t characterCount;
-		common.read((char*)&characterCount, sizeof(size_t));
-		for (size_t c = 0; c < characterCount; c++)
-		{
-			Wyrd::FontType::Character character;
-			character.Advance;
-
-			common.read((char*)&character.Advance, sizeof(unsigned int));
-			common.read((char*)&character.Bearing, sizeof(glm::ivec2));
-			common.read((char*)&character.Size, sizeof(glm::ivec2));
-			common.read((char*)&character.uv1, sizeof(glm::vec2));
-			common.read((char*)&character.uv2, sizeof(glm::vec2));
-
-			newFontType->GetCharacters().insert(std::pair<char, FontType::Character>(c, character));
-		}
-
-		Application::Get().GetResources().FontTypes.insert({ fontName, newFontType });
-		
+		Application::Get().GetResources().Meshs.insert({ newMesh->GetUID(), newMesh });
+		WYRD_CORE_TRACE("\t\t{0} -> {1}", newMesh->GetUID().str(), newMesh->GetName());
 	}
 
+	size_t shaderCount;
+	common.read((char*)&shaderCount, sizeof(size_t));
+	WYRD_CORE_TRACE("\tShader: {0}", shaderCount);
+
+	for (size_t i = 0; i < shaderCount; i++)
+	{
+		std::shared_ptr<Shader> newShader = DeserialiseShader(common);
+
+		Application::Get().GetResources().Shaders.insert({ newShader->GetName(), newShader });
+		WYRD_CORE_TRACE("\t\t{0}", newShader->GetName());
+	}
+	
+	size_t materialCount;
+	common.read((char*)&materialCount, sizeof(size_t));
+	WYRD_CORE_TRACE("\tMaterials: {0}", materialCount);
+
+	for (size_t i = 0; i < materialCount; i++)
+	{
+		std::shared_ptr<Material> newMaterial = DeserialiseMaterial(common);
+
+		Application::Get().GetResources().Materials.insert({ newMaterial->GetUID(), newMaterial });
+		WYRD_CORE_TRACE("\t\t{0} -> {1}", newMaterial->GetUID().str(), newMaterial->GetName());
+	}
+
+
+	///////////////////////
+	/* Build Shaders */
+	for (auto& shader : Application::Get().GetResources().Shaders)
+	{
+		shader.second->Build(shader.second->GetSource(ShaderStage::Vertex), shader.second->GetSource(ShaderStage::Fragment));
+	}
+	
+	
+	
 	{
 		size_t fileCount;
 		common.read((char*)&fileCount, sizeof(size_t));
-
+	
 		std::vector<UID> scriptFilesUID;
 		std::vector<std::filesystem::path> scriptFilesNames;
 		for (size_t i = 0; i < fileCount; i++)
 		{
 			char fileNamebuffer[64];
 			common.read((char*)&fileNamebuffer, sizeof(char) * 64);
-
+	
 			char uuidBuffer[64];
 			common.read((char*)&uuidBuffer, sizeof(char) * 64);
-
+	
 			scriptFilesUID.push_back(UID(uuidBuffer));
 			scriptFilesNames.push_back(fileNamebuffer);
 		}
-
+	
 		size_t coreLibSize;
 		common.read((char*)&coreLibSize, sizeof(size_t));
-
+	
 		std::vector<char> coreLibData;
 		coreLibData.resize(coreLibSize);
 		common.read((char*)&coreLibData[0], sizeof(char) * coreLibSize);
-
+	
 		size_t clientLibSize;
 		common.read((char*)&clientLibSize, sizeof(size_t));
-
+	
 		std::vector<char> clientLibData;
 		clientLibData.resize(clientLibSize);
 		common.read((char*)&clientLibData[0], sizeof(char) * clientLibSize);
-
+	
 		Application::Get().GetBehaviour().LoadBehaviourModel(scriptFilesNames, coreLibData, clientLibData);
-
+		
 		for (int i = 0; i < scriptFilesNames.size(); ++i)
 		{
 			Application::Get().GetBehaviour().GetCustomClass(scriptFilesNames[i].string())->SetUID(scriptFilesUID[i]);

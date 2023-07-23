@@ -9,7 +9,7 @@ namespace Wyrd
 	class OpenGLShader : public Shader
 	{
 	public:
-		OpenGLShader();
+		OpenGLShader(ShaderDesc desc);
 
 		bool Build(const std::string& vertexSrc, const std::string& fragment) override;
 		void Bind() override;

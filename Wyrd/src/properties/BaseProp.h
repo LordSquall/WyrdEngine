@@ -10,13 +10,15 @@
 
 
 #define PROPERTY_FACTORY_REGISTER(Name, typeName, managedName, InternalStorageType)\
-bool Prop##Name::s_Registered = PropFactory::Register(typeName, managedName,Prop##Name::Create);\
+bool Prop##Name::s_Registered = PropFactory::Register(typeName, managedName,Prop##Name::CreateJson,Prop##Name::CreateSerial);\
 template void BaseProp::Set<InternalStorageType>(InternalStorageType);\
 template InternalStorageType BaseProp::Get<InternalStorageType>();
 
 
 #define PROPERTY_SERIALISE_FUNCSIG(Name) bool Prop##Name::Serialise(jsonxx::Object& json)
+#define PROPERTY_SERIALISE_STREAM_FUNCSIG(Name) bool Prop##Name::Serialise(std::ofstream& stream)
 #define PROPERTY_DESERIALISE_FUNCSIG(Name) bool Prop##Name::Deserialise(const jsonxx::Object& json)
+#define PROPERTY_DESERIALISE_STREAM_FUNCSIG(Name) bool Prop##Name::Deserialise(std::ifstream& stream)
 #define PROPERTY_DESERIALISE_VAL_FUNCSIG(Name) bool Prop##Name::Deserialise(const jsonxx::Value& json)
 
 #define PROPERTY_TOSTRING_FUNCSIG(Name) const std::string Prop##Name::ToString()
@@ -50,14 +52,20 @@ public:\
 	Prop##Name(const std::string& name, const std::string& type) : BaseProp(name, type, #ManagedName), Value(DefaultValue) {}\
 	Prop##Name(const std::string& name, const std::string& type, InternalStorageType value) : BaseProp(name, type, #ManagedName), Value(value) { }\
 	Prop##Name(const std::string& name, const std::string& type, const jsonxx::Value& value) : BaseProp(name, type, #ManagedName), Value(DefaultValue) { Deserialise(value); }\
+	Prop##Name(const std::string& name, const std::string& type, std::ifstream& value) : BaseProp(name, type, #ManagedName), Value(DefaultValue) { Deserialise(value); }\
 	\
 	bool Serialise(jsonxx::Object& json);\
+	bool Serialise(std::ofstream& stream);\
+	bool Deserialise(std::ifstream& stream);\
 	bool Deserialise(const jsonxx::Object& json);\
 	bool Deserialise(const jsonxx::Value& json);\
 	void* GetRawValuePtr() { return &Value; }\
 	std::unique_ptr<BaseProp> CreateCopy(BaseProp* ref) override { return std::make_unique<Prop##Name>(ref->GetName(), ref->GetType(), ref->Get<InternalStorageType>()); }\
 	const std::string ToString();\
-	static BasePropRef Create(const std::string& name, const std::string& type, const jsonxx::Value& value, bool parseValue) { \
+	static BasePropRef CreateJson(const std::string& name, const std::string& type, const jsonxx::Value& value, bool parseValue) { \
+		return parseValue ? std::make_unique<Prop##Name>(name, type, value) : std::make_unique<Prop##Name>(name, type); \
+	}\
+	static BasePropRef CreateSerial(const std::string& name, const std::string& type, std::ifstream& value, bool parseValue) { \
 		return parseValue ? std::make_unique<Prop##Name>(name, type, value) : std::make_unique<Prop##Name>(name, type); \
 	}\
 public:\
@@ -83,6 +91,9 @@ namespace Wyrd
 
 		virtual bool Serialise(jsonxx::Object& json) = 0;
 		virtual bool Deserialise(const jsonxx::Object& json) = 0;
+
+		virtual bool Serialise(std::ofstream& stream) = 0;
+		virtual bool Deserialise(std::ifstream& stream) = 0;
 
 		virtual std::unique_ptr<BaseProp> CreateCopy(BaseProp* ref) = 0;
 
@@ -112,12 +123,13 @@ namespace Wyrd
 	class WYRD_LIBRARY_API PropFactory
 	{
 	public:
-		using CreatePropFunc = BasePropRef(*)(const std::string& name, const std::string& type, const jsonxx::Value& v, bool parseValue);
+		using CreateJsonPropFunc = BasePropRef(*)(const std::string& name, const std::string& type, const jsonxx::Value& v, bool parseValue);
+		using CreateSerialPropFunc = BasePropRef(*)(const std::string& name, const std::string& type, std::ifstream& v, bool parseValue);
 
 	public:
 		PropFactory() = delete;
 
-		static bool Register(const std::string typeName, const std::string managedName, CreatePropFunc createFunc);
+		static bool Register(const std::string typeName, const std::string managedName, CreateJsonPropFunc createJsonFunc, CreateSerialPropFunc createSerialFunc);
 
 		static BasePropRef CreateProp(const std::string& type, const std::string& name);
 
@@ -127,10 +139,13 @@ namespace Wyrd
 
 		static BasePropMapRef CreatePropMap(const jsonxx::Object& object);
 
+		static BasePropMapRef CreatePropMap(std::ifstream& stream);
+
 		static BasePropMapRef CopyPropMap(BasePropMapRef map);
 
-		static std::map<std::string, PropFactory::CreatePropFunc>* GetNativeProps();
-		static std::map<std::string, PropFactory::CreatePropFunc>* GetManagedProps();
+		static std::map<std::string, PropFactory::CreateJsonPropFunc>* GetNativeProps();
+		static std::map<std::string, PropFactory::CreateJsonPropFunc>* GetManagedProps();
+		static std::map<std::string, PropFactory::CreateSerialPropFunc>* GetSerialProps();
 	};
 
 	// Type name, Managed Type name, internal storage type, default value

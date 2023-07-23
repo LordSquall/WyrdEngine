@@ -341,7 +341,7 @@ project "WyrdAPI"
 end
 
 group "Applications"
---[[project "TestPlayer"
+project "TestPlayer"
 	location "Apps/TestPlayer"
 	kind "ConsoleApp"
 	language "C++"
@@ -447,7 +447,7 @@ group "Applications"
 		defines "WYRD_DISTRIBUTION"
 		runtime "Debug"
 		symbols "on"
-]]--		
+		
 project "Editor"
 	location "Apps/Editor"
 	kind "ConsoleApp"
@@ -492,7 +492,7 @@ project "Editor"
 	{ 
 		"WyrdAPI", 
 		"WyrdCAPI",
-		"Player"
+		"TestPlayer"
 	}
 
 	filter "system:windows"

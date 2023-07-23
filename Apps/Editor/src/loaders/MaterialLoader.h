@@ -2,7 +2,7 @@
 #include <filesystem>
 
 /* core wyrd includes */
-#include <core/pipeline/materials/Material.h>
+#include <core/renderer/Material.h>
 
 /* local includes */
 

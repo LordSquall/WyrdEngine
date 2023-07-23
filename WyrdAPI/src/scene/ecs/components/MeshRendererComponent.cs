@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace WyrdAPI
 {
     [StructLayout(LayoutKind.Sequential)]
-    public class MeshRendererComponent : Component
+    public partial class MeshRendererComponent : Component
     {
 
       [MarshalAs(UnmanagedType.Bool)]

@@ -64,7 +64,7 @@ namespace Wyrd {
 		 * @param name Entity Name
 		*/
 		template<typename Component>
-		void RegisterComponent(const std::string& name, const std::string& scriptName, bool serialise)
+		void RegisterComponent(const std::string& name, const std::string& scriptName, bool serialise, ComponentResetFunc resetFunc)
 		{
 			int componentID = GetID<Component>();
 
@@ -73,7 +73,7 @@ namespace Wyrd {
 				componentPools.resize(componentID + 1, nullptr);
 			}
 
-			componentPools[componentID] = new ComponentPool(name, componentID, sizeof(Component), scriptName, serialise);
+			componentPools[componentID] = new ComponentPool(name, componentID, sizeof(Component), scriptName, serialise, resetFunc);
 		}
 
 		/**
@@ -124,12 +124,7 @@ namespace Wyrd {
 		 * @brief Remove a component object to a respective entity
 		 * @param Entity to remove from
 		*/
-		void RemoveComponent(uint32_t poolIndex, Entity entity)
-		{
-			entities[entity - 1].mask.set(poolIndex, false);
-
-			componentPools[poolIndex]->count--;
-		}
+		void RemoveComponent(uint32_t poolIndex, Entity entity);
 
 		/**
 		 * @brief Retrieve a Component from a entity

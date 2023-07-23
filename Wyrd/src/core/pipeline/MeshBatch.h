@@ -2,7 +2,7 @@
 
 #include "core/renderer/commands/RendererCommands.h"
 #include "core/renderer/RendererDrawTypes.h"
-#include "core/pipeline/materials/Material.h"
+#include "core/renderer/Material.h"
 #include "core/pipeline/Vertex3D.h"
 
 using namespace Wyrd;

@@ -102,7 +102,7 @@ namespace Wyrd
 	}
 
 
-	void OpenGLRenderer::DrawDebugBoundingBox(const BoundingBox& boundingBox, const glm::vec3& position, const Color& color, const glm::mat4& projection, const glm::mat4& view)
+	void OpenGLRenderer::DrawDebugBoundingBox(const BoundingBox& boundingBox, const glm::vec3& position, float thickness, const Color& color, const glm::mat4& model, const glm::mat4& projection, const glm::mat4& view)
 	{
 		glm::vec3 c = position + boundingBox._position;
 		glm::vec3 min = boundingBox._minExtent;
@@ -138,7 +138,114 @@ namespace Wyrd
 
 		auto shader = Application::Get().GetResources().Shaders["Debug3D"];
 
+		glLineWidth((GLfloat)thickness);
+
 		shader->Bind();
+		shader->SetMatrix("u_model", model);
+		shader->SetMatrix("u_view", view);
+		shader->SetMatrix("u_projection", projection);
+
+		shader->SetUniformColor("u_BlendColor", color);
+
+		_DebugVertexArray->Bind();
+		_DebugVertexBuffer->Bind();
+
+
+		/* update both the vertex and index buffers */
+		_DebugVertexBuffer->Update((float*)&_DebugVertices.at(0), sizeof(Vertex3D) * (uint32_t)_DebugVertices.size(), 0);
+
+		DrawArray(RendererDrawType::Lines, 0, (uint32_t)_DebugVertices.size());
+
+#ifdef WYRD_INCLUDE_DEBUG_TAGS
+		_Renderer->EndNamedSection();
+#endif
+		_DebugVertices.clear();
+	}
+
+	void OpenGLRenderer::DrawDebugVector(const Vector3& position, const glm::vec3& direction, float thickness, const Color& color, const glm::mat4& model, const glm::mat4& projection, const glm::mat4& view)
+	{
+		_DebugVertices.push_back({ position.x, position.y, position.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ position.x + direction.x, position.y + direction.y, position.z + direction.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+
+		auto shader = Application::Get().GetResources().Shaders["Debug3D"];
+
+		glLineWidth((GLfloat)thickness);
+
+		shader->Bind();
+		shader->SetMatrix("u_model", model);
+		shader->SetMatrix("u_view", view);
+		shader->SetMatrix("u_projection", projection);
+
+		shader->SetUniformColor("u_BlendColor", color);
+
+		_DebugVertexArray->Bind();
+		_DebugVertexBuffer->Bind();
+
+
+		/* update both the vertex and index buffers */
+		_DebugVertexBuffer->Update((float*)&_DebugVertices.at(0), sizeof(Vertex3D) * (uint32_t)_DebugVertices.size(), 0);
+
+		DrawArray(RendererDrawType::Lines, 0, (uint32_t)_DebugVertices.size());
+
+#ifdef WYRD_INCLUDE_DEBUG_TAGS
+		_Renderer->EndNamedSection();
+#endif
+		_DebugVertices.clear();
+	}
+
+
+	void OpenGLRenderer::DrawDebugFrustum(const Vector3& position, const glm::vec3& direction, const Frustum& frustum, float thickness, const Color& color, const glm::mat4& model, const glm::mat4& projection, const glm::mat4& view)
+	{
+		glm::vec3 c = { position.x , position.y, position.z };
+
+		glm::vec3 ftl = Plane::IntersectionPoint(frustum.topFace, frustum.farFace, frustum.leftFace);
+		glm::vec3 ftr = Plane::IntersectionPoint(frustum.topFace, frustum.farFace, frustum.rightFace);
+		glm::vec3 fbr = Plane::IntersectionPoint(frustum.bottomFace, frustum.farFace, frustum.rightFace);
+		glm::vec3 fbl = Plane::IntersectionPoint(frustum.bottomFace, frustum.farFace, frustum.leftFace);
+
+		glm::vec3 ntl = Plane::IntersectionPoint(frustum.topFace, frustum.nearFace, frustum.leftFace);
+		glm::vec3 ntr = Plane::IntersectionPoint(frustum.topFace, frustum.nearFace, frustum.rightFace);
+		glm::vec3 nbr = Plane::IntersectionPoint(frustum.bottomFace, frustum.nearFace, frustum.rightFace);
+		glm::vec3 nbl = Plane::IntersectionPoint(frustum.bottomFace, frustum.nearFace, frustum.leftFace);
+
+
+		// far plane
+		_DebugVertices.push_back({ ftl.x, ftl.y, ftl.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ ftr.x, ftr.y, ftr.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ ftr.x, ftr.y, ftr.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ fbr.x, fbr.y, fbr.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ fbr.x, fbr.y, fbr.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ fbl.x, fbl.y, fbl.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ fbl.x, fbl.y, fbl.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ ftl.x, ftl.y, ftl.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+
+
+		//near plane
+		_DebugVertices.push_back({ ntl.x, ntl.y, ntl.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ ntr.x, ntr.y, ntr.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ ntr.x, ntr.y, ntr.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ nbr.x, nbr.y, nbr.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ nbr.x, nbr.y, nbr.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ nbl.x, nbl.y, nbl.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ nbl.x, nbl.y, nbl.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ ntl.x, ntl.y, ntl.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+
+		// joining bounds
+		_DebugVertices.push_back({ ntl.x, ntl.y, ntl.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ ftl.x, ftl.y, ftl.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ ntr.x, ntr.y, ntr.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ ftr.x, ftr.y, ftr.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ nbl.x, nbl.y, nbl.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ fbl.x, fbl.y, fbl.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ nbr.x, nbr.y, nbr.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+		_DebugVertices.push_back({ fbr.x, fbr.y, fbr.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+
+		auto shader = Application::Get().GetResources().Shaders["Debug3D"];
+
+		glLineWidth((GLfloat)thickness);
+
+		shader->Bind();
+		shader->SetMatrix("u_model", model);
 		shader->SetMatrix("u_view", view);
 		shader->SetMatrix("u_projection", projection);
 

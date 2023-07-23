@@ -4,7 +4,7 @@
 #include "core/Log.h"
 #include "core/Application.h"
 
-extern Wyrd::Application* Wyrd::CreateApplication();
+extern Wyrd::Application* Wyrd::CreateApplication(int argc, char** argv);
 
 /* Only on windows we want to generate this entry point */
 #ifdef WYRD_PLATFORM_WINDOWS
@@ -20,7 +20,7 @@ void main(int argc, char** argv)
 	Wyrd::Log::Init();
 	
 	/* create the client application */
-	auto app = Wyrd::CreateApplication();
+	auto app = Wyrd::CreateApplication(argc, argv);
 
 	/* enter the main run loop */
 	app->Run();

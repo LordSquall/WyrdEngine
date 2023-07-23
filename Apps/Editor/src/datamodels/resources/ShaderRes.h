@@ -24,6 +24,8 @@ namespace Wyrd::Editor
 		int Load() override;
 		ResourceType GetType() override { return ResourceType::SHADER; }
 
+		inline std::shared_ptr<Shader> GetShader() const { return _shader; }
+
 	private:
 		std::shared_ptr<Shader> _shader;
 	};

@@ -73,6 +73,13 @@ namespace Wyrd::Editor
 
 					for (size_t i = 0; i < entitiesArray.size(); i++)
 					{
+						// reset the entity info in the pools
+						for (auto& pool : scene.componentPools)
+						{
+							pool->resetFunc(pool, i+1);
+							pool->count++;
+						}
+
 						jsonxx::Object entityObj = entitiesArray.get<jsonxx::Object>(i);
 
 						Wyrd::UID entityUID = UID(entityObj.get<jsonxx::String>("uid"));
@@ -99,15 +106,18 @@ namespace Wyrd::Editor
 
 							ComponentPool* pool = *foundPoolIt;
 
-							int poolElementSize = pool->elementSize;
+							if (pool->serialise == true)
+							{
+								int poolElementSize = pool->elementSize;
 
-							ComponentSerialiserFactory::Deserialise(name, data, &(pool->data[i * poolElementSize]));
-							pool->count++;
+								ComponentSerialiserFactory::Deserialise(name, data, &(pool->data[i * poolElementSize]));
 
-							mask.set(pool->idx);
+								mask.set(pool->idx);
+							}
 						}
 
-						scene.entities[i] = { i + 1, mask };
+						scene.entities[i].id = i + 1;
+						scene.entities[i].mask = mask;
 					}
 				}
 			}

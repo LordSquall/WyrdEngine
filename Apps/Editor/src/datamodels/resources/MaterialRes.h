@@ -2,7 +2,7 @@
 
 /* core wyrd includes */
 #include <wyrdpch.h>
-#include <core/pipeline/materials/Material.h>
+#include <core/renderer/Material.h>
 
 /* local includes */
 #include "core/export.h"
@@ -23,6 +23,7 @@ namespace Wyrd::Editor
 		
 		int Load() override;
 		ResourceType GetType() override { return ResourceType::MATERIAL; }
+		inline const std::shared_ptr<Material> GetMaterial() const { return _material; }
 
 	private:
 		std::shared_ptr<Material> _material;

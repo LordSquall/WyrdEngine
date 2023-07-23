@@ -26,6 +26,10 @@ namespace Wyrd::Editor
 		MaterialLoader::Result loadResult = MaterialLoader::Load(_path, name, _material.get());
 		if (loadResult == MaterialLoader::Result::Success)
 		{
+			/* set the base resource uid and name */
+			_material->SetUID(_resourceID);
+			_material->SetName(name);
+
 			/* register the material with the core resource manager */
 			Application::Get().GetResources().Materials[_resourceID] = _material;
 

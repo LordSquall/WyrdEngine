@@ -162,7 +162,7 @@ namespace Wyrd {
 	 * @brief External Create Application function. This should be supplied by the Client application
 	 * @return new client application pointer
 	*/
-	Application* CreateApplication();
+	Application* CreateApplication(int argc, char** argv);
 
 	/**
 	 * @brief Called after subsystem are created, but before intialisation

@@ -3,6 +3,7 @@
 /* local includes */
 #include "core/export.h"
 #include "core/UID.h"
+#include "core/renderer/ResourceBase.h"
 
 /* external includes */
 #include <string>
@@ -21,17 +22,19 @@ namespace Wyrd
 	struct TextureDesc
 	{
 		unsigned char* data;
+		std::string name;
 		int width;
 		int height;
 		int channels;
 		bool maintainCPU;
 		TextureUVWrap uvWrapping;
+		Wyrd::UID guid;
 		std::string description;
 
-		TextureDesc() : data(nullptr), width(0), height(0), channels(0), maintainCPU(false), uvWrapping(TextureUVWrap::REPEAT), description("") { }
+		TextureDesc() : data(nullptr), name(""), width(0), height(0), channels(0), maintainCPU(false), uvWrapping(TextureUVWrap::REPEAT), guid(""), description("") { }
 	};
 
-	class WYRD_LIBRARY_API Texture
+	class WYRD_LIBRARY_API Texture : public ResourceBase
 	{
 	public:
 		virtual ~Texture() {}
@@ -51,9 +54,6 @@ namespace Wyrd
 		inline void SetHeight(int height) { _height = height; }
 		inline int GetChannels() const { return _channels; }
 
-		inline UID GetUID() { return _uid; }
-		inline void SetUID(UID uid) { _uid = uid; }
-
 		inline unsigned char* GetData() const { return _data; }
 
 		inline const std::string& GetDescription() const { return _description; }
@@ -61,7 +61,6 @@ namespace Wyrd
 		static Texture* Create(const TextureDesc& desc);
 
 	protected:
-		UID _uid;
 		int _height;
 		int _width;
 		int _channels;

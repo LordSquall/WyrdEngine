@@ -37,6 +37,42 @@ namespace glm
 
 namespace Wyrd
 {
+
+	void writeStr(std::ofstream& os, const std::string& str)
+	{
+		size_t size = str.size();
+		os.write((char*)&size, sizeof(size_t));
+		if (size > 0)
+		{
+			os.write((char*)str.c_str(), sizeof(unsigned char) * size);
+		}
+	}
+
+	std::string readStr(std::ifstream& is)
+	{
+		size_t sz;
+		is.read((char*)&sz, sizeof(size_t));
+
+		if (sz > 0)
+		{
+			std::vector<char> buffer(sz);
+			is.read(&buffer[0], buffer.size());
+			std::string str(buffer.begin(), buffer.end());
+			return str;
+		}
+		return "";
+	}
+
+	void writeGuid(std::ofstream& os, const Wyrd::UID& guid)
+	{
+		writeStr(os, guid.str());
+	}
+
+	Wyrd::UID readGuid(std::ifstream& is)
+	{
+		return Wyrd::UID(readStr(is));
+	}
+
 	const std::vector<float> ExplodeToFloats(const std::string& data)
 	{
 		std::vector<float> values;

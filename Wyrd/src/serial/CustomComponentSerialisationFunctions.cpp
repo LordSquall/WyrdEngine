@@ -37,6 +37,34 @@ namespace Wyrd
         }
     }
 
+
+    void CustomSerialisation_MaterialComponent(std::ofstream& stream, Wyrd::MaterialComponent* data)
+    {
+        // Write properties stream;
+        size_t propertyCount = 0;
+        if (data->properties != nullptr)
+        {
+            propertyCount = data->properties->size();
+            stream.write((char*)&propertyCount, sizeof(size_t));
+            for (auto& [name, prop] : *data->properties)
+            {
+                prop->Serialise(stream);
+            }
+        }
+        else
+        {
+            stream.write((char*)&propertyCount, sizeof(size_t));
+        }
+    }
+
+    void CustomDeserialisation_MaterialComponent(std::ifstream& stream, Wyrd::MaterialComponent* data)
+    {
+        // Read properties steam;
+        BasePropMapRef propMap = PropFactory::CreatePropMap(stream);
+
+        data->properties.swap(propMap);
+    }
+
     void CustomSerialisation_ScriptComponent(jsonxx::Object& obj, Wyrd::ScriptComponent* data)
     {
 
@@ -62,5 +90,33 @@ namespace Wyrd
 
             data->properties.swap(propMap);
         }
+    }
+
+
+    void CustomSerialisation_ScriptComponent(std::ofstream& stream, Wyrd::ScriptComponent* data)
+    {
+        // Write properties stream;
+        size_t propertyCount = 0;
+        if (data->properties != nullptr)
+        {
+            propertyCount = data->properties->size();
+            stream.write((char*)&propertyCount, sizeof(size_t));
+            for (auto& [name, prop] : *data->properties)
+            {
+                prop->Serialise(stream);
+            }
+        }
+        else
+        {
+            stream.write((char*)&propertyCount, sizeof(size_t));
+        }
+    }
+
+    void CustomDeserialisation_ScriptComponent(std::ifstream& stream, Wyrd::ScriptComponent* data)
+    {
+        // Read properties steam;
+        BasePropMapRef propMap = PropFactory::CreatePropMap(stream);
+
+        data->properties.swap(propMap);
     }
 }

@@ -21,9 +21,18 @@ namespace Wyrd
 			{
 				//TODO: Throw Assert
 			}
-<!CONTENT_SERIALISE>
+<!CONTENT_JSON_SERIALISE>
 	
 			return obj;
+		}
+
+		static void Serialise(std::ofstream& stream, const std::string& name, const char* data)
+		{
+			if (strcmp(name.c_str(), "Unknown") == 0)
+			{
+				//TODO: Throw Assert
+			}
+<!CONTENT_STREAM_SERIALISE>
 		}
 
 		static void Deserialise(const std::string& name, jsonxx::Object& obj, char* buffer)
@@ -32,7 +41,17 @@ namespace Wyrd
 			{
 				//TODO: Throw Assert
 			}
-<!CONTENT_DESERIALISE>
+<!CONTENT_JSON_DESERIALISE>
+
+		}
+
+		static void Deserialise(const std::string& name, std::ifstream& stream, char* buffer)
+		{
+			if (strcmp(name.c_str(), "Uknown") == 0)
+			{
+				//TODO: Throw Assert
+			}
+<!CONTENT_STREAM_DESERIALISE>
 
 		}
 

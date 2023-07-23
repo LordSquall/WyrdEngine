@@ -30,7 +30,7 @@
 
 namespace Wyrd::Editor
 {
-	static bool showEditorComponent = false;
+	static bool showEditorComponent = true;
 
 	SceneViewer::SceneViewer(EditorLayer* editorLayer) : EditorViewBase("Scene Viewer", editorLayer), _SelectedEntity(ENTITY_INVALID)
 	{
@@ -155,11 +155,33 @@ namespace Wyrd::Editor
 						Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(e);
 						EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
 
-						BasePropMapRef materialProps = std::make_shared<std::map<std::string, BasePropRef>>();
-						(*materialProps)["BlendColor"] = PropFactory::CreateProp("Color", "BlendColor");
-						(*materialProps)["BlendColor"]->Set<Color>(Color::MAGENTA);
+						renderer.DrawDebugBoundingBox(editorComponent->inputBoundingBox, { transform->position.x, transform->position.y, transform->position.z }, 1.0f, Color::MAGENTA, glm::identity<glm::mat4>(), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
 
-						renderer.DrawDebugBoundingBox(editorComponent->inputBoundingBox, { transform->position.x, transform->position.y, transform->position.z }, Color::MAGENTA, _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
+						renderer.DrawDebugVector(transform->position, { 10.0f, 0.0f, 0.0f }, 10.0f, Color::RED,  glm::identity<glm::mat4>(), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
+						renderer.DrawDebugVector(transform->position, { 0.0f, 10.0f, 0.0f }, 10.0f, Color::GREEN, glm::identity<glm::mat4>(), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
+						renderer.DrawDebugVector(transform->position, { 0.0f, 0.0f, 10.0f }, 10.0f, Color::BLUE, glm::identity<glm::mat4>(), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
+					}
+
+					for (Entity e : EntitySet<Transform3DComponent, EditorComponent, CameraComponent>(*_Scene.get()))
+					{
+						Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(e);
+						EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
+						CameraComponent* cameraComponent = _Scene->Get<CameraComponent>(e);
+
+						Camera debugCamera;
+						debugCamera.SetPosition({ transform->position.x, transform->position.y, transform->position.z });
+						debugCamera.SetYaw(debugCamera.GetYaw() + -transform->rotation.y);
+						debugCamera.SetPitch(debugCamera.GetPitch() + transform->rotation.x);
+						debugCamera.perspectiveSettings.farPlane = cameraComponent->farPlane;
+						debugCamera.perspectiveSettings.nearPlane = cameraComponent->nearPlane;
+						debugCamera.perspectiveSettings.aspect = cameraComponent->aspectRatio;
+						debugCamera.SetMode(Camera::Mode::Perspective);
+						debugCamera.Update();
+
+						renderer.DrawDebugVector(transform->position, debugCamera.GetForward() * 10.0f, 10.0f, Color::YELLOW, glm::mat4(1), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
+
+						renderer.DrawDebugFrustum(transform->position, debugCamera.GetForward(), debugCamera.frustum, 10.0f, Color::CYAN, glm::mat4(1), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
+
 					}
 				}
 
@@ -417,27 +439,27 @@ namespace Wyrd::Editor
 
 		if (e.GetKeyCode() == OSR_KEY_0)
 		{
-			{
-				std::ifstream vertexStream(Utils::GetEditorResFolder() + "shaders/mesh.vs");
-				std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
-
-				std::ifstream fragmentStream(Utils::GetEditorResFolder() + "shaders/mesh.fs");
-				std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
-
-				std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
-				Application::Get().GetResources().Shaders["Mesh"]->Build(vertexSrc, fragmentSrc);
-			}
-
-			{
-				std::ifstream vertexStream(Utils::GetEditorResFolder() + "shaders/gizmo3DGrid.vs");
-				std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
-
-				std::ifstream fragmentStream(Utils::GetEditorResFolder() + "shaders/gizmo3DGrid.fs");
-				std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
-
-				std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
-				Application::Get().GetResources().Shaders["Gizmo3DGrid"]->Build(vertexSrc, fragmentSrc);
-			}
+			//{
+			//	std::ifstream vertexStream(Utils::GetEditorResFolder() + "shaders/mesh.vs");
+			//	std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
+			//
+			//	std::ifstream fragmentStream(Utils::GetEditorResFolder() + "shaders/mesh.fs");
+			//	std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
+			//
+			//	std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
+			//	Application::Get().GetResources().Shaders["Mesh"]->Build(vertexSrc, fragmentSrc);
+			//}
+			//
+			//{
+			//	std::ifstream vertexStream(Utils::GetEditorResFolder() + "shaders/gizmo3DGrid.vs");
+			//	std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
+			//
+			//	std::ifstream fragmentStream(Utils::GetEditorResFolder() + "shaders/gizmo3DGrid.fs");
+			//	std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
+			//
+			//	std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
+			//	Application::Get().GetResources().Shaders["Gizmo3DGrid"]->Build(vertexSrc, fragmentSrc);
+			//}
 		}
 
 		return true;

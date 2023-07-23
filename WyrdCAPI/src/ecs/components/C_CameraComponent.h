@@ -17,6 +17,14 @@ LIBRARY_API void CameraComponent_SetAspectratio(void* obj, Wyrd::Entity entity, 
 
 LIBRARY_API void CameraComponent_SetSize(void* obj, Wyrd::Entity entity, Wyrd::Vector2* position);
 
+LIBRARY_API void CameraComponent_SetNearplane(void* obj, Wyrd::Entity entity, float* position);
+
+LIBRARY_API void CameraComponent_SetFarplane(void* obj, Wyrd::Entity entity, float* position);
+
+LIBRARY_API void CameraComponent_SetAspect(void* obj, Wyrd::Entity entity, float* position);
+
+LIBRARY_API void CameraComponent_SetFov(void* obj, Wyrd::Entity entity, float* position);
+
 
 
 #ifdef __cplusplus

@@ -52,9 +52,23 @@ namespace Wyrd
 		return true;
 	}
 
+	PROPERTY_SERIALISE_STREAM_FUNCSIG(Int)
+	{
+		writeStr(stream, "Int");
+		writeStr(stream, _Name);
+		stream.write((char*)&Value, sizeof(int));
+		return true;
+	}
+
 	PROPERTY_DESERIALISE_FUNCSIG(Int)
 	{
 		Value = json.get<jsonxx::Number>("value", 0);
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_STREAM_FUNCSIG(Int)
+	{
+		stream.read((char*)Value, sizeof(int));
 		return true;
 	}
 
@@ -76,12 +90,26 @@ namespace Wyrd
 		return true;
 	}
 
+	PROPERTY_SERIALISE_STREAM_FUNCSIG(Int32)
+	{
+		writeStr(stream, "Int32");
+		writeStr(stream, _Name);
+		stream.write((char*)&Value, sizeof(int32_t));
+		return true;
+	}
+
 	PROPERTY_DESERIALISE_FUNCSIG(Int32)
 	{
 		Value = json.get<jsonxx::Number>("value", 0);
 		return true;
 	}
 	
+	PROPERTY_DESERIALISE_STREAM_FUNCSIG(Int32)
+	{
+		stream.read((char*)Value, sizeof(int32_t));
+		return true;
+	}
+
 	PROPERTY_DESERIALISE_VAL_FUNCSIG(Int32)
 	{
 		Value = json.get<jsonxx::Number>();
@@ -100,9 +128,23 @@ namespace Wyrd
 		return true;
 	}
 
+	PROPERTY_SERIALISE_STREAM_FUNCSIG(UInt32)
+	{
+		writeStr(stream, "UInt32");
+		writeStr(stream, _Name);
+		stream.write((char*)&Value, sizeof(uint32_t));
+		return true;
+	}
+
 	PROPERTY_DESERIALISE_FUNCSIG(UInt32)
 	{
 		Value = json.get<jsonxx::Number>("value", 0);
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_STREAM_FUNCSIG(UInt32)
+	{
+		stream.read((char*)Value, sizeof(uint32_t));
 		return true;
 	}
 
@@ -124,12 +166,26 @@ namespace Wyrd
 		return true;
 	}
 
+	PROPERTY_SERIALISE_STREAM_FUNCSIG(Int64)
+	{
+		writeStr(stream, "Int64");
+		writeStr(stream, _Name);
+		stream.write((char*)&Value, sizeof(int64_t));
+		return true;
+	}
+
 	PROPERTY_DESERIALISE_FUNCSIG(Int64)
 	{
 		Value = json.get<jsonxx::Number>("value", 0);
 		return true;
 	}
-	
+
+	PROPERTY_DESERIALISE_STREAM_FUNCSIG(Int64)
+	{
+		stream.read((char*)Value, sizeof(int64_t));
+		return true;
+	}
+
 	PROPERTY_DESERIALISE_VAL_FUNCSIG(Int64)
 	{
 		Value = json.get<jsonxx::Number>();
@@ -148,9 +204,23 @@ namespace Wyrd
 		return true;
 	}
 
+	PROPERTY_SERIALISE_STREAM_FUNCSIG(UInt64)
+	{
+		writeStr(stream, "UInt64");
+		writeStr(stream, _Name);
+		stream.write((char*)&Value, sizeof(uint64_t));
+		return true;
+	}
+
 	PROPERTY_DESERIALISE_FUNCSIG(UInt64)
 	{
 		Value = json.get<jsonxx::Number>("value", 0);
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_STREAM_FUNCSIG(UInt64)
+	{
+		stream.read((char*)Value, sizeof(uint64_t));
 		return true;
 	}
 
@@ -172,9 +242,23 @@ namespace Wyrd
 		return true;
 	}
 
+	PROPERTY_SERIALISE_STREAM_FUNCSIG(Float)
+	{
+		writeStr(stream, "Float");
+		writeStr(stream, _Name);
+		stream.write((char*)&Value, sizeof(float));
+		return true;
+	}
+
 	PROPERTY_DESERIALISE_FUNCSIG(Float)
 	{
 		Value = json.get<jsonxx::Number>("value", 0);
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_STREAM_FUNCSIG(Float)
+	{
+		stream.read((char*)&Value, sizeof(float));
 		return true;
 	}
 
@@ -196,9 +280,23 @@ namespace Wyrd
 		return true;
 	}
 
+	PROPERTY_SERIALISE_STREAM_FUNCSIG(Double)
+	{
+		writeStr(stream, "Double");
+		writeStr(stream, _Name);
+		stream.write((char*)&Value, sizeof(double));
+		return true;
+	}
+
 	PROPERTY_DESERIALISE_FUNCSIG(Double)
 	{
 		Value = json.get<jsonxx::Number>("value", 0);
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_STREAM_FUNCSIG(Double)
+	{
+		stream.read((char*)&Value, sizeof(double));
 		return true;
 	}
 
@@ -220,9 +318,23 @@ namespace Wyrd
 		return true;
 	}
 
+	PROPERTY_SERIALISE_STREAM_FUNCSIG(String)
+	{
+		writeStr(stream, "String");
+		writeStr(stream, _Name);
+		writeStr(stream, Value);
+		return true;
+	}
+
 	PROPERTY_DESERIALISE_FUNCSIG(String)
 	{
 		Value = json.get<jsonxx::String>("value", "");
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_STREAM_FUNCSIG(String)
+	{
+		Value = readStr(stream);
 		return true;
 	}
 
@@ -244,9 +356,23 @@ namespace Wyrd
 		return true;
 	}
 
+	PROPERTY_SERIALISE_STREAM_FUNCSIG(Vec2)
+	{
+		writeStr(stream, "Vec2");
+		writeStr(stream, _Name);
+		stream.write((char*)&Value, sizeof(Vector2));
+		return true;
+	}
+
 	PROPERTY_DESERIALISE_FUNCSIG(Vec2)
 	{
 		Value << json.get<jsonxx::Object>("value");
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_STREAM_FUNCSIG(Vec2)
+	{
+		stream.read((char*)&Value, sizeof(Vector2));
 		return true;
 	}
 
@@ -268,12 +394,26 @@ namespace Wyrd
 		return true;
 	}
 
+	PROPERTY_SERIALISE_STREAM_FUNCSIG(Vec3)
+	{
+		writeStr(stream, "Vec3");
+		writeStr(stream, _Name);
+		stream.write((char*)&Value, sizeof(Vector3));
+		return true;
+	}
+
 	PROPERTY_DESERIALISE_FUNCSIG(Vec3)
 	{
 		Value << json.get<jsonxx::Object>("value");
 		return true;
 	}
-	
+
+	PROPERTY_DESERIALISE_STREAM_FUNCSIG(Vec3)
+	{
+		stream.read((char*)&Value, sizeof(Vector3));
+		return true;
+	}
+
 	PROPERTY_DESERIALISE_VAL_FUNCSIG(Vec3)
 	{
 		Value << json.get<jsonxx::Object>();
@@ -292,9 +432,23 @@ namespace Wyrd
 		return true;
 	}
 
+	PROPERTY_SERIALISE_STREAM_FUNCSIG(Bool)
+	{
+		writeStr(stream, "Bool");
+		writeStr(stream, _Name);
+		stream.write((char*)&Value, sizeof(bool));
+		return true;
+	}
+
 	PROPERTY_DESERIALISE_FUNCSIG(Bool)
 	{
 		Value = json.get<jsonxx::Boolean>("value", false);
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_STREAM_FUNCSIG(Bool)
+	{
+		stream.read((char*)&Value, sizeof(bool));
 		return true;
 	}
 
@@ -316,9 +470,23 @@ namespace Wyrd
 		return true;
 	}
 
+	PROPERTY_SERIALISE_STREAM_FUNCSIG(Color)
+	{
+		writeStr(stream, "Color");
+		writeStr(stream, _Name);
+		stream.write((char*)&Value, sizeof(Color));
+		return true;
+	}
+
 	PROPERTY_DESERIALISE_FUNCSIG(Color)
 	{
 		Value << json.get<jsonxx::Object>("value");
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_STREAM_FUNCSIG(Color)
+	{
+		stream.read((char*)&Value, sizeof(Color));
 		return true;
 	}
 
@@ -347,6 +515,14 @@ namespace Wyrd
 		return true;
 	}
 
+	PROPERTY_SERIALISE_STREAM_FUNCSIG(Texture)
+	{
+		writeStr(stream, "Texture");
+		writeStr(stream, _Name);
+		writeGuid(stream, Value->GetUID());
+		return true;
+	}
+
 	PROPERTY_DESERIALISE_FUNCSIG(Texture)
 	{
 		if (json.has<jsonxx::String>("value"))
@@ -357,6 +533,14 @@ namespace Wyrd
 		{
 			Value = Application::Get().GetResources().Textures[RES_TEXTURE_DEFAULT].get();
 		}
+
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_STREAM_FUNCSIG(Texture)
+	{
+		Wyrd::UID guid = readGuid(stream);
+		Value = Application::Get().GetResources().Textures[guid].get();
 
 		return true;
 	}
@@ -386,9 +570,23 @@ namespace Wyrd
 		return true;
 	}
 
+	PROPERTY_SERIALISE_STREAM_FUNCSIG(Entity)
+	{
+		writeStr(stream, "Entity");
+		writeStr(stream, _Name);
+		stream.write((char*)&Value, sizeof(Entity));
+		return true;
+	}
+	
 	PROPERTY_DESERIALISE_FUNCSIG(Entity)
 	{
 		Value = json.get<jsonxx::Number>("value", ENTITY_INVALID);
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_STREAM_FUNCSIG(Entity)
+	{
+		stream.read((char*)&Value, sizeof(Entity));
 		return true;
 	}
 

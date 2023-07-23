@@ -448,12 +448,12 @@ namespace Wyrd::Editor
 	void AssetViewer::DrawSceneItem(int resID, SceneRes& sceneResource)
 	{
 		/* Drag and Drop */
-		//if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-		//{
-		//	ImGui::SetDragDropPayload("DND_SCENE", &sceneResource.GetResourceID(), sizeof(UID));
-		//	ImGui::Image(*_SceneIcon, ImVec2(32, 32));
-		//	ImGui::EndDragDropSource();
-		//}
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+		{
+			ImGui::SetDragDropPayload(IMGUI_DND_SCENE, &sceneResource.GetResourceID(), sizeof(UID));
+			ImGui::Image(*_SceneIcon, ImVec2(32, 32));
+			ImGui::EndDragDropSource();
+		}
 
 		/* Tool Tip */
 		if (ImGui::IsItemHovered())

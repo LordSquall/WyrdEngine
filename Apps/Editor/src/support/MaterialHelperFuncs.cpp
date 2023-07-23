@@ -16,7 +16,7 @@ namespace Wyrd::Editor
 		/* Retrieve the material */
 		std::shared_ptr<Material> material = Application::Get().GetResources().Materials[materialComponent->material];
 
-		Material::InputMap propList = material->GetInputPropertyList();
+		MaterialInputMap propList = material->GetInputPropertyList();
 
 		/* Clear out and recreate the property set */
 		materialComponent->properties = std::make_shared<std::map<std::string, BasePropRef>>();
