@@ -26,3 +26,4 @@ codegen/models/obj/
 toolchain/
 dependencies/
 *.msi
+*.rdc

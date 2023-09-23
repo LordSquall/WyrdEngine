@@ -46,7 +46,7 @@ namespace Wyrd::Editor
 					float widthNorm = (float)icon->width / (float)iconSet->width;
 					float heightNorm = (float)icon->height / (float)iconSet->height;
 					float xNorm = (float)icon->x / (float)iconSet->width;
-					float yNorm = 1.0f - (float)icon->y / (float)iconSet->height;
+					float yNorm = (float)icon->y / (float)iconSet->height;
 
 					icon->uv[0] = { xNorm,				yNorm };
 					icon->uv[1] = { xNorm,				yNorm + heightNorm };

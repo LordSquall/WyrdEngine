@@ -238,7 +238,7 @@ namespace Wyrd::Editor
 
 
 		ImGui::PushID("RotateToolBtn");
-		if (ImGui::IconButton(_RotateIcon, 2001, true, size) == true)
+		if (ImGui::IconButton(_RotateIcon, 2001, false, size) == true)
 		{
 			CurrentTransformTool = TransformTool::Rotate;
 		}
