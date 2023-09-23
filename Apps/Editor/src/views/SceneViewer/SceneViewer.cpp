@@ -229,7 +229,7 @@ namespace Wyrd::Editor
 		
 		/* here we want to create a simple toolbox to show the different transformation tools */
 		ImGui::PushID("TranslateToolBtn");
-		if (ImGui::IconButton(_TranslateIcon, 2000, true, size) == true)
+		if (ImGui::IconButton(_TranslateIcon, 2000, true, size, -1, CurrentTransformTool == TransformTool::Translate ? ImVec4(1, 1, 1, 1) : ImVec4(0, 0, 0, 0), ImVec4(0.5f, 0.5f, 0.5f, 1.0f)) == true)
 		{
 			CurrentTransformTool = TransformTool::Translate;
 		}
@@ -238,7 +238,7 @@ namespace Wyrd::Editor
 
 
 		ImGui::PushID("RotateToolBtn");
-		if (ImGui::IconButton(_RotateIcon, 2001, false, size) == true)
+		if (ImGui::IconButton(_RotateIcon, 2001, true, size, -1, CurrentTransformTool == TransformTool::Rotate ? ImVec4(1, 1, 1, 1) : ImVec4(0, 0, 0, 0), ImVec4(0.5f, 0.5f, 0.5f, 1.0f)) == true)
 		{
 			CurrentTransformTool = TransformTool::Rotate;
 		}
@@ -247,7 +247,7 @@ namespace Wyrd::Editor
 
 
 		ImGui::PushID("ScaleToolBtn");
-		if (ImGui::IconButton(_ScaleIcon, 2002, true, size) == true)
+		if (ImGui::IconButton(_ScaleIcon, 2002, true, size, -1, CurrentTransformTool == TransformTool::Scale ? ImVec4(1, 1, 1, 1) : ImVec4(0, 0, 0, 0), ImVec4(0.5f, 0.5f, 0.5f, 1.0f)) == true)
 		{
 			CurrentTransformTool = TransformTool::Scale;
 		}
