@@ -176,6 +176,7 @@ namespace Wyrd {
 		Color bgcolor;
 
 		Wyrd::Vector3 cameraPosition = { 0.0f, 0.0f, 0.0f };
+		Wyrd::Vector3 cameraOrientation = { 0.0f, 0.0f, 0.0f };
 		float cameraZoom = 0.0f;
 
 	private:

@@ -213,6 +213,7 @@ namespace Wyrd::Editor
 		{
 			//_Scene->cameraZoom = _CameraController->GetSize();
 			_Scene->cameraPosition = _CameraController->GetPosition();
+			_Scene->cameraOrientation = _CameraController->GetOrientation();
 		}
 	}
 
@@ -530,8 +531,8 @@ namespace Wyrd::Editor
 		_Scene = evtArgs.scene;
 
 		/* Set camera settings */
-		//_CameraController->SetSize(_Scene->cameraZoom);
-		//_CameraController->SetPosition(glm::vec3(_Scene->cameraPosition.x, _Scene->cameraPosition.y, _Scene->cameraPosition.z));
+		_CameraController->SetPosition(glm::vec3(_Scene->cameraPosition.x, _Scene->cameraPosition.y, _Scene->cameraPosition.z));
+		_CameraController->SetOrientation(glm::vec3(_Scene->cameraOrientation.x, _Scene->cameraOrientation.y, _Scene->cameraOrientation.z));
 	}
 
 	void SceneViewer::OnSelectedEntityChanged(Events::EventArgs& args)

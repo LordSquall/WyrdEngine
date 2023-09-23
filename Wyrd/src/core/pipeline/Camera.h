@@ -29,7 +29,7 @@ namespace Wyrd
 		glm::vec3 GetUpDirection() const;
 		glm::vec3 GetRightDirection() const;
 		glm::vec3 GetForwardDirection() const;
-		glm::quat GetOrientation() const;
+		glm::quat GetOrientationQuat() const;
 
 		inline const glm::vec3 GetWorldUp() const { return _WorldUp; }
 		inline const glm::vec3 GetWorldForward() const { return _WorldForward; }
@@ -42,6 +42,9 @@ namespace Wyrd
 
 		inline const glm::vec3 GetPosition() const { return _FocalPoint; }
 		inline void SetPosition(const glm::vec3 position) { _FocalPoint = position; }
+
+		inline const glm::vec3 GetOrientation() const { return { _Pitch, 0.0f, _Yaw }; }
+		inline void SetOrientation(const glm::vec3 orientation) { SetPitch(orientation.x); SetYaw(orientation.z); }
 
 		inline const glm::mat4 GetViewMatrix() const { return _viewMatrix; }
 		inline const glm::mat4 GetProjectionMatrix() const { return _projectionMatrix; }

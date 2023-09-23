@@ -33,6 +33,9 @@ namespace Wyrd::Editor
 		inline glm::vec3 GetPosition() const { return _Camera.GetPosition(); }
 		inline void SetPosition(glm::vec3 position) { _Camera.SetPosition(position); }
 
+		inline glm::vec3 GetOrientation() const { return _Camera.GetOrientation(); }
+		inline void SetOrientation(glm::vec3 orientation) { _Camera.SetOrientation(orientation); }
+
 		inline void SetMode(const Camera::Mode mode) { _Camera.SetMode(mode); }
 		inline const CameraController::Mode GetTransformMode() const { return _TransformMode; }
 

@@ -51,6 +51,10 @@ namespace Wyrd::Editor
 				if (o.has<jsonxx::Object>("cameraPosition"))
 					scene.cameraPosition << o.get<jsonxx::Object>("cameraPosition");
 
+				/* camera orientation*/
+				if (o.has<jsonxx::Object>("cameraOrientation"))
+					scene.cameraOrientation << o.get<jsonxx::Object>("cameraOrientation");
+
 				/* camera zoom */
 				if (o.has<jsonxx::Number>("cameraZoom"))
 					scene.cameraZoom = (float)o.get<jsonxx::Number>("cameraZoom");
@@ -156,6 +160,9 @@ namespace Wyrd::Editor
 
 		/* camera position */
 		o << "cameraPosition" << scene.cameraPosition;
+
+		/* camera orientation*/
+		o << "cameraOrientation" << scene.cameraOrientation;
 
 		/* camera zoom */
 		o << "cameraZoom" << scene.cameraZoom;

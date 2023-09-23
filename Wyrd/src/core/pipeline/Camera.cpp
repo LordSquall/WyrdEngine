@@ -38,7 +38,7 @@ namespace Wyrd
 			_projectionMatrix = glm::perspective(glm::radians(perspectiveSettings.fov), perspectiveSettings.aspect, perspectiveSettings.nearPlane, perspectiveSettings.farPlane);
 
 			_Position = CalculatePosition();
-			glm::quat orientation = GetOrientation();
+			glm::quat orientation = GetOrientationQuat();
 
 			_viewMatrix = glm::translate(glm::mat4(1.0f), _Position) * glm::toMat4(orientation);
 			_viewMatrix = glm::inverse(_viewMatrix);
@@ -52,17 +52,17 @@ namespace Wyrd
 
 	glm::vec3 Camera::GetUpDirection() const
 	{
-		return glm::rotate(GetOrientation(), glm::vec3(0.0f, 1.0f, 0.0f));
+		return glm::rotate(GetOrientationQuat(), glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
 	glm::vec3 Camera::GetRightDirection() const
 	{
-		return glm::rotate(GetOrientation(), glm::vec3(1.0f, 0.0f, 0.0f));
+		return glm::rotate(GetOrientationQuat(), glm::vec3(1.0f, 0.0f, 0.0f));
 	}
 
 	glm::vec3 Camera::GetForwardDirection() const
 	{
-		return glm::rotate(GetOrientation(), glm::vec3(0.0f, 0.0f, -1.0f));
+		return glm::rotate(GetOrientationQuat(), glm::vec3(0.0f, 0.0f, -1.0f));
 	}
 
 	glm::vec3 Camera::CalculatePosition() const
@@ -70,7 +70,7 @@ namespace Wyrd
 		return _FocalPoint;// -GetForwardDirection() * _Distance;
 	}
 
-	glm::quat Camera::GetOrientation() const
+	glm::quat Camera::GetOrientationQuat() const
 	{
 		return glm::quat(glm::vec3(_Pitch, _Yaw, 0.0f));
 	}
