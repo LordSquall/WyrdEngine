@@ -99,6 +99,14 @@ namespace WyrdGen
                     }
                     content.AppendLine();
 
+                    content.AppendLine();
+                    content.AppendLine("        static void ResetFunc(ComponentPool* pool, Entity entity) {");
+                    content.AppendFormat("            {0}* c = ({0}*)pool->get(entity);", component.Name);
+                    content.AppendLine();
+                    content.AppendFormat("            (new (c) {0}());", component.Name);
+                    content.AppendLine();
+                    content.AppendLine("        }");
+
                     content.AppendLine("    };");
                 }
 

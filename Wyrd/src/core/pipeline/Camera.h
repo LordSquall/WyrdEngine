@@ -12,7 +12,7 @@
 #include <glm/glm.hpp>
 
 // Default camera values
-const float YAW = -90.0f;
+const float YAW = 0.0f;
 const float PITCH = 0.0f;
 
 namespace Wyrd
@@ -26,11 +26,11 @@ namespace Wyrd
 
 		void LookAt(const glm::vec3 target);
 
-		inline const glm::vec3 GetForward() const { return _Forward; }
-		//inline void SetForward(const glm::vec3 forward) { _Forward = forward; }
+		glm::vec3 GetUpDirection() const;
+		glm::vec3 GetRightDirection() const;
+		glm::vec3 GetForwardDirection() const;
+		glm::quat GetOrientation() const;
 
-		inline const glm::vec3 GetUp() const { return _Up; }
-		inline const glm::vec3 GetRight() const { return _Right; }
 		inline const glm::vec3 GetWorldUp() const { return _WorldUp; }
 		inline const glm::vec3 GetWorldForward() const { return _WorldForward; }
 
@@ -40,8 +40,8 @@ namespace Wyrd
 		inline const float GetPitch() const { return _Pitch; }
 		inline void SetPitch(float pitch) { _Pitch = pitch; }
 
-		inline const glm::vec3 GetPosition() const { return _Position; }
-		inline void SetPosition(const glm::vec3 position) { _Position = position; }
+		inline const glm::vec3 GetPosition() const { return _FocalPoint; }
+		inline void SetPosition(const glm::vec3 position) { _FocalPoint = position; }
 
 		inline const glm::mat4 GetViewMatrix() const { return _viewMatrix; }
 		inline const glm::mat4 GetProjectionMatrix() const { return _projectionMatrix; }
@@ -58,6 +58,7 @@ namespace Wyrd
 		enum class Mode { Orthographic, Perspective } _Mode;
 
 		inline void SetMode(Camera::Mode mode) { _Mode = mode; }
+		inline const Camera::Mode GetMode() const { return _Mode; }
 
 		struct PerspectiveSettings
 		{
@@ -84,10 +85,6 @@ namespace Wyrd
 		};
 
 	private:
-		glm::vec3 _Position;
-		glm::vec3 _Up;
-		glm::vec3 _Forward;
-		glm::vec3 _Right;
 
 		glm::vec3 _WorldUp;
 		glm::vec3 _WorldForward;
@@ -95,8 +92,14 @@ namespace Wyrd
 		glm::mat4 _viewMatrix;
 		glm::mat4 _projectionMatrix;
 
-		float _Yaw;
-		float _Pitch;
+		glm::vec3 _Position = { 0.0f, 0.0f, 0.0f };
+		glm::vec3 _FocalPoint = { 0.0f, 0.0f, 0.0f };
+
+		float _Distance = 0.0f;
+		float _Yaw = 0.0f;
+		float _Pitch = 0.0f;
+
+		glm::vec3 CalculatePosition() const;
 
 	public:
 		OrthoSettings orthoSettings;

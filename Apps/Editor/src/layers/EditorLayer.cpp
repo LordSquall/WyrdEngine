@@ -32,6 +32,7 @@
 /* external includes */
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <ImGuizmo.h>
 
 #ifdef WYRD_PLATFORM_WINDOWS
 #include <SOIL.h>
@@ -272,6 +273,7 @@ namespace Wyrd::Editor
 		/* start a new imgui frame */
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui::NewFrame();
+		ImGuizmo::BeginFrame();
 
 		/* push the editor font */
 		ImGui::PushFont(s_defaultFont);

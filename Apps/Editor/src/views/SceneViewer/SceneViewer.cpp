@@ -2,6 +2,7 @@
 #include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/Application.h>
+#include <core/Maths.h>
 #include <core/Layer.h>
 #include <core/Input.h>
 #include <core/KeyCodes.h>
@@ -27,6 +28,7 @@
 #include <glm/common.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <imgui.h>
+#include <ImGuizmo.h>
 
 namespace Wyrd::Editor
 {
@@ -148,39 +150,59 @@ namespace Wyrd::Editor
 					renderer.Flush();
 				}
 
+				if (_SelectedEntity != ENTITY_INVALID)
+				{
+					Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(_SelectedEntity);
+					ImGuizmo::SetOrthographic(false);
+					ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
+					ImGuizmo::SetRect(_ViewportBoundary._position.x, _ViewportBoundary._position.y, _ViewportBoundary._size.x, _ViewportBoundary._size.y);
+					glm::mat4 camViewInverseMat = _CameraController->GetCamera().GetViewMatrix();
+					glm::mat4 projectionMat = _CameraController->GetCamera().GetProjectionMatrix();
+					glm::mat4 transformMat = transform->modelMatrix;
+
+					ImGuizmo::Manipulate(glm::value_ptr(camViewInverseMat), glm::value_ptr(projectionMat), ImGuizmo::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(transformMat));
+
+					if (ImGuizmo::IsUsing())
+					{
+						glm::vec3 translation, rotation, scale;
+						Maths::DecomposeTransform(transform->modelMatrix, translation, rotation, scale);
+
+						transform->position = translation;
+					}
+				}
+
 				if (showEditorComponent)
 				{
-					for (Entity e : EntitySet<Transform3DComponent, EditorComponent>(*_Scene.get()))
-					{
-						Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(e);
-						EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
-
-						renderer.DrawDebugBoundingBox(editorComponent->inputBoundingBox, { transform->position.x, transform->position.y, transform->position.z }, 1.0f, Color::MAGENTA, glm::identity<glm::mat4>(), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
-
-						renderer.DrawDebugVector(transform->position, { 10.0f, 0.0f, 0.0f }, 10.0f, Color::RED,  glm::identity<glm::mat4>(), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
-						renderer.DrawDebugVector(transform->position, { 0.0f, 10.0f, 0.0f }, 10.0f, Color::GREEN, glm::identity<glm::mat4>(), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
-						renderer.DrawDebugVector(transform->position, { 0.0f, 0.0f, 10.0f }, 10.0f, Color::BLUE, glm::identity<glm::mat4>(), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
-					}
+					//for (Entity e : EntitySet<Transform3DComponent, EditorComponent>(*_Scene.get()))
+					//{
+					//	Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(e);
+					//	EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
+					//
+					//	renderer.DrawDebugBoundingBox(editorComponent->inputBoundingBox, { transform->position.x, transform->position.y, transform->position.z }, 1.0f, Color::MAGENTA, glm::identity<glm::mat4>(), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
+					//
+					//	renderer.DrawDebugVector(transform->position, { 10.0f, 0.0f, 0.0f }, 10.0f, Color::RED,  glm::identity<glm::mat4>(), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
+					//	renderer.DrawDebugVector(transform->position, { 0.0f, 10.0f, 0.0f }, 10.0f, Color::GREEN, glm::identity<glm::mat4>(), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
+					//	renderer.DrawDebugVector(transform->position, { 0.0f, 0.0f, 10.0f }, 10.0f, Color::BLUE, glm::identity<glm::mat4>(), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
+					//}
 
 					for (Entity e : EntitySet<Transform3DComponent, EditorComponent, CameraComponent>(*_Scene.get()))
 					{
-						Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(e);
-						EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
-						CameraComponent* cameraComponent = _Scene->Get<CameraComponent>(e);
+						//Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(e);
+						//EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
+						//CameraComponent* cameraComponent = _Scene->Get<CameraComponent>(e);
+						//
+						//Camera debugCamera;
+						//debugCamera.SetPosition({ transform->position.x, transform->position.y, transform->position.z });
+						//debugCamera.SetYaw(debugCamera.GetYaw() + -transform->rotation.y);
+						//debugCamera.SetPitch(debugCamera.GetPitch() + transform->rotation.x);
+						//debugCamera.perspectiveSettings.farPlane = cameraComponent->farPlane;
+						//debugCamera.perspectiveSettings.nearPlane = cameraComponent->nearPlane;
+						//debugCamera.perspectiveSettings.aspect = cameraComponent->aspectRatio;
+						//debugCamera.SetMode(Camera::Mode::Perspective);
+						//debugCamera.Update();
 
-						Camera debugCamera;
-						debugCamera.SetPosition({ transform->position.x, transform->position.y, transform->position.z });
-						debugCamera.SetYaw(debugCamera.GetYaw() + -transform->rotation.y);
-						debugCamera.SetPitch(debugCamera.GetPitch() + transform->rotation.x);
-						debugCamera.perspectiveSettings.farPlane = cameraComponent->farPlane;
-						debugCamera.perspectiveSettings.nearPlane = cameraComponent->nearPlane;
-						debugCamera.perspectiveSettings.aspect = cameraComponent->aspectRatio;
-						debugCamera.SetMode(Camera::Mode::Perspective);
-						debugCamera.Update();
-
-						renderer.DrawDebugVector(transform->position, debugCamera.GetForward() * 10.0f, 10.0f, Color::YELLOW, glm::mat4(1), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
-
-						renderer.DrawDebugFrustum(transform->position, debugCamera.GetForward(), debugCamera.frustum, 10.0f, Color::CYAN, glm::mat4(1), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
+						//renderer.DrawDebugVector(transform->position, debugCamera.GetForward() * 10.0f, 10.0f, Color::YELLOW, glm::mat4(1), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
+						//renderer.DrawDebugFrustum(transform->position, debugCamera.GetForward(), debugCamera.frustum, 10.0f, Color::CYAN, glm::mat4(1), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
 
 					}
 				}
@@ -286,31 +308,51 @@ namespace Wyrd::Editor
 			ImGui::Checkbox("use ortho", &useOrtho);
 			ImGui::SetCursorPosY(58.0f);
 			ImGui::Text("Camera:");
-		
-			float camYaw = _CameraController->GetCamera().GetYaw();
-		
-			if (ImGui::InputFloat("Yaw", &camYaw))
+			auto pos = _CameraController->GetCamera().GetPosition();
+			ImGui::Text("\tPos	[%f,%f,%f]", pos.x, pos.y, pos.z);
+
+			ImGui::Text("Axis:");
+			auto fwd = _CameraController->GetCamera().GetForwardDirection();
+			ImGui::Text("\tForward	[%f,%f,%f]", fwd.x, fwd.y, fwd.z);
+
+			auto right = _CameraController->GetCamera().GetRightDirection();
+			ImGui::Text("\tRight	[%f,%f,%f]", right.x, right.y, right.z);
+
+			auto up = _CameraController->GetCamera().GetUpDirection();
+			ImGui::Text("\tUp	[%f,%f,%f]", up.x, up.y, up.z);
+
+
+			ImGui::Text("Camera Controller:");
+			switch (_CameraController->GetTransformMode())
 			{
-				_CameraController->GetCamera().SetYaw(camYaw);
+				case CameraController::Mode::None:
+					ImGui::Text("\tTransform Mode: NONE");
+					break;
+				case CameraController::Mode::Pivot:
+					ImGui::Text("\tTransform Mode: PIVOT");
+					ImGui::Text("\t_InitialPitch [%f]", _CameraController->_InitialPitch);
+					ImGui::Text("\t_InitialYaw [%f]", _CameraController->_InitialYaw);
+					ImGui::Text("\t_PitchDelta [%f]", _CameraController->_PivotPitchDelta);
+					ImGui::Text("\t_PitchYaw [%f]", _CameraController->_PivotYawDelta);
+					break;
 			}
-			ImGui::Text("\tPos		[%f, %f, %f]", _CameraController->GetPosition().x, _CameraController->GetPosition().y, _CameraController->GetPosition().z);
+
+			//ImGui::Text("\tUp		[%f, %f, %f]", _CameraController->GetCamera().GetUp().x, _CameraController->GetCamera().GetUp().y, _CameraController->GetCamera().GetUp().z);
+			//ImGui::Text("\tForward	[%f, %f, %f]", _CameraController->GetCamera().GetForward().x, _CameraController->GetCamera().GetForward().y, _CameraController->GetCamera().GetForward().z);
+			//ImGui::Text("\tPitch	[%f]", _CameraController->GetCamera().GetPitch());
+			//ImGui::Text("\tYaw		[%f]", _CameraController->GetCamera().GetYaw());
 		
-			ImGui::Text("\tUp		[%f, %f, %f]", _CameraController->GetCamera().GetUp().x, _CameraController->GetCamera().GetUp().y, _CameraController->GetCamera().GetUp().z);
-			ImGui::Text("\tForward	[%f, %f, %f]", _CameraController->GetCamera().GetForward().x, _CameraController->GetCamera().GetForward().y, _CameraController->GetCamera().GetForward().z);
-			ImGui::Text("\tPitch	[%f]", _CameraController->GetCamera().GetPitch());
-			ImGui::Text("\tYaw		[%f]", _CameraController->GetCamera().GetYaw());
-		
-			ImGui::Text("Window:");
-			ImGui::Text("\tAspect Ratio [%f]", _ViewportBoundary._size.x / _ViewportBoundary._size.y);
-		
-			ImGui::Text("FrameBuffer:");
-			ImGui::Text("Width [%d]", _Framebuffer->GetConfig().width);
-			ImGui::Text("Height [%d]", _Framebuffer->GetConfig().height);
-		
-			ImGui::Text("Cursor:");
-			ImGui::Text("Screen Position: [%d, %d]", (int32_t)_mouseOffset.x, (int32_t)_mouseOffset.y);
-			ImGui::Text("Viewport Offset Coords:   [%d, %d]", (int32_t)_mouseOffset.x, (int32_t)_mouseOffset.y);
-			ImGui::Text("Evt Start Coords: [%d, %d]", (int32_t)_LastMousePos.x, (int32_t)_LastMousePos.y);
+			//ImGui::Text("Window:");
+			//ImGui::Text("\tAspect Ratio [%f]", _ViewportBoundary._size.x / _ViewportBoundary._size.y);
+			//
+			//ImGui::Text("FrameBuffer:");
+			//ImGui::Text("Width [%d]", _Framebuffer->GetConfig().width);
+			//ImGui::Text("Height [%d]", _Framebuffer->GetConfig().height);
+			//
+			//ImGui::Text("Cursor:");
+			//ImGui::Text("Screen Position: [%d, %d]", (int32_t)_mouseOffset.x, (int32_t)_mouseOffset.y);
+			//ImGui::Text("Viewport Offset Coords:   [%d, %d]", (int32_t)_mouseOffset.x, (int32_t)_mouseOffset.y);
+			//ImGui::Text("Evt Start Coords: [%d, %d]", (int32_t)_LastMousePos.x, (int32_t)_LastMousePos.y);
 		}
 	}
 
@@ -416,7 +458,7 @@ namespace Wyrd::Editor
 
 			if (Input::IsMouseButtonPressed(OSR_MOUSE_BUTTON_MIDDLE) == true)
 			{
-				_CameraController->Translate({ worldSpaceDelta.x, worldSpaceDelta.y });
+				//_CameraController->Translate({ worldSpaceDelta.x, worldSpaceDelta.y });
 			}
 			_PrevMouseWorldPos = _MouseWorldPos;
 		}

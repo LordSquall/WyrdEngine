@@ -18,6 +18,8 @@ git clone https://github.com/hjiang/jsonxx dependencies/jsonxx
 
 git clone -b docking https://github.com/ocornut/imgui.git dependencies/imgui
 
+git clone https://github.com/CedricGuillemet/ImGuizmo.git dependencies/ImGuizmo
+
 git clone https://github.com/gabime/spdlog dependencies/spdlog
 cd dependencies/spdlog
 mkdir cmakedir

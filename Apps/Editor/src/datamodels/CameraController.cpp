@@ -3,6 +3,7 @@
 /* core wyrd includes */
 #include <core/Input.h>
 #include <core/KeyCodes.h>
+#include <core/Log.h>
 
 /* local includes */
 #include "CameraController.h"
@@ -12,13 +13,14 @@ namespace Wyrd::Editor {
 	CameraController::CameraController() :
 		_PanSensitivity(0.05f),
 		_PivotSensitivity(0.1f),
-		_InitialXPos(0.0f),
-		_InitialYPos(0.0f),
+		_PrevXPos(0.0f),
+		_PrevYPos(0.0f),
 		_LeftShift(false)
 	{
-		_Camera.SetPosition({ 10.0f, 10.0f, 10.0f });
-		_Camera.SetPitch(-45.0f);
-		_Camera.SetYaw(-135.0f);
+		_Camera.SetPosition({0.0f, 5.0f, 20.0f});
+		//_Camera.SetPosition({ 10.0f, 10.0f, 10.0f });
+		//_Camera.SetPitch(-45.0f);
+		//_Camera.SetYaw(-135.0f);
 	}
 
 	void CameraController::SetViewportSize(float width, float height)
@@ -59,12 +61,6 @@ namespace Wyrd::Editor {
 		dispatcher.Dispatch<KeyReleasedEvent>(WYRD_BIND_EVENT_FN(CameraController::OnKeyReleased), nullptr);
 	}
 
-
-	void CameraController::Translate(glm::vec2 delta)
-	{
-		_Camera.SetPosition(_Camera.GetPosition() + (glm::vec3(delta, 0.0f)));
-	}
-
 	bool CameraController::OnMouseButtonPressed(MouseButtonPressedEvent& e, void* data)
 	{
 		if (e.GetMouseButton() == 2) // TODO: Mouse Wheel
@@ -72,14 +68,16 @@ namespace Wyrd::Editor {
 			if (_LeftShift == false)
 			{
 				_TransformMode = CameraController::Mode::Pivot;
+				_InitialPitch = _Camera.GetPitch();
+				_InitialYaw = _Camera.GetYaw();
+				_PivotPitchDelta = 0;
+				_PivotYawDelta = 0;
 			}
 			else
 			{
 				_TransformMode = CameraController::Mode::Pan;
 
 			}
-			_InitialXPos = e.GetPositionX();
-			_InitialYPos = e.GetPositionY();
 		}
 
 		return true;
@@ -88,56 +86,86 @@ namespace Wyrd::Editor {
 	bool CameraController::OnMouseButtonReleased(MouseButtonReleasedEvent& e, void* data)
 	{
 		_TransformMode = CameraController::Mode::None;
+
+		_PivotPitchDelta = 0;
+		_PivotYawDelta = 0;
+
 		return true;
 	}
 
 	bool CameraController::OnMouseMoved(MouseMovedEvent& e, void* data)
 	{
+		const glm::vec2& mouse{ e.GetX(), e.GetY() };
+		glm::vec2 delta = glm::vec2((mouse.x - _PrevXPos), (mouse.y - _PrevYPos)) * 0.003f;
+
+		//WYRD_TRACE("Mouse {0} {1}", mouse.x, mouse.y);
+		WYRD_TRACE("Delta {0} {1}", delta.x, delta.y);
+
+
 		switch (_TransformMode)
 		{
 		case Mode::Pivot:
-			{
-				float xOffset = (_InitialXPos - e.GetX()) * _PivotSensitivity;
-				float yOffset = (e.GetY() - _InitialYPos) * _PivotSensitivity;
-				_InitialXPos = e.GetX();
-				_InitialYPos = e.GetY();
-
-				float currentPitch = _Camera.GetPitch();
-				float currentYaw = _Camera.GetYaw();
-
-				currentPitch += yOffset;
-				currentYaw += xOffset;
-
-				if (currentPitch > 89.0f)
-					currentPitch = 89.0f;
-				if (currentPitch < -89.0f)
-					currentPitch = -89.0f;
-
-				_Camera.SetPitch(currentPitch);
-				_Camera.SetYaw(currentYaw);
-			}
+			MouseRotate(delta);
 			break;
 		case Mode::Pan:
-			{
-				float xOffset = (e.GetX() - _InitialXPos) * _PanSensitivity;
-				float yOffset = (_InitialYPos - e.GetY()) * _PanSensitivity;
-				_InitialXPos = e.GetX();
-				_InitialYPos = e.GetY();
-
-				glm::vec3 delta = glm::normalize((-_Camera.GetRight() * xOffset) + (-_Camera.GetForward() * yOffset));
-				_Camera.SetPosition(_Camera.GetPosition() + glm::vec3(delta.x, 0.0f, delta.z));
-			}
+			MousePan(delta);
 			break;
 		}
+
+
+		_PrevXPos = mouse.x;
+		_PrevYPos = mouse.y;
+
+
+		//if (Input::IsMouseButtonPressed(Mouse::ButtonMiddle))
+		//	MousePan(delta);
+		//else if (Input::IsMouseButtonPressed(Mouse::ButtonLeft))
+		//	MouseRotate(delta);
+		//else if (Input::IsMouseButtonPressed(Mouse::ButtonRight))
+		//	MouseZoom(delta.y);
+
+		//switch (_TransformMode)
+		//{
+		//case Mode::Pivot:
+		//	{
+		//		float xOffset = (_InitialXPos - e.GetX()) * _PivotSensitivity;
+		//		float yOffset = (e.GetY() - _InitialYPos) * _PivotSensitivity;
+		//		_InitialXPos = e.GetX();
+		//		_InitialYPos = e.GetY();
+		//
+		//		float currentPitch = _Camera.GetPitch();
+		//		float currentYaw = _Camera.GetYaw();
+		//
+		//		currentPitch += yOffset;
+		//		currentYaw += xOffset;
+		//
+		//		if (currentPitch > 89.0f)
+		//			currentPitch = 89.0f;
+		//		if (currentPitch < -89.0f)
+		//			currentPitch = -89.0f;
+		//
+		//		_Camera.SetPitch(currentPitch);
+		//		_Camera.SetYaw(currentYaw);
+		//	}
+		//	break;
+		//case Mode::Pan:
+		//	{
+		//		float xOffset = (e.GetX() - _InitialXPos) * _PanSensitivity;
+		//		float yOffset = (_InitialYPos - e.GetY()) * _PanSensitivity;
+		//		_InitialXPos = e.GetX();
+		//		_InitialYPos = e.GetY();
+		//
+		//		glm::vec3 delta = glm::normalize((-_Camera.GetRight() * xOffset) + (-_Camera.GetForward() * yOffset));
+		//		_Camera.SetPosition(_Camera.GetPosition() + glm::vec3(delta.x, 0.0f, delta.z));
+		//	}
+		//	break;
+		//}
 		return true;
 	}
 
 	bool CameraController::OnMouseScrolled(MouseScrolledEvent& e, void* data)
 	{
-		glm::vec3 newPosition = _Camera.GetPosition() + (_Camera.GetForward() * e.GetYOffset());
-
-		_Camera.SetPosition(newPosition);
-
+		MouseZoom(e.GetYOffset());
 		return false;
 	}
 
@@ -149,48 +177,29 @@ namespace Wyrd::Editor {
 
 	bool CameraController::OnKeyPressed(KeyPressedEvent& e, void* data)
 	{
+		glm::vec3 currentCamPos = _Camera.GetPosition();
 		switch (e.GetKeyCode())
 		{
-		case OSR_KEY_W:
-			_Camera.SetPosition(_Camera.GetPosition() + _Camera.GetForward());
-			break;
-		case OSR_KEY_S:
-			_Camera.SetPosition(_Camera.GetPosition() - _Camera.GetForward());
-			break;
-		case OSR_KEY_A:
-			_Camera.SetPosition(_Camera.GetPosition() - _Camera.GetRight());
-			break;
-		case OSR_KEY_D:
-			_Camera.SetPosition(_Camera.GetPosition() + _Camera.GetRight());
-			break;
 		case OSR_KEY_R:
-			_Camera.SetPosition(_Camera.GetPosition() + _Camera.GetUp());
+			_Camera.SetPosition({ currentCamPos.x, currentCamPos.y + 1.0f, currentCamPos.z });
 			break;
 		case OSR_KEY_F:
-			_Camera.SetPosition(_Camera.GetPosition() - _Camera.GetUp());
+			_Camera.SetPosition({ currentCamPos.x, currentCamPos.y - 1.0f, currentCamPos.z });
 			break;
-		case OSR_KEY_T:
-			_Camera.SetPosition(_Camera.GetPosition() + _Camera.GetWorldUp());
+		case OSR_KEY_W:
+			_Camera.SetPosition(currentCamPos  + _Camera.GetForwardDirection());
 			break;
-		case OSR_KEY_G:
-			_Camera.SetPosition(_Camera.GetPosition() - _Camera.GetWorldUp());
+		case OSR_KEY_S:
+			_Camera.SetPosition(currentCamPos - _Camera.GetForwardDirection());
 			break;
-
-		case OSR_KEY_8:
-			_Camera.SetPitch(_Camera.GetPitch() + 1.0f);
+		case OSR_KEY_A:
+			_Camera.SetPosition(currentCamPos - _Camera.GetRightDirection());
 			break;
-		case OSR_KEY_2:
-			_Camera.SetPitch(_Camera.GetPitch() - 1.0f);
-			break;
-		case OSR_KEY_4:
-			_Camera.SetYaw(_Camera.GetYaw() + 1.0f);
-			break;
-		case OSR_KEY_6:
-			_Camera.SetYaw(_Camera.GetYaw() - 1.0f);
+		case OSR_KEY_D:
+			_Camera.SetPosition(currentCamPos + _Camera.GetRightDirection());
 			break;
 		case OSR_KEY_LEFT_SHIFT:
 			_LeftShift = true;
-			break;
 		}
 		return true;
 	}
@@ -213,4 +222,45 @@ namespace Wyrd::Editor {
 		return true;
 	}
 
+	void CameraController::MousePan(const glm::vec2& delta)
+	{
+		glm::vec3 currentCamPos = _Camera.GetPosition();
+		glm::vec3 cameraDir = glm::normalize((_Camera.GetRightDirection()) * delta.x + (_Camera.GetUpDirection() * delta.y));
+		glm::vec3 newCamPos = currentCamPos - (cameraDir * PanSpeed());
+		_Camera.SetPosition(newCamPos);
+	}
+
+	void CameraController::MouseRotate(const glm::vec2& delta)
+	{
+		float yawSign = _Camera.GetUpDirection().y < 0 ? -1.0f : 1.0f;
+		float newYaw = (yawSign * delta.x * RotationSpeed());
+		float newPitch = (delta.y * RotationSpeed());
+
+		_PivotYawDelta += newYaw;
+		_PivotPitchDelta += newPitch;
+
+		_Camera.SetYaw(_InitialYaw + _PivotYawDelta);
+		_Camera.SetPitch(_InitialPitch + _PivotPitchDelta);
+	}
+
+	void CameraController::MouseZoom(float delta)
+	{
+		glm::vec3 currentCamPos = _Camera.GetPosition();
+		_Camera.SetPosition(currentCamPos + (_Camera.GetForwardDirection() * (delta * ZoomSpeed())));
+	}
+
+	float CameraController::RotationSpeed() const
+	{
+		return 0.5f;
+	}
+
+	float CameraController::ZoomSpeed() const
+	{
+		return 0.5f;
+	}
+
+	float CameraController::PanSpeed() const
+	{
+		return 0.5f;
+	}
 }

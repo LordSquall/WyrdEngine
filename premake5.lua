@@ -58,6 +58,7 @@ includedir["GLFW"] = dependenciesdir .. "/GLFW/include"
 includedir["SOIL"] = dependenciesdir .. "/soil/src"
 includedir["glm"] = dependenciesdir .. "/glm"
 includedir["imgui"] = dependenciesdir .. "/imgui"
+includedir["imguizmo"] = dependenciesdir .. "/imguizmo"
 includedir["spdlog"] = dependenciesdir .. "/spdlog/include/"
 includedir["crossguid"] = dependenciesdir .. "/crossguid/include/"
 includedir["hash"] = dependenciesdir .. "/Hash/include/"
@@ -82,6 +83,7 @@ group "Third Party"
 	include "buildsystem/common/premake/jsonxx.lua"
 	include "buildsystem/common/premake/soil.lua"
 	include "buildsystem/common/premake/imgui.lua"
+	include "buildsystem/common/premake/imguizmo.lua"
 	include "buildsystem/common/premake/spdlog.lua"
 	include "buildsystem/common/premake/crossguid.lua"
 end
@@ -91,6 +93,7 @@ group "Third Party"
 	include "buildsystem/common/premake/glad.lua"
 	include "buildsystem/common/premake/jsonxx.lua"
 	include "buildsystem/common/premake/imgui.lua"
+	include "buildsystem/common/premake/imguizmo.lua"
 end
 
 group ""
@@ -400,6 +403,7 @@ project "TestPlayer"
 			"SOIL",
 			"jsonxx",
 			"imgui",
+			"imguizmo",
 			"opengl32.dll"
 		}
 		
@@ -479,6 +483,7 @@ project "Editor"
 		"%{includedir.jsonxx}",
 		"%{includedir.SOIL}",
 		"%{includedir.imgui}",
+		"%{includedir.imguizmo}",
 		"%{includedir.glm}",
 		"%{includedir.tinyobjloader}",
 		"%{includedir.mono}",
@@ -517,6 +522,7 @@ project "Editor"
 			"SOIL",
 			"jsonxx",
 			"imgui",
+			"imguizmo",
 			"opengl32.dll"
 		}
 		
@@ -547,6 +553,7 @@ project "Editor"
 			"uuid",
 			"glad",
 			"imgui",
+			"imguizmo",
 			"jsonxx",
 			"mono-2.0",
 			"dl",

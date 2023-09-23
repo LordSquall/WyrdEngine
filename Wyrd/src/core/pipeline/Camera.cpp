@@ -2,18 +2,20 @@
 
 #include "Camera.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
 
 namespace Wyrd
 {
 	Camera::Camera(glm::vec3 position, glm::vec3 worldUp, glm::vec3 worldForward, float yaw, float pitch) :
 		_Mode(Camera::Mode::Perspective), 
 		_Position(position),
-		_Up(0.0f, 1.0f, 0.0f),
 		_Yaw(yaw),
 		_Pitch(pitch),
-		_Forward(0.0f, 0.0f, -1.0f), 
-		_Right(-1.0f, 0.0f, 0.0f), 
 		_WorldUp(worldUp),
 		_WorldForward(worldForward),
 		_viewMatrix(glm::identity<glm::mat4>()), 
@@ -35,45 +37,42 @@ namespace Wyrd
 		{
 			_projectionMatrix = glm::perspective(glm::radians(perspectiveSettings.fov), perspectiveSettings.aspect, perspectiveSettings.nearPlane, perspectiveSettings.farPlane);
 
-			//// Update frustum
-			const float halfVSide = perspectiveSettings.farPlane * tanf(glm::radians(perspectiveSettings.fov) * .5f);
-			const float halfHSide = halfVSide * perspectiveSettings.aspect;
-			const glm::vec3 frontMultFar = perspectiveSettings.farPlane * -_Forward;
-			
-			frustum.nearFace = { _Position + perspectiveSettings.nearPlane * -_Forward, 
-				_Forward };
+			_Position = CalculatePosition();
+			glm::quat orientation = GetOrientation();
 
-			frustum.farFace = { _Position + frontMultFar, 
-				-_Forward };
-			
-			frustum.rightFace = { _Position, 
-				glm::cross(frontMultFar - _Right * halfHSide, _Up) };
-
-			frustum.leftFace = { _Position, 
-				glm::cross(_Up, frontMultFar + _Right * halfHSide) };
-			
-			frustum.bottomFace = { _Position, 
-				glm::cross(_Right, frontMultFar - _Up * halfVSide) };
-
-			frustum.topFace = { _Position, 
-				glm::cross(frontMultFar + _Up * halfVSide, _Right) };
+			_viewMatrix = glm::translate(glm::mat4(1.0f), _Position) * glm::toMat4(orientation);
+			_viewMatrix = glm::inverse(_viewMatrix);
 		}
 		else
 		{
 			_projectionMatrix = glm::ortho(orthoSettings.left, orthoSettings.right, orthoSettings.bottom, orthoSettings.top, orthoSettings.nearPlane, orthoSettings.farPlane);
 		}
+	}
 
-		glm::vec3 front;
-		front.x = cos(glm::radians(_Yaw)) * cos(glm::radians(_Pitch));
-		front.y = sin(glm::radians(_Pitch));
-		front.z = sin(glm::radians(_Yaw)) * cos(glm::radians(_Pitch));
-		_Forward	= glm::normalize(front);
-		_Right		= glm::normalize(glm::cross(_Forward, _WorldUp));
-		_Up			= glm::normalize(glm::cross(_Right, _Forward));
 
-		_viewMatrix = glm::lookAt(_Position,
-			_Position + _Forward,
-			_Up);
+	glm::vec3 Camera::GetUpDirection() const
+	{
+		return glm::rotate(GetOrientation(), glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+
+	glm::vec3 Camera::GetRightDirection() const
+	{
+		return glm::rotate(GetOrientation(), glm::vec3(1.0f, 0.0f, 0.0f));
+	}
+
+	glm::vec3 Camera::GetForwardDirection() const
+	{
+		return glm::rotate(GetOrientation(), glm::vec3(0.0f, 0.0f, -1.0f));
+	}
+
+	glm::vec3 Camera::CalculatePosition() const
+	{
+		return _FocalPoint;// -GetForwardDirection() * _Distance;
+	}
+
+	glm::quat Camera::GetOrientation() const
+	{
+		return glm::quat(glm::vec3(_Pitch, _Yaw, 0.0f));
 	}
 
 	const glm::vec3 Camera::GetWorldSpaceFromPoint(const glm::vec3& point, const Wyrd::Rect& boundary)

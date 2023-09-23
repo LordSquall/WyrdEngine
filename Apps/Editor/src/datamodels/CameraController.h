@@ -22,6 +22,8 @@ namespace Wyrd::Editor
 		void OnUpdate(Timestep ts);
 		void OnEvent(Event& e);
 
+		enum class Mode { None, Pan, Pivot } _TransformMode;
+
 		/* Getters and Setters */
 		inline Camera& GetCamera() { return _Camera; }
 		inline const Camera& GetCamera() const { return _Camera; }
@@ -32,10 +34,14 @@ namespace Wyrd::Editor
 		inline void SetPosition(glm::vec3 position) { _Camera.SetPosition(position); }
 
 		inline void SetMode(const Camera::Mode mode) { _Camera.SetMode(mode); }
+		inline const CameraController::Mode GetTransformMode() const { return _TransformMode; }
 
 
-		void Translate(glm::vec2 delta);
-		
+		float _InitialPitch;
+		float _InitialYaw;
+		float _PivotPitchDelta;
+		float _PivotYawDelta;
+
 	private:
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e, void* data);
 		bool OnMouseButtonReleased(MouseButtonReleasedEvent& e, void* data);
@@ -45,15 +51,22 @@ namespace Wyrd::Editor
 		bool OnKeyPressed(KeyPressedEvent& e, void* data);
 		bool OnKeyReleased(KeyReleasedEvent& e, void* data);
 
-		enum class Mode { None, Pan, Pivot } _TransformMode;
+		void MousePan(const glm::vec2& delta);
+		void MouseRotate(const glm::vec2& delta);
+		void MouseZoom(float delta);
+
+		float RotationSpeed() const;
+		float ZoomSpeed() const;
+		float PanSpeed() const;
+
 	private:
 		Camera _Camera;
 
 		float _PanSensitivity;
 		float _PivotSensitivity;
 
-		float _InitialXPos;
-		float _InitialYPos;
+		float _PrevXPos;
+		float _PrevYPos;
 
 		bool _LeftShift;
 	};
