@@ -160,6 +160,10 @@ namespace Wyrd::Editor
 					glm::mat4 projectionMat = _CameraController->GetCamera().GetProjectionMatrix();
 					glm::mat4 transformMat = transform->modelMatrix;
 
+					//glm::vec3 translation, rotation, scale;
+					//Maths::DecomposeTransform(transform->modelMatrix, translation, rotation, scale);
+					//transformMat = translation;
+
 					ImGuizmo::Manipulate(glm::value_ptr(camViewInverseMat), glm::value_ptr(projectionMat), ImGuizmo::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(transformMat));
 
 					if (ImGuizmo::IsUsing())
