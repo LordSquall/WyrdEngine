@@ -26,6 +26,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/common.hpp>
+#include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <imgui.h>
 #include <ImGuizmo.h>
@@ -52,19 +53,14 @@ namespace Wyrd::Editor
 		/* initialise camera */
 		_CameraController = std::make_shared<CameraController>();
 
-		/* initialise each of the transformation gizmos */
-		_TransformationGizmos.push_back(std::make_unique<Translate2DGizmo>(this));
-		_TransformationGizmos.push_back(std::make_unique<Rotate2DGizmo>(this));
-		_TransformationGizmos.push_back(std::make_unique<Scale2DGizmo>(this));
-		_CurrentTransformationGizmoIndex = 0;
-
+		/* initialise the grid */
 		_Grid3DGizmo = std::make_unique<Grid3DGizmo>(this);
 
 		/* initialise each icon */
 		_pointSelectBtnIcon = _ResourceService->GetIconLibrary().GetIcon("common", "sim_play");
-		_TransformationGizmoIcons.push_back(_ResourceService->GetIconLibrary().GetIcon("common", "sim_play"));
-		_TransformationGizmoIcons.push_back(_ResourceService->GetIconLibrary().GetIcon("common", "sim_play"));
-		_TransformationGizmoIcons.push_back(_ResourceService->GetIconLibrary().GetIcon("common", "sim_play"));
+		_TranslateIcon = _ResourceService->GetIconLibrary().GetIcon("common", "transform_translate");
+		_RotateIcon = _ResourceService->GetIconLibrary().GetIcon("common", "transform_rotate");
+		_ScaleIcon = _ResourceService->GetIconLibrary().GetIcon("common", "transform_scale");
 
 		/* create a new framebuffer */
 		_Framebuffer.reset(Wyrd::FrameBuffer::Create(FrameBufferConfig()));
@@ -72,6 +68,8 @@ namespace Wyrd::Editor
 		/* setup window config */
 		config.windowPaddingX = 0.0f;
 		config.windowPaddingY = 0.0f;
+
+		CurrentTransformTool = TransformTool::Translate;
 	}
 
 	SceneViewer::~SceneViewer() 
@@ -150,31 +148,6 @@ namespace Wyrd::Editor
 					renderer.Flush();
 				}
 
-				if (_SelectedEntity != ENTITY_INVALID)
-				{
-					Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(_SelectedEntity);
-					ImGuizmo::SetOrthographic(false);
-					ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
-					ImGuizmo::SetRect(_ViewportBoundary._position.x, _ViewportBoundary._position.y, _ViewportBoundary._size.x, _ViewportBoundary._size.y);
-					glm::mat4 camViewInverseMat = _CameraController->GetCamera().GetViewMatrix();
-					glm::mat4 projectionMat = _CameraController->GetCamera().GetProjectionMatrix();
-					glm::mat4 transformMat = transform->modelMatrix;
-
-					//glm::vec3 translation, rotation, scale;
-					//Maths::DecomposeTransform(transform->modelMatrix, translation, rotation, scale);
-					//transformMat = translation;
-
-					ImGuizmo::Manipulate(glm::value_ptr(camViewInverseMat), glm::value_ptr(projectionMat), ImGuizmo::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(transformMat));
-
-					if (ImGuizmo::IsUsing())
-					{
-						glm::vec3 translation, rotation, scale;
-						Maths::DecomposeTransform(transform->modelMatrix, translation, rotation, scale);
-
-						transform->position = translation;
-					}
-				}
-
 				if (showEditorComponent)
 				{
 					//for (Entity e : EntitySet<Transform3DComponent, EditorComponent>(*_Scene.get()))
@@ -235,8 +208,6 @@ namespace Wyrd::Editor
 		dispatcher.Dispatch<KeyPressedEvent>(WYRD_BIND_EVENT_FN(SceneViewer::OnKeyPressedEvent), nullptr);
 		dispatcher.Dispatch<KeyReleasedEvent>(WYRD_BIND_EVENT_FN(SceneViewer::OnKeyReleasedEvent), nullptr);
 
-		_TransformationGizmos[_CurrentTransformationGizmoIndex]->OnEvent(event);
-
 		/* Set camera settings */
 		if (_Scene != nullptr)
 		{
@@ -257,16 +228,42 @@ namespace Wyrd::Editor
 		const ImVec2 size(16.0f, 16.0f);
 		
 		/* here we want to create a simple toolbox to show the different transformation tools */
-		for (int i = 0; i < _TransformationGizmos.size(); i++)
+		ImGui::PushID("TranslateToolBtn");
+		if (ImGui::IconButton(_TranslateIcon, 2000, true, size) == true)
 		{
-			ImGui::PushID(_TransformationGizmos[i].get());
-			if (ImGui::IconButton(_TransformationGizmoIcons[i], 1, _CurrentTransformationGizmoIndex == i, size) == true)
-			{
-				_CurrentTransformationGizmoIndex = i;
-			}
-			ImGui::SameLine();
-			ImGui::PopID();
+			CurrentTransformTool = TransformTool::Translate;
 		}
+		ImGui::SameLine();
+		ImGui::PopID();
+
+
+		ImGui::PushID("RotateToolBtn");
+		if (ImGui::IconButton(_RotateIcon, 2001, true, size) == true)
+		{
+			CurrentTransformTool = TransformTool::Rotate;
+		}
+		ImGui::SameLine();
+		ImGui::PopID();
+
+
+		ImGui::PushID("ScaleToolBtn");
+		if (ImGui::IconButton(_ScaleIcon, 2002, true, size) == true)
+		{
+			CurrentTransformTool = TransformTool::Scale;
+		}
+		ImGui::SameLine();
+		ImGui::PopID();
+
+		//for (int i = 0; i < _TransformationGizmos.size(); i++)
+		//{
+		//	ImGui::PushID(_TransformationGizmos[i].get());
+		//	if (ImGui::IconButton(_TransformationGizmoIcons[i], 1, _CurrentTransformationGizmoIndex == i, size) == true)
+		//	{
+		//		_CurrentTransformationGizmoIndex = i;
+		//	}
+		//	ImGui::SameLine();
+		//	ImGui::PopID();
+		//}
 		
 		if (ImGui::IconButton(_pointSelectBtnIcon, 1, false, size) == true)
 		{
@@ -307,6 +304,46 @@ namespace Wyrd::Editor
 
 		ImGui::Image((ImTextureID)(UINT_PTR)_Framebuffer->GetColorAttachmentID(), ImVec2(_Viewport._size.x, _Viewport._size.y), ImVec2(0, 1), ImVec2(1, 0));
 
+		if (_SelectedEntity != ENTITY_INVALID)
+		{
+			Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(_SelectedEntity);
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist(ImGui::GetWindowDrawList());
+			ImGuizmo::SetRect(_ViewportBoundary._position.x, _ViewportBoundary._position.y, _ViewportBoundary._size.x, _ViewportBoundary._size.y);
+			glm::mat4 camViewInverseMat = _CameraController->GetCamera().GetViewMatrix();
+			glm::mat4 projectionMat = _CameraController->GetCamera().GetProjectionMatrix();
+			glm::mat4 transformMat = transform->modelMatrix;
+
+			ImGuizmo::OPERATION op;
+			switch (CurrentTransformTool)
+			{
+			case TransformTool::Translate: op = ImGuizmo::OPERATION::TRANSLATE; break;
+			case TransformTool::Rotate: op = ImGuizmo::OPERATION::ROTATE; break;
+			case TransformTool::Scale: op = ImGuizmo::OPERATION::SCALE; break;
+			}
+
+			ImGuizmo::Enable(true);
+			ImGuizmo::Manipulate(glm::value_ptr(camViewInverseMat), glm::value_ptr(projectionMat), op, ImGuizmo::LOCAL, glm::value_ptr(transformMat));
+
+
+			if (ImGuizmo::IsUsing())
+			{
+
+				WYRD_TRACE("GIZMOMAT: {0}", glm::to_string(transformMat));
+
+				glm::vec3 translation, rotation, scale;
+				Maths::DecomposeTransform(transformMat, translation, rotation, scale);
+
+				glm::vec3 dRot = { RAD_TO_DEG(rotation.x) - transform->rotation.x, RAD_TO_DEG(rotation.y) - transform->rotation.y, RAD_TO_DEG(rotation.z) - transform->rotation.z };
+				transform->position = translation;
+				transform->rotation = transform->rotation + dRot;
+				transform->scale = scale;
+
+
+				WYRD_TRACE("GIZMOMAT [SCALE]: {0}", glm::to_string(scale));
+			}
+		}
+
 		if (showStats == true)
 		{
 			ImGui::Checkbox("use ortho", &useOrtho);
@@ -340,23 +377,6 @@ namespace Wyrd::Editor
 					ImGui::Text("\t_PitchYaw [%f]", _CameraController->_PivotYawDelta);
 					break;
 			}
-
-			//ImGui::Text("\tUp		[%f, %f, %f]", _CameraController->GetCamera().GetUp().x, _CameraController->GetCamera().GetUp().y, _CameraController->GetCamera().GetUp().z);
-			//ImGui::Text("\tForward	[%f, %f, %f]", _CameraController->GetCamera().GetForward().x, _CameraController->GetCamera().GetForward().y, _CameraController->GetCamera().GetForward().z);
-			//ImGui::Text("\tPitch	[%f]", _CameraController->GetCamera().GetPitch());
-			//ImGui::Text("\tYaw		[%f]", _CameraController->GetCamera().GetYaw());
-		
-			//ImGui::Text("Window:");
-			//ImGui::Text("\tAspect Ratio [%f]", _ViewportBoundary._size.x / _ViewportBoundary._size.y);
-			//
-			//ImGui::Text("FrameBuffer:");
-			//ImGui::Text("Width [%d]", _Framebuffer->GetConfig().width);
-			//ImGui::Text("Height [%d]", _Framebuffer->GetConfig().height);
-			//
-			//ImGui::Text("Cursor:");
-			//ImGui::Text("Screen Position: [%d, %d]", (int32_t)_mouseOffset.x, (int32_t)_mouseOffset.y);
-			//ImGui::Text("Viewport Offset Coords:   [%d, %d]", (int32_t)_mouseOffset.x, (int32_t)_mouseOffset.y);
-			//ImGui::Text("Evt Start Coords: [%d, %d]", (int32_t)_LastMousePos.x, (int32_t)_LastMousePos.y);
 		}
 	}
 
@@ -481,31 +501,6 @@ namespace Wyrd::Editor
 		else
 		{
 			_SimulationService->SetInputState(e.GetKeyCode(), 1);
-		}
-
-		if (e.GetKeyCode() == OSR_KEY_0)
-		{
-			//{
-			//	std::ifstream vertexStream(Utils::GetEditorResFolder() + "shaders/mesh.vs");
-			//	std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
-			//
-			//	std::ifstream fragmentStream(Utils::GetEditorResFolder() + "shaders/mesh.fs");
-			//	std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
-			//
-			//	std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
-			//	Application::Get().GetResources().Shaders["Mesh"]->Build(vertexSrc, fragmentSrc);
-			//}
-			//
-			//{
-			//	std::ifstream vertexStream(Utils::GetEditorResFolder() + "shaders/gizmo3DGrid.vs");
-			//	std::string vertexSrc((std::istreambuf_iterator<char>(vertexStream)), std::istreambuf_iterator<char>());
-			//
-			//	std::ifstream fragmentStream(Utils::GetEditorResFolder() + "shaders/gizmo3DGrid.fs");
-			//	std::string fragmentSrc((std::istreambuf_iterator<char>(fragmentStream)), std::istreambuf_iterator<char>());
-			//
-			//	std::shared_ptr<Shader> shader = std::shared_ptr<Shader>(Shader::Create());
-			//	Application::Get().GetResources().Shaders["Gizmo3DGrid"]->Build(vertexSrc, fragmentSrc);
-			//}
 		}
 
 		return true;

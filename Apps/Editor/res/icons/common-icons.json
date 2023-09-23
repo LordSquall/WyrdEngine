@@ -115,6 +115,27 @@
                       "name":  "sim_stop",
                       "height":  64,
                       "x":  960
+                  },
+                  {
+                      "y":  64,
+                      "width":  64,
+                      "name":  "transform_rotate",
+                      "height":  64,
+                      "x":  0
+                  },
+                  {
+                      "y":  64,
+                      "width":  64,
+                      "name":  "transform_scale",
+                      "height":  64,
+                      "x":  64
+                  },
+                  {
+                      "y":  64,
+                      "width":  64,
+                      "name":  "transform_translate",
+                      "height":  64,
+                      "x":  128
                   }
               ]
 }

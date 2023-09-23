@@ -98,10 +98,6 @@ namespace Wyrd::Editor {
 		const glm::vec2& mouse{ e.GetX(), e.GetY() };
 		glm::vec2 delta = glm::vec2((mouse.x - _PrevXPos), (mouse.y - _PrevYPos)) * 0.003f;
 
-		//WYRD_TRACE("Mouse {0} {1}", mouse.x, mouse.y);
-		WYRD_TRACE("Delta {0} {1}", delta.x, delta.y);
-
-
 		switch (_TransformMode)
 		{
 		case Mode::Pivot:
@@ -112,54 +108,9 @@ namespace Wyrd::Editor {
 			break;
 		}
 
-
 		_PrevXPos = mouse.x;
 		_PrevYPos = mouse.y;
 
-
-		//if (Input::IsMouseButtonPressed(Mouse::ButtonMiddle))
-		//	MousePan(delta);
-		//else if (Input::IsMouseButtonPressed(Mouse::ButtonLeft))
-		//	MouseRotate(delta);
-		//else if (Input::IsMouseButtonPressed(Mouse::ButtonRight))
-		//	MouseZoom(delta.y);
-
-		//switch (_TransformMode)
-		//{
-		//case Mode::Pivot:
-		//	{
-		//		float xOffset = (_InitialXPos - e.GetX()) * _PivotSensitivity;
-		//		float yOffset = (e.GetY() - _InitialYPos) * _PivotSensitivity;
-		//		_InitialXPos = e.GetX();
-		//		_InitialYPos = e.GetY();
-		//
-		//		float currentPitch = _Camera.GetPitch();
-		//		float currentYaw = _Camera.GetYaw();
-		//
-		//		currentPitch += yOffset;
-		//		currentYaw += xOffset;
-		//
-		//		if (currentPitch > 89.0f)
-		//			currentPitch = 89.0f;
-		//		if (currentPitch < -89.0f)
-		//			currentPitch = -89.0f;
-		//
-		//		_Camera.SetPitch(currentPitch);
-		//		_Camera.SetYaw(currentYaw);
-		//	}
-		//	break;
-		//case Mode::Pan:
-		//	{
-		//		float xOffset = (e.GetX() - _InitialXPos) * _PanSensitivity;
-		//		float yOffset = (_InitialYPos - e.GetY()) * _PanSensitivity;
-		//		_InitialXPos = e.GetX();
-		//		_InitialYPos = e.GetY();
-		//
-		//		glm::vec3 delta = glm::normalize((-_Camera.GetRight() * xOffset) + (-_Camera.GetForward() * yOffset));
-		//		_Camera.SetPosition(_Camera.GetPosition() + glm::vec3(delta.x, 0.0f, delta.z));
-		//	}
-		//	break;
-		//}
 		return true;
 	}
 

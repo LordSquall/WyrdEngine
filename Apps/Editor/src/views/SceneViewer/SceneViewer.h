@@ -40,6 +40,8 @@ namespace Wyrd::Editor
 
 		inline std::shared_ptr<Scene> GetScene() const { return _Scene; }
 
+		enum class TransformTool { Translate, Rotate, Scale } CurrentTransformTool;
+
 	private:
 		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data);
 		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e, void* data);
@@ -69,10 +71,10 @@ namespace Wyrd::Editor
 		std::shared_ptr<Icon> _pointSelectBtnIcon;	
 
 		// translation icons
-		std::vector<std::shared_ptr<Icon>> _TransformationGizmoIcons;
+		std::shared_ptr<Icon> _TranslateIcon;
+		std::shared_ptr<Icon> _RotateIcon;
+		std::shared_ptr<Icon> _ScaleIcon;
 
-		int _CurrentTransformationGizmoIndex;
-		std::vector<std::unique_ptr<Gizmo>> _TransformationGizmos;
 
 		std::unique_ptr<Grid3DGizmo>						_Grid3DGizmo;
 		std::shared_ptr<Shader>						_GizmoShader;

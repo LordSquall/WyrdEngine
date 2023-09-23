@@ -58,8 +58,8 @@ namespace Wyrd {
 		glm::vec2 dir = glm::normalize(pt2 - pt1);
 
 		glm::vec2 n = {
-			dir.x * cos(WYRD_DEG_TO_RAD(90.0)) - dir.y * sin(WYRD_DEG_TO_RAD(90.0)),
-			dir.x * sin(WYRD_DEG_TO_RAD(90.0)) + dir.y * cos(WYRD_DEG_TO_RAD(90.0))
+			dir.x * cos(DEG_TO_RAD(90.0)) - dir.y * sin(DEG_TO_RAD(90.0)),
+			dir.x * sin(DEG_TO_RAD(90.0)) + dir.y * cos(DEG_TO_RAD(90.0))
 		};
 
 		glm::vec2 p1 = pt2 + (n * (thickness * 0.5f));
@@ -81,15 +81,15 @@ namespace Wyrd {
 	{
 
 		glm::vec2 dir = {
-			cos(WYRD_DEG_TO_RAD(-angle)),
-			sin(WYRD_DEG_TO_RAD(-angle))
+			cos(DEG_TO_RAD(-angle)),
+			sin(DEG_TO_RAD(-angle))
 		};
 
 		glm::vec2 pt2 = pt1 + (dir * length);
 
 		glm::vec2 n = {
-			dir.x * cos(WYRD_DEG_TO_RAD(90.0)) - dir.y * sin(WYRD_DEG_TO_RAD(90.0)),
-			dir.x * sin(WYRD_DEG_TO_RAD(90.0)) + dir.y * cos(WYRD_DEG_TO_RAD(90.0))
+			dir.x * cos(DEG_TO_RAD(90.0)) - dir.y * sin(DEG_TO_RAD(90.0)),
+			dir.x * sin(DEG_TO_RAD(90.0)) + dir.y * cos(DEG_TO_RAD(90.0))
 		};
 
 		glm::vec2 p1 = pt2 + (n * (thickness * 0.5f));
@@ -121,15 +121,15 @@ namespace Wyrd {
 		for (int i = 1; i < resolution + 1; i++)
 		{
 			glm::vec2 pt2 = {
-				center.x + radius * cos(WYRD_DEG_TO_RAD(increment  * i)),
-				center.y + radius * sin(WYRD_DEG_TO_RAD(increment  * i))
+				center.x + radius * cos(DEG_TO_RAD(increment  * i)),
+				center.y + radius * sin(DEG_TO_RAD(increment  * i))
 			};
 
 			glm::vec2 dir = glm::normalize(pt1 - pt2);
 
 			glm::vec2 n = {
-				dir.x * cos(WYRD_DEG_TO_RAD(90.0)) - dir.y * sin(WYRD_DEG_TO_RAD(90.0)),
-				dir.x * sin(WYRD_DEG_TO_RAD(90.0)) + dir.y * cos(WYRD_DEG_TO_RAD(90.0))
+				dir.x * cos(DEG_TO_RAD(90.0)) - dir.y * sin(DEG_TO_RAD(90.0)),
+				dir.x * sin(DEG_TO_RAD(90.0)) + dir.y * cos(DEG_TO_RAD(90.0))
 			};
 
 			glm::vec2 p1 = pt2 + (n * (thickness * 0.5f));
