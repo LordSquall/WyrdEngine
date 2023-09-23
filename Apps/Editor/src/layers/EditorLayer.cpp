@@ -422,7 +422,7 @@ namespace Wyrd::Editor
 		}
 
 		ImGui::SameLine();
-		ImGui::SetCursorPosX(ImGui::GetWindowContentRegionWidth() - (size.x * 3));
+		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x - ImGui::GetWindowContentRegionMin().x) - (size.x * 3));
 		
 		if (ImGui::IconButton(_exportOptionsButtonIcon, 4, true, size) == true)
 		{

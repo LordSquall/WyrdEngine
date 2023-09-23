@@ -328,9 +328,6 @@ namespace Wyrd::Editor
 
 			if (ImGuizmo::IsUsing())
 			{
-
-				WYRD_TRACE("GIZMOMAT: {0}", glm::to_string(transformMat));
-
 				glm::vec3 translation, rotation, scale;
 				Maths::DecomposeTransform(transformMat, translation, rotation, scale);
 
@@ -338,9 +335,6 @@ namespace Wyrd::Editor
 				transform->position = translation;
 				transform->rotation = transform->rotation + dRot;
 				transform->scale = scale;
-
-
-				WYRD_TRACE("GIZMOMAT [SCALE]: {0}", glm::to_string(scale));
 			}
 		}
 
@@ -435,18 +429,21 @@ namespace Wyrd::Editor
 		/* we only want to process mouse events within the viewport of the scene */
 		if (_Viewport.ContainsPoint(viewportPos) == true)
 		{
-			for (Entity e : EntitySet<EditorComponent, MetaDataComponent, Transform3DComponent>(*_Scene.get()))
+			if (_Scene)
 			{
-				MetaDataComponent* metaDataComponent = _Scene->Get<MetaDataComponent>(e);
-				Transform3DComponent* transform3DComponent = _Scene->Get<Transform3DComponent>(e);
-				EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
-
-				Ray r;
-				PhysicsUtils::ScreenPosToWorldRay(viewportPos, _ViewportBoundary._size, _CameraController->GetCamera().GetViewMatrix(), _CameraController->GetCamera().GetProjectionMatrix(), r);
-
-				if (PhysicsUtils::IntersectRayBoundingBox(transform3DComponent->modelMatrix, r, editorComponent->inputBoundingBox))
+				for (Entity e : EntitySet<EditorComponent, MetaDataComponent, Transform3DComponent>(*_Scene.get()))
 				{
-					_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(e));
+					MetaDataComponent* metaDataComponent = _Scene->Get<MetaDataComponent>(e);
+					Transform3DComponent* transform3DComponent = _Scene->Get<Transform3DComponent>(e);
+					EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
+
+					Ray r;
+					PhysicsUtils::ScreenPosToWorldRay(viewportPos, _ViewportBoundary._size, _CameraController->GetCamera().GetViewMatrix(), _CameraController->GetCamera().GetProjectionMatrix(), r);
+
+					if (PhysicsUtils::IntersectRayBoundingBox(transform3DComponent->modelMatrix, r, editorComponent->inputBoundingBox))
+					{
+						_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(e));
+					}
 				}
 			}
 		}

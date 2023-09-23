@@ -503,6 +503,7 @@ project "Editor"
 	filter "system:windows"
 		systemversion "latest"
 
+		debugenvs { "PATH=%PATH%;%MONO_BIN%" }
 		defines
 		{
 			"WYRD_PLATFORM_WINDOWS",
