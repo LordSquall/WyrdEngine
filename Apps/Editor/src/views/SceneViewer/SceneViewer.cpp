@@ -430,7 +430,7 @@ namespace Wyrd::Editor
 		/* we only want to process mouse events within the viewport of the scene */
 		if (_Viewport.ContainsPoint(viewportPos) == true)
 		{
-			if (_Scene)
+			if (_Scene && !ImGuizmo::IsOver())
 			{
 				for (Entity e : EntitySet<EditorComponent, MetaDataComponent, Transform3DComponent>(*_Scene.get()))
 				{
@@ -444,12 +444,13 @@ namespace Wyrd::Editor
 					if (PhysicsUtils::IntersectRayBoundingBox(transform3DComponent->modelMatrix, r, editorComponent->inputBoundingBox))
 					{
 						_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(e));
+						return true;
 					}
 				}
 			}
 		}
 
-		return true;
+		return false;
 	}
 
 	bool SceneViewer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e, void* data)
