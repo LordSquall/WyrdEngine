@@ -84,7 +84,7 @@ namespace Wyrd::Editor
 							pool->count++;
 						}
 
-						jsonxx::Object entityObj = entitiesArray.get<jsonxx::Object>(i);
+						jsonxx::Object entityObj = entitiesArray.get<jsonxx::Object>((unsigned int)i);
 
 						Wyrd::UID entityUID = UID(entityObj.get<jsonxx::String>("uid"));
 						jsonxx::Array componentsArray = entityObj.get<jsonxx::Array>("components");
@@ -93,7 +93,7 @@ namespace Wyrd::Editor
 
 						for (size_t ci = 0; ci < componentsArray.size(); ci++)
 						{
-							jsonxx::Object componentObject = componentsArray.get<jsonxx::Object>(ci);
+							jsonxx::Object componentObject = componentsArray.get<jsonxx::Object>((unsigned int)ci);
 
 							std::string name = componentObject.get<jsonxx::String>("name");
 							jsonxx::Object data = componentObject.get<jsonxx::Object>("data");
@@ -112,7 +112,7 @@ namespace Wyrd::Editor
 
 							if (pool->serialise == true)
 							{
-								int poolElementSize = pool->elementSize;
+								size_t poolElementSize = pool->elementSize;
 
 								ComponentSerialiserFactory::Deserialise(name, data, &(pool->data[i * poolElementSize]));
 

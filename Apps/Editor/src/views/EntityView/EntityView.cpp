@@ -43,7 +43,7 @@ namespace Wyrd::Editor
 					{
 						MetaDataComponent* metadataComp = scene.Get<MetaDataComponent>(e);
 
-						ImGui::PushID(e);
+						ImGui::PushID((int)e);
 						ImGui::TableNextRow(ImGuiTableRowFlags_None, ImGui::GetTextLineHeightWithSpacing() * 1.2f);
 						ImGui::TableNextColumn();
 

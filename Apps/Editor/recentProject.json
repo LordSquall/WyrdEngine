@@ -1,6 +1,10 @@
 {
 	"projects": [
 		{
+			"name": "EntityTesting",
+			"path": "C:\\Projects\\games\\EntityStuctureTest\\EntityTesting\\EntityTesting.oproj" 
+		},
+		{
 			"name": "ScriptingTests",
 			"path": "C:\\Projects\\games\\ScriptingTests\\ScriptingTests.oproj" 
 		},

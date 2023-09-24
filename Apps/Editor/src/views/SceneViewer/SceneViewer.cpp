@@ -14,9 +14,6 @@
 
 /* local include */
 #include "SceneViewer.h"
-#include "gizmos/2D/Translate2DGizmo.h"
-#include "gizmos/2D/Rotate2DGizmo.h"
-#include "gizmos/2D/Scale2DGizmo.h"
 #include "gizmos/3D/Grid3DGizmo.h"
 #include "support/ImGuiUtils.h"
 #include "datamodels/EditorComponents.h"

@@ -161,7 +161,7 @@ namespace Wyrd::Editor
 		}
 
 		ImVec2 availableRegion = ImGui::GetWindowSize();
-		ImGui::SetCursorPos(ImVec2(availableRegion.x - 130.0, availableRegion.y - 30.0f));
+		ImGui::SetCursorPos(ImVec2(availableRegion.x - 130.0f, availableRegion.y - 30.0f));
 
 		if (ImGui::TextButton("Cancel"))
 		{

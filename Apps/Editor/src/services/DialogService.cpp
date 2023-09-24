@@ -50,7 +50,7 @@ namespace Wyrd::Editor
 						float yPos = (((float)currentWinHeight) * 0.5f) - ((float)dialogConfig.height * 0.5f);
 
 						ImGui::SetNextWindowPos(ImVec2(xPos, yPos));
-						ImGui::SetNextWindowSize(ImVec2(dialogConfig.width, dialogConfig.height));
+						ImGui::SetNextWindowSize(ImVec2((float)dialogConfig.width, (float)dialogConfig.height));
 					}
 					ImGui::OpenPopup(title);
 				}

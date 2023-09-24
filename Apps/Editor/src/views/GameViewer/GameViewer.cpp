@@ -12,7 +12,6 @@
 
 /* local include */
 #include "GameViewer.h"
-#include "gizmos/TranslationGizmo.h"
 #include "support/ImGuiUtils.h"
 
 /* external includes */
