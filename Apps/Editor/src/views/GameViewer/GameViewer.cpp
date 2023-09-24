@@ -56,15 +56,22 @@ namespace Wyrd::Editor
 		{
 			Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(_CameraEntity);
 			CameraComponent* camera = _Scene->Get<CameraComponent>(_CameraEntity);
-			
-			_Camera->SetPosition({ transform->position.x, transform->position.y, transform->position.z });
-			_Camera->SetYaw(-transform->rotation.y);
-			_Camera->SetPitch(transform->rotation.x);
-			_Camera->SetMode(Camera::Mode::Perspective);
-			_Camera->perspectiveSettings.nearPlane = camera->nearPlane;
-			_Camera->perspectiveSettings.farPlane = camera->farPlane;
-			_Camera->perspectiveSettings.aspect = camera->aspectRatio;
-			_Camera->Update();
+
+			if (transform == nullptr || camera == nullptr)
+			{
+				_CameraEntity = ENTITY_INVALID;
+			}
+			else
+			{
+				_Camera->SetPosition({ transform->position.x, transform->position.y, transform->position.z });
+				_Camera->SetYaw(-transform->rotation.y);
+				_Camera->SetPitch(transform->rotation.x);
+				_Camera->SetMode(Camera::Mode::Perspective);
+				_Camera->perspectiveSettings.nearPlane = camera->nearPlane;
+				_Camera->perspectiveSettings.farPlane = camera->farPlane;
+				_Camera->perspectiveSettings.aspect = camera->aspectRatio;
+				_Camera->Update();
+			}
 		}
 	}
 

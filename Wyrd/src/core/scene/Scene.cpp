@@ -130,13 +130,10 @@ namespace Wyrd
 		_AvailableEntities.push_back(entity);
 
 		// remove the components from the pool
-		for (auto& p : componentPools)
-		{
-			memcpy(p->data + ((entity - 1) * p->elementSize), p->data + (entity * p->elementSize), p->elementSize * (MAX_ENTITIES - entity));
-		}
-
-		// remove entity from list
-		entities.erase(entities.begin() + (entity - 1));
+		//for (auto& p : componentPools)
+		//{
+		//	memcpy(p->data + ((entity - 1) * p->elementSize), p->data + (entity * p->elementSize), p->elementSize * (MAX_ENTITIES - entity));
+		//}
 	}
 
 	void Scene::SwapEntity(Entity entityA, Entity entityB)
