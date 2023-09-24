@@ -47,6 +47,31 @@ namespace Wyrd
 		{
 			_projectionMatrix = glm::ortho(orthoSettings.left, orthoSettings.right, orthoSettings.bottom, orthoSettings.top, orthoSettings.nearPlane, orthoSettings.farPlane);
 		}
+
+		// Update frustum
+		const float halfVSide = perspectiveSettings.farPlane * tanf(glm::radians(perspectiveSettings.fov) * .5f);
+		const float halfHSide = halfVSide * perspectiveSettings.aspect;
+		const glm::vec3 frontMultFar = perspectiveSettings.farPlane * -GetForwardDirection();
+
+		glm::vec3 invertedPos = -_Position;
+
+		frustum.nearFace = { invertedPos + perspectiveSettings.nearPlane * -GetForwardDirection(),
+			GetForwardDirection() };
+
+		frustum.farFace = { invertedPos + frontMultFar,
+			-GetForwardDirection() };
+
+		frustum.rightFace = { invertedPos,
+			glm::cross(frontMultFar - GetRightDirection() * halfHSide, GetUpDirection()) };
+
+		frustum.leftFace = { invertedPos,
+			glm::cross(GetUpDirection(), frontMultFar + GetRightDirection() * halfHSide) };
+
+		frustum.bottomFace = { invertedPos,
+			glm::cross(GetRightDirection(), frontMultFar - GetUpDirection() * halfVSide) };
+
+		frustum.topFace = { invertedPos,
+			glm::cross(frontMultFar + GetUpDirection() * halfVSide, GetRightDirection()) };
 	}
 
 
@@ -67,7 +92,7 @@ namespace Wyrd
 
 	glm::vec3 Camera::CalculatePosition() const
 	{
-		return _FocalPoint;// -GetForwardDirection() * _Distance;
+		return _Position;
 	}
 
 	glm::quat Camera::GetOrientationQuat() const

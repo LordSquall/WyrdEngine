@@ -159,30 +159,29 @@ namespace Wyrd::Editor
 					//	renderer.DrawDebugVector(transform->position, { 0.0f, 0.0f, 10.0f }, 10.0f, Color::BLUE, glm::identity<glm::mat4>(), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
 					//}
 
-					for (Entity e : EntitySet<Transform3DComponent, EditorComponent, CameraComponent>(*_Scene.get()))
+					if (_SelectedEntity != ENTITY_INVALID)
 					{
-						//Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(e);
-						//EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
-						//CameraComponent* cameraComponent = _Scene->Get<CameraComponent>(e);
-						//
-						//Camera debugCamera;
-						//debugCamera.SetPosition({ transform->position.x, transform->position.y, transform->position.z });
-						//debugCamera.SetYaw(debugCamera.GetYaw() + -transform->rotation.y);
-						//debugCamera.SetPitch(debugCamera.GetPitch() + transform->rotation.x);
-						//debugCamera.perspectiveSettings.farPlane = cameraComponent->farPlane;
-						//debugCamera.perspectiveSettings.nearPlane = cameraComponent->nearPlane;
-						//debugCamera.perspectiveSettings.aspect = cameraComponent->aspectRatio;
-						//debugCamera.SetMode(Camera::Mode::Perspective);
-						//debugCamera.Update();
+						Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(_SelectedEntity);
+						CameraComponent* cameraComponent = _Scene->Get<CameraComponent>(_SelectedEntity);
 
-						//renderer.DrawDebugVector(transform->position, debugCamera.GetForward() * 10.0f, 10.0f, Color::YELLOW, glm::mat4(1), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
-						//renderer.DrawDebugFrustum(transform->position, debugCamera.GetForward(), debugCamera.frustum, 10.0f, Color::CYAN, glm::mat4(1), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
+						if (transform != nullptr && cameraComponent != nullptr)
+						{
+							Camera debugCamera;
+							debugCamera.SetPosition({ transform->position.x, transform->position.y, transform->position.z });
+							debugCamera.SetYaw(debugCamera.GetYaw() + -DEG_TO_RAD(transform->rotation.y));
+							debugCamera.SetPitch(debugCamera.GetPitch() + DEG_TO_RAD(transform->rotation.x));
+							debugCamera.perspectiveSettings.farPlane = cameraComponent->farPlane;
+							debugCamera.perspectiveSettings.nearPlane = cameraComponent->nearPlane;
+							debugCamera.perspectiveSettings.aspect = cameraComponent->aspect;
+							debugCamera.SetMode(Camera::Mode::Perspective);
+							debugCamera.Update();
 
+							renderer.DrawDebugFrustum({ -transform->position.x, -transform->position.y, -transform->position.z }, debugCamera.GetForwardDirection(), debugCamera.frustum, 3.0f, Color::CYAN, glm::mat4(1), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
+						}
 					}
 				}
 
 				_Grid3DGizmo->Render(ts, renderer);
-
 			}
 
 			renderer.Flush();
@@ -251,17 +250,6 @@ namespace Wyrd::Editor
 		}
 		ImGui::SameLine();
 		ImGui::PopID();
-
-		//for (int i = 0; i < _TransformationGizmos.size(); i++)
-		//{
-		//	ImGui::PushID(_TransformationGizmos[i].get());
-		//	if (ImGui::IconButton(_TransformationGizmoIcons[i], 1, _CurrentTransformationGizmoIndex == i, size) == true)
-		//	{
-		//		_CurrentTransformationGizmoIndex = i;
-		//	}
-		//	ImGui::SameLine();
-		//	ImGui::PopID();
-		//}
 		
 		if (ImGui::IconButton(_pointSelectBtnIcon, 1, false, size) == true)
 		{

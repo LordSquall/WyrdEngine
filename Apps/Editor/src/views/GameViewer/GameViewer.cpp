@@ -64,8 +64,8 @@ namespace Wyrd::Editor
 			else
 			{
 				_Camera->SetPosition({ transform->position.x, transform->position.y, transform->position.z });
-				_Camera->SetYaw(-transform->rotation.y);
-				_Camera->SetPitch(transform->rotation.x);
+				_Camera->SetYaw(-DEG_TO_RAD(transform->rotation.y));
+				_Camera->SetPitch(DEG_TO_RAD(transform->rotation.x));
 				_Camera->SetMode(Camera::Mode::Perspective);
 				_Camera->perspectiveSettings.nearPlane = camera->nearPlane;
 				_Camera->perspectiveSettings.farPlane = camera->farPlane;

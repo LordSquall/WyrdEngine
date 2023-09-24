@@ -40,8 +40,8 @@ namespace Wyrd
 		inline const float GetPitch() const { return _Pitch; }
 		inline void SetPitch(float pitch) { _Pitch = pitch; }
 
-		inline const glm::vec3 GetPosition() const { return _FocalPoint; }
-		inline void SetPosition(const glm::vec3 position) { _FocalPoint = position; }
+		inline const glm::vec3 GetPosition() const { return _Position; }
+		inline void SetPosition(const glm::vec3 position) { _Position = position; }
 
 		inline const glm::vec3 GetOrientation() const { return { _Pitch, 0.0f, _Yaw }; }
 		inline void SetOrientation(const glm::vec3 orientation) { SetPitch(orientation.x); SetYaw(orientation.z); }
@@ -96,7 +96,6 @@ namespace Wyrd
 		glm::mat4 _projectionMatrix;
 
 		glm::vec3 _Position = { 0.0f, 0.0f, 0.0f };
-		glm::vec3 _FocalPoint = { 0.0f, 0.0f, 0.0f };
 
 		float _Distance = 0.0f;
 		float _Yaw = 0.0f;
