@@ -172,9 +172,18 @@ namespace Wyrd::Editor
 				scriptFiles.push_back(value->GetPath());
 			}
 		}
-		
 		/**
-		* First stage is to compile all the file into a loadable library.
+		* generate an assembly info class for the user library and add to library
+		*/
+		Utils::CopySingleFile(Utils::GetEditorResFolder() + "scripts/AssemblyInfo.cs", _WorkspaceService->GetTempDirectory(), true);
+		std::string templateS = Utils::ReadFileToString((_WorkspaceService->GetTempDirectory() / "AssemblyInfo.cs").string());
+		std::string	expandedS =	Utils::ReplaceAll(templateS, "<TITLE>", _WorkspaceService->GetCurrentProject()->name);
+		Utils::CreateRawFile(_WorkspaceService->GetTempDirectory() / "AssemblyInfo.cs", expandedS, true);
+
+		scriptFiles.push_back(_WorkspaceService->GetTempDirectory() / "AssemblyInfo.cs");
+
+		/**
+		* compile all the file into a loadable library.
 		* Note: we want to compile this into the temp directory, in case the compilation fails
 		*/
 		const std::filesystem::path tempModelFileName = _WorkspaceService->GetTempDirectory() / (_WorkspaceService->GetCurrentProject()->name + ".dll");

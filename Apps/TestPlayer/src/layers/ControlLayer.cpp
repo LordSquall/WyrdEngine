@@ -57,6 +57,7 @@ bool ControlLayer::OnAttach()
 	CameraComponent* cameraComponent = scene->Get<CameraComponent>(_CameraEntity);
 	if (transformComponent == nullptr || cameraComponent == nullptr)
 	{
+		WYRD_CORE_ERROR("Unable to start scene!. Can't locate valid Camera configuration!");
 		return false;
 	}
 

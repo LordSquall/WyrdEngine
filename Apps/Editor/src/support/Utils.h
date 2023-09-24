@@ -65,8 +65,8 @@ namespace Wyrd::Editor
 		static bool FolderExists(const std::string& filename);
 
 		/* File Functions */
-		static bool CreateRawFile(const std::filesystem::path& filename, const std::string& content);
-		static bool CopySingleFile(const std::filesystem::path& filename, const std::filesystem::path& directory);
+		static bool CreateRawFile(const std::filesystem::path& filename, const std::string& content, bool overwrite = false);
+		static bool CopySingleFile(const std::filesystem::path& filename, const std::filesystem::path& directory, bool overwrite = false);
 		static void RenameFile(const std::filesystem::path& filename, const std::filesystem::path& newFilename);
 		static void RemoveFile(const std::filesystem::path& filename);
 		static const std::string BuildPath(std::initializer_list<std::reference_wrapper<std::string>> args);

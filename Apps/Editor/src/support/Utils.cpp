@@ -394,8 +394,11 @@ namespace Wyrd::Editor {
 		return std::filesystem::is_directory(std::filesystem::path(filename));
 	}
 
-	bool Utils::CreateRawFile(const std::filesystem::path& filename, const std::string& content)
+	bool Utils::CreateRawFile(const std::filesystem::path& filename, const std::string& content, bool overwrite)
 	{
+		if (overwrite && std::filesystem::exists(filename))
+			std::filesystem::remove(filename);
+
 		std::ofstream file(filename);
 		file << content;
 		file.close();
@@ -403,8 +406,11 @@ namespace Wyrd::Editor {
 		return true;
 	}
 
-	bool Utils::CopySingleFile(const std::filesystem::path& filename, const std::filesystem::path& directory)
+	bool Utils::CopySingleFile(const std::filesystem::path& filename, const std::filesystem::path& directory, bool overwrite)
 	{
+		if (overwrite && std::filesystem::exists(directory / filename.filename()))
+			std::filesystem::remove(directory / filename.filename());
+
 		std::filesystem::copy(filename, directory);
 		return true;
 	}

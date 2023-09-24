@@ -11,6 +11,10 @@
 		{
 			"name": "TestProject_01",
 			"path": "C:\\Projects\\games\\TestProject_01\\TestProject_01.oproj" 
+		},
+		{
+			"name": "TestWorld",
+			"path": "C:\\Projects\\games\\TestWorld\\TestWorld\\TestWorld.oproj" 
 		} 
 	] 
 } 

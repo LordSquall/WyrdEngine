@@ -394,7 +394,7 @@ namespace Wyrd::Editor
 		{
 			_workspaceService->SaveScene();
 			ExportManager::Export();
-			Utils::SystemExecute("..\\..\\bin\\Debug\\TestPlayer\\TestPlayer.exe --gamedir \"C:/Projects/games/ScriptingTests/.builds/\"");
+			Utils::SystemExecute("..\\..\\bin\\Debug\\TestPlayer\\TestPlayer.exe --gamedir \"" + _workspaceService->GetBuildsDirectory().string() + "/\"");
 		}
 
 		/* setup the dockspace */

@@ -474,15 +474,19 @@ namespace Wyrd
 			// Get the file name
 			std::string className = file.stem().string();
 
-			/* retrieve the managed class */
-			MonoClass* managedClass = mono_class_from_name((MonoImage*)_ClientImage, "WyrdGame", className.c_str());
+			/* We want to be sure to exclude the assembly info class */
+			if (className != "AssemblyInfo")
+			{
+				/* retrieve the managed class */
+				MonoClass* managedClass = mono_class_from_name((MonoImage*)_ClientImage, "WyrdGame", className.c_str());
 
-			/* Add class to the managed class map */
-			_ManagedClasses[className] = mono_class_from_name((MonoImage*)_ClientImage, "WyrdGame", className.c_str());
+				/* Add class to the managed class map */
+				_ManagedClasses[className] = mono_class_from_name((MonoImage*)_ClientImage, "WyrdGame", className.c_str());
 
-			std::shared_ptr<ScriptedClass> newScript = std::make_shared<ScriptedClass>(className, &_ManagedClasses[className], _ClientDomain);
+				std::shared_ptr<ScriptedClass> newScript = std::make_shared<ScriptedClass>(className, &_ManagedClasses[className], _ClientDomain);
 
-			_ScriptedCustomClasses[className] = newScript;
+				_ScriptedCustomClasses[className] = newScript;
+			}
 		}
 
 		/* Retrieve fixed objects */
