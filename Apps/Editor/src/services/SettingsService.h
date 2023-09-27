@@ -27,7 +27,7 @@
 #define CONFIG_SCENEVIEWER__YSPACING		"y_spacing"
 #define CONFIG_SCENEVIEWER__COLS			"columns"
 #define CONFIG_SCENEVIEWER__ROWS			"rows"
-#define CONFIG_SCENEVIEWER__COLOR			"color"
+#define CONFIG_SCENEVIEWER__BGBOLOR			"bgcolor"
 
 #define CONFIG_RENDERDOC					"Preferences-RenderDoc"
 #define CONFIG_RENDERDOC__ENABLED			"enabled"

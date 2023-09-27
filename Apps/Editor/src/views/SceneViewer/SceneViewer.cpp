@@ -121,9 +121,10 @@ namespace Wyrd::Editor
 			
 			if (_Scene != nullptr)
 			{
+				Color bgColor = Utils::ToColor(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__BGBOLOR, "1,1,1,1"));
 
 				_Framebuffer->Bind();
-				renderer.Clear(0.1f, 0.1f, 0.1f);
+				renderer.Clear(bgColor.r, bgColor.g, bgColor.b);
 
 				for (Entity e : EntitySet<Transform3DComponent, MeshRendererComponent, MaterialComponent>(*_Scene.get()))
 				{
@@ -261,6 +262,25 @@ namespace Wyrd::Editor
 		ImGui::Checkbox("show stats", &showStats);
 		ImGui::SameLine();
 		ImGui::Checkbox("show EC", &showEditorComponent);
+		ImGui::SameLine();
+
+		ImGui::SetCursorPosX(ImGui::GetWindowSize().x - (size.x * 2.0f));
+		if (ImGui::BeginPopupContextItem("sceneviewer_settings_popup"))
+		{
+			Color bgColor = Utils::ToColor(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__BGBOLOR, "1,1,1,1"));
+
+			if (ImGui::ColorPicker3("Background Color", (float*)&bgColor))
+			{
+				_SettingsService->SetSetting(Utils::ToString(bgColor), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__BGBOLOR);
+			}
+			ImGui::EndPopup();
+		}
+
+		if (ImGui::IconButton(_ScaleIcon, 2003, true, size, -1, CurrentTransformTool == TransformTool::Scale ? ImVec4(1, 1, 1, 1) : ImVec4(0, 0, 0, 0), ImVec4(0.5f, 0.5f, 0.5f, 1.0f)) == true)
+		{
+			ImGui::OpenPopup("sceneviewer_settings_popup");
+		}
+
 		
 		menuBarHeight = ImGui::GetCursorScreenPos().y - menuBarHeight;
 		
