@@ -113,6 +113,7 @@ namespace Wyrd::Editor
 		/* set the configuration flags for imgui */
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
 		/* add the editor gui font */
 		io.Fonts->AddFontFromFileTTF("Montserrat-Regular.otf", 16.0f);
@@ -439,6 +440,12 @@ namespace Wyrd::Editor
 		//renderer.StartNamedSection("ImGui Editor");
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+		}
 		//renderer.EndNamedSection();
 		
 	}

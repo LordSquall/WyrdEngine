@@ -90,7 +90,10 @@ namespace Wyrd {
 
 			entities[entity-1].mask.set(componentID);
 			
-			componentPools[componentID]->count++;
+			if (entity > componentPools[componentID]->count)
+			{
+				componentPools[componentID]->count++;
+			}
 
 			return comp;
 		}

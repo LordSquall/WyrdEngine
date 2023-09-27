@@ -21,8 +21,11 @@ namespace Wyrd::Editor
 
 	private:
 		void OnSceneOpened(Events::EventArgs& args);
+		void OnSelectedEntityChanged(Events::EventArgs& args);
 
 		std::shared_ptr<EventService>   _EventService;
 		std::shared_ptr<Scene>			_Scene;
+
+		Entity	_SelectedEntity;
 	};
 }

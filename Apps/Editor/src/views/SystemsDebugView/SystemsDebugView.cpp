@@ -94,7 +94,7 @@ namespace Wyrd::Editor
 		}
 	}
 
-	SystemsDebugView::SystemsDebugView(EditorLayer* editorLayer) : EditorViewBase("Systems Debug View", editorLayer), _Scene(nullptr)
+	SystemsDebugView::SystemsDebugView(EditorLayer* editorLayer) : EditorViewBase("Systems Debug View", editorLayer), _Scene(nullptr), _SelectedEntity(ENTITY_INVALID)
 	{
 		_ShowFlag = true;
 
@@ -102,6 +102,7 @@ namespace Wyrd::Editor
 
 		/* setup event bindings */
 		_EventService->Subscribe(Events::EventType::SceneOpened, WYRD_BIND_FN(SystemsDebugView::OnSceneOpened));
+		_EventService->Subscribe(Events::EventType::SceneOpened, WYRD_BIND_FN(SystemsDebugView::OnSelectedEntityChanged));
 	}
 
 	SystemsDebugView::~SystemsDebugView() {}
@@ -328,5 +329,11 @@ namespace Wyrd::Editor
 	{
 		Events::SceneOpenedArgs& evtArgs = static_cast<Events::SceneOpenedArgs&>(args);
 		_Scene = evtArgs.scene;
+	}
+
+	void SystemsDebugView::OnSelectedEntityChanged(Events::EventArgs& args)
+	{
+		Events::SelectedEntityChangedArgs& evtArgs = static_cast<Events::SelectedEntityChangedArgs&>(args);
+		_SelectedEntity = evtArgs.entity;
 	}
 }

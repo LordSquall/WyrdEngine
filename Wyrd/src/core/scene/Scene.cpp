@@ -88,18 +88,6 @@ namespace Wyrd
 			entities.push_back({ entities.size() + 1, ComponentMask() });
 			ent = entities.back().id;
 		}
-		
-		/* register all the inbuild components with the ECS */
-		InitialiseComponent<MetaDataComponent>(ent);
-		InitialiseComponent<RelationshipComponent>(ent);
-		InitialiseComponent<Transform3DComponent>(ent);
-
-		// Assign all initial components
-		MetaDataComponent* metaDataComponent = AssignComponent<MetaDataComponent>(ent);
-		RelationshipComponent* relationshipComponent = AssignComponent<RelationshipComponent>(ent);
-		Transform3DComponent* transform3DComponent = AssignComponent<Transform3DComponent>(ent);
-
-		strcpy(metaDataComponent->name, "New Entity");
 
 		return ent;
 	}
