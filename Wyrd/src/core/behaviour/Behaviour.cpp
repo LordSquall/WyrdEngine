@@ -87,7 +87,6 @@ namespace Wyrd
 	void Behaviour::Start(std::shared_ptr<Scene> scene)
 	{
 		_CurrentScene = scene;
-		_IsRunning = true;
 
 		/* generate a new run ID */
 		_RunID = UIDUtils::Create();
@@ -103,9 +102,6 @@ namespace Wyrd
 		/* setup the native pointer to the unmanaged systems */
 		if (MonoUtils::SetProperty((MonoImage*)_CoreImage, "WyrdAPI", "ResourceManagerProxy", "NativePtr", _ResourceManagedProxy, { &_BehaviourSubsystem }) == false) { WYRD_ERROR("Failed to set BehaviourManager::NativePtr!"); return; }
 
-		/* assign to the managed static reference */
-		if (MonoUtils::SetProperty((MonoImage*)_CoreImage, "WyrdAPI", "ManagerProxy", "ResourceManager", nullptr, { &_ResourceManagedProxy }) == false) { WYRD_ERROR("Failed to set BehaviourManager::NativePtr!"); return; }
-
 		/* setup the interface pointers for all external events */
 		if (MonoUtils::SetProperty((MonoImage*)_CoreImage, "WyrdAPI", "SceneManager", "NativePtr", nullptr, { &_SceneManager }) == false)
 		{
@@ -115,6 +111,7 @@ namespace Wyrd
 
 		if (_CurrentScene != nullptr)
 		{
+
 			/* store the raw scene pointer all ensure it's available at all times within in the VM */
 			_Scene = _CurrentScene.get();
 
@@ -131,7 +128,7 @@ namespace Wyrd
 				auto textureUID = texture.first.bytes();
 				std::vector<void*> args;
 				MonoArray* arr = mono_array_new((MonoDomain*)_ClientDomain, mono_get_byte_class(), textureUID.size());
-				
+
 				for (auto i = 0; i < textureUID.size(); i++) {
 					mono_array_set(arr, uint8_t, i, textureUID[i]);
 				}
@@ -143,18 +140,18 @@ namespace Wyrd
 			}
 
 
-			/** 
+			/**
 			* We add each of the pools types to the Managed Scene. This will link the Managed classes to the unmanaged pool
 			 */
 			for (auto& pool : _Scene->componentPools)
 			{
-				MonoUtils::InvokeMethod((MonoImage*)_CoreImage, "WyrdAPI", "Scene", "AddPoolRegistration", nullptr, 
-					{ 
-						mono_string_new((MonoDomain*)_RootDomain, pool->scriptName.c_str()), 
-						&pool->idx 
+				MonoUtils::InvokeMethod((MonoImage*)_CoreImage, "WyrdAPI", "Scene", "AddPoolRegistration", nullptr,
+					{
+						mono_string_new((MonoDomain*)_RootDomain, pool->scriptName.c_str()),
+						&pool->idx
 					});
 			}
-			
+
 			/**
 			* We register the component pools for the scene. This is important to ensure the component IDs on the native
 			* are the same in the VM. This allows simple mapping between the components  in the ECS
@@ -187,21 +184,21 @@ namespace Wyrd
 			for (Entity e : EntitySet<ScriptComponent>(*_CurrentScene.get()))
 			{
 				ScriptComponent* scriptComponent = _CurrentScene->Get<ScriptComponent>(e);
-			
+
 				/* retrieve script class */
 				auto scriptClass = GetCustomClassByUID(scriptComponent->scriptId);
-			
+
 				if (scriptClass != nullptr)
 				{
 					/* create the actual object*/
 					auto scriptObject = std::make_shared<ScriptedCustomObject>((MonoDomain*)_ClientDomain, _ClientImage, GetCustomClassByUID(scriptComponent->scriptId).get(), _ScriptedClasses["ScriptedEntity"].get(), e);
-					
+
 					/* add to the custom object list */
 					_ECSScriptedCustomObjects[scriptComponent->scriptId].push_back(scriptObject);
-			
+
 					/* map the instance Id to the location in the map vector */
 					scriptComponent->instanceId = (uint32_t)_ECSScriptedCustomObjects[scriptComponent->scriptId].size() - 1;
-			
+
 					ScriptedCustomObject* obj = GetCustomObject(scriptComponent->scriptId, scriptComponent->instanceId);
 
 					for (auto& prop : *scriptComponent->properties)
@@ -215,13 +212,13 @@ namespace Wyrd
 				}
 			}
 
-			/** 
-			* Call the initial start function on each of the managed objects 
+			/**
+			* Call the initial start function on each of the managed objects
 			*/
 			for (Entity e : EntitySet<ScriptComponent>(*_CurrentScene.get()))
 			{
 				ScriptComponent* scriptComponent = _CurrentScene->Get<ScriptComponent>(e);
-			
+
 				if (scriptComponent->instanceId != -1)
 				{
 					ScriptedCustomObject* obj = GetCustomObject(scriptComponent->scriptId, scriptComponent->instanceId);
@@ -232,6 +229,8 @@ namespace Wyrd
 					}
 				}
 			}
+
+			_IsRunning = true;
 		}
 	}
 
