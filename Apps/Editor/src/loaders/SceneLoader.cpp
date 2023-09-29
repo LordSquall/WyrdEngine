@@ -178,32 +178,35 @@ namespace Wyrd::Editor
 
 		for (auto& e : scene.entities)
 		{
-			jsonxx::Object entity;
-
-			MetaDataComponent* metaDataComponent = scene.Get<MetaDataComponent>(e.id);
-			entity << "uid" << metaDataComponent->uid;
-
-			jsonxx::Array components;
-
-			for (auto& cp : scene.componentPools)
+			if (e.mask != 0)
 			{
-				if (e.mask.test(cp->idx))
+				jsonxx::Object entity;
+
+				MetaDataComponent* metaDataComponent = scene.Get<MetaDataComponent>(e.id);
+				entity << "uid" << metaDataComponent->uid;
+
+				jsonxx::Array components;
+
+				for (auto& cp : scene.componentPools)
 				{
-					const char* componentData = (const char*)scene.Get(cp->idx, e.id);
+					if (e.mask.test(cp->idx))
+					{
+						const char* componentData = (const char*)scene.Get(cp->idx, e.id);
 
-					jsonxx::Object componentObj = ComponentSerialiserFactory::Serialise(cp->name, componentData);
+						jsonxx::Object componentObj = ComponentSerialiserFactory::Serialise(cp->name, componentData);
 
-					jsonxx::Object componentsDescObj;
-					componentsDescObj << "name" << cp->name;
-					componentsDescObj << "data" << componentObj;
+						jsonxx::Object componentsDescObj;
+						componentsDescObj << "name" << cp->name;
+						componentsDescObj << "data" << componentObj;
 
-					components << componentsDescObj;
+						components << componentsDescObj;
+					}
 				}
+
+				entity << "components" << components;
+
+				entityArray << entity;
 			}
-
-			entity << "components" << components;
-
-			entityArray << entity;
 		}
 
 		o << "entities" << entityArray;

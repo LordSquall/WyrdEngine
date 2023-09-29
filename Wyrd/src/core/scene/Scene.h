@@ -140,6 +140,9 @@ namespace Wyrd {
 			if (entity == ENTITY_INVALID)
 				return nullptr;
 
+			if (entities.size() < entity - 1)
+				return nullptr;
+
 			int componentID = GetID<Component>();
 			if (!entities[entity-1].mask.test(componentID))
 				return nullptr;

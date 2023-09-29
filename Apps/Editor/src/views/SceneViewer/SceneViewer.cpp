@@ -78,10 +78,11 @@ namespace Wyrd::Editor
 	{
 		if (_Scene != nullptr)
 		{
-			for (Entity e : EntitySet<EditorComponent, Transform3DComponent>(*_Scene.get()))
+			for (Entity e : EntitySet<EditorComponent, Transform3DComponent, RelationshipComponent>(*_Scene.get()))
 			{
 				EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
 				Transform3DComponent* transform3DComponent = _Scene->Get<Transform3DComponent>(e);
+				RelationshipComponent* relationshipComponent = _Scene->Get<RelationshipComponent>(e);
 
 				glm::quat q = glm::quat(glm::vec3(glm::radians(transform3DComponent->rotation.x), glm::radians(transform3DComponent->rotation.y), glm::radians(transform3DComponent->rotation.z)));
 
@@ -90,6 +91,12 @@ namespace Wyrd::Editor
 				glm::mat4 scale = glm::scale(glm::mat4(1), glm::vec3(transform3DComponent->scale.x, transform3DComponent->scale.y, transform3DComponent->scale.z));
 
 				transform3DComponent->modelMatrix = translate * rotate * scale;
+
+				if (relationshipComponent->parent != ENTITY_INVALID)
+				{
+					Transform3DComponent* parentTransform3DComponent = _Scene->Get<Transform3DComponent>(relationshipComponent->parent);
+					transform3DComponent->modelMatrix = parentTransform3DComponent->modelMatrix * transform3DComponent->modelMatrix;
+				}
 
 				MeshRendererComponent* meshRenderer = _Scene->Get<MeshRendererComponent>(e);
 				if (meshRenderer != nullptr)
