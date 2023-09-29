@@ -16,9 +16,7 @@ namespace Wyrd
 	{
 		ManagedClass = managedClass;
 
-		MonoProperty* unmanagedProp;
 		MonoMethod* unmangedMethod;
-		void* propertyIter = NULL;
 		void* methodIter = NULL;
 
 		//WYRD_TRACE("Mapping Scripted Class: {0}", className);
@@ -46,7 +44,29 @@ namespace Wyrd
 			if (found != std::string::npos) valueMethod = false;
 		}
 
-		Properties = std::make_shared<std::map<std::string, BasePropRef>>();
+		Properties = CreatePropertyList();
+	}
+
+	BasePropMapRef ScriptedClass::GetPropertiesCopy()
+	{
+		BasePropMapRef newPropertyList = CreatePropertyList();
+
+		for (const auto& [k, v] : *Properties)
+		{
+			jsonxx::Object obj;
+			v->Serialise(obj);
+			(*newPropertyList).at(k)->SetType(v->GetType());
+		}
+
+		return newPropertyList;
+	}
+
+	BasePropMapRef ScriptedClass::CreatePropertyList()
+	{
+		MonoProperty* unmanagedProp;
+		void* propertyIter = NULL;
+
+		BasePropMapRef newPropertyList = std::make_shared<std::map<std::string, BasePropRef>>();
 
 		/* at this point we want to process each of the properties in object */
 		while ((unmanagedProp = mono_class_get_properties((MonoClass*)*ManagedClass, &propertyIter))) {
@@ -72,7 +92,7 @@ namespace Wyrd
 					fullTypeNS = qualifiedType.substr(0, found);
 					fullTypeName = qualifiedType.substr(found + 1);
 				}
-				
+
 				if (fullTypeNS == "WyrdGame") {
 					qualifiedType = "WyrdGame.ScriptedObject";
 				}
@@ -81,7 +101,7 @@ namespace Wyrd
 				if (scriptProp != nullptr)
 				{
 					WYRD_TRACE("- Property: {0}", name);
-					(*Properties)[name] = std::move(scriptProp);
+					(*newPropertyList)[name] = std::move(scriptProp);
 				}
 				else
 				{
@@ -93,11 +113,7 @@ namespace Wyrd
 				WYRD_WARN("Unable to parse C# property '{0}'. Missing Get/Set function!", name);
 			}
 		}
-	}
 
-	BasePropMapRef ScriptedClass::GetPropertiesCopy() const
-	{
-		BasePropMapRef newPropertyList = std::make_shared<std::map<std::string, BasePropRef>>();
 		return newPropertyList;
 	}
 }

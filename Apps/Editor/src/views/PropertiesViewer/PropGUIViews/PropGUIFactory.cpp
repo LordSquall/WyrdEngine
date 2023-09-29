@@ -16,7 +16,9 @@ namespace Wyrd
         PropInt* intProp = (PropInt*)prop;
         ImGui::Text(prop->GetName().c_str());
         ImGui::SameLine();
+        ImGui::PushID(prop->GetName().c_str());
         ImGui::InputInt("", (int*)&intProp->Value);
+        ImGui::PopID();
     }
 
     void CreatePropGUI_Int32(BaseProp* prop)
@@ -24,7 +26,9 @@ namespace Wyrd
         PropInt32* int32Prop = (PropInt32*)prop;
         ImGui::Text(prop->GetName().c_str());
         ImGui::SameLine();
+        ImGui::PushID(prop->GetName().c_str());
         ImGui::InputInt("", (int*)&int32Prop->Value);
+        ImGui::PopID();
     }
 
     void CreatePropGUI_UInt32(BaseProp* prop)
@@ -32,7 +36,9 @@ namespace Wyrd
         PropUInt32* intU32Prop = (PropUInt32*)prop;
         ImGui::Text(prop->GetName().c_str());
         ImGui::SameLine();
+        ImGui::PushID(prop->GetName().c_str());
         ImGui::InputInt("", (int*)&intU32Prop->Value);
+        ImGui::PopID();
     }
 
     void CreatePropGUI_Int64(BaseProp* prop)
@@ -40,7 +46,9 @@ namespace Wyrd
         PropInt64* int64Prop = (PropInt64*)prop;
         ImGui::Text(prop->GetName().c_str());
         ImGui::SameLine();
+        ImGui::PushID(prop->GetName().c_str());
         ImGui::InputInt("", (int*)&int64Prop->Value);
+        ImGui::PopID();
     }
 
     void CreatePropGUI_UInt64(BaseProp* prop)
@@ -48,7 +56,9 @@ namespace Wyrd
         PropUInt64* intU64Prop = (PropUInt64*)prop;
         ImGui::Text(prop->GetName().c_str());
         ImGui::SameLine();
+        ImGui::PushID(prop->GetName().c_str());
         ImGui::InputInt("", (int*)&intU64Prop->Value);
+        ImGui::PopID();
     }
 
     void CreatePropGUI_Float(BaseProp* prop)
@@ -56,7 +66,9 @@ namespace Wyrd
         PropFloat* floatProp = (PropFloat*)prop;
         ImGui::Text(prop->GetName().c_str());
         ImGui::SameLine();
+        ImGui::PushID(prop->GetName().c_str());
         ImGui::InputFloat("", (float*)&floatProp->Value);
+        ImGui::PopID();
     }
 
     void CreatePropGUI_Double(BaseProp* prop)
@@ -64,7 +76,9 @@ namespace Wyrd
         PropDouble* doubleProp = (PropDouble*)prop;
         ImGui::Text(prop->GetName().c_str());
         ImGui::SameLine();
+        ImGui::PushID(prop->GetName().c_str());
         ImGui::InputDouble("", (double*)&doubleProp->Value);
+        ImGui::PopID();
     }
 
     void CreatePropGUI_String(BaseProp* prop)
@@ -72,7 +86,9 @@ namespace Wyrd
         PropDouble* doubleProp = (PropDouble*)prop;
         ImGui::Text(prop->GetName().c_str());
         ImGui::SameLine();
+        ImGui::PushID(prop->GetName().c_str());
         ImGui::InputText("", (std::string*)&doubleProp->Value);
+        ImGui::PopID();
     }
 
     void CreatePropGUI_Vec2(BaseProp* prop)
@@ -80,7 +96,9 @@ namespace Wyrd
         PropVec2* vec2Prop = (PropVec2*)prop;
         ImGui::Text(prop->GetName().c_str());
         ImGui::SameLine();
+        ImGui::PushID(prop->GetName().c_str());
         ImGui::InputFloat2("", (float*)&vec2Prop->Value);
+        ImGui::PopID();
     }
 
     void CreatePropGUI_Vec3(BaseProp* prop)
@@ -88,7 +106,9 @@ namespace Wyrd
         PropVec3* vec3Prop = (PropVec3*)prop;
         ImGui::Text(prop->GetName().c_str());
         ImGui::SameLine();
+        ImGui::PushID(prop->GetName().c_str());
         ImGui::InputFloat3("", (float*)&vec3Prop->Value);
+        ImGui::PopID();
     }
 
     void CreatePropGUI_Bool(BaseProp* prop)
@@ -96,7 +116,9 @@ namespace Wyrd
         PropBool* boolProp = (PropBool*)prop;
         ImGui::Text(prop->GetName().c_str());
         ImGui::SameLine();
+        ImGui::PushID(prop->GetName().c_str());
         ImGui::Checkbox("", (bool*)&boolProp->Value);
+        ImGui::PopID();
     }
 
     void CreatePropGUI_Color(BaseProp* prop)
@@ -104,7 +126,9 @@ namespace Wyrd
         PropColor* colorProp = (PropColor*)prop;
         ImGui::Text(prop->GetName().c_str());
         ImGui::SameLine();
+        ImGui::PushID(prop->GetName().c_str());
         ImGui::ColorEdit4("", (float*)&colorProp->Value);
+        ImGui::PopID();
     }
 
     void CreatePropGUI_Texture(BaseProp* prop)

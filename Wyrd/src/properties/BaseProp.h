@@ -49,7 +49,7 @@ class WYRD_LIBRARY_API Prop##Name :  public BaseProp\
 public:\
 	Prop##Name() : BaseProp("", "", #ManagedName), Value(DefaultValue) {}\
 	Prop##Name(const std::string& name) : BaseProp(name, "", #ManagedName), Value(DefaultValue) {}\
-	Prop##Name(const std::string& name, const std::string& type) : BaseProp(name, type, #ManagedName), Value(DefaultValue) {}\
+	Prop##Name(const std::string& name, const std::string& type) : BaseProp(name, #Name, type), Value(DefaultValue) {}\
 	Prop##Name(const std::string& name, const std::string& type, InternalStorageType value) : BaseProp(name, type, #ManagedName), Value(value) { }\
 	Prop##Name(const std::string& name, const std::string& type, const jsonxx::Value& value) : BaseProp(name, type, #ManagedName), Value(DefaultValue) { Deserialise(value); }\
 	Prop##Name(const std::string& name, const std::string& type, std::ifstream& value) : BaseProp(name, type, #ManagedName), Value(DefaultValue) { Deserialise(value); }\
@@ -111,6 +111,7 @@ namespace Wyrd
 		inline void SetName(const std::string& name) { _Name = name; };
 
 		inline const std::string GetType() const { return _Type; };
+		inline void SetType(const std::string& type) { _Type = type; };
 		inline const std::string GetManagedType() const { return _ManagedType; };
 
 

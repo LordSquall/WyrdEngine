@@ -41,10 +41,11 @@ namespace Wyrd::Editor
 
 	void SimulationService::OnUpdate()
 	{
-		if (_pendingRebuild)
+		if (_pendingRebuild || (_delayedRebuild && !_IsRunning))
 		{
 			_ResourceService->BuildScripts();
 			_pendingRebuild = false;
+			_delayedRebuild = false;
 		}
 	}
 
@@ -106,7 +107,14 @@ namespace Wyrd::Editor
 
 	void SimulationService::OnBuildBehaviourModelEvent(Events::EventArgs& args)
 	{
-		_pendingRebuild = true;
+		if (_IsRunning == false)
+		{
+			_pendingRebuild = true;
+		}
+		else
+		{
+			_delayedRebuild = true;
+		}
 	}
 
 	void SimulationService::OnBuildBehaviourBuiltEvent(Events::EventArgs& args)
@@ -121,9 +129,9 @@ namespace Wyrd::Editor
 
 				if (scriptResource != nullptr && scriptResource->PendingReload == true)
 				{
-					//std::shared_ptr<ScriptedClass> scriptClass = Application::Get().GetBehaviour().GetCustomClassByUID(scriptComponent->scriptId);
+					std::shared_ptr<ScriptedClass> scriptClass = Application::Get().GetBehaviour().GetCustomClassByUID(scriptComponent->scriptId);
 
-					//scriptComponent->properties = scriptClass->GetPropertiesCopy();
+					scriptComponent->properties = scriptClass->GetPropertiesCopy();
 				}
 			}
 		}

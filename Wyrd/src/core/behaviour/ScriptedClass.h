@@ -56,8 +56,11 @@ namespace Wyrd
 		*/
 		inline void SetName(const std::string& name) { _Name = name; }
 
-		BasePropMapRef GetPropertiesCopy() const;
 
+		BasePropMapRef GetPropertiesCopy();
+
+	private:
+		BasePropMapRef CreatePropertyList();
 
 	public:
 		BasePropMapRef	Properties;

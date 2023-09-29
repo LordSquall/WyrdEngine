@@ -57,6 +57,7 @@ namespace Wyrd::Editor
 		bool _IsPaused;
 		bool _IsAvailable;
 		bool _pendingRebuild;
+		bool _delayedRebuild;
 
 		float _MousePos[2];
 
