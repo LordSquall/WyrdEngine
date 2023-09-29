@@ -3,11 +3,11 @@
 #include <core/Log.h>
 #include <core/ecs/Components.h>
 #include <core/Application.h>
+#include <core/support/MaterialHelperFuncs.h>
 
 /* local includes */
 #include "MaterialComponentView.h"
 #include "views/PropertiesViewer/PropGUIViews/PropGUIFactory.h"
-#include "support/MaterialHelperFuncs.h"
 
 /* external includes */
 #include <imgui.h>

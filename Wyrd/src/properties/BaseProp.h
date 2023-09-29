@@ -144,6 +144,8 @@ namespace Wyrd
 
 		static BasePropMapRef CopyPropMap(BasePropMapRef map);
 
+		static void MergePropMaps(BasePropMapRef destination, BasePropMapRef source);
+
 		static std::map<std::string, PropFactory::CreateJsonPropFunc>* GetNativeProps();
 		static std::map<std::string, PropFactory::CreateJsonPropFunc>* GetManagedProps();
 		static std::map<std::string, PropFactory::CreateSerialPropFunc>* GetSerialProps();

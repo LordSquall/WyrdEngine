@@ -30,7 +30,7 @@ namespace Wyrd::Editor
 	struct LayoutSettings_s
 	{
 		float itemGroupSize = 64.0f;
-		int itemColumnCnt = 6;
+		int itemColumnCnt = 8;
 		int itemLabelShortCharLimit = 9;
 	} layoutSettings;
 

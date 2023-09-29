@@ -39,4 +39,12 @@ void Transform3DComponent_SetModelmatrix(void* scenePtr, Wyrd::Entity entity, gl
    component->modelMatrix = *modelMatrix;
 }
 
+void Transform3DComponent_SetParentmodelmatrix(void* scenePtr, Wyrd::Entity entity, glm::mat4* parentModelMatrix)
+{
+   Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
+   Wyrd::Transform3DComponent* component = scene->Get<Wyrd::Transform3DComponent>(entity);
+
+   component->parentModelMatrix = *parentModelMatrix;
+}
+
 

@@ -9,9 +9,14 @@
 				"binding": "u_BlendColor"
 			},
 			{
-				"name" : "BaseTexture",
-				"type" : "Texture",
-				"binding" : "u_Texture"
+				"name": "BaseTexture",
+				"type": "Texture",
+				"binding": "u_Texture"
+			},
+			{
+				"name": "Tiling",
+				"type": "Vec2",
+				"binding": "u_Tiling"
 			}
 		]
 	}

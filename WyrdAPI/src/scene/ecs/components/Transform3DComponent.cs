@@ -23,6 +23,9 @@ namespace WyrdAPI
       [MarshalAs(UnmanagedType.Struct)]
       private Matrix4 _modelmatrix;
 
+      [MarshalAs(UnmanagedType.Struct)]
+      private Matrix4 _parentmodelmatrix;
+
 
 
       public Vector3 Position
@@ -65,6 +68,16 @@ namespace WyrdAPI
          }
       }
 
+      public Matrix4 Parentmodelmatrix
+      {
+         get { return _parentmodelmatrix; }
+         set 
+         {
+             _parentmodelmatrix = value;
+             Transform3DComponent_SetParentmodelmatrix(Scene.NativePtr, EntityID, _parentmodelmatrix);
+         }
+      }
+
 
 
         public UInt64 EntityID { get; set; }
@@ -84,6 +97,8 @@ namespace WyrdAPI
          public static extern IntPtr Transform3DComponent_SetScale(IntPtr scenePtr, UInt64 entity, Vector3 scale);
          [DllImport("WyrdCAPI")]
          public static extern IntPtr Transform3DComponent_SetModelmatrix(IntPtr scenePtr, UInt64 entity, Matrix4 modelmatrix);
+         [DllImport("WyrdCAPI")]
+         public static extern IntPtr Transform3DComponent_SetParentmodelmatrix(IntPtr scenePtr, UInt64 entity, Matrix4 parentmodelmatrix);
 
 
         #endregion

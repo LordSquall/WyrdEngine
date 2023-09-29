@@ -19,6 +19,8 @@ LIBRARY_API void Transform3DComponent_SetScale(void* obj, Wyrd::Entity entity, W
 
 LIBRARY_API void Transform3DComponent_SetModelmatrix(void* obj, Wyrd::Entity entity, glm::mat4* position);
 
+LIBRARY_API void Transform3DComponent_SetParentmodelmatrix(void* obj, Wyrd::Entity entity, glm::mat4* position);
+
 
 
 #ifdef __cplusplus

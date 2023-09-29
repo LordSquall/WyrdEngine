@@ -5,13 +5,13 @@
 #include <core/Layer.h>
 #include <core/KeyCodes.h>
 #include <core/ecs/EntitySet.h>
+#include <core/support/MaterialHelperFuncs.h>
 
 /* local includes */
 #include "HierarchyView.h"
 #include "datamodels/EditorComponents.h"
 #include "support/ImGuiUtils.h"
 #include "support/RelationshipHelperFuncs.h"
-#include "support/MaterialHelperFuncs.h"
 
 namespace Wyrd::Editor
 {

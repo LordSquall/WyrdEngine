@@ -61,8 +61,12 @@
   <ItemGroup>
     <Compile Include="datamodels\ComponentDefintions.cs" />
     <Compile Include="datamodels\TypeMappingDefinitions.cs" />
-    <None Include="definitions\ComponentDefinitions.xml" />
-    <None Include="definitions\TypeMappingDefinitions.xml" />
+    <None Include="definitions\ComponentDefinitions.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="definitions\TypeMappingDefinitions.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Compile Include="src\GeneratorUtils.cs" />
     <Compile Include="src\Managed\ManagedComponents_Gen.cs" />
     <Compile Include="src\Program.cs" />
@@ -71,6 +75,24 @@
     <Compile Include="src\Unmanaged\PInvokeAPI_Gen.cs" />
     <Compile Include="src\Unmanaged\UnmanagedComponents_Gen.cs" />
     <Compile Include="src\Utils.cs" />
+    <None Include="templates\Components.cs.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="templates\Components.h.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="templates\ComponentSerialiserFactory.cpp.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="templates\ComponentSerialiserFactory.h.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="templates\PInvokeAPI.cpp.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="templates\PInvokeAPI.h.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

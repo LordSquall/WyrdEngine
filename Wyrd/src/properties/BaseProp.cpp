@@ -182,4 +182,15 @@ namespace Wyrd
 
         return propMap;
     }
+
+    void PropFactory::MergePropMaps(BasePropMapRef destination, BasePropMapRef source)
+    {
+        for (auto& s : *source)
+        {
+            if (destination->find(s.first) != destination->end())
+            {
+                (*destination)[s.first] = std::move(s.second);
+            }
+        }
+    }
 }

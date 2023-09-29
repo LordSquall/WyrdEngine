@@ -95,7 +95,7 @@ namespace Wyrd::Editor
 				if (relationshipComponent->parent != ENTITY_INVALID)
 				{
 					Transform3DComponent* parentTransform3DComponent = _Scene->Get<Transform3DComponent>(relationshipComponent->parent);
-					transform3DComponent->modelMatrix = parentTransform3DComponent->modelMatrix * transform3DComponent->modelMatrix;
+					transform3DComponent->parentModelMatrix = parentTransform3DComponent->modelMatrix;
 				}
 
 				MeshRendererComponent* meshRenderer = _Scene->Get<MeshRendererComponent>(e);
@@ -140,7 +140,7 @@ namespace Wyrd::Editor
 					MaterialComponent* material = _Scene->Get<MaterialComponent>(e);
 
 					Wyrd::DrawMeshCommand cmd{};
-					cmd.modelMatrix = transform->modelMatrix;
+					cmd.modelMatrix = transform->parentModelMatrix * transform->modelMatrix;
 					cmd.viewMatrix = _CameraController->GetCamera().GetViewMatrix();
 					cmd.projectionMatrix = _CameraController->GetCamera().GetProjectionMatrix();
 					cmd.material = Application::Get().GetResources().Materials[material->material].get();

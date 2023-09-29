@@ -5,6 +5,7 @@
 #include "core/ecs/Components.h"
 #include "core/behaviour/ScriptedClass.h"
 #include "core/Log.h"
+#include "core/support/MaterialHelperFuncs.h"
 #include "serial/TypeSerialisers.h"
 #include "serial/ComponentSerialiserFactory.h"
 
@@ -27,13 +28,17 @@ namespace Wyrd
 
     void CustomDeserialisation_MaterialComponent(Wyrd::MaterialComponent* data, jsonxx::Object& obj)
     {
+        // retrieve the material we are using 
+        MaterialHelperFuncs::AssignToComponent(data);
+
         if (obj.has<jsonxx::Object>("properties"))
         {
-            jsonxx::Object propsObject = obj.get<jsonxx::Object>("properties");
+                
+           jsonxx::Object propsObject = obj.get<jsonxx::Object>("properties");
 
-            BasePropMapRef propMap = PropFactory::CreatePropMap(propsObject);
+           BasePropMapRef propMap = PropFactory::CreatePropMap(propsObject);
 
-            data->properties.swap(propMap);
+           PropFactory::MergePropMaps(data->properties, propMap);
         }
     }
 

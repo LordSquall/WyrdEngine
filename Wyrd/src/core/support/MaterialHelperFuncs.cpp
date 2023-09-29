@@ -5,11 +5,10 @@
 #include <core/Application.h>
 #include <core/ecs/Components.h>
 #include <core/scene/Scene.h>
+#include <core/support/MaterialHelperFuncs.h>
 
-/* local includes */
-#include "MaterialHelperFuncs.h"
 
-namespace Wyrd::Editor
+namespace Wyrd
 {
 	void MaterialHelperFuncs::AssignToComponent(MaterialComponent* materialComponent)
 	{

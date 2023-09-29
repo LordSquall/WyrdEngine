@@ -55,8 +55,9 @@ namespace Wyrd
         Wyrd::Vector3 rotation;
         Wyrd::Vector3 scale;
         glm::mat4 modelMatrix;
+        glm::mat4 parentModelMatrix;
 
-        Transform3DComponent() : position(0,0,0), rotation(0,0,0), scale(1,1,1), modelMatrix(glm::mat4(1.0)) {} 
+        Transform3DComponent() : position(0,0,0), rotation(0,0,0), scale(1,1,1), modelMatrix(glm::mat4(1.0)), parentModelMatrix(glm::mat4(1.0)) {} 
 
         static void ResetFunc(ComponentPool* pool, Entity entity) {
             Transform3DComponent* c = (Transform3DComponent*)pool->get(entity);

@@ -61,6 +61,15 @@ namespace Wyrd
 						texture->Bind();
 					}
 				}
+
+				if (input.second.type == "Vec2")
+				{
+					PropVec2* vec2Prop = (PropVec2*)(*propMap)->at(input.first).get();
+					if (vec2Prop != nullptr)
+					{
+						_shader->SetUniformVec2(input.second.binding, glm::vec2(vec2Prop->Value.x, vec2Prop->Value.y));
+					}
+				}
 			}
 		}
 	}

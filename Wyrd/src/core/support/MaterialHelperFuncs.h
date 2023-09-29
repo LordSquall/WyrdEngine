@@ -8,7 +8,7 @@ namespace Wyrd
 	class Scene;
 }
 
-namespace Wyrd::Editor
+namespace Wyrd
 {
 	class MaterialHelperFuncs
 	{

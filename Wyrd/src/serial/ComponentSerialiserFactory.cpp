@@ -59,6 +59,7 @@ namespace Wyrd
         stream.write((char*)&data->rotation, sizeof(Wyrd::Vector3));
         stream.write((char*)&data->scale, sizeof(Wyrd::Vector3));
         stream.write((char*)&data->modelMatrix, sizeof(glm::mat4));
+        stream.write((char*)&data->parentModelMatrix, sizeof(glm::mat4));
     }
 
     void ComponentSerialiserFactory::Serialise(jsonxx::Object & obj, Wyrd::MeshRendererComponent* data)
@@ -211,6 +212,7 @@ namespace Wyrd
         stream.read((char*)&data->rotation, sizeof(Wyrd::Vector3));
         stream.read((char*)&data->scale, sizeof(Wyrd::Vector3));
         stream.read((char*)&data->modelMatrix, sizeof(glm::mat4));
+        stream.read((char*)&data->parentModelMatrix, sizeof(glm::mat4));
     }
 
     void ComponentSerialiserFactory::Deserialise(jsonxx::Object & obj, Wyrd::MeshRendererComponent* data)

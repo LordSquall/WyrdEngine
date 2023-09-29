@@ -16,6 +16,7 @@
     <Data name="rotation" type="Vec3" default="0,0,0"/>
     <Data name="scale" type="Vec3" default="1,1,1"/>
     <Data name="modelMatrix" type="Mat4" default="glm::mat4(1.0)" runtimeOnly="true"/>
+    <Data name="parentModelMatrix" type="Mat4" default="glm::mat4(1.0)" runtimeOnly="true"/>
   </Component>
 
   <Component name="MeshRendererComponent" shortName="MeshRenderer">
