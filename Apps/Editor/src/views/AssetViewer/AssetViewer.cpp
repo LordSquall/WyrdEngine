@@ -11,6 +11,7 @@
 #include "datamodels/resources/TextureRes.h"
 #include "services/ServiceManager.h"
 #include "support/ImGuiUtils.h"
+#include "views/MaterialEditorView/MaterialEditorView.h"
 
 /* external includes */
 #include <imgui.h>
@@ -37,28 +38,16 @@ namespace Wyrd::Editor
 	AssetViewer::AssetViewer(EditorLayer* editorLayer) : EditorViewBase("Asset Viewer", editorLayer), _SelectedDirectory(""), _SelectedResource(-1), _DeleteDirectoryState(""), _DeleteAssetState("")
 	{
 		/* cache the service(s) */
-		_resourcesService = ServiceManager::Get<ResourceService>();
-		_workspaceService = ServiceManager::Get<WorkspaceService>();
-		_settingsService = ServiceManager::Get<SettingsService>();
-		_EventService = ServiceManager::Get<EventService>();
-		_dialogService = ServiceManager::Get<DialogService>();
-
-		/* cache the icon pointers */
-		_UnknownIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_unknown");
-		_FolderIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_folder");
-		_SceneIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_scene");
-		_TextureIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_texture");
-		_ScriptIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_script");
-		_ModelIcon = _resourcesService->GetIconLibrary().GetIcon("common", "assets_3dmodel");
-		_HomeIcon = _resourcesService->GetIconLibrary().GetIcon("common", "nav_home");
-		_UpIcon = _resourcesService->GetIconLibrary().GetIcon("common", "nav_up");
-		_OpenIcon = _resourcesService->GetIconLibrary().GetIcon("common", "nav_open");
-		_FilterOffIcon = _resourcesService->GetIconLibrary().GetIcon("common", "data_filteroff");
+		_Resources = ServiceManager::Get<ResourceService>();
+		_Workspace = ServiceManager::Get<WorkspaceService>();
+		_Settings = ServiceManager::Get<SettingsService>();
+		_Events = ServiceManager::Get<EventService>();
+		_Dialogs = ServiceManager::Get<DialogService>();
 
 		/* register from events */
-		_EventService->Subscribe(Events::EventType::ProjectLoaded, [this](Events::EventArgs& args)
+		_Events->Subscribe(Events::EventType::ProjectLoaded, [this](Events::EventArgs& args)
 			{
-				_SelectedDirectory = _workspaceService->GetAssetsDirectory();
+				_SelectedDirectory = _Workspace->GetAssetsDirectory();
 			});
 	}
 
@@ -68,7 +57,7 @@ namespace Wyrd::Editor
 		float itemGroupWidth = 64.0f;
 		static ResourceType selectedType = ResourceType::NONE;
 
-		if (_workspaceService->GetCurrentProject() != nullptr)
+		if (_Workspace->GetCurrentProject() != nullptr)
 		{
 			/* capture the width of the child area to determine the column count */
 			//layoutSettings.itemColumnCnt = (int)(ImGui::GetContentRegionAvail().x / layoutSettings.itemGroupSize);
@@ -79,7 +68,7 @@ namespace Wyrd::Editor
 			ImGui::InputText("##label", &_SearchCriteria);
 			ImGui::SameLine();
 						
-			if (ImGui::IconButton(_FilterOffIcon, 0, _SearchCriteria != "", ImVec2(16.0f, 16.0f)))
+			if (ImGui::IconButton(_Resources->RetrieveIcon("common", "data_filteroff"), 0, _SearchCriteria != "", ImVec2(16.0f, 16.0f)))
 			{
 				_SearchCriteria = "";
 			}
@@ -89,15 +78,15 @@ namespace Wyrd::Editor
 			ImGui::SameLine();
 			
 			ImVec2 buttonSize = ImVec2(16.0f, 16.0f);
-			bool parentDirAvailable = _SelectedDirectory != _workspaceService->GetAssetsDirectory();
-			if (ImGui::IconButton(_UpIcon, 2, parentDirAvailable, buttonSize))
+			bool parentDirAvailable = _SelectedDirectory != _Workspace->GetAssetsDirectory();
+			if (ImGui::IconButton(_Resources->RetrieveIcon("common", "nav_up"), 2, parentDirAvailable, buttonSize))
 			{
 				_SelectedDirectory = _SelectedDirectory.parent_path();
 				_SelectedResource = -1;
 			}
 			ImGui::SameLine();
 			
-			if (ImGui::IconButton(_OpenIcon, 3, true, buttonSize))
+			if (ImGui::IconButton(_Resources->RetrieveIcon("common", "nav_open"), 3, true, buttonSize))
 			{
 				ShellExecuteA(NULL, "open", _SelectedDirectory.string().c_str(), NULL, NULL, SW_SHOWDEFAULT);
 			}
@@ -122,7 +111,7 @@ namespace Wyrd::Editor
 				{
 					if (ImGui::MenuItem("Scene"))
 					{
-						_dialogService->OpenSingleEntryDialog(_EditorLayer, "Create new Scene", "Name", [&](std::string d) -> void {
+						_Dialogs->OpenSingleEntryDialog(_EditorLayer, "Create new Scene", "Name", [&](std::string d) -> void {
 
 							/* load the scene template */
 							std::string rawTemplateContent = Utils::ReadFileToString(Utils::GetEditorResFolder() + "\\templates\\Scene.scene");
@@ -138,7 +127,7 @@ namespace Wyrd::Editor
 					}
 					if (ImGui::MenuItem("Material"))
 					{
-						_dialogService->OpenSingleEntryDialog(_EditorLayer, "Create new Material", "Name", [&](std::string d) -> void {
+						_Dialogs->OpenSingleEntryDialog(_EditorLayer, "Create new Material", "Name", [&](std::string d) -> void {
 
 							/* load the material template */
 							std::string rawTemplateContent = Utils::ReadFileToString(Utils::GetEditorResFolder() + "\\templates\\Material.material");
@@ -154,7 +143,7 @@ namespace Wyrd::Editor
 					}
 					if (ImGui::MenuItem("Script"))
 					{
-						_dialogService->OpenSingleEntryDialog(_EditorLayer, "Create new Script", "Name", [&](std::string d) -> void {
+						_Dialogs->OpenSingleEntryDialog(_EditorLayer, "Create new Script", "Name", [&](std::string d) -> void {
 
 							/* load the material template */
 							std::string rawTemplateContent = Utils::ReadFileToString(Utils::GetEditorResFolder() + "\\templates\\Script.cs");
@@ -170,7 +159,7 @@ namespace Wyrd::Editor
 					}
 					if (ImGui::MenuItem("Shader"))
 					{
-						_dialogService->OpenSingleEntryDialog(_EditorLayer, "Create new Shader", "Name", [&](std::string d) -> void {
+						_Dialogs->OpenSingleEntryDialog(_EditorLayer, "Create new Shader", "Name", [&](std::string d) -> void {
 
 							/* load the material template */
 							std::string rawTemplateContent = Utils::ReadFileToString(Utils::GetEditorResFolder() + "\\templates\\Shader.shader");
@@ -216,7 +205,7 @@ namespace Wyrd::Editor
 					for (const auto& entry : std::filesystem::directory_iterator(_SelectedDirectory))
 					{
 						/* check if the file extension shouldn't be ignored */
-						if (!_resourcesService->CheckIgnored(entry.path()))
+						if (!_Resources->CheckIgnored(entry.path()))
 						{
 							if (std::filesystem::is_regular_file(entry.path().string()))
 							{
@@ -308,7 +297,7 @@ namespace Wyrd::Editor
 			ImGui::SetCursorPos(cursor);
 
 			/* retrieve matching resource cache entry */
-			auto resource = _resourcesService->GetResourceByFilePath(file);
+			auto resource = _Resources->GetResourceByFilePath(file);
 
 			if (resource != nullptr)
 			{
@@ -388,7 +377,7 @@ namespace Wyrd::Editor
 		}
 
 		/* Visuals */
-		ImGui::Image(*_FolderIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+		ImGui::Image(_Resources->RetrieveIcon("common", "assets_folder"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 		ImGui::TextClipped(p.stem().string().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "..");
 	}
 
@@ -397,7 +386,7 @@ namespace Wyrd::Editor
 		/* there is a change that the image may not be loaded yet if currently in the background thread. in this case we want to draw a default texture */
 		ImTextureID thumbnailTexture = 0;
 		if (textureResource.GetTexture() == nullptr)
-			thumbnailTexture = (ImTextureID)(INT_PTR)_resourcesService->GetDefaultTexture()->GetTexture()->GetHandle();
+			thumbnailTexture = (ImTextureID)(INT_PTR)_Resources->GetDefaultTexture()->GetTexture()->GetHandle();
 		else
 			thumbnailTexture = (ImTextureID)(INT_PTR)textureResource.GetTexture()->GetHandle();
 
@@ -451,7 +440,7 @@ namespace Wyrd::Editor
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 		{
 			ImGui::SetDragDropPayload(IMGUI_DND_SCENE, &sceneResource.GetResourceID(), sizeof(UID));
-			ImGui::Image(*_SceneIcon, ImVec2(32, 32));
+			ImGui::Image(_Resources->RetrieveIcon("common", "assets_scene"), ImVec2(32, 32));
 			ImGui::EndDragDropSource();
 		}
 
@@ -482,7 +471,7 @@ namespace Wyrd::Editor
 			ImGui::Separator();
 			if (ImGui::MenuItem("Properties"))
 			{
-				_EventService->Publish(Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&sceneResource));
+				_Events->Publish(Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&sceneResource));
 			}
 			ImGui::EndPopup();
 		}
@@ -496,12 +485,13 @@ namespace Wyrd::Editor
 			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 			{
 				_SelectedResource = resID;
+				_Events->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(ENTITY_INVALID));
 				ServiceManager::Get<WorkspaceService>()->LoadScene(sceneResource.GetPath());
 			}
 		}
 
 		/* Visuals */
-		ImGui::Image(*_SceneIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+		ImGui::Image(_Resources->RetrieveIcon("common", "assets_scene"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 		ImGui::TextClipped(sceneResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
 
 	}
@@ -513,7 +503,7 @@ namespace Wyrd::Editor
 		{
 			const UID resourceID = scriptResource.GetResourceID();
 			ImGui::SetDragDropPayload(IMGUI_DND_SCRIPT, &resourceID, sizeof(UID));
-			ImGui::Image(*_ScriptIcon, ImVec2(32, 32));
+			ImGui::Image(_Resources->RetrieveIcon("common", "assets_script"), ImVec2(32, 32));
 			ImGui::EndDragDropSource();
 		}
 
@@ -537,7 +527,7 @@ namespace Wyrd::Editor
 			ImGui::Separator();
 			if (ImGui::MenuItem("Properties"))
 			{
-				_EventService->Publish(Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&scriptResource));
+				_Events->Publish(Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&scriptResource));
 			}
 			ImGui::EndPopup();
 		}
@@ -553,13 +543,13 @@ namespace Wyrd::Editor
 			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 			{
 				/* build the full path to the project file */
-				std::filesystem::path projectFile = _workspaceService->GetProjectRootDirectory() / "/vs.code-workspace";
+				std::filesystem::path projectFile = _Workspace->GetProjectRootDirectory() / "/vs.code-workspace";
 				Utils::SystemExecute("code " + projectFile.string() + " " + scriptResource.GetPath().string());
 			}
 		}
 
 		/* Visuals */
-		ImGui::Image(*_ScriptIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+		ImGui::Image(_Resources->RetrieveIcon("common", "assets_script"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 		ImGui::TextClipped(scriptResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
 	}
 
@@ -587,6 +577,14 @@ namespace Wyrd::Editor
 		/* Context Menu */
 		if (ImGui::BeginPopupContextItem())
 		{
+			if (ImGui::MenuItem("Open in Material Editor"))
+			{
+				_Events->Publish(Events::EventType::OpenMaterialTool, std::make_unique<Events::OpenMaterialToolArgs>(materialResource.GetMaterial()));
+			}
+			if (ImGui::MenuItem("View Source"))
+			{
+				Utils::SystemExecute("code " + materialResource.GetPath().string());
+			}
 			if (ImGui::MenuItem("Delete"))
 			{
 				Utils::RemoveFile(materialResource.GetPath().c_str());
@@ -608,7 +606,7 @@ namespace Wyrd::Editor
 		}
 
 		/* Visuals */
-		ImGui::Image(*_SceneIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+		ImGui::Image(_Resources->RetrieveIcon("common", "assets_material"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 		ImGui::TextClipped(materialResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
 
 	}
@@ -658,7 +656,7 @@ namespace Wyrd::Editor
 		}
 
 		/* Visuals */
-		ImGui::Image(*_ModelIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+		ImGui::Image(_Resources->RetrieveIcon("common", "assets_3dmodel"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 		ImGui::TextClipped(modelResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
 
 	}
@@ -700,7 +698,7 @@ namespace Wyrd::Editor
 		}
 
 		/* Visuals */
-		ImGui::Image(*_SceneIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+		ImGui::Image(_Resources->RetrieveIcon("common", "assets_shader"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 		ImGui::TextClipped(ShaderResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
 
 	}
@@ -736,7 +734,7 @@ namespace Wyrd::Editor
 		}
 		
 		/* Visuals */
-		ImGui::Image(*_UnknownIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+		ImGui::Image(_Resources->RetrieveIcon("common", "assets_unknown"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 		ImGui::TextClipped(unknownResourceName.c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
 	}
 }

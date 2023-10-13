@@ -33,7 +33,9 @@ namespace Wyrd
 	{
 	public:
 		Material() {};
+		Material(std::shared_ptr<Material> material);
 
+		void BindModelMatrix(const glm::mat4& modelMat);
 		void BindViewMatrix(const glm::mat4& view);
 		void BindProjectionMatrix(const glm::mat4& projection);
 
@@ -43,13 +45,18 @@ namespace Wyrd
 		void SetShader(std::shared_ptr<Shader> shader) { _shader = shader; }
 		inline std::shared_ptr<Shader> GetShader() const { return _shader; }
 
+		void SetShaderName(const std::string& name) { _shaderName = name; }
+		inline std::string GetShaderName() const { return _shaderName; }
+
 		void AddInputBinding(const std::string& name, const std::string& type, const std::string& binding);
 
 		inline const MaterialInputMap& GetInputPropertyList() const { return _inputs; }
 
 	private:
 		std::shared_ptr<Shader> _shader;
+		std::string _shaderName;
 		MaterialInputMap _inputs;
+		bool _isShaderLoaded;
 
 	public:
 		static Material* Create(const MaterialDesc& desc);

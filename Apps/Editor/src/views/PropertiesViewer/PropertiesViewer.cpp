@@ -74,11 +74,11 @@ namespace Wyrd::Editor
 				if (ComponentViewFactory::Contains(scene->componentPools[i]->name, _SelectedEntity))
 				{
 					ImGui::PushID(i);
-					ImGui::Text(scene->componentPools[i]->scriptName.c_str());
+					ImGui::SeparatorText(scene->componentPools[i]->scriptName.c_str());
 
 					/* we cant allow the metadata component to be deleted */
 					if (i != 0)
-					{
+					{  
 						ImGui::SameLine();
 						if (ImGui::SmallButton("x"))
 						{

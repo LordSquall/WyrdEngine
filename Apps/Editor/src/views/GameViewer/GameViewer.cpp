@@ -4,6 +4,7 @@
 #include <core/Application.h>
 #include <core/ecs/ECS.h>
 #include <core/ecs/EntitySet.h>
+#include <core/Maths.h>
 #include <core/pipeline/Camera.h>
 #include <core/Layer.h>
 #include <core/Input.h>
@@ -22,15 +23,15 @@ namespace Wyrd::Editor
 	GameViewer::GameViewer(EditorLayer* editorLayer) : EditorViewBase("Game Viewer", editorLayer), _CameraEntity(ENTITY_INVALID), _SizeConfigID(1)
 	{
 		/* retrieve services */
-		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
-		_EventService = ServiceManager::Get<EventService>();
-		_ResourceService = ServiceManager::Get<ResourceService>();
-		_SettingsService = ServiceManager::Get<SettingsService>();
-		_SimulationService = ServiceManager::Get<SimulationService>();
+		_Workspace  = ServiceManager::Get<WorkspaceService>();
+		_Events = ServiceManager::Get<EventService>();
+		_Resources = ServiceManager::Get<ResourceService>();
+		_Settings = ServiceManager::Get<SettingsService>();
+		_Simulation = ServiceManager::Get<SimulationService>();
 
 		/* setup event bindings */
-		_EventService->Subscribe(Events::EventType::SceneOpened, WYRD_BIND_FN(GameViewer::OnSceneOpened));
-		_EventService->Subscribe(Events::EventType::SetSceneCamera, [this](Events::EventArgs& args) {
+		_Events->Subscribe(Events::EventType::SceneOpened, WYRD_BIND_FN(GameViewer::OnSceneOpened));
+		_Events->Subscribe(Events::EventType::SetSceneCamera, [this](Events::EventArgs& args) {
 			Events::SetSceneCameraArgs& a = (Events::SetSceneCameraArgs&)args;
 			_CameraEntity = a.entity;
 		});
@@ -56,6 +57,7 @@ namespace Wyrd::Editor
 		{
 			Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(_CameraEntity);
 			CameraComponent* camera = _Scene->Get<CameraComponent>(_CameraEntity);
+			RelationshipComponent* relationshipComponent = _Scene->Get<RelationshipComponent>(_CameraEntity);
 
 			if (transform == nullptr || camera == nullptr)
 			{
@@ -63,13 +65,40 @@ namespace Wyrd::Editor
 			}
 			else
 			{
-				_Camera->SetPosition({ transform->position.x, transform->position.y, transform->position.z });
+				glm::vec3 translation = { transform->position.x, transform->position.y, transform->position.z };
+				glm::vec3 rotation;
+				glm::vec3 scale;
+
+				if (relationshipComponent != nullptr && relationshipComponent->parent != ENTITY_INVALID)
+				{
+					Transform3DComponent* parentTransform3DComponent = _Scene->Get<Transform3DComponent>(relationshipComponent->parent);
+
+					if (parentTransform3DComponent != nullptr)
+					{
+						glm::vec3 parentTranslation;
+						glm::vec3 parentRotation;
+						glm::vec3 parentScale;
+						Maths::DecomposeTransform(parentTransform3DComponent->modelMatrix, parentTranslation, rotation, scale);
+
+						translation += parentTranslation;
+					}
+				}
+
+				_Camera->SetPosition(translation);
 				_Camera->SetYaw(-DEG_TO_RAD(transform->rotation.y));
 				_Camera->SetPitch(DEG_TO_RAD(transform->rotation.x));
-				_Camera->SetMode(Camera::Mode::Perspective);
+				_Camera->SetMode(camera->projection == 0 ? Camera::Mode::Perspective : Camera::Mode::Orthographic);
 				_Camera->perspectiveSettings.nearPlane = camera->nearPlane;
 				_Camera->perspectiveSettings.farPlane = camera->farPlane;
 				_Camera->perspectiveSettings.aspect = camera->aspectRatio;
+
+				_Camera->orthoSettings.top = camera->top;
+				_Camera->orthoSettings.bottom = camera->bottom;
+				_Camera->orthoSettings.left = camera->left;
+				_Camera->orthoSettings.right = camera->right;
+				_Camera->orthoSettings.nearPlane = camera->nearPlane;
+				_Camera->orthoSettings.farPlane = camera->farPlane;
+
 				_Camera->Update();
 			}
 		}
@@ -122,6 +151,21 @@ namespace Wyrd::Editor
 		}
 	}
 
+	void GameViewer::OnEvent(Event& event)
+	{
+
+		if (_Simulation->IsRunning())
+		{
+			EventDispatcher dispatcher(event);
+			dispatcher.Dispatch<MouseButtonPressedEvent>(WYRD_BIND_EVENT_FN(GameViewer::OnMouseButtonPressedEvent), nullptr);
+			dispatcher.Dispatch<MouseButtonReleasedEvent>(WYRD_BIND_EVENT_FN(GameViewer::OnMouseButtonReleasedEvent), nullptr);
+			dispatcher.Dispatch<MouseScrolledEvent>(WYRD_BIND_EVENT_FN(GameViewer::OnMouseScrolledEvent), nullptr);
+			dispatcher.Dispatch<MouseMovedEvent>(WYRD_BIND_EVENT_FN(GameViewer::OnMouseMovedEvent), nullptr);
+			dispatcher.Dispatch<KeyPressedEvent>(WYRD_BIND_EVENT_FN(GameViewer::OnKeyPressedEvent), nullptr);
+			dispatcher.Dispatch<KeyReleasedEvent>(WYRD_BIND_EVENT_FN(GameViewer::OnKeyReleasedEvent), nullptr);
+		}
+	}
+
 	void GameViewer::OnEditorRender()
 	{
 		static bool showStats = false;
@@ -140,7 +184,7 @@ namespace Wyrd::Editor
 			switch (_SizeConfigID)
 			{
 			case 0:
-				_Framebuffer->Resize((uint32_t)_WorkspaceService->GetCurrentProject()->GetExportSettings().width, (uint32_t)_WorkspaceService->GetCurrentProject()->GetExportSettings().height);
+				_Framebuffer->Resize((uint32_t)_Workspace->GetCurrentProject()->GetExportSettings().width, (uint32_t)_Workspace->GetCurrentProject()->GetExportSettings().height);
 				break;
 			case 1:
 				_Framebuffer->Resize((uint32_t)_Viewport._size.x, (uint32_t)_Viewport._size.y);
@@ -197,5 +241,44 @@ namespace Wyrd::Editor
 			_CameraEntity = ENTITY_INVALID;
 			//_CameraComponent = nullptr;
 		}
+	}
+
+	bool GameViewer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data)
+	{
+		return false;
+	}
+
+	bool GameViewer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e, void* data)
+	{
+		return false;
+	}
+
+	bool GameViewer::OnMouseScrolledEvent(MouseScrolledEvent& e, void* data)
+	{
+		return false;
+	}
+
+	bool GameViewer::OnMouseMovedEvent(MouseMovedEvent& e, void* data)
+	{
+		return false;
+	}
+
+	bool GameViewer::OnKeyPressedEvent(KeyPressedEvent& e, void* data)
+	{
+		if (e.GetRepeatCount() == 1)
+		{
+			_Simulation->SetInputState(e.GetKeyCode(), 0);
+		}
+		else
+		{
+			_Simulation->SetInputState(e.GetKeyCode(), 1);
+		}
+		return false;
+	}
+
+	bool GameViewer::OnKeyReleasedEvent(KeyReleasedEvent& e, void* data)
+	{
+		_Simulation->SetInputState(e.GetKeyCode(), 2);
+		return false;
 	}
 }

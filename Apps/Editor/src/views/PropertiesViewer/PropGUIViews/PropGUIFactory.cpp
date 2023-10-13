@@ -135,18 +135,17 @@ namespace Wyrd
     {
         PropTexture* textureProp = (PropTexture*)prop;
         ImGui::Text(prop->GetName().c_str());
-        ImGui::SameLine();
 
         auto texture = textureProp->Value ? textureProp->Value : Application::Get().GetResources().Textures[UID(RES_TEXTURE_DEFAULT)].get();
-        
 
-        ImGui::Text(texture->GetUID().str().c_str()); 
-        if (ImGui::IsItemHovered())
-        {
-            ImGui::BeginTooltip();
-            ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2(64.0f, 64.0f));
-            ImGui::EndTooltip();
-        }
+        ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2(64.0f, 64.0f));
+        
+        //if (ImGui::IsItemHovered())
+        //{
+        //    ImGui::BeginTooltip();
+        //    ImGui::Image((ImTextureID)(INT_PTR)texture->GetHandle(), ImVec2(64.0f, 64.0f));
+        //    ImGui::EndTooltip();
+        //}
         
 
         if (ImGui::BeginDragDropTarget())
@@ -168,7 +167,9 @@ namespace Wyrd
                 }
             }
             ImGui::EndDragDropTarget();
-        }
+        } 
+        ImGui::SameLine();
+        ImGui::Text(texture->GetUID().str().c_str());
     }
 
     void CreatePropGUI_Entity(BaseProp* prop)

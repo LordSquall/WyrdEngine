@@ -454,7 +454,7 @@ namespace Wyrd
 
 	PROPERTY_DESERIALISE_VAL_FUNCSIG(Bool)
 	{
-		Value = json.get<jsonxx::Number>();
+		Value = json.get<jsonxx::Boolean>();
 		return true;
 	}
 

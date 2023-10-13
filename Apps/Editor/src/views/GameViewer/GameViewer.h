@@ -20,6 +20,7 @@ namespace Wyrd::Editor
 		/* EditorPlugin functions */
 		void OnUpdate(Timestep ts) override;
 		void OnRender(Timestep ts, Renderer& renderer) override;
+		void OnEvent(Event& event) override;
 		void OnEditorRender() override;
 
 		void OnResize() override;
@@ -29,12 +30,19 @@ namespace Wyrd::Editor
 	private:
 		void OnSceneOpened(Events::EventArgs& args);
 
+		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data);
+		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e, void* data);
+		bool OnMouseScrolledEvent(MouseScrolledEvent& e, void* data);
+		bool OnMouseMovedEvent(MouseMovedEvent& e, void* data);
+		bool OnKeyPressedEvent(KeyPressedEvent& e, void* data);
+		bool OnKeyReleasedEvent(KeyReleasedEvent& e, void* data);
+
 	private:
-		std::shared_ptr<WorkspaceService>		_WorkspaceService;
-		std::shared_ptr<EventService>			_EventService;
-		std::shared_ptr<ResourceService>		_ResourceService;
-		std::shared_ptr<SettingsService>		_SettingsService;
-		std::shared_ptr<SimulationService>		_SimulationService;
+		std::shared_ptr<WorkspaceService>		_Workspace;
+		std::shared_ptr<EventService>			_Events;
+		std::shared_ptr<ResourceService>		_Resources;
+		std::shared_ptr<SettingsService>		_Settings;
+		std::shared_ptr<SimulationService>		_Simulation;
 		std::unique_ptr<Wyrd::FrameBuffer>		_Framebuffer;
 
 		std::shared_ptr<Scene>							_Scene;

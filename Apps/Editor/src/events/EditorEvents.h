@@ -27,6 +27,7 @@ namespace Wyrd::Editor::Events
 		AddResource, DeleteResource, ReloadResource, RenameResource,
 		LoadAsset, BuildBehaviourModel, BehaviourModelBuilt,
 		SetSceneCamera,
+		OpenMaterialTool,
 		CloseEditor
 	};
 
@@ -563,6 +564,26 @@ namespace Wyrd::Editor::Events
 	{
 	public:
 		SetSceneCameraEvent() : Event(EventType::SetSceneCamera) { }
+	};
+
+#pragma endregion
+
+#pragma region OpenTool
+
+	class OpenMaterialToolArgs : public EventArgs
+	{
+	public:
+		OpenMaterialToolArgs(std::shared_ptr<Material> material) : material(material) {}
+
+		std::shared_ptr<Material> material;
+
+		EVENT_ARGS_CLONE(OpenMaterialToolArgs)
+	};
+
+	class OpenMaterialToolEvent : public Event
+	{
+	public:
+		OpenMaterialToolEvent() : Event(EventType::OpenMaterialTool) { }
 	};
 
 #pragma endregion

@@ -16,9 +16,9 @@ namespace ImGui
 
 
     /* Buttons */
-	bool IconButton(std::shared_ptr<Wyrd::Editor::Icon> icon, ImGuiID id, bool enabled, const ImVec2& size, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
+	bool IconButton(const Wyrd::Editor::Icon& icon, ImGuiID id, bool enabled, const ImVec2& size, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
 	{
-		std::shared_ptr<Wyrd::Editor::TextureRes> texture = icon->iconSet->Texture;
+		std::shared_ptr<Wyrd::Editor::TextureRes> texture = icon.iconSet->Texture;
 
 		ImGuiWindow* window = GetCurrentWindow();
 		if (window->SkipItems)
@@ -63,7 +63,7 @@ namespace ImGui
 		if (tex != nullptr)
 		{
 			ImTextureID tempid = (ImTextureID)(UINT_PTR)tex->GetHandle();
-			window->DrawList->AddImage(tempid, image_bb.Min, image_bb.Max, ImVec2(icon->uv[0].x, icon->uv[0].y), ImVec2(icon->uv[2].x, icon->uv[2].y), enabledTint);
+			window->DrawList->AddImage(tempid, image_bb.Min, image_bb.Max, ImVec2(icon.uv[0].x, icon.uv[0].y), ImVec2(icon.uv[2].x, icon.uv[2].y), enabledTint);
 		}
 		return pressed;
 	}

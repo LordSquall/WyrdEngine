@@ -35,29 +35,23 @@ namespace Wyrd::Editor
 	SceneViewer::SceneViewer(EditorLayer* editorLayer) : EditorViewBase("Scene Viewer", editorLayer), _SelectedEntity(ENTITY_INVALID)
 	{
 		/* retrieve services */
-		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
-		_EventService = ServiceManager::Get<EventService>();
-		_ResourceService = ServiceManager::Get<ResourceService>();
-		_DialogService = ServiceManager::Get<DialogService>();
-		_SettingsService = ServiceManager::Get<SettingsService>();
-		_SimulationService = ServiceManager::Get<SimulationService>();
-		_CoreSystemService = ServiceManager::Get<CoreSystemsService>();
+		_Workspace = ServiceManager::Get<WorkspaceService>();
+		_Events = ServiceManager::Get<EventService>();
+		_Resources = ServiceManager::Get<ResourceService>();
+		_Dialogs = ServiceManager::Get<DialogService>();
+		_Settings = ServiceManager::Get<SettingsService>();
+		_Simulation = ServiceManager::Get<SimulationService>();
+		_CoreSystem = ServiceManager::Get<CoreSystemsService>();
 
 		/* setup event bindings */
-		_EventService->Subscribe(Events::EventType::SceneOpened, WYRD_BIND_FN(SceneViewer::OnSceneOpened));
-		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, WYRD_BIND_FN(SceneViewer::OnSelectedEntityChanged));
+		_Events->Subscribe(Events::EventType::SceneOpened, WYRD_BIND_FN(SceneViewer::OnSceneOpened));
+		_Events->Subscribe(Events::EventType::SelectedEntityChanged, WYRD_BIND_FN(SceneViewer::OnSelectedEntityChanged));
 
 		/* initialise camera */
 		_CameraController = std::make_shared<CameraController>();
 
 		/* initialise the grid */
 		_Grid3DGizmo = std::make_unique<Grid3DGizmo>(this);
-
-		/* initialise each icon */
-		_pointSelectBtnIcon = _ResourceService->GetIconLibrary().GetIcon("common", "sim_play");
-		_TranslateIcon = _ResourceService->GetIconLibrary().GetIcon("common", "transform_translate");
-		_RotateIcon = _ResourceService->GetIconLibrary().GetIcon("common", "transform_rotate");
-		_ScaleIcon = _ResourceService->GetIconLibrary().GetIcon("common", "transform_scale");
 
 		/* create a new framebuffer */
 		_Framebuffer.reset(Wyrd::FrameBuffer::Create(FrameBufferConfig()));
@@ -95,7 +89,10 @@ namespace Wyrd::Editor
 				if (relationshipComponent->parent != ENTITY_INVALID)
 				{
 					Transform3DComponent* parentTransform3DComponent = _Scene->Get<Transform3DComponent>(relationshipComponent->parent);
-					transform3DComponent->parentModelMatrix = parentTransform3DComponent->modelMatrix;
+					if (parentTransform3DComponent != nullptr)
+					{
+						transform3DComponent->parentModelMatrix = parentTransform3DComponent->modelMatrix;
+					}
 				}
 
 				MeshRendererComponent* meshRenderer = _Scene->Get<MeshRendererComponent>(e);
@@ -128,7 +125,7 @@ namespace Wyrd::Editor
 			
 			if (_Scene != nullptr)
 			{
-				Color bgColor = Utils::ToColor(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__BGBOLOR, "1,1,1,1"));
+				Color bgColor = Utils::ToColor(_Settings->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__BGBOLOR, "1,1,1,1"));
 
 				_Framebuffer->Bind();
 				renderer.Clear(bgColor.r, bgColor.g, bgColor.b);
@@ -149,7 +146,7 @@ namespace Wyrd::Editor
 					cmd.baseTexture = Application::Get().GetResources().Textures[RES_TEXTURE_DEFAULT].get();
 					cmd.drawType = RendererDrawType::Triangles;
 					
-					renderer.Submit(cmd);
+ 					renderer.Submit(cmd);
 					renderer.Flush();
 				}
 
@@ -174,14 +171,24 @@ namespace Wyrd::Editor
 
 						if (transform != nullptr && cameraComponent != nullptr)
 						{
+							// As the camera component doesn't have a camera object, we need to create one to show the debug info
+							
 							Camera debugCamera;
+
 							debugCamera.SetPosition({ transform->position.x, transform->position.y, transform->position.z });
-							debugCamera.SetYaw(debugCamera.GetYaw() + -DEG_TO_RAD(transform->rotation.y));
-							debugCamera.SetPitch(debugCamera.GetPitch() + DEG_TO_RAD(transform->rotation.x));
-							debugCamera.perspectiveSettings.farPlane = cameraComponent->farPlane;
+							debugCamera.SetYaw(-DEG_TO_RAD(transform->rotation.y));
+							debugCamera.SetPitch(DEG_TO_RAD(transform->rotation.x));
+							debugCamera.SetMode(cameraComponent->projection == 0 ? Camera::Mode::Perspective : Camera::Mode::Orthographic);
 							debugCamera.perspectiveSettings.nearPlane = cameraComponent->nearPlane;
-							debugCamera.perspectiveSettings.aspect = cameraComponent->aspect;
-							debugCamera.SetMode(Camera::Mode::Perspective);
+							debugCamera.perspectiveSettings.farPlane = cameraComponent->farPlane;
+							debugCamera.perspectiveSettings.aspect = cameraComponent->aspectRatio;
+
+							debugCamera.orthoSettings.top = cameraComponent->top;
+							debugCamera.orthoSettings.bottom = cameraComponent->bottom;
+							debugCamera.orthoSettings.left = cameraComponent->left;
+							debugCamera.orthoSettings.right = cameraComponent->right;
+							debugCamera.orthoSettings.nearPlane = cameraComponent->nearPlane;
+							debugCamera.orthoSettings.farPlane = cameraComponent->farPlane;
 							debugCamera.Update();
 
 							renderer.DrawDebugFrustum({ -transform->position.x, -transform->position.y, -transform->position.z }, debugCamera.GetForwardDirection(), debugCamera.frustum, 3.0f, Color::CYAN, glm::mat4(1), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
@@ -234,7 +241,7 @@ namespace Wyrd::Editor
 		
 		/* here we want to create a simple toolbox to show the different transformation tools */
 		ImGui::PushID("TranslateToolBtn");
-		if (ImGui::IconButton(_TranslateIcon, 2000, true, size, -1, CurrentTransformTool == TransformTool::Translate ? ImVec4(1, 1, 1, 1) : ImVec4(0, 0, 0, 0), ImVec4(0.5f, 0.5f, 0.5f, 1.0f)) == true)
+		if (ImGui::IconButton(_Resources->RetrieveIcon("common", "transform_translate"), 2000, true, size, -1, CurrentTransformTool == TransformTool::Translate ? ImVec4(1, 1, 1, 1) : ImVec4(0, 0, 0, 0), ImVec4(0.5f, 0.5f, 0.5f, 1.0f)) == true)
 		{
 			CurrentTransformTool = TransformTool::Translate;
 		}
@@ -243,7 +250,7 @@ namespace Wyrd::Editor
 
 
 		ImGui::PushID("RotateToolBtn");
-		if (ImGui::IconButton(_RotateIcon, 2001, true, size, -1, CurrentTransformTool == TransformTool::Rotate ? ImVec4(1, 1, 1, 1) : ImVec4(0, 0, 0, 0), ImVec4(0.5f, 0.5f, 0.5f, 1.0f)) == true)
+		if (ImGui::IconButton(_Resources->RetrieveIcon("common", "transform_rotate"), 2001, true, size, -1, CurrentTransformTool == TransformTool::Rotate ? ImVec4(1, 1, 1, 1) : ImVec4(0, 0, 0, 0), ImVec4(0.5f, 0.5f, 0.5f, 1.0f)) == true)
 		{
 			CurrentTransformTool = TransformTool::Rotate;
 		}
@@ -252,18 +259,12 @@ namespace Wyrd::Editor
 
 
 		ImGui::PushID("ScaleToolBtn");
-		if (ImGui::IconButton(_ScaleIcon, 2002, true, size, -1, CurrentTransformTool == TransformTool::Scale ? ImVec4(1, 1, 1, 1) : ImVec4(0, 0, 0, 0), ImVec4(0.5f, 0.5f, 0.5f, 1.0f)) == true)
+		if (ImGui::IconButton(_Resources->RetrieveIcon("common", "transform_scale"), 2002, true, size, -1, CurrentTransformTool == TransformTool::Scale ? ImVec4(1, 1, 1, 1) : ImVec4(0, 0, 0, 0), ImVec4(0.5f, 0.5f, 0.5f, 1.0f)) == true)
 		{
 			CurrentTransformTool = TransformTool::Scale;
 		}
 		ImGui::SameLine();
 		ImGui::PopID();
-		
-		if (ImGui::IconButton(_pointSelectBtnIcon, 1, false, size) == true)
-		{
-		
-		}
-		ImGui::SameLine();
 		
 		/* build the top toolbar */
 		ImGui::Checkbox("show stats", &showStats);
@@ -274,16 +275,23 @@ namespace Wyrd::Editor
 		ImGui::SetCursorPosX(ImGui::GetWindowSize().x - (size.x * 2.0f));
 		if (ImGui::BeginPopupContextItem("sceneviewer_settings_popup"))
 		{
-			Color bgColor = Utils::ToColor(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__BGBOLOR, "1,1,1,1"));
+			/* Camera Settings */
+			ImGui::SeparatorText("Camera");
+			ImGui::InputFloat("Far", &_CameraController->GetCamera().perspectiveSettings.nearPlane);
+			ImGui::InputFloat("Near", &_CameraController->GetCamera().perspectiveSettings.farPlane);
+			ImGui::InputFloat("FOV", &_CameraController->GetCamera().perspectiveSettings.fov);
+			ImGui::InputFloat("aspect", &_CameraController->GetCamera().perspectiveSettings.aspect);
 
+			ImGui::SeparatorText("Viewport");
+			Color bgColor = Utils::ToColor(_Settings->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__BGBOLOR, "1,1,1,1"));
 			if (ImGui::ColorPicker3("Background Color", (float*)&bgColor))
 			{
-				_SettingsService->SetSetting(Utils::ToString(bgColor), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__BGBOLOR);
+				_Settings->SetSetting(Utils::ToString(bgColor), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__BGBOLOR);
 			}
 			ImGui::EndPopup();
 		}
 
-		if (ImGui::IconButton(_ScaleIcon, 2003, true, size, -1, CurrentTransformTool == TransformTool::Scale ? ImVec4(1, 1, 1, 1) : ImVec4(0, 0, 0, 0), ImVec4(0.5f, 0.5f, 0.5f, 1.0f)) == true)
+		if (ImGui::IconButton(_Resources->RetrieveIcon("common", "transform_scale"), 2003, true, size, -1, CurrentTransformTool == TransformTool::Scale ? ImVec4(1, 1, 1, 1) : ImVec4(0, 0, 0, 0), ImVec4(0.5f, 0.5f, 0.5f, 1.0f)) == true)
 		{
 			ImGui::OpenPopup("sceneviewer_settings_popup");
 		}
@@ -431,7 +439,7 @@ namespace Wyrd::Editor
 	bool SceneViewer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data)
 	{
 		_CameraController->OnEvent(e);
-		_SimulationService->SetMouseButtonState(e.GetMouseButton(), true);
+		_Simulation->SetMouseButtonState(e.GetMouseButton(), true);
 
 		/* build the initial mouse position vector */
 		glm::vec2 mousePos = { e.GetPositionX(), e.GetPositionY() };
@@ -455,7 +463,7 @@ namespace Wyrd::Editor
 
 					if (PhysicsUtils::IntersectRayBoundingBox(transform3DComponent->modelMatrix, r, editorComponent->inputBoundingBox))
 					{
-						_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(e));
+						_Events->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(e));
 						return true;
 					}
 				}
@@ -468,7 +476,7 @@ namespace Wyrd::Editor
 	bool SceneViewer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e, void* data)
 	{
 		_CameraController->OnEvent(e);
-		_SimulationService->SetMouseButtonState(e.GetMouseButton(), false);
+		_Simulation->SetMouseButtonState(e.GetMouseButton(), false);
 		return true;
 	}
 
@@ -507,11 +515,11 @@ namespace Wyrd::Editor
 
 		if (e.GetRepeatCount() == 1)
 		{
-			_SimulationService->SetInputState(e.GetKeyCode(), 0);
+			_Simulation->SetInputState(e.GetKeyCode(), 0);
 		}
 		else
 		{
-			_SimulationService->SetInputState(e.GetKeyCode(), 1);
+			_Simulation->SetInputState(e.GetKeyCode(), 1);
 		}
 
 		return true;
@@ -521,9 +529,9 @@ namespace Wyrd::Editor
 	{
 		_CameraController->OnEvent(e);
 
-		if (_SimulationService->IsRunning())
+		if (_Simulation->IsRunning())
 		{
-			_SimulationService->SetInputState(e.GetKeyCode(), 2);
+			_Simulation->SetInputState(e.GetKeyCode(), 2);
 			return true;
 		}
 

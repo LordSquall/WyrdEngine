@@ -61,6 +61,21 @@ namespace Wyrd
 		return newPropertyList;
 	}
 
+	BasePropMapRef ScriptedClass::GetMergedPropertiesCopy(BasePropMapRef source)
+	{
+		BasePropMapRef newPropertyList = CreatePropertyList();
+
+		for (auto& [k, v] : *source)
+		{
+			if ((*newPropertyList).find(k) != (*newPropertyList).end())
+			{
+				(*newPropertyList)[k] = std::move(v);
+			}
+		}
+
+		return newPropertyList;
+	}
+
 	BasePropMapRef ScriptedClass::CreatePropertyList()
 	{
 		MonoProperty* unmanagedProp;

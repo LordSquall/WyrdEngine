@@ -42,36 +42,53 @@ namespace Wyrd
 
 			_viewMatrix = glm::translate(glm::mat4(1.0f), _Position) * glm::toMat4(orientation);
 			_viewMatrix = glm::inverse(_viewMatrix);
+
+			// Update frustum
+			const float halfVSide = perspectiveSettings.farPlane * tanf(glm::radians(perspectiveSettings.fov) * .5f);
+			const float halfHSide = halfVSide * perspectiveSettings.aspect;
+			const glm::vec3 frontMultFar = perspectiveSettings.farPlane * -GetForwardDirection();
+
+			glm::vec3 invertedPos = -_Position;
+
+			frustum.nearFace = { invertedPos + perspectiveSettings.nearPlane * -GetForwardDirection(),
+				GetForwardDirection() };
+
+			frustum.farFace = { invertedPos + frontMultFar,
+				-GetForwardDirection() };
+
+			frustum.rightFace = { invertedPos,
+				glm::cross(frontMultFar - GetRightDirection() * halfHSide, GetUpDirection()) };
+
+			frustum.leftFace = { invertedPos,
+				glm::cross(GetUpDirection(), frontMultFar + GetRightDirection() * halfHSide) };
+
+			frustum.bottomFace = { invertedPos,
+				glm::cross(GetRightDirection(), frontMultFar - GetUpDirection() * halfVSide) };
+
+			frustum.topFace = { invertedPos,
+				glm::cross(frontMultFar + GetUpDirection() * halfVSide, GetRightDirection()) };
+
 		}
 		else
 		{
 			_projectionMatrix = glm::ortho(orthoSettings.left, orthoSettings.right, orthoSettings.bottom, orthoSettings.top, orthoSettings.nearPlane, orthoSettings.farPlane);
+
+			_Position = CalculatePosition();
+			glm::quat orientation = GetOrientationQuat();
+
+			_viewMatrix = glm::translate(glm::mat4(1.0f), _Position) * glm::toMat4(orientation);
+			_viewMatrix = glm::inverse(_viewMatrix);
+
+			glm::vec3 invertedPos = -_Position;
+
+			frustum.nearFace = { invertedPos + orthoSettings.nearPlane * -GetForwardDirection(), GetForwardDirection() };
+			frustum.farFace = { invertedPos + orthoSettings.farPlane * -GetForwardDirection(), -GetForwardDirection() };
+			frustum.rightFace = { invertedPos + (orthoSettings.right), GetRightDirection() };
+			frustum.leftFace = { invertedPos + (orthoSettings.left), -GetRightDirection() };
+			frustum.bottomFace = { invertedPos + (orthoSettings.bottom), GetUpDirection() };
+			frustum.topFace = { invertedPos + (orthoSettings.top), -GetUpDirection() };
 		}
 
-		// Update frustum
-		const float halfVSide = perspectiveSettings.farPlane * tanf(glm::radians(perspectiveSettings.fov) * .5f);
-		const float halfHSide = halfVSide * perspectiveSettings.aspect;
-		const glm::vec3 frontMultFar = perspectiveSettings.farPlane * -GetForwardDirection();
-
-		glm::vec3 invertedPos = -_Position;
-
-		frustum.nearFace = { invertedPos + perspectiveSettings.nearPlane * -GetForwardDirection(),
-			GetForwardDirection() };
-
-		frustum.farFace = { invertedPos + frontMultFar,
-			-GetForwardDirection() };
-
-		frustum.rightFace = { invertedPos,
-			glm::cross(frontMultFar - GetRightDirection() * halfHSide, GetUpDirection()) };
-
-		frustum.leftFace = { invertedPos,
-			glm::cross(GetUpDirection(), frontMultFar + GetRightDirection() * halfHSide) };
-
-		frustum.bottomFace = { invertedPos,
-			glm::cross(GetRightDirection(), frontMultFar - GetUpDirection() * halfVSide) };
-
-		frustum.topFace = { invertedPos,
-			glm::cross(frontMultFar + GetUpDirection() * halfVSide, GetRightDirection()) };
 	}
 
 

@@ -26,6 +26,8 @@ namespace Wyrd::Editor {
 	void CameraController::SetViewportSize(float width, float height)
 	{
 		_Camera.perspectiveSettings.aspect = width / height;
+		_Camera.perspectiveSettings.nearPlane = 0.1f;
+		_Camera.perspectiveSettings.farPlane = 10000.0f;
 
 		// TODO needs work :/
 		float a = glm::radians(45.0f);
@@ -41,7 +43,7 @@ namespace Wyrd::Editor {
 		_Camera.orthoSettings.top = top;
 		_Camera.orthoSettings.bottom = -top;
 		_Camera.orthoSettings.nearPlane = 0.1f;
-		_Camera.orthoSettings.farPlane = 100.0f;
+		_Camera.orthoSettings.farPlane = 10000.0f;
 	}
 
 	void CameraController::OnUpdate(Timestep ts)

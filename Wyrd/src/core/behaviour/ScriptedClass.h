@@ -56,6 +56,12 @@ namespace Wyrd
 		*/
 		inline void SetName(const std::string& name) { _Name = name; }
 
+		/**
+		* @brief Merge source properties in to target
+		* @param target
+		* @param source
+		*/
+		BasePropMapRef GetMergedPropertiesCopy(BasePropMapRef source);
 
 		BasePropMapRef GetPropertiesCopy();
 

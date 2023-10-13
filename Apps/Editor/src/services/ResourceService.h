@@ -30,6 +30,7 @@ namespace Wyrd::Editor
 
 		/* Icon Functions */
 		inline IconLibrary& GetIconLibrary() { return _iconLibrary; }
+		inline const Icon& RetrieveIcon(const std::string& library, const std::string& name) { return _iconLibrary.GetIcon(library, name); }
 
 		template<class T>
 		std::shared_ptr<T> GetResourceByID(const UID resourceId)

@@ -20,7 +20,10 @@ namespace Wyrd
 
 		_VertexArray.reset(VertexArray::Create());
 		_VertexArray->SetAttribute(0, 0, 3, sizeof(Vertex3D));
-		_VertexArray->SetAttribute(1, 3, 2, sizeof(Vertex3D));
+		_VertexArray->SetAttribute(1, 2, 2, sizeof(Vertex3D));
+		_VertexArray->SetAttribute(2, 5, 3, sizeof(Vertex3D));
+
+		_VertexCount = 0;
 
 		_Material = nullptr;
 		_DrawType = RendererDrawType::Uknown;
@@ -42,23 +45,15 @@ namespace Wyrd
 
 		_DrawType = cmd.drawType;
 
-		/* copy vertices in to batcher */
-		for (int i = 0; i < cmd.mesh->Vertices.size(); ++i)
-		{
-			Vertex3D v = cmd.mesh->Vertices.at(i);
-			glm::vec4 translatedPos = cmd.modelMatrix * glm::vec4(v.x, v.y, v.z, 1.0f);
-			v.x = translatedPos.x;
-			v.y = translatedPos.y;
-			v.z = translatedPos.z;
-			_vertices.push_back(v);
-		}
-		
 		/* bind the batch vertex array */
 		_VertexArray->Bind();
 
 		/* update both the vertex and index buffers */
-		_VertexBuffer->Update((float*)&_vertices.at(0), sizeof(Vertex3D) * (uint32_t)_vertices.size(), 0);
+		_VertexBuffer->Update((float*)&cmd.mesh->Vertices.at(0), sizeof(Vertex3D) * (uint32_t)cmd.mesh->Vertices.size(), _VertexCount);
 
+		_VertexCount += cmd.mesh->Vertices.size();
+
+		_ModelMatrix = cmd.modelMatrix;
 		_ViewMatrix = cmd.viewMatrix;
 		_ProjectionMatrix = cmd.projectionMatrix;
 		_Material = cmd.material;
@@ -69,11 +64,12 @@ namespace Wyrd
 
 	void MeshBatch::Flush()
 	{
-		if (_vertices.size() == 0)
+		if (_VertexCount == 0)
 			return;
 
 		_Material->BindShader();
 		_Material->Bind(_MaterialProps);
+		_Material->BindModelMatrix(_ModelMatrix);
 		_Material->BindViewMatrix(_ViewMatrix);
 		_Material->BindProjectionMatrix(_ProjectionMatrix);
 
@@ -84,11 +80,11 @@ namespace Wyrd
 		_Renderer->StartNamedSection("Vertex2D Batch Render");
 #endif
 
-		_Renderer->DrawArray(_DrawType, 0, (uint32_t)_vertices.size());
+		_Renderer->DrawArray(_DrawType, 0, (uint32_t)_VertexCount);
 
 #ifdef WYRD_INCLUDE_DEBUG_TAGS
 		_Renderer->EndNamedSection();
 #endif
-		_vertices.clear();
+		_VertexCount = 0;
 	}
 }

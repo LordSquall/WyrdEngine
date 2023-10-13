@@ -19,12 +19,26 @@ namespace Wyrd::Editor
 	{
 		/* Cast to the correct component */
 		CameraComponent* cameraComponent = (CameraComponent*)data;
-		
-		ImGui::InputFloat2("Size      ", (float*)&cameraComponent->size);
-		ImGui::InputFloat ("Aspect    ", &cameraComponent->aspect);
-		ImGui::InputFloat ("Near Plane", &cameraComponent->nearPlane);
-		ImGui::InputFloat ("Far Plane ", &cameraComponent->farPlane);
 
+		ImGui::InputInt   ("Projection", &cameraComponent->projection);
+		
+		if (cameraComponent->projection == 0)
+		{
+			ImGui::InputFloat2("Size      ", (float*)&cameraComponent->size);
+			ImGui::InputFloat("Aspect    ", &cameraComponent->aspect);
+			ImGui::InputFloat("Near Plane", &cameraComponent->nearPlane);
+			ImGui::InputFloat("Far Plane ", &cameraComponent->farPlane);
+		}
+		else
+		{
+			ImGui::InputFloat("top    ", &cameraComponent->top);
+			ImGui::InputFloat("bottom ", &cameraComponent->bottom);
+			ImGui::InputFloat("left   ", &cameraComponent->left);
+			ImGui::InputFloat("right  ", &cameraComponent->right);
+
+			ImGui::InputFloat("Near Plane", &cameraComponent->nearPlane);
+			ImGui::InputFloat("Far Plane ", &cameraComponent->farPlane);
+		}
 		if (ImGui::Button("Set As Main Camera"))
 		{
 			ServiceManager::Get<EventService>()->Publish(Editor::Events::EventType::SetSceneCamera, std::make_unique<Events::SetSceneCameraArgs>(e, cameraComponent));

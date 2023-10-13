@@ -96,9 +96,9 @@ namespace Wyrd
 		}
 	}
 
-	void OpenGLTexture::Bind() const
+	void OpenGLTexture::Bind(unsigned int idx) const
 	{
-		glActiveTexture(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE0 + idx);
 		glBindTexture(GL_TEXTURE_2D, _rendererID);
 	}
 

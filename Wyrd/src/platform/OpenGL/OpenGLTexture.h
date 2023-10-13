@@ -9,7 +9,7 @@ namespace Wyrd
 	public:
 		OpenGLTexture(const TextureDesc& desc);
 		~OpenGLTexture();
-		virtual void Bind() const override;
+		virtual void Bind(unsigned int idx = 0) const override;
 		virtual void Unbind() const override;
 		virtual uint32_t GetHandle() const override;
 		virtual void Update(unsigned char* data, int xOffset, int yOffset, int width, int height) override;

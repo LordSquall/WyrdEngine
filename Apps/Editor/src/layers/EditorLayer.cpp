@@ -18,6 +18,7 @@
 #include "views/Dialogs/PreferencesDialog.h"
 #include "views/Dialogs/NewProjectDialog.h"
 #include "views/SystemsDebugView/SystemsDebugView.h"
+#include "views/MaterialEditorView/MaterialEditorView.h"
 #include "platform/OpenGL/imgui_opengl_renderer.h"
 #include "export/ExportManager.h"
 #include "support/ImGuiUtils.h"
@@ -53,6 +54,7 @@ namespace Wyrd::Editor
 		Application& app = Application::Get();
 		LayerStack* stack = app.GetLayerStack();
 
+		/* register views */
 		_views["Scene Viewer"] = std::make_shared<SceneViewer>(this);
 		_views["Game Viewer"] = std::make_shared<GameViewer>(this);
 		_views["Properties"] = std::make_shared<PropertiesViewer>(this);
@@ -61,25 +63,28 @@ namespace Wyrd::Editor
 		_views["Asset Viewer"] = std::make_shared<AssetViewer>(this);
 		_views["Output"] = std::make_shared<OutputView>(this);
 		_views["Export View"] = std::make_shared<ExportView>(this);
-		_views["Systems Debug"] = std::make_shared<SystemsDebugView>(this);
-		
+		/*_views["Systems Debug"] = std::make_shared<SystemsDebugView>(this);*/
+		/*_views["Material Editor"] = std::make_shared<MaterialEditorView>(this);*/
+
 		/* cache services */
-		_eventService = ServiceManager::Get<EventService>();
-		_workspaceService = ServiceManager::Get<WorkspaceService>();
-		_settingsService = ServiceManager::Get<SettingsService>();
-		_resourceService = ServiceManager::Get<ResourceService>();
-		_simulationService = ServiceManager::Get<SimulationService>();
-		_dialogService = ServiceManager::Get<DialogService>();
+		_Event = ServiceManager::Get<EventService>();
+		_Workspace = ServiceManager::Get<WorkspaceService>();
+		_Settings = ServiceManager::Get<SettingsService>();
+		_Resource = ServiceManager::Get<ResourceService>();
+		_Simulation = ServiceManager::Get<SimulationService>();
+		_Dialog = ServiceManager::Get<DialogService>();
 
 		/* pass the scene viewer view to the simluation service */
-		_simulationService->SetSceneViewer(_views["Scene Viewer"]);
+		_Simulation->SetSceneViewer(_views["Scene Viewer"]);
 
-		/* cache icon resources */
-		_playButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "sim_play");
-		_stopButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "sim_stop");
-		_pauseButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "sim_pause");
-		_exportOptionsButtonIcon = _resourceService->GetIconLibrary().GetIcon("common", "export_settings");
-		_exportButtonGameIcon = _resourceService->GetIconLibrary().GetIcon("common", "export");
+		/* register for events */
+		_Event->Subscribe(Events::EventType::OpenMaterialTool, [this](Events::EventArgs& args)
+			{
+				Events::OpenMaterialToolArgs* a = (Events::OpenMaterialToolArgs*)&args;
+				std::shared_ptr<MaterialEditorView>* met = (std::shared_ptr<MaterialEditorView>*)&_views["Material Editor"];
+				(*met)->SetMaterial(a->material);
+				(*met)->Open();
+			});
 	}
 
 	EditorLayer::~EditorLayer()
@@ -91,7 +96,7 @@ namespace Wyrd::Editor
 	{
 		/* load in icons sets */
 		const std::string filepath = "res/icons/filesystem_icons.json";
-		_resourceService->GetIconLibrary().AddIconsFromFile(filepath);
+		_Resource->GetIconLibrary().AddIconsFromFile(filepath);
 
 		/* set the style and icons library for each of the plugins */
 		for (std::map<std::string, std::shared_ptr<EditorViewBase>>::iterator it = _views.begin(); it != _views.end(); it++)
@@ -227,17 +232,17 @@ namespace Wyrd::Editor
 		ImGui_ImplOpenGL3_Init("#version 410");
 
 		/* attempt to load the default project otherwise asked the user to create a new one */
-		if (_workspaceService->LoadProject(_settingsService->GetSetting(CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT, "")) == false)
+		if (_Workspace->LoadProject(_Settings->GetSetting(CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT, "")) == false)
 		{
-			_dialogService->OpenDialog(std::make_shared<NewProjectDialog>(this));
+			_Dialog->OpenDialog(std::make_shared<NewProjectDialog>(this));
 		}
 
 		/* register for events */
-		_eventService->Subscribe(Events::EventType::CloseEditor, [this](Events::EventArgs& args)
+		_Event->Subscribe(Events::EventType::CloseEditor, [this](Events::EventArgs& args)
 			{
 				Application::Get().Terminate();
 			});
-		_eventService->Subscribe(Events::EventType::SceneOpened, WYRD_BIND_FN(EditorLayer::OnSceneOpened));
+		_Event->Subscribe(Events::EventType::SceneOpened, WYRD_BIND_FN(EditorLayer::OnSceneOpened));
 
 		return true;
 	}
@@ -249,10 +254,10 @@ namespace Wyrd::Editor
 	
 	void EditorLayer::OnUpdate(Timestep ts)
 	{
-		_resourceService->OnUpdate();
-		_eventService->OnUpdate();
-		_simulationService->OnUpdate();
-		_simulationService->Update(ts);
+		_Resource->OnUpdate();
+		_Event->OnUpdate();
+		_Simulation->OnUpdate();
+		_Simulation->Update(ts);
 	}
 
 	void EditorLayer::OnRender(Timestep ts, Renderer& renderer)
@@ -304,13 +309,13 @@ namespace Wyrd::Editor
 		{
 			if (ImGui::MenuItem("Create New Project..."))
 			{
-				_dialogService->OpenDialog(std::make_shared<NewProjectDialog>(this));
+				_Dialog->OpenDialog(std::make_shared<NewProjectDialog>(this));
 			}
 			if (ImGui::MenuItem("Open Project"))
 			{
-				_workspaceService->LoadProject(Utils::OpenFileDialog(".oproj"));
+				_Workspace->LoadProject(Utils::OpenFileDialog(".oproj"));
 			}
-			if (ImGui::MenuItem("Open Project In Explorer", nullptr, nullptr, _workspaceService->IsProjectLoaded()))
+			if (ImGui::MenuItem("Open Project In Explorer", nullptr, nullptr, _Workspace->IsProjectLoaded()))
 			{
 				//ShellExecuteA(NULL, "open", Utils::GetAssetFolder().c_str(), NULL, NULL, SW_SHOWDEFAULT);
 			}
@@ -349,7 +354,7 @@ namespace Wyrd::Editor
 
 			if (ImGui::MenuItem("Preferences"))
 			{
-				_dialogService->OpenDialog(std::make_shared<PreferencesDialog>(this));
+				_Dialog->OpenDialog(std::make_shared<PreferencesDialog>(this));
 			}
 			ImGui::EndMenu();
 		}
@@ -368,34 +373,34 @@ namespace Wyrd::Editor
 
 		ImGui::SetCursorPosX((ImGui::GetWindowWidth() - 64.0f) * 0.5f);
 
-		if (ImGui::IconButton(_playButtonIcon, 1, !_simulationService->IsRunning() && _simulationService->IsAvailable(), size) == true)
+		if (ImGui::IconButton(_Resource->RetrieveIcon("common", "sim_play"), 1, !_Simulation->IsRunning() && _Simulation->IsAvailable(), size) == true)
 		{
-			_simulationService->Start();
+			_Simulation->Start();
 		}
 		ImGui::SameLine();
-		if (ImGui::IconButton(_pauseButtonIcon, 2, _simulationService->IsRunning() && _simulationService->IsAvailable(), size) == true)
+		if (ImGui::IconButton(_Resource->RetrieveIcon("common", "sim_pause"), 2, _Simulation->IsRunning() && _Simulation->IsAvailable(), size) == true)
 		{
-			_simulationService->TogglePause();
+			_Simulation->TogglePause();
 		}
 		ImGui::SameLine();
-		if (ImGui::IconButton(_stopButtonIcon, 3, _simulationService->IsRunning() && _simulationService->IsAvailable(), size) == true)
+		if (ImGui::IconButton(_Resource->RetrieveIcon("common", "sim_stop"), 3, _Simulation->IsRunning() && _Simulation->IsAvailable(), size) == true)
 		{
-			_simulationService->Stop();
+			_Simulation->Stop();
 		}
 
 		ImGui::SameLine();
 		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x - ImGui::GetWindowContentRegionMin().x) - (size.x * 3));
 		
-		if (ImGui::IconButton(_exportOptionsButtonIcon, 4, true, size) == true)
+		if (ImGui::IconButton(_Resource->RetrieveIcon("common", "export_settings"), 4, true, size) == true)
 		{
 		}
 
 		ImGui::SameLine();
-		if (ImGui::IconButton(_exportButtonGameIcon, 5, true, size) == true)
+		if (ImGui::IconButton(_Resource->RetrieveIcon("common", "export"), 5, true, size) == true)
 		{
-			_workspaceService->SaveScene();
+			_Workspace->SaveScene();
 			ExportManager::Export();
-			Utils::SystemExecute("..\\..\\bin\\Debug\\TestPlayer\\TestPlayer.exe --gamedir \"" + _workspaceService->GetBuildsDirectory().string() + "/\"");
+			Utils::SystemExecute("..\\..\\bin\\Debug\\TestPlayer\\TestPlayer.exe --gamedir \"" + _Workspace->GetBuildsDirectory().string() + "/\"");
 		}
 
 		/* setup the dockspace */
@@ -469,7 +474,7 @@ namespace Wyrd::Editor
 		Events::SceneOpenedArgs& evtArgs = static_cast<Events::SceneOpenedArgs&>(args);
 
 		/* get the current loaded project name */
-		std::string projectName = _workspaceService->GetCurrentProject()->name;
+		std::string projectName = _Workspace->GetCurrentProject()->name;
 
 		/* set the title */
 		Application::Get().GetWindow().SetTitle("Wyrd Engine - " + projectName + " [" + evtArgs.scene->name + "] ");
@@ -489,13 +494,15 @@ namespace Wyrd::Editor
 		for (const auto& view : _views)
 		{
 			glm::vec2 mousePos = { e.GetPositionX(), e.GetPositionY() };
-
-			if ((view.second)->GetBoundary().ContainsPoint(mousePos) == true)
+			if ((*view.second->GetShowFlagRef()))
 			{
-				/* store the view as the event owner */
-				_mouseEventOwner = (view.second);
+				if ((view.second)->GetBoundary().ContainsPoint(mousePos) == true)
+				{
+					/* store the view as the event owner */
+					_mouseEventOwner = (view.second);
 
-				(view.second)->OnEvent(e);
+					(view.second)->OnEvent(e);
+				}
 			}
 		}
 
@@ -525,7 +532,7 @@ namespace Wyrd::Editor
 		ImGuiIO& io = ImGui::GetIO();
 		io.MousePos = ImVec2(e.GetX(), e.GetY());
 		
-		_simulationService->SetMousePosition(e.GetX(), e.GetY());
+		_Simulation->SetMousePosition(e.GetX(), e.GetY());
 
 		for (const auto& view : _views)
 		{
@@ -579,10 +586,14 @@ namespace Wyrd::Editor
 		io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
 
 
+		if (_mouseEventOwner != nullptr)
+			_mouseEventOwner->OnEvent(e);
+
+
 		/* global key events */
 		if (e.GetKeyCode() == GLFW_KEY_F9)
 		{
-			_simulationService->CompileAll();
+			_Simulation->CompileAll();
 		}
 
 		if (_mouseEventOwner != nullptr)

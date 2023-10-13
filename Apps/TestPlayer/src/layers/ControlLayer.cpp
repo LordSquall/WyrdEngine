@@ -6,6 +6,7 @@
 #include <core/Application.h>
 #include <core/ecs/ECS.h>
 #include <core/ecs/EntitySet.h>
+#include <core/Maths.h>
 #include <core/scene/Scene.h>
 #include <core/renderer/Texture.h>
 #include <core/renderer/FontType.h>
@@ -87,15 +88,39 @@ void ControlLayer::OnUpdate(Timestep ts)
 	{
 		Transform3DComponent* transformComponent = scene->Get<Transform3DComponent>(_CameraEntity);
 		CameraComponent* cameraComponent = scene->Get<CameraComponent>(_CameraEntity);
+		RelationshipComponent* relationshipComponent = scene->Get<RelationshipComponent>(_CameraEntity);
 
-		_Camera.SetPosition(glm::vec3(transformComponent->position.x, transformComponent->position.y, transformComponent->position.z));
-		_Camera.SetYaw(-transformComponent->rotation.y);
-		_Camera.SetPitch(transformComponent->rotation.x);
-		_Camera.SetMode(Camera::Mode::Perspective);
+		glm::vec3 translation = { transformComponent->position.x, transformComponent->position.y, transformComponent->position.z };
+		glm::vec3 rotation;
+		glm::vec3 scale;
+
+		if (relationshipComponent != nullptr && relationshipComponent->parent != ENTITY_INVALID)
+		{
+			Transform3DComponent* parentTransform3DComponent = scene->Get<Transform3DComponent>(relationshipComponent->parent);
+
+			glm::vec3 parentTranslation;
+			glm::vec3 parentRotation;
+			glm::vec3 parentScale;
+			Maths::DecomposeTransform(parentTransform3DComponent->modelMatrix, parentTranslation, rotation, scale);
+
+			translation += parentTranslation;
+		}
+
+		_Camera.SetPosition(translation);
+		_Camera.SetYaw(-DEG_TO_RAD(transformComponent->rotation.y));
+		_Camera.SetPitch(DEG_TO_RAD(transformComponent->rotation.x));
+		_Camera.SetMode(cameraComponent->projection == 0 ? Camera::Mode::Perspective : Camera::Mode::Orthographic);
 
 		_Camera.perspectiveSettings.nearPlane = cameraComponent->nearPlane;
 		_Camera.perspectiveSettings.farPlane = cameraComponent->farPlane;
 		_Camera.perspectiveSettings.aspect = cameraComponent->aspectRatio;
+
+		_Camera.orthoSettings.top = cameraComponent->top;
+		_Camera.orthoSettings.bottom = cameraComponent->bottom;
+		_Camera.orthoSettings.left = cameraComponent->left;
+		_Camera.orthoSettings.right = cameraComponent->right;
+		_Camera.orthoSettings.nearPlane = cameraComponent->nearPlane;
+		_Camera.orthoSettings.farPlane = cameraComponent->farPlane;
 
 		_Camera.Update();
 	}
@@ -131,7 +156,6 @@ void ControlLayer::OnRender(Timestep ts, Renderer& renderer)
 	renderer.Clear(0.1f, 0.1f, 0.1f);
 	for (Entity e : EntitySet<Wyrd::Transform3DComponent, Wyrd::MeshRendererComponent, Wyrd::MaterialComponent>(*scene))
 	{
-		Wyrd::MetaDataComponent* metaData = scene->Get<Wyrd::MetaDataComponent>(e);
 		Wyrd::Transform3DComponent* transform = scene->Get<Wyrd::Transform3DComponent>(e);
 		Wyrd::MeshRendererComponent* meshRenderer = scene->Get<Wyrd::MeshRendererComponent>(e);
 		Wyrd::MaterialComponent* material = scene->Get<Wyrd::MaterialComponent>(e);

@@ -21,121 +21,142 @@
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "assets_scene",
+                      "name":  "assets_material",
                       "height":  64,
                       "x":  128
                   },
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "assets_script",
+                      "name":  "assets_scene",
                       "height":  64,
                       "x":  192
                   },
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "assets_texture",
+                      "name":  "assets_script",
                       "height":  64,
                       "x":  256
                   },
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "assets_unknown",
+                      "name":  "assets_shader",
                       "height":  64,
                       "x":  320
                   },
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "data_filteroff",
+                      "name":  "assets_texture",
                       "height":  64,
                       "x":  384
                   },
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "default",
+                      "name":  "assets_unknown",
                       "height":  64,
                       "x":  448
                   },
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "export",
+                      "name":  "data_filteroff",
                       "height":  64,
                       "x":  512
                   },
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "export_settings",
+                      "name":  "default",
                       "height":  64,
                       "x":  576
                   },
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "nav_home",
+                      "name":  "export",
                       "height":  64,
                       "x":  640
                   },
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "nav_open",
+                      "name":  "export_scene",
                       "height":  64,
                       "x":  704
                   },
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "nav_up",
+                      "name":  "export_settings",
                       "height":  64,
                       "x":  768
                   },
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "sim_pause",
+                      "name":  "nav_home",
                       "height":  64,
                       "x":  832
                   },
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "sim_play",
+                      "name":  "nav_open",
                       "height":  64,
                       "x":  896
                   },
                   {
                       "y":  0,
                       "width":  64,
-                      "name":  "sim_stop",
+                      "name":  "nav_up",
                       "height":  64,
                       "x":  960
                   },
                   {
                       "y":  64,
                       "width":  64,
-                      "name":  "transform_rotate",
+                      "name":  "sim_pause",
                       "height":  64,
                       "x":  0
                   },
                   {
                       "y":  64,
                       "width":  64,
-                      "name":  "transform_scale",
+                      "name":  "sim_play",
                       "height":  64,
                       "x":  64
                   },
                   {
                       "y":  64,
                       "width":  64,
-                      "name":  "transform_translate",
+                      "name":  "sim_stop",
                       "height":  64,
                       "x":  128
+                  },
+                  {
+                      "y":  64,
+                      "width":  64,
+                      "name":  "transform_rotate",
+                      "height":  64,
+                      "x":  192
+                  },
+                  {
+                      "y":  64,
+                      "width":  64,
+                      "name":  "transform_scale",
+                      "height":  64,
+                      "x":  256
+                  },
+                  {
+                      "y":  64,
+                      "width":  64,
+                      "name":  "transform_translate",
+                      "height":  64,
+                      "x":  320
                   }
               ]
 }

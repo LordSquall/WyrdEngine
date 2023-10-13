@@ -31,7 +31,7 @@ namespace ImGui
 	void Icon(const std::shared_ptr<Wyrd::Editor::Icon> icon, const ImVec2& size);
 
 	/* Buttons */
-	bool IconButton(std::shared_ptr<Wyrd::Editor::Icon> icon, ImGuiID id, bool enabled, const ImVec2& size, int frame_padding = -1, const ImVec4& bg_col = BG_COLOR, const ImVec4& tint_col = TINT_COLOR);
+	bool IconButton(const Wyrd::Editor::Icon& icon, ImGuiID id, bool enabled, const ImVec2& size, int frame_padding = -1, const ImVec4& bg_col = BG_COLOR, const ImVec4& tint_col = TINT_COLOR);
 	bool TextButton(const char* label, bool enabled = true, const ImVec2& size = { 0, 0 }, ImGuiButtonFlags = 0);
 
 	/* Text */

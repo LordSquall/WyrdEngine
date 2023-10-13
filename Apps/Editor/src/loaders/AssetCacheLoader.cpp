@@ -58,6 +58,12 @@ namespace Wyrd::Editor
 
 					_ResourceService->CachedFiles[fullFilePath] = UID(uuid);
 				}
+
+				/* perform any post load operations on assets (e.g. material -> shader bindings etc...) */
+				for (auto const& res : _ResourceService->GetResources())
+				{
+					res.second->ResolveReferences();
+				}
 			}
 			else
 			{

@@ -36,6 +36,7 @@ namespace Wyrd::Editor
 					std::string shaderName = shaderObject.get<jsonxx::String>("name", "default");
 
 					/* retrieve the shader from resources */
+					material->SetShaderName(shaderName);
 					material->SetShader(Application::Get().GetResources().Shaders[shaderName]);
 					material->SetName(name);
 

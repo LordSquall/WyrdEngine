@@ -31,6 +31,11 @@ namespace Wyrd::Editor
 		virtual int Load() = 0;
 
 		/**
+		 * @brief Optional function on resources to allow external references to be evaluated
+		*/
+		virtual void ResolveReferences() {};
+
+		/**
 		 * @brief Returns the resource tupe as defined in ResourceTypes.h
 		 * @return Resource Type
 		*/

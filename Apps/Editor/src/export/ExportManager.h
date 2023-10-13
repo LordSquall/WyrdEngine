@@ -9,6 +9,7 @@ namespace Wyrd::Editor
 		~ExportManager() = default;
 
 		static bool Export();
+		static bool ExportScene();
 
 		static void GenerateCoreFile();
 		static void GenerateGameFile();

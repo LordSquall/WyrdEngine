@@ -38,4 +38,9 @@ namespace Wyrd::Editor
 
 		return loadResult;
 	}
+
+	void MaterialRes::ResolveReferences()
+	{
+		_material->SetShader(Application::Get().GetResources().Shaders[_material->GetShaderName()]);
+	}
 }

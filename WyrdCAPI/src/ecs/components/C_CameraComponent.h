@@ -13,6 +13,8 @@ extern "C" {
 
 LIBRARY_API void CameraComponent_SetViewport(void* obj, Wyrd::Entity entity, Wyrd::Rect* position);
 
+LIBRARY_API void CameraComponent_SetProjection(void* obj, Wyrd::Entity entity, int32_t* position);
+
 LIBRARY_API void CameraComponent_SetAspectratio(void* obj, Wyrd::Entity entity, float* position);
 
 LIBRARY_API void CameraComponent_SetSize(void* obj, Wyrd::Entity entity, Wyrd::Vector2* position);
@@ -24,6 +26,14 @@ LIBRARY_API void CameraComponent_SetFarplane(void* obj, Wyrd::Entity entity, flo
 LIBRARY_API void CameraComponent_SetAspect(void* obj, Wyrd::Entity entity, float* position);
 
 LIBRARY_API void CameraComponent_SetFov(void* obj, Wyrd::Entity entity, float* position);
+
+LIBRARY_API void CameraComponent_SetTop(void* obj, Wyrd::Entity entity, float* position);
+
+LIBRARY_API void CameraComponent_SetBottom(void* obj, Wyrd::Entity entity, float* position);
+
+LIBRARY_API void CameraComponent_SetLeft(void* obj, Wyrd::Entity entity, float* position);
+
+LIBRARY_API void CameraComponent_SetRight(void* obj, Wyrd::Entity entity, float* position);
 
 
 

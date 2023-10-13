@@ -94,6 +94,11 @@ namespace Wyrd::Editor
 		inline const std::string& GetName() const { return _Name; }
 
 		/**
+		 * @brief Open the view
+		*/
+		inline void Open() { _ShowFlag = true; }
+
+		/**
 		 * @brief Close the view 
 		*/
 		inline void Close() { _ShowFlag = false; }

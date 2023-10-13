@@ -30,10 +30,11 @@ namespace Wyrd {
 
 	private:
 		Renderer*						_Renderer;
-		std::vector<Vertex3D>			_vertices;
 		std::shared_ptr<VertexArray>	_VertexArray;
 		std::shared_ptr<VertexBuffer>	_VertexBuffer;
+		INT32							_VertexCount;
 
+		glm::mat4						_ModelMatrix;
 		glm::mat4						_ViewMatrix;
 		glm::mat4						_ProjectionMatrix;
 		Material*						_Material;

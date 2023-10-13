@@ -22,6 +22,11 @@ namespace Wyrd
 		return newMaterial;
 	}
 
+	void Material::BindModelMatrix(const glm::mat4& view)
+	{
+		_shader->SetMatrix("u_model", view);
+	}
+
 	void Material::BindViewMatrix(const glm::mat4& view)
 	{
 		_shader->SetMatrix("u_view", view);
@@ -41,6 +46,7 @@ namespace Wyrd
 	{
 		if (*propMap)
 		{
+			unsigned int _texSlotIdx = 0;
 			for (auto& input : _inputs)
 			{
 				if (input.second.type == "Color")
@@ -58,7 +64,8 @@ namespace Wyrd
 					Texture* texture = textureProp->Get<Texture*>();
 					if (texture != nullptr)
 					{
-						texture->Bind();
+						texture->Bind(_texSlotIdx);
+						_texSlotIdx++;
 					}
 				}
 
@@ -68,6 +75,15 @@ namespace Wyrd
 					if (vec2Prop != nullptr)
 					{
 						_shader->SetUniformVec2(input.second.binding, glm::vec2(vec2Prop->Value.x, vec2Prop->Value.y));
+					}
+				}
+
+				if (input.second.type == "Vec3")
+				{
+					PropVec3* vec3Prop = (PropVec3*)(*propMap)->at(input.first).get();
+					if (vec3Prop != nullptr)
+					{
+						_shader->SetUniformVec3(input.second.binding, glm::vec3(vec3Prop->Value.x, vec3Prop->Value.y, vec3Prop->Value.z));
 					}
 				}
 			}

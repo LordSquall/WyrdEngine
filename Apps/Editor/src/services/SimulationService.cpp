@@ -131,7 +131,7 @@ namespace Wyrd::Editor
 				{
 					std::shared_ptr<ScriptedClass> scriptClass = Application::Get().GetBehaviour().GetCustomClassByUID(scriptComponent->scriptId);
 
-					scriptComponent->properties = scriptClass->GetPropertiesCopy();
+					scriptComponent->properties = scriptClass->GetMergedPropertiesCopy(scriptComponent->properties);
 				}
 			}
 		}

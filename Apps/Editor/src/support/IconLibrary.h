@@ -54,7 +54,8 @@ namespace Wyrd::Editor
 
 		bool AddIconsFromFile(const std::string& filepath);
 
-		std::shared_ptr<Icon> GetIcon(std::string setName, std::string name);
+		std::shared_ptr<Icon> GetIconPtr(std::string setName, std::string name);
+		const Icon& GetIcon(std::string setName, std::string name);
 		
 	private:
 		std::map<std::string, std::shared_ptr<IconSet>> _IconSets;

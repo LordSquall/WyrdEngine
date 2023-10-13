@@ -104,6 +104,7 @@ namespace Wyrd::Editor
 		if (isParent)
 		{
 			flags |= ImGuiTreeNodeFlags_OpenOnDoubleClick;
+			flags |= ImGuiTreeNodeFlags_DefaultOpen;
 			flags |= (selected) ? ImGuiTreeNodeFlags_Selected : ImGuiTreeNodeFlags_None;
 
 			std::string name(metaDataComponent->name);

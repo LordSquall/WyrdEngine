@@ -84,7 +84,7 @@ namespace Wyrd::Editor
 		return false;
 	}
 
-	std::shared_ptr<Icon> IconLibrary::GetIcon(std::string setName, std::string name)
+	std::shared_ptr<Icon> IconLibrary::GetIconPtr(std::string setName, std::string name)
 	{
 		auto setIt = _IconSets.find(setName);
 		if (setIt != _IconSets.end())
@@ -104,6 +104,29 @@ namespace Wyrd::Editor
 		{
 			WYRD_WARN("Unable to find icon set {0}", setName);
 			return _DefaultIcon;
+		}
+	}
+
+	const Icon& IconLibrary::GetIcon(std::string setName, std::string name)
+	{
+		auto setIt = _IconSets.find(setName);
+		if (setIt != _IconSets.end())
+		{
+			auto it = std::find_if(_IconSets[setName]->Icons.begin(), _IconSets[setName]->Icons.end(), [&name](const std::shared_ptr<Icon>& obj) {return (*obj).name == name; });
+			if (it != _IconSets[setName]->Icons.end())
+			{
+				return *(*it);
+			}
+			else
+			{
+				WYRD_WARN("Unable to find matching icon {0} in iconset {1}", name, setName);
+				return *_DefaultIcon;
+			}
+		}
+		else
+		{
+			WYRD_WARN("Unable to find icon set {0}", setName);
+			return *_DefaultIcon;
 		}
 	}
 }

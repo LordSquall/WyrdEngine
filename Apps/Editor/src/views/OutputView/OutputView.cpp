@@ -10,21 +10,18 @@ namespace Wyrd::Editor
 	OutputView::OutputView(EditorLayer* editorLayer) : EditorViewBase("Output", editorLayer)
 	{
 		/* cache the service(s) */
-		_ResourceService = ServiceManager::Get<ResourceService>();
-		_EventService = ServiceManager::Get<EventService>();
-
-		/* cache the icon pointers */
-		_CodeIcon = _ResourceService->GetIconLibrary().GetIcon("common", "code_error");
+		_Resources = ServiceManager::Get<ResourceService>();
+		_Events = ServiceManager::Get<EventService>();
 
 		/* register from events */
-		_EventService->Subscribe(Events::EventType::AddLogEntry, [this](Events::EventArgs& args)
+		_Events->Subscribe(Events::EventType::AddLogEntry, [this](Events::EventArgs& args)
 			{
 				Events::AddLogEntryArgs& evtArgs = (Events::AddLogEntryArgs&)args;
 
 				_LogItems.push_back({ evtArgs.type, evtArgs.severity, evtArgs.msg });
 			});
 
-		_EventService->Subscribe(Events::EventType::ClearLogEntry, [this](Events::EventArgs& args)
+		_Events->Subscribe(Events::EventType::ClearLogEntry, [this](Events::EventArgs& args)
 			{
 				Events::ClearLogEntryArgs& evtArgs = (Events::ClearLogEntryArgs&)args;
 

@@ -28,10 +28,8 @@ namespace Wyrd::Editor
 		void DrawUserLogItem(int idx, const LogItem& item);
 
 	private:
-		std::shared_ptr<EventService> _EventService;
-		std::shared_ptr<ResourceService> _ResourceService;
-
-		std::shared_ptr<Icon> _CodeIcon;
+		std::shared_ptr<EventService> _Events;
+		std::shared_ptr<ResourceService> _Resources;
 
 		bool _ShowInfo = true;
 		bool _ShowWarnings = true;

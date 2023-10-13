@@ -141,6 +141,9 @@ namespace Wyrd
 		glUseProgram(m_RendererHandle);
 
 		glUniform1i(glGetUniformLocation(m_RendererHandle, "s_Texture"), 0); // set it manually
+
+		glUniform1i(glGetUniformLocation(m_RendererHandle, "u_Texture1"), 0); // set it manually
+		glUniform1i(glGetUniformLocation(m_RendererHandle, "u_Texture2"), 1); // set it manually
 	}
 
 	void OpenGLShader::Unbind()

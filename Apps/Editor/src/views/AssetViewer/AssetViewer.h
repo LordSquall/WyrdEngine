@@ -37,23 +37,11 @@ namespace Wyrd::Editor
 		std::string _DeleteAssetState;
 
 		/* Services*/
-		std::shared_ptr<ResourceService> _resourcesService;
-		std::shared_ptr<WorkspaceService> _workspaceService;
-		std::shared_ptr<SettingsService> _settingsService;
-		std::shared_ptr<EventService> _EventService;
-		std::shared_ptr<DialogService> _dialogService;
-
-		/* Icons */
-		std::shared_ptr<Icon> _UnknownIcon;
-		std::shared_ptr<Icon> _FolderIcon;
-		std::shared_ptr<Icon> _SceneIcon;
-		std::shared_ptr<Icon> _TextureIcon;
-		std::shared_ptr<Icon> _ScriptIcon;
-		std::shared_ptr<Icon> _ModelIcon;
-		std::shared_ptr<Icon> _HomeIcon;
-		std::shared_ptr<Icon> _UpIcon;
-		std::shared_ptr<Icon> _OpenIcon;
-		std::shared_ptr<Icon> _FilterOffIcon;
+		std::shared_ptr<ResourceService>	_Resources;
+		std::shared_ptr<WorkspaceService>	_Workspace;
+		std::shared_ptr<SettingsService>	_Settings;
+		std::shared_ptr<EventService>		_Events;
+		std::shared_ptr<DialogService>		_Dialogs;
 
 		std::string _SearchCriteria;
 	};

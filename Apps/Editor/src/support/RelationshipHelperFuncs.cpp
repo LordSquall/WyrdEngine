@@ -26,7 +26,7 @@ namespace Wyrd::Editor
 		// can't add a child to one of it's own children
 		if (source_rc->first == parent)
 			return false;
-
+		 
 		RelationshipComponent* cur = target_rc;
 		while (cur->parent != ENTITY_INVALID)
 		{

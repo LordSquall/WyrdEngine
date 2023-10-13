@@ -152,14 +152,19 @@ namespace Wyrd
     struct WYRD_LIBRARY_API CameraComponent
     {
         Wyrd::Rect viewport;
+        int32_t projection;
         float aspectRatio;
         Wyrd::Vector2 size;
         float nearPlane;
         float farPlane;
         float aspect;
         float fov;
+        float top;
+        float bottom;
+        float left;
+        float right;
 
-        CameraComponent() : viewport(0,0,0,0), aspectRatio(1.0f), size(0,0), nearPlane(0.1f), farPlane(100.0f), aspect(1.0f), fov(45.0f) {} 
+        CameraComponent() : viewport(0,0,0,0), projection(0), aspectRatio(1.0f), size(0,0), nearPlane(0.1f), farPlane(100.0f), aspect(1.0f), fov(45.0f), top(1.0f), bottom(1.0f), left(1.0f), right(1.0f) {} 
 
         static void ResetFunc(ComponentPool* pool, Entity entity) {
             CameraComponent* c = (CameraComponent*)pool->get(entity);

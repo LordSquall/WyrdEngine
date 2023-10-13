@@ -151,23 +151,33 @@ namespace Wyrd
     void ComponentSerialiserFactory::Serialise(jsonxx::Object & obj, Wyrd::CameraComponent* data)
     {
         obj << "viewport" << data->viewport;
+        obj << "projection" << data->projection;
         obj << "aspectRatio" << data->aspectRatio;
         obj << "size" << data->size;
         obj << "nearPlane" << data->nearPlane;
         obj << "farPlane" << data->farPlane;
         obj << "aspect" << data->aspect;
         obj << "fov" << data->fov;
+        obj << "top" << data->top;
+        obj << "bottom" << data->bottom;
+        obj << "left" << data->left;
+        obj << "right" << data->right;
     }
 
     void ComponentSerialiserFactory::Serialise(std::ofstream& stream, Wyrd::CameraComponent* data)
     {
         stream.write((char*)&data->viewport, sizeof(Wyrd::Rect));
+        stream.write((char*)&data->projection, sizeof(int32_t));
         stream.write((char*)&data->aspectRatio, sizeof(float));
         stream.write((char*)&data->size, sizeof(Wyrd::Vector2));
         stream.write((char*)&data->nearPlane, sizeof(float));
         stream.write((char*)&data->farPlane, sizeof(float));
         stream.write((char*)&data->aspect, sizeof(float));
         stream.write((char*)&data->fov, sizeof(float));
+        stream.write((char*)&data->top, sizeof(float));
+        stream.write((char*)&data->bottom, sizeof(float));
+        stream.write((char*)&data->left, sizeof(float));
+        stream.write((char*)&data->right, sizeof(float));
     }
 
 
@@ -304,23 +314,33 @@ namespace Wyrd
     void ComponentSerialiserFactory::Deserialise(jsonxx::Object & obj, Wyrd::CameraComponent* data)
     {
         data->viewport << obj.get<jsonxx::Object>("viewport", DecodeRect("0,0,0,0"));
+        data->projection = obj.get<jsonxx::Number>("projection", 0);
         data->aspectRatio = obj.get<jsonxx::Number>("aspectRatio", 1.0f);
         data->size << obj.get<jsonxx::Object>("size", DecodeVec2("0,0"));
         data->nearPlane = obj.get<jsonxx::Number>("nearPlane", 0.1f);
         data->farPlane = obj.get<jsonxx::Number>("farPlane", 100.0f);
         data->aspect = obj.get<jsonxx::Number>("aspect", 1.0f);
         data->fov = obj.get<jsonxx::Number>("fov", 45.0f);
+        data->top = obj.get<jsonxx::Number>("top", 1.0f);
+        data->bottom = obj.get<jsonxx::Number>("bottom", 1.0f);
+        data->left = obj.get<jsonxx::Number>("left", 1.0f);
+        data->right = obj.get<jsonxx::Number>("right", 1.0f);
     }
 
     void ComponentSerialiserFactory::Deserialise(std::ifstream& stream, Wyrd::CameraComponent* data)
     {
         stream.read((char*)&data->viewport, sizeof(Wyrd::Rect));
+        stream.read((char*)&data->projection, sizeof(int32_t));
         stream.read((char*)&data->aspectRatio, sizeof(float));
         stream.read((char*)&data->size, sizeof(Wyrd::Vector2));
         stream.read((char*)&data->nearPlane, sizeof(float));
         stream.read((char*)&data->farPlane, sizeof(float));
         stream.read((char*)&data->aspect, sizeof(float));
         stream.read((char*)&data->fov, sizeof(float));
+        stream.read((char*)&data->top, sizeof(float));
+        stream.read((char*)&data->bottom, sizeof(float));
+        stream.read((char*)&data->left, sizeof(float));
+        stream.read((char*)&data->right, sizeof(float));
     }
 
 

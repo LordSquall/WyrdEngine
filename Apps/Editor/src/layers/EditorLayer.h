@@ -46,18 +46,12 @@ namespace Wyrd::Editor
 		std::shared_ptr<EditorViewBase> _sceneViewer;
 		std::map<std::string, std::shared_ptr<EditorViewBase>> _views;
 
-		std::shared_ptr<EventService>		_eventService;
-		std::shared_ptr<WorkspaceService>	_workspaceService;
-		std::shared_ptr<SettingsService>	_settingsService;
-		std::shared_ptr<ResourceService>	_resourceService;
-		std::shared_ptr<SimulationService>	_simulationService;
-		std::shared_ptr<DialogService>		_dialogService;
-
-		std::shared_ptr<Icon> _playButtonIcon;
-		std::shared_ptr<Icon> _stopButtonIcon;
-		std::shared_ptr<Icon> _pauseButtonIcon;
-		std::shared_ptr<Icon> _exportOptionsButtonIcon;
-		std::shared_ptr<Icon> _exportButtonGameIcon;
+		std::shared_ptr<EventService>		_Event;
+		std::shared_ptr<WorkspaceService>	_Workspace;
+		std::shared_ptr<SettingsService>	_Settings;
+		std::shared_ptr<ResourceService>	_Resource;
+		std::shared_ptr<SimulationService>	_Simulation;
+		std::shared_ptr<DialogService>		_Dialog;
 
 		std::shared_ptr<EditorViewBase> _mouseEventOwner;
 

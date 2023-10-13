@@ -22,6 +22,7 @@ namespace Wyrd::Editor
 
 		
 		int Load() override;
+		void ResolveReferences() override;
 		ResourceType GetType() override { return ResourceType::MATERIAL; }
 		inline const std::shared_ptr<Material> GetMaterial() const { return _material; }
 
