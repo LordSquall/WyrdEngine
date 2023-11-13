@@ -64,7 +64,7 @@ namespace Wyrd::Editor
 		_views["Output"] = std::make_shared<OutputView>(this);
 		_views["Export View"] = std::make_shared<ExportView>(this);
 		/*_views["Systems Debug"] = std::make_shared<SystemsDebugView>(this);*/
-		/*_views["Material Editor"] = std::make_shared<MaterialEditorView>(this);*/
+		_views["Material Editor"] = std::make_shared<MaterialEditorView>(this);
 
 		/* cache services */
 		_Event = ServiceManager::Get<EventService>();
@@ -118,7 +118,7 @@ namespace Wyrd::Editor
 		/* set the configuration flags for imgui */
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
 		/* add the editor gui font */
 		io.Fonts->AddFontFromFileTTF("Montserrat-Regular.otf", 16.0f);
@@ -405,7 +405,7 @@ namespace Wyrd::Editor
 
 		/* setup the dockspace */
 		ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiWindowFlags_NoBackground);
+		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), 0);
 
 		/* render of the currently open views */
 		for (std::map<std::string, std::shared_ptr<EditorViewBase>>::iterator it = _views.begin(); it != _views.end(); it++)

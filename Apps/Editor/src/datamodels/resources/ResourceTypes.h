@@ -15,6 +15,27 @@ namespace Wyrd::Editor
 		SCENE = 5,
 		SCRIPT = 6,
 		FONT = 7,
-		MATERIAL = 8
+		MATERIAL = 8,
+		SHADERSTAGE = 9,
 	};
+	
+	class Resource;
+	class TextureRes;
+	class ShaderRes;
+	class ModelRes;
+	class SceneRes;
+	class ScriptRes;
+	class FontTypeRes;
+	class MaterialRes;
+	class ShaderStageRes;
+
+	typedef std::shared_ptr<Resource> ResourceRef;
+	typedef std::shared_ptr<TextureRes> TextureResRef;
+	typedef std::shared_ptr<ShaderRes> ShaderResRef;
+	typedef std::shared_ptr<ModelRes> ModelResRef;
+	typedef std::shared_ptr<SceneRes> SceneResRef;
+	typedef std::shared_ptr<ScriptRes> ScriptResRef;
+	typedef std::shared_ptr<FontTypeRes> FontResRef;
+	typedef std::shared_ptr<MaterialRes> MaterialResRef;
+	typedef std::shared_ptr<ShaderStageRes> ShaderStageResRef;
 }

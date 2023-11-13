@@ -41,6 +41,9 @@ namespace WyrdGen
 
         [XmlAttribute("wrapperType")]
         public String WrapperType;
+
+        [XmlAttribute("isPrimitive")]
+        public bool IsPrimitive = true;
     }
 
     public class JsonType

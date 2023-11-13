@@ -49,41 +49,44 @@ namespace Wyrd
 			unsigned int _texSlotIdx = 0;
 			for (auto& input : _inputs)
 			{
-				if (input.second.type == "Color")
+				if ((**propMap).find(input.first) != (**propMap).end())
 				{
-					PropColor* color = (PropColor*)(*propMap)->at(input.first).get();
-					if (color != nullptr)
+					if (input.second.type == "Color")
 					{
-						_shader->SetUniformColor(input.second.binding, color->Value);
+						PropColor* color = (PropColor*)(*propMap)->at(input.first).get();
+						if (color != nullptr)
+						{
+							_shader->SetUniformColor(input.second.binding, color->Value);
+						}
 					}
-				}
 
-				if (input.second.type == "Texture")
-				{
-					PropTexture* textureProp = (PropTexture*)(*propMap)->at(input.first).get();
-					Texture* texture = textureProp->Get<Texture*>();
-					if (texture != nullptr)
+					if (input.second.type == "Texture")
 					{
-						texture->Bind(_texSlotIdx);
-						_texSlotIdx++;
+						PropTexture* textureProp = (PropTexture*)(*propMap)->at(input.first).get();
+						Texture* texture = textureProp->Get<Texture*>();
+						if (texture != nullptr)
+						{
+							texture->Bind(_texSlotIdx);
+							_texSlotIdx++;
+						}
 					}
-				}
 
-				if (input.second.type == "Vec2")
-				{
-					PropVec2* vec2Prop = (PropVec2*)(*propMap)->at(input.first).get();
-					if (vec2Prop != nullptr)
+					if (input.second.type == "Vec2")
 					{
-						_shader->SetUniformVec2(input.second.binding, glm::vec2(vec2Prop->Value.x, vec2Prop->Value.y));
+						PropVec2* vec2Prop = (PropVec2*)(*propMap)->at(input.first).get();
+						if (vec2Prop != nullptr)
+						{
+							_shader->SetUniformVec2(input.second.binding, glm::vec2(vec2Prop->Value.x, vec2Prop->Value.y));
+						}
 					}
-				}
 
-				if (input.second.type == "Vec3")
-				{
-					PropVec3* vec3Prop = (PropVec3*)(*propMap)->at(input.first).get();
-					if (vec3Prop != nullptr)
+					if (input.second.type == "Vec3")
 					{
-						_shader->SetUniformVec3(input.second.binding, glm::vec3(vec3Prop->Value.x, vec3Prop->Value.y, vec3Prop->Value.z));
+						PropVec3* vec3Prop = (PropVec3*)(*propMap)->at(input.first).get();
+						if (vec3Prop != nullptr)
+						{
+							_shader->SetUniformVec3(input.second.binding, glm::vec3(vec3Prop->Value.x, vec3Prop->Value.y, vec3Prop->Value.z));
+						}
 					}
 				}
 			}

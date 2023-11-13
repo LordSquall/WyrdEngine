@@ -14,13 +14,16 @@ namespace Wyrd
 	{
 		_Renderer = renderer;
 
+		/* retrieve the default resources */
+		
+
 		Vertex3D verts = { 0.0f, 0.0f, 0.0f };
 
 		_VertexBuffer.reset(VertexBuffer::Create((float*)&verts, sizeof(Vertex3D), "meshbatch"));
 
 		_VertexArray.reset(VertexArray::Create());
 		_VertexArray->SetAttribute(0, 0, 3, sizeof(Vertex3D));
-		_VertexArray->SetAttribute(1, 2, 2, sizeof(Vertex3D));
+		_VertexArray->SetAttribute(1, 3, 2, sizeof(Vertex3D));
 		_VertexArray->SetAttribute(2, 5, 3, sizeof(Vertex3D));
 
 		_VertexCount = 0;
@@ -49,7 +52,7 @@ namespace Wyrd
 		_VertexArray->Bind();
 
 		/* update both the vertex and index buffers */
-		_VertexBuffer->Update((float*)&cmd.mesh->Vertices.at(0), sizeof(Vertex3D) * (uint32_t)cmd.mesh->Vertices.size(), _VertexCount);
+		_VertexBuffer->Update((float*)&cmd.mesh->Vertices[0], sizeof(Vertex3D) * (uint32_t)cmd.mesh->Vertices.size(), _VertexCount);
 
 		_VertexCount += cmd.mesh->Vertices.size();
 
@@ -66,6 +69,11 @@ namespace Wyrd
 	{
 		if (_VertexCount == 0)
 			return;
+
+		if (_Material->GetShader() == nullptr)
+		{
+			_Material = _FallbackMaterial.get();
+		}
 
 		_Material->BindShader();
 		_Material->Bind(_MaterialProps);

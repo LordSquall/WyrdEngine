@@ -1,6 +1,6 @@
 {
 	"name": "Grid3DMaterial",
 	"shader": {
-		"name": "Gizmo3DGrid"
+		"resourceId": "96615472-0480-4c5a-ba10-f6af3b09d148"
 	}
 } 

@@ -41,11 +41,14 @@ namespace Wyrd::Editor
 
 	void SimulationService::OnUpdate()
 	{
-		if (_pendingRebuild || (_delayedRebuild && !_IsRunning))
+		if (_WorkspaceService->GetCurrentProject() != nullptr)
 		{
-			_ResourceService->BuildScripts();
-			_pendingRebuild = false;
-			_delayedRebuild = false;
+			if (_pendingRebuild || (_delayedRebuild && !_IsRunning))
+			{
+				_ResourceService->BuildScripts();
+				_pendingRebuild = false;
+				_delayedRebuild = false;
+			}
 		}
 	}
 

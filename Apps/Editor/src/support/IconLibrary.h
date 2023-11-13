@@ -43,7 +43,7 @@ namespace Wyrd::Editor
 		int height = 0;
 
 		std::vector<std::shared_ptr<Icon>> Icons;
-		std::shared_ptr<TextureRes> Texture;
+		TextureResRef Texture;
 	};
 
 	class IconLibrary

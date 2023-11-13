@@ -20,12 +20,14 @@ namespace Wyrd::Editor
 	class ModelRes : public Resource
 	{
 	public:
-		ModelRes(const std::filesystem::path& filepath, const UID& uid);
-
+		ModelRes(const std::string& name, const UID& uid);
 		~ModelRes() = default;
 
-		// Resource overrides
-		int Load() override;
+		IOResult Load(const std::string& filepath) override;
+		IOResult Load(const jsonxx::Object& obj) override;
+
+		IOResult Save(const std::string& filepath) override;
+
 		ResourceType GetType() override { return ResourceType::MODEL; }
 
 		// Getters and Setters

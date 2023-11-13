@@ -28,6 +28,8 @@ namespace Wyrd {
 
 		void Flush();
 
+		inline void SetFallbackMaterial(std::shared_ptr<Material> material) { _FallbackMaterial = material; }
+
 	private:
 		Renderer*						_Renderer;
 		std::shared_ptr<VertexArray>	_VertexArray;
@@ -42,5 +44,7 @@ namespace Wyrd {
 		Texture*						_BaseTexture;
 		BasePropMapRef*					_MaterialProps;
 		RendererDrawType				_DrawType;
+
+		std::shared_ptr<Material>		_FallbackMaterial;
 	};
 }

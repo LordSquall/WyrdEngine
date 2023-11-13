@@ -21,9 +21,9 @@ namespace Wyrd::Editor
 	{
 		if (_activeDialog != nullptr)
 		{
-			bool isOpen = _popupDialogCallback(_activeDialog);
+			IsDialogOpen = _popupDialogCallback(_activeDialog);
 
-			if (!isOpen)
+			if (!IsDialogOpen)
 				_activeDialog = nullptr;
 		}
 	}
@@ -111,6 +111,39 @@ namespace Wyrd::Editor
 		_singleEntryDialog->SetFailureCallback(failureCallback);
 
 		_activeDialog = _singleEntryDialog;
+
+		_popupDialogCallback = [](std::shared_ptr<EditorViewDialogBase> dialog)->bool
+		{
+			if (dialog != nullptr)
+			{
+				const char* name = dialog->GetTitle().c_str();
+				if (!ImGui::IsPopupOpen(name))
+					ImGui::OpenPopup(name);
+
+				if (ImGui::BeginPopupModal(name, nullptr, ImGuiWindowFlags_NoResize))
+				{
+					dialog->OnDialogRender();
+					ImGui::EndPopup();
+				}
+
+				return ImGui::IsPopupOpen(name);
+			}
+			return false;
+		};
+	}
+
+
+	void DialogService::OpenCreateShaderStageDialog(EditorLayer* editorLayer, const std::string title, const std::string& prompt, std::function<void(std::string, int)> successCallback, std::function<void(std::string, int)> failureCallback)
+	{
+		if (!_newShaderStageDialog)
+			_newShaderStageDialog = std::make_shared<NewShaderStageDialog>(editorLayer);
+
+		_newShaderStageDialog->SetTitle(title);
+		_newShaderStageDialog->SetPrompt(prompt);
+		_newShaderStageDialog->SetSuccessCallback(successCallback);
+		_newShaderStageDialog->SetFailureCallback(failureCallback);
+
+		_activeDialog = _newShaderStageDialog;
 
 		_popupDialogCallback = [](std::shared_ptr<EditorViewDialogBase> dialog)->bool
 		{

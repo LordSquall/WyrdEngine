@@ -19,7 +19,7 @@ namespace Wyrd
 		_Source[ShaderStage::Fragment] = desc.fragmentSrc;
 	}
 
-	bool OpenGLShader::Build(const std::string& vertexSrc, const std::string& fragmentSrc)
+	bool OpenGLShader::Build(const std::string& vertexSrc, const std::string& fragmentSrc, bool isRebuild)
 	{
 		// Store the source code
 		_Source[ShaderStage::Vertex] = vertexSrc;
@@ -43,16 +43,19 @@ namespace Wyrd
 			GLint maxLength = 0;
 			glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
 
-			// The maxLength includes the NULL character
-			std::vector<GLchar> infoLog(maxLength);
-			glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
+			if (maxLength > 0)
+			{
+				// The maxLength includes the NULL character
+				std::vector<GLchar> infoLog(maxLength);
+				glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
 
-			// We don't need the shader anymore.
-			glDeleteShader(vertexShader);
+				// We don't need the shader anymore.
+				glDeleteShader(vertexShader);
 
-			// Use the infoLog as you see fit.
-			std::string msg(infoLog.begin(), infoLog.end());
-			WYRD_CORE_ERROR(msg);
+				// Use the infoLog as you see fit.
+				std::string msg(infoLog.begin(), infoLog.end());
+				WYRD_CORE_ERROR(msg);
+			}
 
 			// In this simple program, we'll just leave
 			return false;
@@ -75,18 +78,21 @@ namespace Wyrd
 			GLint maxLength = 0;
 			glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
 
-			// The maxLength includes the NULL character
-			std::vector<GLchar> infoLog(maxLength);
-			glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &infoLog[0]);
+			if (maxLength > 0)
+			{
+				// The maxLength includes the NULL character
+				std::vector<GLchar> infoLog(maxLength);
+				glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &infoLog[0]);
 
-			// We don't need the shader anymore.
-			glDeleteShader(fragmentShader);
-			// Either of them. Don't leak shaders.
-			glDeleteShader(vertexShader);
+				// We don't need the shader anymore.
+				glDeleteShader(fragmentShader);
+				// Either of them. Don't leak shaders.
+				glDeleteShader(vertexShader);
 
-			// Use the infoLog as you see fit.
-			std::string msg(infoLog.begin(), infoLog.end());
-			WYRD_CORE_ERROR(msg);
+				// Use the infoLog as you see fit.
+				std::string msg(infoLog.begin(), infoLog.end());
+				WYRD_CORE_ERROR(msg);
+			}
 
 			// In this simple program, we'll just leave
 			return false;
@@ -95,7 +101,8 @@ namespace Wyrd
 		// Vertex and fragment shaders are successfully compiled.
 		// Now time to link them together into a program.
 		// Get a program object.
-		m_RendererHandle = glCreateProgram();
+		if (isRebuild != true)
+			m_RendererHandle = glCreateProgram();
 
 		// Attach our shaders to our program
 		glAttachShader(m_RendererHandle, vertexShader);
@@ -112,19 +119,22 @@ namespace Wyrd
 			GLint maxLength = 0;
 			glGetProgramiv(m_RendererHandle, GL_INFO_LOG_LENGTH, &maxLength);
 
-			// The maxLength includes the NULL character
-			std::vector<GLchar> infoLog(maxLength);
-			glGetProgramInfoLog(m_RendererHandle, maxLength, &maxLength, &infoLog[0]);
+			if (maxLength > 0)
+			{
+				// The maxLength includes the NULL character
+				std::vector<GLchar> infoLog(maxLength);
+				glGetProgramInfoLog(m_RendererHandle, maxLength, &maxLength, &infoLog[0]);
 
-			// We don't need the program anymore.
-			glDeleteProgram(m_RendererHandle);
-			// Don't leak shaders either.
-			glDeleteShader(vertexShader);
-			glDeleteShader(fragmentShader);
+				// We don't need the program anymore.
+				glDeleteProgram(m_RendererHandle);
+				// Don't leak shaders either.
+				glDeleteShader(vertexShader);
+				glDeleteShader(fragmentShader);
 
-			// Use the infoLog as you see fit.
-			std::string msg(infoLog.begin(), infoLog.end());
-			WYRD_CORE_ERROR(msg);
+				// Use the infoLog as you see fit.
+				std::string msg(infoLog.begin(), infoLog.end());
+				WYRD_CORE_ERROR(msg);
+			}
 
 			// In this simple program, we'll just leave
 			return false;

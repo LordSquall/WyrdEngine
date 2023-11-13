@@ -55,6 +55,8 @@ namespace Wyrd
 		virtual void DrawDebugVector(const Vector3& position, const glm::vec3& direction, float thickness, const Color& color, const glm::mat4& model, const glm::mat4& projection, const glm::mat4& view) = 0;
 		virtual void DrawDebugFrustum(const Vector3& position, const glm::vec3& direction, const Frustum& frustum, float thickness, const Color& color, const glm::mat4& model, const glm::mat4& projection, const glm::mat4& view) = 0;
 		
+		virtual void SetFallbackMaterial(std::shared_ptr<Material> fallbackMaterial);
+
 		inline struct RendererInfo& GetVendorInfo() { return _vendorInfo; }
 
 		inline static RendererAPI GetAPI() { return s_RendererAPI; }

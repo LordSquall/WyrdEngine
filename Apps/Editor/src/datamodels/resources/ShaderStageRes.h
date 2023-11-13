@@ -2,7 +2,6 @@
 
 /* core wyrd includes */
 #include <wyrdpch.h>
-#include <core/renderer/FontType.h>
 
 /* local includes */
 #include "core/export.h"
@@ -10,29 +9,30 @@
 #include "support/Utils.h"
 #include "datamodels/resources/ResourceTypes.h"
 
+typedef unsigned char BYTE;
+
 namespace Wyrd::Editor
 {
-	class FontTypeRes : public Resource
+	class ShaderStageRes : public Resource
 	{
 	public:
-		FontTypeRes(const std::string& name, const UID& uid);
-		~FontTypeRes() = default;
+		ShaderStageRes(const std::string& name, const UID& uid);
+		~ShaderStageRes() = default;
 
 		IOResult Load(const std::string & filepath) override;
 		IOResult Load(const jsonxx::Object & obj) override;
 
 		IOResult Save(const std::string& filepath) override;
 
-		ResourceType GetType() override { return Wyrd::Editor::ResourceType::FONT; }
+		ResourceType GetType() override { return ResourceType::SHADERSTAGE; }
+
+		void DrawProperties() override;
+
+		inline std::string GetSource() const { return _source; }
 
 	private:
-		std::string _name;
-		uint32_t _channels;
-		unsigned char* _data;
+		std::string _source;
 
-		int32_t _width;
-		int32_t _height;
-
-		std::shared_ptr<FontType> _fontType;
+		std::vector<ShaderResRef> _ownedShaders;
 	};
 }

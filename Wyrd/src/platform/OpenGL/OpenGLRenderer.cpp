@@ -240,7 +240,7 @@ namespace Wyrd
 		_DebugVertices.push_back({ nbr.x, nbr.y, nbr.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
 		_DebugVertices.push_back({ fbr.x, fbr.y, fbr.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
 
-		auto shader = Application::Get().GetResources().Shaders["Debug3D"];
+		auto shader = Application::Get().GetResources().Shaders[RES_SHADER_DEBUG3D];
 
 		glLineWidth((GLfloat)thickness);
 

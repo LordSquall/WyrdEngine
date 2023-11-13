@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -9,17 +8,17 @@ using System.Threading.Tasks;
 namespace WyrdAPI
 {
     [StructLayout(LayoutKind.Sequential)]
-    public partial class Transform3DComponent : Component, INotifyPropertyChanged
+    public partial class Transform3DComponent : Component
     {
 
       [MarshalAs(UnmanagedType.Struct)]
-      private Vector3 _position;
+      private Vector3 _position = new Vector3();
 
       [MarshalAs(UnmanagedType.Struct)]
-      private Vector3 _rotation;
+      private Vector3 _rotation = new Vector3();
 
       [MarshalAs(UnmanagedType.Struct)]
-      private Vector3 _scale;
+      private Vector3 _scale = new Vector3();
 
       [MarshalAs(UnmanagedType.Struct)]
       private Matrix4 _modelmatrix;
@@ -27,8 +26,7 @@ namespace WyrdAPI
       [MarshalAs(UnmanagedType.Struct)]
       private Matrix4 _parentmodelmatrix;
 
-
-        public Vector3 Position
+      public Vector3 Position
       {
          get { return _position; }
          set 
@@ -85,19 +83,6 @@ namespace WyrdAPI
         public void SetEntity(Entity entity)
         {
             EntityID = entity.NativeID;
-
-            _position.PropertyChanged   += (obj, property) => { Transform3DComponent_SetPosition(Scene.NativePtr, EntityID, _position); };
-            _rotation.PropertyChanged   += (obj, property) => { Transform3DComponent_SetRotation(Scene.NativePtr, EntityID, _rotation); };
-            _scale.PropertyChanged      += (obj, property) => { Transform3DComponent_SetScale(Scene.NativePtr, EntityID, _scale); };
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged(string property)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
         }
 
         #region P/Invoke functions

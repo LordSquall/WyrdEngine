@@ -2,8 +2,10 @@
 #include <filesystem>
 
 /* core wyrd includes */
+#include <jsonxx.h>
 
 /* local includes */
+#include "datamodels/resources/ShaderRes.h"
 
 
 using namespace Wyrd;
@@ -22,6 +24,8 @@ namespace Wyrd::Editor {
 
 		static ShaderLoader::Result Load(const std::filesystem::path& path, std::string& name, std::string& vs, std::string& fs);
 																			
-		static ShaderLoader::Result Save(const std::filesystem::path& path);
+		static ShaderLoader::Result Load(const jsonxx::Object& obj, std::string& name, std::string& vs, std::string& fs);
+
+		static ShaderLoader::Result Save(const std::filesystem::path& path, ShaderRes* shaderRes);
 	};
 }

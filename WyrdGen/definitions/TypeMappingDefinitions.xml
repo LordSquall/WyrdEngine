@@ -2,127 +2,127 @@
 
   <TypeMap name="Int8">
     <UnmanagedType type="int8_t" default="0"/>
-    <ManagedType type="Int8" marshalType="I1" default="0"/>
+    <ManagedType type="Int8" marshalType="I1" default="0" isPrimitive="true"/>
     <JsonType type="Number" isStreamable="false" isPrimitive="true"/>
   </TypeMap>
 
   <TypeMap name="Int16">
     <UnmanagedType type="int16_t" default="0"/>
-    <ManagedType type="Int16" marshalType="I2" default="0"/>
+    <ManagedType type="Int16" marshalType="I2" default="0" isPrimitive="true"/>
     <JsonType type="Number" isStreamable="false" isPrimitive="true"/>
   </TypeMap>
 
   <TypeMap name="Int32">
     <UnmanagedType type="int32_t" default="0"/>
-    <ManagedType type="Int32" marshalType="I4" default="0"/>
+    <ManagedType type="Int32" marshalType="I4" default="0" isPrimitive="true"/>
     <JsonType type="Number" isStreamable="false" isPrimitive="true"/>
   </TypeMap>
 
   <TypeMap name="Int64">
     <UnmanagedType type="int64_t" default="0"/>
-    <ManagedType type="Int64" marshalType="I8" default="0"/>
+    <ManagedType type="Int64" marshalType="I8" default="0" isPrimitive="true"/>
     <JsonType type="Number" isStreamable="false" isPrimitive="true"/>
   </TypeMap>
 
   <TypeMap name="UInt8">
     <UnmanagedType type="uint8_t" default="0"/>
-    <ManagedType type="UInt8" marshalType="U1" default="0"/>
+    <ManagedType type="UInt8" marshalType="U1" default="0" isPrimitive="true"/>
     <JsonType type="Number" isStreamable="false" isPrimitive="true"/>
   </TypeMap>
 
   <TypeMap name="UInt16">
     <UnmanagedType type="uint16_t" default="0"/>
-    <ManagedType type="UInt16" marshalType="U2" default="0"/>
+    <ManagedType type="UInt16" marshalType="U2" default="0" isPrimitive="true"/>
     <JsonType type="Number" isStreamable="false" isPrimitive="true"/>
   </TypeMap>
 
   <TypeMap name="UInt32">
     <UnmanagedType type="uint32_t" default="0"/>
-    <ManagedType type="UInt32" marshalType="U4" default="0"/>
+    <ManagedType type="UInt32" marshalType="U4" default="0" isPrimitive="true"/>
     <JsonType type="Number" isStreamable="false" isPrimitive="true"/>
   </TypeMap>
 
   <TypeMap name="UInt64">
     <UnmanagedType type="uint64_t" default="0"/>
-    <ManagedType type="UInt64" marshalType="U8" default="0"/>
+    <ManagedType type="UInt64" marshalType="U8" default="0" isPrimitive="true"/>
     <JsonType type="Number" isStreamable="false" isPrimitive="true"/>
   </TypeMap>
 
   <TypeMap name="Float">
     <UnmanagedType type="float" default="0.0f"/>
-    <ManagedType type="float" marshalType="R4" default="0"/>
+    <ManagedType type="float" marshalType="R4" default="0" isPrimitive="true"/>
     <JsonType type="Number" isStreamable="false" isPrimitive="true"/>
   </TypeMap>
 
   <TypeMap name="Boolean">
     <UnmanagedType type="bool" default="false"/>
-    <ManagedType type="bool" marshalType="Bool" default="false"/>
+    <ManagedType type="bool" marshalType="Bool" default="false" isPrimitive="true"/>
     <JsonType type="Boolean" isStreamable="false" isPrimitive="true"/>
   </TypeMap>
 
   <TypeMap name="String">
     <UnmanagedType type="char" default="" isArray="true" generateMaxLengthDefines="true" isPrimitive="false"/>
-    <ManagedType type="String" marshalType="ByValTStr, SizeConst={length}" default=""/>
+    <ManagedType type="String" marshalType="ByValTStr, SizeConst={length}" default="" isPrimitive="true"/>
     <JsonType type="String" isStreamable="true" isPrimitive="false"/>
   </TypeMap>
 
   <TypeMap name="Vec2">
     <UnmanagedType type="Wyrd::Vector2" default="0.0,0.0" isPrimitive="false"/>
-    <ManagedType type="Vector2" marshalType="Struct" default="0"/>
+    <ManagedType type="Vector2" marshalType="Struct" default="0" isPrimitive="false"/>
     <JsonType type="Object" isStreamable="true" isPrimitive="false"/>
   </TypeMap>
 
   <TypeMap name="Vec3">
     <UnmanagedType type="Wyrd::Vector3" default="0.0,0.0" isPrimitive="false"/>
-    <ManagedType type="Vector3" marshalType="Struct" default="0"/>
+    <ManagedType type="Vector3" marshalType="Struct" default="0" isPrimitive="false"/>
     <JsonType type="Object" isStreamable="true" isPrimitive="false"/>
   </TypeMap>
 
   <TypeMap name="Mat4">
     <UnmanagedType type="glm::mat4" default="glm::mat4(1.0)" isPrimitive="false"/>
-    <ManagedType type="Matrix4" marshalType="Struct" default="0"/>
+    <ManagedType type="Matrix4" marshalType="Struct" default="0" isPrimitive="false"/>
     <JsonType type="Object" isStreamable="true" isPrimitive="false"/>
   </TypeMap>
 
   <TypeMap name="Color">
     <UnmanagedType type="Wyrd::Color" default="1,1,1,1" isPrimitive="false"/>
-    <ManagedType type="Color" marshalType="Struct" default="0"/>
+    <ManagedType type="Color" marshalType="Struct" default="0" isPrimitive="false"/>
     <JsonType type="Object" isStreamable="true" isPrimitive="false"/>
   </TypeMap>
 
   <TypeMap name="UID">
     <UnmanagedType type="Wyrd::UID" default="" isPrimitive="false"/>
-    <ManagedType type="UID" marshalType="Struct" default="0"/>
+    <ManagedType type="UID" marshalType="Struct" default="0" isPrimitive="false"/>
     <JsonType type="String" isStreamable="true" isPrimitive="true"/>
   </TypeMap>
 
   <TypeMap name="Texture">
     <UnmanagedType type="Wyrd::UID" default="" isPrimitive="false"/>
-    <ManagedType type="Texture" marshalType="Struct" default="0" />
+    <ManagedType type="Texture" marshalType="Struct" default="0" isPrimitive="false"/>
     <JsonType type="String" isStreamable="true" isPrimitive="true"/>
   </TypeMap>
 
   <TypeMap name="Material">
     <UnmanagedType type="Wyrd::UID" default="" isPrimitive="false"/>
-    <ManagedType type="Material" marshalType="Struct" default="0" />
+    <ManagedType type="Material" marshalType="Struct" default="0" isPrimitive="false"/>
     <JsonType type="String" isStreamable="true" isPrimitive="true"/>
   </TypeMap>
   
   <TypeMap name="Model">
     <UnmanagedType type="Wyrd::UID" default="" isPrimitive="false"/>
-    <ManagedType type="Model" marshalType="Struct" default="0" />
+    <ManagedType type="Model" marshalType="Struct" default="0" isPrimitive="false"/>
     <JsonType type="String" isStreamable="true" isPrimitive="true"/>
   </TypeMap>
 
   <TypeMap name="Rect">
     <UnmanagedType type="Wyrd::Rect" default="0,0,0,0" isPrimitive="false"/>
-    <ManagedType type="Rect" marshalType="Struct" default="0"/>
+    <ManagedType type="Rect" marshalType="Struct" default="0" isPrimitive="false"/>
     <JsonType type="Object" isStreamable="true" isPrimitive="false"/>
   </TypeMap>
 
   <TypeMap name="Entity">
     <UnmanagedType type="Wyrd::Entity" default="ENTITY_INVALID"/>
-    <ManagedType type="Entity" marshalType="Struct" default="0"/>
+    <ManagedType type="Entity" marshalType="Struct" default="0" isPrimitive="true"/>
     <JsonType type="Number" isStreamable="false" isPrimitive="true"/>
   </TypeMap>
 
@@ -133,25 +133,25 @@
 
   <TypeMap name="PropertyList" HeapOnly="true">
     <UnmanagedType type="BasePropMapRef" default="nullptr"/>
-    <ManagedType type="BasePropMapRef" marshalType="Struct" default="null"/>
+    <ManagedType type="BasePropMapRef" marshalType="Struct" default="null" isPrimitive="true"/>
     <JsonType type="BasePropMapRef" isStreamable="false" isPrimitive="true"/>
   </TypeMap>
 
   <TypeMap name="PropetryList" HeapOnly="true">
     <UnmanagedType type="PropetryListRef" default="nullptr"/>
-    <ManagedType type="PropetryListRef" marshalType="Struct" default="null"/>
+    <ManagedType type="PropetryListRef" marshalType="Struct" default="null" isPrimitive="true"/>
     <JsonType type="PropetryListRef" isStreamable="false" isPrimitive="true"/>
   </TypeMap>
   
   <TypeMap name="ScriptPropertiesMapRef" HeapOnly="true">
     <UnmanagedType type="ScriptPropertiesMapRef" default="nullptr"/>
-    <ManagedType type="ScriptPropertiesMapRef" marshalType="Struct" default="null"/>
+    <ManagedType type="ScriptPropertiesMapRef" marshalType="Struct" default="null" isPrimitive="true"/>
     <JsonType type="ScriptPropertiesMapRef" isStreamable="false" isPrimitive="true"/>
   </TypeMap>
 
   <TypeMap name="ScriptPropertiesDataMapRef" HeapOnly="true">
     <UnmanagedType type="ScriptPropertiesDataMapRef" default="nullptr"/>
-    <ManagedType type="ScriptPropertiesDataMapRef" marshalType="Struct" default="null"/>
+    <ManagedType type="ScriptPropertiesDataMapRef" marshalType="Struct" default="null" isPrimitive="true"/>
     <JsonType type="ScriptPropertiesDataMapRef" isStreamable="false" isPrimitive="true"/>
   </TypeMap>
   

@@ -16,7 +16,7 @@ namespace Wyrd
 				OpenGLError::Resolve(err);
 		}
 		glBindBuffer(GL_ARRAY_BUFFER, _rendererID);
-		//glObjectLabel(GL_BUFFER, _rendererID, -1, description.c_str());
+		glObjectLabel(GL_BUFFER, _rendererID, -1, description.c_str());
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_DYNAMIC_DRAW);
 
 		GLenum err = glGetError();

@@ -1,6 +1,7 @@
 /* core wyrd includes */
 #include <wyrdpch.h>
 #include <core/Log.h>
+#include <filesystem>
 
 /* local includes */
 #include "ResourceSetLoader.h"
@@ -14,10 +15,10 @@
 
 namespace Wyrd::Editor
 {
-	ResourceSetLoader::Result ResourceSetLoader::Load(const std::filesystem::path& path)
+	ResourceSetLoader::Result ResourceSetLoader::Load(const std::filesystem::path& path, std::map<UID, std::shared_ptr<Resource>>& resourceMap)
 	{
 		ResourceSetLoader::Result result = FileNotFound;
-		jsonxx::Object o;
+		jsonxx::Array a;
 
 		std::ifstream f(path);
 		if (f.is_open() == true) {
@@ -27,97 +28,111 @@ namespace Wyrd::Editor
 			std::ostringstream ss;
 			ss << f.rdbuf();
 
-			if (o.parse(ss.str()) == true)
+			if (a.parse(ss.str()) == true)
 			{
-				if (o.has<jsonxx::Array>("Textures"))
+				for (size_t i = 0; i < a.size(); i++)
 				{
-					jsonxx::Array textureArray = o.get<jsonxx::Array>("Textures");
+					jsonxx::Object resourceObj = a.get<jsonxx::Object>((int)i);
+					
+					/* retrieve the standard cache header fields */
+					std::string resourceType = resourceObj.get<jsonxx::String>("type");
+					std::string name = resourceObj.get<jsonxx::String>("name");
+					UID resourceID = UID(resourceObj.get<jsonxx::String>("resourceID"));
 
-					for (size_t i = 0; i < textureArray.size(); i++)
+					if (resourceType == "Texture")
 					{
-						jsonxx::Object textureObject = textureArray.get<jsonxx::Object>((int)i);
-
-						std::string path = textureObject.get<jsonxx::String>("path");
-						std::string resourceID = textureObject.get<jsonxx::String>("resourceID");
-
-						std::shared_ptr<TextureRes> textureRes = std::make_shared<TextureRes>(rootPath / path, UID(resourceID));
-						if (textureRes->Load() != 0)
+						std::string path = resourceObj.get<jsonxx::String>("path");
+						std::shared_ptr<TextureRes> res = std::make_shared<TextureRes>(name, resourceID);
+						res->IsEditorOnly(true);
+						res->SetPath(rootPath / path);
+						if (res->Load((rootPath / path).string()) != 0)
 						{
 							WYRD_CORE_ERROR("Unable to load Texture Resource!");
 						}
 						else
 						{
-							WYRD_CORE_INFO("Texture Loaded : {0} - {1}", textureRes->GetName(), textureRes->GetResourceID().str());
+							WYRD_CORE_INFO("Texture Loaded : {0} - {1}", res->GetName(), res->GetResourceID().str());
+							resourceMap.insert(std::pair<UID, std::shared_ptr<Resource>>(UID(resourceID), res));
 						}
 					}
-				}
-
-				if (o.has<jsonxx::Array>("Shaders"))
-				{
-					jsonxx::Array shaderArray = o.get<jsonxx::Array>("Shaders");
-
-					for (size_t i = 0; i < shaderArray.size(); i++)
+					else if (resourceType == "Mesh")
 					{
-						jsonxx::Object shaderObject = shaderArray.get<jsonxx::Object>((int)i);
-
-						std::string path = shaderObject.get<jsonxx::String>("path");
-						std::string resourceID = shaderObject.get<jsonxx::String>("resourceID");
-
-						std::shared_ptr<ShaderRes> shaderRes = std::make_shared<ShaderRes>(rootPath / path, UID(resourceID));
-						if (shaderRes->Load() != 0)
+						std::string path = resourceObj.get<jsonxx::String>("path");
+						std::shared_ptr<ModelRes> res = std::make_shared<ModelRes>(name, resourceID);
+						res->IsEditorOnly(true);
+						res->SetPath(rootPath / path);
+						if (res->Load((rootPath / path).string()) != 0)
 						{
-							WYRD_CORE_ERROR("Unable to load Shader Resource!");
+							WYRD_CORE_ERROR("Unable to load Model Resource!");
 						}
 						else
 						{
-							WYRD_CORE_INFO("Shader Loaded : {0} - {1}", shaderRes->GetName(), shaderRes->GetResourceID().str());
+							WYRD_CORE_INFO("Model Loaded : {0} - {1}", res->GetName(), res->GetResourceID().str());
+							resourceMap.insert(std::pair<UID, std::shared_ptr<Resource>>(UID(resourceID), res));
 						}
 					}
-				}
-
-				if (o.has<jsonxx::Array>("Materials"))
-				{
-					jsonxx::Array MaterialArray = o.get<jsonxx::Array>("Materials");
-
-					for (size_t i = 0; i < MaterialArray.size(); i++)
+					else if (resourceType == "ShaderStage")
 					{
-						jsonxx::Object materialObject = MaterialArray.get<jsonxx::Object>((int)i);
-
-						std::string path = materialObject.get<jsonxx::String>("path");
-						std::string resourceID = materialObject.get<jsonxx::String>("resourceID");
-
-						std::shared_ptr<MaterialRes> materialRes = std::make_shared<MaterialRes>(rootPath / path, UID(resourceID));
-						if (materialRes->Load() != 0)
+						std::string path = resourceObj.get<jsonxx::String>("path");
+						std::shared_ptr<ShaderStageRes> res = std::make_shared<ShaderStageRes>(name, resourceID);
+						res->IsEditorOnly(true);
+						res->SetPath(rootPath / path);
+						if (res->Load((rootPath / path).string()) != 0)
 						{
-							WYRD_CORE_ERROR("Unable to load Material!");
+							WYRD_CORE_ERROR("Unable to load ShaderStageRes Resource!");
 						}
 						else
 						{
-							WYRD_CORE_INFO("Material Loaded : {0} - {1}", materialRes->GetName(), materialRes->GetResourceID().str());
+							WYRD_CORE_INFO("ShaderStageRes Loaded : {0} - {1}", res->GetName(), res->GetResourceID().str());
+							resourceMap.insert(std::pair<UID, std::shared_ptr<Resource>>(UID(resourceID), res));
 						}
 					}
-				}
-				if (o.has<jsonxx::Array>("Meshes"))
-				{
-					jsonxx::Array meshArray = o.get<jsonxx::Array>("Meshes");
-				
-					for (size_t i = 0; i < meshArray.size(); i++)
+					else if (resourceType == "Shader")
 					{
-						jsonxx::Object meshObject = meshArray.get<jsonxx::Object>((int)i);
-
-						std::string path = meshObject.get<jsonxx::String>("path");
-						std::string resourceID = meshObject.get<jsonxx::String>("resourceID");
-
-						std::shared_ptr<ModelRes> modelRes = std::make_shared<ModelRes>(rootPath / path, UID(resourceID));
-						if (modelRes->Load() != 0)
+						jsonxx::Object data = resourceObj.get<jsonxx::Object>("data");
+						std::shared_ptr<ShaderRes> res = std::make_shared<ShaderRes>(name, resourceID);
+						res->IsEditorOnly(true);
+						if (res->Load(data) != 0)
 						{
-							WYRD_CORE_ERROR("Unable to load Mesh!");
+							WYRD_CORE_ERROR("Unable to load ShaderRes Resource!");
 						}
 						else
 						{
-							WYRD_CORE_INFO("Mesh Loaded : {0} - {1}", modelRes->GetName(), modelRes->GetResourceID().str());
+							WYRD_CORE_INFO("ShaderRes Loaded : {0} - {1}", res->GetName(), res->GetResourceID().str());
+							resourceMap.insert(std::pair<UID, std::shared_ptr<Resource>>(UID(resourceID), res));
 						}
 					}
+					else if (resourceType == "Material")
+					{
+						jsonxx::Object data = resourceObj.get<jsonxx::Object>("data");
+						std::shared_ptr<MaterialRes> res = std::make_shared<MaterialRes>(name, resourceID);
+						res->IsEditorOnly(true);
+						if (res->Load(data) != 0)
+						{
+							WYRD_CORE_ERROR("Unable to load MaterialRes Resource!");
+						}
+						else
+						{
+							WYRD_CORE_INFO("MaterialRes Loaded : {0} - {1}", res->GetName(), res->GetResourceID().str());
+							resourceMap.insert(std::pair<UID, std::shared_ptr<Resource>>(UID(resourceID), res));
+						}
+					}
+					else
+					{
+						WYRD_CORE_WARN("Unrecognised Resource type in resourceset: {0} {1}", name, resourceType);
+					}
+				}
+
+				/* trigger resolutions on all resources */
+				for (auto& [k, v] : resourceMap)
+				{
+					v->ResolveReferences();
+				}
+
+				/* trigger build on all resources */
+				for (auto& [k, v] : resourceMap)
+				{
+					v->Build();
 				}
 
 				result = Success;

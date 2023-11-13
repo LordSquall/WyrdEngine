@@ -33,9 +33,12 @@ namespace Wyrd::Editor
 		inline const Icon& RetrieveIcon(const std::string& library, const std::string& name) { return _iconLibrary.GetIcon(library, name); }
 
 		template<class T>
-		std::shared_ptr<T> GetResourceByID(const UID resourceId)
+		std::shared_ptr<T> GetResourceByID(const UID resourceId, bool includeEditorResources = false)
 		{
-			auto it = _resourceMap.find(resourceId);
+			auto it = std::find_if(_resourceMap.begin(), _resourceMap.end(), [&](const auto& e)
+				{
+					return e.second->GetResourceID() == resourceId;
+				});
 
 			if (it != _resourceMap.end())
 			{
@@ -61,6 +64,8 @@ namespace Wyrd::Editor
 		inline const std::map<UID, std::shared_ptr<Resource>> GetResources() { return _resourceMap; };
 
 		inline const std::shared_ptr<TextureRes> GetDefaultTexture() { return _defaultTexture; };
+
+		inline const std::shared_ptr<ShaderRes> GetDefaultShader() { return _defaultShader; };
 
 		std::map<UID, std::shared_ptr<Resource>> GetResourcesByDir(const std::string& dir);
 
@@ -91,8 +96,9 @@ namespace Wyrd::Editor
 		std::map<std::string, ResourceType> _extensions;
 		std::set<std::string> _ignoredExtensions;
 
-		std::shared_ptr<TextureRes> _defaultTexture;
-		std::shared_ptr<SceneRes> _defaultScene;
+		TextureResRef _defaultTexture;
+		ShaderResRef _defaultShader;
+		SceneResRef _defaultScene;
 
 	private:
 		std::shared_ptr<WorkspaceService> _WorkspaceService;

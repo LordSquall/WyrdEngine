@@ -27,8 +27,10 @@ namespace Wyrd::Editor
 				iconSet->imagePath = o.get<jsonxx::String>("texture-path");
 				iconSet->width = (int)o.get<jsonxx::Number>("texture-width");
 				iconSet->height = (int)o.get<jsonxx::Number>("texture-height");
-				iconSet->Texture = std::make_shared<TextureRes>(path.parent_path() / iconSet->imagePath, UIDUtils::Create());
-				iconSet->Texture->Load();
+				iconSet->Texture = std::make_shared<TextureRes>(iconSet->name, UIDUtils::Create());
+				iconSet->Texture->Load((path.parent_path() / iconSet->imagePath).string());
+				iconSet->Texture->ResolveReferences();
+				iconSet->Texture->Build();
 
 				jsonxx::Array icons = o.get<jsonxx::Array>("icons");
 				for (int i = 0; i < icons.size(); i++)

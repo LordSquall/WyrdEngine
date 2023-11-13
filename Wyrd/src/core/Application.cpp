@@ -43,10 +43,6 @@ namespace Wyrd {
 
 			_Window->SetSize(props.windowProps.Width, props.windowProps.Height);
 
-			/* create a renderer */
-			_Renderer.reset(Renderer::Create());
-
-
 			/* create the resource subsystem */
 			_Resources = std::make_unique<Resources>();
 
@@ -68,6 +64,11 @@ namespace Wyrd {
 				texture->SetUID(UID(RES_TEXTURE_DEFAULT));
 				_Resources->Textures.insert(std::pair<std::string, std::shared_ptr<Texture>>(UID(RES_TEXTURE_DEFAULT), texture));
 			}
+
+
+			/* create a renderer */
+			_Renderer.reset(Renderer::Create());
+
 		}
 		else
 		{

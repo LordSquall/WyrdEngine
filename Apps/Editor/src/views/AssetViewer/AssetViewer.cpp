@@ -125,37 +125,25 @@ namespace Wyrd::Editor
 							WYRD_TRACE("Add Scene... {0}", d.c_str());
 							});
 					}
-					if (ImGui::MenuItem("Material"))
+					ImGui::Separator();
+					if (ImGui::MenuItem("ShaderStage")) 
 					{
-						_Dialogs->OpenSingleEntryDialog(_EditorLayer, "Create new Material", "Name", [&](std::string d) -> void {
+						_Dialogs->OpenCreateShaderStageDialog(_EditorLayer, "Create new ShaderStage", "Name", [&](std::string d, int t) -> void {
 
-							/* load the material template */
-							std::string rawTemplateContent = Utils::ReadFileToString(Utils::GetEditorResFolder() + "\\templates\\Material.material");
+							/* determine extension from type */
+							std::string ext = (t == 0 ? ".vs" : ".fs");
 
+							/* load the Shader Stage template */
+							std::string rawTemplateContent = Utils::ReadFileToString(Utils::GetEditorResFolder() + "\\templates\\ShaderStage" + ext);
+							
 							/* populate the template tags */
-							std::string populatedTemplateContent = Utils::ReplaceAll(rawTemplateContent, "<<MATERIAL_NAME>>", d.c_str());
+							std::string populatedTemplateContent = Utils::ReplaceAll(rawTemplateContent, "<<SHADERSTAGE_NAME>>", d.c_str());
 
 							/* create the file */
-							Utils::CreateRawFile(_SelectedDirectory / (d + ".material"), populatedTemplateContent);
+							Utils::CreateRawFile(_SelectedDirectory / (d + ext), populatedTemplateContent);
 
-							WYRD_TRACE("Add Material... {0}", d.c_str());
-						});
-					}
-					if (ImGui::MenuItem("Script"))
-					{
-						_Dialogs->OpenSingleEntryDialog(_EditorLayer, "Create new Script", "Name", [&](std::string d) -> void {
-
-							/* load the material template */
-							std::string rawTemplateContent = Utils::ReadFileToString(Utils::GetEditorResFolder() + "\\templates\\Script.cs");
-
-							/* populate the template tags */
-							std::string populatedTemplateContent = Utils::ReplaceAll(rawTemplateContent, "<<CLASS_NAME>>", d.c_str());
-
-							/* create the file */
-							Utils::CreateRawFile(_SelectedDirectory / (d + ".cs"), populatedTemplateContent);
-
-							WYRD_TRACE("Add Script... {0}", d.c_str());
-						});
+							WYRD_TRACE("Add Shader Stage... {0}", d.c_str());
+							});
 					}
 					if (ImGui::MenuItem("Shader"))
 					{
@@ -172,6 +160,39 @@ namespace Wyrd::Editor
 
 							WYRD_TRACE("Add Shader... {0}", d.c_str());
 							});
+					}
+					if (ImGui::MenuItem("Material"))
+					{
+						_Dialogs->OpenSingleEntryDialog(_EditorLayer, "Create new Material", "Name", [&](std::string d) -> void {
+
+							/* load the material template */
+							std::string rawTemplateContent = Utils::ReadFileToString(Utils::GetEditorResFolder() + "\\templates\\Material.material");
+
+							/* populate the template tags */
+							std::string populatedTemplateContent = Utils::ReplaceAll(rawTemplateContent, "<<MATERIAL_NAME>>", d.c_str());
+
+							/* create the file */
+							Utils::CreateRawFile(_SelectedDirectory / (d + ".material"), populatedTemplateContent);
+
+							WYRD_TRACE("Add Material... {0}", d.c_str());
+						});
+					}
+					ImGui::Separator();
+					if (ImGui::MenuItem("Script"))
+					{
+						_Dialogs->OpenSingleEntryDialog(_EditorLayer, "Create new Script", "Name", [&](std::string d) -> void {
+
+							/* load the material template */
+							std::string rawTemplateContent = Utils::ReadFileToString(Utils::GetEditorResFolder() + "\\templates\\Script.cs");
+
+							/* populate the template tags */
+							std::string populatedTemplateContent = Utils::ReplaceAll(rawTemplateContent, "<<CLASS_NAME>>", d.c_str());
+
+							/* create the file */
+							Utils::CreateRawFile(_SelectedDirectory / (d + ".cs"), populatedTemplateContent);
+
+							WYRD_TRACE("Add Script... {0}", d.c_str());
+						});
 					}
 					ImGui::EndMenu();
 				}
@@ -317,6 +338,9 @@ namespace Wyrd::Editor
 				case ResourceType::SHADER:
 					DrawShaderItem(resIdx, (ShaderRes&)*resource.get());
 					break;
+				case ResourceType::SHADERSTAGE:
+					DrawShaderStageItem(resIdx, (ShaderStageRes&)*resource.get());
+					break;
 				case ResourceType::MATERIAL:
 					DrawMaterialItem(resIdx, (MaterialRes&)*resource.get());
 					break;
@@ -412,6 +436,11 @@ namespace Wyrd::Editor
 		/* Context Menu */
 		if (ImGui::BeginPopupContextItem())
 		{
+			if (ImGui::MenuItem("Properties"))
+			{
+				_Events->Publish(Editor::Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&textureResource));
+			}
+			ImGui::Separator();
 			if (ImGui::MenuItem("Delete"))
 			{
 				Utils::RemoveFile(textureResource.GetPath());
@@ -457,6 +486,11 @@ namespace Wyrd::Editor
 		/* Context Menu */
 		if (ImGui::BeginPopupContextItem())
 		{
+			if (ImGui::MenuItem("Properties"))
+			{
+				_Events->Publish(Editor::Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&sceneResource));
+			}
+			ImGui::Separator();
 			if (ImGui::MenuItem("Delete"))
 			{
 				Utils::RemoveFile(sceneResource.GetPath().c_str());
@@ -520,6 +554,11 @@ namespace Wyrd::Editor
 		/* Context Menu */
 		if (ImGui::BeginPopupContextItem())
 		{
+			if (ImGui::MenuItem("Properties"))
+			{
+				_Events->Publish(Editor::Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&scriptResource));
+			}
+			ImGui::Separator();
 			if (ImGui::MenuItem("Delete"))
 			{
 				Utils::RemoveFile(scriptResource.GetPath().c_str());
@@ -577,6 +616,11 @@ namespace Wyrd::Editor
 		/* Context Menu */
 		if (ImGui::BeginPopupContextItem())
 		{
+			if (ImGui::MenuItem("Properties"))
+			{
+				_Events->Publish(Editor::Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&materialResource));
+			}
+			ImGui::Separator();
 			if (ImGui::MenuItem("Open in Material Editor"))
 			{
 				_Events->Publish(Events::EventType::OpenMaterialTool, std::make_unique<Events::OpenMaterialToolArgs>(materialResource.GetMaterial()));
@@ -606,9 +650,15 @@ namespace Wyrd::Editor
 		}
 
 		/* Visuals */
+		ImVec2 rootPos = ImGui::GetCursorPos();
 		ImGui::Image(_Resources->RetrieveIcon("common", "assets_material"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 		ImGui::TextClipped(materialResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
+		ImVec2 finalPos = ImGui::GetCursorPos();
 
+		if (!materialResource.IsLoaded())
+		{
+			DrawStatusIcon(_Resources->RetrieveIcon("common", "warning"), rootPos);
+		}
 	}
 
 	void AssetViewer::DrawModelItem(int resID, ModelRes& modelResource)
@@ -635,6 +685,11 @@ namespace Wyrd::Editor
 		/* Context Menu */
 		if (ImGui::BeginPopupContextItem())
 		{
+			if (ImGui::MenuItem("Properties"))
+			{
+				_Events->Publish(Editor::Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&modelResource));
+			}
+			ImGui::Separator();
 			if (ImGui::MenuItem("Delete"))
 			{
 				Utils::RemoveFile(modelResource.GetPath().c_str());
@@ -645,14 +700,14 @@ namespace Wyrd::Editor
 		/* Input */
 		if (ImGui::IsItemHovered())
 		{
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-				_SelectedResource = resID;
+		if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+			_SelectedResource = resID;
 
-			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-			{
-				_SelectedResource = resID;
-				Utils::SystemExecute("code " + modelResource.GetPath().string());
-			}
+		if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+		{
+			_SelectedResource = resID;
+			Utils::SystemExecute("code " + modelResource.GetPath().string());
+		}
 		}
 
 		/* Visuals */
@@ -661,9 +716,17 @@ namespace Wyrd::Editor
 
 	}
 
-
 	void AssetViewer::DrawShaderItem(int resID, ShaderRes& ShaderResource)
 	{
+		/* Drag and Drop */
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+		{
+			const UID resourceID = ShaderResource.GetResourceID();
+			ImGui::SetDragDropPayload(IMGUI_DND_SHADER, &resourceID, sizeof(UID));
+			ImGui::Image(_Resources->RetrieveIcon("common", "assets_shader"), ImVec2(32, 32));
+			ImGui::EndDragDropSource();
+		}
+
 		/* Tool Tip */
 		if (ImGui::IsItemHovered())
 		{
@@ -671,12 +734,29 @@ namespace Wyrd::Editor
 			ImGui::Text(ShaderResource.GetName().c_str());
 			ImGui::Text("Filename: %s", ShaderResource.GetPath().c_str());
 			ImGui::Text("UID: %s", ShaderResource.GetResourceID().str().c_str());
+			ImGui::Text("IsLoaded: %d", ShaderResource.IsLoaded());
 			ImGui::EndTooltip();
 		}
 
 		/* Context Menu */
 		if (ImGui::BeginPopupContextItem())
 		{
+			if (ImGui::MenuItem("Properties"))
+			{
+				_Events->Publish(Editor::Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&ShaderResource));
+			}
+			ImGui::Separator();
+			if (ImGui::MenuItem("View Source"))
+			{
+				Utils::SystemExecute("code " + ShaderResource.GetPath().string());
+			}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Reload"))
+			{
+				ShaderResource.Load(ShaderResource.GetPath().string());
+				ShaderResource.ResolveReferences();
+				ShaderResource.Build();
+			}
 			if (ImGui::MenuItem("Delete"))
 			{
 				Utils::RemoveFile(ShaderResource.GetPath().c_str());
@@ -698,8 +778,107 @@ namespace Wyrd::Editor
 		}
 
 		/* Visuals */
+
+		ImVec2 rootPos = ImGui::GetCursorPos();
 		ImGui::Image(_Resources->RetrieveIcon("common", "assets_shader"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 		ImGui::TextClipped(ShaderResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
+		ImVec2 finalPos = ImGui::GetCursorPos();
+
+		if (!ShaderResource.IsLoaded())
+		{
+			DrawStatusIcon(_Resources->RetrieveIcon("common", "warning"), rootPos);
+		}
+
+	}
+
+	void AssetViewer::DrawShaderStageItem(int resID, ShaderStageRes& ShaderStageResource)
+	{
+		/* Drag and Drop */
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+		{
+			const UID resourceID = ShaderStageResource.GetResourceID();
+			ImGui::SetDragDropPayload(IMGUI_DND_SHADERSTAGE, &resourceID, sizeof(UID));
+			if (ShaderStageResource.GetPath().extension() == ".vs")
+			{
+				ImGui::Image(_Resources->RetrieveIcon("common", "assets_shaderstage_vs"), ImVec2(32, 32));
+			}
+			else
+			{
+				ImGui::Image(_Resources->RetrieveIcon("common", "assets_shaderstage_fs"), ImVec2(32, 32));
+			}
+			ImGui::EndDragDropSource();
+		}
+
+		/* Tool Tip */
+		if (ImGui::IsItemHovered())
+		{
+			ImGui::BeginTooltip();
+			ImGui::Text(ShaderStageResource.GetName().c_str());
+			ImGui::Text("Filename: %s", ShaderStageResource.GetPath().c_str());
+			ImGui::Text("UID: %s", ShaderStageResource.GetResourceID().str().c_str());
+			ImGui::Text("IsLoaded: %d", ShaderStageResource.IsLoaded());
+			ImGui::EndTooltip();
+		}
+
+		/* Context Menu */
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Properties"))
+			{
+				_Events->Publish(Editor::Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&ShaderStageResource));
+			}
+			ImGui::Separator();
+			if (ImGui::MenuItem("View Source"))
+			{
+				Utils::SystemExecute("code " + ShaderStageResource.GetPath().string());
+			}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Reload"))
+			{
+				ShaderStageResource.Load(ShaderStageResource.GetPath().string());
+				ShaderStageResource.ResolveReferences();
+				ShaderStageResource.Build();
+			}
+			if (ImGui::MenuItem("Delete"))
+			{
+				Utils::RemoveFile(ShaderStageResource.GetPath().c_str());
+			}
+			ImGui::EndPopup();
+		}
+
+		/* Input */
+		if (ImGui::IsItemHovered())
+		{
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+			{
+				_SelectedResource = resID;
+			}
+
+			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+			{
+				_SelectedResource = resID;
+				Utils::SystemExecute("code " + ShaderStageResource.GetPath().string());
+			}
+		}
+
+		/* Visuals */
+
+		ImVec2 rootPos = ImGui::GetCursorPos();
+		if (ShaderStageResource.GetPath().extension() == ".vs")
+		{
+			ImGui::Image(_Resources->RetrieveIcon("common", "assets_shaderstage_vs"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+		}
+		else
+		{
+			ImGui::Image(_Resources->RetrieveIcon("common", "assets_shaderstage_fs"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+		}
+		ImGui::TextClipped(ShaderStageResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
+		ImVec2 finalPos = ImGui::GetCursorPos();
+
+		if (!ShaderStageResource.IsLoaded())
+		{
+			DrawStatusIcon(_Resources->RetrieveIcon("common", "warning"), rootPos);
+		}
 
 	}
 
@@ -734,7 +913,18 @@ namespace Wyrd::Editor
 		}
 		
 		/* Visuals */
+		ImVec2 rootPos = ImGui::GetCursorPos();
+
 		ImGui::Image(_Resources->RetrieveIcon("common", "assets_unknown"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 		ImGui::TextClipped(unknownResourceName.c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
+	}
+
+	void AssetViewer::DrawStatusIcon(const Icon& icon, const ImVec2& rootPos)
+	{
+		ImVec2 finalPos = ImGui::GetCursorPos();
+		ImGui::SetCursorPosX(rootPos.x + layoutSettings.itemGroupSize * 0.75);
+		ImGui::SetCursorPosY(rootPos.y + layoutSettings.itemGroupSize * 0.75);
+		ImGui::Image(icon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize) * 0.25, ImVec4(0.9, 0.1, 0.1, 1), ImVec4(1, 0, 0, 0));
+		ImGui::SetCursorPos(finalPos);
 	}
 }

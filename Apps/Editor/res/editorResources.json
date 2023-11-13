@@ -1,66 +1,151 @@
-{
-  "Textures": [
-    {
-      "path": "textures//default.png",
-      "resourceID": "f7ad951c-50a4-43b2-8b5f-88c484691f11"
+[
+  // Default base resources
+  {
+    "type": "Texture",
+    "name": "Default Texture",
+    "resourceID": "f7ad951c-50a4-43b2-8b5f-88c484691f11",
+    "path": "textures//default.png"
+  },
+  {
+    "type": "Mesh",
+    "name": "Default Mesh",
+    "resourceID": "39e3b96f-e71f-4bba-b2fe-9eac4d9827a1",
+    "path": "meshes//cube.obj"
+  },
+
+  // Fallback Material + Shader
+  {
+    "type": "ShaderStage",
+    "name": "Fallback VS",
+    "resourceID": "99d17caa-1e5e-4c4a-88fd-ba076d1b632f",
+    "path": "shaders//fallback3D.vs"
+  },
+  {
+    "type": "ShaderStage",
+    "name": "Fallback FS",
+    "resourceID": "605db58b-37ff-4fa9-95ca-1115d42d9bf9",
+    "path": "shaders//fallback3D.fs"
+  },
+  {
+    "type": "Shader",
+    "name": "Fallback Shader",
+    "resourceID": "e18c6197-c662-4f3a-99b5-c2372d7e17c1",
+    "data": {
+      "vertexStageID": "99d17caa-1e5e-4c4a-88fd-ba076d1b632f",
+      "fragmentStageID": "605db58b-37ff-4fa9-95ca-1115d42d9bf9"
     }
-  ],
-  "Shaders": [
-    {
-      "path": "shaders//gizmo3DGrid.shader",
-      "resourceID": "96615472-0480-4c5a-ba10-f6af3b09d148"
-    },
-    {
-      "path": "shaders//mesh.shader",
-      "resourceID": "1248afbe-4320-46d3-821d-1b1de84699a7"
-    },
-    {
-      "path": "shaders//sprite.shader",
-      "resourceID": "9548ee20-4af6-4edd-9cb5-00d58a2e1b25"
-    },
-    {
-      "path": "shaders//text.shader",
-      "resourceID": "291ca044-5e4e-4d78-9614-f4196c916eef"
-    },
-    {
-      "path": "shaders//vertex2D.shader",
-      "resourceID": "6fdcea37-b168-40f1-8fe9-d0f0d3754d3a"
-    },
-    {
-      "path": "shaders//TwoColors.shader",
-      "resourceID": "9bec7051-debe-45d6-8678-2b1e67ea4f9d"
-    },
-    {
-      "path": "shaders//MeshTexture.shader",
-      "resourceID": "440b3f3c-19a2-49ba-b15c-ad9952bb6f5f"
-    },
-    {
-      "path": "shaders//debug3d.shader",
-      "resourceID": "4cf0f2c1-abe5-4f31-99e4-3a874fb95ad8"
-    },
-    {
-      "path": "shaders//inputColorPicking.shader",
-      "resourceID": "b73002f6-9619-446b-aaae-b9ff545d7bde"
+  },
+  {
+    "type": "Material",
+    "name": "Fallback 3D Material",
+    "resourceID": "2d56e68f-d5d1-484b-8a1d-7d24110c7c24",
+    "data": {
+      "shader": {
+        "resourceId": "e18c6197-c662-4f3a-99b5-c2372d7e17c1",
+        "inputs": []
+      }
     }
-  ],
-  "Materials": [
-    {
-      "path": "materials//Default3DMaterial.material",
-      "resourceID": "7e5a4ac6-2f4f-4f82-adc1-f5c9dce5401e"
-    },
-    {
-      "path": "materials//Grid3DMaterial.material",
-      "resourceID": "15873145-54b3-40e0-8da1-cce762b74d6f"
-    },
-    {
-      "path": "materials//InputColorPickingMaterial.material",
-      "resourceID": "686cc13b-bf63-4802-8972-6cfe20336bd4"
+  },
+
+  // Gizmo 3D Grid Material + Shader
+  {
+    "type": "ShaderStage",
+    "name": "Gizmo 3D Grid VS",
+    "resourceID": "7dd8b039-0c66-4ad2-9c55-331dcf289ace",
+    "path": "shaders//gizmo3DGrid.vs"
+  },
+  {
+    "type": "ShaderStage",
+    "name": "Gizmo 3D Grid FS",
+    "resourceID": "203c1bc6-d221-4d78-9e0f-12e2f64d2e24",
+    "path": "shaders//gizmo3DGrid.fs"
+  },
+  {
+    "type": "Shader",
+    "name": "Gizmo 3D Grid Shader",
+    "resourceID": "02676e0e-eaac-462f-b9c6-560847e5c545",
+    "data": {
+      "vertexStageID": "7dd8b039-0c66-4ad2-9c55-331dcf289ace",
+      "fragmentStageID": "203c1bc6-d221-4d78-9e0f-12e2f64d2e24"
     }
-  ],
-  "Meshes": [
-    {
-      "path": "meshes//cube.obj",
-      "resourceID": "39e3b96f-e71f-4bba-b2fe-9eac4d9827a1"
+  },
+  {
+    "type": "Material",
+    "name": "Gizmo 3D Grid Material",
+    "resourceID": "15873145-54b3-40e0-8da1-cce762b74d6f",
+    "data": {
+      "shader": {
+        "resourceId": "02676e0e-eaac-462f-b9c6-560847e5c545",
+        "inputs": []
+      }
     }
-  ]
-}
+  },
+
+  // Debug 3D Material + Shader
+  {
+    "type": "ShaderStage",
+    "name": "Debug 3D VS",
+    "resourceID": "5a8d5809-f934-45d2-afed-1b4f3a7fd039",
+    "path": "shaders//debug3d.vs"
+  },
+  {
+    "type": "ShaderStage",
+    "name": "Debug 3D FS",
+    "resourceID": "da0af991-3190-46cd-b2de-3874148c09b3",
+    "path": "shaders//debug3d.fs"
+  },
+  {
+    "type": "Shader",
+    "name": "Debug 3D Shader",
+    "resourceID": "4cf0f2c1-abe5-4f31-99e4-3a874fb95ad8",
+    "data": {
+      "vertexStageID": "5a8d5809-f934-45d2-afed-1b4f3a7fd039",
+      "fragmentStageID": "da0af991-3190-46cd-b2de-3874148c09b3"
+    }
+  },
+  {
+    "type": "Material",
+    "name": "Debug 3D Material",
+    "resourceID": "b7bcc8e1-20da-4a50-940e-d6712b4622ef",
+    "data": {
+      "shader": {
+        "resourceId": "4cf0f2c1-abe5-4f31-99e4-3a874fb95ad8",
+        "inputs": []
+      }
+    }
+  },
+
+  // Default 3D Material + Shader
+  {
+    "type": "ShaderStage",
+    "name": "Default 3D VS",
+    "resourceID": "41458323-1a61-4a14-b665-f70734cfc0da",
+    "path": "shaders//gizmo3DGrid.vs"
+  },
+  {
+    "type": "ShaderStage",
+    "name": "Default 3D FS",
+    "resourceID": "dfd4d193-acc4-46d3-ae1d-0ee81606c2e8",
+    "path": "shaders//gizmo3DGrid.fs"
+  },
+  {
+    "type": "Shader",
+    "name": "Default 3D Shader",
+    "resourceID": "956a7700-ce61-4598-8c80-9e0751e68939",
+    "data": {
+      "vertexStageID": "41458323-1a61-4a14-b665-f70734cfc0da",
+      "fragmentStageID": "dfd4d193-acc4-46d3-ae1d-0ee81606c2e8"
+    }
+  },
+  {
+    "type": "Material",
+    "name": "Default 3D Material",
+    "resourceID": "7e5a4ac6-2f4f-4f82-adc1-f5c9dce5401e",
+    "data": {
+      "shader": {
+        "resourceId": "956a7700-ce61-4598-8c80-9e0751e68939",
+        "inputs": []
+      }
+    }
+  }
+]

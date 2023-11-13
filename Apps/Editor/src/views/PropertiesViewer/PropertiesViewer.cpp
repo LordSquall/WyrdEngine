@@ -99,6 +99,9 @@ namespace Wyrd::Editor
 
 	void PropertiesViewer::DrawResourceUI()
 	{
-		ImGui::Text(_SelectedAsset->GetName().c_str());
+		if (_SelectedAsset != nullptr)
+		{
+			_SelectedAsset->DrawProperties();
+		}
 	}
 }

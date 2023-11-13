@@ -30,7 +30,7 @@ namespace Wyrd
 	class WYRD_LIBRARY_API Shader : public ResourceBase
 	{
 	public:
-		virtual bool Build(const std::string& vertexSrc, const std::string& fragment) = 0;
+		virtual bool Build(const std::string& vertexSrc, const std::string& fragment, bool isRebuild = false) = 0;
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 

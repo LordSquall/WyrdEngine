@@ -45,16 +45,17 @@ namespace Wyrd
 		void SetShader(std::shared_ptr<Shader> shader) { _shader = shader; }
 		inline std::shared_ptr<Shader> GetShader() const { return _shader; }
 
-		void SetShaderName(const std::string& name) { _shaderName = name; }
-		inline std::string GetShaderName() const { return _shaderName; }
+		void SetShaderUID(const UID& id) { _shaderUID = id; }
+		inline const UID& GetShaderUID() const { return _shaderUID; }
 
 		void AddInputBinding(const std::string& name, const std::string& type, const std::string& binding);
+
 
 		inline const MaterialInputMap& GetInputPropertyList() const { return _inputs; }
 
 	private:
 		std::shared_ptr<Shader> _shader;
-		std::string _shaderName;
+		UID _shaderUID;
 		MaterialInputMap _inputs;
 		bool _isShaderLoaded;
 

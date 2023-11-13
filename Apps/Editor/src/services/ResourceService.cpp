@@ -34,6 +34,8 @@ namespace Wyrd::Editor
 		_extensions.insert(std::pair<std::string, ResourceType>(".jpg", ResourceType::TEXTURE));
 		_extensions.insert(std::pair<std::string, ResourceType>(".bmp", ResourceType::TEXTURE));
 		_extensions.insert(std::pair<std::string, ResourceType>(".shader", ResourceType::SHADER));
+		_extensions.insert(std::pair<std::string, ResourceType>(".vs", ResourceType::SHADERSTAGE));
+		_extensions.insert(std::pair<std::string, ResourceType>(".fs", ResourceType::SHADERSTAGE));
 		_extensions.insert(std::pair<std::string, ResourceType>(".cs", ResourceType::SCRIPT));
 		_extensions.insert(std::pair<std::string, ResourceType>(".ttf", ResourceType::FONT));
 
@@ -46,7 +48,11 @@ namespace Wyrd::Editor
 		_extensions.insert(std::pair<std::string, ResourceType>(".obj", ResourceType::MODEL));
 
 		/* Load the Editor Resources */
-		ResourceSetLoader::Load(Utils::GetEditorResFolder() + "editorResources.json");
+		ResourceSetLoader::Result result = ResourceSetLoader::Load(Utils::GetEditorResFolder() + "editorResources.json", _resourceMap);
+		if (result != ResourceSetLoader::Result::Success)
+		{
+			WYRD_CORE_ERROR("Failed to load editorResources! cause: {0}", result);
+		}
 
 		/* add the default shaders */
 		{
@@ -59,6 +65,9 @@ namespace Wyrd::Editor
 				}
 			}
 		}
+
+		/* Set the fallback material */
+		//Application::Get().GetRenderer().SetFallbackMaterial(Application::Get().GetResources().Materials[RES_FALLBACK_MATERIAL]);
 
 		/* Load default icons into the icon library */
 		_iconLibrary.AddIconsFromFile(Utils::GetEditorResFolder() + "icons/common-icons.json");
@@ -78,7 +87,7 @@ namespace Wyrd::Editor
 	{
 		if (!_loadableResources.empty())
 		{
-			_loadableResources.top()->Load();
+			_loadableResources.top()->Load(_loadableResources.top()->GetPath().string());
 			_loadableResources.pop();
 		}
 	}
@@ -95,12 +104,13 @@ namespace Wyrd::Editor
 			{
 				/* create a new resource object */
 				std::shared_ptr<Resource> resource = ResourceFactory::Create(resourceType, resourcePath, uid);
+				resource->SetPath(resourcePath);
 
 				/* add to the resource map */
 				_resourceMap.insert(std::pair<UID, std::shared_ptr<Resource>>(resource->GetResourceID(), resource));
 
 				/* load all resources for now */
-				resource->Load();
+				resource->Load(resourcePath.string());
 
 				/* add the cachedFiles */
 				CachedFiles[resourcePath] = uid;
@@ -314,7 +324,11 @@ namespace Wyrd::Editor
 		{
 			BuildScripts();
 		}
-
+		else 
+		{
+			std::shared_ptr<Resource> res = GetResourceByFilePath(a.filepath);
+			res->Reload();
+		}
 	}
 
 	void ResourceService::OnLoadAssetEvent(Events::EventArgs& args)

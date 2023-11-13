@@ -111,6 +111,24 @@ namespace WyrdGen
                     output = output.ReplaceTag("PROPERTIES", content.ToString());
                 }
 
+                // Property Bindings
+                {
+                    //StringBuilder content = new StringBuilder();
+                    //
+                    //foreach (Data data in component.Data)
+                    //{
+                    //    ManagedType typeMap = TypeMappings[data.Type].Managed;
+                    //    if (!typeMap.IsPrimitive)
+                    //    {
+                    //        String deletateFunc = "{ " + component.Name + "_Set" + data.Name.Substring(0, 1).ToUpper() + data.Name.Substring(1).ToLower() + "(Scene.NativePtr, EntityID, _" + data.Name.ToLower() + "); }";
+                    //        content.AppendLine($"\t\t\t_{data.Name.ToLower()}.PropertyChanged += (obj, property) => {deletateFunc};");
+                    //    }
+                    //}
+                    //
+                    //output = output.ReplaceTag("PROPERTY_BINDINGS", content.ToString());
+                    output = output.ReplaceTag("PROPERTY_BINDINGS", "");
+                }
+
                 // P/Invoke function
                 {
                     StringBuilder content = new StringBuilder();

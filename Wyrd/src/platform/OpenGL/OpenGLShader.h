@@ -11,7 +11,7 @@ namespace Wyrd
 	public:
 		OpenGLShader(ShaderDesc desc);
 
-		bool Build(const std::string& vertexSrc, const std::string& fragment) override;
+		bool Build(const std::string& vertexSrc, const std::string& fragment, bool isRebuild = false) override;
 		void Bind() override;
 		void Unbind() override;
 		void SetVPMatrix(const glm::mat4& mat) override;

@@ -16,12 +16,14 @@ namespace Wyrd::Editor
 	class ScriptRes : public Resource
 	{
 	public:
-		ScriptRes(const std::filesystem::path& filepath, const UID& uid);
-
+		ScriptRes(const std::string& name, const UID& uid);
 		~ScriptRes() = default;
 
-		/* Resource overrides */
-		int Load() override;
+		IOResult Load(const std::string& filepath) override;
+		IOResult Load(const jsonxx::Object& obj) override;
+
+		IOResult Save(const std::string& filepath) override;
+
 		ResourceType GetType() override { return ResourceType::SCRIPT; }
 
 	public:

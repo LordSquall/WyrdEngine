@@ -63,6 +63,7 @@ namespace Wyrd::Editor
 				for (auto const& res : _ResourceService->GetResources())
 				{
 					res.second->ResolveReferences();
+					res.second->Build();
 				}
 			}
 			else
@@ -92,13 +93,16 @@ namespace Wyrd::Editor
 		{
 			auto res = resource.second;
 
-			jsonxx::Object sceneObj;
+			if (!res->IsEditorOnly())
+			{
+				jsonxx::Object sceneObj;
 
-			sceneObj << "name" << res->GetName();
-			sceneObj << "filepath" << res->GetPath().string();
-			sceneObj << "uuid" << res->GetResourceID().str();
+				sceneObj << "name" << res->GetName();
+				sceneObj << "filepath" << res->GetPath().string();
+				sceneObj << "uuid" << res->GetResourceID().str();
 
-			resourceArray << sceneObj;
+				resourceArray << sceneObj;
+			}
 		}
 
 		o << "assets" << resourceArray;

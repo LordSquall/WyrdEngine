@@ -7,6 +7,9 @@
 #include "views/EditorViewBase.h"
 #include "services/ServiceManager.h"
 
+/* external includes */
+#include <imgui.h>
+
 namespace Wyrd::Editor
 {
 	class AssetViewer : public EditorViewBase
@@ -18,6 +21,10 @@ namespace Wyrd::Editor
 		void OnEditorRender() override;
 		void OnEvent(Event& event) override;
 
+
+	private:
+		enum StatusPosition { TOPLEFT, TOPRIGHT, BOTTOMLEFT, BOTTOMRIGHT };
+
 	private:
 
 		void DrawItemTable(const std::vector<std::filesystem::path>& directories, const std::vector<std::filesystem::path>& files);
@@ -28,7 +35,10 @@ namespace Wyrd::Editor
 		void DrawMaterialItem(int resID, MaterialRes& materialResource);
 		void DrawModelItem(int resID, ModelRes& modelResource);
 		void DrawShaderItem(int resID, ShaderRes& ShaderResource);
+		void DrawShaderStageItem(int resID, ShaderStageRes& ShaderStageResource);
 		void DrawUnknownItem(int resID, const std::string& unknownResourceName);
+
+		void DrawStatusIcon(const Icon& icon, const ImVec2& rootPos);
 
 		/* Selection State(s) */
 		std::filesystem::path _SelectedDirectory;

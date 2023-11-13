@@ -98,6 +98,8 @@ namespace WyrdAPI
         public void SetEntity(Entity entity)
         {
             EntityID = entity.NativeID;
+
+
         }
 
         #region P/Invoke functions

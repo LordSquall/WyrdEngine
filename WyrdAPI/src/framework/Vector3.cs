@@ -1,33 +1,20 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 namespace WyrdAPI
 {
     [StructLayout(LayoutKind.Sequential)]
-    public class Vector3 : INotifyPropertyChanged
+    public class Vector3 
     {
         private float _X = 0.0f;
-        public float X 
-        { 
-            get { 
-                return _X; 
-            }
-            set { 
-                _X = value;
-                NotifyPropertyChanged("X"); 
-            } 
-        }
+        public float X { get { return _X; } set { _X = value; } }
 
         private float _Y = 0.0f;
-        public float Y { get { return _Y; } set { _Y = value; NotifyPropertyChanged("Y"); } }
+        public float Y { get { return _Y; } set { _Y = value; } }
 
         private float _Z = 0.0f;
-        public float Z { get { return _Z; } set { _Z = value; NotifyPropertyChanged("Z"); } }
+        public float Z { get { return _Z; } set { _Z = value; } }
 
         public Vector3() { }
 
@@ -89,15 +76,6 @@ namespace WyrdAPI
         public override string ToString()
         {
             return "[" + X + ", " + Y + ", " + Z + "]";
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged(string property)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
         }
     }
 }

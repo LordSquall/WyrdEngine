@@ -1,0 +1,7 @@
+{
+	"name": "Fallback3DMaterial",
+	"shader": {
+		"resourceId": "91be1cf1-5e7e-4e81-859f-dfd1ef01a486",
+		"inputs": []
+	}
+} 

@@ -13,17 +13,24 @@ namespace Wyrd
 	void MaterialHelperFuncs::AssignToComponent(MaterialComponent* materialComponent)
 	{
 		/* Retrieve the material */
-		std::shared_ptr<Material> material = Application::Get().GetResources().Materials[materialComponent->material];
-
-		MaterialInputMap propList = material->GetInputPropertyList();
-
-		/* Clear out and recreate the property set */
-		materialComponent->properties = std::make_shared<std::map<std::string, BasePropRef>>();
-
-		/* Process each of the properties in the material and assign the data for the material component */
-		for (auto& [name, binding] : propList)
+		if (Application::Get().GetResources().Materials.find(materialComponent->material) != Application::Get().GetResources().Materials.end())
 		{
-			(*materialComponent->properties)[name] = PropFactory::CreateProp(binding.type, name);
+			std::shared_ptr<Material> material = Application::Get().GetResources().Materials[materialComponent->material];
+
+			MaterialInputMap propList = material->GetInputPropertyList();
+
+			/* Clear out and recreate the property set */
+			materialComponent->properties = std::make_shared<std::map<std::string, BasePropRef>>();
+
+			/* Process each of the properties in the material and assign the data for the material component */
+			for (auto& [name, binding] : propList)
+			{
+				(*materialComponent->properties)[name] = PropFactory::CreateProp(binding.type, name);
+			}
+		}
+		else
+		{
+			// default;
 		}
 	}
 }

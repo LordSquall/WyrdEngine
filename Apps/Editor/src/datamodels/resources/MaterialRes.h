@@ -17,16 +17,25 @@ namespace Wyrd::Editor
 	class MaterialRes : public Resource
 	{
 	public:
-		MaterialRes(const std::filesystem::path& filepath, const UID& uid);
+		MaterialRes(const std::string& name, const UID& uid);
 		~MaterialRes() = default;
 
-		
-		int Load() override;
+		IOResult Load(const std::string& filepath) override;
+		IOResult Load(const jsonxx::Object& object) override;
+
+		IOResult Save(const std::string& filepath) override;
+
 		void ResolveReferences() override;
+		void Build(bool isRebuild = false) override;
+
 		ResourceType GetType() override { return ResourceType::MATERIAL; }
 		inline const std::shared_ptr<Material> GetMaterial() const { return _material; }
 
+
+		void DrawProperties() override;
+
 	private:
 		std::shared_ptr<Material> _material;
+		ShaderResRef _shaderResRef;
 	};
 }

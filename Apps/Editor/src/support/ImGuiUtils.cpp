@@ -114,7 +114,7 @@ namespace ImGui
     {
         std::string textContent = text;
         const ImVec2 p0 = ImGui::GetItemRectMin();
-        const ImVec2 p1 = ImGui::GetItemRectMax();
+        const ImVec2 p1 = { p0.x + clipLength, ImGui::GetItemRectMax().y };
         const ImVec2 textPosition = ImVec2(p0.x, p1.y);
         ImDrawList* draw_list = ImGui::GetWindowDrawList();
 

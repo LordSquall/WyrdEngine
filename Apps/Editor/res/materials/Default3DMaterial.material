@@ -1,7 +1,7 @@
 {
 	"name": "Default3DMaterial",
 	"shader": {
-		"name": "Mesh",
+		"resourceId": "1248afbe-4320-46d3-821d-1b1de84699a7",
 		"inputs": [
 			{
 				"name": "BlendColor",

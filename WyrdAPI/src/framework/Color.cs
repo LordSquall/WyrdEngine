@@ -8,12 +8,19 @@ using System.Threading.Tasks;
 namespace WyrdAPI
 {
     [StructLayout(LayoutKind.Sequential)]
-    public class Color
+    public class Color : NotifableType
     {
-        public float R { get; set; } = 1.0f;
-        public float G { get; set; } = 1.0f;
-        public float B { get; set; } = 1.0f;
-        public float A { get; set; } = 1.0f;
+        private float _R = 1.0f;
+        public float R { get { return _R; } set { _R = value; NotifyPropertyChanged("R"); } }
+
+        private float _G = 1.0f;
+        public float G { get { return _G; } set { _R = value; NotifyPropertyChanged("G"); } }
+
+        private float _B = 1.0f;
+        public float B { get { return _B; } set { _R = value; NotifyPropertyChanged("B"); } }
+
+        private float _A = 1.0f;
+        public float A { get { return _A; } set { _R = value; NotifyPropertyChanged("A"); } }
 
         public Color()
         {

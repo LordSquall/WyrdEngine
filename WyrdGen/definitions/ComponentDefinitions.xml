@@ -27,7 +27,7 @@
   <Component name="MaterialComponent" shortName="Material" customSerialisation="true">
     <Data name="enabled" type="Boolean" default="true" />
     <Data name="color" type="Color" default="1,1,1,1"/>
-    <Data name="material" type="Material" default="RES_MATERIAL_3D_DEFAULT"/>
+    <Data name="material" type="Material" default="RES_MATERIAL_3D_DEFAULT"/> 
     <Data name="properties" type="PropertyList" heapOnly="true" default="" />
   </Component>
   

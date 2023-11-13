@@ -12,12 +12,12 @@
 
 namespace Wyrd::Editor
 {
-	TextureRes::TextureRes(const std::filesystem::path& filepath, const UID& uid) : Resource(filepath.stem().string(), filepath, uid), _width(0u), _height(0u), _channels(0u), _data(0)
+	TextureRes::TextureRes(const std::string& name, const UID& uid) : Resource(name, uid), _width(0u), _height(0u), _channels(0u), _data(0)
 	{
 
 	}
 	
-	int TextureRes::Load()
+	Resource::IOResult TextureRes::Load(const std::string& filepath)
 	{
 		/* textures should always be loaded on the main thread */
 		if (Application::Get().GetMainThreadID() != std::this_thread::get_id())
@@ -31,12 +31,12 @@ namespace Wyrd::Editor
 		else
 		{
 			/* load the data from file */
-			TextureLoader::Load(_path, _width, _height, _channels, &_data);
+			TextureLoader::Load(filepath, _width, _height, _channels, &_data);
 
 			/* build the texture description structure */
 			TextureDesc textureDesc;
 			textureDesc.guid = _resourceID;
-			textureDesc.name = _path.stem().string();
+			textureDesc.name = filepath;
 			textureDesc.data = _data;
 			textureDesc.width = _width;
 			textureDesc.height = _height;
@@ -52,7 +52,16 @@ namespace Wyrd::Editor
 			_isLoaded = true;
 		}
 
+		return Success;
+	}
 
-		return 0;
+	Resource::IOResult TextureRes::Load(const jsonxx::Object& obj)
+	{
+		return NotImplemented;
+	}
+
+	Resource::IOResult TextureRes::Save(const std::string& filepath) 
+	{
+		return NotImplemented;
 	}
 }

@@ -12,12 +12,12 @@
 
 namespace Wyrd::Editor
 {
-	ModelRes::ModelRes(const std::filesystem::path& filepath, const UID& uid) : Resource(filepath.stem().string(), filepath, uid)
+	ModelRes::ModelRes(const std::string& name, const UID& uid) : Resource(name, uid)
 	{
 
 	}
 	
-	int ModelRes::Load()
+	Resource::IOResult ModelRes::Load(const std::string& filepath)
 	{
 		std::vector<Vertex3D> vertices;
 		BoundingBox boundingBox;
@@ -37,6 +37,18 @@ namespace Wyrd::Editor
 
 		_isLoaded = true;
 
-		return 0;
+		return Success;
+	}
+
+	Resource::IOResult ModelRes::Load(const jsonxx::Object& obj)
+	{
+		return NotImplemented;
+	}
+
+	Resource::IOResult ModelRes::Save(const std::string& filepath) 
+	{
+		return NotImplemented;
 	}
 }
+
+

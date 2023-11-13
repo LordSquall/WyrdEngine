@@ -17,9 +17,9 @@ typedef unsigned char BYTE;
 
 namespace Wyrd::Editor
 {
-	FontTypeRes::FontTypeRes(const std::filesystem::path& filepath, const UID& uid) : Resource(filepath.stem().string(), filepath, uid) {}
+	FontTypeRes::FontTypeRes(const std::string& name, const UID& uid) : Resource(name, uid) {}
 
-	int FontTypeRes::Load()
+	Resource::IOResult FontTypeRes::Load(const std::string& filepath)
 	{
 		/* textures should always be loaded on the main thread */
 		if (Application::Get().GetMainThreadID() != std::this_thread::get_id())
@@ -134,6 +134,16 @@ namespace Wyrd::Editor
 
 		_isLoaded = true;
 
-		return 0;
+		return Success;
+	}
+
+	Resource::IOResult FontTypeRes::Load(const jsonxx::Object& obj)
+	{
+		return NotImplemented;
+	}
+
+	Resource::IOResult FontTypeRes::Save(const std::string& filepath) 
+	{
+		return NotImplemented;
 	}
 }

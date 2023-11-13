@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace WyrdAPI
 {
     [StructLayout(LayoutKind.Sequential)]
-    public class Matrix4
+    public class Matrix4 : NotifableType
     {
         public float X { get; set; } = 0.0f;
         public float Y { get; set; } = 0.0f;

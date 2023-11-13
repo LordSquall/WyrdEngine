@@ -20,10 +20,14 @@ namespace Wyrd::Editor
 	class TextureRes : public Resource
 	{
 	public:
-		TextureRes(const std::filesystem::path& filepath, const UID& uid);
+		TextureRes(const std::string& name, const UID& uid);
 		~TextureRes() = default;
 
-		int Load() override;
+		IOResult Load(const std::string& filepath) override;
+		IOResult Load(const jsonxx::Object& obj) override;
+
+		IOResult Save(const std::string& filepath) override;
+
 		ResourceType GetType() override { return ResourceType::TEXTURE; }
 
 		/**
