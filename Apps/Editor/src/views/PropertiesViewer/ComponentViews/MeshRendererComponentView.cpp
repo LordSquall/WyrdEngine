@@ -6,6 +6,7 @@
 
 /* local includes */
 #include "MeshRendererComponentView.h"
+#include "services/ServiceManager.h"
 
 #include "support/ImGuiUtils.h"
 
@@ -21,7 +22,18 @@ namespace Wyrd::Editor
 		/* Cast to the correct component */
 		MeshRendererComponent* meshRenderer = (MeshRendererComponent*)data;
 
-		ImGui::Text(meshRenderer->model.str().c_str());
+		std::shared_ptr<ResourceService> resources = ServiceManager::Get<ResourceService>();
+
+		ModelResRef modelResRef = resources->GetResourceByID<ModelRes>(meshRenderer->model);
+
+		if (modelResRef != nullptr)
+		{
+			ImGui::Text(modelResRef->GetName().c_str());
+		}
+		else
+		{
+			ImGui::Text(meshRenderer->model.str().c_str());
+		}
 		if (ImGui::BeginDragDropTarget())
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_DND_MODEL))
