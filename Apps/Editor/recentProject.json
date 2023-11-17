@@ -1,24 +1,12 @@
 {
 	"projects": [
 		{
-			"name": "EntityTesting",
-			"path": "C:\\Projects\\games\\EntityStuctureTest\\EntityTesting\\EntityTesting.oproj" 
-		},
-		{
-			"name": "ScriptingTests",
-			"path": "C:\\Projects\\games\\ScriptingTests\\ScriptingTests.oproj" 
-		},
-		{
 			"name": "TempProject",
 			"path": "C:\\Projects\\games\\TempProject\\TempProject.oproj" 
 		},
 		{
-			"name": "TestProject_01",
-			"path": "C:\\Projects\\games\\TestProject_01\\TestProject_01.oproj" 
-		},
-		{
-			"name": "TestWorld",
-			"path": "C:\\Projects\\games\\TestWorld\\TestWorld\\TestWorld.oproj" 
+			"name": "TestVillage",
+			"path": "C:\\Projects\\games\\TestVillage\\TestVillage.oproj" 
 		} 
 	] 
 } 

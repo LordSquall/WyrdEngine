@@ -148,139 +148,76 @@ namespace Wyrd::Editor
 
 		WYRD_CORE_TRACE("Export Core Resources:");
 
+		/* Create initial resource include lists */
+		std::vector<TextureResRef> textureResources;
+		std::vector<ModelResRef> modelResources;
+		std::vector<ShaderResRef> shaderResources;
+		std::vector<MaterialResRef> materialResources;
+
+
+		for (auto [k, v] : resourceService->GetResources())
+		{
+			if (!v->IsEditorOnly())
+			{
+				switch (v->GetType())
+				{
+				case TEXTURE:
+					textureResources.push_back(std::dynamic_pointer_cast<TextureRes>(v));
+					break;
+				case MODEL:
+					modelResources.push_back(std::dynamic_pointer_cast<ModelRes>(v));
+					break;
+				case SHADER:
+					shaderResources.push_back(std::dynamic_pointer_cast<ShaderRes>(v));
+					break;
+				case MATERIAL:
+					materialResources.push_back(std::dynamic_pointer_cast<MaterialRes>(v));
+					break;
+				default:
+					break;
+				}
+			}
+		}
+
 		/* add the texture resources */
-		size_t textureCount = Application::Get().GetResources().Textures.size();
+		size_t textureCount = textureResources.size();
 		WYRD_CORE_TRACE("\tTextures: {0}", textureCount);
 		commonBundle.write((char*)&textureCount, sizeof(size_t));
-		for (auto& t : Application::Get().GetResources().Textures)
+		for (TextureResRef t : textureResources)
 		{
-			SerialiseTexture(commonBundle, t.second);
-			WYRD_CORE_TRACE("\t\t{0} -> {1}", t.first.str(), t.second->GetName());
+			SerialiseTexture(commonBundle, t->GetTexture());
+			WYRD_CORE_TRACE("\t\t{0} -> {1}", t->GetResourceID().str(), t->GetName());
 		}
 
 		/* add the model resources */
-		size_t modelCount = Application::Get().GetResources().Meshs.size();
+		size_t modelCount = modelResources.size();
 		WYRD_CORE_TRACE("\tModels: {0}", modelCount);
 		commonBundle.write((char*)&modelCount, sizeof(size_t));
-		for (auto& m : Application::Get().GetResources().Meshs)
+		for (ModelResRef m : modelResources)
 		{
-			SerialiseModel(commonBundle, m.second);
-			WYRD_CORE_TRACE("\t\t{0} -> {1}", m.first.str(), m.second->GetName());
+			SerialiseModel(commonBundle, m->GetMesh());
+			WYRD_CORE_TRACE("\t\t{0} -> {1}", m->GetResourceID().str(), m->GetName());
 		}
 
 		/* add the shader resources */
-		size_t shaderCount = Application::Get().GetResources().Shaders.size();
+		size_t shaderCount = shaderResources.size();
 		WYRD_CORE_TRACE("\tShader: {0}", shaderCount);
 		commonBundle.write((char*)&shaderCount, sizeof(size_t));
-		for (auto& s : Application::Get().GetResources().Shaders)
+		for (ShaderResRef s : shaderResources)
 		{
-			SerialiseShader(commonBundle, s.second);
-			WYRD_CORE_TRACE("\t\t{0} -> {1}", s.first.c_str(), s.second->GetName());
+			SerialiseShader(commonBundle, s->GetShader());
+			WYRD_CORE_TRACE("\t\t{0} -> {1}", s->GetShader()->GetUID().str(), s->GetName());
 		}
 
 		/* add the material resources */
-		size_t materialCount = Application::Get().GetResources().Materials.size();
+		size_t materialCount = materialResources.size();
 		WYRD_CORE_TRACE("\tMaterials: {0}", materialCount);
 		commonBundle.write((char*)&materialCount, sizeof(size_t));
-		for (auto& m : Application::Get().GetResources().Materials)
+		for (MaterialResRef m : materialResources)
 		{
-			SerialiseMaterial(commonBundle, m.second);
-			WYRD_CORE_TRACE("\t\t{0} -> {1}", m.first.str(), m.second->GetName());
+			SerialiseMaterial(commonBundle, m->GetMaterial());
+			WYRD_CORE_TRACE("\t\t{0} -> {1}", m->GetResourceID().str(), m->GetName());
 		}
-
-		///* add the shader resources */
-		//size_t shaderCount = Application::Get().GetResources().Shaders.size();
-		//commonBundle.write((char*)&shaderCount, sizeof(size_t));
-		//for (auto& s : Application::Get().GetResources().Shaders)
-		//{
-		//	char shaderName[32];
-		//	strcpy(shaderName, s.first.c_str());
-		//
-		//	std::string vertSrc = s.second->GetSource(ShaderStage::Vertex); 
-		//	std::string fragSrc = s.second->GetSource(ShaderStage::Fragment);
-		//
-		//	size_t vertSrcSize = vertSrc.size();
-		//	size_t fragSrcSize = fragSrc.size();
-		//
-		//	commonBundle.write((char*)shaderName, sizeof(char) * 32);
-		//	commonBundle.write((char*)&vertSrcSize, sizeof(size_t));
-		//	commonBundle.write((char*)vertSrc.c_str(), sizeof(char) * vertSrcSize);
-		//	commonBundle.write((char*)&fragSrcSize, sizeof(size_t));
-		//	commonBundle.write((char*)fragSrc.c_str(), sizeof(char) * fragSrcSize);
-		//}
-		//
-		///* add the mesh resources */
-		//size_t meshCount = models.size();
-		//commonBundle.write((char*)&meshCount, sizeof(size_t));
-		//for (auto& m : models)
-		//{
-		//	char modelUID[64];
-		//	strcpy(modelUID, m.first.str().c_str());
-		//	size_t vertexCount = m.second->GetMesh()->Vertices.size();
-		//
-		//	size_t nameSize = m.second->GetName().size();
-		//
-		//	commonBundle.write(&modelUID[0], sizeof(char) * 64); 
-		//	commonBundle.write((char*)&nameSize, sizeof(size_t));
-		//	commonBundle.write((char*)m.second->GetName().c_str(), sizeof(char) * nameSize);
-		//	commonBundle.write((char*)&vertexCount, sizeof(size_t));
-		//	commonBundle.write((char*)&m.second->GetMesh()->Vertices[0], sizeof(Vertex3D) * vertexCount);
-		//
-		//	WYRD_CORE_INFO("Exporting Mesh: {0} -> {1}", m.first.str().c_str(), m.second->GetName());
-		//}
-
-		///* add the texture resources */
-		//size_t textureCount = textures.size();
-		//commonBundle.write((char*)&textureCount, sizeof(size_t));
-		//for (auto& t : textures)
-		//{
-		//	commonBundle << *t.second->GetTexture();
-		//
-		//
-		//	//char textureUID[64];
-		//	//strcpy(textureUID, t.first.str().c_str());
-		//	//
-		//	//uint32_t width = (uint32_t)t.second->GetWidth();
-		//	//uint32_t height = (uint32_t)t.second->GetHeight();
-		//	//unsigned char* data = t.second->GetData();
-		//	//
-		//	//commonBundle.write(&textureUID[0], sizeof(char) * 64);
-		//	//commonBundle.write((char*)&width, sizeof(uint32_t));
-		//	//commonBundle.write((char*)&height, sizeof(uint32_t));
-		//	//commonBundle.write((char*)data, sizeof(unsigned char) * (width * height * 4));
-		//}
-
-		/* add the font resources */
-		//size_t fontCount = Application::Get().GetResources().FontTypes.size();
-		//commonBundle.write((char*)&fontCount, sizeof(size_t));
-		//for (auto& f : Application::Get().GetResources().FontTypes)
-		//{
-		//	char fontName[64];
-		//	strcpy(fontName, f.first.c_str());
-		//
-		//	uint32_t width = (uint32_t)f.second->Texture->GetWidth();
-		//	uint32_t height = (uint32_t)f.second->Texture->GetHeight();
-		//	uint32_t channels = (uint32_t)f.second->Texture->GetChannels();
-		//	unsigned char* data = f.second->Texture->GetData();
-		//
-		//	commonBundle.write((char*)fontName, sizeof(char) * 64);
-		//	commonBundle.write((char*)&width, sizeof(uint32_t));
-		//	commonBundle.write((char*)&height, sizeof(uint32_t));
-		//	commonBundle.write((char*)&channels, sizeof(uint32_t));
-		//	commonBundle.write((char*)data, sizeof(unsigned char) * (width * height * channels));
-		//
-		//	size_t characterCount = f.second->GetCharacters().size();
-		//	commonBundle.write((char*)&characterCount, sizeof(size_t));
-		//	for (auto& c : f.second->GetCharacters())
-		//	{
-		//		commonBundle.write((char*)&c.second.Advance, sizeof(unsigned int));
-		//		commonBundle.write((char*)&c.second.Bearing, sizeof(glm::ivec2));
-		//		commonBundle.write((char*)&c.second.Size, sizeof(glm::ivec2));
-		//		commonBundle.write((char*)&c.second.uv1, sizeof(glm::vec2));
-		//		commonBundle.write((char*)&c.second.uv2, sizeof(glm::vec2));
-		//	}
-		//}
-		//
 		
 		/* build a list of the script files */
 		std::map<UID, std::filesystem::path> scriptFiles;

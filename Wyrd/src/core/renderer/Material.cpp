@@ -12,7 +12,8 @@ namespace Wyrd
 		newMaterial->SetUID(desc.resource.guid);
 		newMaterial->SetName(desc.resource.name);
 
-		newMaterial->SetShader(Application::Get().GetResources().Shaders[desc.shaderName]);
+		newMaterial->SetShaderUID(desc.shaderUID);
+		newMaterial->SetShader(Application::Get().GetResources().Shaders[desc.shaderUID]);
 
 		for (auto& input : desc.inputMap)
 		{

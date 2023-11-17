@@ -115,12 +115,12 @@ namespace Wyrd
 				BasePropRef scriptProp = PropFactory::CreateManagedProp(qualifiedType, name);
 				if (scriptProp != nullptr)
 				{
-					WYRD_TRACE("- Property: {0}", name);
+					//WYRD_TRACE("- Property: {0}", name);
 					(*newPropertyList)[name] = std::move(scriptProp);
 				}
 				else
 				{
-					WYRD_WARN("- Property: {0} (Unregistered!)", name);
+					//WYRD_WARN("- Property: {0} (Unregistered!)", name);
 				}
 			}
 			else

@@ -59,6 +59,7 @@ namespace Wyrd::Editor
 		/* name */
 		std::string name = object.get<jsonxx::String>("name", "default");
 		_material->SetName(name);
+		_material->SetUID(_resourceID);
 
 		/* export settings */
 		if (object.has<jsonxx::Object>("shader"))
@@ -84,8 +85,9 @@ namespace Wyrd::Editor
 
 					_material->AddInputBinding(name, type, binding);
 				}
-
 			}
+
+			_isLoaded = true;
 		}
 
 		return Success;

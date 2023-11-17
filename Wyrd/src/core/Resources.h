@@ -40,7 +40,7 @@ namespace Wyrd {
 		/**
 		 * @brief Shader resource map 
 		*/
-		std::map<std::string, std::shared_ptr<Shader>> Shaders;
+		std::map<UID, std::shared_ptr<Shader>> Shaders;
 
 		/**
 		 * @brief Material resource map

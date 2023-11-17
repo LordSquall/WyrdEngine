@@ -136,7 +136,7 @@ namespace Wyrd
 		_DebugVertices.push_back({ c.x + max.x, c.y + min.y, c.z + min.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
 		_DebugVertices.push_back({ c.x + max.x, c.y + min.y, c.z + max.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
 
-		auto shader = Application::Get().GetResources().Shaders["Debug3D"];
+		auto shader = Application::Get().GetResources().Shaders[RES_SHADER_DEBUG3D];
 
 		glLineWidth((GLfloat)thickness);
 
@@ -167,7 +167,7 @@ namespace Wyrd
 		_DebugVertices.push_back({ position.x, position.y, position.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
 		_DebugVertices.push_back({ position.x + direction.x, position.y + direction.y, position.z + direction.z, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
 
-		auto shader = Application::Get().GetResources().Shaders["Debug3D"];
+		auto shader = Application::Get().GetResources().Shaders[RES_SHADER_DEBUG3D];
 
 		glLineWidth((GLfloat)thickness);
 

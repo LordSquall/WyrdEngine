@@ -95,7 +95,7 @@ bool ImportManager::ImportCommonBundle(const std::string& root)
 		auto newTexture = DeserialiseTexture(common);
 
 		Application::Get().GetResources().Textures.insert({ newTexture->GetUID(), newTexture });
-		WYRD_CORE_TRACE("\t\t{0} -> {1}", newTexture->GetUID().str(), newTexture->GetName());
+		WYRD_CORE_TRACE("\t\t{0} -> {1}", newTexture->GetUID().str(), std::filesystem::path(newTexture->GetName()).filename().string());
 	}
 
 	size_t modelCount;
@@ -117,9 +117,8 @@ bool ImportManager::ImportCommonBundle(const std::string& root)
 	for (size_t i = 0; i < shaderCount; i++)
 	{
 		std::shared_ptr<Shader> newShader = DeserialiseShader(common);
-
-		Application::Get().GetResources().Shaders.insert({ newShader->GetName(), newShader });
-		WYRD_CORE_TRACE("\t\t{0}", newShader->GetName());
+		Application::Get().GetResources().Shaders.insert({ newShader->GetUID(), newShader });
+		WYRD_CORE_TRACE("\t\t{0} -> {1}", newShader->GetUID().str(), newShader->GetName());
 	}
 	
 	size_t materialCount;
@@ -244,15 +243,15 @@ std::unique_ptr<Wyrd::Scene> ImportManager::ImportScene(const std::string& root,
 	}
 
 
-	for (auto& e : newScene->entities)
-	{
-		WYRD_CORE_INFO("Entity ID: {0} Mask: {1}", e.id, e.mask);
-	}
-
-	for (auto& cp : newScene->componentPools)
-	{
-		WYRD_CORE_INFO("Component Pool Name: {0} ElementSize: {1}", cp->name, cp->elementSize);
-	}
+	//for (auto& e : newScene->entities)
+	//{
+	//	WYRD_CORE_INFO("Entity ID: {0} Mask: {1}", e.id, e.mask);
+	//}
+	//
+	//for (auto& cp : newScene->componentPools)
+	//{
+	//	WYRD_CORE_INFO("Component Pool Name: {0} ElementSize: {1}", cp->name, cp->elementSize);
+	//}
 
 	return std::move(newScene);
 }

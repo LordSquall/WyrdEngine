@@ -13,6 +13,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <filesystem>
 
 namespace Wyrd
 {
@@ -20,7 +21,7 @@ namespace Wyrd
 	{
 		/* write common header info */
 		writeGuid(os, data->GetUID());
-		writeStr(os, data->GetName());
+		writeStr(os, std::filesystem::path(data->GetName()).filename().string());
 
 		/* local values for writing */
 		uint32_t w = data->GetWidth();
@@ -76,7 +77,7 @@ namespace Wyrd
 		writeGuid(os, data->GetUID());
 		writeStr(os, data->GetName());
 
-		writeStr(os, data->GetShader()->GetName());
+		writeGuid(os, data->GetShader()->GetUID());
 
 		const MaterialInputMap& inputMap = data->GetInputPropertyList();
 		size_t inputMapSize = inputMap.size();
@@ -97,11 +98,10 @@ namespace Wyrd
 		std::string name = readStr(is);
 
 		/* local values */
-		std::string shaderName;
 		size_t inputMapSize = 0;
 		MaterialInputMap inputMap;
 
-		shaderName = readStr(is);
+		Wyrd::UID shaderUID = readGuid(is);
 
 		is.read((char*)&inputMapSize, sizeof(size_t));
 
@@ -118,7 +118,7 @@ namespace Wyrd
 		MaterialDesc materialDesc;
 		materialDesc.resource.guid = guid;
 		materialDesc.resource.name = name;
-		materialDesc.shaderName = shaderName;
+		materialDesc.shaderUID = shaderUID;
 		materialDesc.inputMap = inputMap;
 
 		return std::shared_ptr<Wyrd::Material>(Material::Create(materialDesc));
@@ -189,6 +189,9 @@ namespace Wyrd
 		shaderDesc.vertexSrc = vertexSrc;
 		shaderDesc.fragmentSrc = fragmentSrc;
 
-		return std::shared_ptr<Wyrd::Shader>(Shader::Create(shaderDesc));
+		std::shared_ptr<Wyrd::Shader> newShader = std::shared_ptr<Wyrd::Shader>(Shader::Create(shaderDesc));
+		newShader->Build(vertexSrc, fragmentSrc);
+
+		return newShader;
 	}
 }

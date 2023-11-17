@@ -23,7 +23,7 @@ namespace Wyrd
 	struct MaterialDesc
 	{
 		ResourceDesc resource;
-		std::string shaderName;
+		UID shaderUID;
 		MaterialInputMap inputMap;
 
 		MaterialDesc() : resource() { }

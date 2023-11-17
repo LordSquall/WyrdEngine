@@ -120,13 +120,13 @@
     "type": "ShaderStage",
     "name": "Default 3D VS",
     "resourceID": "41458323-1a61-4a14-b665-f70734cfc0da",
-    "path": "shaders//gizmo3DGrid.vs"
+    "path": "shaders//mesh.vs"
   },
   {
     "type": "ShaderStage",
     "name": "Default 3D FS",
     "resourceID": "dfd4d193-acc4-46d3-ae1d-0ee81606c2e8",
-    "path": "shaders//gizmo3DGrid.fs"
+    "path": "shaders//mesh.fs"
   },
   {
     "type": "Shader",
@@ -144,7 +144,23 @@
     "data": {
       "shader": {
         "resourceId": "956a7700-ce61-4598-8c80-9e0751e68939",
-        "inputs": []
+        "inputs": [
+          {
+            "name": "BlendColor",
+            "type": "Color",
+            "binding": "u_BlendColor"
+          },
+          {
+            "name": "BaseTexture",
+            "type": "Texture",
+            "binding": "u_Texture"
+          },
+          {
+            "name": "Tiling",
+            "type": "Vec2",
+            "binding": "u_Tiling"
+          }
+        ]
       }
     }
   }

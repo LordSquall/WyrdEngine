@@ -529,7 +529,7 @@ namespace Wyrd
 
 				if (monoClass != nullptr)
 				{
-					WYRD_CORE_TRACE("\tClasses Found: {0}::{1}", ns, name);
+					//WYRD_CORE_TRACE("\tClasses Found: {0}::{1}", ns, name);
 				}
 			}
 		}
