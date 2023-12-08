@@ -97,7 +97,7 @@ namespace Wyrd
         ImGui::Text(prop->GetName().c_str());
         ImGui::SameLine();
         ImGui::PushID(prop->GetName().c_str());
-        ImGui::InputFloat2("", (float*)&vec2Prop->Value);
+        ImGui::DragFloat2("", (float*)&vec2Prop->Value, 0.01f);
         ImGui::PopID();
     }
 
@@ -107,7 +107,7 @@ namespace Wyrd
         ImGui::Text(prop->GetName().c_str());
         ImGui::SameLine();
         ImGui::PushID(prop->GetName().c_str());
-        ImGui::InputFloat3("", (float*)&vec3Prop->Value);
+        ImGui::DragFloat3("", (float*)&vec3Prop->Value);
         ImGui::PopID();
     }
 

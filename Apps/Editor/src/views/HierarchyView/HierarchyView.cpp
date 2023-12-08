@@ -191,6 +191,11 @@ namespace Wyrd::Editor
 				RelationshipHelperFuncs::Remove(&scene, entity);
 			}
 			ImGui::Separator();
+			if (ImGui::MenuItem("Add Component"))
+			{
+				ImGui::MenuItem("test1");
+				ImGui::MenuItem("test2");
+			}
 			if (ImGui::MenuItem("Add Transform"))
 			{
 				Transform2DComponent* c = scene.AssignComponent<Transform2DComponent>(entity);
