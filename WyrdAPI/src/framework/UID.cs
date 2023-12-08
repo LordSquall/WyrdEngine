@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace WyrdAPI
 {
     [StructLayout(LayoutKind.Auto)]
-    public class UID : NotifableType
+    public class UID
     {
 
     }

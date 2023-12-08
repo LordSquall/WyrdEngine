@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace WyrdAPI
 {
     [StructLayout(LayoutKind.Sequential)]
-    public class Vector2 : NotifableType
+    public class Vector2
     {
         private float _x = 0.0f;
         private float _y = 0.0f;
@@ -15,7 +15,6 @@ namespace WyrdAPI
             set 
             { 
                 _x = value;
-                NotifyPropertyChanged("X");
             }
         }
 
@@ -25,7 +24,6 @@ namespace WyrdAPI
             set
             {
                 _y = value;
-                NotifyPropertyChanged("Y");
             }
         }
 

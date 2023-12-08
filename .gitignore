@@ -3,12 +3,10 @@ cmakeBuild
 *.filters
 bin/*
 obj/*
-Osiris/vendor/*/bin/*
-Osiris/vendor/*/bin-int/*
+packages/*
 *.sln
 *.vcxproj
 *.vcxproj.user
-OsirisAPI/OsirisAPI.csproj
 /Apps/DevApp/imgui.ini
 Apps/Editor/config.ini
 Apps/Editor/Editor.args.json

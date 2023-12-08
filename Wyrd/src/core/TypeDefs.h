@@ -1,9 +1,5 @@
 #pragma once
 
-#include "properties/BaseProp.h"
-#include "core/behaviour/ScriptedClass.h"
-#include "core/renderer/Material.h"
-
 #include <string>
 #include <map>
 #include <memory>

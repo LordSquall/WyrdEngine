@@ -54,6 +54,7 @@ dependenciesdir = "dependencies/"
 outputdir = "%{cfg.buildcfg}"
 
 includedir = {}
+-- Third Party libs
 includedir["GLFW"] = dependenciesdir .. "/GLFW/include"
 includedir["SOIL"] = dependenciesdir .. "/soil/src"
 includedir["glm"] = dependenciesdir .. "/glm"
@@ -64,6 +65,9 @@ includedir["crossguid"] = dependenciesdir .. "/crossguid/include/"
 includedir["hash"] = dependenciesdir .. "/Hash/include/"
 includedir["jsonxx"] = dependenciesdir .. "/jsonxx/"
 includedir["GLAD"] = "Wyrd/vendor/glad/include"
+
+-- Local Libs
+includedir["ImGuiEx"] = "libs/ImGuiEx/include"
 
 -- if mono was found, the add the in application to the include directories
 if monofound then
@@ -170,12 +174,12 @@ group ""
 			systemversion "latest"
 
 
-   includedirs
+   			includedirs
 			{
 				"%{prj.name}/src/"
 			}
 
-   defines
+   			defines
 			{
 				"WYRD_PLATFORM_LINUX",
 				"WYRD_LIBRARY_EXPORT",
@@ -243,7 +247,7 @@ if os.istarget("windows") then
 				symbols "on"
 end
 group "Scripting"
-project "WyrdCAPI"
+	project "WyrdCAPI"
 		location "WyrdCAPI"
 		kind "SharedLib"
 		language "C++"
@@ -303,7 +307,7 @@ project "WyrdCAPI"
 			symbols "on"
 			
 if os.istarget("windows") then
-project "WyrdAPI"
+	project "WyrdAPI"
 		location "WyrdAPI"
 		kind "SharedLib"
 		language "C#"
@@ -343,237 +347,411 @@ project "WyrdAPI"
 			symbols "on"
 end
 
-group "Applications"
-project "TestPlayer"
-	location "Apps/TestPlayer"
-	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "off"
+group "Libraries"
+	project "ImGuiEx"
+		location "libs/ImGuiEx"
+		kind "StaticLib"
+		language "C++"
+		cppdialect "C++17"
+		staticruntime "off"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("obj/" .. outputdir .. "/%{prj.name}")
-
-	files
-	{
-		"Apps/%{prj.name}/src/**.h",
-		"Apps/%{prj.name}/src/**.cpp",
-		"Apps/%{prj.name}/res/**.vs",
-		"Apps/%{prj.name}/res/**.fs"
-	}
-
-	includedirs
-	{
-		"Apps/%{prj.name}/src/",
-		"%{prj.name}/vendor/glad/include",
-		"Wyrd/src",
-		"%{includedir.GLFW}",
-		"%{includedir.GLAD}",
-		"%{includedir.jsonxx}",
-		"%{includedir.SOIL}",
-		"%{includedir.glm}",
-		"%{includedir.mono}",
-		"%{includedir.spdlog}",
-		"%{includedir.crossguid}"
-	}
-
-	dependson 
-	{ 
-		"WyrdAPI", 
-		"WyrdCAPI"
-	}
-
-	filter "system:windows"
-		systemversion "latest"
-
-		debugenvs { "PATH=%PATH%;%MONO_BIN%" }
-		
-		defines
-		{
-			"WYRD_PLATFORM_WINDOWS",
-			"WYRD_EDITOR_ENABLED",
-			"GLM_ENABLE_EXPERIMENTAL",
-			"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
-			"MONO_INSTALL_LOC=" .. monodir
-		}
-
-		links
-		{
-			"Wyrd",
-			"GLFW",
-			"GLAD",
-			"SOIL",
-			"jsonxx",
-			"imgui",
-			"imguizmo",
-			"opengl32.dll"
-		}
-		
-		linkoptions { "/WHOLEARCHIVE:Wyrd" }
-	
-	filter "system:linux"
+		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+		objdir ("obj/" .. outputdir .. "/%{prj.name}")
 
 		files
 		{
-			"Wyrd/vendor/glad/include/**.h",
-			"Wyrd/vendor/glad/src/**.c",
+			"libs/%{prj.name}/**.cpp",
+			"libs/%{prj.name}/**.h"
 		}
 
-		libdirs
+		includedirs
 		{
-			"buildsystem/linux/bin/Debug/glad/",
-			"buildsystem/linux/bin/Debug/jsonxx/"
+			"%{includedir.crossguid}",
+			"%{includedir.glm}",
+			"%{includedir.jsonxx}",
+			"%{includedir.imgui}",
+			"%{includedir.ImGuiEx}",
+			"Wyrd/src"
 		}
 
-		links
+		filter "system:windows"
+			systemversion "latest"
+
+			debugenvs { "PATH=%PATH%;%MONO_BIN%" }
+			defines
+			{
+				"WYRD_PLATFORM_WINDOWS",
+				"IMGUI_DEFINE_MATH_OPERATORS",
+			}
+
+			links
+			{
+				"GLFW",
+				"GLAD",
+				"SOIL",
+				"jsonxx",
+				"imgui",
+				"opengl32.dll"
+			}
+
+		filter "configurations:Debug"
+			defines "WYRD_DEBUG"
+			runtime "Debug"
+			symbols "on"
+
+		filter "configurations:Release"
+			defines "WYRD_RELEASE"
+			runtime "Debug"
+			symbols "on"
+
+		filter "configurations:Distribution"
+			defines "WYRD_DISTRIBUTION"
+			runtime "Debug"
+			symbols "on"
+
+group "Applications"
+	project "TestPlayer"
+		location "Apps/TestPlayer"
+		kind "ConsoleApp"
+		language "C++"
+		cppdialect "C++17"
+		staticruntime "off"
+
+		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+		objdir ("obj/" .. outputdir .. "/%{prj.name}")
+
+		files
 		{
-			"Wyrd",
-			"glfw3",
-			"GLAD",
-			"dl",
-			"SOIL",
-			"crossguid",
-			"uuid",
-			"spdlog",
-			"mono-2.0",
-			"pthread"
+			"Apps/%{prj.name}/src/**.h",
+			"Apps/%{prj.name}/src/**.cpp",
+			"Apps/%{prj.name}/res/**.vs",
+			"Apps/%{prj.name}/res/**.fs"
 		}
 
-	filter "configurations:Debug"
-		defines "WYRD_DEBUG"
-		runtime "Debug"
-		symbols "on"
+		includedirs
+		{
+			"Apps/%{prj.name}/src/",
+			"%{prj.name}/vendor/glad/include",
+			"Wyrd/src",
+			"%{includedir.GLFW}",
+			"%{includedir.GLAD}",
+			"%{includedir.jsonxx}",
+			"%{includedir.SOIL}",
+			"%{includedir.glm}",
+			"%{includedir.mono}",
+			"%{includedir.spdlog}",
+			"%{includedir.crossguid}"
+		}
 
-	filter "configurations:Release"
-		defines "WYRD_RELEASE"
-		runtime "Debug"
-		symbols "on"
+		dependson 
+		{ 
+			"WyrdAPI", 
+			"WyrdCAPI"
+		}
 
-	filter "configurations:Distribution"
-		defines "WYRD_DISTRIBUTION"
-		runtime "Debug"
-		symbols "on"
+		filter "system:windows"
+			systemversion "latest"
+
+			debugenvs { "PATH=%PATH%;%MONO_BIN%" }
+
+			defines
+			{
+				"WYRD_PLATFORM_WINDOWS",
+				"WYRD_EDITOR_ENABLED",
+				"GLM_ENABLE_EXPERIMENTAL",
+				"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
+				"MONO_INSTALL_LOC=" .. monodir
+			}
+
+			links
+			{
+				"Wyrd",
+				"GLFW",
+				"GLAD",
+				"SOIL",
+				"jsonxx",
+				"imgui",
+				"imguizmo",
+				"opengl32.dll"
+			}
+
+			linkoptions { "/WHOLEARCHIVE:Wyrd" }
 		
-project "Editor"
-	location "Apps/Editor"
-	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "off"
+		filter "system:linux"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("obj/" .. outputdir .. "/%{prj.name}")
+			files
+			{
+				"Wyrd/vendor/glad/include/**.h",
+				"Wyrd/vendor/glad/src/**.c",
+			}
 
-	files
-	{
-		"Apps/%{prj.name}/src/**.h",
-		"Apps/%{prj.name}/src/**.cpp",
-		"Apps/%{prj.name}/res/**.vs",
-		"Apps/%{prj.name}/res/**.fs"
-	}
+			libdirs
+			{
+				"buildsystem/linux/bin/Debug/glad/",
+				"buildsystem/linux/bin/Debug/jsonxx/"
+			}
 
-	includedirs
-	{
-		"Apps/%{prj.name}/src",
-		"Apps/Players/Player/src",
-		"codegen/src/Common/include",
-		"codegen/src/PlayerAPI/include",
-		"Wyrd/src",
-		"%{includedir.glm}",
-		"%{includedir.GLFW}",
-		"%{includedir.GLAD}",
-		"%{includedir.jsonxx}",
-		"%{includedir.SOIL}",
-		"%{includedir.imgui}",
-		"%{includedir.imguizmo}",
-		"%{includedir.glm}",
-		"%{includedir.tinyobjloader}",
-		"%{includedir.mono}",
-		"%{includedir.spdlog}",
-		"%{includedir.crossguid}",
-		"%{includedir.hash}",
-		iif(renderdocfound, includedir["renderdoc"], "")
-	}
+			links
+			{
+				"Wyrd",
+				"glfw3",
+				"GLAD",
+				"dl",
+				"SOIL",
+				"crossguid",
+				"uuid",
+				"spdlog",
+				"mono-2.0",
+				"pthread"
+			}
 
-	dependson 
-	{ 
-		"WyrdAPI", 
-		"WyrdCAPI",
-		"TestPlayer"
-	}
+		filter "configurations:Debug"
+			defines "WYRD_DEBUG"
+			runtime "Debug"
+			symbols "on"
 
-	filter "system:windows"
-		systemversion "latest"
+		filter "configurations:Release"
+			defines "WYRD_RELEASE"
+			runtime "Debug"
+			symbols "on"
 
-		debugenvs { "PATH=%PATH%;%MONO_BIN%" }
-		defines
+		filter "configurations:Distribution"
+			defines "WYRD_DISTRIBUTION"
+			runtime "Debug"
+			symbols "on"
+
+	project "ImGuiTests"
+		location "Apps/ImGuiTests"
+		kind "ConsoleApp"
+		language "C++"
+		cppdialect "C++17"
+		staticruntime "off"
+	
+		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+		objdir ("obj/" .. outputdir .. "/%{prj.name}")
+	
+		files
 		{
-			"WYRD_PLATFORM_WINDOWS",
-			"WYRD_EDITOR_ENABLED",
-			"GLM_ENABLE_EXPERIMENTAL",
-			"IMGUI_DEFINE_MATH_OPERATORS",
-			"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
-			"MONO_INSTALL_LOC=" .. monodir,
-			iif(renderdocfound, "WYRD_RENDERDOC_ENABLED", "")
+			"Apps/%{prj.name}/src/**.h",
+			"Apps/%{prj.name}/src/**.cpp",
+			"Apps/%{prj.name}/res/**.vs",
+			"Apps/%{prj.name}/res/**.fs"
 		}
-
-		links
+	
+		includedirs
 		{
-			"Wyrd",
-			"GLFW",
-			"GLAD",
-			"SOIL",
-			"jsonxx",
-			"imgui",
-			"imguizmo",
-			"opengl32.dll"
+			"Apps/%{prj.name}/src/",
+			"%{prj.name}/vendor/glad/include",
+			"Wyrd/src",
+			"%{includedir.glm}",
+			"%{includedir.GLFW}",
+			"%{includedir.GLAD}",
+			"%{includedir.jsonxx}",
+			"%{includedir.SOIL}",
+			"%{includedir.mono}",
+			"%{includedir.spdlog}",
+			"%{includedir.crossguid}",
+			"%{includedir.imgui}",
+			"%{includedir.ImGuiEx}",
 		}
+	
+		dependson 
+		{ 
+			"WyrdAPI", 
+			"WyrdCAPI"
+		}
+	
+		filter "system:windows"
+			systemversion "latest"
+	
+			debugenvs { "PATH=%PATH%;%MONO_BIN%" }
+			
+			defines
+			{
+				"WYRD_PLATFORM_WINDOWS",
+				"WYRD_EDITOR_ENABLED",
+				"GLM_ENABLE_EXPERIMENTAL",
+				"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
+				"MONO_INSTALL_LOC=" .. monodir
+			}
+	
+			links
+			{
+				"Wyrd",
+				"GLFW",
+				"GLAD",
+				"SOIL",
+				"jsonxx",
+				"crossguid",
+				"imgui",
+				"ImGuiEx",
+				"opengl32.dll"
+			}
+			
+			linkoptions { "/WHOLEARCHIVE:Wyrd" }
 		
-		linkoptions { "/WHOLEARCHIVE:Wyrd" }
+		filter "system:linux"
+	
+			files
+			{
+				"Wyrd/vendor/glad/include/**.h",
+				"Wyrd/vendor/glad/src/**.c",
+			}
+	
+			libdirs
+			{
+				"buildsystem/linux/bin/Debug/glad/",
+				"buildsystem/linux/bin/Debug/jsonxx/"
+			}
+	
+			links
+			{
+				"Wyrd",
+				"glfw3",
+				"GLAD",
+				"dl",
+				"SOIL",
+				"crossguid",
+				"uuid",
+				"spdlog",
+				"mono-2.0",
+				"pthread"
+			}
+	
+		filter "configurations:Debug"
+			defines "WYRD_DEBUG"
+			runtime "Debug"
+			symbols "on"
+	
+		filter "configurations:Release"
+			defines "WYRD_RELEASE"
+			runtime "Debug"
+			symbols "on"
+	
+		filter "configurations:Distribution"
+			defines "WYRD_DISTRIBUTION"
+			runtime "Debug"
+			symbols "on"
 		
-	filter  "system:linux"
-		defines
+	project "Editor"
+		location "Apps/Editor"
+		kind "ConsoleApp"
+		language "C++"
+		cppdialect "C++17"
+		staticruntime "off"
+
+		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+		objdir ("obj/" .. outputdir .. "/%{prj.name}")
+
+		files
 		{
-			"WYRD_PLATFORM_LINUX",
-			"WYRD_EDITOR_ENABLED",
-			"GLM_ENABLE_EXPERIMENTAL",
-			"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
-			"MONO_INSTALL_LOC=" .. monodir
+			"Apps/%{prj.name}/src/**.h",
+			"Apps/%{prj.name}/src/**.cpp",
+			"Apps/%{prj.name}/res/**.vs",
+			"Apps/%{prj.name}/res/**.fs"
 		}
 
-		libdirs
+		includedirs
 		{
-			"buildsystem/linux/bin/Debug/glad/",
-			"buildsystem/linux/bin/Debug/jsonxx/"
+			"Apps/%{prj.name}/src",
+			"Apps/Players/Player/src",
+			"codegen/src/Common/include",
+			"codegen/src/PlayerAPI/include",
+			"Wyrd/src",
+			"%{includedir.glm}",
+			"%{includedir.GLFW}",
+			"%{includedir.GLAD}",
+			"%{includedir.jsonxx}",
+			"%{includedir.SOIL}",
+			"%{includedir.imgui}",
+			"%{includedir.imguizmo}",
+			"%{includedir.tinyobjloader}",
+			"%{includedir.mono}",
+			"%{includedir.spdlog}",
+			"%{includedir.crossguid}",
+			"%{includedir.hash}",
+			iif(renderdocfound, includedir["renderdoc"], "")
 		}
 
-		links
-		{
-			"Wyrd",
-			"glfw3",
-			"SOIL",
-			"crossguid",
-			"uuid",
-			"glad",
-			"imgui",
-			"imguizmo",
-			"jsonxx",
-			"mono-2.0",
-			"dl",
-			"pthread"
+		dependson 
+		{ 
+			"WyrdAPI", 
+			"WyrdCAPI",
+			"TestPlayer"
 		}
 
-	filter "configurations:Debug"
-		defines "WYRD_DEBUG"
-		runtime "Debug"
-		symbols "on"
+		filter "system:windows"
+			systemversion "latest"
 
-	filter "configurations:Release"
-		defines "WYRD_RELEASE"
-		runtime "Debug"
-		symbols "on"
+			debugenvs { "PATH=%PATH%;%MONO_BIN%" }
+			defines
+			{
+				"WYRD_PLATFORM_WINDOWS",
+				"WYRD_EDITOR_ENABLED",
+				"GLM_ENABLE_EXPERIMENTAL",
+				"IMGUI_DEFINE_MATH_OPERATORS",
+				"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
+				"MONO_INSTALL_LOC=" .. monodir,
+				iif(renderdocfound, "WYRD_RENDERDOC_ENABLED", "")
+			}
 
-	filter "configurations:Distribution"
-		defines "WYRD_DISTRIBUTION"
-		runtime "Debug"
-		symbols "on"
+			links
+			{
+				"Wyrd",
+				"GLFW",
+				"GLAD",
+				"SOIL",
+				"jsonxx",
+				"imgui",
+				"imguizmo",
+				"opengl32.dll"
+			}
+
+			linkoptions { "/WHOLEARCHIVE:Wyrd" }
+
+		filter  "system:linux"
+			defines
+			{
+				"WYRD_PLATFORM_LINUX",
+				"WYRD_EDITOR_ENABLED",
+				"GLM_ENABLE_EXPERIMENTAL",
+				"NATIVE_API_LIB_LOC=" .. os.getcwd() .. "/lib/Debug/",
+				"MONO_INSTALL_LOC=" .. monodir
+			}
+
+			libdirs
+			{
+				"buildsystem/linux/bin/Debug/glad/",
+				"buildsystem/linux/bin/Debug/jsonxx/"
+			}
+
+			links
+			{
+				"Wyrd",
+				"glfw3",
+				"SOIL",
+				"crossguid",
+				"uuid",
+				"glad",
+				"imgui",
+				"imguizmo",
+				"jsonxx",
+				"mono-2.0",
+				"dl",
+				"pthread"
+			}
+
+		filter "configurations:Debug"
+			defines "WYRD_DEBUG"
+			runtime "Debug"
+			symbols "on"
+
+		filter "configurations:Release"
+			defines "WYRD_RELEASE"
+			runtime "Debug"
+			symbols "on"
+
+		filter "configurations:Distribution"
+			defines "WYRD_DISTRIBUTION"
+			runtime "Debug"
+			symbols "on"
