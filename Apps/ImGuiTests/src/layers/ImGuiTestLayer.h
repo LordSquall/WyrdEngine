@@ -39,6 +39,7 @@ public:
 private:
 	bool OnKeyReleasedEvent(KeyReleasedEvent& e, void* data);
 	bool OnKeyPressedEvent(KeyPressedEvent& e, void* data);
+	bool OnMouseScrolledEvent(MouseScrolledEvent& e, void* data);
 	bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data);
 	bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e, void* data);
 	bool OnMouseMovedEvent(MouseMovedEvent& e, void* data);

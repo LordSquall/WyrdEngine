@@ -21,6 +21,6 @@ namespace ImGui
 	const static std::string YCOMP_LABEL = "y";
 
 	/* Tree View  */
-	bool TreeEntity(Wyrd::Scene& scene, Wyrd::Entity e);
+	bool TreeEntity(Wyrd::Scene& scene, Entity selectedEntity, Wyrd::Entity e);
 	void TreeSeperator(const int depth);
 }

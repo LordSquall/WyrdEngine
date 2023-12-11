@@ -129,6 +129,7 @@ namespace Wyrd
     void ComponentSerialiserFactory::Serialise(jsonxx::Object & obj, Wyrd::RelationshipComponent* data)
     {
         obj << "first" << data->first;
+        obj << "last" << data->last;
         obj << "previous" << data->previous;
         obj << "next" << data->next;
         obj << "parent" << data->parent;
@@ -140,6 +141,7 @@ namespace Wyrd
     void ComponentSerialiserFactory::Serialise(std::ofstream& stream, Wyrd::RelationshipComponent* data)
     {
         stream.write((char*)&data->first, sizeof(Wyrd::Entity));
+        stream.write((char*)&data->last, sizeof(Wyrd::Entity));
         stream.write((char*)&data->previous, sizeof(Wyrd::Entity));
         stream.write((char*)&data->next, sizeof(Wyrd::Entity));
         stream.write((char*)&data->parent, sizeof(Wyrd::Entity));
@@ -292,6 +294,7 @@ namespace Wyrd
     void ComponentSerialiserFactory::Deserialise(jsonxx::Object & obj, Wyrd::RelationshipComponent* data)
     {
         data->first = obj.get<jsonxx::Number>("first", ENTITY_INVALID);
+        data->last = obj.get<jsonxx::Number>("last", ENTITY_INVALID);
         data->previous = obj.get<jsonxx::Number>("previous", ENTITY_INVALID);
         data->next = obj.get<jsonxx::Number>("next", ENTITY_INVALID);
         data->parent = obj.get<jsonxx::Number>("parent", ENTITY_INVALID);
@@ -303,6 +306,7 @@ namespace Wyrd
     void ComponentSerialiserFactory::Deserialise(std::ifstream& stream, Wyrd::RelationshipComponent* data)
     {
         stream.read((char*)&data->first, sizeof(Wyrd::Entity));
+        stream.read((char*)&data->last, sizeof(Wyrd::Entity));
         stream.read((char*)&data->previous, sizeof(Wyrd::Entity));
         stream.read((char*)&data->next, sizeof(Wyrd::Entity));
         stream.read((char*)&data->parent, sizeof(Wyrd::Entity));

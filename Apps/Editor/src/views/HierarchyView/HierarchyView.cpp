@@ -108,7 +108,7 @@ namespace Wyrd::Editor
 			flags |= (selected) ? ImGuiTreeNodeFlags_Selected : ImGuiTreeNodeFlags_None;
 
 			std::string name(metaDataComponent->name);
-			name.append(" - " + std::to_string(entity));
+			//name.append(" - " + std::to_string(entity));
 			bool open = ImGui::TreeNodeEx(name.c_str(), flags);
 		
 			DisplayEntityContentMenu(entity);
@@ -136,7 +136,10 @@ namespace Wyrd::Editor
 						childEntity = nextRelationshipComponent->next;
 					}
 				}
-				DisplayBelowDragTarget(nextRelationshipComponent->parent, depth + 1);
+				if (nextRelationshipComponent != nullptr)
+				{
+					DisplayBelowDragTarget(nextRelationshipComponent->parent, depth + 1);
+				}
 		
 				ImGui::TreePop();
 			}
@@ -148,7 +151,7 @@ namespace Wyrd::Editor
 			flags |= ImGuiTreeNodeFlags_NoTreePushOnOpen;
 			flags |= (selected) ? ImGuiTreeNodeFlags_Selected : ImGuiTreeNodeFlags_None;
 			std::string name(metaDataComponent->name);
-			name.append(" - " + std::to_string(entity));
+			//name.append(" - " + std::to_string(entity));
 			ImGui::TreeNodeEx(name.c_str(), flags);
 		
 			DisplayEntityContentMenu(entity);
@@ -318,6 +321,7 @@ namespace Wyrd::Editor
 			ImGui::Text("childCnt: %d", relationshipComp->childrenCnt);
 			ImGui::Text("depth: %d", relationshipComp->depth);
 			ImGui::Text("first: %lu", relationshipComp->first);
+			ImGui::Text("last: %lu", relationshipComp->last);
 			ImGui::Text("next: %lu", relationshipComp->next);
 			ImGui::Text("parent: %lu", relationshipComp->parent);
 			ImGui::Text("previous: %lu", relationshipComp->previous);

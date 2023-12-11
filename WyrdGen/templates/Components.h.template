@@ -4,11 +4,11 @@
 #include "core/export.h"
 #include "core/UID.h"
 #include "core/Structures.h"
-#include "core/TypeDefs.h"
 #include "core/ResourcesUIDs.h"
 #include "core/maths/Rect.h"
 #include "core/ecs/ECS.h"
 #include "core/ecs/ComponentPool.h"
+#include "properties/BaseProp.h"
 
 #include <glm/glm.hpp>
 

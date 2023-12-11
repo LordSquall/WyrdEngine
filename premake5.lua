@@ -215,7 +215,8 @@ if os.istarget("windows") then
 			files
 			{
 				"%{prj.name}/**.cs",
-				"%{prj.name}/**.xml"
+				"%{prj.name}/**.xml",
+				"%{prj.name}/**.template"
 			}
 			
 			links { "System.Xml" }

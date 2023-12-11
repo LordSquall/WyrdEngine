@@ -83,7 +83,9 @@ namespace Wyrd::Editor
 					std::string type = inputObject.get<jsonxx::String>("type");
 					std::string binding = inputObject.get<jsonxx::String>("binding");
 
-					_material->AddInputBinding(name, type, binding);
+					jsonxx::Object defaultData = inputObject.get<jsonxx::Object>("default", jsonxx::Object());
+
+					_material->AddInputBinding(name, type, binding, defaultData);
 				}
 			}
 
@@ -198,7 +200,7 @@ namespace Wyrd::Editor
 		if (ImGui::Button("+"))
 		{
 			ServiceManager::Get<DialogService>()->OpenSingleEntryDialog(nullptr, "Create new Binding", "Enter Unique Name", [&](std::string d) -> void {
-				_material->AddInputBinding(d, "Vec2", "value");
+				//_material->AddInputBinding(d, "Vec2", "value");
 			});
 		}
 		if (ImGui::Button("Save"))

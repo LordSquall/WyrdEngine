@@ -133,6 +133,7 @@ namespace Wyrd
     struct WYRD_LIBRARY_API RelationshipComponent
     {
         Wyrd::Entity first;
+        Wyrd::Entity last;
         Wyrd::Entity previous;
         Wyrd::Entity next;
         Wyrd::Entity parent;
@@ -140,7 +141,7 @@ namespace Wyrd
         int32_t depth;
         bool remove;
 
-        RelationshipComponent() : first(ENTITY_INVALID), previous(ENTITY_INVALID), next(ENTITY_INVALID), parent(ENTITY_INVALID), childrenCnt(0), depth(0), remove(false) {} 
+        RelationshipComponent() : first(ENTITY_INVALID), last(ENTITY_INVALID), previous(ENTITY_INVALID), next(ENTITY_INVALID), parent(ENTITY_INVALID), childrenCnt(0), depth(0), remove(false) {} 
 
         static void ResetFunc(ComponentPool* pool, Entity entity) {
             RelationshipComponent* c = (RelationshipComponent*)pool->get(entity);

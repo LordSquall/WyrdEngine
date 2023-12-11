@@ -12,19 +12,21 @@ namespace WyrdAPI
     {
 
       [MarshalAs(UnmanagedType.Struct)]
-      private Vector3 _position = new Vector3();
+      private Vector3 _position;
 
       [MarshalAs(UnmanagedType.Struct)]
-      private Vector3 _rotation = new Vector3();
+      private Vector3 _rotation;
 
       [MarshalAs(UnmanagedType.Struct)]
-      private Vector3 _scale = new Vector3();
+      private Vector3 _scale;
 
       [MarshalAs(UnmanagedType.Struct)]
       private Matrix4 _modelmatrix;
 
       [MarshalAs(UnmanagedType.Struct)]
       private Matrix4 _parentmodelmatrix;
+
+
 
       public Vector3 Position
       {
@@ -83,11 +85,13 @@ namespace WyrdAPI
         public void SetEntity(Entity entity)
         {
             EntityID = entity.NativeID;
+
+
         }
 
         #region P/Invoke functions
 
-        [DllImport("WyrdCAPI")]
+         [DllImport("WyrdCAPI")]
          public static extern IntPtr Transform3DComponent_SetPosition(IntPtr scenePtr, UInt64 entity, Vector3 position);
          [DllImport("WyrdCAPI")]
          public static extern IntPtr Transform3DComponent_SetRotation(IntPtr scenePtr, UInt64 entity, Vector3 rotation);

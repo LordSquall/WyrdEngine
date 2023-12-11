@@ -15,6 +15,9 @@ namespace WyrdAPI
       private Entity _first;
 
       [MarshalAs(UnmanagedType.Struct)]
+      private Entity _last;
+
+      [MarshalAs(UnmanagedType.Struct)]
       private Entity _previous;
 
       [MarshalAs(UnmanagedType.Struct)]
@@ -41,6 +44,16 @@ namespace WyrdAPI
          {
              _first = value;
              RelationshipComponent_SetFirst(Scene.NativePtr, EntityID, _first);
+         }
+      }
+
+      public Entity Last
+      {
+         get { return _last; }
+         set 
+         {
+             _last = value;
+             RelationshipComponent_SetLast(Scene.NativePtr, EntityID, _last);
          }
       }
 
@@ -119,6 +132,8 @@ namespace WyrdAPI
 
          [DllImport("WyrdCAPI")]
          public static extern IntPtr RelationshipComponent_SetFirst(IntPtr scenePtr, UInt64 entity, Entity first);
+         [DllImport("WyrdCAPI")]
+         public static extern IntPtr RelationshipComponent_SetLast(IntPtr scenePtr, UInt64 entity, Entity last);
          [DllImport("WyrdCAPI")]
          public static extern IntPtr RelationshipComponent_SetPrevious(IntPtr scenePtr, UInt64 entity, Entity previous);
          [DllImport("WyrdCAPI")]

@@ -50,6 +50,7 @@
   
   <Component name="RelationshipComponent" shortName="Relationship">
     <Data name="first" type="Entity" default="ENTITY_INVALID"/>
+    <Data name="last" type="Entity" default="ENTITY_INVALID"/>
     <Data name="previous" type="Entity" default="ENTITY_INVALID"/>
     <Data name="next" type="Entity" default="ENTITY_INVALID"/>
     <Data name="parent" type="Entity" default="ENTITY_INVALID"/>

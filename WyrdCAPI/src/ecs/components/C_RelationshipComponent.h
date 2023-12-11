@@ -13,6 +13,8 @@ extern "C" {
 
 LIBRARY_API void RelationshipComponent_SetFirst(void* obj, Wyrd::Entity entity, Wyrd::Entity* position);
 
+LIBRARY_API void RelationshipComponent_SetLast(void* obj, Wyrd::Entity entity, Wyrd::Entity* position);
+
 LIBRARY_API void RelationshipComponent_SetPrevious(void* obj, Wyrd::Entity entity, Wyrd::Entity* position);
 
 LIBRARY_API void RelationshipComponent_SetNext(void* obj, Wyrd::Entity entity, Wyrd::Entity* position);

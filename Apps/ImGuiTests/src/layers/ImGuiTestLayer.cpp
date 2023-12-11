@@ -37,13 +37,55 @@ void BuildSample()
 {
 	s_Scene.Initialise();
 
-	s_Scene.CreateEntity("Entity_A");
-	s_Scene.CreateEntity("Entity_B");
-	s_Scene.CreateEntity("Entity_C");
-	s_Scene.CreateEntity("Entity_D");
-	s_Scene.CreateEntity("Entity_F");
-	s_Scene.CreateEntity("Entity_G");
-	s_Scene.CreateEntity("Entity_H");
+	Entity ent_A = s_Scene.CreateEntity("Entity_A");
+	Entity ent_B = s_Scene.CreateEntity("Entity_B");
+	Entity ent_C = s_Scene.CreateEntity("Entity_C");
+	Entity ent_D = s_Scene.CreateEntity("Entity_D");
+	Entity ent_E = s_Scene.CreateEntity("Entity_E");
+	Entity ent_F = s_Scene.CreateEntity("Entity_F");
+	Entity ent_G = s_Scene.CreateEntity("Entity_G");
+	Entity ent_H = s_Scene.CreateEntity("Entity_H");
+	Entity ent_I = s_Scene.CreateEntity("Entity_I");
+	Entity ent_J = s_Scene.CreateEntity("Entity_J");
+	Entity ent_K = s_Scene.CreateEntity("Entity_K");
+	Entity ent_L = s_Scene.CreateEntity("Entity_L");
+	Entity ent_M = s_Scene.CreateEntity("Entity_M");
+	Entity ent_N = s_Scene.CreateEntity("Entity_N");
+
+	{  // Single child
+		RelationshipComponent* ent_A_rsc = s_Scene.Get<RelationshipComponent>(ent_A);
+		ent_A_rsc->first = ent_B;
+		ent_A_rsc->childrenCnt = 1;
+
+		RelationshipComponent* ent_B_rsc = s_Scene.Get<RelationshipComponent>(ent_B);
+		ent_B_rsc->parent = ent_A;
+	}
+	{  // Multiple child
+		RelationshipComponent* ent_D_rsc = s_Scene.Get<RelationshipComponent>(ent_D);
+		ent_D_rsc->first = ent_E;
+		ent_D_rsc->childrenCnt = 2;
+
+		RelationshipComponent* ent_E_rsc = s_Scene.Get<RelationshipComponent>(ent_E);
+		ent_E_rsc->parent = ent_D;
+		ent_E_rsc->next = ent_F;
+
+		RelationshipComponent* ent_F_rsc = s_Scene.Get<RelationshipComponent>(ent_F);
+		ent_F_rsc->parent = ent_D;
+		ent_F_rsc->previous = ent_E;
+	}
+	{
+		RelationshipComponent* ent_H_rsc = s_Scene.Get<RelationshipComponent>(ent_H);
+		ent_H_rsc->first = ent_I;
+		ent_H_rsc->childrenCnt = 1;
+
+		RelationshipComponent* ent_I_rsc = s_Scene.Get<RelationshipComponent>(ent_I);
+		ent_I_rsc->parent = ent_H;
+		ent_I_rsc->first = ent_J;
+		ent_I_rsc->childrenCnt = 1;
+
+		RelationshipComponent* ent_J_rsc = s_Scene.Get<RelationshipComponent>(ent_J);
+		ent_J_rsc->parent = ent_I;
+	}
 }
 
 bool ImGuiTestLayer::OnAttach()
@@ -189,9 +231,10 @@ void ImGuiTestLayer::OnEvent(Event& event)
 	EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<KeyReleasedEvent>(WYRD_BIND_EVENT_FN(ImGuiTestLayer::OnKeyReleasedEvent), nullptr);
 	dispatcher.Dispatch<KeyPressedEvent>(WYRD_BIND_EVENT_FN(ImGuiTestLayer::OnKeyPressedEvent), nullptr);
+	dispatcher.Dispatch<MouseMovedEvent>(WYRD_BIND_EVENT_FN(ImGuiTestLayer::OnMouseMovedEvent), nullptr);
+	dispatcher.Dispatch<MouseScrolledEvent>(WYRD_BIND_EVENT_FN(ImGuiTestLayer::OnMouseScrolledEvent), nullptr);
 	dispatcher.Dispatch<MouseButtonPressedEvent>(WYRD_BIND_EVENT_FN(ImGuiTestLayer::OnMouseButtonPressedEvent), nullptr);
 	dispatcher.Dispatch<MouseButtonReleasedEvent>(WYRD_BIND_EVENT_FN(ImGuiTestLayer::OnMouseButtonReleasedEvent), nullptr);
-	dispatcher.Dispatch<MouseMovedEvent>(WYRD_BIND_EVENT_FN(ImGuiTestLayer::OnMouseMovedEvent), nullptr);
 }
 
 void ImGuiTestLayer::OnRender(Timestep ts, Renderer& renderer)
@@ -233,6 +276,8 @@ void ImGuiTestLayer::OnRender(Timestep ts, Renderer& renderer)
 	/* start root dockspace window */
 	ImGui::Begin("DockspaceRoot", 0, window_flags);
 
+	static Entity s_SelectedEntity = ENTITY_INVALID;
+
 	for (Entity e : EntitySet<RelationshipComponent, MetaDataComponent>(s_Scene))
 	{
 		MetaDataComponent* metatDataComponent = s_Scene.Get<MetaDataComponent>(e);
@@ -240,7 +285,7 @@ void ImGuiTestLayer::OnRender(Timestep ts, Renderer& renderer)
 
 		if (relationshipComponent->parent == ENTITY_INVALID)
 		{
-			if (ImGui::TreeEntity(s_Scene, e))
+			if (ImGui::TreeEntity(s_Scene, s_SelectedEntity, e))
 			{
 
 			}
@@ -271,20 +316,32 @@ bool ImGuiTestLayer::OnKeyPressedEvent(KeyPressedEvent& e, void* data)
 	return false;
 }
 
+bool ImGuiTestLayer::OnMouseScrolledEvent(MouseScrolledEvent& e, void* data)
+{
+	ImGuiIO& io = ImGui::GetIO();
+	io.MouseWheel += e.GetYOffset();
+	io.MouseWheelH += e.GetXOffset();
+
+	return false;
+}
+
 bool ImGuiTestLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e, void* data)
 {
-	Application::Get().GetBehaviour().SetMouseButtonState(e.GetMouseButton(), true);
+	ImGuiIO& io = ImGui::GetIO();
+	io.MouseDown[e.GetMouseButton()] = true;
 	return false;
 }
 
 bool ImGuiTestLayer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e, void* data)
 {
-	Application::Get().GetBehaviour().SetMouseButtonState(e.GetMouseButton(), false);
+	ImGuiIO& io = ImGui::GetIO();
+	io.MouseDown[e.GetMouseButton()] = false;
 	return false;
 }
 
 bool ImGuiTestLayer::OnMouseMovedEvent(MouseMovedEvent& e, void* data)
 {
-	Application::Get().GetBehaviour().SetMouseState(e.GetX(), e.GetY());
+	ImGuiIO& io = ImGui::GetIO();
+	io.MousePos = ImVec2(e.GetX(), e.GetY());
 	return false;
 }

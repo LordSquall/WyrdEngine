@@ -136,7 +136,7 @@ namespace Wyrd::Editor
 				else
 				{
 					/* as we are added to the end of a list, we need to first the last entity to attach to*/
-					Entity targetLast = target_rc->first;
+					Entity targetLast = target_rc->last;
 					RelationshipComponent* targetLast_rc = scene->Get<RelationshipComponent>(targetLast);
 					targetLast_rc->next = source;
 					target_rc->previous = targetLast;

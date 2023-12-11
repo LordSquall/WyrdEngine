@@ -15,6 +15,7 @@ namespace Wyrd
 	{
 		std::string type;
 		std::string binding;
+		jsonxx::Object defaultData;
 	};
 
 	typedef std::map<std::string, InputBinding> MaterialInputMap;
@@ -48,7 +49,7 @@ namespace Wyrd
 		void SetShaderUID(const UID& id) { _shaderUID = id; }
 		inline const UID& GetShaderUID() const { return _shaderUID; }
 
-		void AddInputBinding(const std::string& name, const std::string& type, const std::string& binding);
+		void AddInputBinding(const std::string& name, const std::string& type, const std::string& binding, const jsonxx::Object& defaultData);
 
 
 		inline const MaterialInputMap& GetInputPropertyList() const { return _inputs; }

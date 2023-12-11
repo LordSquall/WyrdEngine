@@ -17,7 +17,7 @@ namespace Wyrd
 
 		for (auto& input : desc.inputMap)
 		{
-			newMaterial->AddInputBinding(input.first, input.second.type, input.second.binding);
+			//newMaterial->AddInputBinding(input.first, input.second.type, input.second.binding);
 		}
 
 		return newMaterial;
@@ -95,8 +95,8 @@ namespace Wyrd
 	}
 
 
-	void Material::AddInputBinding(const std::string& name, const std::string& type, const std::string& binding)
+	void Material::AddInputBinding(const std::string& name, const std::string& type, const std::string& binding, const jsonxx::Object& defaultData)
 	{
-		(_inputs)[name] = { type, binding };
+		(_inputs)[name] = { type, binding, defaultData };
 	}
 }

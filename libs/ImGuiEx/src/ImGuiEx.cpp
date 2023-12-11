@@ -7,14 +7,54 @@ using namespace Wyrd;
 
 namespace ImGui 
 {
-    bool TreeEntity(Scene& scene, Entity e)
+    bool TreeEntity(Scene& scene, Entity selectedEntity, Entity e)
     {
         if (e != ENTITY_INVALID)
         {
+            // retrieve the components for the current entity
             MetaDataComponent* metaDataComponent = scene.Get<MetaDataComponent>(e);
             RelationshipComponent* relationshipComponent = scene.Get<RelationshipComponent>(e);
 
-            return TreeNode(metaDataComponent->name);
+            ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
+
+            bool isSelected = selectedEntity == e;
+            bool isParent = relationshipComponent->childrenCnt > 0;
+            if (isParent)
+            {
+                bool isOpen = TreeNodeEx(metaDataComponent->name, flags);
+
+                //if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+                //{
+                //    _EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(entity));
+                //}
+
+                if (isOpen)
+                {
+                    Entity childEntity = relationshipComponent->first;
+                    RelationshipComponent* nextRelationshipComponent = nullptr;
+                    RelationshipComponent* lastRelationshipComponent = nullptr;
+                    for (int i = 0; i < relationshipComponent->childrenCnt; i++)
+                    {
+                        if (childEntity != ENTITY_INVALID)
+                        {
+                            TreeEntity(scene, selectedEntity, childEntity);
+
+                            nextRelationshipComponent = scene.Get<RelationshipComponent>(childEntity);
+                            childEntity = nextRelationshipComponent->next;
+                        }
+                    }
+
+                    ImGui::TreePop();
+                }
+            }
+            else
+            {
+                flags |= ImGuiTreeNodeFlags_Leaf;
+                flags |= ImGuiTreeNodeFlags_Bullet;
+                flags |= ImGuiTreeNodeFlags_NoTreePushOnOpen;
+
+                TreeNodeEx(metaDataComponent->name, flags);
+            }
         }
 
         return false;

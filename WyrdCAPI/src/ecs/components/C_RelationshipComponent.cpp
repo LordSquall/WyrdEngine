@@ -15,6 +15,14 @@ void RelationshipComponent_SetFirst(void* scenePtr, Wyrd::Entity entity, Wyrd::E
    component->first = first;
 }
 
+void RelationshipComponent_SetLast(void* scenePtr, Wyrd::Entity entity, Wyrd::Entity last)
+{
+   Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
+   Wyrd::RelationshipComponent* component = scene->Get<Wyrd::RelationshipComponent>(entity);
+
+   component->last = last;
+}
+
 void RelationshipComponent_SetPrevious(void* scenePtr, Wyrd::Entity entity, Wyrd::Entity previous)
 {
    Wyrd::Scene* scene = (Wyrd::Scene*)scenePtr;
