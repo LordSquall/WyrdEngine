@@ -76,7 +76,7 @@ namespace Wyrd
         auto properties = GetNativeProps();
         if (auto it = properties->find(type); it != properties->end())
         {
-            return (*properties)[type](name, type, 0, false);
+              return (*properties)[type](name, type, 0, false);
         }
         return nullptr;
     }

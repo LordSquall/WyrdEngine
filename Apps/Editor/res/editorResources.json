@@ -148,17 +148,32 @@
           {
             "name": "BlendColor",
             "type": "Color",
-            "binding": "u_BlendColor"
+            "binding": "u_BlendColor",
+            "default": {
+              "value": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+              }
+            }
           },
           {
             "name": "BaseTexture",
             "type": "Texture",
-            "binding": "u_Texture"
+            "binding": "u_Texture",
+            "default": {}
           },
           {
             "name": "Tiling",
             "type": "Vec2",
-            "binding": "u_Tiling"
+            "binding": "u_Tiling",
+            "default": {
+              "value": {
+                "x": 1.0,
+                "y": 1.0
+              }
+            }
           }
         ]
       }

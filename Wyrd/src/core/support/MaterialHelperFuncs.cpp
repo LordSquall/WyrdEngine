@@ -26,6 +26,7 @@ namespace Wyrd
 			for (auto& [name, binding] : propList)
 			{
 				(*materialComponent->properties)[name] = PropFactory::CreateProp(binding.type, name);
+				(*materialComponent->properties)[name]->Deserialise(binding.defaultData);
 			}
 		}
 		else
