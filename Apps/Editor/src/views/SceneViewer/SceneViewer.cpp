@@ -137,7 +137,7 @@ namespace Wyrd::Editor
 					MaterialComponent* material = _Scene->Get<MaterialComponent>(e);
 
 					Wyrd::DrawMeshCommand cmd{};
-					cmd.modelMatrix = transform->parentModelMatrix * transform->modelMatrix;
+					cmd.modelMatrix = transform->modelMatrix * transform->parentModelMatrix;
 					cmd.viewMatrix = _CameraController->GetCamera().GetViewMatrix();
 					cmd.projectionMatrix = _CameraController->GetCamera().GetProjectionMatrix();
 					cmd.material = Application::Get().GetResources().Materials[material->material].get();
@@ -336,7 +336,9 @@ namespace Wyrd::Editor
 			ImGuizmo::SetRect(_ViewportBoundary._position.x, _ViewportBoundary._position.y, _ViewportBoundary._size.x, _ViewportBoundary._size.y);
 			glm::mat4 camViewInverseMat = _CameraController->GetCamera().GetViewMatrix();
 			glm::mat4 projectionMat = _CameraController->GetCamera().GetProjectionMatrix();
-			glm::mat4 transformMat = transform->modelMatrix;
+			glm::mat4 transformMat = transform->modelMatrix * transform->parentModelMatrix;
+
+			//transform->modelMatrix * transform->parentModelMatrix
 
 			ImGuizmo::OPERATION op;
 			switch (CurrentTransformTool)
@@ -464,7 +466,7 @@ namespace Wyrd::Editor
 					Ray r;
 					PhysicsUtils::ScreenPosToWorldRay(viewportPos, _ViewportBoundary._size, _CameraController->GetCamera().GetViewMatrix(), _CameraController->GetCamera().GetProjectionMatrix(), r);
 
-					if (PhysicsUtils::IntersectRayBoundingBox(transform3DComponent->modelMatrix, r, editorComponent->inputBoundingBox))
+					if (PhysicsUtils::IntersectRayBoundingBox(transform3DComponent->modelMatrix * transform3DComponent->parentModelMatrix, r, editorComponent->inputBoundingBox))
 					{
 						_Events->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(e));
 						return true;

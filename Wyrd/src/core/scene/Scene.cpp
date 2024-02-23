@@ -6,6 +6,7 @@
 #include "core/Application.h"
 #include "core/behaviour/ScriptedClass.h"
 #include "core/ecs/Components.h"
+#include "core/ecs/EntitySet.h"
 #include "serial/ComponentSerialiserFactory.h"
 #include "serial/TypeSerialisers.h"
 
@@ -146,6 +147,21 @@ namespace Wyrd
 		// Update script components (if applicable)
 		AssignScripts(entityA);
 		AssignScripts(entityB);
+	}
+
+	void Scene::CleanUp()
+	{
+		for (Entity e : EntitySet<RelationshipComponent>(*this))
+		{
+			RelationshipComponent* relationshipComponent = Get<RelationshipComponent>(e);
+
+			if (relationshipComponent->remove == true)
+			{
+				DestroyEntity(e);
+				relationshipComponent->remove = false;
+				break;
+			}
+		}
 	}
 
 	void Scene::RemoveComponent(uint32_t poolIndex, Entity entity)

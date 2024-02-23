@@ -68,20 +68,6 @@ namespace Wyrd::Editor
 			*/
 			ImGui::Selectable("##label", false, ImGuiSelectableFlags_Disabled, ImGui::GetContentRegionAvail());
 			DisplayEntityContentMenu(ENTITY_INVALID);
-			
-			for (Entity e : EntitySet<RelationshipComponent>(scene))
-			{
-				RelationshipComponent* relationshipComponent = scene.Get<RelationshipComponent>(e);
-			
-				if (relationshipComponent->remove == true)
-				{
-					scene.DestroyEntity(e);
-					relationshipComponent->remove = false;
-					break;
-				}
-			}
-		
-		
 		}
 	}
 
@@ -185,6 +171,8 @@ namespace Wyrd::Editor
 				{
 					RelationshipHelperFuncs::AddChild(&scene, newEntity, entity, RelationshipHelperFuncs::AddOp::On);
 				}
+
+				_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(newEntity));
 				
 			}
 			if (ImGui::MenuItem("Delete"))
@@ -229,6 +217,7 @@ namespace Wyrd::Editor
 				for (auto& [name, binding] : propList)
 				{
 					(*c->properties)[name] = PropFactory::CreateProp(binding.type, name);
+					(*c->properties)[name]->Deserialise(binding.defaultData);
 				}
 			}
 			ImGui::Separator();
@@ -263,6 +252,8 @@ namespace Wyrd::Editor
 				MaterialComponent* mc = scene.AssignComponent<MaterialComponent>(newEntity);
 
 				MaterialHelperFuncs::AssignToComponent(mc);
+
+				_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(newEntity));
 			}
 			ImGui::EndPopup();
 		}

@@ -258,6 +258,8 @@ namespace Wyrd::Editor
 		_Event->OnUpdate();
 		_Simulation->OnUpdate();
 		_Simulation->Update(ts);
+
+		_Workspace->GetLoadedScene()->CleanUp();
 	}
 
 	void EditorLayer::OnRender(Timestep ts, Renderer& renderer)

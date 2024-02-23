@@ -59,6 +59,9 @@ namespace Wyrd {
 		*/
 		void SwapEntity(Entity entityA, Entity entityB);
 
+
+		void CleanUp();
+
 		/**
 		 * @brief Register a new component type with the ECS
 		 * @param name Entity Name
