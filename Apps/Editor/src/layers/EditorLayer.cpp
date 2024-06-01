@@ -63,7 +63,7 @@ namespace Wyrd::Editor
 		_views["Asset Viewer"] = std::make_shared<AssetViewer>(this);
 		_views["Output"] = std::make_shared<OutputView>(this);
 		_views["Export View"] = std::make_shared<ExportView>(this);
-		/*_views["Systems Debug"] = std::make_shared<SystemsDebugView>(this);*/
+		_views["Systems Debug"] = std::make_shared<SystemsDebugView>(this);
 		_views["Material Editor"] = std::make_shared<MaterialEditorView>(this);
 
 		/* cache services */
@@ -402,7 +402,7 @@ namespace Wyrd::Editor
 		{
 			_Workspace->SaveScene();
 			ExportManager::Export();
-			Utils::SystemExecute("..\\..\\bin\\Debug\\TestPlayer\\TestPlayer.exe --gamedir \"" + _Workspace->GetBuildsDirectory().string() + "/\"");
+			//Utils::SystemExecute("..\\..\\bin\\Debug\\TestPlayer\\TestPlayer.exe --gamedir \"" + _Workspace->GetBuildsDirectory().string() + "/\"");
 		}
 
 		/* setup the dockspace */

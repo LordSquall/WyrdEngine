@@ -2,6 +2,7 @@
 
 /* core wyrd includes */
 #include <wyrdpch.h>
+#include <core/Log.h>
 #include <core/ecs/Components.h>
 #include <core/scene/Scene.h>
 
@@ -51,137 +52,48 @@ namespace Wyrd::Editor
 
 		if (source_rc != nullptr && target_rc != nullptr)
 		{
-			bool isSiblings = source_rc->parent == target_rc->parent;
-			bool isFirst = source_rc->previous == ENTITY_INVALID;
-			bool isLast = source_rc->next == ENTITY_INVALID;
-
-			/* we need to first the source node from the structure, this has been accounted for in the local list, plus parent structure */
-			if (isFirst)
+			/* if we are first child, we can just complete the operation */
+			if (target_rc->childrenCnt == 0)
 			{
-				/* as we are the first in the local list, we just need to update the parent (if we have one) to point to the next as it's 'first' */
-				if (source_rc->parent != ENTITY_INVALID)
-				{
-					RelationshipComponent* sourceParent_rc = scene->Get<RelationshipComponent>(source_rc->parent);
-					sourceParent_rc->first = source_rc->next;
-					sourceParent_rc->childrenCnt--;
-				}
+				target_rc->childrenCnt++;
+				target_rc->first = source;
+				target_rc->last = source;
 
-				/* we are a double linked-list so we need to update the counter link */
-				if (source_rc->next != ENTITY_INVALID)
-				{
-					RelationshipComponent* sourceNext_rc = scene->Get<RelationshipComponent>(source_rc->next);
-					sourceNext_rc->previous = ENTITY_INVALID;
-				}
+				source_rc->parent = target;
+				source_rc->depth = target_rc->depth + 1;
 			}
-			else
+			else if (target_rc->childrenCnt > 0)
 			{
-				/* we are removing a node from the middle of a list, therefore we need to update both next and previous links*/
-				{
-					RelationshipComponent* sourcePrev_rc = scene->Get<RelationshipComponent>(source_rc->previous);
-					sourcePrev_rc->next = source_rc->next;
+				/* update last element in child list */
+				RelationshipComponent* targetLast_rc = scene->Get<RelationshipComponent>(target_rc->last);
+				targetLast_rc->next = source;
 
-					if (!isLast)
-					{
-						RelationshipComponent* sourceNext_rc = scene->Get<RelationshipComponent>(source_rc->next);
-						sourceNext_rc->previous = source_rc->previous;
-					}
+				/* update parent */
+				target_rc->childrenCnt++;
+				target_rc->last = source;
 
-					if (source_rc->parent != ENTITY_INVALID)
-					{
-						RelationshipComponent* sourceParent_rc = scene->Get<RelationshipComponent>(source_rc->parent);
-						sourceParent_rc->childrenCnt--;
-					}
-				}
-			}
-
-			source_rc->parent = ENTITY_INVALID;
-			source_rc->next = ENTITY_INVALID;
-			source_rc->previous = ENTITY_INVALID;
-
-			if (addOp == AddOp::On)
-			{
-				/* in this case we are adding the first child */
-				if (target_rc->first == ENTITY_INVALID)
-				{
-					target_rc->first = source;
-					target_rc->childrenCnt++;
-					source_rc->parent = target;
-				}
-				else
-				{
-					/* as we are added to the end of a list, we need to first the last entity to attach to*/
-					Entity targetLast = target_rc->first;
-					for (uint32_t i = 0; i < target_rc->childrenCnt-1; i++)
-					{
-						RelationshipComponent* next_rc = scene->Get<RelationshipComponent>(targetLast);
-						targetLast = next_rc->next;
-					}
-
-					RelationshipComponent* targetLast_rc = scene->Get<RelationshipComponent>(targetLast);
-					targetLast_rc->next = source;
-					target_rc->previous = targetLast;
-					target_rc->childrenCnt++;
-					source_rc->parent = target;
-				}
-			}
-			else if (addOp == AddOp::After)
-			{
-				/* in this case we are adding the first child */
-				if (target_rc->first == ENTITY_INVALID)
-				{
-					target_rc->first = source;
-					target_rc->childrenCnt++;
-					source_rc->parent = target;
-				}
-				else
-				{
-					/* as we are added to the end of a list, we need to first the last entity to attach to*/
-					Entity targetLast = target_rc->last;
-					RelationshipComponent* targetLast_rc = scene->Get<RelationshipComponent>(targetLast);
-					targetLast_rc->next = source;
-					target_rc->previous = targetLast;
-					target_rc->childrenCnt++;
-					source_rc->parent = target;
-				}
-			}
-			else if (addOp == AddOp::Before)
-			{
-				/* update the parent count if not siblings */
-				if (target_rc->parent != ENTITY_INVALID)
-				{
-					RelationshipComponent* targetParent_rc = scene->Get<RelationshipComponent>(target_rc->parent);
-					targetParent_rc->childrenCnt++;
-				}
-				source_rc->parent = target_rc->parent;
-
-				/* we should be able to just insert the entity into the double linked list */
-				if (target_rc->previous != ENTITY_INVALID)
-				{
-					RelationshipComponent* targetPrev_rc = scene->Get<RelationshipComponent>(target_rc->previous);
-					targetPrev_rc->next = source;
-					source_rc->previous = target_rc->previous;
-				}
-				else
-				{
-					/* in this case we are added to the first item in the list, so the parent need to be updated */
-					if (target_rc->parent != ENTITY_INVALID)
-					{
-						RelationshipComponent* targetParent_rc = scene->Get<RelationshipComponent>(target_rc->parent);
-						targetParent_rc->first = source;
-					}
-				}
-				if (target_rc->next != ENTITY_INVALID)
-				{
-					RelationshipComponent* targetNext_rc = scene->Get<RelationshipComponent>(target_rc->next);
-					targetNext_rc->previous = source;
-					source_rc->next = target_rc->next;
-				}
-
-				source_rc->next = target;
-				target_rc->previous = source;
+				/* update the source */
+				source_rc->parent = target;
+				source_rc->depth = target_rc->depth + 1;
+				source_rc->previous = target_rc->last;
+				source_rc->next = ENTITY_INVALID;
 			}
 		}
 	}  
+
+
+	void RelationshipHelperFuncs::ClearEntity(Wyrd::Scene* scene, Entity entity)
+	{
+		RelationshipComponent* source_rc = scene->Get<RelationshipComponent>(entity);
+
+		source_rc->first = 0;
+		source_rc->last = 0;
+		source_rc->previous = 0;
+		source_rc->next = 0;
+		source_rc->parent = 0;
+		source_rc->childrenCnt = 0;
+		source_rc->depth = 0;
+	}
 
 	//void RelationshipHelperFuncs::AddChildBefore(Wyrd::Scene* scene, Entity target, Entity source)
 	//{
@@ -279,6 +191,7 @@ namespace Wyrd::Editor
 				if (parentRC->childrenCnt == 0)
 				{
 					parentRC->first = ENTITY_INVALID;
+					parentRC->last = ENTITY_INVALID;
 				}
 		
 				/* first child removed */

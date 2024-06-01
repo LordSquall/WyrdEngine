@@ -1,0 +1,10 @@
+{
+  "FileVersion": 2,
+  "Id": "b285aa43-9e3d-ec90-0745-c5ecf31b8781",
+  "Items": [
+    {
+      "Id": "c75bf7a9-d4e5-4377-a3a4-f22a13b138ff",
+      "Command": "--gamedir C:\\Projects\\games\\TestCaseProject\\.builds\\"
+    }
+  ]
+}

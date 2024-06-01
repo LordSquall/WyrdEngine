@@ -10,6 +10,7 @@ namespace Wyrd::Editor
 {
 	struct WYRD_LIBRARY_API EditorComponent
 	{
+		bool requiresRefresh;
 		BoundingBox inputBoundingBox;
 
 		static void ResetFunc(ComponentPool* pool, Entity entity) {};

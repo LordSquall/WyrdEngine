@@ -30,7 +30,7 @@ namespace Wyrd::Editor
 		workspaceService->SaveScene();
 		
 		std::filesystem::path bundlesDir = workspaceService->GetBuildsDirectory() / "bundles";
-		if (Utils::CreateFolder(bundlesDir))
+		if (!Utils::CreateFolder(bundlesDir))
 		{
 			return false;
 		}
@@ -102,14 +102,14 @@ namespace Wyrd::Editor
 		auto workspaceService = ServiceManager::Get<WorkspaceService>();
 
 		/* we need to get a map of just the texture resources */
-		//std::map<UID, TextureRes*> textures;
-		//for (auto& res : resourceService->GetResources())
-		//{
-		//	if (res.second->GetType() == ResourceType::TEXTURE)
-		//	{
-		//		textures.insert({ res.first, std::dynamic_pointer_cast<TextureRes>(res.second).get() });
-		//	}
-		//}
+		std::map<UID, TextureRes*> textures;
+		for (auto& res : resourceService->GetResources())
+		{
+			if (res.second->GetType() == ResourceType::TEXTURE)
+			{
+				textures.insert({ res.first, std::dynamic_pointer_cast<TextureRes>(res.second).get() });
+			}
+		}
 
 		/* we need to get a map of just the material resources */
 		std::map<UID, MaterialRes*> materials;

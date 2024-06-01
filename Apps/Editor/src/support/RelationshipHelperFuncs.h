@@ -24,6 +24,8 @@ namespace Wyrd::Editor
 
 		static void AddChild(Wyrd::Scene* scene, Entity parent, Entity child, AddOp addOp);
 
+		static void ClearEntity(Wyrd::Scene* scene, Entity entity);
+
 		static void Remove(Wyrd::Scene* scene, Entity entity);
 	};
 }

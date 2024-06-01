@@ -101,7 +101,7 @@ void ControlLayer::OnUpdate(Timestep ts)
 			glm::vec3 parentTranslation;
 			glm::vec3 parentRotation;
 			glm::vec3 parentScale;
-			Maths::DecomposeTransform(parentTransform3DComponent->modelMatrix, parentTranslation, rotation, scale);
+			//Maths::DecomposeTransform(parentTransform3DComponent->modelMatrix, parentTranslation, rotation, scale);
 
 			translation += parentTranslation;
 		}
@@ -135,7 +135,7 @@ void ControlLayer::OnUpdate(Timestep ts)
 		glm::mat4 rotate = glm::toMat4(q);
 		glm::mat4 scale = glm::scale(glm::mat4(1), glm::vec3(transform3DComponent->scale.x, transform3DComponent->scale.y, transform3DComponent->scale.z));
 
-		transform3DComponent->modelMatrix = translate * rotate * scale;
+		//transform3DComponent->modelMatrix = translate * rotate * scale;
 	}
 }
 
@@ -161,7 +161,7 @@ void ControlLayer::OnRender(Timestep ts, Renderer& renderer)
 		Wyrd::MaterialComponent* material = scene->Get<Wyrd::MaterialComponent>(e);
 
 		Wyrd::DrawMeshCommand cmd{};
-		cmd.modelMatrix = transform->modelMatrix;
+		//cmd.modelMatrix = transform->modelMatrix;
 		cmd.viewMatrix = _Camera.GetViewMatrix();
 		cmd.projectionMatrix = _Camera.GetProjectionMatrix();
 		cmd.material = Application::Get().GetResources().Materials[material->material].get();

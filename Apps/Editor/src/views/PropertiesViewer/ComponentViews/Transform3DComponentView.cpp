@@ -2,9 +2,11 @@
 #include <wyrdpch.h>
 #include <core/Log.h>
 #include <core/ecs/Components.h>
+#include <core/Application.h>
 
 /* local includes */
 #include "Transform3DComponentView.h"
+#include "services/ServiceManager.h"
 
 #include "support/ImGuiUtils.h"
 
@@ -23,5 +25,21 @@ namespace Wyrd::Editor
 		ImGui::InputFloat3("Pos     ", (float*)&transform3D->position);
 		ImGui::InputFloat3("Rot     ", (float*)&transform3D->rotation);
 		ImGui::InputFloat3("Scale     ", (float*)&transform3D->scale);
+
+		static int positionMode = 0;
+
+		const ImVec2 size(16.0f, 16.0f);
+		auto resourceService = ServiceManager::Get<ResourceService>();
+		if (ImGui::IconButton(resourceService->RetrieveIcon("common", "transform_scale"), 1, true, size) == true)
+		{
+			positionMode = 0;
+		}
+		ImGui::SameLine();
+		if (ImGui::IconButton(resourceService->RetrieveIcon("common", "transform_rotate"), 2, true, size) == true)
+		{
+			positionMode = 1;
+		}
+
+		ImGui::Text("PositionMode: %d", positionMode);
 	}
 }

@@ -315,6 +315,27 @@ namespace Wyrd::Editor
 					ImGui::EndTabItem();
 				}
 
+				if (ImGui::BeginTabItem("Relationship"))
+				{
+					for (Entity e : EntitySet<MetaDataComponent, RelationshipComponent>(*_Scene.get()))
+					{
+						MetaDataComponent* m = _Scene->Get<MetaDataComponent>(e);
+						RelationshipComponent* r = _Scene->Get<RelationshipComponent>(e);
+
+
+						std::string padding(r->depth, '\t');
+
+						if (r->parent == ENTITY_INVALID)
+						{
+							ImGui::Text("%s[%d] %s - childCnt [%d] - parent - [%d] - prev [%d] - next [%d] - depth [%d]", padding.c_str(), e, m->name, r->childrenCnt, r->parent, r->previous, r->next, r->depth);
+						}
+						else
+						{
+							ImGui::Text("%s[%d] %s - childCnt [%d] - parent - [%d] - first [%d] - last [%d] - prev [%d] - next [%d] - depth [%d]", padding.c_str(), e, m->name, r->childrenCnt, r->parent, r->first, r->last, r->previous, r->next, r->depth);
+						}
+					}
+					ImGui::EndTabItem();
+				}
 				ImGui::EndTabBar();
 			}
 		}

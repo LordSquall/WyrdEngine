@@ -78,7 +78,7 @@ namespace Wyrd::Editor
 						glm::vec3 parentTranslation;
 						glm::vec3 parentRotation;
 						glm::vec3 parentScale;
-						Maths::DecomposeTransform(parentTransform3DComponent->modelMatrix, parentTranslation, rotation, scale);
+						//Maths::DecomposeTransform(parentTransform3DComponent->modelMatrix, parentTranslation, rotation, scale);
 
 						translation += parentTranslation;
 					}
@@ -126,7 +126,7 @@ namespace Wyrd::Editor
 						MaterialComponent* material = _Scene->Get<MaterialComponent>(e);
 
 						Wyrd::DrawMeshCommand cmd{};
-						cmd.modelMatrix = transform->modelMatrix;
+						//cmd.modelMatrix = transform->modelMatrix;
 						cmd.viewMatrix = _Camera->GetViewMatrix();
 						cmd.projectionMatrix = _Camera->GetProjectionMatrix();
 						cmd.material = Application::Get().GetResources().Materials[material->material].get();

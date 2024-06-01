@@ -5,6 +5,7 @@
 #include <core/Layer.h>
 #include <core/KeyCodes.h>
 #include <core/ecs/EntitySet.h>
+#include <core/ecs/HierarchyEntitySet.h>
 #include <core/support/MaterialHelperFuncs.h>
 
 /* local includes */
@@ -50,15 +51,14 @@ namespace Wyrd::Editor
 			
 				for (Entity e : EntitySet<RelationshipComponent>(scene))
 				{
-					RelationshipComponent* relationshipComponent = scene.Get<RelationshipComponent>(e);
-			
-					if (relationshipComponent->parent == ENTITY_INVALID)
+					RelationshipComponent* relationshipComp = scene.Get<RelationshipComponent>(e);
+
+					if (relationshipComp->parent == ENTITY_INVALID)
 					{
-						DisplayAboveDragTarget(e, 0);
 						DisplayEntity(e, 0);
 					}
 				}
-				DisplayBelowDragTarget(ENTITY_INVALID, 0);
+				//DisplayBelowDragTarget(ENTITY_INVALID, 0);
 				ImGui::EndTable();
 			}
 			
@@ -66,8 +66,8 @@ namespace Wyrd::Editor
 			* this will create a selectable area on the reset of the available area which is invisible on the display
 			* using this will allow the context menu to function when nothing is selected in the table
 			*/
-			ImGui::Selectable("##label", false, ImGuiSelectableFlags_Disabled, ImGui::GetContentRegionAvail());
-			DisplayEntityContentMenu(ENTITY_INVALID);
+			//ImGui::Selectable("##label", false, ImGuiSelectableFlags_Disabled, ImGui::GetContentRegionAvail());
+			//DisplayEntityContentMenu(ENTITY_INVALID);
 		}
 	}
 
@@ -86,68 +86,40 @@ namespace Wyrd::Editor
 		ImGui::TableNextRow();
 		ImGui::TableNextColumn();
 		ImGui::PushID(entity);
+
 		const bool isParent = (relationshipComponent->childrenCnt > 0);
+
 		if (isParent)
 		{
 			flags |= ImGuiTreeNodeFlags_OpenOnDoubleClick;
 			flags |= ImGuiTreeNodeFlags_DefaultOpen;
-			flags |= (selected) ? ImGuiTreeNodeFlags_Selected : ImGuiTreeNodeFlags_None;
-
-			std::string name(metaDataComponent->name);
-			//name.append(" - " + std::to_string(entity));
-			bool open = ImGui::TreeNodeEx(name.c_str(), flags);
-		
-			DisplayEntityContentMenu(entity);
-			DisplayEntityDragAndDrop(entity);
-			DisplayEntityTooltip(entity);
-		
-			if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
-			{
-				_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(entity));
-			}
-		
-			if (open)
-			{
-				Entity childEntity = relationshipComponent->first;
-				RelationshipComponent* nextRelationshipComponent = nullptr;
-				RelationshipComponent* lastRelationshipComponent = nullptr;
-				for (int i = 0; i < relationshipComponent->childrenCnt; i++)
-				{
-					if (childEntity != ENTITY_INVALID)
-					{
-						DisplayAboveDragTarget(childEntity, depth + 1);
-						DisplayEntity(childEntity, depth + 1);
-		
-						nextRelationshipComponent = scene.Get<RelationshipComponent>(childEntity);
-						childEntity = nextRelationshipComponent->next;
-					}
-				}
-				if (nextRelationshipComponent != nullptr)
-				{
-					DisplayBelowDragTarget(nextRelationshipComponent->parent, depth + 1);
-				}
-		
-				ImGui::TreePop();
-			}
 		}
 		else
 		{
 			flags |= ImGuiTreeNodeFlags_Leaf;
 			flags |= ImGuiTreeNodeFlags_Bullet;
 			flags |= ImGuiTreeNodeFlags_NoTreePushOnOpen;
-			flags |= (selected) ? ImGuiTreeNodeFlags_Selected : ImGuiTreeNodeFlags_None;
-			std::string name(metaDataComponent->name);
-			//name.append(" - " + std::to_string(entity));
-			ImGui::TreeNodeEx(name.c_str(), flags);
-		
-			DisplayEntityContentMenu(entity);
-			DisplayEntityDragAndDrop(entity);
-			DisplayEntityTooltip(entity);
-		
-			if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+		}
+		flags |= (selected) ? ImGuiTreeNodeFlags_Selected : ImGuiTreeNodeFlags_None;
+
+		std::string name(metaDataComponent->name);
+		name.append(" - " + std::to_string(entity));
+		bool open = ImGui::TreeNodeEx(name.c_str(), flags);
+
+		if (open)
+		{
+			Entity nextEntity = relationshipComponent->next;
+			RelationshipComponent* nextRelationshipComponent = nullptr;
+			for (int i = 0; i < relationshipComponent->childrenCnt; i++)
 			{
-				_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(entity));
+				if (nextEntity != ENTITY_INVALID)
+				{
+					//DisplayEntity(nextEntity, depth + 1);
+				}
+			
+				nextEntity = scene.Get<RelationshipComponent>(nextEntity)->next;
 			}
+			//ImGui::TreePop();
 		}
 		ImGui::PopID();
 	}
@@ -225,11 +197,6 @@ namespace Wyrd::Editor
 			{
 				ScriptComponent* c = scene.AssignComponent<ScriptComponent>(entity);
 			}
-			//ImGui::Separator();
-			//if (ImGui::MenuItem("Add Text"))
-			//{
-			//	TextComponent* c = scene.AssignComponent<TextComponent>(entity);
-			//}
 			if (ImGui::MenuItem("Add Camera"))
 			{
 				CameraComponent* c = scene.AssignComponent<CameraComponent>(entity);

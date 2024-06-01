@@ -4,6 +4,7 @@
 #include "services/ServiceManager.h"
 #include "datamodels/CameraController.h"
 #include "gizmos/Gizmo.h"
+#include "systems/SceneRenderSystem.h"
 
 #include <core/renderer/Buffer.h>
 #include <core/renderer/Shader.h>
@@ -72,6 +73,8 @@ namespace Wyrd::Editor
 		std::shared_ptr<Shader>					_GizmoShader;
 
 		Entity	_SelectedEntity;
+
+		SceneRenderSystem _SceneRenderSystem;
 
 		glm::vec2 _LastMousePos;
 		glm::vec2 _MenuPos;

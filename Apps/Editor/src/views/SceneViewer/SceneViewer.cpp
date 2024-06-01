@@ -9,8 +9,10 @@
 #include <core/MouseCodes.h>
 #include <core/ecs/ECS.h>
 #include <core/ecs/EntitySet.h>
+#include <core/ecs/HierarchyEntitySet.h>
 #include <core/renderer/Mesh.h>
 #include <core/physics/PhysicsUtils.h>
+#include <core/systems/TransformUpdateSystem.h>
 
 /* local include */
 #include "SceneViewer.h"
@@ -72,44 +74,9 @@ namespace Wyrd::Editor
 	{
 		if (_Scene != nullptr)
 		{
-			for (Entity e : EntitySet<EditorComponent, Transform3DComponent, RelationshipComponent>(*_Scene.get()))
-			{
-				EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
-				Transform3DComponent* transform3DComponent = _Scene->Get<Transform3DComponent>(e);
-				RelationshipComponent* relationshipComponent = _Scene->Get<RelationshipComponent>(e);
-
-				glm::quat q = glm::quat(glm::vec3(glm::radians(transform3DComponent->rotation.x), glm::radians(transform3DComponent->rotation.y), glm::radians(transform3DComponent->rotation.z)));
-
-				glm::mat4 translate = glm::translate(glm::mat4(1), glm::vec3(transform3DComponent->position.x, transform3DComponent->position.y, transform3DComponent->position.z));
-				glm::mat4 rotate = glm::toMat4(q);
-				glm::mat4 scale = glm::scale(glm::mat4(1), glm::vec3(transform3DComponent->scale.x, transform3DComponent->scale.y, transform3DComponent->scale.z));
-
-				transform3DComponent->modelMatrix = translate * rotate * scale;
-
-				if (relationshipComponent->parent != ENTITY_INVALID)
-				{
-					Transform3DComponent* parentTransform3DComponent = _Scene->Get<Transform3DComponent>(relationshipComponent->parent);
-					if (parentTransform3DComponent != nullptr)
-					{
-						transform3DComponent->parentModelMatrix = parentTransform3DComponent->modelMatrix;
-					}
-				}
-
-				MeshRendererComponent* meshRenderer = _Scene->Get<MeshRendererComponent>(e);
-				if (meshRenderer != nullptr)
-				{
-					const auto& mesh = Application::Get().GetResources().Meshs[meshRenderer->model].get();
-					if (mesh != nullptr)
-					{
-						editorComponent->inputBoundingBox = mesh->boundingBox;
-
-						glm::vec4 translatedMinExtents = rotate * scale * glm::vec4(editorComponent->inputBoundingBox._minExtent, 1.0f);
-						glm::vec4 translatedMaxExtents = rotate * scale * glm::vec4(editorComponent->inputBoundingBox._maxExtent, 1.0f);
-						editorComponent->inputBoundingBox._minExtent = glm::vec3(translatedMinExtents.x, translatedMinExtents.y, translatedMinExtents.z);
-						editorComponent->inputBoundingBox._maxExtent = glm::vec3(translatedMaxExtents.x, translatedMaxExtents.y, translatedMaxExtents.z);
-					}
-				}
-			}
+			TransformUpdateSystem tus;
+			TransformUpdateSystemContext tusCtx(*(_Scene.get()));
+			tus.OnUpdate(tusCtx);
 		}
 	}
 
@@ -130,39 +97,28 @@ namespace Wyrd::Editor
 				_Framebuffer->Bind();
 				renderer.Clear(bgColor.r, bgColor.g, bgColor.b);
 
-				for (Entity e : EntitySet<Transform3DComponent, MeshRendererComponent, MaterialComponent>(*_Scene.get()))
-				{
-					Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(e);
-					MeshRendererComponent* meshRenderer = _Scene->Get<MeshRendererComponent>(e);
-					MaterialComponent* material = _Scene->Get<MaterialComponent>(e);
-
-					Wyrd::DrawMeshCommand cmd{};
-					cmd.modelMatrix = transform->modelMatrix * transform->parentModelMatrix;
-					cmd.viewMatrix = _CameraController->GetCamera().GetViewMatrix();
-					cmd.projectionMatrix = _CameraController->GetCamera().GetProjectionMatrix();
-					cmd.material = Application::Get().GetResources().Materials[material->material].get();
-					cmd.materialProps = &material->properties;
-					cmd.mesh = Application::Get().GetResources().Meshs[meshRenderer->model].get();
-					cmd.baseTexture = Application::Get().GetResources().Textures[RES_TEXTURE_DEFAULT].get();
-					cmd.drawType = RendererDrawType::Triangles;
-					
- 					renderer.Submit(cmd);
-					renderer.Flush();
-				}
+				SceneRenderSystemContext srsCtx(*(_Scene.get()), renderer, *(_CameraController.get()));
+				_SceneRenderSystem.OnUpdate(srsCtx);
 
 				if (showEditorComponent)
 				{
-					//for (Entity e : EntitySet<Transform3DComponent, EditorComponent>(*_Scene.get()))
-					//{
-					//	Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(e);
-					//	EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
-					//
-					//	renderer.DrawDebugBoundingBox(editorComponent->inputBoundingBox, { transform->position.x, transform->position.y, transform->position.z }, 1.0f, Color::MAGENTA, glm::identity<glm::mat4>(), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
-					//
-					//	renderer.DrawDebugVector(transform->position, { 10.0f, 0.0f, 0.0f }, 10.0f, Color::RED,  glm::identity<glm::mat4>(), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
-					//	renderer.DrawDebugVector(transform->position, { 0.0f, 10.0f, 0.0f }, 10.0f, Color::GREEN, glm::identity<glm::mat4>(), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
-					//	renderer.DrawDebugVector(transform->position, { 0.0f, 0.0f, 10.0f }, 10.0f, Color::BLUE, glm::identity<glm::mat4>(), _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
-					//}
+					for (Entity e : HierarchyEntitySet<Transform3DComponent, EditorComponent>(*_Scene.get()))
+					{
+						Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(e);
+						EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
+					
+						const auto& combinedMatrix = transform->modelMatrix * transform->parentModelMatrix;
+						renderer.DrawDebugBoundingBox(editorComponent->inputBoundingBox, 
+							{ 0.0f, 0.0f, 0.0f }, 
+							1.0f, Color::CYAN, 
+							combinedMatrix,
+							_CameraController->GetCamera().GetProjectionMatrix(), 
+							_CameraController->GetCamera().GetViewMatrix());
+					
+						renderer.DrawDebugVector({ 0.0f, 0.0f, 0.0f }, { 2.0f, 0.0f, 0.0f }, 2.0f, Color::RED, combinedMatrix, _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
+						renderer.DrawDebugVector({ 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f }, 2.0f, Color::GREEN, combinedMatrix, _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
+						renderer.DrawDebugVector({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 2.0f }, 2.0f, Color::BLUE, combinedMatrix, _CameraController->GetCamera().GetProjectionMatrix(), _CameraController->GetCamera().GetViewMatrix());
+					}
 
 					if (_SelectedEntity != ENTITY_INVALID)
 					{
@@ -336,9 +292,8 @@ namespace Wyrd::Editor
 			ImGuizmo::SetRect(_ViewportBoundary._position.x, _ViewportBoundary._position.y, _ViewportBoundary._size.x, _ViewportBoundary._size.y);
 			glm::mat4 camViewInverseMat = _CameraController->GetCamera().GetViewMatrix();
 			glm::mat4 projectionMat = _CameraController->GetCamera().GetProjectionMatrix();
-			glm::mat4 transformMat = transform->modelMatrix * transform->parentModelMatrix;
+			glm::mat4 transformParentMat = transform->modelMatrix * transform->parentModelMatrix;
 
-			//transform->modelMatrix * transform->parentModelMatrix
 
 			ImGuizmo::OPERATION op;
 			switch (CurrentTransformTool)
@@ -349,13 +304,13 @@ namespace Wyrd::Editor
 			}
 
 			ImGuizmo::Enable(true);
-			ImGuizmo::Manipulate(glm::value_ptr(camViewInverseMat), glm::value_ptr(projectionMat), op, ImGuizmo::LOCAL, glm::value_ptr(transformMat));
+			ImGuizmo::Manipulate(glm::value_ptr(camViewInverseMat), glm::value_ptr(projectionMat), op, ImGuizmo::LOCAL, glm::value_ptr(transformParentMat));
 
 
 			if (ImGuizmo::IsUsing())
 			{
 				glm::vec3 translation, rotation, scale;
-				Maths::DecomposeTransform(transformMat, translation, rotation, scale);
+				Maths::DecomposeTransform(transformParentMat, translation, rotation, scale);
 
 				glm::vec3 dRot = { RAD_TO_DEG(rotation.x) - transform->rotation.x, RAD_TO_DEG(rotation.y) - transform->rotation.y, RAD_TO_DEG(rotation.z) - transform->rotation.z };
 				transform->position = translation;
@@ -466,11 +421,11 @@ namespace Wyrd::Editor
 					Ray r;
 					PhysicsUtils::ScreenPosToWorldRay(viewportPos, _ViewportBoundary._size, _CameraController->GetCamera().GetViewMatrix(), _CameraController->GetCamera().GetProjectionMatrix(), r);
 
-					if (PhysicsUtils::IntersectRayBoundingBox(transform3DComponent->modelMatrix * transform3DComponent->parentModelMatrix, r, editorComponent->inputBoundingBox))
-					{
-						_Events->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(e));
-						return true;
-					}
+					//if (PhysicsUtils::IntersectRayBoundingBox(transform3DComponent->modelMatrix * transform3DComponent->parentModelMatrix, r, editorComponent->inputBoundingBox))
+					//{
+					//	_Events->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(e));
+					//	return true;
+					//}
 				}
 			}
 		}
