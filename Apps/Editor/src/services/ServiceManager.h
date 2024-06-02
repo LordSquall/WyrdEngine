@@ -2,6 +2,8 @@
 
 #include "core/export.h"
 
+#include "serial/LogEditorTypeFunctions.h"
+
 #include "ServiceTypes.h"
 #include "EventsService.h"
 #include "WorkspaceService.h"

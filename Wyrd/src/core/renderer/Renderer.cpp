@@ -22,6 +22,12 @@ namespace Wyrd
 			return newRenderer;
 		}
 
+		RendererInfo info = newRenderer->GetVendorInfo();
+		WYRD_TRACE("Renderer Info:");
+		WYRD_TRACE("\tVendor: {0}", info.vendor);
+		WYRD_TRACE("\tRenderer: {0}", info.renderer);
+		WYRD_TRACE("\tVersion: {0}", info.version);
+
 		/* Initialise the renderer subsystems */
 		newRenderer->Initialise();
 

@@ -77,7 +77,8 @@ namespace Wyrd
 						PropVec2* vec2Prop = (PropVec2*)(*propMap)->at(input.first).get();
 						if (vec2Prop != nullptr)
 						{
-							_shader->SetUniformVec2(input.second.binding, glm::vec2(vec2Prop->Value.x, vec2Prop->Value.y));
+							glm::vec2 v = glm::vec2(vec2Prop->Value.x, vec2Prop->Value.y);
+							_shader->SetUniformVec2(input.second.binding, v);
 						}
 					}
 
@@ -86,7 +87,8 @@ namespace Wyrd
 						PropVec3* vec3Prop = (PropVec3*)(*propMap)->at(input.first).get();
 						if (vec3Prop != nullptr)
 						{
-							_shader->SetUniformVec3(input.second.binding, glm::vec3(vec3Prop->Value.x, vec3Prop->Value.y, vec3Prop->Value.z));
+							glm::vec3 v = glm::vec3(vec3Prop->Value.x, vec3Prop->Value.y, vec3Prop->Value.z);
+							_shader->SetUniformVec3(input.second.binding, v);
 						}
 					}
 				}

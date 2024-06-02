@@ -31,7 +31,10 @@
 
 /* Wyrd Common Headers */
 #include "core/Structures.h"
+#include "serial/LogTypeFunctions.h"
+#include "core/Log.h"
 
 #ifdef WYRD_PLATFORM_WINDOWS	
+#define NOMINMAX
 	#include <Windows.h>
 #endif

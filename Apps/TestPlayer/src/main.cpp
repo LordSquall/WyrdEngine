@@ -6,6 +6,8 @@
 
 #include "core/EntryPoint.h"
 
+#include <serial/LogTypeFunctions.h>
+
 class PlayerApp : public Wyrd::Application
 {
 public:

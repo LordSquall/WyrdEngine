@@ -26,7 +26,7 @@ namespace Wyrd
 	{
 		Entity currentParent = ENTITY_INVALID;
 
-		for (Entity e : HierarchyEntitySet<Transform3DComponent, RelationshipComponent>(context.scene))
+		for (Entity e : EntitySet<Transform3DComponent, RelationshipComponent>(context.scene))
 		{
 			Transform3DComponent* transform3DComponent = context.scene.Get<Transform3DComponent>(e);
 			RelationshipComponent* relationshipComponent = context.scene.Get<RelationshipComponent>(e);

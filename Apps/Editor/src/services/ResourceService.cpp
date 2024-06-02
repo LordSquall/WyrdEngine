@@ -10,6 +10,7 @@
 /* local includes */
 #include "ResourceService.h"
 #include "services/ServiceManager.h"
+#include "serial/LogEditorTypeFunctions.h"
 #include "loaders/AssetCacheLoader.h"
 #include "loaders/ResourceSetLoader.h"
 #include "loaders/TextureLoader.h"
@@ -51,7 +52,7 @@ namespace Wyrd::Editor
 		ResourceSetLoader::Result result = ResourceSetLoader::Load(Utils::GetEditorResFolder() + "editorResources.json", _resourceMap);
 		if (result != ResourceSetLoader::Result::Success)
 		{
-			WYRD_CORE_ERROR("Failed to load editorResources! cause: {0}", result);
+			//WYRD_CORE_ERROR("Failed to load editorResources! cause: {0}", result);
 		}
 
 		/* add the default shaders */

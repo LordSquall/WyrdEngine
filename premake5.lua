@@ -271,7 +271,8 @@ group "Scripting"
 			"%{includedir.uuid}",
 			"%{includedir.mono}",
 			"%{includedir.jsonxx}",
-			"%{includedir.crossguid}"
+			"%{includedir.crossguid}",
+			"%{includedir.spdlog}"
 		}
 		
         links { 

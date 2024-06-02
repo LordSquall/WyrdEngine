@@ -387,7 +387,7 @@ namespace Wyrd
 		MonoClass* clsPtr = mono_class_from_name((MonoImage*)_CoreImage, WYRD_CORE_API_NAMESPACE, "ResourceManagerProxy");
 		if (clsPtr == nullptr)
 		{
-			return false;
+			return nullptr;
 		}
 
 		MonoMethod* methodPtr = mono_class_get_method_from_name(clsPtr, "RetrieveCachedTextureObject", 1);
@@ -434,7 +434,9 @@ namespace Wyrd
 		}
 
 		/* Create a new app domain */
-		_ClientDomain = mono_domain_create_appdomain("Wyrd_Client_Domain", nullptr);
+		char domainName[20];
+		strcpy_s(domainName, 19, "Wyrd_Client_Domain");
+		_ClientDomain = mono_domain_create_appdomain(&domainName[0], nullptr);
 
 		/* Switch to the client domain */
 		mono_domain_set((MonoDomain*)_ClientDomain, true);

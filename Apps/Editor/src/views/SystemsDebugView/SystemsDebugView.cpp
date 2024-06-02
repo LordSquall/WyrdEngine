@@ -29,7 +29,7 @@ namespace Wyrd::Editor
 
 	static ImMemoryTableParams sMemoryTableParams;
 
-	void DrawMemoryTable(byte* data, size_t size, ImMemoryTableParams* params)
+	void DrawMemoryTable(BYTE* data, size_t size, ImMemoryTableParams* params)
 	{
 		static ImGuiTableFlags tableFlags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedSame | ImGuiTableFlags_NoHostExtendX;
 		int elementByteCounter = 0;
@@ -186,7 +186,7 @@ namespace Wyrd::Editor
 
 								sMemoryTableParams.elementSize = cp->elementSize;
 								
-								DrawMemoryTable((byte*)(&cp->data[0]), cp->count * cp->elementSize, &sMemoryTableParams);
+								DrawMemoryTable((BYTE*)(&cp->data[0]), cp->count * cp->elementSize, &sMemoryTableParams);
 
 							}
 							ImGui::EndChild();

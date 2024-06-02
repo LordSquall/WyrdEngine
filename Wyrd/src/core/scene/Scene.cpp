@@ -151,17 +151,17 @@ namespace Wyrd
 
 	void Scene::CleanUp()
 	{
-		for (Entity e : EntitySet<RelationshipComponent>(*this))
-		{
-			RelationshipComponent* relationshipComponent = Get<RelationshipComponent>(e);
-
-			if (relationshipComponent->remove == true)
-			{
-				DestroyEntity(e);
-				relationshipComponent->remove = false;
-				break;
-			}
-		}
+		//for (Entity e : EntitySet<RelationshipComponent>(*this))
+		//{
+		//	RelationshipComponent* relationshipComponent = Get<RelationshipComponent>(e);
+		//
+		//	if (relationshipComponent->remove == true)
+		//	{
+		//		DestroyEntity(e);
+		//		relationshipComponent->remove = false;
+		//		break;
+		//	}
+		//}
 	}
 
 	void Scene::RemoveComponent(uint32_t poolIndex, Entity entity)

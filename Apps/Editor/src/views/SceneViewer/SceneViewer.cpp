@@ -102,7 +102,7 @@ namespace Wyrd::Editor
 
 				if (showEditorComponent)
 				{
-					for (Entity e : HierarchyEntitySet<Transform3DComponent, EditorComponent>(*_Scene.get()))
+					for (Entity e : EntitySet<Transform3DComponent, EditorComponent>(*_Scene.get()))
 					{
 						Transform3DComponent* transform = _Scene->Get<Transform3DComponent>(e);
 						EditorComponent* editorComponent = _Scene->Get<EditorComponent>(e);
