@@ -159,7 +159,7 @@ namespace Wyrd {
 		 * @param Entity to query
 		 * @return Pointer to the component, nullptr if not assigned
 		*/
-		void* Get(uint32_t poolIndex, Entity entity)
+		void* Get(uint32_t poolIndex, Entity entity) const
 		{
 			if (entity == ENTITY_INVALID)
 				return nullptr;

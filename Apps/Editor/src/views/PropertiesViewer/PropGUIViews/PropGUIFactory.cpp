@@ -111,6 +111,16 @@ namespace Wyrd
         ImGui::PopID();
     }
 
+    void CreatePropGUI_Vec4(BaseProp* prop)
+    {
+        PropVec4* vec4Prop = (PropVec4*)prop;
+        ImGui::Text(prop->GetName().c_str());
+        ImGui::SameLine();
+        ImGui::PushID(prop->GetName().c_str());
+        ImGui::DragFloat4("", (float*)&vec4Prop->Value);
+        ImGui::PopID();
+    }
+
     void CreatePropGUI_Bool(BaseProp* prop)
     {
         PropBool* boolProp = (PropBool*)prop;
@@ -212,6 +222,7 @@ namespace Wyrd
             { "String", CreatePropGUI_String },
             { "Vec2", CreatePropGUI_Vec2 },
             { "Vec3", CreatePropGUI_Vec3 },
+            { "Vec4", CreatePropGUI_Vec4 },
             { "Bool", CreatePropGUI_Bool },
             { "Color", CreatePropGUI_Color },
             { "Texture", CreatePropGUI_Texture },
@@ -233,6 +244,7 @@ namespace Wyrd
             { "System.String", CreatePropGUI_String },
             { "WyrdAPI.Vector2", CreatePropGUI_Vec2 },
             { "WyrdAPI.Vector3", CreatePropGUI_Vec3 },
+            { "WyrdAPI.Vector4", CreatePropGUI_Vec4 },
             { "System.Boolean", CreatePropGUI_Bool },
             { "WyrdAPI.Color", CreatePropGUI_Color },
             { "WyrdAPI.Texture", CreatePropGUI_Texture },

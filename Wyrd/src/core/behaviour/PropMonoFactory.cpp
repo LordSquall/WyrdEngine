@@ -113,6 +113,42 @@ namespace Wyrd
         MonoUtils::SetProperty(image, "WyrdGame", className, prop->GetName(), object, { args });
     }
 
+    void SetPropMono_Vec4(BaseProp* prop, MonoImage* image, const std::string& className, MonoObject* object)
+    {
+        Vector4 vector4 = prop->Get<Vector4>();
+
+        std::vector<void*> args;
+
+        std::shared_ptr<ScriptedClass> vector4Class = Application::Get().GetBehaviour().GetClass("Vector3");
+        MonoObject* vector3Object = mono_object_new((MonoDomain*)Application::Get().GetBehaviour().GetDomain(), *vector4Class->ManagedClass);
+
+        MonoProperty* xProperty = mono_class_get_property_from_name((MonoClass*)*vector4Class->ManagedClass, "X");
+        MonoProperty* yProperty = mono_class_get_property_from_name((MonoClass*)*vector4Class->ManagedClass, "Y");
+        MonoProperty* zProperty = mono_class_get_property_from_name((MonoClass*)*vector4Class->ManagedClass, "Z");
+        MonoProperty* wProperty = mono_class_get_property_from_name((MonoClass*)*vector4Class->ManagedClass, "W");
+
+        MonoMethod* xPropSetter = mono_property_get_set_method(xProperty);
+        MonoMethod* yPropSetter = mono_property_get_set_method(yProperty);
+        MonoMethod* zPropSetter = mono_property_get_set_method(zProperty);
+        MonoMethod* wPropSetter = mono_property_get_set_method(wProperty);
+
+        args.push_back(&vector4.x);
+        args.push_back(&vector4.y);
+        args.push_back(&vector4.z);
+        args.push_back(&vector4.w);
+
+        mono_runtime_invoke(xPropSetter, vector3Object, &args[0], nullptr);
+        mono_runtime_invoke(yPropSetter, vector3Object, &args[1], nullptr);
+        mono_runtime_invoke(zPropSetter, vector3Object, &args[2], nullptr);
+        mono_runtime_invoke(zPropSetter, vector3Object, &args[3], nullptr);
+
+        args.clear();
+
+        args.push_back(vector3Object);
+
+        MonoUtils::SetProperty(image, "WyrdGame", className, prop->GetName(), object, { args });
+    }
+
     void SetPropMono_Bool(BaseProp* prop, MonoImage* image, const std::string& className, MonoObject* object)
     {
         MonoUtils::SetProperty(image, "WyrdGame", className, prop->GetName(), object, { prop->GetRawValuePtr() });
@@ -214,6 +250,7 @@ namespace Wyrd
             { "String", SetPropMono_String },
             { "Vec2", SetPropMono_Vec2 },
             { "Vec3", SetPropMono_Vec3 },
+            { "Vec4", SetPropMono_Vec4 },
             { "Bool", SetPropMono_Bool },
             { "Color", SetPropMono_Color },
             { "Texture", SetPropMono_Texture },

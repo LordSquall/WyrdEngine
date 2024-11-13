@@ -20,6 +20,7 @@ namespace Wyrd
 	PROPERTY_TEMPLATE_SET_FUNC(String, std::string)
 	PROPERTY_TEMPLATE_SET_FUNC(Vec2, Vector2)
 	PROPERTY_TEMPLATE_SET_FUNC(Vec3, Vector3)
+	PROPERTY_TEMPLATE_SET_FUNC(Vec4, Vector4)
 	PROPERTY_TEMPLATE_SET_FUNC(Bool, bool)
 	PROPERTY_TEMPLATE_SET_FUNC(Color, Color)
 	PROPERTY_TEMPLATE_SET_FUNC(Texture, Texture*)
@@ -35,6 +36,7 @@ namespace Wyrd
 	PROPERTY_TEMPLATE_GET_FUNC(String, std::string)
 	PROPERTY_TEMPLATE_GET_FUNC(Vec2, Vector2)
 	PROPERTY_TEMPLATE_GET_FUNC(Vec3, Vector3)
+	PROPERTY_TEMPLATE_GET_FUNC(Vec4, Vector4)
 	PROPERTY_TEMPLATE_GET_FUNC(Bool, bool)
 	PROPERTY_TEMPLATE_GET_FUNC(Color, Color)
 	PROPERTY_TEMPLATE_GET_FUNC(Texture, Texture*)
@@ -421,6 +423,45 @@ namespace Wyrd
 	}
 
 	PROPERTY_TOSTRING_FUNCSIG(Vec3) { return "[" + std::to_string(Value.x) + ", " + std::to_string(Value.y) + ", " + std::to_string(Value.z) + "]"; }
+
+	// Vec4
+	PROPERTY_SERIALISE_FUNCSIG(Vec4)
+	{
+		jsonxx::Object obj;
+		obj << "type" << "Vec4";
+		obj << "value" << Value;
+		json << _Name << obj;
+		return true;
+	}
+
+	PROPERTY_SERIALISE_STREAM_FUNCSIG(Vec4)
+	{
+		writeStr(stream, "Vec4");
+		writeStr(stream, _Name);
+		stream.write((char*)&Value, sizeof(Vector4));
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_FUNCSIG(Vec4)
+	{
+		Value << json.get<jsonxx::Object>("value");
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_STREAM_FUNCSIG(Vec4)
+	{
+		stream.read((char*)&Value, sizeof(Vector4));
+		return true;
+	}
+
+	PROPERTY_DESERIALISE_VAL_FUNCSIG(Vec4)
+	{
+		Value << json.get<jsonxx::Object>();
+		return true;
+	}
+
+	PROPERTY_TOSTRING_FUNCSIG(Vec4) { return "[" + std::to_string(Value.x) + ", " + std::to_string(Value.y) + ", " + std::to_string(Value.z) + ", " + std::to_string(Value.w) + "]"; }
+
 
 	// Boolean
 	PROPERTY_SERIALISE_FUNCSIG(Bool)

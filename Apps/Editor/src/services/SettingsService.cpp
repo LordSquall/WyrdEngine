@@ -7,19 +7,25 @@
 
 namespace Wyrd::Editor
 {
-	
 	void SettingsService::OnCreate()
 	{
-		_IniParser = std::make_shared<IniParser>("config.ini");
+		_ConfigIniParser = std::make_shared<IniParser>("config.ini");
+		_PreferencesIniParser = std::make_shared<IniParser>("preferences.ini");
 
 		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::SettingsUpdated, [this](Events::EventArgs& args)
 			{
-				_IniParser->Save("config.ini");
+				_ConfigIniParser->Save("config.ini");
+			});
+
+		ServiceManager::Get<EventService>()->Subscribe(Events::EventType::SettingsUpdated, [this](Events::EventArgs& args)
+			{
+				_PreferencesIniParser->Save("preferences.ini");
 			});
 	}
 
 	void SettingsService::OnDestroy()
 	{
-		_IniParser->Save("config.ini");
+		_ConfigIniParser->Save("config.ini");
+		_PreferencesIniParser->Save("preferences.ini");
 	}
 }

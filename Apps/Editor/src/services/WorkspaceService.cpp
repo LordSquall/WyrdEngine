@@ -92,7 +92,7 @@ namespace Wyrd::Editor
 			IsProjectLoaded(true);
 
 			/* Update the settings to ensure this project is loaded by default next time */
-			ServiceManager::Get<SettingsService>()->SetSetting(_LoadedProjectPath.string(), CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT);
+			ServiceManager::Get<SettingsService>()->Set(_LoadedProjectPath.string(), CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT);
 				
 			/* Set the base root folder */
 			SetProjectRootDirectory(_LoadedProjectPath.parent_path());
@@ -209,7 +209,7 @@ namespace Wyrd::Editor
 			AddToRecentProjects(_LoadedProject->name, _LoadedProjectPath);
 
 			/* Update the settings to ensure this project is loaded by default next time */
-			ServiceManager::Get<SettingsService>()->SetSetting(_LoadedProjectPath.string(), CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT);
+			ServiceManager::Get<SettingsService>()->Set(_LoadedProjectPath.string(), CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT);
 
 			/* Set the project root directory path */
 			SetProjectRootDirectory(projectfile.parent_path().string());

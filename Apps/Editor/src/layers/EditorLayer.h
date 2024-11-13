@@ -39,6 +39,9 @@ namespace Wyrd::Editor
 
 		void OnSceneOpened(Events::EventArgs& args);
 		
+		void SaveLayoutPreferences();
+		void LoadLayoutPreferences();
+
 	private:
 		float _time;
 		

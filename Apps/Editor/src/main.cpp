@@ -44,10 +44,10 @@ public:
 	{
 
 		std::shared_ptr<SettingsService> settingsService = ServiceManager::Get<SettingsService>();
-		settingsService->SetSetting(std::to_string(_Window->GetWidth()), CONFIG_WINDOW, CONFIG_WINDOW__WIDTH);
-		settingsService->SetSetting(std::to_string(_Window->GetHeight()), CONFIG_WINDOW, CONFIG_WINDOW__HEIGHT);
-		settingsService->SetSetting(std::to_string(_Window->GetX()), CONFIG_WINDOW, CONFIG_WINDOW__X);
-		settingsService->SetSetting(std::to_string(_Window->GetY()), CONFIG_WINDOW, CONFIG_WINDOW__Y);
+		settingsService->Set(std::to_string(_Window->GetWidth()), CONFIG_WINDOW, CONFIG_WINDOW__WIDTH);
+		settingsService->Set(std::to_string(_Window->GetHeight()), CONFIG_WINDOW, CONFIG_WINDOW__HEIGHT);
+		settingsService->Set(std::to_string(_Window->GetX()), CONFIG_WINDOW, CONFIG_WINDOW__X);
+		settingsService->Set(std::to_string(_Window->GetY()), CONFIG_WINDOW, CONFIG_WINDOW__Y);
 
 
 		/* initialise editor services */

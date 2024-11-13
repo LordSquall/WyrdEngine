@@ -76,13 +76,21 @@ namespace Wyrd
 		const Iterator begin() const
 		{
 			int firstIndex = 0;
-			while (firstIndex < scene->entities.size() &&
-				(componentMask != (componentMask & scene->entities[firstIndex].mask)
-					|| !IsEntityValid(scene->entities[firstIndex].id)))
+
+			if (scene->entities.size() != 0)
 			{
-				firstIndex++;
+				while (firstIndex < scene->entities.size() &&
+					(componentMask != (componentMask & scene->entities[firstIndex].mask)
+						|| !IsEntityValid(scene->entities[firstIndex].id)))
+				{
+					firstIndex++;
+				}
+				return Iterator(scene, scene->entities[0].id, firstIndex, componentMask, all);
 			}
-			return Iterator(scene, scene->entities[0].id, firstIndex, componentMask, all);
+			else
+			{
+				return Iterator(scene, ENTITY_INVALID, ENTITY_INVALID, componentMask, all);
+			}
 		}
 
 		const Iterator end() const

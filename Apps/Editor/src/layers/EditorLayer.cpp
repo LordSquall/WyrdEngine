@@ -231,8 +231,11 @@ namespace Wyrd::Editor
 		/* initialise imgui */
 		ImGui_ImplOpenGL3_Init("#version 410");
 
+		/* load user preferences */
+		LoadLayoutPreferences();
+
 		/* attempt to load the default project otherwise asked the user to create a new one */
-		if (_Workspace->LoadProject(_Settings->GetSetting(CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT, "")) == false)
+		if (_Workspace->LoadProject(_Settings->Get(CONFIG_PROJECT, CONFIG_PROJECT__DEFAULT, "")) == false)
 		{
 			_Dialog->OpenDialog(std::make_shared<NewProjectDialog>(this));
 		}
@@ -249,6 +252,7 @@ namespace Wyrd::Editor
 
 	void EditorLayer::OnDetach()
 	{
+		SaveLayoutPreferences();
 		ImGui::SaveIniSettingsToDisk("imgui.ini");
 	}
 	
@@ -336,7 +340,11 @@ namespace Wyrd::Editor
 		{
 			for (std::map<std::string, std::shared_ptr<EditorViewBase>>::iterator it = _views.begin(); it != _views.end(); it++)
 			{
-				ImGui::MenuItem((it->second)->GetName().c_str(), NULL, (it->second)->GetShowFlagRef());
+				if (ImGui::MenuItem((it->second)->GetName().c_str(), NULL, (it->second)->GetShowFlagRef()))
+				{
+					WYRD_CORE_TRACE("Test");
+					ImGui::SaveIniSettingsToDisk("imgui.ini");
+				}
 			}
 
 
@@ -622,5 +630,23 @@ namespace Wyrd::Editor
 		glViewport(0, 0, e.GetWidth(), e.GetHeight());
 
 		return false;
+	}
+
+	void EditorLayer::SaveLayoutPreferences()
+	{
+		for (std::map<std::string, std::shared_ptr<EditorViewBase>>::iterator it = _views.begin(); it != _views.end(); it++)
+		{
+			bool isShownPref = *(it->second->GetShowFlagRef());
+			_Settings->SetPreference(std::to_string(isShownPref), "VIEWS", it->second->GetName());
+		}
+	}
+
+	void EditorLayer::LoadLayoutPreferences()
+	{
+		for (std::map<std::string, std::shared_ptr<EditorViewBase>>::iterator it = _views.begin(); it != _views.end(); it++)
+		{
+			bool isShownPref = Utils::ToBool(_Settings->GetPreference("VIEWS", it->second->GetName(), "false"));
+			isShownPref ? it->second->Open() : it->second->Close();
+		}
 	}
 }

@@ -16,6 +16,7 @@ namespace Wyrd
     PROPERTY_FACTORY_REGISTER(Double, "Double", "System.Double", double);
     PROPERTY_FACTORY_REGISTER(Vec2, "Vec2", "WyrdAPI.Vector2", Wyrd::Vector2);
     PROPERTY_FACTORY_REGISTER(Vec3, "Vec3", "WyrdAPI.Vector3", Wyrd::Vector3);
+    PROPERTY_FACTORY_REGISTER(Vec4, "Vec4", "WyrdAPI.Vector4", Wyrd::Vector4);
     PROPERTY_FACTORY_REGISTER(Bool, "Bool", "System.Boolean", bool);
     PROPERTY_FACTORY_REGISTER(Color, "Color", "WyrdAPI.Color", Wyrd::Color);
     PROPERTY_FACTORY_REGISTER(Texture, "Texture", "WyrdAPI.Texture", Wyrd::Texture*);

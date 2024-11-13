@@ -62,10 +62,14 @@ namespace Wyrd::Editor
 
 		auto scene = _WorkspaceService->GetLoadedScene();
 
+		ImGui::PushID(0);
+		ComponentViewFactory::Create(scene->componentPools[0]->name, _SelectedEntity, scene->Get(0, _SelectedEntity));
+		ImGui::PopID();
+
 		/* Process each of the registered component views to see if the entity has a matching assigned component */
 		std::bitset<64> mask = scene->GetMask(_SelectedEntity);
 
-		for (int i = 0; i < scene->componentPools.size(); ++i)
+		for (int i = 1; i < scene->componentPools.size(); ++i)
 		{
 			if (mask.test(i))
 			{
@@ -74,18 +78,13 @@ namespace Wyrd::Editor
 				if (ComponentViewFactory::Contains(scene->componentPools[i]->name, _SelectedEntity))
 				{
 					ImGui::PushID(i);
-					ImGui::SeparatorText(scene->componentPools[i]->scriptName.c_str());
-
-					/* we cant allow the metadata component to be deleted */
-					if (i != 0)
-					{  
-						ImGui::SameLine();
-						if (ImGui::SmallButton("x"))
-						{
-							scene->RemoveComponent(i, _SelectedEntity);
-							removed = true;
-						}
+					if (ImGui::SmallButton("x"))
+					{
+						scene->RemoveComponent(i, _SelectedEntity);
+						removed = true;
 					}
+					ImGui::SameLine();
+					ImGui::SeparatorText(scene->componentPools[i]->scriptName.c_str());
 
 					if (removed == false)
 						ComponentViewFactory::Create(scene->componentPools[i]->name, _SelectedEntity, scene->Get(i, _SelectedEntity));

@@ -54,8 +54,11 @@ namespace Wyrd::Editor
 		SettingsService() {}
 		~SettingsService() {}
 
-		inline std::string GetSetting(std::string section, std::string name, std::string defaultValue) { return _IniParser->GetValue(section, name, defaultValue); }
-		inline void SetSetting(std::string value, std::string section, std::string name) { _IniParser->SetValue(value, section, name); }
+		inline std::string Get(std::string section, std::string name, std::string defaultValue) { return _ConfigIniParser->GetValue(section, name, defaultValue); }
+		inline void Set(std::string value, std::string section, std::string name) { _ConfigIniParser->SetValue(value, section, name); }
+
+		inline std::string GetPreference(const std::string& section, const std::string& name, const std::string& defaultValue) { return _PreferencesIniParser->GetValue(section, name, defaultValue); }
+		inline void SetPreference(const std::string& value, const std::string& section, const std::string& name) { _PreferencesIniParser->SetValue(value, section, name); }
 
 		static ServiceType GetTypeID() { return ServiceType::Settings; }
 	private:
@@ -63,6 +66,7 @@ namespace Wyrd::Editor
 		virtual void OnCreate() override;
 		virtual void OnDestroy() override;
 
-		std::shared_ptr<IniParser> _IniParser;
+		std::shared_ptr<IniParser> _ConfigIniParser;
+		std::shared_ptr<IniParser> _PreferencesIniParser;
 	};
 }

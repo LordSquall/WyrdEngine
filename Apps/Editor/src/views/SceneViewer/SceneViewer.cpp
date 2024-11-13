@@ -92,7 +92,7 @@ namespace Wyrd::Editor
 			
 			if (_Scene != nullptr)
 			{
-				Color bgColor = Utils::ToColor(_Settings->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__BGBOLOR, "1,1,1,1"));
+				Color bgColor = Utils::ToColor(_Settings->Get(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__BGBOLOR, "1,1,1,1"));
 
 				_Framebuffer->Bind();
 				renderer.Clear(bgColor.r, bgColor.g, bgColor.b);
@@ -242,10 +242,10 @@ namespace Wyrd::Editor
 			ImGui::InputFloat("aspect", &_CameraController->GetCamera().perspectiveSettings.aspect);
 
 			ImGui::SeparatorText("Viewport");
-			Color bgColor = Utils::ToColor(_Settings->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__BGBOLOR, "1,1,1,1"));
+			Color bgColor = Utils::ToColor(_Settings->Get(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__BGBOLOR, "1,1,1,1"));
 			if (ImGui::ColorPicker3("Background Color", (float*)&bgColor))
 			{
-				_Settings->SetSetting(Utils::ToString(bgColor), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__BGBOLOR);
+				_Settings->Set(Utils::ToString(bgColor), CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__BGBOLOR);
 			}
 			ImGui::EndPopup();
 		}

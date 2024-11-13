@@ -200,7 +200,7 @@ namespace Wyrd::Editor
 		if (ImGui::Button("+"))
 		{
 			ServiceManager::Get<DialogService>()->OpenSingleEntryDialog(nullptr, "Create new Binding", "Enter Unique Name", [&](std::string d) -> void {
-				//_material->AddInputBinding(d, "Vec2", "value");
+				_material->AddInputBinding(d, "Vec2", "value", jsonxx::Object());
 			});
 		}
 		if (ImGui::Button("Save"))

@@ -111,7 +111,11 @@ namespace Wyrd::Editor
 				_resourceMap.insert(std::pair<UID, std::shared_ptr<Resource>>(resource->GetResourceID(), resource));
 
 				/* load all resources for now */
-				resource->Load(resourcePath.string());
+				Resource::IOResult result = resource->Load(resourcePath.string());
+				if (result != Resource::IOResult::Success)
+				{
+					WYRD_CORE_ERROR("Unable to Load Resource: {0}", (int)result);
+				}
 
 				/* add the cachedFiles */
 				CachedFiles[resourcePath] = uid;

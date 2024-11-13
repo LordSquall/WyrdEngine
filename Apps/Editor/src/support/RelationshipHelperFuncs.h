@@ -27,5 +27,9 @@ namespace Wyrd::Editor
 		static void ClearEntity(Wyrd::Scene* scene, Entity entity);
 
 		static void Remove(Wyrd::Scene* scene, Entity entity);
+
+		static Entity GetFirst(Wyrd::Scene* scene);
+
+		static Entity GetLast(Wyrd::Scene* scene);
 	};
 }

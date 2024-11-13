@@ -36,8 +36,33 @@ namespace Wyrd::Editor
 
 		if (_WorkspaceService->IsSceneLoaded())
 		{
-		
 			Scene& scene = *_WorkspaceService->GetLoadedScene();
+
+			// Generate Entity Hierachy Data structure
+			std::vector<EntityHiearchyNode*> nodes;
+			std::stack<EntityHiearchyNode*> nodeStack;
+
+			for (Entity e : HierarchyEntitySet<RelationshipComponent>(scene))
+			{
+				RelationshipComponent* rc = scene.Get<RelationshipComponent>(e);
+				RelationshipComponent* topRc = nodeStack.empty() ? nullptr : scene.Get<RelationshipComponent>(nodeStack.top()->e);
+
+				if (rc->depth == 0)
+				{
+					EntityHiearchyNode* ehn = new EntityHiearchyNode();
+					ehn->e = e;
+					nodes.push_back(ehn);
+					nodeStack.push(ehn);
+
+				}
+				else if (rc->depth > topRc->depth)
+				{
+					EntityHiearchyNode* ehn = new EntityHiearchyNode();
+					ehn->e = e;
+					nodeStack.top()->children.push_back(ehn);
+					nodeStack.push(ehn);
+				}
+			}
 		
 			const float TEXT_BASE_WIDTH = ImGui::CalcTextSize("A").x;
 		
@@ -45,48 +70,40 @@ namespace Wyrd::Editor
 		
 			if (ImGui::BeginTable("entityHierarchyTable", 1, flags))
 			{
-				// The first column will use the default _WidthStretch when ScrollX is Off and _WidthFixed when ScrollX is On
-				ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_NoHide);
+				ImGui::TableSetupColumn("Name");
 				ImGui::TableHeadersRow();
 			
-				for (Entity e : EntitySet<RelationshipComponent>(scene))
+				for (const EntityHiearchyNode* node : nodes)
 				{
-					RelationshipComponent* relationshipComp = scene.Get<RelationshipComponent>(e);
+					ImGui::TableNextRow();
+					ImGui::TableNextColumn();
 
-					if (relationshipComp->parent == ENTITY_INVALID)
-					{
-						DisplayEntity(e, 0);
-					}
+					ImGui::PushID((int)node->e);
+					DisplayEntityNode(*node);
+					ImGui::PopID();
 				}
-				//DisplayBelowDragTarget(ENTITY_INVALID, 0);
 				ImGui::EndTable();
 			}
-			
-			/*
-			* this will create a selectable area on the reset of the available area which is invisible on the display
-			* using this will allow the context menu to function when nothing is selected in the table
-			*/
-			//ImGui::Selectable("##label", false, ImGuiSelectableFlags_Disabled, ImGui::GetContentRegionAvail());
-			//DisplayEntityContentMenu(ENTITY_INVALID);
+
+			for(EntityHiearchyNode* e : nodes)
+			{
+				delete e;
+			}
 		}
 	}
 
 
-	void HierarchyView::DisplayEntity(Entity entity, int depth)
+	void HierarchyView::DisplayEntityNode(const EntityHiearchyNode& entityNode)
 	{
 		Scene& scene = *_WorkspaceService->GetLoadedScene();
 		
-		MetaDataComponent* metaDataComponent = scene.Get<MetaDataComponent>(entity);
-		RelationshipComponent* relationshipComponent = scene.Get<RelationshipComponent>(entity);
+		MetaDataComponent* metaDataComponent = scene.Get<MetaDataComponent>(entityNode.e);
+		RelationshipComponent* relationshipComponent = scene.Get<RelationshipComponent>(entityNode.e);
 		
-		bool selected = entity == _SelectedEntity;
+		bool selected = entityNode.e == _SelectedEntity;
 		
 		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
 		
-		ImGui::TableNextRow();
-		ImGui::TableNextColumn();
-		ImGui::PushID(entity);
-
 		const bool isParent = (relationshipComponent->childrenCnt > 0);
 
 		if (isParent)
@@ -98,39 +115,45 @@ namespace Wyrd::Editor
 		{
 			flags |= ImGuiTreeNodeFlags_Leaf;
 			flags |= ImGuiTreeNodeFlags_Bullet;
-			flags |= ImGuiTreeNodeFlags_NoTreePushOnOpen;
 		}
 		flags |= (selected) ? ImGuiTreeNodeFlags_Selected : ImGuiTreeNodeFlags_None;
 
 		std::string name(metaDataComponent->name);
-		name.append(" - " + std::to_string(entity));
+		name.append(" - " + std::to_string(entityNode.e));
 		bool open = ImGui::TreeNodeEx(name.c_str(), flags);
+
+		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+		{
+			_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(entityNode.e));
+		}
+
+		DisplayEntityNodeContentMenu(entityNode);
 
 		if (open)
 		{
-			Entity nextEntity = relationshipComponent->next;
-			RelationshipComponent* nextRelationshipComponent = nullptr;
-			for (int i = 0; i < relationshipComponent->childrenCnt; i++)
+			for (const EntityHiearchyNode* node : entityNode.children)
 			{
-				if (nextEntity != ENTITY_INVALID)
-				{
-					//DisplayEntity(nextEntity, depth + 1);
-				}
+				ImGui::PushID((int)node->e);
+				ImGui::TableNextRow();
+				ImGui::TableNextColumn();
 			
-				nextEntity = scene.Get<RelationshipComponent>(nextEntity)->next;
+				DisplayEntityNode(*node);
+			
+				ImGui::PopID();
 			}
-			//ImGui::TreePop();
+
+			ImGui::TreePop();
 		}
-		ImGui::PopID();
 	}
 
-	void HierarchyView::DisplayEntityContentMenu(Entity entity)
+	void HierarchyView::DisplayEntityNodeContentMenu(const EntityHiearchyNode& entityNode)
 	{
-		if (ImGui::BeginPopupContextItem((const char*)&entity))
+		if (ImGui::BeginPopupContextItem((const char*)&entityNode.e))
 		{
 			Scene& scene = *_WorkspaceService->GetLoadedScene();
-			MetaDataComponent* metaDataComponent = scene.Get<MetaDataComponent>(entity);
-			
+			MetaDataComponent* metaDataComponent = scene.Get<MetaDataComponent>(entityNode.e);
+			ImGui::Text("%d", entityNode.e);
+
 			if (ImGui::MenuItem("Add Child"))
 			{
 				/* build the base default entity */
@@ -139,9 +162,9 @@ namespace Wyrd::Editor
 				scene.AssignComponent<MeshRendererComponent>(newEntity);
 				scene.AssignComponent<MaterialComponent>(newEntity);
 
-				if (entity != ENTITY_INVALID)
+				if (entityNode.e != ENTITY_INVALID)
 				{
-					RelationshipHelperFuncs::AddChild(&scene, newEntity, entity, RelationshipHelperFuncs::AddOp::On);
+					RelationshipHelperFuncs::AddChild(&scene, newEntity, entityNode.e, RelationshipHelperFuncs::AddOp::On);
 				}
 
 				_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(newEntity));
@@ -151,7 +174,7 @@ namespace Wyrd::Editor
 			{
 				/* update the relationship component */
 				_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(ENTITY_INVALID));
-				RelationshipHelperFuncs::Remove(&scene, entity);
+				RelationshipHelperFuncs::Remove(&scene, entityNode.e);
 			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Add Component"))
@@ -161,21 +184,21 @@ namespace Wyrd::Editor
 			}
 			if (ImGui::MenuItem("Add Transform"))
 			{
-				Transform2DComponent* c = scene.AssignComponent<Transform2DComponent>(entity);
+				Transform2DComponent* c = scene.AssignComponent<Transform2DComponent>(entityNode.e);
 			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Add Mesh"))
 			{
-				scene.AssignComponent<Transform3DComponent>(entity);
-				scene.AssignComponent<MeshRendererComponent>(entity);
+				scene.AssignComponent<Transform3DComponent>(entityNode.e);
+				scene.AssignComponent<MeshRendererComponent>(entityNode.e);
 			}
 			if (ImGui::MenuItem("Add Sprite"))
 			{
-				SpriteComponent* c = scene.AssignComponent<SpriteComponent>(entity);
+				SpriteComponent* c = scene.AssignComponent<SpriteComponent>(entityNode.e);
 			}
 			if (ImGui::MenuItem("Add Material"))
 			{
-				MaterialComponent* c = scene.AssignComponent<MaterialComponent>(entity);
+				MaterialComponent* c = scene.AssignComponent<MaterialComponent>(entityNode.e);
 
 				/* Retrieve the material */
 				std::shared_ptr<Material> material = Application::Get().GetResources().Materials[RES_MATERIAL_3D_DEFAULT];
@@ -195,11 +218,11 @@ namespace Wyrd::Editor
 			ImGui::Separator();
 			if (ImGui::MenuItem("Add Script"))
 			{
-				ScriptComponent* c = scene.AssignComponent<ScriptComponent>(entity);
+				ScriptComponent* c = scene.AssignComponent<ScriptComponent>(entityNode.e);
 			}
 			if (ImGui::MenuItem("Add Camera"))
 			{
-				CameraComponent* c = scene.AssignComponent<CameraComponent>(entity);
+				CameraComponent* c = scene.AssignComponent<CameraComponent>(entityNode.e);
 			}
 			ImGui::EndPopup();
 		}
@@ -213,28 +236,43 @@ namespace Wyrd::Editor
 			
 			if (ImGui::MenuItem("Add Child"))
 			{
+				/* Ensure that the new Entity is placed at the end of the Hierarchy change */
+				Entity lastEntity = RelationshipHelperFuncs::GetLast(&scene);
+
+				/* Create a new entity within the scene */
 				Entity newEntity = scene.CreateEntity("New Entity");
 				EditorComponent* ec = scene.AssignComponent<EditorComponent>(newEntity);
 				MeshRendererComponent* mrc = scene.AssignComponent<MeshRendererComponent>(newEntity);
 				MaterialComponent* mc = scene.AssignComponent<MaterialComponent>(newEntity);
 
 				MaterialHelperFuncs::AssignToComponent(mc);
+				
+				RelationshipComponent* currentRC = scene.Get< RelationshipComponent>(newEntity);
+				RelationshipHelperFuncs::AddChild(&scene, ENTITY_INVALID, newEntity, RelationshipHelperFuncs::AddOp::On);
+				
+				if (lastEntity != ENTITY_INVALID)
+				{
+					RelationshipComponent* lastRC = scene.Get<RelationshipComponent>(lastEntity);
 
+					lastRC->next = newEntity;
+				}
+
+				/* Publish the change to ensure we are selecting the new entity on creation */
 				_EventService->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(newEntity));
 			}
 			ImGui::EndPopup();
 		}
 	}
 
-	void HierarchyView::DisplayEntityDragAndDrop(Entity entity)
+	void HierarchyView::DisplayEntityNodeDragAndDrop(const EntityHiearchyNode& entityNode)
 	{
 		Scene& scene = *_WorkspaceService->GetLoadedScene();
-		MetaDataComponent* metaDataComponent = scene.Get<MetaDataComponent>(entity);
+		MetaDataComponent* metaDataComponent = scene.Get<MetaDataComponent>(entityNode.e);
 
 		/* Drag and Drop */
 		if (ImGui::BeginDragDropSource())
 		{
-			ImGui::SetDragDropPayload(IMGUI_DND_ENTITY, &entity, sizeof(Entity));
+			ImGui::SetDragDropPayload(IMGUI_DND_ENTITY, &entityNode.e, sizeof(Entity));
 			ImGui::Text(metaDataComponent->name);
 			ImGui::EndDragDropSource();
 		}
@@ -245,7 +283,7 @@ namespace Wyrd::Editor
 			{
 				Entity* payloadEntity = (Entity*)ImGui::GetDragDropPayload()->Data;
 
-				if (RelationshipHelperFuncs::CanAddChild(&scene, entity, *payloadEntity, RelationshipHelperFuncs::AddOp::On))
+				if (RelationshipHelperFuncs::CanAddChild(&scene, entityNode.e, *payloadEntity, RelationshipHelperFuncs::AddOp::On))
 				{
 					if (ImGui::BeginDragDropTarget())
 					{
@@ -255,7 +293,7 @@ namespace Wyrd::Editor
 
 							RelationshipComponent* child = scene.Get<RelationshipComponent>(*sourceEntity);
 
-							RelationshipHelperFuncs::AddChild(&scene, *sourceEntity, entity, RelationshipHelperFuncs::AddOp::On);
+							RelationshipHelperFuncs::AddChild(&scene, *sourceEntity, entityNode.e, RelationshipHelperFuncs::AddOp::On);
 						}
 						ImGui::EndDragDropTarget();
 					}
@@ -264,17 +302,17 @@ namespace Wyrd::Editor
 		}
 	}
 
-	void HierarchyView::DisplayEntityTooltip(Entity entity)
+	void HierarchyView::DisplayEntityNodeTooltip(const EntityHiearchyNode& entityNode)
 	{
 		Scene& scene = *_WorkspaceService->GetLoadedScene();
 
 		if (ImGui::IsItemHovered())
 		{
-			MetaDataComponent* metadataComp = scene.Get<MetaDataComponent>(entity);
-			RelationshipComponent* relationshipComp = scene.Get<RelationshipComponent>(entity);
+			MetaDataComponent* metadataComp = scene.Get<MetaDataComponent>(entityNode.e);
+			RelationshipComponent* relationshipComp = scene.Get<RelationshipComponent>(entityNode.e);
 			
 			ImGui::BeginTooltip();
-			ImGui::Text("Entity: %lu", entity);
+			ImGui::Text("Entity: %lu", entityNode.e);
 			ImGui::Text("Name: %s", metadataComp->name);
 			ImGui::Text("childCnt: %d", relationshipComp->childrenCnt);
 			ImGui::Text("depth: %d", relationshipComp->depth);

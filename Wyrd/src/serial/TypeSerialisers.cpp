@@ -33,6 +33,21 @@ namespace glm
 		vector.z = (float)arr.get<jsonxx::Number>(2);
 		return vector;
 	}
+
+	jsonxx::Object& operator<<(jsonxx::Object& obj, const glm::vec4& vector) {
+		jsonxx::Array arr;
+		arr << vector.x << vector.y << vector.z << vector.w;
+		obj << arr;
+		return obj;
+	}
+
+	glm::vec4& operator<<(glm::vec4& vector, const jsonxx::Array& arr) {
+		vector.x = (float)arr.get<jsonxx::Number>(0);
+		vector.y = (float)arr.get<jsonxx::Number>(1);
+		vector.z = (float)arr.get<jsonxx::Number>(2);
+		vector.w = (float)arr.get<jsonxx::Number>(3);
+		return vector;
+	}
 }
 
 namespace Wyrd
@@ -133,6 +148,29 @@ namespace Wyrd
 		return obj;
 	}
 
+	jsonxx::Object DecodeVec4(const std::string& encodedData /* = "" */)
+	{
+		jsonxx::Object obj;
+
+		if (encodedData != "")
+		{
+			std::vector<float> components = ExplodeToFloats(encodedData);
+
+			obj << "x" << components[0];
+			obj << "y" << components[1];
+			obj << "z" << components[2];
+			obj << "w" << components[3];
+		}
+		else
+		{
+			obj << "x" << 0.0f;
+			obj << "y" << 0.0f;
+			obj << "z" << 0.0f;
+			obj << "w" << 0.0f;
+		}
+		return obj;
+	}
+
 	jsonxx::Object DecodeColor(const std::string& encodedData /* = "" */)
 	{
 		jsonxx::Object obj;
@@ -202,6 +240,16 @@ namespace Wyrd
 		return data;
 	}
 
+	jsonxx::Object& operator<<(jsonxx::Object& data, const Wyrd::Vector4& val) {
+		jsonxx::Object o;
+		o << "x" << val.x;
+		o << "y" << val.y;
+		o << "z" << val.z;
+		o << "w" << val.w;
+		data << o;
+		return data;
+	}
+
 	jsonxx::Object& operator<<(jsonxx::Object& data, const Wyrd::Color& val) {
 		jsonxx::Object o;
 		o << "r" << val.r;
@@ -243,6 +291,14 @@ namespace Wyrd
 		data.x = (float)val.get<jsonxx::Number>("x");
 		data.y = (float)val.get<jsonxx::Number>("y");
 		data.z = (float)val.get<jsonxx::Number>("z");
+		return data;
+	}
+
+	Wyrd::Vector4& operator<<(Wyrd::Vector4& data, const jsonxx::Object& val) {
+		data.x = (float)val.get<jsonxx::Number>("x");
+		data.y = (float)val.get<jsonxx::Number>("y");
+		data.z = (float)val.get<jsonxx::Number>("z");
+		data.z = (float)val.get<jsonxx::Number>("w");
 		return data;
 	}
 

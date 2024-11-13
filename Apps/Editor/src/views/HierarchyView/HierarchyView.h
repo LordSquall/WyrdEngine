@@ -11,17 +11,23 @@ namespace Wyrd::Editor
 	public:
 		HierarchyView(EditorLayer* editorLayer);
 		~HierarchyView();
+	private:
+		struct EntityHiearchyNode {
+			Entity e;
+			std::vector<EntityHiearchyNode*> children;
+		};
 
+	public:
 		void OnInitialise() override;
 		void OnEditorRender() override;
 
 		void OnEvent(Event& event) override;
 
 	private:
-		void DisplayEntity(Entity entity, int depth);
-		void DisplayEntityContentMenu(Entity entity);
-		void DisplayEntityDragAndDrop(Entity entity);
-		void DisplayEntityTooltip(Entity entity);
+		void DisplayEntityNode(const EntityHiearchyNode& entityNode);
+		void DisplayEntityNodeContentMenu(const EntityHiearchyNode& entityNode);
+		void DisplayEntityNodeDragAndDrop(const EntityHiearchyNode& entityNode);
+		void DisplayEntityNodeTooltip(const EntityHiearchyNode& entityNode);
 		void DisplayContentMenu();
 		void OnSelectedEntityChanged(Events::EventArgs& args);
 

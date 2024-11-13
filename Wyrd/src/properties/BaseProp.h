@@ -162,6 +162,7 @@ namespace Wyrd
 	PROPERTY_TYPE(String, System.String, std::string, "");
 	PROPERTY_TYPE(Vec2, WyrdAPI.Vector2, Wyrd::Vector2, Vector2());
 	PROPERTY_TYPE(Vec3, WyrdAPI.Vector3, Wyrd::Vector3, Vector3());
+	PROPERTY_TYPE(Vec4, WyrdAPI.Vector4, Wyrd::Vector4, Vector4());
 	PROPERTY_TYPE(Bool, System.Boolean, bool, false);
 	PROPERTY_TYPE(Color, WyrdAPI.Color, Wyrd::Color, Color());
 	PROPERTY_TYPE(Texture, WyrdAPI.Texture, Wyrd::Texture*, nullptr);

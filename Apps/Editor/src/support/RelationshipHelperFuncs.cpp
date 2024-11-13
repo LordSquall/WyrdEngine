@@ -16,6 +16,8 @@ namespace Wyrd::Editor
 		RelationshipComponent* source_rc = scene->Get<RelationshipComponent>(child);
 		RelationshipComponent* target_rc = scene->Get<RelationshipComponent>(parent);
 
+		WYRD_TRACE("Checking Entity Drop: {0} -> {1}", child, parent);
+
 		// source and target must both have valid relationship components
 		if (source_rc == nullptr || target_rc == nullptr)
 			return false;
@@ -55,12 +57,16 @@ namespace Wyrd::Editor
 			/* if we are first child, we can just complete the operation */
 			if (target_rc->childrenCnt == 0)
 			{
-				target_rc->childrenCnt++;
+				/* Update the source entity */
+				source_rc->parent = target;
+				source_rc->next = target_rc->next;
+				source_rc->depth = target_rc->depth + 1;
+
+				// Update the target to point to the this node next
+				target_rc->next = source;
 				target_rc->first = source;
 				target_rc->last = source;
-
-				source_rc->parent = target;
-				source_rc->depth = target_rc->depth + 1;
+				target_rc->childrenCnt++;
 			}
 			else if (target_rc->childrenCnt > 0)
 			{
@@ -68,15 +74,15 @@ namespace Wyrd::Editor
 				RelationshipComponent* targetLast_rc = scene->Get<RelationshipComponent>(target_rc->last);
 				targetLast_rc->next = source;
 
-				/* update parent */
-				target_rc->childrenCnt++;
-				target_rc->last = source;
-
 				/* update the source */
 				source_rc->parent = target;
 				source_rc->depth = target_rc->depth + 1;
 				source_rc->previous = target_rc->last;
 				source_rc->next = ENTITY_INVALID;
+
+				/* update parent */
+				target_rc->childrenCnt++;
+				target_rc->last = source;
 			}
 		}
 	}  
@@ -213,5 +219,32 @@ namespace Wyrd::Editor
 				}
 			}
 		}
+	}
+
+	Entity GetFirst(Wyrd::Scene* scene)
+	{
+		Entity firstEntity = ENTITY_INVALID;
+
+		if (!scene->entities.empty())
+		{
+			return scene->entities[0].id;
+		}
+		return firstEntity;
+	}
+		
+	Entity RelationshipHelperFuncs::GetLast(Wyrd::Scene* scene)
+	{
+		Entity lastEntity = ENTITY_INVALID;
+
+		for (EntityDesc e : scene->entities)
+		{
+			RelationshipComponent* rc = scene->Get<RelationshipComponent>(e.id);
+
+			if (rc->next == ENTITY_INVALID)
+			{
+				lastEntity = e.id;
+			}
+		}
+		return lastEntity;
 	}
 }
