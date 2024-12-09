@@ -3,6 +3,7 @@ project "spdlog"
     language "C++"
 	cppdialect "C++17"
 	staticruntime "off"
+	characterset "Unicode"
     
 	project_dir_name = "spdlog"
 	project_dependices_root = "../../../dependencies/"

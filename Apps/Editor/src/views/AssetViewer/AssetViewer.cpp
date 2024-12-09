@@ -88,7 +88,7 @@ namespace Wyrd::Editor
 			
 			if (ImGui::IconButton(_Resources->RetrieveIcon("common", "nav_open"), 3, true, buttonSize))
 			{
-				//ShellExecuteA(NULL, "open", _SelectedDirectory.string().c_str(), NULL, NULL, SW_SHOWDEFAULT);
+				Utils::OpenFolderInExplorer(_SelectedDirectory.string());
 			}
 
 			//ImGui::SliderFloat("Size", &layoutSettings.itemGroupSize, 16.0f, 512.0f);

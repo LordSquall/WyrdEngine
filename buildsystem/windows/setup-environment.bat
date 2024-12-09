@@ -40,6 +40,3 @@ mkdir cmakedir
 cd cmakedir
 cmake ../
 cd ../../.. 
-
-curl --output mono-install.msi --url https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0.182-x64-0.msi
-mono-install.msi /passive

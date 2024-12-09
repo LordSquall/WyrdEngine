@@ -446,6 +446,11 @@ namespace Wyrd::Editor {
 		system(command.c_str());
 	}
 
+	void Utils::OpenFolderInExplorer(const std::string& directory)
+	{
+		system(("explorer.exe " + directory).c_str());
+	}
+
 	/* Hashing */
 	std::string Utils::HashFile(const std::string& file)
 	{

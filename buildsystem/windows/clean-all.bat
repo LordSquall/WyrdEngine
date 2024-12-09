@@ -1,13 +1,13 @@
 del /f /s /q dependencies 1>nul
-rmdir -r -f dependencies
+rmdir /S /Q dependencies
 
 del /f /s /q lib 1>nul
-rmdir -r -f lib
+rmdir /S /Q lib
 
 del /f /s /q obj 1>nul
-rmdir -r -f obj
+rmdir /S /Q obj
 
 del /f /s /q bin 1>nul
-rmdir -r -f bin
+rmdir /S /Q bin
 
 del Wyrd.sln

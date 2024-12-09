@@ -107,6 +107,7 @@ group ""
 		language "C++"
 		cppdialect "C++17"
 		staticruntime "off"
+		characterset "Unicode"
 
 		targetdir ("lib/" .. outputdir .. "/%{prj.name}")
 		objdir ("obj/" .. outputdir .. "/%{prj.name}")
@@ -169,6 +170,11 @@ group ""
 				"GLFW_INCLUDE_NONE",
 				"GLM_ENABLE_EXPERIMENTAL"
 			}
+			
+			buildoptions
+			{
+				"/utf-8"
+			}
 
 		filter "system:linux"
 			systemversion "latest"
@@ -208,6 +214,7 @@ if os.istarget("windows") then
 			location "WyrdGen"
 			kind "ConsoleApp"
 			language "C#"
+			characterset "Unicode"
 
 			targetdir ("lib/" .. outputdir .. "/%{prj.name}")
 			objdir ("obj/" .. outputdir .. "/%{prj.name}")
@@ -230,6 +237,11 @@ if os.istarget("windows") then
 					"WYRD_EDITOR_ENABLED",
 					"GLFW_INCLUDE_NONE",
 					"GLM_ENABLE_EXPERIMENTAL"
+				}
+				
+				buildoptions
+				{
+					"/utf-8"
 				}
 
 			filter "configurations:Debug"
@@ -254,6 +266,7 @@ group "Scripting"
 		language "C++"
 		cppdialect "C++17"
 		staticruntime "off"
+		characterset "Unicode"
 
 		targetdir ("lib/" .. outputdir .. "/%{prj.name}")
 		objdir ("obj/" .. outputdir .. "/%{prj.name}")
@@ -292,6 +305,11 @@ group "Scripting"
 				"GLM_ENABLE_EXPERIMENTAL",
 				"LIBRARY_EXPORT"
 			}
+			
+			buildoptions
+			{
+				"/utf-8"
+			}
 
 		filter "configurations:Debug"
 			defines "WYRD_DEBUG"
@@ -313,6 +331,7 @@ if os.istarget("windows") then
 		location "WyrdAPI"
 		kind "SharedLib"
 		language "C#"
+		characterset "Unicode"
 
 		targetdir ("lib/" .. outputdir .. "/%{prj.name}")
 		objdir ("obj/" .. outputdir .. "/%{prj.name}")
@@ -331,6 +350,11 @@ if os.istarget("windows") then
 				"WYRD_EDITOR_ENABLED",
 				"GLFW_INCLUDE_NONE",
 				"GLM_ENABLE_EXPERIMENTAL"
+			}
+			
+			buildoptions
+			{
+				"/utf-8"
 			}
 
 		filter "configurations:Debug"
@@ -356,6 +380,7 @@ group "Libraries"
 		language "C++"
 		cppdialect "C++17"
 		staticruntime "off"
+		characterset "Unicode"
 
 		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 		objdir ("obj/" .. outputdir .. "/%{prj.name}")
@@ -371,6 +396,7 @@ group "Libraries"
 			"%{includedir.crossguid}",
 			"%{includedir.glm}",
 			"%{includedir.jsonxx}",
+			"%{includedir.spdlog}",
 			"%{includedir.imgui}",
 			"%{includedir.ImGuiEx}",
 			"Wyrd/src"
@@ -392,10 +418,16 @@ group "Libraries"
 				"GLAD",
 				"SOIL",
 				"jsonxx",
+				"spdlog",
 				"imgui",
 				"opengl32.dll"
 			}
-
+			
+			buildoptions
+			{
+				"/utf-8"
+			}
+			
 		filter "configurations:Debug"
 			defines "WYRD_DEBUG"
 			runtime "Debug"
@@ -418,6 +450,7 @@ group "Applications"
 		language "C++"
 		cppdialect "C++17"
 		staticruntime "off"
+		characterset "Unicode"
 
 		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 		objdir ("obj/" .. outputdir .. "/%{prj.name}")
@@ -476,6 +509,11 @@ group "Applications"
 				"imguizmo",
 				"opengl32.dll"
 			}
+				
+			buildoptions
+			{
+				"/utf-8"
+			}
 
 			linkoptions { "/WHOLEARCHIVE:Wyrd" }
 		
@@ -528,6 +566,7 @@ group "Applications"
 		language "C++"
 		cppdialect "C++17"
 		staticruntime "off"
+		characterset "Unicode"
 	
 		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 		objdir ("obj/" .. outputdir .. "/%{prj.name}")
@@ -589,6 +628,11 @@ group "Applications"
 				"ImGuiEx",
 				"opengl32.dll"
 			}
+				
+			buildoptions
+			{
+				"/utf-8"
+			}
 			
 			linkoptions { "/WHOLEARCHIVE:Wyrd" }
 		
@@ -641,6 +685,7 @@ group "Applications"
 		language "C++"
 		cppdialect "C++17"
 		staticruntime "off"
+		characterset "Unicode"
 
 		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 		objdir ("obj/" .. outputdir .. "/%{prj.name}")
@@ -707,6 +752,11 @@ group "Applications"
 				"imgui",
 				"imguizmo",
 				"opengl32.dll"
+			}
+				
+			buildoptions
+			{
+				"/utf-8"
 			}
 
 			linkoptions { "/WHOLEARCHIVE:Wyrd" }

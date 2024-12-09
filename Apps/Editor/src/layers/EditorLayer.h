@@ -59,5 +59,8 @@ namespace Wyrd::Editor
 		std::shared_ptr<EditorViewBase> _mouseEventOwner;
 
 		static bool _showSceneViewerContextMenu;
+
+
+        int GetPlatformKeyCode(int keycode, int scancode);
 	};
 }

@@ -165,7 +165,6 @@ namespace Wyrd::Editor
 
 		if (ImGui::TextButton("Cancel"))
 		{
-			ServiceManager::Get<EventService>()->Publish(Events::EventType::CloseEditor, std::make_unique<Events::CloseEditorArgs>());
 			ImGui::CloseCurrentPopup();
 			Close();
 		}
