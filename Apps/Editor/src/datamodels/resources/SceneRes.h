@@ -23,5 +23,6 @@ namespace Wyrd::Editor
 		IOResult Save(const std::string& filepath) override;
 
 		ResourceType GetType() override { return ResourceType::SCENE; }
+		const Icon& GetThumbnail() override;
 	};
 }

@@ -8,6 +8,7 @@
 
 /* local includes */
 #include "ResourceTypes.h"
+#include "support/IconLibrary.h"
 
 #ifndef WYRD_PLATFORM_LINUX
 typedef unsigned char BYTE;
@@ -102,6 +103,11 @@ namespace Wyrd::Editor
 		 * @args name - resource name
 		*/
 		inline void SetPath(const std::filesystem::path& path) { _path = path; }
+
+		/**
+		 * @brief Get the Icon of the resource Thumbnail
+		*/
+		virtual const Icon& GetThumbnail();
 
 		/**
 		 * @brief Returns the isLoaded flag

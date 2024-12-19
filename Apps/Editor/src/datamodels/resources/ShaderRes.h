@@ -30,6 +30,7 @@ namespace Wyrd::Editor
 		void Build(bool isRebuild = false) override;
 
 		ResourceType GetType() override { return ResourceType::SHADER; }
+		const Icon& GetThumbnail() override;
 
 		void DrawProperties() override;
 

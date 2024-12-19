@@ -1,12 +1,18 @@
 #include "wyrdpch.h"
 #include "Resource.h"
 
+#include "services/ServiceManager.h"
+
 #include <core/Log.h>
 
 #include <imgui.h>
 
 namespace Wyrd::Editor
 {
+	const Icon& Resource::GetThumbnail()
+	{
+		return ServiceManager::Get<ResourceService>()->RetrieveIcon("common", "assets_3dmodel");
+	}
 
 	Resource::IOResult Resource::Reload()
 	{

@@ -129,6 +129,11 @@ namespace Wyrd::Editor
 		return NotImplemented;
 	}
 
+	const Icon& MaterialRes::GetThumbnail()
+	{
+		return ServiceManager::Get<ResourceService>()->RetrieveIcon("common", "assets_material");
+	}
+
 	void MaterialRes::ResolveReferences()
 	{
 		std::shared_ptr<ResourceService> resourceService = ServiceManager::Get<ResourceService>();

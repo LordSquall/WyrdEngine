@@ -49,6 +49,11 @@ namespace Wyrd::Editor
 	{
 		return NotImplemented;
 	}
+
+	const Icon& ModelRes::GetThumbnail()
+	{
+		return ServiceManager::Get<ResourceService>()->RetrieveIcon("common", "assets_3dmodel");
+	}
 }
 
 

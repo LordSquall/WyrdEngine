@@ -4,6 +4,7 @@
 
 /* local includes */
 #include "ImGuiUtils.h"
+#include "datamodels/resources/TextureRes.h"
 
 namespace ImGui 
 {

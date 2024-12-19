@@ -24,7 +24,7 @@ namespace Wyrd::Editor
 			switch (t)
 			{
 			case TEXTURE:
-				return std::make_shared<TextureRes>(filename, uid);
+				//return std::make_shared<TextureRes>(filename, uid);
 			case SCENE:
 				return std::make_shared<SceneRes>(filename, uid);
 			case SCRIPT:

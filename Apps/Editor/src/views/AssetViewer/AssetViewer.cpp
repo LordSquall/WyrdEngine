@@ -324,34 +324,114 @@ namespace Wyrd::Editor
 			{
 				ResourceType resType = static_cast<ResourceType>(resource->GetType());
 
-				switch (resType)
+				const Icon& thumbnailIcon = resource->GetThumbnail();
+
+				/* Drag and Drop */
+				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 				{
-				case ResourceType::TEXTURE:
-					DrawTextureItem(resIdx, (TextureRes&)*resource.get());
-					break;
-				case ResourceType::SCENE:
-					DrawSceneItem(resIdx, (SceneRes&)*resource.get());
-					break;
-				case ResourceType::SCRIPT:
-					DrawScriptItem(resIdx, (ScriptRes&)*resource.get());
-					break;
-				case ResourceType::SHADER:
-					DrawShaderItem(resIdx, (ShaderRes&)*resource.get());
-					break;
-				case ResourceType::SHADERSTAGE:
-					DrawShaderStageItem(resIdx, (ShaderStageRes&)*resource.get());
-					break;
-				case ResourceType::MATERIAL:
-					DrawMaterialItem(resIdx, (MaterialRes&)*resource.get());
-					break;
-				case ResourceType::MODEL:
-					DrawModelItem(resIdx, (ModelRes&)*resource.get());
-					break;
-				case ResourceType::NONE:
-				default:
-					DrawUnknownItem(resIdx, file.stem().string());
-					break;
+					const UID resourceID = resource->GetResourceID();
+					ImGui::SetDragDropPayload(IMGUI_DND_TEXTURE, &resourceID, sizeof(UID));
+					ImGui::Image(thumbnailIcon, ImVec2(32, 32));
+					ImGui::EndDragDropSource();
 				}
+
+				/* Tool Tip */
+				if (ImGui::IsItemHovered())
+				{
+					ImGui::BeginTooltip();
+					ImGui::Text(resource->GetName().c_str());
+					ImGui::Text("Filename: %s", resource->GetPath().c_str());
+					ImGui::Text("UID: %s", resource->GetResourceID().str().c_str());
+					ImGui::EndTooltip();
+				}
+
+				/* Visuals */
+				//ImGui::Image(thumbnailIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize));
+				//ImGui::TextClipped(resource->GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1, 1, 1, 1), "..");
+				
+				///* there is a change that the image may not be loaded yet if currently in the background thread. in this case we want to draw a default texture */
+				//ImTextureID thumbnailTexture = 0;
+				//if (textureResource.GetTexture() == nullptr)
+				//	thumbnailTexture = (ImTextureID)(INT_PTR)_Resources->GetDefaultTexture()->GetTexture()->GetHandle();
+				//else
+				//	thumbnailTexture = (ImTextureID)(INT_PTR)textureResource.GetTexture()->GetHandle();
+
+				/* Drag and Drop */
+				//if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+				//{
+				//	const UID resourceID = textureResource.GetResourceID();
+				//	ImGui::SetDragDropPayload(IMGUI_DND_TEXTURE, &resourceID, sizeof(UID));
+				//	ImGui::Image((ImTextureID)(INT_PTR)textureResource.GetTexture()->GetHandle(), ImVec2(32, 32));
+				//	ImGui::EndDragDropSource();
+				//}
+
+				///* Tool Tip */
+				//if (ImGui::IsItemHovered())
+				//{
+				//	ImGui::BeginTooltip();
+				//	ImGui::Text(textureResource.GetName().c_str());
+				//	ImGui::Text("Filename: %s", textureResource.GetPath().c_str());
+				//	ImGui::Text("UID: %s", textureResource.GetResourceID().str().c_str());
+				//	ImGui::EndTooltip();
+				//}
+
+				/* Context Menu */
+				//if (ImGui::BeginPopupContextItem())
+				//{
+				//	if (ImGui::MenuItem("Properties"))
+				//	{
+				//		_Events->Publish(Editor::Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&textureResource));
+				//	}
+				//	ImGui::Separator();
+				//	if (ImGui::MenuItem("Delete"))
+				//	{
+				//		Utils::RemoveFile(textureResource.GetPath());
+				//	}
+				//	ImGui::EndPopup();
+				//}
+				//
+				///* Input */
+				//if (ImGui::IsItemHovered())
+				//{
+				//	if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+				//		_SelectedResource = resID;
+				//
+				//	if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+				//		Utils::OpenFileWithSystem(textureResource.GetPath());
+				//}
+				//
+				///* Visuals */
+				//ImGui::Image(thumbnailTexture, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+				//ImGui::TextClipped(textureResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1, 1, 1, 1), "..");
+				//
+				//switch (resType)
+				//{
+				//case ResourceType::TEXTURE:
+				//	DrawTextureItem(resIdx, (TextureRes&)*resource.get());
+				//	break;
+				//case ResourceType::SCENE:
+				//	DrawSceneItem(resIdx, (SceneRes&)*resource.get());
+				//	break;
+				//case ResourceType::SCRIPT:
+				//	DrawScriptItem(resIdx, (ScriptRes&)*resource.get());
+				//	break;
+				//case ResourceType::SHADER:
+				//	DrawShaderItem(resIdx, (ShaderRes&)*resource.get());
+				//	break;
+				//case ResourceType::SHADERSTAGE:
+				//	DrawShaderStageItem(resIdx, (ShaderStageRes&)*resource.get());
+				//	break;
+				//case ResourceType::MATERIAL:
+				//	DrawMaterialItem(resIdx, (MaterialRes&)*resource.get());
+				//	break;
+				//case ResourceType::MODEL:
+				//	DrawModelItem(resIdx, (ModelRes&)*resource.get());
+				//	break;
+				//case ResourceType::NONE:
+				//default:
+				//	DrawUnknownItem(resIdx, file.stem().string());
+				//	break;
+				//}
 			}
 			else
 			{

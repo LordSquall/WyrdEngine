@@ -5,6 +5,7 @@
 /* local includes */
 #include "IconLibrary.h"
 #include "loaders/IconSetLoader.h"
+#include "datamodels/resources/TextureRes.h"
 
 /* external includes */
 #ifdef WYRD_PLATFORM_WINDOWS

@@ -29,6 +29,7 @@ namespace Wyrd::Editor
 		IOResult Save(const std::string& filepath) override;
 
 		ResourceType GetType() override { return ResourceType::TEXTURE; }
+		const Icon& GetThumbnail() override;
 
 		/**
 		 * @brief Returns the Human readable name for the resource
@@ -52,5 +53,6 @@ namespace Wyrd::Editor
 		int32_t _height;
 
 		std::shared_ptr<Texture> _texture;
+		Icon _thumbnailIcon;
 	};
 }

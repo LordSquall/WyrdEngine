@@ -29,6 +29,7 @@ namespace Wyrd::Editor
 		IOResult Save(const std::string& filepath) override;
 
 		ResourceType GetType() override { return ResourceType::MODEL; }
+		const Icon& GetThumbnail() override;
 
 		// Getters and Setters
 		inline std::shared_ptr<Mesh> GetMesh() { return _mesh; }

@@ -25,6 +25,7 @@ namespace Wyrd::Editor
 		IOResult Save(const std::string& filepath) override;
 
 		ResourceType GetType() override { return ResourceType::SCRIPT; }
+		const Icon& GetThumbnail() override;
 
 	public:
 		std::shared_ptr<Wyrd::ScriptedClass> Script;

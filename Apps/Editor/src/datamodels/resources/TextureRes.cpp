@@ -49,6 +49,21 @@ namespace Wyrd::Editor
 			/* register the texture with the core resource manager */
 			Application::Get().GetResources().Textures[_resourceID] = _texture;
 		
+			/* setup the thumbnail icon */
+			_thumbnailIcon.name = "temp";
+			_thumbnailIcon.x = 0;
+			_thumbnailIcon.y = 0;
+			_thumbnailIcon.width = _width;
+			_thumbnailIcon.height = _height;
+
+			_thumbnailIcon.uv[0] = { 0,	0 };
+			_thumbnailIcon.uv[1] = { 0,	1 };
+			_thumbnailIcon.uv[2] = { 1,	1 };
+			_thumbnailIcon.uv[3] = { 1,	0 };
+
+			_thumbnailIcon.iconSet = std::make_shared<IconSet>();
+			_thumbnailIcon.iconSet->Texture;
+
 			_isLoaded = true;
 		}
 
@@ -63,5 +78,10 @@ namespace Wyrd::Editor
 	Resource::IOResult TextureRes::Save(const std::string& filepath) 
 	{
 		return NotImplemented;
+	}
+
+	const Icon& TextureRes::GetThumbnail()
+	{
+		return ServiceManager::Get<ResourceService>()->RetrieveIcon("common", "assets_shaderstage_fs");
 	}
 }

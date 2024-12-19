@@ -4,15 +4,10 @@
 #include <core/Application.h>
 #include <core/Resources.h>
 #include <core/renderer/Renderer.h>
-#include <core/renderer/Buffer.h>
-#include <core/renderer/VertexArray.h>
 
 /* local includes */
 #include "gizmos/Gizmo.h"
-#include "services/ServiceManager.h"
 #include "datamodels/CameraController.h"
-#include "support/IconLibrary.h"
-#include "events/EditorEvents.h"
 
 namespace Wyrd::Editor
 {
@@ -40,9 +35,6 @@ namespace Wyrd::Editor
 		void BuildGrid();
 
 	private:
-		std::shared_ptr<EventService>		_EventService;
-		std::shared_ptr<SettingsService>	_SettingsService;
-
 		std::shared_ptr<CameraController> _CameraController;
 
 		bool _Enabled;

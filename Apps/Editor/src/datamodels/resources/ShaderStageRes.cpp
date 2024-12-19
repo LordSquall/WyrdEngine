@@ -39,6 +39,11 @@ namespace Wyrd::Editor
 		return NotImplemented;
 	}
 
+	const Icon& ShaderStageRes::GetThumbnail()
+	{
+		return ServiceManager::Get<ResourceService>()->RetrieveIcon("common", "assets_shaderstage_fs");
+	}
+
 	void ShaderStageRes::DrawProperties()
 	{
 		ImGui::Text(_source.c_str());

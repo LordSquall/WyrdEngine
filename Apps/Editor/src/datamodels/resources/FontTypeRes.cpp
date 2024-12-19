@@ -146,4 +146,9 @@ namespace Wyrd::Editor
 	{
 		return NotImplemented;
 	}
+
+	const Icon& FontTypeRes::GetThumbnail()
+	{
+		return ServiceManager::Get<ResourceService>()->RetrieveIcon("common", "assets_3dmodel");
+	}
 }

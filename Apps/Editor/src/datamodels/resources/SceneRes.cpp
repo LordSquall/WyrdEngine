@@ -2,6 +2,7 @@
 
 #include "SceneRes.h"
 
+#include "services/ServiceManager.h"
 
 namespace Wyrd::Editor
 {
@@ -22,5 +23,10 @@ namespace Wyrd::Editor
 	Resource::IOResult SceneRes::Save(const std::string& filepath) 
 	{
 		return NotImplemented;
+	}
+
+	const Icon& SceneRes::GetThumbnail()
+	{
+		return ServiceManager::Get<ResourceService>()->RetrieveIcon("common", "assets_scene");
 	}
 }

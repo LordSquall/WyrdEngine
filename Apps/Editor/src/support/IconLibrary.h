@@ -5,7 +5,7 @@
 #include <core/Layer.h>
 
 /* local includes */
-#include "datamodels/resources/TextureRes.h"
+#include "datamodels/resources/ResourceTypes.h"
 
 /* external includes */
 #include <glm/glm.hpp>

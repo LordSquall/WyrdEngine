@@ -28,4 +28,9 @@ namespace Wyrd::Editor
 	{
 		return NotImplemented;
 	}
+
+	const Icon& ScriptRes::GetThumbnail()
+	{
+		return ServiceManager::Get<ResourceService>()->RetrieveIcon("common", "assets_script");
+	}
 }

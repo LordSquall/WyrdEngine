@@ -21,15 +21,15 @@ namespace Wyrd::Editor
 		_CameraController = sceneViewer->GetCamera();
 
 		/* Retrieve the services */
-		_EventService = ServiceManager::Get<EventService>();
-		_SettingsService = ServiceManager::Get<SettingsService>();
+		//_EventService = ServiceManager::Get<EventService>();
+		//_SettingsService = ServiceManager::Get<SettingsService>();
 
 		/* Retrieve settings */
 		//_Enabled = Utils::ToBool(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__ENABLED, std::string("1")));
 		//_Color = Utils::ToColor(_SettingsService->GetSetting(CONFIG_SCENEVIEWER, CONFIG_SCENEVIEWER__COLOR, std::string("1.0,1.0,1.0,1.0")));
 
 		/* Subscribe to settings events */
-		_EventService->Subscribe(Events::EventType::SettingsUpdated, WYRD_BIND_FN(Grid2DGizmo::OnSettingsChanged));
+		//_EventService->Subscribe(Events::EventType::SettingsUpdated, WYRD_BIND_FN(Grid2DGizmo::OnSettingsChanged));
 
 		/* Create and bind a default VAO */
 		_VertexArray.reset(VertexArray::Create());

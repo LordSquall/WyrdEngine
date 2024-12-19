@@ -136,6 +136,11 @@ namespace Wyrd::Editor
 		return Success;
 	}
 
+	const Icon& ShaderRes::GetThumbnail()
+	{
+		return ServiceManager::Get<ResourceService>()->RetrieveIcon("common", "assets_shader");
+	}
+
 	void ShaderRes::ResolveReferences()
 	{
 		std::shared_ptr<ResourceService> resourceService = ServiceManager::Get<ResourceService>();
