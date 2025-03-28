@@ -13,20 +13,31 @@ typedef unsigned char BYTE;
 
 namespace Wyrd::Editor
 {
-	class ShaderStageRes : public Resource
+	struct ShaderStageFSInputBinding
+	{
+		std::string type;
+		std::string binding;
+	};
+
+	typedef std::map<std::string, ShaderStageFSInputBinding> ShaderStageFSInputMap;
+	typedef std::map<std::string, ShaderStageFSInputBinding> ShaderStageFSOutputMap;
+
+	class ShaderStageFSRes : public Resource
 	{
 	public:
-		ShaderStageRes(const std::string& name, const UID& uid);
-		~ShaderStageRes() = default;
+		ShaderStageFSRes(const std::string& name, const UID& uid);
+		~ShaderStageFSRes() = default;
 
 		IOResult Load(const std::string & filepath) override;
 		IOResult Load(const jsonxx::Object & obj) override;
 
 		IOResult Save(const std::string& filepath) override;
 
-		ResourceType GetType() override { return ResourceType::SHADERSTAGE; }
+		ResourceType GetType() override { return ResourceType::SHADERSTAGE_FS; }
 		const std::string GetTypeTag() override;
 		const Icon& GetThumbnail() override;
+
+		bool Build();
 
 		void DrawProperties() override;
 
@@ -34,6 +45,9 @@ namespace Wyrd::Editor
 
 	private:
 		std::string _source;
+
+		ShaderStageFSInputMap _Inputs;
+		ShaderStageFSOutputMap _Outputs;
 
 		std::vector<ShaderResRef> _ownedShaders;
 	};

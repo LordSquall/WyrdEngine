@@ -4,7 +4,6 @@
 
 /* local includes */
 #include "ShaderRes.h"
-#include "ShaderStageRes.h"
 #include "services/ServiceManager.h"
 #include "loaders/ShaderLoader.h"
 #include "support/ImGuiUtils.h"
@@ -151,9 +150,9 @@ namespace Wyrd::Editor
 		std::shared_ptr<ResourceService> resourceService = ServiceManager::Get<ResourceService>();
 
 		/* Resolve Resources */
-		_VertexStage = resourceService->GetResourceByID<ShaderStageRes>(_VertexShaderStageId);
+		_VertexStage = resourceService->GetResourceByID<ShaderStageVSRes>(_VertexShaderStageId);
 		_VertexStage->ResolveReferences();
-		_FragmentStage = resourceService->GetResourceByID<ShaderStageRes>(_FragmentShaderStageId);
+		_FragmentStage = resourceService->GetResourceByID<ShaderStageFSRes>(_FragmentShaderStageId);
 		_FragmentStage->ResolveReferences();
 
 		/* Hook up 'upward' resource chains */
@@ -167,7 +166,9 @@ namespace Wyrd::Editor
 	void ShaderRes::Build(bool isRebuild)
 	{
 		if (_VertexStage != nullptr && _FragmentStage != nullptr)
+		{
 			_isLoaded = _shader->Build(_VertexStage->GetSource(), _FragmentStage->GetSource(), isRebuild);
+		}
 	}
 
 	void ShaderRes::DrawProperties()
@@ -185,12 +186,12 @@ namespace Wyrd::Editor
 
 		if (ImGui::BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(RESOURCE_TAG_SHADERSTAGE))
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(RESOURCE_TAG_SHADERSTAGE_VS))
 			{
 				std::shared_ptr<ResourceService> resourceService = ServiceManager::Get<ResourceService>();
 
 				UID* shaderStageID = (UID*)payload->Data;
-				std::shared_ptr<ShaderStageRes> res = resourceService->GetResourceByID<ShaderStageRes>(*shaderStageID);
+				std::shared_ptr<ShaderStageVSRes> res = resourceService->GetResourceByID<ShaderStageVSRes>(*shaderStageID);
 				if (res != nullptr)
 				{
 					_VertexStage = res;
@@ -211,12 +212,12 @@ namespace Wyrd::Editor
 
 		if (ImGui::BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(RESOURCE_TAG_SHADERSTAGE))
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(RESOURCE_TAG_SHADERSTAGE_FS))
 			{
 				std::shared_ptr<ResourceService> resourceService = ServiceManager::Get<ResourceService>();
 
 				UID* shaderStageID = (UID*)payload->Data;
-				std::shared_ptr<ShaderStageRes> res = resourceService->GetResourceByID<ShaderStageRes>(*shaderStageID);
+				std::shared_ptr<ShaderStageFSRes> res = resourceService->GetResourceByID<ShaderStageFSRes>(*shaderStageID);
 				if (res != nullptr)
 				{
 					_FragmentStage = res;

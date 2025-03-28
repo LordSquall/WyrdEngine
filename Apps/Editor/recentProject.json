@@ -1,6 +1,10 @@
 {
 	"projects": [
 		{
+			"name": "SampleProject",
+			"path": "C:\\Projects\\Wyrd\\WyrdGames\\SampleProject\\SampleProject.oproj" 
+		},
+		{
 			"name": "TestProject",
 			"path": "C:\\projects\\WyrdGames\\TestProject\\TestProject.oproj" 
 		} 

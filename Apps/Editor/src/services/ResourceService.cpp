@@ -35,8 +35,8 @@ namespace Wyrd::Editor
 		_extensions.insert(std::pair<std::string, ResourceType>(".jpg", ResourceType::TEXTURE));
 		_extensions.insert(std::pair<std::string, ResourceType>(".bmp", ResourceType::TEXTURE));
 		_extensions.insert(std::pair<std::string, ResourceType>(".shader", ResourceType::SHADER));
-		_extensions.insert(std::pair<std::string, ResourceType>(".vs", ResourceType::SHADERSTAGE));
-		_extensions.insert(std::pair<std::string, ResourceType>(".fs", ResourceType::SHADERSTAGE));
+		_extensions.insert(std::pair<std::string, ResourceType>(".vs", ResourceType::SHADERSTAGE_VS));
+		_extensions.insert(std::pair<std::string, ResourceType>(".fs", ResourceType::SHADERSTAGE_FS));
 		_extensions.insert(std::pair<std::string, ResourceType>(".cs", ResourceType::SCRIPT));
 		_extensions.insert(std::pair<std::string, ResourceType>(".ttf", ResourceType::FONT));
 

@@ -70,10 +70,10 @@ namespace Wyrd::Editor
 	void PreferencesDialog::OnEditorRender_RenderDoc()
 	{
 #ifdef WYRD_RENDERDOC_ENABLED
-		static bool enableRenderDoc = Utils::ToBool(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__ENABLED, std::string("0")));
-		static bool enableOverlay = Utils::ToBool(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__DISPLAYOVERLAY, std::string("0")));
-		static bool autoOpenOnCapture = Utils::ToBool(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__AUTOOPEN, std::string("0")));
-		static std::string captureDir = _SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__AUTOOPEN, std::string("my_captures/example"));
+		static bool enableRenderDoc = Utils::ToBool(_SettingsService->Get(CONFIG_RENDERDOC, CONFIG_RENDERDOC__ENABLED, std::string("0")));
+		static bool enableOverlay = Utils::ToBool(_SettingsService->Get(CONFIG_RENDERDOC, CONFIG_RENDERDOC__DISPLAYOVERLAY, std::string("0")));
+		static bool autoOpenOnCapture = Utils::ToBool(_SettingsService->Get(CONFIG_RENDERDOC, CONFIG_RENDERDOC__AUTOOPEN, std::string("0")));
+		static std::string captureDir = _SettingsService->Get(CONFIG_RENDERDOC, CONFIG_RENDERDOC__AUTOOPEN, std::string("my_captures/example"));
 		static int currentKey;
 
 		ImGui::Checkbox("Enable Renderdoc", &enableRenderDoc);
@@ -84,10 +84,10 @@ namespace Wyrd::Editor
 
 		if (ImGui::Button("Apply") == true)
 		{
-			_SettingsService->SetSetting(std::to_string(enableRenderDoc), CONFIG_RENDERDOC, CONFIG_RENDERDOC__ENABLED);
-			_SettingsService->SetSetting(std::to_string(enableOverlay), CONFIG_RENDERDOC, CONFIG_RENDERDOC__DISPLAYOVERLAY);
-			_SettingsService->SetSetting(std::to_string(autoOpenOnCapture), CONFIG_RENDERDOC, CONFIG_RENDERDOC__AUTOOPEN);
-			_SettingsService->SetSetting(captureDir, CONFIG_RENDERDOC, CONFIG_RENDERDOC__CAPTUREDIR);
+			_SettingsService->Set(std::to_string(enableRenderDoc), CONFIG_RENDERDOC, CONFIG_RENDERDOC__ENABLED);
+			_SettingsService->Set(std::to_string(enableOverlay), CONFIG_RENDERDOC, CONFIG_RENDERDOC__DISPLAYOVERLAY);
+			_SettingsService->Set(std::to_string(autoOpenOnCapture), CONFIG_RENDERDOC, CONFIG_RENDERDOC__AUTOOPEN);
+			_SettingsService->Set(captureDir, CONFIG_RENDERDOC, CONFIG_RENDERDOC__CAPTUREDIR);
 
 			ServiceManager::Get<EventService>()->Publish(Events::EventType::SettingsUpdated, std::make_unique<Events::SettingsUpdateEventArgs>());
 

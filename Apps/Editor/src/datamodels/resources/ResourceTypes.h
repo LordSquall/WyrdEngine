@@ -16,17 +16,19 @@ namespace Wyrd::Editor
 		SCRIPT = 6,
 		FONT = 7,
 		MATERIAL = 8,
-		SHADERSTAGE = 9,
+		SHADERSTAGE_VS = 9,
+		SHADERSTAGE_FS = 10,
 	};
 
-#define RESOURCE_TAG_TEXTURE	 "TAG_TEXTURE"
-#define RESOURCE_TAG_SHADER		 "TAG_SHADER"
-#define RESOURCE_TAG_MODEL		 "TAG_MODEL"
-#define RESOURCE_TAG_SCENE		 "TAG_SCENE"
-#define RESOURCE_TAG_SCRIPT		 "TAG_SCRIPT"
-#define RESOURCE_TAG_FONT		 "TAG_FONT"
-#define RESOURCE_TAG_MATERIAL	 "TAG_MATERIAL"
-#define RESOURCE_TAG_SHADERSTAGE "TAG_SHADERSTAGE"
+#define RESOURCE_TAG_TEXTURE		"TAG_TEXTURE"
+#define RESOURCE_TAG_SHADER			"TAG_SHADER"
+#define RESOURCE_TAG_MODEL			"TAG_MODEL"
+#define RESOURCE_TAG_SCENE			"TAG_SCENE"
+#define RESOURCE_TAG_SCRIPT			"TAG_SCRIPT"
+#define RESOURCE_TAG_FONT			"TAG_FONT"
+#define RESOURCE_TAG_MATERIAL		"TAG_MATERIAL"
+#define RESOURCE_TAG_SHADERSTAGE_VS "TAG_SHADERSTAGE_VS"
+#define RESOURCE_TAG_SHADERSTAGE_FS "TAG_SHADERSTAGE_FS"
 	
 	class Resource;
 	class TextureRes;
@@ -36,7 +38,8 @@ namespace Wyrd::Editor
 	class ScriptRes;
 	class FontTypeRes;
 	class MaterialRes;
-	class ShaderStageRes;
+	class ShaderStageVSRes;
+	class ShaderStageFSRes;
 
 	typedef std::shared_ptr<Resource> ResourceRef;
 	typedef std::shared_ptr<TextureRes> TextureResRef;
@@ -46,5 +49,6 @@ namespace Wyrd::Editor
 	typedef std::shared_ptr<ScriptRes> ScriptResRef;
 	typedef std::shared_ptr<FontTypeRes> FontResRef;
 	typedef std::shared_ptr<MaterialRes> MaterialResRef;
-	typedef std::shared_ptr<ShaderStageRes> ShaderStageResRef;
+	typedef std::shared_ptr<ShaderStageVSRes> ShaderStageVSResRef;
+	typedef std::shared_ptr<ShaderStageFSRes> ShaderStageFSResRef;
 }

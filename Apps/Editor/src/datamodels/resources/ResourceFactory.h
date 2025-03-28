@@ -11,7 +11,8 @@
 #include "datamodels/resources/MaterialRes.h"
 #include "datamodels/resources/ModelRes.h"
 #include "datamodels/resources/ShaderRes.h"
-#include "datamodels/resources/ShaderStageRes.h"
+#include "datamodels/resources/ShaderStageVSRes.h"
+#include "datamodels/resources/ShaderStageFSRes.h"
 
 namespace Wyrd::Editor
 {
@@ -37,8 +38,10 @@ namespace Wyrd::Editor
 				return std::make_shared<ModelRes>(filename, uid);
 			case SHADER:
 				return std::make_shared<ShaderRes>(filename, uid);
-			case SHADERSTAGE:
-				return std::make_shared<ShaderStageRes>(filename, uid);
+			case SHADERSTAGE_VS:
+				return std::make_shared<ShaderStageVSRes>(filename, uid);
+			case SHADERSTAGE_FS:
+				return std::make_shared<ShaderStageFSRes>(filename, uid);
 			case UNKNOWN:
 			case NONE:
 			default:

@@ -75,7 +75,7 @@ namespace Wyrd::Editor
 			{
 				if (_RDOCAPI != NULL)
 				{
-					if (Utils::ToBool(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__ENABLED, "0")))
+					if (Utils::ToBool(_SettingsService->Get(CONFIG_RENDERDOC, CONFIG_RENDERDOC__ENABLED, "0")))
 					{
 						time_t rawtime;
 						struct tm* timeinfo;
@@ -86,7 +86,7 @@ namespace Wyrd::Editor
 
 						strftime(buffer, sizeof(buffer), "%d-%m-%Y_%H-%M-%S", timeinfo);
 						std::string datetime(buffer);
-						lastFileCreatedName = _SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__CAPTUREDIR, "my_captures/example") + datetime;
+						lastFileCreatedName = _SettingsService->Get(CONFIG_RENDERDOC, CONFIG_RENDERDOC__CAPTUREDIR, "my_captures/example") + datetime;
 
 						_RDOCAPI->SetCaptureFilePathTemplate(lastFileCreatedName.c_str());
 						_RDOCAPI->StartFrameCapture(NULL, NULL);
@@ -117,7 +117,7 @@ namespace Wyrd::Editor
 					}
 					else
 					{
-						char* filenameBuffer = (char*)malloc(sizeof(char) * Utils::ToUInt(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__MAXFILEPATH, "256")));
+						char* filenameBuffer = (char*)malloc(sizeof(char) * Utils::ToUInt(_SettingsService->Get(CONFIG_RENDERDOC, CONFIG_RENDERDOC__MAXFILEPATH, "256")));
 						uint32_t pathLength = 0;
 						uint64_t timestamp = 0;
 
@@ -125,7 +125,7 @@ namespace Wyrd::Editor
 
 						WYRD_INFO("Renderdoc Capture Ended. Capture Successful: {0}", filenameBuffer);
 
-						if (Utils::ToBool(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__AUTOOPEN, "1")))
+						if (Utils::ToBool(_SettingsService->Get(CONFIG_RENDERDOC, CONFIG_RENDERDOC__AUTOOPEN, "1")))
 						{
 							Utils::OpenFileWithSystem(lastFileCreatedName + "_capture.rdc");
 						}
@@ -154,7 +154,7 @@ namespace Wyrd::Editor
 	{
 		if (_RDOCAPI != NULL)
 		{
-			if (Utils::ToBool(_SettingsService->GetSetting(CONFIG_RENDERDOC, CONFIG_RENDERDOC__DISPLAYOVERLAY, "0")) == false)
+			if (Utils::ToBool(_SettingsService->Get(CONFIG_RENDERDOC, CONFIG_RENDERDOC__DISPLAYOVERLAY, "0")) == false)
 			{
 				_RDOCAPI->MaskOverlayBits(0, 0);
 			}

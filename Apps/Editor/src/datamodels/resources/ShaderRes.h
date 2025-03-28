@@ -9,7 +9,8 @@
 #include "Resource.h"
 #include "support/Utils.h"
 #include "datamodels/resources/ResourceTypes.h"
-#include "datamodels/resources/ShaderStageRes.h"
+#include "datamodels/resources/ShaderStageVSRes.h"
+#include "datamodels/resources/ShaderStageFSRes.h"
 
 typedef unsigned char BYTE;
 
@@ -43,8 +44,8 @@ namespace Wyrd::Editor
 
 		inline std::shared_ptr<Shader> GetShader() const { return _shader; }
 
-		inline std::shared_ptr<ShaderStageRes> GetVertexStage() const { return _VertexStage; }
-		inline std::shared_ptr<ShaderStageRes> GetFragmentStage() const { return _FragmentStage; }
+		inline std::shared_ptr<ShaderStageVSRes> GetVertexStage() const { return _VertexStage; }
+		inline std::shared_ptr<ShaderStageFSRes> GetFragmentStage() const { return _FragmentStage; }
 
 	private:
 		std::shared_ptr<Shader> _shader;
@@ -52,8 +53,8 @@ namespace Wyrd::Editor
 		Wyrd::UID _VertexShaderStageId;
 		Wyrd::UID _FragmentShaderStageId;
 
-		ShaderStageResRef _VertexStage;
-		ShaderStageResRef _FragmentStage;
+		ShaderStageVSResRef _VertexStage;
+		ShaderStageFSResRef _FragmentStage;
 
 		bool _isBuilt;
 	};

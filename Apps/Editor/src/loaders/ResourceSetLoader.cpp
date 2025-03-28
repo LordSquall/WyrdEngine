@@ -71,10 +71,26 @@ namespace Wyrd::Editor
 							resourceMap.insert(std::pair<UID, std::shared_ptr<Resource>>(UID(resourceID), res));
 						}
 					}
-					else if (resourceType == "ShaderStage")
+					else if (resourceType == "ShaderStage_VS")
 					{
 						std::string path = resourceObj.get<jsonxx::String>("path");
-						std::shared_ptr<ShaderStageRes> res = std::make_shared<ShaderStageRes>(name, resourceID);
+						std::shared_ptr<ShaderStageVSRes> res = std::make_shared<ShaderStageVSRes>(name, resourceID);
+						res->IsEditorOnly(true);
+						res->SetPath(rootPath / path);
+						if (res->Load((rootPath / path).string()) != 0)
+						{
+							WYRD_CORE_ERROR("Unable to load ShaderStageRes Resource!");
+						}
+						else
+						{
+							WYRD_CORE_INFO("ShaderStageRes Loaded : {0} - {1}", res->GetName(), res->GetResourceID().str());
+							resourceMap.insert(std::pair<UID, std::shared_ptr<Resource>>(UID(resourceID), res));
+						}
+					}
+					else if (resourceType == "ShaderStage_FS")
+					{
+						std::string path = resourceObj.get<jsonxx::String>("path");
+						std::shared_ptr<ShaderStageFSRes> res = std::make_shared<ShaderStageFSRes>(name, resourceID);
 						res->IsEditorOnly(true);
 						res->SetPath(rootPath / path);
 						if (res->Load((rootPath / path).string()) != 0)
