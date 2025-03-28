@@ -120,9 +120,9 @@ namespace Wyrd::Editor::Events
 	class SelectedAssetChangedArgs : public EventArgs
 	{
 	public:
-		SelectedAssetChangedArgs(Wyrd::Editor::Resource* resource) : resource(resource) { }
+		SelectedAssetChangedArgs(const UID resourceUID) : resourceUID(resourceUID) { }
 
-		Wyrd::Editor::Resource* resource;
+		const UID resourceUID;
 
 		EVENT_ARGS_CLONE(SelectedAssetChangedArgs)
 	};

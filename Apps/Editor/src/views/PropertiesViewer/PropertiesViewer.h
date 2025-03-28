@@ -11,6 +11,7 @@ namespace Wyrd::Editor
 {
 	class EventService;
 	class WorkspaceService;
+	class ResourceService;
 
 	class PropertiesViewer : public EditorViewBase
 	{
@@ -30,9 +31,10 @@ namespace Wyrd::Editor
 
 		std::shared_ptr<EventService> _EventService;
 		std::shared_ptr<WorkspaceService> _WorkspaceService;
+		std::shared_ptr<ResourceService> _ResourceService;
 
 		Wyrd::Entity _SelectedEntity;
-		Wyrd::Editor::Resource* _SelectedAsset;
+		std::shared_ptr<Wyrd::Editor::Resource> _SelectedAsset;
 
 		std::function<void()> _GUIFunc;
 	};

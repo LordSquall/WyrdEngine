@@ -27,7 +27,7 @@ namespace Wyrd::Editor
 		ImGui::Text(material->GetName().c_str());
 		if (ImGui::BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_DND_MATERIAL))
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(RESOURCE_TAG_MATERIAL))
 			{
 				UID* materialUID = (UID*)payload->Data;
 				materialComponent->material = *materialUID;

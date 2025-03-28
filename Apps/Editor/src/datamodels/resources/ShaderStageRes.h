@@ -25,6 +25,7 @@ namespace Wyrd::Editor
 		IOResult Save(const std::string& filepath) override;
 
 		ResourceType GetType() override { return ResourceType::SHADERSTAGE; }
+		const std::string GetTypeTag() override;
 		const Icon& GetThumbnail() override;
 
 		void DrawProperties() override;

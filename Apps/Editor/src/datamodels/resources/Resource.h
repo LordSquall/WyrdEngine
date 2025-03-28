@@ -81,6 +81,12 @@ namespace Wyrd::Editor
 		virtual ResourceType GetType() = 0;
 
 		/**
+		 * @brief Returns the unique type tag
+		 * @return Resource tag
+		*/
+		virtual const std::string GetTypeTag() = 0;
+
+		/**
 		 * @brief Returns the Human readable name for the resource
 		 * @return Resource name
 		*/

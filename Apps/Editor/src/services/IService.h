@@ -4,8 +4,6 @@
 
 #include "core/export.h"
 
-#include "support/IconLibrary.h"
-
 namespace Wyrd::Editor
 {
 	class IService

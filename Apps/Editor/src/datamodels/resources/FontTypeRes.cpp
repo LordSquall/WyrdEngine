@@ -151,4 +151,9 @@ namespace Wyrd::Editor
 	{
 		return ServiceManager::Get<ResourceService>()->RetrieveIcon("common", "assets_3dmodel");
 	}
+
+	const std::string FontTypeRes::GetTypeTag()
+	{
+		return RESOURCE_TAG_FONT;
+	}
 }

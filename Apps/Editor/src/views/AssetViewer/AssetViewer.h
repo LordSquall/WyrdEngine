@@ -29,13 +29,6 @@ namespace Wyrd::Editor
 
 		void DrawItemTable(const std::vector<std::filesystem::path>& directories, const std::vector<std::filesystem::path>& files);
 		void DrawFolderItem(int resID, const std::filesystem::path& directoryEntry);
-		void DrawTextureItem(int resID, TextureRes& textureResource);
-		void DrawSceneItem(int resID, SceneRes& sceneResource);
-		void DrawScriptItem(int resID, ScriptRes& scriptResource);
-		void DrawMaterialItem(int resID, MaterialRes& materialResource);
-		void DrawModelItem(int resID, ModelRes& modelResource);
-		void DrawShaderItem(int resID, ShaderRes& ShaderResource);
-		void DrawShaderStageItem(int resID, ShaderStageRes& ShaderStageResource);
 		void DrawUnknownItem(int resID, const std::string& unknownResourceName);
 
 		void DrawStatusIcon(const Icon& icon, const ImVec2& rootPos);

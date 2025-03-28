@@ -134,6 +134,11 @@ namespace Wyrd::Editor
 		return ServiceManager::Get<ResourceService>()->RetrieveIcon("common", "assets_material");
 	}
 
+	const std::string MaterialRes::GetTypeTag()
+	{
+		return RESOURCE_TAG_MATERIAL;
+	}
+
 	void MaterialRes::ResolveReferences()
 	{
 		std::shared_ptr<ResourceService> resourceService = ServiceManager::Get<ResourceService>();
@@ -169,7 +174,7 @@ namespace Wyrd::Editor
 
 		if (ImGui::BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_DND_SHADER))
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(RESOURCE_TAG_SHADER))
 			{
 				UID* shaderUID = (UID*)payload->Data;
 				_material->SetShaderUID(*shaderUID);

@@ -29,6 +29,7 @@ namespace Wyrd::Editor
 		void Build(bool isRebuild = false) override;
 
 		ResourceType GetType() override { return ResourceType::MATERIAL; }
+		const std::string GetTypeTag() override;
 		const Icon& GetThumbnail() override;
 
 		inline const std::shared_ptr<Material> GetMaterial() const { return _material; }

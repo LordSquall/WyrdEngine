@@ -21,6 +21,7 @@ namespace Wyrd::Editor
 	{
 		_EventService = ServiceManager::Get<EventService>();
 		_WorkspaceService = ServiceManager::Get<WorkspaceService>();
+		_ResourceService = ServiceManager::Get<ResourceService>();
 
 		_EventService->Subscribe(Events::EventType::SelectedEntityChanged, WYRD_BIND_FN(PropertiesViewer::OnSelectedEntityChanged));
 
@@ -48,7 +49,7 @@ namespace Wyrd::Editor
 	{
 		Events::SelectedAssetChangedArgs& evtArgs = static_cast<Events::SelectedAssetChangedArgs&>(args);
 
-		_SelectedAsset = evtArgs.resource;
+		_SelectedAsset = _ResourceService->GetResourceByID<Editor::Resource>(evtArgs.resourceUID);
 
 		_GUIFunc = std::bind(&PropertiesViewer::DrawResourceUI, this);
 	}

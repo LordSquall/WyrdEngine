@@ -141,6 +141,11 @@ namespace Wyrd::Editor
 		return ServiceManager::Get<ResourceService>()->RetrieveIcon("common", "assets_shader");
 	}
 
+	const std::string ShaderRes::GetTypeTag()
+	{
+		return RESOURCE_TAG_SHADER;
+	}
+
 	void ShaderRes::ResolveReferences()
 	{
 		std::shared_ptr<ResourceService> resourceService = ServiceManager::Get<ResourceService>();
@@ -180,7 +185,7 @@ namespace Wyrd::Editor
 
 		if (ImGui::BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_DND_SHADERSTAGE))
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(RESOURCE_TAG_SHADERSTAGE))
 			{
 				std::shared_ptr<ResourceService> resourceService = ServiceManager::Get<ResourceService>();
 
@@ -206,7 +211,7 @@ namespace Wyrd::Editor
 
 		if (ImGui::BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_DND_SHADERSTAGE))
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(RESOURCE_TAG_SHADERSTAGE))
 			{
 				std::shared_ptr<ResourceService> resourceService = ServiceManager::Get<ResourceService>();
 

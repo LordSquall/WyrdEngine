@@ -8,7 +8,6 @@ namespace Wyrd
 {
 	Texture* Texture::Create(const TextureDesc& desc)
 	{
-		
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::None:		

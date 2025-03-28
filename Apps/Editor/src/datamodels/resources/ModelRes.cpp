@@ -54,6 +54,11 @@ namespace Wyrd::Editor
 	{
 		return ServiceManager::Get<ResourceService>()->RetrieveIcon("common", "assets_3dmodel");
 	}
+
+	const std::string ModelRes::GetTypeTag()
+	{
+		return RESOURCE_TAG_MODEL;
+	}
 }
 
 

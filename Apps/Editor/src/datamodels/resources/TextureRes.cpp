@@ -48,21 +48,26 @@ namespace Wyrd::Editor
 
 			/* register the texture with the core resource manager */
 			Application::Get().GetResources().Textures[_resourceID] = _texture;
-		
-			/* setup the thumbnail icon */
-			_thumbnailIcon.name = "temp";
-			_thumbnailIcon.x = 0;
-			_thumbnailIcon.y = 0;
+
+			/* create an icon set for the thumnail */
+			_thumbnailIconSet.name = "thumbnail_iconset";
+			_thumbnailIconSet.imagePath = filepath;
+			_thumbnailIconSet.width = _width;
+			_thumbnailIconSet.height = _height;
+			_thumbnailIconSet.Texture.reset(this);
+
 			_thumbnailIcon.width = _width;
 			_thumbnailIcon.height = _height;
-
-			_thumbnailIcon.uv[0] = { 0,	0 };
-			_thumbnailIcon.uv[1] = { 0,	1 };
-			_thumbnailIcon.uv[2] = { 1,	1 };
-			_thumbnailIcon.uv[3] = { 1,	0 };
-
-			_thumbnailIcon.iconSet = std::make_shared<IconSet>();
-			_thumbnailIcon.iconSet->Texture;
+			_thumbnailIcon.x = 0;
+			_thumbnailIcon.y = 0;
+			_thumbnailIcon.uv[0] = { 0.0f, 0.0f };
+			_thumbnailIcon.uv[1] = { 0.0f, 1.0f };
+			_thumbnailIcon.uv[2] = { 1.0f, 1.0f };
+			_thumbnailIcon.uv[3] = { 1.0f, 0.0f };
+			_thumbnailIcon.name = "ThumbnailIcon";
+			//thumbnailIcon->iconSet = std::make_shared<IconSet>();
+			_thumbnailIcon.iconSet.reset(&_thumbnailIconSet);
+			_thumbnailIconSet.Icons.push_back(std::make_shared<Icon>(_thumbnailIcon));
 
 			_isLoaded = true;
 		}
@@ -82,6 +87,11 @@ namespace Wyrd::Editor
 
 	const Icon& TextureRes::GetThumbnail()
 	{
-		return ServiceManager::Get<ResourceService>()->RetrieveIcon("common", "assets_shaderstage_fs");
+		return _thumbnailIcon;
+	}
+
+	const std::string TextureRes::GetTypeTag()
+	{
+		return RESOURCE_TAG_TEXTURE;
 	}
 }

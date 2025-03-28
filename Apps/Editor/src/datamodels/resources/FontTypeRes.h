@@ -24,6 +24,7 @@ namespace Wyrd::Editor
 		IOResult Save(const std::string& filepath) override;
 
 		ResourceType GetType() override { return Wyrd::Editor::ResourceType::FONT; }
+		const std::string GetTypeTag() override;
 		const Icon& GetThumbnail() override;
 
 	private:

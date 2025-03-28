@@ -41,19 +41,19 @@ namespace Wyrd::Editor
 
 					if (resourceType == "Texture")
 					{
-						std::string path = resourceObj.get<jsonxx::String>("path");
-						std::shared_ptr<TextureRes> res = std::make_shared<TextureRes>(name, resourceID);
-						res->IsEditorOnly(true);
-						res->SetPath(rootPath / path);
-						if (res->Load((rootPath / path).string()) != 0)
-						{
-							WYRD_CORE_ERROR("Unable to load Texture Resource!");
-						}
-						else
-						{
-							WYRD_CORE_INFO("Texture Loaded : {0} - {1}", res->GetName(), res->GetResourceID().str());
-							resourceMap.insert(std::pair<UID, std::shared_ptr<Resource>>(UID(resourceID), res));
-						}
+						//std::string path = resourceObj.get<jsonxx::String>("path");
+						//std::shared_ptr<TextureRes> res = std::make_shared<TextureRes>(name, resourceID);
+						//res->IsEditorOnly(true);
+						//res->SetPath(rootPath / path);
+						//if (res->Load((rootPath / path).string()) != 0)
+						//{
+						//	WYRD_CORE_ERROR("Unable to load Texture Resource!");
+						//}
+						//else
+						//{
+						//	WYRD_CORE_INFO("Texture Loaded : {0} - {1}", res->GetName(), res->GetResourceID().str());
+						//	resourceMap.insert(std::pair<UID, std::shared_ptr<Resource>>(UID(resourceID), res));
+						//}
 					}
 					else if (resourceType == "Mesh")
 					{

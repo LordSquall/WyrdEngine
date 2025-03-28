@@ -12,12 +12,14 @@ namespace Wyrd::Editor
 
 	Resource::IOResult SceneRes::Load(const std::string& filepath)
 	{
-		return NotImplemented;
+		/* Scene don't require any content is be loaded upfront */
+		return Success;
 	}
 
 	Resource::IOResult SceneRes::Load(const jsonxx::Object& obj)
 	{
-		return NotImplemented;
+		/* Scene don't require any content is be loaded upfront */
+		return Success;
 	}
 
 	Resource::IOResult SceneRes::Save(const std::string& filepath) 
@@ -28,5 +30,10 @@ namespace Wyrd::Editor
 	const Icon& SceneRes::GetThumbnail()
 	{
 		return ServiceManager::Get<ResourceService>()->RetrieveIcon("common", "assets_scene");
+	}
+
+	const std::string SceneRes::GetTypeTag()
+	{
+		return RESOURCE_TAG_SCENE;
 	}
 }

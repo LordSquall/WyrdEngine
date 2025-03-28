@@ -302,8 +302,11 @@ namespace Wyrd::Editor
 
 		for (auto& file : files)
 		{
-			uint32_t tableCursor = resIdx % layoutSettings.itemColumnCnt;
+			/* retrieve matching resource cache entry */
+			std::shared_ptr<Resource> resource = _Resources->GetResourceByFilePath(file);
 
+			uint32_t tableCursor = resIdx % layoutSettings.itemColumnCnt;
+			
 			if (tableCursor == 0)
 			{
 				ImGui::TableNextRow();
@@ -313,12 +316,12 @@ namespace Wyrd::Editor
 
 			ImVec2 cursor = ImGui::GetCursorPos();
 			ImGui::PushID(resIdx);
-			ImGui::Selectable("##title", _SelectedResource == resIdx, ImGuiSelectableFlags_None, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize));
+			if (ImGui::Selectable("##title", _SelectedResource == resIdx, ImGuiSelectableFlags_None, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize)))
+			{
+				_Events->Publish(Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(resource->GetResourceID()));
+			}
 			ImGui::PopID();
 			ImGui::SetCursorPos(cursor);
-
-			/* retrieve matching resource cache entry */
-			auto resource = _Resources->GetResourceByFilePath(file);
 
 			if (resource != nullptr)
 			{
@@ -330,7 +333,7 @@ namespace Wyrd::Editor
 				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 				{
 					const UID resourceID = resource->GetResourceID();
-					ImGui::SetDragDropPayload(IMGUI_DND_TEXTURE, &resourceID, sizeof(UID));
+					ImGui::SetDragDropPayload(resource->GetTypeTag().c_str(), &resourceID, sizeof(UID));
 					ImGui::Image(thumbnailIcon, ImVec2(32, 32));
 					ImGui::EndDragDropSource();
 				}
@@ -345,93 +348,28 @@ namespace Wyrd::Editor
 					ImGui::EndTooltip();
 				}
 
-				/* Visuals */
-				//ImGui::Image(thumbnailIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize));
-				//ImGui::TextClipped(resource->GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1, 1, 1, 1), "..");
-				
-				///* there is a change that the image may not be loaded yet if currently in the background thread. in this case we want to draw a default texture */
-				//ImTextureID thumbnailTexture = 0;
-				//if (textureResource.GetTexture() == nullptr)
-				//	thumbnailTexture = (ImTextureID)(INT_PTR)_Resources->GetDefaultTexture()->GetTexture()->GetHandle();
-				//else
-				//	thumbnailTexture = (ImTextureID)(INT_PTR)textureResource.GetTexture()->GetHandle();
-
-				/* Drag and Drop */
-				//if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-				//{
-				//	const UID resourceID = textureResource.GetResourceID();
-				//	ImGui::SetDragDropPayload(IMGUI_DND_TEXTURE, &resourceID, sizeof(UID));
-				//	ImGui::Image((ImTextureID)(INT_PTR)textureResource.GetTexture()->GetHandle(), ImVec2(32, 32));
-				//	ImGui::EndDragDropSource();
-				//}
-
-				///* Tool Tip */
-				//if (ImGui::IsItemHovered())
-				//{
-				//	ImGui::BeginTooltip();
-				//	ImGui::Text(textureResource.GetName().c_str());
-				//	ImGui::Text("Filename: %s", textureResource.GetPath().c_str());
-				//	ImGui::Text("UID: %s", textureResource.GetResourceID().str().c_str());
-				//	ImGui::EndTooltip();
-				//}
-
 				/* Context Menu */
-				//if (ImGui::BeginPopupContextItem())
-				//{
-				//	if (ImGui::MenuItem("Properties"))
-				//	{
-				//		_Events->Publish(Editor::Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&textureResource));
-				//	}
-				//	ImGui::Separator();
-				//	if (ImGui::MenuItem("Delete"))
-				//	{
-				//		Utils::RemoveFile(textureResource.GetPath());
-				//	}
-				//	ImGui::EndPopup();
-				//}
-				//
-				///* Input */
-				//if (ImGui::IsItemHovered())
-				//{
-				//	if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-				//		_SelectedResource = resID;
-				//
-				//	if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-				//		Utils::OpenFileWithSystem(textureResource.GetPath());
-				//}
-				//
-				///* Visuals */
-				//ImGui::Image(thumbnailTexture, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
-				//ImGui::TextClipped(textureResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1, 1, 1, 1), "..");
-				//
-				//switch (resType)
-				//{
-				//case ResourceType::TEXTURE:
-				//	DrawTextureItem(resIdx, (TextureRes&)*resource.get());
-				//	break;
-				//case ResourceType::SCENE:
-				//	DrawSceneItem(resIdx, (SceneRes&)*resource.get());
-				//	break;
-				//case ResourceType::SCRIPT:
-				//	DrawScriptItem(resIdx, (ScriptRes&)*resource.get());
-				//	break;
-				//case ResourceType::SHADER:
-				//	DrawShaderItem(resIdx, (ShaderRes&)*resource.get());
-				//	break;
-				//case ResourceType::SHADERSTAGE:
-				//	DrawShaderStageItem(resIdx, (ShaderStageRes&)*resource.get());
-				//	break;
-				//case ResourceType::MATERIAL:
-				//	DrawMaterialItem(resIdx, (MaterialRes&)*resource.get());
-				//	break;
-				//case ResourceType::MODEL:
-				//	DrawModelItem(resIdx, (ModelRes&)*resource.get());
-				//	break;
-				//case ResourceType::NONE:
-				//default:
-				//	DrawUnknownItem(resIdx, file.stem().string());
-				//	break;
-				//}
+				if (ImGui::BeginPopupContextItem())
+				{
+					if (ImGui::MenuItem("Delete"))
+					{
+					}
+					ImGui::EndPopup();
+				}
+
+				/* Input */
+				if (ImGui::IsItemHovered())
+				{
+					if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+						_SelectedResource = resIdx;
+
+					if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+						Utils::OpenFileWithSystem(resource->GetPath());
+				}
+
+				/* Visuals */
+				ImGui::Image(thumbnailIcon, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize));
+				ImGui::TextClipped(resource->GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1, 1, 1, 1), "..");
 			}
 			else
 			{
@@ -483,483 +421,6 @@ namespace Wyrd::Editor
 		/* Visuals */
 		ImGui::Image(_Resources->RetrieveIcon("common", "assets_folder"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 		ImGui::TextClipped(p.stem().string().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "..");
-	}
-
-	void AssetViewer::DrawTextureItem(int resID, TextureRes& textureResource)
-	{
-		/* there is a change that the image may not be loaded yet if currently in the background thread. in this case we want to draw a default texture */
-		ImTextureID thumbnailTexture = 0;
-		if (textureResource.GetTexture() == nullptr)
-			thumbnailTexture = (ImTextureID)(INT_PTR)_Resources->GetDefaultTexture()->GetTexture()->GetHandle();
-		else
-			thumbnailTexture = (ImTextureID)(INT_PTR)textureResource.GetTexture()->GetHandle();
-
-		/* Drag and Drop */
-		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-		{
-			const UID resourceID = textureResource.GetResourceID();
-			ImGui::SetDragDropPayload(IMGUI_DND_TEXTURE, &resourceID, sizeof(UID));
-			ImGui::Image((ImTextureID)(INT_PTR)textureResource.GetTexture()->GetHandle(), ImVec2(32, 32));
-			ImGui::EndDragDropSource();
-		}
-
-		/* Tool Tip */
-		if (ImGui::IsItemHovered())
-		{
-			ImGui::BeginTooltip();
-			ImGui::Text(textureResource.GetName().c_str());
-			ImGui::Text("Filename: %s", textureResource.GetPath().c_str());
-			ImGui::Text("UID: %s", textureResource.GetResourceID().str().c_str());
-			ImGui::EndTooltip();
-		}
-
-		/* Context Menu */
-		if (ImGui::BeginPopupContextItem())
-		{
-			if (ImGui::MenuItem("Properties"))
-			{
-				_Events->Publish(Editor::Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&textureResource));
-			}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Delete"))
-			{
-				Utils::RemoveFile(textureResource.GetPath());
-			}
-			ImGui::EndPopup();
-		}
-
-		/* Input */
-		if (ImGui::IsItemHovered())
-		{
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-				_SelectedResource = resID;
-
-			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-				Utils::OpenFileWithSystem(textureResource.GetPath());
-		}
-
-		/* Visuals */
-		ImGui::Image(thumbnailTexture, ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec2(0,0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
-		ImGui::TextClipped(textureResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1, 1, 1, 1), "..");
-	}
-
-	void AssetViewer::DrawSceneItem(int resID, SceneRes& sceneResource)
-	{
-		/* Drag and Drop */
-		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-		{
-			ImGui::SetDragDropPayload(IMGUI_DND_SCENE, &sceneResource.GetResourceID(), sizeof(UID));
-			ImGui::Image(_Resources->RetrieveIcon("common", "assets_scene"), ImVec2(32, 32));
-			ImGui::EndDragDropSource();
-		}
-
-		/* Tool Tip */
-		if (ImGui::IsItemHovered())
-		{
-			ImGui::BeginTooltip();
-			ImGui::Text(sceneResource.GetName().c_str());
-			ImGui::Text("Filename: %s", sceneResource.GetPath().c_str());
-			ImGui::Text("UID: %s", sceneResource.GetResourceID().str().c_str());
-			ImGui::EndTooltip();
-		}
-
-		/* Context Menu */
-		if (ImGui::BeginPopupContextItem())
-		{
-			if (ImGui::MenuItem("Properties"))
-			{
-				_Events->Publish(Editor::Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&sceneResource));
-			}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Delete"))
-			{
-				Utils::RemoveFile(sceneResource.GetPath().c_str());
-			}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Show in Explorer"))
-			{
-				std::ostringstream os;
-				os << "explorer.exe " << sceneResource.GetPath();
-				Utils::SystemExecute(os.str());
-			}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Properties"))
-			{
-				_Events->Publish(Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&sceneResource));
-			}
-			ImGui::EndPopup();
-		}
-
-		/* Input */
-		if (ImGui::IsItemHovered())
-		{
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-				_SelectedResource = resID;
-
-			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-			{
-				_SelectedResource = resID;
-				_Events->Publish(Editor::Events::EventType::SelectedEntityChanged, std::make_unique<Events::SelectedEntityChangedArgs>(ENTITY_INVALID));
-				ServiceManager::Get<WorkspaceService>()->LoadScene(sceneResource.GetPath());
-			}
-		}
-
-		/* Visuals */
-		ImGui::Image(_Resources->RetrieveIcon("common", "assets_scene"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
-		ImGui::TextClipped(sceneResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
-
-	}
-
-	void AssetViewer::DrawScriptItem(int resID, ScriptRes& scriptResource)
-	{
-		/* Drag and Drop */
-		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-		{
-			const UID resourceID = scriptResource.GetResourceID();
-			ImGui::SetDragDropPayload(IMGUI_DND_SCRIPT, &resourceID, sizeof(UID));
-			ImGui::Image(_Resources->RetrieveIcon("common", "assets_script"), ImVec2(32, 32));
-			ImGui::EndDragDropSource();
-		}
-
-		/* Tool Tip */
-		if (ImGui::IsItemHovered())
-		{
-			ImGui::BeginTooltip();
-			ImGui::Text(scriptResource.GetName().c_str());
-			ImGui::Text("Filename: %s", scriptResource.GetPath().c_str());
-			ImGui::Text("UID: %s", scriptResource.GetResourceID().str().c_str());
-			ImGui::EndTooltip();
-		}
-
-		/* Context Menu */
-		if (ImGui::BeginPopupContextItem())
-		{
-			if (ImGui::MenuItem("Properties"))
-			{
-				_Events->Publish(Editor::Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&scriptResource));
-			}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Delete"))
-			{
-				Utils::RemoveFile(scriptResource.GetPath().c_str());
-			}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Properties"))
-			{
-				_Events->Publish(Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&scriptResource));
-			}
-			ImGui::EndPopup();
-		}
-
-		/* Input */
-		if (ImGui::IsItemHovered())
-		{
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-			{
-				_SelectedResource = resID;
-			}
-
-			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-			{
-				/* build the full path to the project file */
-				std::filesystem::path projectFile = _Workspace->GetProjectRootDirectory() / "/vs.code-workspace";
-				Utils::SystemExecute("code " + projectFile.string() + " " + scriptResource.GetPath().string());
-			}
-		}
-
-		/* Visuals */
-		ImGui::Image(_Resources->RetrieveIcon("common", "assets_script"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
-		ImGui::TextClipped(scriptResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
-	}
-
-	void AssetViewer::DrawMaterialItem(int resID, MaterialRes& materialResource)
-	{
-		/* Drag and Drop */
-		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-		{
-			const UID resourceID = materialResource.GetResourceID();
-			ImGui::SetDragDropPayload(IMGUI_DND_MATERIAL, &resourceID, sizeof(UID));
-			ImGui::Text(materialResource.GetName().c_str());
-			ImGui::EndDragDropSource();
-		}
-
-		/* Tool Tip */
-		if (ImGui::IsItemHovered())
-		{
-			ImGui::BeginTooltip();
-			ImGui::Text(materialResource.GetName().c_str());
-			ImGui::Text("Filename: %s", materialResource.GetPath().c_str());
-			ImGui::Text("UID: %s", materialResource.GetResourceID().str().c_str());
-			ImGui::EndTooltip();
-		}
-
-		/* Context Menu */
-		if (ImGui::BeginPopupContextItem())
-		{
-			if (ImGui::MenuItem("Properties"))
-			{
-				_Events->Publish(Editor::Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&materialResource));
-			}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Open in Material Editor"))
-			{
-				_Events->Publish(Events::EventType::OpenMaterialTool, std::make_unique<Events::OpenMaterialToolArgs>(materialResource.GetMaterial()));
-			}
-			if (ImGui::MenuItem("View Source"))
-			{
-				Utils::SystemExecute("code " + materialResource.GetPath().string());
-			}
-			if (ImGui::MenuItem("Delete"))
-			{
-				Utils::RemoveFile(materialResource.GetPath().c_str());
-			}
-			ImGui::EndPopup();
-		}
-
-		/* Input */
-		if (ImGui::IsItemHovered())
-		{
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-				_SelectedResource = resID;
-
-			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-			{
-				_SelectedResource = resID;
-				Utils::SystemExecute("code " + materialResource.GetPath().string());
-			}
-		}
-
-		/* Visuals */
-		ImVec2 rootPos = ImGui::GetCursorPos();
-		ImGui::Image(_Resources->RetrieveIcon("common", "assets_material"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
-		ImGui::TextClipped(materialResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
-		ImVec2 finalPos = ImGui::GetCursorPos();
-
-		if (!materialResource.IsLoaded())
-		{
-			DrawStatusIcon(_Resources->RetrieveIcon("common", "warning"), rootPos);
-		}
-	}
-
-	void AssetViewer::DrawModelItem(int resID, ModelRes& modelResource)
-	{
-		/* Drag and Drop */
-		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-		{
-			const UID resourceID = modelResource.GetResourceID();
-			ImGui::SetDragDropPayload(IMGUI_DND_MODEL, &resourceID, sizeof(UID));
-			ImGui::Text(modelResource.GetName().c_str());
-			ImGui::EndDragDropSource();
-		}
-
-		/* Tool Tip */
-		if (ImGui::IsItemHovered())
-		{
-			ImGui::BeginTooltip();
-			ImGui::Text(modelResource.GetName().c_str());
-			ImGui::Text("Filename: %s", modelResource.GetPath().c_str());
-			ImGui::Text("UID: %s", modelResource.GetResourceID().str().c_str());
-			ImGui::EndTooltip();
-		}
-
-		/* Context Menu */
-		if (ImGui::BeginPopupContextItem())
-		{
-			if (ImGui::MenuItem("Properties"))
-			{
-				_Events->Publish(Editor::Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&modelResource));
-			}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Delete"))
-			{
-				Utils::RemoveFile(modelResource.GetPath().c_str());
-			}
-			ImGui::EndPopup();
-		}
-
-		/* Input */
-		if (ImGui::IsItemHovered())
-		{
-		if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-			_SelectedResource = resID;
-
-		if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-		{
-			_SelectedResource = resID;
-			Utils::SystemExecute("code " + modelResource.GetPath().string());
-		}
-		}
-
-		/* Visuals */
-		ImGui::Image(_Resources->RetrieveIcon("common", "assets_3dmodel"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
-		ImGui::TextClipped(modelResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
-
-	}
-
-	void AssetViewer::DrawShaderItem(int resID, ShaderRes& ShaderResource)
-	{
-		/* Drag and Drop */
-		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-		{
-			const UID resourceID = ShaderResource.GetResourceID();
-			ImGui::SetDragDropPayload(IMGUI_DND_SHADER, &resourceID, sizeof(UID));
-			ImGui::Image(_Resources->RetrieveIcon("common", "assets_shader"), ImVec2(32, 32));
-			ImGui::EndDragDropSource();
-		}
-
-		/* Tool Tip */
-		if (ImGui::IsItemHovered())
-		{
-			ImGui::BeginTooltip();
-			ImGui::Text(ShaderResource.GetName().c_str());
-			ImGui::Text("Filename: %s", ShaderResource.GetPath().c_str());
-			ImGui::Text("UID: %s", ShaderResource.GetResourceID().str().c_str());
-			ImGui::Text("IsLoaded: %d", ShaderResource.IsLoaded());
-			ImGui::EndTooltip();
-		}
-
-		/* Context Menu */
-		if (ImGui::BeginPopupContextItem())
-		{
-			if (ImGui::MenuItem("Properties"))
-			{
-				_Events->Publish(Editor::Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&ShaderResource));
-			}
-			ImGui::Separator();
-			if (ImGui::MenuItem("View Source"))
-			{
-				Utils::SystemExecute("code " + ShaderResource.GetPath().string());
-			}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Reload"))
-			{
-				ShaderResource.Load(ShaderResource.GetPath().string());
-				ShaderResource.ResolveReferences();
-				ShaderResource.Build();
-			}
-			if (ImGui::MenuItem("Delete"))
-			{
-				Utils::RemoveFile(ShaderResource.GetPath().c_str());
-			}
-			ImGui::EndPopup();
-		}
-
-		/* Input */
-		if (ImGui::IsItemHovered())
-		{
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-				_SelectedResource = resID;
-
-			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-			{
-				_SelectedResource = resID;
-				Utils::SystemExecute("code " + ShaderResource.GetPath().string());
-			}
-		}
-
-		/* Visuals */
-
-		ImVec2 rootPos = ImGui::GetCursorPos();
-		ImGui::Image(_Resources->RetrieveIcon("common", "assets_shader"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
-		ImGui::TextClipped(ShaderResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
-		ImVec2 finalPos = ImGui::GetCursorPos();
-
-		if (!ShaderResource.IsLoaded())
-		{
-			DrawStatusIcon(_Resources->RetrieveIcon("common", "warning"), rootPos);
-		}
-
-	}
-
-	void AssetViewer::DrawShaderStageItem(int resID, ShaderStageRes& ShaderStageResource)
-	{
-		/* Drag and Drop */
-		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-		{
-			const UID resourceID = ShaderStageResource.GetResourceID();
-			ImGui::SetDragDropPayload(IMGUI_DND_SHADERSTAGE, &resourceID, sizeof(UID));
-			if (ShaderStageResource.GetPath().extension() == ".vs")
-			{
-				ImGui::Image(_Resources->RetrieveIcon("common", "assets_shaderstage_vs"), ImVec2(32, 32));
-			}
-			else
-			{
-				ImGui::Image(_Resources->RetrieveIcon("common", "assets_shaderstage_fs"), ImVec2(32, 32));
-			}
-			ImGui::EndDragDropSource();
-		}
-
-		/* Tool Tip */
-		if (ImGui::IsItemHovered())
-		{
-			ImGui::BeginTooltip();
-			ImGui::Text(ShaderStageResource.GetName().c_str());
-			ImGui::Text("Filename: %s", ShaderStageResource.GetPath().c_str());
-			ImGui::Text("UID: %s", ShaderStageResource.GetResourceID().str().c_str());
-			ImGui::Text("IsLoaded: %d", ShaderStageResource.IsLoaded());
-			ImGui::EndTooltip();
-		}
-
-		/* Context Menu */
-		if (ImGui::BeginPopupContextItem())
-		{
-			if (ImGui::MenuItem("Properties"))
-			{
-				_Events->Publish(Editor::Events::EventType::SelectedAssetChanged, std::make_unique<Events::SelectedAssetChangedArgs>(&ShaderStageResource));
-			}
-			ImGui::Separator();
-			if (ImGui::MenuItem("View Source"))
-			{
-				Utils::SystemExecute("code " + ShaderStageResource.GetPath().string());
-			}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Reload"))
-			{
-				ShaderStageResource.Load(ShaderStageResource.GetPath().string());
-				ShaderStageResource.ResolveReferences();
-				ShaderStageResource.Build();
-			}
-			if (ImGui::MenuItem("Delete"))
-			{
-				Utils::RemoveFile(ShaderStageResource.GetPath().c_str());
-			}
-			ImGui::EndPopup();
-		}
-
-		/* Input */
-		if (ImGui::IsItemHovered())
-		{
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-			{
-				_SelectedResource = resID;
-			}
-
-			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-			{
-				_SelectedResource = resID;
-				Utils::SystemExecute("code " + ShaderStageResource.GetPath().string());
-			}
-		}
-
-		/* Visuals */
-
-		ImVec2 rootPos = ImGui::GetCursorPos();
-		if (ShaderStageResource.GetPath().extension() == ".vs")
-		{
-			ImGui::Image(_Resources->RetrieveIcon("common", "assets_shaderstage_vs"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
-		}
-		else
-		{
-			ImGui::Image(_Resources->RetrieveIcon("common", "assets_shaderstage_fs"), ImVec2(layoutSettings.itemGroupSize, layoutSettings.itemGroupSize), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
-		}
-		ImGui::TextClipped(ShaderStageResource.GetName().c_str(), layoutSettings.itemGroupSize, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "...");
-		ImVec2 finalPos = ImGui::GetCursorPos();
-
-		if (!ShaderStageResource.IsLoaded())
-		{
-			DrawStatusIcon(_Resources->RetrieveIcon("common", "warning"), rootPos);
-		}
-
 	}
 
 	void AssetViewer::DrawUnknownItem(int resID, const std::string& unknownResourceName)

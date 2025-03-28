@@ -29,6 +29,7 @@ namespace Wyrd::Editor
 		IOResult Save(const std::string& filepath) override;
 
 		ResourceType GetType() override { return ResourceType::MODEL; }
+		const std::string GetTypeTag() override;
 		const Icon& GetThumbnail() override;
 
 		// Getters and Setters

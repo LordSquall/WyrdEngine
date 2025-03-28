@@ -6,6 +6,7 @@
 #include "views/PropertiesViewer/PropGUIViews/PropGUIFactory.h"
 #include "properties/BaseProp.h"
 #include "core/Application.h"
+#include "datamodels/resources/ResourceTypes.h"
 
 #include <misc/cpp/imgui_stdlib.h>
 
@@ -160,7 +161,7 @@ namespace Wyrd
 
         if (ImGui::BeginDragDropTarget())
         {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_DND_TEXTURE))
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(RESOURCE_TAG_TEXTURE))
             {
                 UID* spriteUID = (UID*)payload->Data;
 

@@ -44,6 +44,11 @@ namespace Wyrd::Editor
 		return ServiceManager::Get<ResourceService>()->RetrieveIcon("common", "assets_shaderstage_fs");
 	}
 
+	const std::string ShaderStageRes::GetTypeTag()
+	{
+		return RESOURCE_TAG_SHADERSTAGE;
+	}
+
 	void ShaderStageRes::DrawProperties()
 	{
 		ImGui::Text(_source.c_str());

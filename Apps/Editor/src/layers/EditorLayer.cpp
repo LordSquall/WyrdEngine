@@ -354,24 +354,24 @@ namespace Wyrd::Editor
 		/* primary control bar */
 		const ImVec2 size(16.0f, 16.0f);
 
-		ImGui::SetCursorPosX((ImGui::GetWindowWidth() - 64.0f) * 0.5f);
-
-		if (ImGui::IconButton(_Resource->RetrieveIcon("common", "sim_play"), 1, !_Simulation->IsRunning() && _Simulation->IsAvailable(), size) == true)
-		{
-			_Simulation->Start();
-		}
-		ImGui::SameLine();
-		if (ImGui::IconButton(_Resource->RetrieveIcon("common", "sim_pause"), 2, _Simulation->IsRunning() && _Simulation->IsAvailable(), size) == true)
-		{
-			_Simulation->TogglePause();
-		}
-		ImGui::SameLine();
-		if (ImGui::IconButton(_Resource->RetrieveIcon("common", "sim_stop"), 3, _Simulation->IsRunning() && _Simulation->IsAvailable(), size) == true)
-		{
-			_Simulation->Stop();
-		}
-
-		ImGui::SameLine();
+		//ImGui::SetCursorPosX((ImGui::GetWindowWidth() - 64.0f) * 0.5f);
+		//
+		//if (ImGui::IconButton(_Resource->RetrieveIcon("common", "sim_play"), 1, !_Simulation->IsRunning() && _Simulation->IsAvailable(), size) == true)
+		//{
+		//	_Simulation->Start();
+		//}
+		//ImGui::SameLine();
+		//if (ImGui::IconButton(_Resource->RetrieveIcon("common", "sim_pause"), 2, _Simulation->IsRunning() && _Simulation->IsAvailable(), size) == true)
+		//{
+		//	_Simulation->TogglePause();
+		//}
+		//ImGui::SameLine();
+		//if (ImGui::IconButton(_Resource->RetrieveIcon("common", "sim_stop"), 3, _Simulation->IsRunning() && _Simulation->IsAvailable(), size) == true)
+		//{
+		//	_Simulation->Stop();
+		//}
+		//
+		//ImGui::SameLine();
 		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x - ImGui::GetWindowContentRegionMin().x) - (size.x * 3));
 		
 		if (ImGui::IconButton(_Resource->RetrieveIcon("common", "export_settings"), 4, true, size) == true)
@@ -383,7 +383,7 @@ namespace Wyrd::Editor
 		{
 			_Workspace->SaveScene();
 			ExportManager::Export();
-			//Utils::SystemExecute("..\\..\\bin\\Debug\\TestPlayer\\TestPlayer.exe --gamedir \"" + _Workspace->GetBuildsDirectory().string() + "/\"");
+			Utils::SystemExecute("..\\..\\bin\\Debug\\TestPlayer\\TestPlayer.exe --gamedir \"" + _Workspace->GetBuildsDirectory().string() + "/\"");
 		}
 
 		/* setup the dockspace */

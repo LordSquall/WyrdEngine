@@ -33,4 +33,9 @@ namespace Wyrd::Editor
 	{
 		return ServiceManager::Get<ResourceService>()->RetrieveIcon("common", "assets_script");
 	}
+
+	const std::string ScriptRes::GetTypeTag()
+	{
+		return RESOURCE_TAG_SCRIPT;
+	}
 }
