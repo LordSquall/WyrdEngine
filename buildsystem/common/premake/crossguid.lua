@@ -1,7 +1,7 @@
 project "crossguid"
     kind "StaticLib"
     language "C++"
-	cppdialect "C++17"
+	cppdialect "C++20"
 	staticruntime "off"
 
 	project_dir_name = "crossguid"

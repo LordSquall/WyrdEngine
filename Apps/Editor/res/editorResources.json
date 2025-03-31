@@ -18,13 +18,13 @@
     "type": "ShaderStage_VS",
     "name": "Fallback VS",
     "resourceID": "99d17caa-1e5e-4c4a-88fd-ba076d1b632f",
-    "path": "shaders//fallback3D.vs"
+    "path": "shaders//fallback3D.raw.vs"
   },
   {
     "type": "ShaderStage_FS",
     "name": "Fallback FS",
     "resourceID": "605db58b-37ff-4fa9-95ca-1115d42d9bf9",
-    "path": "shaders//fallback3D.fs"
+    "path": "shaders//fallback3D.raw.fs"
   },
   {
     "type": "Shader",
@@ -52,13 +52,13 @@
     "type": "ShaderStage_VS",
     "name": "Gizmo 3D Grid VS",
     "resourceID": "7dd8b039-0c66-4ad2-9c55-331dcf289ace",
-    "path": "shaders//gizmo3DGrid.vs"
+    "path": "shaders//gizmo3DGrid.raw.vs"
   },
   {
     "type": "ShaderStage_FS",
     "name": "Gizmo 3D Grid FS",
     "resourceID": "203c1bc6-d221-4d78-9e0f-12e2f64d2e24",
-    "path": "shaders//gizmo3DGrid.fs"
+    "path": "shaders//gizmo3DGrid.raw.fs"
   },
   {
     "type": "Shader",
@@ -86,13 +86,13 @@
     "type": "ShaderStage_VS",
     "name": "Debug 3D VS",
     "resourceID": "5a8d5809-f934-45d2-afed-1b4f3a7fd039",
-    "path": "shaders//debug3d.vs"
+    "path": "shaders//debug3d.raw.vs"
   },
   {
     "type": "ShaderStage_FS",
     "name": "Debug 3D FS",
     "resourceID": "da0af991-3190-46cd-b2de-3874148c09b3",
-    "path": "shaders//debug3d.fs"
+    "path": "shaders//debug3d.raw.fs"
   },
   {
     "type": "Shader",
@@ -120,13 +120,13 @@
     "type": "ShaderStage_VS",
     "name": "Default 3D VS",
     "resourceID": "41458323-1a61-4a14-b665-f70734cfc0da",
-    "path": "shaders//mesh.vs"
+    "path": "shaders//mesh.raw.vs"
   },
   {
     "type": "ShaderStage_FS",
     "name": "Default 3D FS",
     "resourceID": "dfd4d193-acc4-46d3-ae1d-0ee81606c2e8",
-    "path": "shaders//mesh.fs"
+    "path": "shaders//mesh.raw.fs"
   },
   {
     "type": "Shader",
